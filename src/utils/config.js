@@ -1,0 +1,64 @@
+const APIV1 = '/api/v1'
+const APIV2 = '/api/v2'
+const APIHOST = 'localhost'
+const APIPORT = 5557
+const APIURL = `http://${APIHOST}:${APIPORT}`
+
+module.exports = {
+  name: 'TyreMaster App',
+  prefix: 'dmiPos',
+  footerText: 'Pos © 2017 Darkotech Mandiri Indonesia',
+  logo: '/logo.png',
+  iconFontCSS: '/iconfont.css',
+  iconFontJS: '/iconfont.js',
+  YQL: ['http://www.zuimeitianqi.com'],
+  CORS: `${APIURL}`,
+  openPages: ['/login'],
+  authBy: 'id',
+  apiPrefix: `${APIV1}`,
+  apiHeader: { Accept: 'application/json', 'Content-Type': 'application/json' },
+  disableMultiSelect: true,
+  apiold: {
+    userLogin: `${APIV1}/user/login`,
+    userLogout: `${APIV1}/user/logout`, // services/app.js get
+    userInfo: `${APIV1}/userInfo`,
+    users: `${APIV1}/users`,
+    posts: `${APIV1}/posts`,
+    user: `${APIV1}/user/:id`,
+    dashboard: `${APIV1}/dashboard`,
+    menus: `${APIV1}/menus`,
+    v1test: `${APIV1}/test`,
+    v2test: `${APIV2}/test`,
+  },
+  api: {
+    userLogin: `${APIURL}${APIV1}/users/login`,
+    userLogout: `${APIURL}${APIV1}/users/logout`, // services/app.js post
+    userInfo: `${APIV1}/userInfo`,
+    users: `${APIURL}${APIV1}/users`,
+    user: `${APIURL}${APIV1}/users/:id`,
+    employees: `${APIURL}${APIV1}/employees`,
+    jobposition: `${APIURL}${APIV1}/employees/positions`,
+    customers: `${APIURL}${APIV1}/members`,
+    customergroup: `${APIURL}${APIV1}/members/groups`,
+    customertype: `${APIURL}${APIV1}/members/types`,
+    suppliers: `${APIURL}${APIV1}/suppliers`,
+    city: `${APIURL}${APIV1}/cities`,
+    services: `${APIURL}${APIV1}/services`,
+    servicestype: `${APIURL}${APIV1}/misc/code/service`,
+    misc: `${APIURL}${APIV1}/misc`,
+    posts: `${APIV1}/posts`,
+    dashboard: `${APIV1}/dashboard`,
+    menus: `${APIV1}/menus`,
+    position: '${APIV1}/position',
+    sellprice: `${APIURL}${APIV1}/misc/code/SELLPRICE`,
+    brand: `${APIURL}${APIV1}/stocks/brands`,
+    stockcategory: `${APIURL}${APIV1}/stocks/categories`,
+    stock: `${APIURL}${APIV1}/stocks`,
+    cashier: `${APIURL}${APIV1}/pos`,
+    member: `${APIURL}${APIV1}/member`,
+    service: `${APIURL}${APIV1}/service`,
+    cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,
+    cashierTrans: `${APIURL}${APIV1}/cashierTrans`,
+    creditCharge: `${APIURL}${APIV1}/creditCharge`,
+  },
+}

@@ -1,0 +1,36 @@
+@import "./Header.less";
+
+.button, .void {
+  width: 47px;
+  height: 47px;
+  line-height: 47px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.button {
+  cursor: pointer;
+  transition: @transition-ease-in;
+  & a {
+    color: #000;
+  }
+  &:hover {
+    color: @primary-color;
+    background-color: fade(@primary-color, 15%);
+  }
+  &.shortcut {
+    background-color: #d897eb;
+  }
+  &.pos {
+    background-color: #8fc9fb;
+  }
+  &.profit {
+    background-color: #64ea91;
+  }
+  &.alert {
+    background-color: #f69899;
+  }
+  &.notification {
+    background-color: #ffff66;
+  }
+}

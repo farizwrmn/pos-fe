@@ -1,0 +1,42 @@
+import { request, config, crypt } from 'utils'
+const { cashierList, cashierTrans } = config.api
+
+export async function getCashierNo () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: cashierList,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function getCashierTrans (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: cashierTrans + '/' + params.cashierId + '/' + params.cashierNo + '/' + params.shift + '/' + params.status,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function createCashierTrans (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: cashierTrans,
+    method: 'post',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function updateCashierTrans (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: cashierTrans,
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}

@@ -1,0 +1,162 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import Browse from './Browse'
+import Filter from './Filter'
+import Modal from './Modal'
+
+const Employee = ({ location, dispatch, employee, jobposition, loading  }) => {
+  const { list, pagination, currentItem, modalVisible, searchVisible, modalType,
+    selectedRowKeys, disableItem, disableMultiSelect } = employee
+
+  const { listLovJobPosition } = jobposition
+
+  const { pageSize } = pagination
+
+  const modalProps = {
+    item: modalType === 'add' ? {} : currentItem,
+    visible: modalVisible,
+    confirmLoading: loading.effects['employee/update'],
+    title: `${modalType === 'add' ? 'Add Employee' : 'Edit Employee'}`,
+    disableItem: disableItem,
+    wrapClassName: 'vertical-center-modal',
+    listJobPosition: listLovJobPosition,
+    onOk (data) {
+      dispatch({
+        type: `employee/${modalType}`,
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'employee/modalHide',
+      })
+    },
+    modalButtonCancelClick () {
+      dispatch({ type: `employee/modalHide` })
+    },
+    modalButtonSaveClick (id, data) {
+      console.log('modalButtonSaveClick', id)
+      dispatch({
+        type: `employee/${modalType}`,
+        payload: {
+          id: id,
+          data: data
+        },
+      })
+    }
+  }
+
+  const browseProps = {
+    dataSource: list,
+    loading: loading.effects['employee/query'],
+    pagination,
+    location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      }))
+    },
+    onAddItem () {
+      dispatch({
+        type: 'employee/modalShow',
+        payload: {
+          modalType: 'add',
+        },
+      })
+    },
+    onEditItem (item) {
+      dispatch({
+        type: 'employee/modalShow',
+        payload: {
+          modalType: 'edit',
+          currentItem: item,
+        },
+      })
+    },
+    onDeleteItem (id) {
+      dispatch({
+        type: 'employee/delete',
+        payload: id
+      })
+    },
+    onDeleteBatch (selectedRowKeys) {
+      dispatch({
+        type: 'employee/deleteBatch',
+        payload: {
+          employeeId: selectedRowKeys,
+        },
+      })
+    },
+    onSearchShow () { dispatch({ type: 'employee/searchShow' }) },
+    size:'small',
+  }
+  Object.assign(browseProps, disableMultiSelect ? null :
+    {rowSelection: {
+      selectedRowKeys,
+      onChange: (keys) => {
+        dispatch({
+          type: 'employee/updateState',
+          payload: {
+            selectedRowKeys: keys,
+          },
+        })
+      },
+    }}
+  )
+
+  const filterProps = {
+    visiblePanel: searchVisible,
+    filter: {
+      ...location.query,
+    },
+    onFilterChange (value) {
+      dispatch(routerRedux.push({
+        pathname: location.pathname,
+        query: {
+          ...value,
+          page: 1,
+          pageSize,
+        },
+      }))
+    },
+    onSearch (fieldsValue) {
+
+      fieldsValue.keyword.length ? dispatch(routerRedux.push({
+          pathname: '/master/employee',
+          query: {
+            field: fieldsValue.field,
+            keyword: fieldsValue.keyword,
+          },
+        })) : dispatch(routerRedux.push({
+          pathname: '/master/employee',
+        }))
+    },
+    onSearchHide () { dispatch({ type: 'employee/searchHide'}) },
+  }
+
+  return (
+    <div className="content-inner">
+      <Filter {...filterProps} />
+      <Browse {...browseProps} />
+      {modalVisible && <Modal {...modalProps} />}
+    </div>
+  )
+}
+
+Employee.propTypes = {
+  employee: PropTypes.object,
+  location: PropTypes.object,
+  dispatch: PropTypes.func,
+  loading: PropTypes.object,
+}
+
+
+export default connect(({ employee, jobposition, loading }) => ({ employee, jobposition, loading }))(Employee)
