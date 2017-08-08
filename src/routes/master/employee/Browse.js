@@ -51,8 +51,8 @@ const Browse = ({
       width: 210,
     }, {
       title: 'Position',
-      dataIndex: 'positionId',
-      key: 'positionId',
+      dataIndex: 'positionName',
+      key: 'positionName',
       width: 80,
     }, {
       title: 'Address 1',

@@ -38,10 +38,10 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/onReset',
+      type: 'pos/onMemberReset',
       payload: {
         searchText: '',
-        tmpList: tmpList,
+        tmpMemberList: tmpMemberList,
       },
     })
   }

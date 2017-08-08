@@ -81,10 +81,10 @@ const modal = ({
         </FormItem>
         <FormItem label='Position' hasFeedback {...formItemLayout}>
           {getFieldDecorator('positionId', {
+            initialValue: item.positionId ? item.positionId.split(',').map(function(el){ return +el;}) : null
           })(<Cascader
             size='large'
             style={{ width: '100%' }}
-            defaultValue={item.positionId.split(',').map(function(el){ return +el;})}
             options={listJobPosition}
           />)}
         </FormItem>
@@ -100,9 +100,9 @@ const modal = ({
           })(<Input />)}
         </FormItem>
         <FormItem label="City" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('city', {
-            initialValue: item.city,
-            rules: [{ min: 4, max: 30 }],
+          {getFieldDecorator('cityId', {
+            initialValue: item.cityId,
+            rules: [{ max: 30 }],
           })(<Input />)}
         </FormItem>
         <FormItem label="State" hasFeedback {...formItemLayout}>

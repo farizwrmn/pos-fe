@@ -7,7 +7,7 @@ import { DropOption } from 'components'
 const FormItem = Form.Item
 
 const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
-  const { searchText, tmpList } = pos
+  const { searchText, filtered, tmpProductList } = pos
 
   const handleMenuClick = (record, e) => {
     onChooseItem(record)
@@ -26,20 +26,20 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/onSearch',
+      type: 'pos/onProductSearch',
       payload: {
         searchText: searchText,
-        tmpList: tmpList,
+        tmpProductList: tmpProductList,
       },
     })
   }
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/onReset',
+      type: 'pos/onProductReset',
       payload: {
         searchText: '',
-        tmpList: tmpList,
+        tmpProductList: tmpProductList,
       },
     })
   }
@@ -49,14 +49,17 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
+      width: '25%'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
+      width: '50%'
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
-      key: 'sellPrice'
+      key: 'sellPrice',
+      width: '25%'
     }
   ]
 
@@ -82,10 +85,11 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       <Table
         {...tableProps}
         bordered
+        scroll={{ x: 500, y: 388}}
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.employeeId}
+        rowKey={record => record.productCode}
         onRowClick={(record) => handleMenuClick(record)}
       />
     </div>

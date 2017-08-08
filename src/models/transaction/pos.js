@@ -1,11 +1,12 @@
 import * as stockService from '../../services/stock'
 import * as memberService from '../../services/member'
-import * as serviceService from '../../services/service'
+// import * as serviceService from '../../services/service'
 import * as cashierService from '../../services/cashier'
 
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
 import { queryMechanics as queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
 import { query as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
+import { query as queryService, queryServiceByCode as queryServiceByCode } from '../../services/service'
 
 import { parse } from 'qs'
 import { Modal } from 'antd'
@@ -13,7 +14,7 @@ import { routerRedux } from 'dva/router'
 
 const { query, queryByCode } = stockService
 const { memberByCode = memberService.queryByCode } = memberService
-const { queryService, queryServiceByCode } = serviceService
+// const { queryService, queryServiceByCode } = serviceService
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
 export default {
@@ -58,6 +59,8 @@ export default {
     dataPosLoaded: false,
     memberInformation: [],
     tmpMemberList: [],
+    tmpMechanicList: [],
+    tmpProductList: [],
     mechanicInformation: [],
     memberUnitInfo: [],
     curRecord: 1,
@@ -370,6 +373,28 @@ export default {
       }
     },
 
+    *getServices ({ payload }, { call, put }) {
+      const data = yield call(queryService, payload)
+      let newData = payload ? data.service : data.data
+      if ( data.success ) {
+        yield put({
+          type: 'queryGetServicesSuccess',
+          payload: {
+            serviceInformation: newData,
+            tmpServiceList: newData,
+          },
+        })
+      }
+      else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Service Not Found...!',
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        //throw data
+      }
+    },
+
     *getMechanic ({ payload }, { call, put }) {
       const data = yield call(queryMechanicCode, payload)
       let newData = payload ? data.mechanic : data.data
@@ -399,6 +424,7 @@ export default {
           type: 'queryGetMechanicsSuccess',
           payload: {
             mechanicInformation: newData,
+            tmpMechanicList: newData,
           },
         })
       }
@@ -420,6 +446,7 @@ export default {
           type: 'queryGetProductsSuccess',
           payload: {
             productInformation: newData,
+            tmpProductList: newData,
           },
         })
       }
@@ -602,13 +629,13 @@ export default {
     },
 
     queryServiceSuccess (state, action) {
-      const { list, pagination } = action.payload
+      const { listService, pagination } = action.payload
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var a = dataPos
       var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
-        list,
+        listService,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -666,6 +693,18 @@ export default {
         curTotal: grandTotal, }
     },
 
+    queryGetServicesSuccess (state, action) {
+      const { serviceInformation, tmpServiceList } = action.payload
+      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      var a = dataPos
+      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+
+      return { ...state,
+        listService: serviceInformation,
+        tmpServiceList: tmpServiceList,
+        curTotal: grandTotal, }
+    },
+
     queryGetMechanicSuccess (state, action) {
       const { mechanicInformation } = action.payload
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
@@ -678,24 +717,26 @@ export default {
     },
 
     queryGetMechanicsSuccess (state, action) {
-      const { mechanicInformation } = action.payload
+      const { mechanicInformation, tmpMechanicList } = action.payload
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var a = dataPos
       var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listMechanic: mechanicInformation,
+        tmpMechanicList: tmpMechanicList,
         curTotal: grandTotal, }
     },
 
     queryGetProductsSuccess (state, action) {
-      const { productInformation } = action.payload
+      const { productInformation, tmpProductList } = action.payload
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var a = dataPos
       var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listProduct: productInformation,
+        tmpProductList: tmpProductList,
         curTotal: grandTotal, }
     },
 
@@ -916,7 +957,7 @@ export default {
       var newData
       console.log('tmpMemberList', tmpMemberList)
       newData = tmpMemberList.map((record) => {
-        const match = record.memberName.match(reg)
+        const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
         if (!match) {
           return null;
         }
@@ -927,7 +968,41 @@ export default {
 
       return { ...state, listMember: newData }
     },
-    onMemberReset (state, action) {
+    onMechanicSearch (state, action) {
+      const { searchText, tmpMechanicList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+      console.log('tmpMechanicList', tmpMechanicList)
+      newData = tmpMechanicList.map((record) => {
+        const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMechanic: newData }
+    },
+    onProductSearch (state, action) {
+      const { searchText, tmpProductList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+      console.log('tmpProductList', tmpProductList)
+      newData = tmpProductList.map((record) => {
+        const match = record.productName.match(reg) || record.productCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listProduct: newData }
+    },
+    onReset (state, action) {
       const { searchText, tmpList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       var newData
@@ -943,6 +1018,23 @@ export default {
       }).filter(record => !!record)
 
       return { ...state, list: newData, searchText: searchText }
+    },
+
+    onServiceSearch (state, action) {
+      const { searchText, tmpServiceList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+      newData = tmpServiceList.map((record) => {
+        const match = record.serviceName.match(reg) || record.serviceCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+      console.log('newData', newData);
+      return { ...state, listService: newData }
     },
 
     onSearch (state, action) {
@@ -963,12 +1055,66 @@ export default {
       return { ...state, list: newData }
     },
 
-    onReset (state, action) {
-      const { searchText, tmpList } = action.payload;
+    onMemberReset (state, action) {
+      const { searchText, tmpMemberList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       var newData
 
-      newData = tmpList.map((record) => {
+      newData = tmpMemberList.map((record) => {
+        const match = record.memberName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMember: newData, searchText: searchText }
+    },
+
+    onMechanicReset (state, action) {
+      const { searchText, tmpMechanicList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+
+      newData = tmpMechanicList.map((record) => {
+        const match = record.employeeName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMechanic: newData, searchText: searchText }
+    },
+
+    onServiceReset (state, action) {
+      const { searchText, tmpServiceList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+
+      newData = tmpServiceList.map((record) => {
+        const match = record.serviceName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listService: newData, searchText: searchText }
+    },
+
+    onProductReset (state, action) {
+      const { searchText, tmpProductList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      var newData
+
+      newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg)
         if (!match) {
           return null;
@@ -978,7 +1124,7 @@ export default {
         };
       }).filter(record => !!record)
 
-      return { ...state, list: newData, searchText: searchText }
+      return { ...state, listProduct: newData, searchText: searchText }
     },
 
     //------------------

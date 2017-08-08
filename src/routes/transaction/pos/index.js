@@ -164,7 +164,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
   const handleServiceBrowse = () => {
     dispatch({
-      type: 'pos/queryService',
+      type: 'pos/getServices',
     })
 
     dispatch({
@@ -431,7 +431,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
       console.log('itemitem', item)
-      dispatch({ type: 'pos/queryGetProductSuccess', payload: { listByCode: item, curRecord: curRecord + 1, } })
+      dispatch({ type: 'pos/queryGetProductsSuccess', payload: { listByCode: item, curRecord: curRecord + 1, } })
       dispatch({ type: 'pos/hideProductModal' })
     },
   }
@@ -462,15 +462,15 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
       arrayProd.push({
         'no': curRecord,
-        'code': item.serviceId,
-        'name': item.serviceDescription,
+        'code': item.serviceCode,
+        'name': item.serviceName,
         'qty': curQty,
-        'price': (memberInformation.memberCode ? item.memberPrice : item.normalPrice),
+        'price':  item.serviceCost,
         'discount': 0,
         'disc1': 0,
         'disc2': 0,
         'disc3': 0,
-        'total': (memberInformation.memberCode ? item.memberPrice : item.normalPrice) * curQty
+        'total':  item.serviceCost * curQty
       })
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
@@ -1053,7 +1053,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                 <FormItem label="Name" {...formItemLayout}>
                   <Input value={mechanicInformation.employeeName} disabled />
                 </FormItem>
-                <FormItem label="Name" {...formItemLayout}>
+                <FormItem label="ID" {...formItemLayout}>
                   <Input value={mechanicInformation.employeeId} disabled />
                 </FormItem>
               </Form>

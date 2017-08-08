@@ -10,7 +10,7 @@ import ListService from './ListService'
 import ListQueue from './ListQueue'
 
 const Browse = ({ location, pos, loading, onChooseItem, ...modalProps }) => {
-  const { list, listMember, listMechanic, listProduct,
+  const { list, listMember, listMechanic, listProduct, listService,
     pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = pos
 
   const { pageSize } = pagination
@@ -49,6 +49,7 @@ const Browse = ({ location, pos, loading, onChooseItem, ...modalProps }) => {
       { (modalType == 'browseMember') && <ListMember {...listProps} /> }
       { (modalType == 'browseMechanic') && <ListMechanic {...listProps} /> }
       { (modalType == 'browseProduct') && <ListProduct {...listProps} /> }
+      { (modalType == 'browseService') && <ListService {...listProps} /> }
       {/*{(modalType == 'browse' ? <List {...listProps} /> : (modalType == 'browseMechanic' ? <ListMechanic {...listProps} /> : (modalType == 'browseService' ? <ListService {...listProps} /> : <ListQueue {...listProps} />)))}*/}
     </Modal>
   )

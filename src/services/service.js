@@ -13,6 +13,17 @@ export async function query (params) {
   })
 }
 
+export async function queryServiceByCode (params) {
+  console.log('query_params', params,services);
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: services + params.serviceCode,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken,
+  })
+}
+
 export async function add (params) {
   console.log('params:', params, services);
   const url = params.serviceCode ? services + '/' + params.serviceCode : null

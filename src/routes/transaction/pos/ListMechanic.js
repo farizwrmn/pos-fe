@@ -7,7 +7,7 @@ import { DropOption } from 'components'
 const FormItem = Form.Item
 
 const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
-  const { searchText, tmpList } = pos
+  const { searchText, tmpMechanicList } = pos
 
   const handleMenuClick = (record, e) => {
     onChooseItem(record)
@@ -25,21 +25,23 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   }
 
   const handleSearch = () => {
+    console.log('searchText', searchText)
+    console.log('tmpMechanicList', tmpMechanicList)
     dispatch({
-      type: 'pos/onSearch',
+      type: 'pos/onMechanicSearch',
       payload: {
         searchText: searchText,
-        tmpList: tmpList,
+        tmpMechanicList: tmpMechanicList,
       },
     })
   }
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/onReset',
+      type: 'pos/onMechanicReset',
       payload: {
         searchText: '',
-        tmpList: tmpList,
+        tmpMechanicList: tmpMechanicList,
       },
     })
   }
