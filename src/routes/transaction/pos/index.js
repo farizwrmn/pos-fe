@@ -1040,6 +1040,9 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                     </Popover>
                   </Col>
                 </FormItem>
+                <FormItem label="KM" {...formItemLayout}>
+                  <Input required value={memberUnitInfo.unitNo}/>
+                </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input  value={memberInformation.memberCode} disabled />
                 </FormItem>

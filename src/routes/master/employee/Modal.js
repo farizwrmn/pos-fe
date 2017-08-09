@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button, Cascader } from 'antd'
-
+import { Form, Input, Modal, Icon, Button, Row, Col, Popover, Cascader } from 'antd'
+import BrowseCity from './BrowseCity'
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -10,12 +10,18 @@ const formItemLayout = {
 }
 
 const modal = ({
-  item = {},
+  item = [],
   listJobPosition = [],
   onOk,
   disableItem,
+  listCity,
   modalButtonCancelClick,
   modalButtonSaveClick,
+  modalPopoverVisibleCity,
+  modalPopoverClose,
+  onChooseCity,
+  modalButtonCityClick,
+  visiblePopoverCity = false,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
@@ -33,10 +39,41 @@ const modal = ({
       onOk(data)
     })
   }
+  const hdlPopoverVisibleCityChange = () => {
+    modalPopoverVisibleCity()
+  }
+  const hdlPopoverClose = () => {
+    modalPopoverClose()
+  }
+  console.log('item', item);
+  const hdlTableCityRowClick = (record) => {
+    onChooseCity(record)
+  }
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
   }
+  const hdlButtonCityClick = () => {
+    modalButtonCityClick()
+  }
+  const contentPopoverCity = (
+    <div>
+      <BrowseCity pagination={false} dataSource={listCity}
+      onRowClick={record => hdlTableCityRowClick(record)}/>
+    </div>
+  )
+  const titlePopover = (
+    <Row>
+      <Col span={8}>Choose</Col>
+      <Col span={1} offset={15}>
+        <Button shape="circle"
+          icon="close-circle"
+          size="small"
+          onClick={() => hdlPopoverClose()}
+        />
+      </Col>
+    </Row>
+  )
   const hdlButtonCancelClick = () => {
     modalButtonCancelClick()
   }
@@ -81,7 +118,7 @@ const modal = ({
         </FormItem>
         <FormItem label='Position' hasFeedback {...formItemLayout}>
           {getFieldDecorator('positionId', {
-            initialValue: item.positionId ? item.positionId.split(',').map(function(el){ return +el;}) : null
+            initialValue: item.positionId ? item.positionId.toString(10).split(',').map(function(el){ return +el;}) : null
           })(<Cascader
             size='large'
             style={{ width: '100%' }}
@@ -100,10 +137,43 @@ const modal = ({
           })(<Input />)}
         </FormItem>
         <FormItem label="City" hasFeedback {...formItemLayout}>
+        <Row>
+        <Col span={5}>
+        <Popover visible={visiblePopoverCity}
+          onVisibleChange={() => hdlPopoverVisibleCityChange()}
+          title={titlePopover}
+          content={contentPopoverCity}
+          trigger="click"
+        >
+          <Button
+            type="primary"
+            style={{width:50}}
+            onClick={() => hdlButtonCityClick()}
+          ><Icon type="environment" />
+          </Button>
+        </Popover>
+        </Col>
+        <Col span={4}>
           {getFieldDecorator('cityId', {
             initialValue: item.cityId,
-            rules: [{ max: 30 }],
-          })(<Input />)}
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input style={{width: 40}} disabled/>)}
+          </Col>
+          <Col span={4}>
+          {getFieldDecorator('cityName', {
+            initialValue: item.cityName,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input style={{width: 96}} disabled/>)}
+          </Col>
+          </Row>
         </FormItem>
         <FormItem label="State" hasFeedback {...formItemLayout}>
           {getFieldDecorator('state', {

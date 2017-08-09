@@ -185,7 +185,11 @@ let database = [
     bpid: '92',
     name: 'Misc Detail',
     route: '/setting/misc/:id',
-  }
+  },
+  {
+    id: '11',
+    route: '/transaction/pos/payment'
+  },
 ]
 
 module.exports = {

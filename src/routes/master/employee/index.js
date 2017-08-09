@@ -6,17 +6,19 @@ import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
 
-const Employee = ({ location, dispatch, employee, jobposition, loading  }) => {
+const Employee = ({ location, dispatch, employee, jobposition, city, loading  }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, modalType,
-    selectedRowKeys, disableItem, disableMultiSelect } = employee
+    selectedRowKeys, disableItem, visiblePopoverCity, disableMultiSelect } = employee
 
   const { listLovJobPosition } = jobposition
-
+  const { listCity } = city
   const { pageSize } = pagination
 
   const modalProps = {
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     visible: modalVisible,
+    visiblePopoverCity,
+    listCity,
     confirmLoading: loading.effects['employee/update'],
     title: `${modalType === 'add' ? 'Add Employee' : 'Edit Employee'}`,
     disableItem: disableItem,
@@ -45,7 +47,45 @@ const Employee = ({ location, dispatch, employee, jobposition, loading  }) => {
           data: data
         },
       })
-    }
+    },
+    modalPopoverVisibleCity () {
+      console.log('modalPopoverVisibleCity');
+      dispatch({
+        type: 'employee/modalPopoverVisibleCity',
+      })
+    },
+    modalButtonCityClick () {
+      dispatch({
+        type: 'city/query',
+      })
+    },
+    modalPopoverClose () {
+      dispatch({
+        type: 'employee/modalPopoverClose',
+      })
+    },
+    onChooseCity (data) {
+      console.log('onChooseCity', data, 'currentItem', currentItem)
+      dispatch({
+        type: 'employee/chooseCity',
+        payload: {
+          modalType,
+          currentItem: {
+            cityId: data.id,
+            cityName: data.cityName,
+            employeeId: currentItem.employeeId,
+            address01: currentItem.address01,
+            address02: currentItem.address02,
+            email: currentItem.email,
+            employeeName: currentItem.employeeName,
+            mobileNumber: currentItem.mobileNumber,
+            phoneNumber: currentItem.phoneNumber,
+            positionId: currentItem.positionId,
+            positionName: currentItem.positionName
+          },
+        },
+      })
+    },
   }
 
   const browseProps = {
@@ -156,7 +196,8 @@ Employee.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
+  city: PropTypes.object
 }
 
 
-export default connect(({ employee, jobposition, loading }) => ({ employee, jobposition, loading }))(Employee)
+export default connect(({ employee, jobposition, city, loading }) => ({ employee, jobposition, city, loading }))(Employee)

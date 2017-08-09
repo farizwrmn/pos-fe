@@ -54,7 +54,7 @@ module.exports = {
     brand: `${APIURL}${APIV1}/stocks/brands`,
     stockcategory: `${APIURL}${APIV1}/stocks/categories`,
     stock: `${APIURL}${APIV1}/stocks`,
-    cashier: `${APIURL}${APIV1}/pos`,
+    pos: `${APIURL}${APIV1}/pos`,
     member: `${APIURL}${APIV1}/member`,
     service: `${APIURL}${APIV1}/service`,
     cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,

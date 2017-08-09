@@ -17,11 +17,10 @@ const formItemLayout = {
   },
 }
 
-const Payment = ({ location, loading, dispatch, stock, payment, app }) => {
+const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, } = payment
-  const { memberInformation, technicianInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, } = stock
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, } = pos
   const { user } = app
-
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = { 17: false, 16: false, 32: false }
   /*
@@ -123,7 +122,7 @@ const Payment = ({ location, loading, dispatch, stock, payment, app }) => {
           totalDiscount: curTotalDiscount,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
-          technicianId: technicianInformation.employeeId,
+          technicianId: mechanicInformation.employeeId,
           curShift: curShift,
           curCashierNo: curCashierNo,
           cashierId: user.userid,
@@ -133,7 +132,7 @@ const Payment = ({ location, loading, dispatch, stock, payment, app }) => {
   }
 
   const cancelPayment = () => {
-    dispatch(routerRedux.push('/cashier'))
+    dispatch(routerRedux.push('/transaction/pos'))
   }
 
   const handleCreditCard = () => {
@@ -180,34 +179,34 @@ const Payment = ({ location, loading, dispatch, stock, payment, app }) => {
 
       <Row style={{ marginBottom: 16 }} gutter={16}>
         <Col span={16}>
-          <Card bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
+          <Card bordered={false} title="Point Information" style={{ fontSize: '20px' }} bodyStyle={{ padding: 0 }}>
           </Card>
         </Col>
         <Col span={8}>
           <Form layout="horizontal">
-            <FormItem label="Grand Total" {...formItemLayout}>
-              <Input value={parseInt(curTotal) + parseInt(curTotalDiscount)} defaultValue="0" size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Grand Total" {...formItemLayout}>
+              <Input value={parseInt(curTotal) + parseInt(curTotalDiscount)} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Discount" {...formItemLayout}>
-              <Input value={curTotalDiscount} defaultValue="0" size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Discount" {...formItemLayout}>
+              <Input value={curTotalDiscount} defaultValue="0" style={{height: '40px', fontSize: '20pt'}}  size="large" disabled />
             </FormItem>
-            <FormItem label="Rounding" {...formItemLayout}>
-              <Input value={curRounding} defaultValue="0" size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Rounding" {...formItemLayout}>
+              <Input value={curRounding} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Credit Card" {...formItemLayout}>
-              <Input value={creditCardTotal} defaultValue="0" size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Credit Card" {...formItemLayout}>
+              <Input value={creditCardTotal} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Credit Card Charge" {...formItemLayout}>
-              <Input value={creditCharge} defaultValue="0" size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Credit Card Charge" {...formItemLayout}>
+              <Input value={creditCharge} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Netto" {...formItemLayout}>
-              <Input value={parseInt(curTotal) + parseInt(curRounding)} size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Netto" {...formItemLayout}>
+              <Input value={parseInt(curTotal) + parseInt(curRounding)} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Total Cash" {...formItemLayout}>
-              <Input value={totalPayment} size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Total Cash" {...formItemLayout}>
+              <Input value={totalPayment} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem label="Change" {...formItemLayout}>
-              <Input value={totalChange} size="large" disabled />
+            <FormItem style={{ fontSize: '20px' }} label="Change" {...formItemLayout}>
+              <Input value={totalChange} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
           </Form>
         </Col>
@@ -230,7 +229,7 @@ const Payment = ({ location, loading, dispatch, stock, payment, app }) => {
 }
 
 Payment.propTypes = {
-  stock: PropTypes.object,
+  pos: PropTypes.object,
   app: PropTypes.object,
   position: PropTypes.object,
   location: PropTypes.object,
@@ -239,4 +238,4 @@ Payment.propTypes = {
   payment: PropTypes.object,
 }
 
-export default connect(({ stock, payment, position, app, loading }) => ({ stock, payment, position, app, loading }))(Payment)
+export default connect(({ pos, payment, position, app, loading }) => ({ pos, payment, position, app, loading }))(Payment)

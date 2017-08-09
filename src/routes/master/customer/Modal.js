@@ -125,14 +125,14 @@ const modal = ({
   const columnsHistory = [
     {
       title: 'Transaksi terakhir',
-      dataIndex: 'lastTrans',
-      key: 'lastTrans',
+      dataIndex: 'transDate',
+      key: 'transDate',
       width: 200,
     },
     {
       title: 'KM terakhir',
-      dataIndex: 'lastSpeedIndex',
-      key: 'lastSpeedIndex',
+      dataIndex: 'lastMeter',
+      key: 'lastMeter',
       width: 200,
     },
   ]
@@ -199,9 +199,8 @@ const modal = ({
         ...getFieldsValue(),
       }
       modalButtonSaveUnitClick(data.policeNo, data)
+      modalButtonCancelClick2()
     })
-    modalButtonCancelClick2()
-    modalButtonCancelClick()
   }
 
   const hdlButtonEditUnitClick = () => {
@@ -213,9 +212,8 @@ const modal = ({
         ...getFieldsValue(),
       }
       modalButtonEditUnitClick(data.policeNo, data)
+      modalButtonCancelClick2()
     })
-    modalButtonCancelClick2()
-    modalButtonCancelClick()
   }
 
   const hdlButtonDeleteUnitClick = () => {
@@ -231,7 +229,6 @@ const modal = ({
         onOk () {
           modalButtonDeleteUnitClick(data.policeNo, data)
           modalButtonCancelClick2()
-          modalButtonCancelClick()
         },
       })
     })
@@ -418,8 +415,8 @@ const modal = ({
                 <FormItem label="Identity Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idNo', {
                     initialValue: item.idNo,
-                    rules: [{ pattern: /^[0-9-_.]{5,15}$/, required: true}],
-                  })(<Input defaultvalue="12313123132131" />)}
+                    rules: [{ pattern: /^[0-9-_.]{3,15}$/, required: true}],
+                  })(<Input />)}
                 </FormItem>
                 <FormItem label="Customer Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberName', {

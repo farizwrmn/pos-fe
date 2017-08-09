@@ -138,6 +138,15 @@ export default modelExtend(pageModel, {
         disableItem: { employeeId: payload.modalType === 'add' ? false : true}
       }
     },
+    modalPopoverClose (state) {
+      return { ...state, visiblePopoverCity: false }
+    },
+    chooseCity (state, action) {
+      return { ...state, ...action.payload, visiblePopoverCity: false }
+    },
+    modalPopoverVisibleCity (state, action) {
+      return { ...state, ...action.payload, visiblePopoverCity: true }
+    },
     modalHide (state) {
       return { ...state, modalVisible: false }
     },

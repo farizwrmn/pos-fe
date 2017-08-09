@@ -42,6 +42,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/employee'))
+              registerModel(app, require('./models/city'))
               registerModel(app, require('./models/master/jobposition'))
               cb(null, require('./routes/master/employee/'))
             }, 'master-employee')
@@ -162,6 +163,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/stock'))
               cb(null, require('./routes/transaction/pos/payment/'))
             }, 'transaction-pos-payment')
           },
