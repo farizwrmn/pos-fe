@@ -5,9 +5,9 @@ import * as creditChargeService from '../services/creditCharge'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { Modal } from 'antd'
-
+import moment from 'moment'
 const { queryLastTransNo, create } = cashierService
-const { updateCashierTrans } = cashierTransService
+const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 
 export default {
@@ -44,27 +44,56 @@ export default {
   subscriptions: {
 
   },
-
+//confirm payment
 
   effects: {
     *create ({ payload }, { call, put }) {
-      var manualFormat = '000000'
-      var curTransNo = '000001'
-      var transNo
+      var datatrans
+      var dataLast
+      console.log('payload',payload);
+      function pad(n, width, z) {
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+      }
+      var data = yield call(queryLastTransNo, payload.periode)
+      // try {
+      //   data = yield call(queryLastTransNo, payload.periode)
+      // } catch (e) {
+      //   throw(e)
+      // } finally {
+      //   datatrans= [`FJ${moment().format('MMYY')}0000`]
+      // }
 
-      const data = yield call(queryLastTransNo, payload.periode)
-      let newData = data.transNo
+      datatrans= [`FJ${moment().format('MMYY')}0000`]
+
+      let newData = datatrans
+      if (data.data.length > 0){
+        dataLast = data.data
+      }
+      else {
+        dataLast = datatrans
+      }
+
+      var parseTransNo = dataLast.reduce(function(prev, current) {
+          return (prev.transNo > current.transNo) ? prev : current
+      })
+
+      var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
+      var newMonth = lastNo.substr(2,4)
+      var lastTransNo = lastNo.substr(lastNo.length - 4)
+      var sendTransNo = parseInt(lastTransNo) + 1
+      var padding = pad(sendTransNo,4)
+
+
+
 
       if ( data.success ) {
-
-        if ( newData.transNo == null ) {
-          transNo = 'GI' + payload.transDate + curTransNo
+        if (newMonth==`${moment().format('MMYY')}`){
+          var transNo = `FJ${moment().format('MMYY')}${padding}`
+        } else {
+          transNo = `FJ${moment().format('MMYY')}0001`
         }
-        else {
-          transNo = 'GI' + payload.transDate + manualFormat.substr(1, (6 - (parseInt(newData.transNo) + 1).toString().length)) + (parseInt(newData.transNo) + 1)
-        }
-
-        var detailPOS
         var arrayProd = []
 
         const dataPos = JSON.parse(localStorage.getItem('cashier_trans'))
@@ -83,15 +112,15 @@ export default {
             'total': dataPos[key].total
           })
         }
-
-        detailPOS = {"dataPos": arrayProd,
+        console.log('paymentjs arraypod', payload);
+        const detailPOS = {"dataPos": arrayProd,
           "transNo": transNo,
           "memberCode": payload.memberCode,
           "technicianId": payload.technicianId,
           "cashierNo": payload.curCashierNo,
           "cashierId": payload.cashierId,
           "shift": payload.curShift,
-          "transDate": payload.transDate2,
+          "transDate": `${moment().format('YYYYMMDD')}`,
           "transTime": payload.transTime,
           "total": payload.grandTotal,
           "creditCardNo": payload.creditCardNo,
@@ -106,7 +135,7 @@ export default {
         //console.log(JSON.stringify(detailPOS))
 
         const data_create = yield call(create, detailPOS)
-
+        console.log('paymentjs payload', payload);
         if (data_create.success) {
           const data_cashier_trans_update = yield call(updateCashierTrans, {"total": (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
                                                                             "totalCreditCard": payload.totalCreditCard,
@@ -132,13 +161,13 @@ export default {
 
             setTimeout(() => modal.destroy(), 1000)
 
-            yield put(routerRedux.push('/cashier'))
+            yield put(routerRedux.push('/Transaction/pos'))
           }
 
         } else {
           Modal.error({
             title: 'Error Saving Payment',
-            content: 'Your Data not saved, please contact your IT Support',
+            content: 'Your Data not saved',
           })
 
           //throw data_create
@@ -198,6 +227,7 @@ export default {
     successPost (state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('member',[])
       return { ...state,
         posMessage: posMessage,
         totalPayment: 0,

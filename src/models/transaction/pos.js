@@ -29,6 +29,7 @@ export default {
     listMechanic: [],
     listProduct: [],
     listByCode: [],
+    lastMeter: '',
     listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))),
     curQueue: 1,
     currentItem: {},
@@ -271,6 +272,7 @@ export default {
       var curRecord = 0
 
       var curCashierNo = localStorage.getItem('cashierNo')
+      var curShift = localStorage.getItem('cashierShift')
 
       var curItem
       const dataCashier = yield call(getCashierNo)
@@ -733,7 +735,6 @@ export default {
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var a = dataPos
       var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-
       return { ...state,
         listProduct: productInformation,
         tmpProductList: tmpProductList,
@@ -897,6 +898,7 @@ export default {
     },
 
     setUtil (state, action) {
+      console.log('setUtil', action.payload);
       return { ...state, kodeUtil: action.payload.kodeUtil, infoUtil: action.payload.infoUtil}
     },
 
@@ -938,7 +940,7 @@ export default {
       else {
         curRounding = parseInt(selisih)
       }
-      console.log('setCurTotal')
+
       return { ...state,
         curTotal: grandTotal,
         curTotalDiscount: (parseInt(totalDiscount) + parseInt(totalDisc1) + parseInt(totalDisc2) + parseInt(totalDisc3)),

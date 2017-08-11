@@ -25,11 +25,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   const { modalVisible, modalServiceVisible, modalMemberVisible,
     modalMechanicVisible, modalProductVisible, visiblePopover,
     curBarcode, curQty, curTotal, listByCode, kodeUtil, infoUtil,
-    memberInformation, memberUnitInfo, mechanicInformation } = pos
+    memberInformation, setCurTotal, memberUnitInfo, mechanicInformation, lastMeter } = pos
   const { listLovMemberUnit } = unit
   const { curRecord, effectedRecord, modalShiftVisible, listCashier, dataCashierTrans, curCashierNo, curShift, modalQueueVisible } = pos
   const { user } = app
-
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
@@ -184,6 +183,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   }
 
   const handleDiscount = (tipe, value) => {
+    console.log('handleDiscount', value);
     if ( value ) {
       if ( value < (curRecord) ) {
         dispatch({
@@ -281,62 +281,61 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     })
   }
 
-  const modalProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
-    visible: modalVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    onCancel () {
-      dispatch({
-        type: 'pos/hideModal',
-      })
-    },
-    onChooseItem (item) {
-      var listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
-
-      var arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
-        arrayProd = listByCode.slice()
-      }
-      else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
-
-
-      arrayProd.push({
-        'no': curRecord,
-        'barcode': item.productBarcode1,
-        'name': item.productName,
-        'qty': curQty,
-        'price': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice),
-        //'price': item.sellingPrice,
-        'discount': 0,
-        'disc1': 0,
-        'disc2': 0,
-        'disc3': 0,
-        'total': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice) * curQty
-      })
-
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-
-      dispatch({
-        type: 'pos/querySuccessByCode',
-        payload: {
-          listByCode: item,
-          curRecord: curRecord + 1,
-        },
-      })
-
-      dispatch({
-        type: 'pos/hideModal',
-      })
-
-      setCurBarcode('', 1)
-    },
-  }
-
+  // const modalProps = {
+  //   location: location,
+  //   loading: loading,
+  //   pos: pos,
+  //   visible: modalVisible,
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'pos/hideModal',
+  //     })
+  //   },
+  //   onChooseItem (item) {
+  //     var listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
+  //
+  //     var arrayProd
+  //     if ( JSON.stringify(listByCode) == "[]" ) {
+  //       arrayProd = listByCode.slice()
+  //     }
+  //     else {
+  //       arrayProd = JSON.parse(listByCode.slice())
+  //     }
+  //
+  //
+  //     arrayProd.push({
+  //       'no': curRecord,
+  //       'barcode': item.productBarcode1,
+  //       'name': item.productName,
+  //       'qty': curQty,
+  //       'price': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice),
+  //       //'price': item.sellingPrice,
+  //       'discount': 0,
+  //       'disc1': 0,
+  //       'disc2': 0,
+  //       'disc3': 0,
+  //       'total': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice) * curQty
+  //     })
+  //
+  //     localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+  //
+  //     dispatch({
+  //       type: 'pos/querySuccessByCode',
+  //       payload: {
+  //         listByCode: item,
+  //         curRecord: curRecord + 1,
+  //       },
+  //     })
+  //
+  //     dispatch({
+  //       type: 'pos/hideModal',
+  //     })
+  //
+  //     setCurBarcode('', 1)
+  //   },
+  // }
   const modalShiftProps = {
     item: dataCashierTrans,
     listCashier: listCashier,
@@ -372,11 +371,39 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } })
-      dispatch({ type: 'pos/hideMemberModal' })
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
+      localStorage.removeItem('member',[])
+      var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+
+      var arrayProd
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        arrayProd = listByCode.slice()
+      }
+      else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+
+      arrayProd.push({
+        'memberCode': item.memberCode,
+        'memberName': item.memberName,
       })
+
+      localStorage.setItem('member', JSON.stringify(arrayProd))
+
+      dispatch({
+        type: 'pos/querySuccessByCode',
+        payload: {
+          listByCode: item,
+          curRecord: curRecord + 1,
+        },
+      })
+      dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
+      dispatch({
+        type: 'pos/hideMemberModal',
+      })
+
+      setCurBarcode('', 1)
     },
   }
 
@@ -420,18 +447,17 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         'code': item.productCode,
         'name': item.productName,
         'qty': curQty,
-        'price': (memberInformation.memberCode ? item.memberPrice : item.sellPrice),
+        'price': (memberInformation.memberCode ? item.distPrice02 : item.sellPrice),
         //'price': item.sellingPrice,
         'discount': 0,
         'disc1': 0,
         'disc2': 0,
         'disc3': 0,
-        'total': (memberInformation.memberCode ? item.memberPrice : item.sellPrice) * curQty
+        'total': (memberInformation.memberCode ? item.distPrice02 : item.sellPrice) * curQty
       })
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-      console.log('itemitem', item)
-      dispatch({ type: 'pos/queryGetProductsSuccess', payload: { listByCode: item, curRecord: curRecord + 1, } })
+      dispatch({ type: 'pos/querySuccessByCode', payload: { listByCode: item, curRecord: curRecord + 1, } })
       dispatch({ type: 'pos/hideProductModal' })
     },
   }
@@ -669,6 +695,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           },
         })
       }
+      else if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[72] ) { //shortcut untuk Help (Ctrl + ALT + H)
+        console.log('shortcut key help');
+        dispatch({ type: 'app/shortcutKeyShow' })
+      }
       else if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[67] ) { //shortcut mechanic (Ctrl + Alt + C)
         dispatch({
           type: 'pos/setUtil',
@@ -689,9 +719,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       }
       else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[51] ) { //shortcut discount 3 (Ctrl + Shift + 3)
         handleDiscount(3, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[72] ) { //shortcut untuk Help (Ctrl + Shift + H)
-        dispatch({ type: 'app/shortcutKeyShow' })
       }
       else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[76] ) { //shortcut untuk Closing Cashier (Ctrl + Shift + L)
         var curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
@@ -892,6 +919,79 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     </div>
   )
 
+  function formatNumber(value) {
+  value += '';
+  const list = value.split('.');
+  const prefix = list[0].charAt(0) === '-' ? '-' : '';
+  let num = prefix ? list[0].slice(1) : list[0];
+  let result = '';
+  while (num.length > 3) {
+    result = `,${num.slice(-3)}${result}`;
+    num = num.slice(0, num.length - 3);
+  }
+  if (num) {
+    result = num + result;
+  }
+  return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
+}
+
+class NumericInput extends React.Component {
+  onChange = (e) => {
+    const { value } = e.target;
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      this.props.onChange(value);
+    }
+  }
+  // '.' at the end or only '-' in the input box.
+  onBlur = () => {
+    const { value, onBlur, onChange } = this.props;
+    if (value.charAt(value.length - 1) === '.' || value === '-') {
+      onChange({ value: value.slice(0, -1) });
+    }
+    if (onBlur) {
+      onBlur();
+    }
+  }
+  render() {
+    const { value } = this.props;
+    const title = value ? (
+      <span className="numeric-input-title">
+        {value !== '-' ? formatNumber(value) : '-'}
+      </span>
+    ) : 'Input a number';
+    return (
+      <Tooltip
+        trigger={['focus']}
+        title={title}
+        placement="topLeft"
+        overlayClassName="numeric-input"
+      >
+        <Input
+          {...this.props}
+          onChange={this.onChange}
+          onBlur={this.onBlur}
+          placeholder="Input a number"
+          maxLength="25"
+        />
+      </Tooltip>
+    );
+  }
+}
+
+class NumericInputDemo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: '' };
+  }
+  onChange = (value) => {
+    this.setState({ value });
+  }
+  render() {
+    return <NumericInput style={{ width: 120 }} value={this.state.value} onChange={this.onChange} />;
+  }
+}
+
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1041,7 +1141,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                   </Col>
                 </FormItem>
                 <FormItem label="KM" {...formItemLayout}>
-                  <Input required value={memberUnitInfo.unitNo}/>
+                  <NumericInputDemo value={lastMeter}/>
                 </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input  value={memberInformation.memberCode} disabled />

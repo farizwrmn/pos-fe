@@ -6,6 +6,7 @@ import { routerRedux } from 'dva/router'
 import { Form, Input, Table, Row, Col, Card, Select, Button, Popconfirm, Modal } from 'antd'
 import { Link } from 'dva/router'
 import ModalCredit from './ModalCreditCard'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -16,10 +17,13 @@ const formItemLayout = {
     span: 14,
   },
 }
+const dataTrans = () => {
+  return (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+}
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, } = pos
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = { 17: false, 16: false, 32: false }
@@ -99,7 +103,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const confirmPayment = () => {
-    if ( (totalPayment - netto) < 0 ) {
+    if ( (parseInt(totalPayment) < parseInt(curTotal) + parseInt(curRounding)) ) {
       Modal.error({
         title: 'Payment',
         content: 'Total Payment must be greater than Netto...!',
@@ -108,7 +112,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     else {
       dispatch({
         type: 'payment/create',
-        payload: { periode: getDate(2),
+        payload: { periode: moment().format('MMYY'),
           transDate: getDate(1),
           transDate2: getDate(3),
           transTime: setTime(),
@@ -118,7 +122,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           creditCardType: '',
           creditCardCharge: 0,
           totalCreditCard: 0,
+          lastMeter: lastMeter,
           totalChange: totalChange,
+          lastMeter: lastMeter,
           totalDiscount: curTotalDiscount,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
@@ -128,7 +134,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           cashierId: user.userid,
         }
       })
+      dispatch(routerRedux.push('/transaction/pos'))
     }
+
   }
 
   const cancelPayment = () => {
@@ -179,7 +187,68 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
 
       <Row style={{ marginBottom: 16 }} gutter={16}>
         <Col span={16}>
-          <Card bordered={false} title="Point Information" style={{ fontSize: '20px' }} bodyStyle={{ padding: 0 }}>
+          <Card bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
+          <Table
+            rowKey={(record, key) => key}
+            pagination={true}
+            bordered
+            scroll={{ x: 1500 }}
+            columns={[
+              {
+                title: 'No',
+                dataIndex: 'no',
+                width: 20,
+              },
+              {
+                title: 'Code',
+                dataIndex: 'code',
+                width: 100,
+              },
+              {
+                title: 'Product Name',
+                dataIndex: 'name',
+                width: 200,
+              },
+              {
+                title: 'Qty',
+                dataIndex: 'qty',
+                width: 50,
+              },
+              {
+                title: 'Price',
+                dataIndex: 'price',
+                width: 100,
+              },
+              {
+                title: 'Disc 1(%)',
+                dataIndex: 'disc1',
+                width: 100,
+              },
+              {
+                title: 'Disc 2(%)',
+                dataIndex: 'disc2',
+                width: 100,
+              },
+              {
+                title: 'Disc 3(%)',
+                dataIndex: 'disc3',
+                width: 100,
+              },
+              {
+                title: 'Discount',
+                dataIndex: 'discount',
+                width: 100,
+              },
+              {
+                title: 'Total',
+                dataIndex: 'total',
+                width: 100,
+              },
+            ]}
+            dataSource={dataTrans()}
+            pagination={false}
+            style={{ marginBottom: 4, marginLeft: 4, marginRight: 4, marginTop: 4 }}
+          />
           </Card>
         </Col>
         <Col span={8}>
