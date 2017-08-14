@@ -29,7 +29,6 @@ export default {
     listMechanic: [],
     listProduct: [],
     listByCode: [],
-    lastMeter: '',
     listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))),
     curQueue: 1,
     currentItem: {},
@@ -52,7 +51,7 @@ export default {
       total: null,
     },
     curBarcode: '',
-    curQty: 1,
+    lastMeter: '',
     curTotal: 0,
     curTotalDiscount: 0,
     kodeUtil: 'member',
@@ -189,7 +188,7 @@ export default {
           'no': payload.curRecord,
           'barcode': newData.productBarcode1,
           'name': newData.productName,
-          'qty': payload.curQty,
+          'qty': 1,
           'price': (payload.memberCode ? newData.memberPrice : newData.sellingPrice),
           'discount': 0,
           'disc1': 0,
@@ -903,6 +902,7 @@ export default {
     },
 
     setEffectedRecord (state, action) {
+      console.log('setEffectedRecord', action.payload)
       return { ...state, effectedRecord: action.payload.effectedRecord }
     },
 
@@ -1133,6 +1133,11 @@ export default {
 
     setCurTime (state, action) {
       return { curTime: action.payload.curTime, }
+    },
+
+    setCurRecord (state, action) {
+      console.log('state', state, 'action', action)
+      return { curRecord: 1, }
     },
 
     changeQueue (state, action) {

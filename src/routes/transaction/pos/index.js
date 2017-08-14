@@ -25,14 +25,14 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   const { modalVisible, modalServiceVisible, modalMemberVisible,
     modalMechanicVisible, modalProductVisible, visiblePopover,
     curBarcode, curQty, curTotal, listByCode, kodeUtil, infoUtil,
-    memberInformation, setCurTotal, memberUnitInfo, mechanicInformation, lastMeter } = pos
+    memberInformation, setCurTotal, memberUnitInfo, mechanicInformation } = pos
   const { listLovMemberUnit } = unit
   const { curRecord, effectedRecord, modalShiftVisible, listCashier, dataCashierTrans, curCashierNo, curShift, modalQueueVisible } = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
-    51: false, 52: false, 72: false, 76: false, 73: false, 85: false }
+    51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false }
 
   /*
   Ascii => Desc
@@ -160,7 +160,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       },
     })
   }
-
   const handleServiceBrowse = () => {
     dispatch({
       type: 'pos/getServices',
@@ -184,13 +183,22 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
   const handleDiscount = (tipe, value) => {
     console.log('handleDiscount', value);
+    let discountQty
+    if(tipe<5){
+      discountQty = 'Discount'
+    }
+    else if (tipe ===5){
+      discountQty = 'Quantity'
+    }
     if ( value ) {
       if ( value < (curRecord) ) {
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: (tipe == 4 ? 'discount' : 'disc' + tipe),
-            infoUtil: 'Insert Discount ' + (tipe == 4 ? 'Nominal' : (tipe + ' (%)')) + ' for Record ' + value,
+            kodeUtil: (tipe == 4 ? 'discount' :
+                      tipe === 5 ? 'quantity'
+                        :'disc' + tipe),
+            infoUtil: `Insert ${discountQty} ` + (tipe == 4 ? 'Nominal' : tipe === 5 ? '' :(tipe + ' (%)')) + ' for Record ' + value,
           },
         })
 
@@ -388,14 +396,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
-
-      dispatch({
-        type: 'pos/querySuccessByCode',
-        payload: {
-          listByCode: item,
-          curRecord: curRecord + 1,
-        },
-      })
       dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
       dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
@@ -405,6 +405,13 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
       setCurBarcode('', 1)
     },
+    // dispatch({
+    //   type: 'pos/querySuccessByCode',
+    //   payload: {
+    //     listByCode: item,
+    //     curRecord: curRecord + 1,
+    //   },
+    // })
   }
 
   const modalMechanicProps = {
@@ -573,8 +580,8 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: 'product',
-            infoUtil: 'Input Product Code',
+            kodeUtil: 'barcode',
+            infoUtil: 'Product',
           },
         })
       }
@@ -590,18 +597,17 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           })
         }
       }
-      else if ( kodeUtil == 'discount' || kodeUtil == 'disc1' || kodeUtil == 'disc2' || kodeUtil == 'disc3' ) {
-
+      else if ( kodeUtil == 'discount' || kodeUtil == 'disc1' || kodeUtil == 'disc2' || kodeUtil == 'disc3' || kodeUtil === 'quantity' ) {
+        console.log('quantity value', value)
         if ( value ) {
           var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
           var arrayProd = dataPos.slice()
           var total = arrayProd[effectedRecord - 1].qty * arrayProd[effectedRecord - 1].price
-
+          var price = arrayProd[effectedRecord - 1].price
           var disc1 = arrayProd[effectedRecord - 1].disc1
           var disc2 = arrayProd[effectedRecord - 1].disc2
           var disc3 = arrayProd[effectedRecord - 1].disc3
           var discount = arrayProd[effectedRecord - 1].discount
-
           if ( kodeUtil == 'discount' ) {
             var tmpDisc = (total * disc1) / 100
             var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
@@ -633,6 +639,18 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
             arrayProd[effectedRecord - 1].disc3 = value
             arrayProd[effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+          }
+          else if ( kodeUtil == 'quantity') {
+            var tmpQty = value
+            var tmpDisc = ((tmpQty * price) * disc1) / 100
+            var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+            var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+            console.log('tempDisc1', tmpDisc)
+            console.log('tempDisc2', tmpDisc2)
+            console.log('tempDisc3', tmpDisc3)
+            console.log('discount', discount)
+            arrayProd[effectedRecord - 1].qty = tmpQty
+            arrayProd[effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
           }
 
           localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
@@ -719,6 +737,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       }
       else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[51] ) { //shortcut discount 3 (Ctrl + Shift + 3)
         handleDiscount(3, value)
+      }
+      else if ( keyShortcut[17] && keyShortcut[75] ) { //shortcut modified quantity (Ctrl + Shift + Q)
+        console.log('handle quantity')
+        handleDiscount(5, value)
       }
       else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[76] ) { //shortcut untuk Closing Cashier (Ctrl + Shift + L)
         var curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
@@ -935,63 +957,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
 }
 
-class NumericInput extends React.Component {
-  onChange = (e) => {
-    const { value } = e.target;
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      this.props.onChange(value);
-    }
-  }
-  // '.' at the end or only '-' in the input box.
-  onBlur = () => {
-    const { value, onBlur, onChange } = this.props;
-    if (value.charAt(value.length - 1) === '.' || value === '-') {
-      onChange({ value: value.slice(0, -1) });
-    }
-    if (onBlur) {
-      onBlur();
-    }
-  }
-  render() {
-    const { value } = this.props;
-    const title = value ? (
-      <span className="numeric-input-title">
-        {value !== '-' ? formatNumber(value) : '-'}
-      </span>
-    ) : 'Input a number';
-    return (
-      <Tooltip
-        trigger={['focus']}
-        title={title}
-        placement="topLeft"
-        overlayClassName="numeric-input"
-      >
-        <Input
-          {...this.props}
-          onChange={this.onChange}
-          onBlur={this.onBlur}
-          placeholder="Input a number"
-          maxLength="25"
-        />
-      </Tooltip>
-    );
-  }
-}
-
-class NumericInputDemo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: '' };
-  }
-  onChange = (value) => {
-    this.setState({ value });
-  }
-  render() {
-    return <NumericInput style={{ width: 120 }} value={this.state.value} onChange={this.onChange} />;
-  }
-}
-
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1141,7 +1106,7 @@ class NumericInputDemo extends React.Component {
                   </Col>
                 </FormItem>
                 <FormItem label="KM" {...formItemLayout}>
-                  <NumericInputDemo value={lastMeter}/>
+                  <Input />
                 </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input  value={memberInformation.memberCode} disabled />

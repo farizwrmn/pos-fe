@@ -124,14 +124,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           totalCreditCard: 0,
           lastMeter: lastMeter,
           totalChange: totalChange,
-          lastMeter: lastMeter,
           totalDiscount: curTotalDiscount,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
           technicianId: mechanicInformation.employeeId,
           curShift: curShift,
           curCashierNo: curCashierNo,
-          cashierId: user.userid,
+          cashierId: user.userid
         }
       })
       dispatch(routerRedux.push('/transaction/pos'))
@@ -285,10 +284,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         <Col span={24}>
           <Form layout="vertical">
             <FormItem>
-                <Button type="primary" size="large" onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
+                <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
             </FormItem>
             <FormItem>
-                <Button type="primary" size="large" onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
+                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
             </FormItem>
           </Form>
         </Col>

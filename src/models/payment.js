@@ -6,7 +6,7 @@ import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
-const { queryLastTransNo, create } = cashierService
+const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 
@@ -57,13 +57,6 @@ export default {
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
       }
       var data = yield call(queryLastTransNo, payload.periode)
-      // try {
-      //   data = yield call(queryLastTransNo, payload.periode)
-      // } catch (e) {
-      //   throw(e)
-      // } finally {
-      //   datatrans= [`FJ${moment().format('MMYY')}0000`]
-      // }
 
       datatrans= [`FJ${moment().format('MMYY')}0000`]
 
@@ -101,18 +94,17 @@ export default {
         for (var key in dataPos) {
           arrayProd.push({
             'transNo': transNo,
-            'productId': dataPos[key].barcode,
+            'productId': dataPos[key].code,
             'productName': dataPos[key].name,
             'qty': dataPos[key].qty,
             'sellingPrice': dataPos[key].price,
             'discount': dataPos[key].discount,
             'disc1': dataPos[key].disc1,
             'disc2': dataPos[key].disc2,
-            'disc3': dataPos[key].disc3,
-            'total': dataPos[key].total
+            'disc3': dataPos[key].disc3
           })
         }
-        console.log('paymentjs arraypod', payload);
+        console.log('paymentjs arraypod', arrayProd);
         const detailPOS = {"dataPos": arrayProd,
           "transNo": transNo,
           "memberCode": payload.memberCode,
@@ -123,6 +115,7 @@ export default {
           "transDate": `${moment().format('YYYYMMDD')}`,
           "transTime": payload.transTime,
           "total": payload.grandTotal,
+          "lastMeter": payload.lastMeter,
           "creditCardNo": payload.creditCardNo,
           "creditCardType": payload.creditCardType,
           "creditCardCharge": payload.creditCardCharge,
@@ -135,7 +128,6 @@ export default {
         //console.log(JSON.stringify(detailPOS))
 
         const data_create = yield call(create, detailPOS)
-        console.log('paymentjs payload', payload);
         if (data_create.success) {
           const data_cashier_trans_update = yield call(updateCashierTrans, {"total": (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
                                                                             "totalCreditCard": payload.totalCreditCard,
@@ -143,7 +135,7 @@ export default {
                                                                             "cashierNo": payload.curCashierNo,
                                                                             "shift": payload.curShift,
                                                                             "transDate": payload.transDate2,})
-
+          yield call (createDetail, { "data": arrayProd, "transNo": transNo})
           if ( data_cashier_trans_update.success ) {
             yield put({
               type: 'successPost',
@@ -160,8 +152,6 @@ export default {
             })
 
             setTimeout(() => modal.destroy(), 1000)
-
-            yield put(routerRedux.push('/Transaction/pos'))
           }
 
         } else {

@@ -61,6 +61,9 @@ console.log('modalOpts',modalOpts)
           <FormItem label="Discount Nominal" {...formItemLayout}>
             <Input value='Ctrl + Shift + 4' size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
+          <FormItem label="Quantity" {...formItemLayout}>
+            <Input value='Ctrl + Shift + K' size="large" style={{ fontSize: 20 }} disabled />
+          </FormItem>
         </Form>
       </Card>
     </Modal>
