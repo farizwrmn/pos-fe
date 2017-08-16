@@ -22,12 +22,31 @@ const formItemLayout = {
 }
 
 const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
-  const { modalVisible, modalServiceVisible, modalMemberVisible,
-    modalMechanicVisible, modalProductVisible, visiblePopover,
-    curBarcode, curQty, curTotal, listByCode, kodeUtil, infoUtil,
-    memberInformation, setCurTotal, memberUnitInfo, mechanicInformation } = pos
+  const { modalVisible,
+          modalServiceVisible,
+          modalMemberVisible,
+          modalMechanicVisible,
+          modalProductVisible,
+          visiblePopover,
+          curBarcode,
+          curQty,
+          curTotal,
+          listByCode,
+          kodeUtil,
+          infoUtil,
+          memberInformation,
+          setCurTotal,
+          memberUnitInfo,
+          mechanicInformation,
+          curRecord,
+          effectedRecord,
+          modalShiftVisible,
+          listCashier,
+          dataCashierTrans,
+          curCashierNo,
+          curShift,
+          modalQueueVisible } = pos
   const { listLovMemberUnit, listUnit } = unit
-  const { curRecord, effectedRecord, modalShiftVisible, listCashier, dataCashierTrans, curCashierNo, curShift, modalQueueVisible } = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = {
@@ -373,7 +392,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       })
     },
   }
-  console.log('memberInformation', memberInformation)
   const modalMemberProps = {
     location: location,
     loading: loading,

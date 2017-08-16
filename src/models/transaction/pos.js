@@ -57,7 +57,7 @@ export default {
     kodeUtil: 'member',
     infoUtil: 'Input Member Code',
     dataPosLoaded: false,
-    memberInformation: JSON.parse(localStorage.getItem('member'))[0] ? JSON.parse(localStorage.getItem('member'))[0] : [],
+    memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
     tmpMemberList: [],
     tmpMechanicList: [],
     tmpProductList: [],
