@@ -75,8 +75,8 @@ export default {
       })
 
       var dataCodeMember = yield call(queryCode, payload.memberCode)
-      console.log('dataCodeMember.member.point', dataCodeMember.member.point);
-      const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.member.point)
+      console.log('dataCodeMember.member.point', dataCodeMember.data.point);
+      const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.data.point)
       console.log('dataCodeMember', dataCodeMember, 'pointTotal', pointTotal)
       yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
 
@@ -112,7 +112,7 @@ export default {
             'disc3': dataPos[key].disc3
           })
         }
-        console.log('paymentjs arraypod', arrayProd);
+
         const detailPOS = {"dataPos": arrayProd,
           "transNo": transNo,
           "memberCode": payload.memberCode,
@@ -134,7 +134,7 @@ export default {
           "policeNo": payload.policeNo,
           "change": payload.totalChange}
 
-        //console.log(JSON.stringify(detailPOS))
+
 
         const data_create = yield call(create, detailPOS)
         if (data_create.success) {
@@ -226,7 +226,7 @@ export default {
     successPost (state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('member',[])
+      localStorage.removeItem('member',[{}])
       return { ...state,
         posMessage: posMessage,
         totalPayment: 0,

@@ -373,7 +373,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       })
     },
   }
-
+  console.log('memberInformation', memberInformation)
   const modalMemberProps = {
     location: location,
     loading: loading,
@@ -383,7 +383,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member',[])
+      localStorage.removeItem('member',[{}])
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       var arrayProd
