@@ -14,10 +14,11 @@ export async function query (params) {
 }
 
 export async function queryServiceByCode (params) {
-  console.log('query_params', params,services);
+  const url = params.serviceCode? services + '/' + params.serviceCode : services + '/' + params
+  console.log('query_params', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: services + params.serviceCode,
+    url: url,
     method: 'get',
     data: params,
     headers: apiHeaderToken,

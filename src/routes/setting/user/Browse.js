@@ -44,7 +44,6 @@ const Browse = ({
       dataIndex: 'userId',
       key: 'userId',
       width: 70,
-      render: (text, record) => <Link to={`user/${record.userId}`}>{text}</Link>,
     },
     {
       title: 'User Name',

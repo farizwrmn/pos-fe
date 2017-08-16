@@ -1,6 +1,7 @@
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
+import { queryByCode as queryCode, edit as updateMembers} from '../services/customers'
 
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -9,7 +10,6 @@ import moment from 'moment'
 const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
-
 export default {
 
   namespace: 'payment',
@@ -36,9 +36,11 @@ export default {
     totalChange: 0,
     lastTransNo: '',
     posMessage: '',
+    lastMeter: '',
     modalCreditVisible: false,
     listCreditCharge: [],
     creditCardType: '',
+    policeNo: '',
   },
 
   subscriptions: {
@@ -71,6 +73,12 @@ export default {
       var parseTransNo = dataLast.reduce(function(prev, current) {
           return (prev.transNo > current.transNo) ? prev : current
       })
+
+      var dataCodeMember = yield call(queryCode, payload.memberCode)
+      console.log('dataCodeMember.member.point', dataCodeMember.member.point);
+      const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.member.point)
+      console.log('dataCodeMember', dataCodeMember, 'pointTotal', pointTotal)
+      yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
 
       var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
       var newMonth = lastNo.substr(2,4)
@@ -123,6 +131,7 @@ export default {
           "discount": payload.totalDiscount,
           "rounding": payload.rounding,
           "paid": payload.totalPayment,
+          "policeNo": payload.policeNo,
           "change": payload.totalChange}
 
         //console.log(JSON.stringify(detailPOS))
@@ -268,6 +277,14 @@ export default {
 
     showCreditModal (state, action) {
       return { ...state, ...action.payload, modalCreditVisible: true }
+    },
+
+    setLastMeter (state, action) {
+      return { state, policeNo: action.payload.policeNo, lastMeter: action.payload.lastMeter}
+    },
+
+    setPoliceNo (state, action) {
+      return { state, policeNo: action.payload.policeNo}
     },
 
     hideCreditModal (state) {

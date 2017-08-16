@@ -105,7 +105,7 @@ export default modelExtend(pageModel, {
     },
 
     *lov ({ payload }, { call, put }) {
-      const data = yield call(queryField, { code: payload.id }, { fields: 'policeNo,merk,model', for: 'pos' })
+      const data = yield call(queryField, { code: payload.id }, { fields: 'policeNo,merk,model', for: 'pos' }, { fields: 'policeNo,merk,model', for: 'payment' })
       if ( data.success ) {
         const dataLov = data.data
         const totalData = data.data.length
@@ -121,6 +121,10 @@ export default modelExtend(pageModel, {
 
         yield put({
           type: 'pos/chooseMemberUnit',
+          payload: { policeNo: data.data[0].policeNo },
+        })
+        yield put({
+          type: 'payment/setPoliceNo',
           payload: { policeNo: data.data[0].policeNo },
         })
       } else {

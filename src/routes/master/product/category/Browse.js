@@ -42,7 +42,6 @@ const Browse = ({
       dataIndex: 'categoryCode',
       key: 'categoryCode',
       width: 70,
-      render: (text, record) => <Link to={`stockcategory/${record.categoryCode}`}>{text}</Link>,
     }, {
       title: 'Name',
       dataIndex: 'categoryName',

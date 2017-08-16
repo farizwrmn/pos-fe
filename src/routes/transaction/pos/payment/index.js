@@ -22,8 +22,8 @@ const dataTrans = () => {
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
+  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, lastMeter, policeNo } = payment
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = { 17: false, 16: false, 32: false }
@@ -125,14 +125,17 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           lastMeter: lastMeter,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
+          policeNo: policeNo,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
           technicianId: mechanicInformation.employeeId,
           curShift: curShift,
+          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid
         }
       })
+      dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
 

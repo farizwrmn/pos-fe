@@ -26,7 +26,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     modalMechanicVisible, modalProductVisible, visiblePopover,
     curBarcode, curQty, curTotal, listByCode, kodeUtil, infoUtil,
     memberInformation, setCurTotal, memberUnitInfo, mechanicInformation } = pos
-  const { listLovMemberUnit } = unit
+  const { listLovMemberUnit, listUnit } = unit
   const { curRecord, effectedRecord, modalShiftVisible, listCashier, dataCashierTrans, curCashierNo, curShift, modalQueueVisible } = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
@@ -179,6 +179,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
     dispatch(routerRedux.push('/transaction/pos/payment'))
+  }
+
+  const hdlUnitClick = () => {
+    dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
   }
 
   const handleDiscount = (tipe, value) => {
@@ -389,10 +393,11 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       else {
         arrayProd = JSON.parse(listByCode.slice())
       }
-
+      console.log('item chooseitem', item);
       arrayProd.push({
         'memberCode': item.memberCode,
         'memberName': item.memberName,
+        'id': item.id
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
@@ -454,8 +459,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         'code': item.productCode,
         'name': item.productName,
         'qty': curQty,
-        'price': (memberInformation.memberCode ? item.distPrice02 : item.sellPrice),
-        //'price': item.sellingPrice,
+        'price': (item.memberCode ? item.distPrice02 : item.sellPrice),
         'discount': 0,
         'disc1': 0,
         'disc2': 0,
@@ -465,6 +469,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/querySuccessByCode', payload: { listByCode: item, curRecord: curRecord + 1, } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
       dispatch({ type: 'pos/hideProductModal' })
     },
   }
@@ -645,10 +650,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             var tmpDisc = ((tmpQty * price) * disc1) / 100
             var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
             var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-            console.log('tempDisc1', tmpDisc)
-            console.log('tempDisc2', tmpDisc2)
-            console.log('tempDisc3', tmpDisc3)
-            console.log('discount', discount)
             arrayProd[effectedRecord - 1].qty = tmpQty
             arrayProd[effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
           }
@@ -784,7 +785,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           })
         }
       }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[85] ) { //shortcut untuk insert antrian (Ctrl + Shift + U)
+      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[85] ) { //shortcut for insertQueue (Ctrl + Shift + U)
         keyShortcut[17] = false
         keyShortcut[16] = false
         keyShortcut[85] = false
@@ -901,6 +902,14 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       type: 'pos/chooseMemberUnit',
       payload: { policeNo: record.policeNo },
     })
+    dispatch({
+      type: 'payment/setPoliceNo',
+      payload: { policeNo: record.policeNo },
+    })
+    dispatch({
+      type: 'payment/setLastMeter',
+      payload: { policeNo: record.policeNo },
+    })
   }
 
   const columns = [{
@@ -932,7 +941,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     <div>
       <Table
         columns={columns}
-        dataSource={listLovMemberUnit}
+        dataSource={listUnit ? listUnit : listLovMemberUnit}
         size='small'
         bordered
         pagination={{ pageSize: 5 }}
@@ -956,6 +965,64 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   }
   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
 }
+/*===================BEGIN=====================*/
+/*=================LAST KM=====================*/
+const CustomizedForm = Form.create({
+  onFieldsChange(props, changedFields) {
+    props.onChange(changedFields);
+  },
+  mapPropsToFields(props) {
+    return {
+      username: {
+        ...props.username,
+        value: props.username.value.toUpperCase(),
+      },
+    };
+  },
+  onValuesChange(_, values) {
+    dispatch({
+      type: 'payment/setLastMeter',
+      payload: {
+        lastMeter: values.username,
+        policeNo: memberUnitInfo.unitNo
+      },
+    })
+  },
+})((props) => {
+  const { getFieldDecorator } = props.form;
+  return (
+      <FormItem label="KM" {...formItemLayout}>
+        {getFieldDecorator('username', {
+          rules: [{ required: true, message: 'Username is required!' }],
+        })(<Input />)}
+      </FormItem>
+  );
+});
+
+class LastMeter extends React.Component {
+  state = {
+    fields: {
+      username: {
+        value: '',
+      },
+    },
+  };
+  handleFormChange = (changedFields) => {
+    this.setState({
+      fields: { ...this.state.fields, ...changedFields },
+    });
+  }
+  render() {
+    const fields = this.state.fields;
+    return (
+      <div>
+        <CustomizedForm {...fields} onChange={this.handleFormChange} />
+      </div>
+    );
+  }
+}
+/*=================LAST KM=====================*/
+/*===================END=======================*/
 
   return (
     <div className="content-inner">
@@ -1100,14 +1167,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                              visible={visiblePopover}
                              onVisibleChange={() => hdlPopoverVisibleChange()}
                              placement="left" trigger='click'>
-                      <Button type='primary' icon="down-square-o" >
+                      <Button type='primary' icon="down-square-o" onClick={hdlUnitClick}>
                       </Button>
                     </Popover>
                   </Col>
                 </FormItem>
-                <FormItem label="KM" {...formItemLayout}>
-                  <Input />
-                </FormItem>
+                  <LastMeter />
                 <FormItem label="Code" {...formItemLayout}>
                   <Input  value={memberInformation.memberCode} disabled />
                 </FormItem>

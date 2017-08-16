@@ -242,7 +242,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<Input style={{width:70}}/>)}
+              })(<Input disabled style={{width:70}}/>)}
               {getFieldDecorator('categoryName', {
                 initialValue: item.categoryName,
                 rules: [
@@ -250,9 +250,9 @@ const modal = ({
                     required: false,
                   },
                 ],
-              })(<Input style={{width:140}}/>)}
+              })(<Input disabled style={{width:140}}/>)}
             </FormItem>
-            <FormItem label="Brand ID" hasFeedback {...formItemLayout}>
+            <FormItem label="Merk" hasFeedback {...formItemLayout}>
               <Popover visible={visiblePopoverBrand}
                 onVisibleChange={() => hdlPopoverVisibleBrandChange()}
                 title={titlePopover}
@@ -265,14 +265,22 @@ const modal = ({
                 ><Icon type="down-square-o" />
                 </Button>
               </Popover>
-              {getFieldDecorator('brandId', {
-                initialValue: item.brandId,
+              {getFieldDecorator('brandCode', {
+                initialValue: item.brandId ? item.brandId : item.brandCode,
                 rules: [
                   {
                     required: true,
                   },
                 ],
-              })(<Input style={{width: 70}}/>)}
+              })(<Input disabled style={{width: 70}}/>)}
+              {getFieldDecorator('brandName', {
+                initialValue: item.brandName,
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<Input disabled style={{width: 140}}/>)}
             </FormItem>
             <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('otherName01', {

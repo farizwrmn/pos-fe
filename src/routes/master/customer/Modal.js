@@ -342,7 +342,7 @@ const modal = ({
                     <Col span={6}>
                       {getFieldDecorator('memberGroupId', {
                         initialValue: item.memberGroupId,
-                        rules: [{ required: true }],
+                        rules: [{ required: true, message: "Required" }],
                       })(
                         <Input disabled style={{width: 40}}/>
                       )}
@@ -350,7 +350,7 @@ const modal = ({
                     <Col span={9}>
                       {getFieldDecorator('memberGroupName', {
                         initialValue: item.memberGroupName,
-                        rules: [{ required: true }],
+                        rules: [{ required: true, message: "Required" }],
                       })(
                         <Input disabled style={{width: 100}}/>
                       )}
@@ -376,7 +376,7 @@ const modal = ({
                     <Col span={6}>
                       {getFieldDecorator('memberTypeId', {
                         initialValue: item.memberTypeId,
-                        rules: [{ required: true }],
+                        rules: [{ required: true, message: "Required" }],
                       })(
                         <Input disabled style={{width: 40}}/>
                       )}
@@ -384,7 +384,7 @@ const modal = ({
                     <Col span={6}>
                       {getFieldDecorator('memberTypeName', {
                         initialValue: item.memberTypeName,
-                        rules: [{ required: true }],
+                        rules: [{ required: true, message: "Required" }],
                       })(
                         <Input disabled style={{width: 100}}/>
                       )}
@@ -394,7 +394,7 @@ const modal = ({
                 <FormItem label="Customer ID" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberCode', {
                     initialValue: item.memberCode,
-                    rules: [{ required: true }],
+                    rules: [{ required: true, message: "Required" }],
                   })(
                     <Input disabled={disableItem.code} />
                   )}
@@ -402,7 +402,7 @@ const modal = ({
                 <FormItem label="Identity Type" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idType', {
                     initialValue: item.idType,
-                    rules: [{ required: true }],
+                    rules: [{ required: true, message: "Required" }],
                   })(<Select
                     value={item.idType}
                     size="large"
@@ -415,13 +415,13 @@ const modal = ({
                 <FormItem label="Identity Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idNo', {
                     initialValue: item.idNo,
-                    rules: [{ pattern: /^[0-9-_.]{3,15}$/, required: true}],
+                    rules: [{ pattern: /^[0-9-_.]{4,15}\S+$/, required: true, message: "Required, No space min: 5"}],
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Customer Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberName', {
                     initialValue: item.memberName,
-                    rules: [{ required: true, min: 4 }],
+                    rules: [{ required: true, min: 4, message: "Required"}],
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Birthdate" hasFeedback {...formItemLayout}>
@@ -449,7 +449,7 @@ const modal = ({
                         message: 'invalid NPWP',
                       },
                     ],
-                  })(<Input maxLength="15" defaultvalue="123456789012345" />)}
+                  })(<Input maxLength="15" />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -459,6 +459,7 @@ const modal = ({
                     rules: [
                       {
                         required: true,
+                        message: "Required"
                       },
                     ],
                   })(<Input />)}
@@ -496,6 +497,7 @@ const modal = ({
                     rules: [
                       {
                         required: true,
+                        message: "Required"
                       },
                     ],
                   })(<Input style={{width: 40}} disabled/>)}
@@ -506,6 +508,7 @@ const modal = ({
                     rules: [
                       {
                         required: true,
+                        message: "Required"
                       },
                     ],
                   })(<Input style={{width: 96}} disabled/>)}
@@ -582,8 +585,12 @@ const modal = ({
                 <FormItem label="No Polisi" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('policeNo', {
                     initialValue: item.policeNo,
-                    rules: [{ required: false }],
-                  })(<Input />)}
+                    rules: [{
+                      required: false,
+                      pattern: /^[A-Z0-9]{1,10}\S+$/,
+                      message: "No Space & Capital Letters"
+                     }],
+                  })(<Input maxLength={10}/>)}
                 </FormItem>
                 <FormItem label="Merk" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('merk', {

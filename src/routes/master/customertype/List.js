@@ -35,7 +35,6 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
     }, {
       title: 'NickName',
       dataIndex: 'nickName',

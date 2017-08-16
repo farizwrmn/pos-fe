@@ -12,14 +12,14 @@ const FormItem = Form.Item
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const ListQueue = ({ isMotion, stock, dispatch, location, ...tableProps }) => {
-  const { listQueue, curQueue } = stock
+const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
+  const { listQueue, curQueue } = pos
 
   const handleChange = (e) => {
     const {value} = e.target
 
     dispatch({
-      type: 'stock/changeQueue',
+      type: 'pos/changeQueue',
       payload: {
         queue: value,
       },
@@ -33,11 +33,11 @@ const ListQueue = ({ isMotion, stock, dispatch, location, ...tableProps }) => {
     localStorage.removeItem('queue' + curQueue)
 
     dispatch({
-      type: 'stock/setCurTotal',
+      type: 'pos/setCurTotal',
     })
 
     dispatch({
-      type: 'stock/hideQueueModal',
+      type: 'pos/hideQueueModal',
     })
   }
 
@@ -68,7 +68,7 @@ const ListQueue = ({ isMotion, stock, dispatch, location, ...tableProps }) => {
           },
           {
             title: 'Barcode',
-            dataIndex: 'barcode',
+            dataIndex: 'code',
           },
           {
             title: 'Product Name',
@@ -115,8 +115,8 @@ ListQueue.propTypes = {
   onChooseItem: PropTypes.func,
   isMotion: PropTypes.bool,
   location: PropTypes.object,
-  stock: PropTypes.object,
+  pos: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ stock }) => ({ stock }))(ListQueue)
+export default connect(({ pos }) => ({ pos }))(ListQueue)

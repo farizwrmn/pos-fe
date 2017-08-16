@@ -47,11 +47,6 @@ const BrowseBrand = ({
       dataIndex: 'brandName',
       key: 'brandName',
       width: 175,
-    }, {
-      title: 'Image',
-      dataIndex: 'brandImage',
-      key: 'brandImage',
-      width: 100,
     }
   ]
 

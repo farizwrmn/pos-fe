@@ -57,7 +57,7 @@ export default {
     kodeUtil: 'member',
     infoUtil: 'Input Member Code',
     dataPosLoaded: false,
-    memberInformation: [],
+    memberInformation: JSON.parse(localStorage.getItem('member'))[0] ? JSON.parse(localStorage.getItem('member'))[0] : [],
     tmpMemberList: [],
     tmpMechanicList: [],
     tmpProductList: [],
@@ -66,6 +66,7 @@ export default {
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
+    curQty: 1,
     filterDropdownVisible: false,
     searchText: '',
     filtered: false,
@@ -560,24 +561,13 @@ export default {
           var disc2 = arrayProd[i].disc2
           var disc3 = arrayProd[i].disc3
 
-          if ( arrayProd[i].barcode.substr(0, 3) != 'SVC' ) {
-            const dataStock = yield call(queryByCode, arrayProd[i].barcode)
-            let newDataStock = dataStock.stocks
-            arrayProd[i].price = newDataStock.sellingPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataStock.sellingPrice)
-            var tmpDisc = (tmpTotal * disc1) / 100
-            var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
-          }
-          else {
-            const dataService = yield call(queryServiceByCode, arrayProd[i].barcode)
-            let newDataService = dataService.services
-            arrayProd[i].price = newDataService.normalPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataService.normalPrice)
+          if ( arrayProd[i].code != null ) {
+            let dataStock = yield call(queryProductCode, arrayProd[i].code)
+            let validData = yield call(queryServiceByCode, arrayProd[i].code)
+            let newDataStock = dataStock.data ? dataStock.data : validData.data
+            arrayProd[i].price = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+            const sell = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+            var tmpTotal = (arrayProd[i].qty * sell)
             var tmpDisc = (tmpTotal * disc1) / 100
             var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
             var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
@@ -888,6 +878,7 @@ export default {
     },
 
     setAllNull (state) {
+      console.log('queue', state);
       return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
     },
 

@@ -12,9 +12,11 @@ export async function query (params) {
 }
 
 export async function queryProductByCode (params) {
+  let url = `${stock}/${params}`
+  console.log(url);
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: stock + params.productCode,
+    url: url,
     method: 'get',
     headers: apiHeaderToken
   })

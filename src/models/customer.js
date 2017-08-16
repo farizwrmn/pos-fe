@@ -83,7 +83,6 @@ export default modelExtend(pageModel, {
     *add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
       } else {
         throw data
