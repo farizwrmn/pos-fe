@@ -74,11 +74,11 @@ export default {
           return (prev.transNo > current.transNo) ? prev : current
       })
 
-      var dataCodeMember = yield call(queryCode, payload.memberCode)
-      console.log('dataCodeMember.member.point', dataCodeMember.data.point);
-      const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.data.point)
-      console.log('dataCodeMember', dataCodeMember, 'pointTotal', pointTotal)
-      yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
+      // var dataCodeMember = yield call(queryCode, payload.memberCode)
+      // console.log('dataCodeMember.member.point', dataCodeMember.data.point);
+      // const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.data.point)
+      // console.log('dataCodeMember', dataCodeMember, 'pointTotal', pointTotal)
+      // yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
 
       var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
       var newMonth = lastNo.substr(2,4)
@@ -123,7 +123,7 @@ export default {
           "transDate": `${moment().format('YYYYMMDD')}`,
           "transTime": payload.transTime,
           "total": payload.grandTotal,
-          "lastMeter": payload.lastMeter,
+          "lastMeter": localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : payload.lastMeter,
           "creditCardNo": payload.creditCardNo,
           "creditCardType": payload.creditCardType,
           "creditCardCharge": payload.creditCardCharge,
@@ -131,8 +131,9 @@ export default {
           "discount": payload.totalDiscount,
           "rounding": payload.rounding,
           "paid": payload.totalPayment,
-          "policeNo": payload.policeNo,
-          "change": payload.totalChange}
+          "policeNo": localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
+          "change": payload.totalChange
+        }
 
 
 
@@ -153,7 +154,7 @@ export default {
               },
             })
 
-            yield put({ type: 'stock/setAllNull' })
+            yield put({ type: 'pos/setAllNull' })
 
             const modal = Modal.info({
               title: 'Information',
@@ -168,8 +169,6 @@ export default {
             title: 'Error Saving Payment',
             content: 'Your Data not saved',
           })
-
-          //throw data_create
         }
       }
     },
@@ -226,7 +225,9 @@ export default {
     successPost (state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('member',[{}])
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('lastMeter')
       return { ...state,
         posMessage: posMessage,
         totalPayment: 0,
@@ -284,6 +285,7 @@ export default {
     },
 
     setPoliceNo (state, action) {
+      localStorage.setItem('memberUnit', action.payload.policeNo)
       return { state, policeNo: action.payload.policeNo}
     },
 

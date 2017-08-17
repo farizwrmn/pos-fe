@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Input, Icon, Form, Radio } from 'antd'
+import { Card, Table, Modal, Button, Input, Icon, Form, Radio, Tabs } from 'antd'
 import { connect } from 'dva'
 import styles from './List.less'
 import classnames from 'classnames'
@@ -11,17 +11,17 @@ const FormItem = Form.Item
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const TabPane = Tabs.TabPane;
 
 const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
   const { listQueue, curQueue } = pos
-
   const handleChange = (e) => {
-    const {value} = e.target
+    console.log('handleChange', e);
 
     dispatch({
       type: 'pos/changeQueue',
       payload: {
-        queue: value,
+        queue: e,
       },
     })
   }
@@ -29,16 +29,40 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
   const handleClick = () => {
     console.log('pilih antrian ke ' + curQueue)
-    localStorage.setItem('cashier_trans', localStorage.getItem('queue' + curQueue))
-    localStorage.removeItem('queue' + curQueue)
+    if (localStorage.getItem('queue' + curQueue) === null ) {
+      const modal = Modal.warning({
+        title: 'Warning',
+        content: `Queue ${curQueue} Not Found...!`,
+      })
+    } else {
+      const cashier_trans = JSON.parse(localStorage.getItem('queue' + curQueue))
+      const trans = cashier_trans[0]
+      var arrayMember = []
+      var arrayMechanic = []
+      arrayMember.push({
+        memberCode: trans.memberCode,
+        memberName: trans.memberName,
+        point: trans.point,
+        id: trans.id
+      })
+      arrayMechanic.push({
+        mechanicCode: trans.mechanicCode,
+        mechanicName: trans.mechanicName
+      })
+      localStorage.setItem('lastMeter', trans.lastMeter)
+      localStorage.setItem('memberUnit', trans.memberUnit)
+      localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
+      localStorage.setItem('member', JSON.stringify(arrayMember))
+      localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
+      localStorage.removeItem('queue' + curQueue)
+      dispatch({
+        type: 'pos/setCurTotal',
+      })
 
-    dispatch({
-      type: 'pos/setCurTotal',
-    })
-
-    dispatch({
-      type: 'pos/hideQueueModal',
-    })
+      dispatch({
+        type: 'pos/hideQueueModal',
+      })
+    }
   }
 
   const getBodyWrapperProps = {
@@ -50,63 +74,113 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
   return (
     <div>
-      <RadioGroup onChange={handleChange} defaultValue="1">
-        <RadioButton value="1"> Queue No. 1 </RadioButton>
-        <RadioButton value="2"> Queue No. 2 </RadioButton>
-        <RadioButton value="3"> Queue No. 3 </RadioButton>
-      </RadioGroup>
-
-      <Table
-        rowKey={(record, key) => key}
-        pagination={true}
-        bordered
-        scroll={{ x: 800 }}
-        columns={[
-          {
-            title: 'No',
-            dataIndex: 'no',
-          },
-          {
-            title: 'Barcode',
-            dataIndex: 'code',
-          },
-          {
-            title: 'Product Name',
-            dataIndex: 'name',
-          },
-          {
-            title: 'Qty',
-            dataIndex: 'qty',
-          },
-          {
-            title: 'Price',
-            dataIndex: 'price',
-          },
-          {
-            title: 'Disc 1(%)',
-            dataIndex: 'disc1',
-          },
-          {
-            title: 'Disc 2(%)',
-            dataIndex: 'disc2',
-          },
-          {
-            title: 'Disc 3(%)',
-            dataIndex: 'disc3',
-          },
-          {
-            title: 'Discount',
-            dataIndex: 'discount',
-          },
-          {
-            title: 'Total',
-            dataIndex: 'total',
-          },
-        ]}
-        dataSource={listQueue}
-        style={{ marginBottom: 16 }}
-      />
-      <Button onClick={handleClick} > Confirm </Button>
+      <Tabs onChange={handleChange} defaultActiveKey="1">
+        <TabPane  tab="Queue 1" key="1"/>
+        <TabPane  tab="Queue 2" key="2"/>
+        <TabPane  tab="Queue 3" key="3"/>
+      </Tabs>
+        <Card bodyStyle={{ padding : 0, fontSize: '200%' }} bordered={false} style={{ width: '100%', marginBottom:5 }}>
+          <div style={{textAlign: 'center'}}>
+            Member Information
+          </div>
+          <div>
+            <Table
+            pagination={true}
+            bordered
+            columns={[
+              {
+                title: 'ID',
+                dataIndex: 'memberCode'
+              },
+              {
+                title: 'NAME',
+                dataIndex: 'memberName'
+              },
+              {
+                title: 'KM',
+                dataIndex: 'lastMeter'
+              },
+              {
+                title: 'Unit',
+                dataIndex: 'memberUnit'
+              },
+              {
+                title: 'Mechanic',
+                dataIndex: 'mechanicName'
+              },
+              {
+                title: 'Mechanic ID',
+                dataIndex: 'mechanicCode'
+              },
+              {
+                title: 'Point',
+                dataIndex: 'point'
+              },
+            ]}
+            dataSource={listQueue}
+            pagination={false}
+            />
+          </div>
+        </Card>
+        <Card bodyStyle={{ padding : 0, fontSize: '200%' }} bordered={false} style={{ width: '100%' }}>
+          <div style={{textAlign: 'center'}}>
+            Payment List
+          </div>
+          <div>
+          <Table
+            rowKey={(record, key) => key}
+            pagination={true}
+            bordered
+            scroll={{ x: 800 }}
+            columns={[
+              {
+                title: 'No',
+                dataIndex: 'no',
+              },
+              {
+                title: 'Barcode',
+                dataIndex: 'code',
+              },
+              {
+                title: 'Product Name',
+                dataIndex: 'name',
+              },
+              {
+                title: 'Qty',
+                dataIndex: 'qty',
+              },
+              {
+                title: 'Price',
+                dataIndex: 'price',
+              },
+              {
+                title: 'Disc 1(%)',
+                dataIndex: 'disc1',
+              },
+              {
+                title: 'Disc 2(%)',
+                dataIndex: 'disc2',
+              },
+              {
+                title: 'Disc 3(%)',
+                dataIndex: 'disc3',
+              },
+              {
+                title: 'Discount',
+                dataIndex: 'discount',
+              },
+              {
+                title: 'Total',
+                dataIndex: 'total',
+              },
+            ]}
+            dataSource={listQueue ? listQueue[0].cashier_trans : []}
+            pagination={false}
+            style={{ marginBottom: 16 }}
+          />
+          </div>
+        </Card>
+        <Button onClick={handleClick} > RESTORE </Button>
     </div>
   )
 }

@@ -45,6 +45,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           dataCashierTrans,
           curCashierNo,
           curShift,
+          lastMeter,
           modalQueueVisible } = pos
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
@@ -52,7 +53,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   var keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
     51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false }
-
   /*
   Ascii => Desc
   17 => Ctrl
@@ -402,6 +402,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
       localStorage.removeItem('member',[{}])
+      localStorage.setItem('memberUnit', '')
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       var arrayProd
@@ -415,13 +416,14 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       arrayProd.push({
         'memberCode': item.memberCode,
         'memberName': item.memberName,
+        'point': item.point ? item.point : 0,
         'id': item.id
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' }})
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode }}),
       dispatch({
         type: 'pos/hideMemberModal',
       })
@@ -446,10 +448,17 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
+      console.log('modalMechanicProps', item);
+      localStorage.removeItem('mechanic')
+      var arrayProd = []
+      arrayProd.push({
+        mechanicName: item.employeeId,
+        mechanicCode: item.employeeName
+      })
+      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
       dispatch({ type: 'pos/hideMechanicModal' })
-      // dispatch({ type: 'pos/getMechanicSuccess', payload: { mechanicInformation: item } })
-      // dispatch({ type: 'pos/hideMechanicModal' })
     },
   }
 
@@ -591,7 +600,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Search Mechanic',
+            infoUtil: 'Mechanic',
           },
         })
       }
@@ -728,7 +737,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'member',
-            infoUtil: 'Search Member Code',
+            infoUtil: 'Member',
           },
         })
       }
@@ -741,7 +750,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Search Mechanic Code',
+            infoUtil: 'Mechanic',
           },
         })
       }
@@ -808,6 +817,37 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         keyShortcut[16] = false
         keyShortcut[85] = false
 
+        var arrayProd = []
+
+        const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+        const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+        const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+
+        var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+        var memberInformation
+        if ( JSON.stringify(listByCode) == "[]" ) {
+          memberInformation = listByCode.slice()
+        }
+        else {
+          memberInformation = listByCode
+        }
+        const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+
+        //start-mechanicInfo
+        const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+        const mechanic = mechanicInfo[0]
+        //end-mechanicInfo
+
+        arrayProd.push({
+            cashier_trans: cashier_trans,
+            memberCode: memberInfo.memberCode,
+            memberName: memberInfo.memberName,
+            point: memberInfo.point,
+            memberUnit: memberUnit,
+            lastMeter: lastMeter,
+            mechanicCode: mechanic.mechanicCode,
+            mechanicName: mechanic.mechanicName
+        })
         if ( localStorage.getItem('cashier_trans') === null ) {
           Modal.warning({
             title: 'Warning',
@@ -816,9 +856,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         }
         else {
           if ( localStorage.getItem('queue1') === null ) {
-            localStorage.setItem('queue1', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue1', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -827,9 +870,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             })
           }
           else if ( localStorage.getItem('queue2') === null ) {
-            localStorage.setItem('queue2', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue2', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -838,9 +884,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             })
           }
           else if ( localStorage.getItem('queue3') === null ) {
-            localStorage.setItem('queue3', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue3', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -868,7 +917,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           },
         })
       }
-      else if ( kodeUtil == 'service' ) {
+      else if ( kodeUtil == 'service' || kodeUtil == 'member' || kodeUtil == 'mechanic' ) {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -920,6 +969,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       type: 'pos/chooseMemberUnit',
       payload: { policeNo: record.policeNo },
     })
+    localStorage.setItem('memberUnit',record.policeNo)
     dispatch({
       type: 'payment/setPoliceNo',
       payload: { policeNo: record.policeNo },
@@ -968,21 +1018,21 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     </div>
   )
 
-  function formatNumber(value) {
-  value += '';
-  const list = value.split('.');
-  const prefix = list[0].charAt(0) === '-' ? '-' : '';
-  let num = prefix ? list[0].slice(1) : list[0];
-  let result = '';
-  while (num.length > 3) {
-    result = `,${num.slice(-3)}${result}`;
-    num = num.slice(0, num.length - 3);
-  }
-  if (num) {
-    result = num + result;
-  }
-  return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
-}
+//   function formatNumber(value) {
+//   value += '';
+//   const list = value.split('.');
+//   const prefix = list[0].charAt(0) === '-' ? '-' : '';
+//   let num = prefix ? list[0].slice(1) : list[0];
+//   let result = '';
+//   while (num.length > 3) {
+//     result = `,${num.slice(-3)}${result}`;
+//     num = num.slice(0, num.length - 3);
+//   }
+//   if (num) {
+//     result = num + result;
+//   }
+//   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
+// }
 /*===================BEGIN=====================*/
 /*=================LAST KM=====================*/
 const CustomizedForm = Form.create({
@@ -991,18 +1041,19 @@ const CustomizedForm = Form.create({
   },
   mapPropsToFields(props) {
     return {
-      username: {
-        ...props.username,
-        value: props.username.value.toUpperCase(),
+      lastMeter: {
+        ...props.lastMeter,
+        value: props.lastMeter.value.toUpperCase(),
       },
     };
   },
   onValuesChange(_, values) {
+    localStorage.setItem('lastMeter', values.lastMeter ? values.lastMeter : 0)
     dispatch({
       type: 'payment/setLastMeter',
       payload: {
-        lastMeter: values.username,
-        policeNo: memberUnitInfo.unitNo
+        lastMeter: values.lastMeter,
+        policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
       },
     })
   },
@@ -1010,8 +1061,8 @@ const CustomizedForm = Form.create({
   const { getFieldDecorator } = props.form;
   return (
       <FormItem label="KM" {...formItemLayout}>
-        {getFieldDecorator('username', {
-          rules: [{ required: true, message: 'Username is required!' }],
+        {getFieldDecorator('lastMeter', {
+          rules: [{ required: true, message: 'Required' }],
         })(<Input />)}
       </FormItem>
   );
@@ -1020,8 +1071,8 @@ const CustomizedForm = Form.create({
 class LastMeter extends React.Component {
   state = {
     fields: {
-      username: {
-        value: '',
+      lastMeter: {
+        value: lastMeter,
       },
     },
   };
@@ -1177,7 +1228,7 @@ class LastMeter extends React.Component {
                 </FormItem>
                 <FormItem label='Unit' hasFeedback {...formItemLayout}>
                   <Col span={20}>
-                    <Input value={memberUnitInfo.unitNo} />
+                    <Input value={memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo ? memberUnitInfo : '------'} />
                   </Col>
                   <Col span={4}>
                     <Popover title={titlePopover}
@@ -1202,10 +1253,10 @@ class LastMeter extends React.Component {
             <Panel header="Mechanic Info" key="2">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName} disabled />
+                  <Input value={mechanicInformation.employeeName ?  mechanicInformation.employeeName : mechanicInformation.mechanicCode} disabled />
                 </FormItem>
                 <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeId} disabled />
+                  <Input value={mechanicInformation.employeeId ?  mechanicInformation.employeeId : mechanicInformation.mechanicName} disabled />
                 </FormItem>
               </Form>
             </Panel>

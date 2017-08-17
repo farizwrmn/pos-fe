@@ -93,7 +93,7 @@ const ModalShift = ({item,
 
   return (
     <Modal {...modalOpts} footer={[
-      <Button key="back" size="large" onClick={handleBack}>Back</Button>,
+      <Button key="back" size="large" onClick={handleOk}>Back</Button>,
       <Button key="submit" type="primary" size="large" onClick={handleOk}>
         Confirm
       </Button>,
