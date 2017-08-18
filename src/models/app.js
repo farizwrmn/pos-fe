@@ -1,4 +1,4 @@
-import { query, logout } from '../services/app'
+import { query, logout, changePw } from '../services/app'
 import * as menusService from '../services/menus'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -23,7 +23,8 @@ export default {
       },
     ],
     menuPopoverVisible: false,
-    visibleShortcutKey: false,
+    visibleItem: {shortcutKey: false, changePw: false },
+    visiblePw: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
@@ -52,10 +53,9 @@ export default {
       if (success && user) {
         const { list } = yield call(menusService.query)
         const { permissions } = user
+
         let menu = list
-        if (permissions.role === EnumRoleType.ADMIN
-          || permissions.role === EnumRoleType.DEVELOPER
-          || permissions.role === EnumRoleType.IT
+        if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)
         ) {
           permissions.visit = list.map(item => item.id)
         } else {
@@ -99,6 +99,19 @@ export default {
       }
     },
 
+    *changePw({
+      payload,
+    }, { call, put }) {
+      const data = yield call(changePw, parse(payload))
+
+      if (data.success) {
+        // yield put({ type: 'query' })
+        yield put({ type: 'changePwHide' })
+      } else {
+        throw (data)
+      }
+    },
+
     *changeNavbar ({
       payload,
     }, { put, select }) {
@@ -133,11 +146,19 @@ export default {
       }
     },
     shortcutKeyShow (state, { payload }) {
-      return { ...state, ...payload, visibleShortcutKey: true }
+      return { ...state, ...payload, visibleItem: {shortcutKey: true } }
     },
     shortcutKeyHide (state) {
-      console.log('shortcutKeyHide')
-      return { ...state, visibleShortcutKey: false }
+      return { ...state, visibleItem: {shortcutKey: false } }
+    },
+    changePwShow (state, { payload }) {
+      return { ...state, ...payload, visibleItem: {changePw: true } }
+    },
+    changePwHide (state) {
+      return { ...state, visibleItem: {changePw: false } }
+    },
+    togglePw (state) {
+      return { ...state, visiblePw: !state.visiblePw }
     },
     switchTheme (state) {
       localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)

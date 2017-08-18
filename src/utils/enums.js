@@ -1,10 +1,6 @@
 const EnumRoleType = {
-  ADMIN: 'admin',
-  DEFAULT: 'admin',
-  DEVELOPER: 'developer',
+  LVL0: 'OWN',
   IT: 'IT',
-  MGR: 'manager',
-
 }
 
 module.exports = {

@@ -115,7 +115,7 @@ export default modelExtend(pageModel, {
       return { ...state, ...payload, modalVisible: true, disabledItem: { userId: false } }
     },
     modalHide (state) {
-      return { ...state, modalVisible: false }
+      return { ...state, modalVisible: false, currentItem: {} }
     },
     chooseEmployee (state, action) {
       return { ...state, ...action.payload, visiblePopover: false }

@@ -25,6 +25,7 @@ const User = ({ location, dispatch, user, loading, misc, employee }) => {
     maskClosable: false,
     confirmLoading: loading.effects['user/update'],
     title: `${modalType === 'add' ? 'Add User' : 'Edit User'}`,
+    modalType: modalType,
     wrapClassName: 'vertical-center-modal',
     listLovEmployee: listLovEmployee,
     listUserRole: listUserRole,
@@ -77,7 +78,8 @@ const User = ({ location, dispatch, user, loading, misc, employee }) => {
         type: `user/${modalType}`,
         payload: {
           id: id,
-          data: data
+          data: data,
+          currentItem: {}
         },
       })
     },
