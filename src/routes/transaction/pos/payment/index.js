@@ -125,7 +125,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           lastMeter: lastMeter,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
-          policeNo: policeNo,
+          policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
           technicianId: mechanicInformation.mechanicCode,

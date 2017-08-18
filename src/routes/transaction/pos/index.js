@@ -401,8 +401,8 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member',[{}])
-      localStorage.setItem('memberUnit', '')
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       var arrayProd
