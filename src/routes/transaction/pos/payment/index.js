@@ -189,7 +189,6 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           <Card bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
           <Table
             rowKey={(record, key) => key}
-            pagination={true}
             bordered
             scroll={{ x: 1500 }}
             columns={[

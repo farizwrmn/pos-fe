@@ -6,14 +6,19 @@ import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
+import ChangePw from './ChangePassword'
 
 const SubMenu = Menu.SubMenu
 
 const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible,
-  visibleShortcutKey, handleShortcutKeyShow, handleShortcutKeyHide, location,
-  switchMenuPopover, navOpenKeys, changeOpenKeys, menu
+  visibleItem, visiblePw, handleShortcutKeyShow, handleShortcutKeyHide,
+  handleChangePwShow, handleChangePwHide, handleTogglePw, handleSave,
+  location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
 }) => {
-  let handleClickMenu = e => e.key === 'logout' && logout()
+  let handleClickMenu = e => {
+    e.key === 'logout' && logout()
+    e.key === 'password' && handleChangePwShow()
+  }
   let screenFull = () => { if (screenfull.enabled) { screenfull.request() } }
 
   const menusProps = {
@@ -28,10 +33,26 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
   }
 
   const shortcutProps = {
-    visible: visibleShortcutKey,
+    visible: visibleItem.shortcutKey,
     onCancel () {
       handleShortcutKeyHide()
     },
+  }
+  const changePwProps = {
+    visible: visibleItem.changePw,
+    visiblePw: visiblePw,
+    onCancel () {
+      handleChangePwHide()
+    },
+    onTogglePw () {
+      handleTogglePw()
+    },
+    onCancelButton () {
+      handleChangePwHide()
+    },
+    onSaveButton (data) {
+      handleSave(data)
+    }
   }
   return (
     <div className={styles.header}>
@@ -61,7 +82,8 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
         <HeaderMenu prompt='alert quantity' icon='exclamation-circle-o' addClass='alert' />
         <HeaderMenu separator={true} />
 
-        {visibleShortcutKey && <ShortcutKey {...shortcutProps} />}
+        {visibleItem.shortcutKey && <ShortcutKey {...shortcutProps} />}
+        {visibleItem.changePw && <ChangePw  {...changePwProps} />}
 
         <Menu mode="horizontal" onClick={handleClickMenu}>
           <SubMenu style={{
@@ -72,6 +94,10 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
           >
             <Menu.Item key="logout">
               Sign out
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="password">
+              Change Password
             </Menu.Item>
           </SubMenu>
         </Menu>

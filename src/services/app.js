@@ -1,7 +1,7 @@
 import { request, config, crypt } from 'utils'
 
 const { api, prefix } = config
-const { user, userLogout, userLogin } = api
+const { user, users, userLogout, userLogin } = api
 
 export async function login (params) {
   return request({
@@ -17,6 +17,19 @@ export async function logout (params) {
     method: 'post', // 'get',
     data: params,
     headers: crypt.apiheader(),
+  })
+}
+
+export async function changePw (params) {
+  console.log('changePw', params)
+  const url = params.id ? users + '/' + params.id  : users
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
+    data: params.data,
+    body: params.data,
+    headers: apiHeaderToken
   })
 }
 

@@ -18,7 +18,8 @@ const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
 const App = ({ children, dispatch, app, loading, location }) => {
-  const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, visibleShortcutKey, navOpenKeys, menu, permissions } = app
+  const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
+    visibleItem, visiblePw, navOpenKeys, menu, permissions } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { iconFontJS, iconFontCSS, logo } = config
@@ -34,13 +35,16 @@ const App = ({ children, dispatch, app, loading, location }) => {
     }
   }
 
+  console.log('user', user.userid)
+
   const headerProps = {
     menu,
     user,
     siderFold,
     isNavbar,
     menuPopoverVisible,
-    visibleShortcutKey,
+    visibleItem,
+    visiblePw,
     navOpenKeys,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
@@ -60,6 +64,26 @@ const App = ({ children, dispatch, app, loading, location }) => {
     handleShortcutKeyHide () {
       dispatch({ type: 'app/shortcutKeyHide' })
     },
+    handleChangePwShow () {
+      dispatch({ type: 'app/changePwShow' })
+    },
+    handleChangePwHide () {
+      dispatch({ type: 'app/changePwHide' })
+    },
+    handleTogglePw () {
+      dispatch({ type: 'app/togglePw' })
+    },
+    handleSave (data) {
+      console.log('handleSave' ,data)
+      dispatch({
+        type: `app/changePw`,
+        payload: {
+          id: user.userid,
+          data: data,
+          currentItem: {}
+        },
+      })
+    }
   }
 
   const siderProps = {

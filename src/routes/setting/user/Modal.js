@@ -97,6 +97,12 @@ const modal = ({
       }
       // data.active = data.active !== undefined ? true : false
 
+      // if there is no update on password
+      if (modalProps.modalType === 'edit' && data.password === 'xxxxxx') {
+        delete data.password
+        delete data.confirm
+      }
+      console.log('hdlButtonSaveClick', data)
       modalButtonSaveClick(data.userId, data)
     })
   }
@@ -135,7 +141,7 @@ const modal = ({
       />
     </div>
   )
-  console.log('jobo', item)
+
   return (
     <Modal {...modalOpts}
       footer={[
@@ -191,7 +197,7 @@ const modal = ({
         </FormItem>
         <FormItem label='User Role' hasFeedback {...formItemLayout}>
           {getFieldDecorator('userRole', {
-            initialValue: item.userRole && item.userRole.split(' '),
+            initialValue: item.userRoleCode && item.userRoleCode.split(' '),
           })(<Cascader
             size='large'
             style={{ width: '100%' }}

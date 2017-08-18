@@ -455,7 +455,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         'name': item.productName,
         'qty': curQty,
         'price': (memberInformation.memberCode ? item.distPrice02 : item.sellPrice),
-        //'price': item.sellingPrice,
         'discount': 0,
         'disc1': 0,
         'disc2': 0,

@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'dva'
-import { Table, Modal, Button, Form, Card, Input } from 'antd'
+import { Modal, Form, Card, Input } from 'antd'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -17,7 +16,7 @@ const ModalHelp = ({...modalProps}) => {
     ...modalProps,
     wrapClassName: 'vertical-center-modal',
   }
-console.log('modalOpts',modalOpts)
+
   return (
     <Modal {...modalOpts} width="768" footer={[]}>
       <Card bordered={false} title="Shortcut Information" >

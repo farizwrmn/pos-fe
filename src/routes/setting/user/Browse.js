@@ -26,6 +26,7 @@ const Browse = ({
   }
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
+      console.log('hdlDropOptionClick',record)
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
@@ -64,8 +65,8 @@ const Browse = ({
         </span>,
     }, {
       title: 'Role',
-      dataIndex: 'userRole',
-      key: 'userRole',
+      dataIndex: 'userRoleCode',
+      key: 'userRoleCode',
       width: 100
     }, {
       title: 'Email',

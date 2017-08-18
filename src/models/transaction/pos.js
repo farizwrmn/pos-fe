@@ -172,8 +172,9 @@ export default {
     },
 
     *getStock ({ payload }, { call, put }) {
-      const data = yield call(queryByCode, payload.productCode)
-      let newData = data.stocks
+      console.log('getStock', payload)
+      const data = yield call(queryProductCode, payload.productCode)
+      let newData = data.data
 
       if ( data.success ) {
         var arrayProd
@@ -186,15 +187,16 @@ export default {
 
         arrayProd.push({
           'no': payload.curRecord,
-          'barcode': newData.productBarcode1,
+          'id': newData.id,
+          'code': newData.productCode,
           'name': newData.productName,
           'qty': 1,
-          'price': (payload.memberCode ? newData.memberPrice : newData.sellingPrice),
+          'price': (payload.memberCode ? newData.distPrice02 : newData.sellPrice),
           'discount': 0,
           'disc1': 0,
           'disc2': 0,
           'disc3': 0,
-          'total': (payload.memberCode ? newData.memberPrice : newData.sellingPrice) * payload.curQty
+          'total': (payload.memberCode ? newData.distPrice02 : newData.sellPrice) * 1
         })
 
         localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
@@ -232,10 +234,10 @@ export default {
 
         arrayProd.push({
           'no': payload.curRecord,
-          'barcode': newData.serviceId,
+          'code': newData.serviceId,
           'name': newData.serviceDescription,
           'qty': payload.curQty,
-          'price': (payload.memberCode ? newData.memberPrice : newData.normalPrice),
+          'price':  (payload.memberCode ? newData.memberPrice : newData.normalPrice),
           'discount': 0,
           'disc1': 0,
           'disc2': 0,
