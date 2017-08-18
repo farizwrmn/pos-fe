@@ -22,8 +22,8 @@ const dataTrans = () => {
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, lastMeter, policeNo } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo} = pos
+  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo } = payment
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = { 17: false, 16: false, 32: false }
@@ -128,7 +128,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           policeNo: policeNo,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
-          technicianId: mechanicInformation.employeeId,
+          technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
           curCashierNo: curCashierNo,

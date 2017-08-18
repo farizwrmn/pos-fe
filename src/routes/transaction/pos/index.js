@@ -452,8 +452,8 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       localStorage.removeItem('mechanic')
       var arrayProd = []
       arrayProd.push({
-        mechanicName: item.employeeId,
-        mechanicCode: item.employeeName
+        mechanicName: item.employeeName,
+        mechanicCode: item.employeeId
       })
       localStorage.setItem('mechanic', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
@@ -1043,7 +1043,7 @@ const CustomizedForm = Form.create({
     return {
       lastMeter: {
         ...props.lastMeter,
-        value: props.lastMeter.value.toUpperCase(),
+        value: props.lastMeter.value,
       },
     };
   },
