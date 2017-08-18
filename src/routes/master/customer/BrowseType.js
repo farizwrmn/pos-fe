@@ -41,7 +41,6 @@ const BrowseType = ({
       dataIndex: 'typeCode',
       key: 'typeCode',
       width: 70,
-      render: (text, record) => <Link to={`user/${record.userid}`}>{text}</Link>,
     }, {
       title: 'Type',
       dataIndex: 'typeName',

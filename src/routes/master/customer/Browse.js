@@ -45,7 +45,6 @@ const Browse = ({
       dataIndex: 'memberCode',
       key: 'memberCode',
       width: '6%',
-      render: (text, record) => <Link to={`customer/${record.memberCode}`}>{text}</Link>,
     },
     {
       title: 'Customer Name',

@@ -16,7 +16,6 @@ const BrowseGroup = ({
       dataIndex: 'groupCode',
       key: 'groupCode',
       width: '5%',
-      render: (text, record) => <Link to={`user/${record.userid}`}>{text}</Link>,
     }, {
       title: 'Type',
       dataIndex: 'groupName',

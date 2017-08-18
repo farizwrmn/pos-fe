@@ -13,9 +13,12 @@ export async function query (params) {
 }
 
 export async function queryByCode (params) {
+  const url = params.memberCode ? customers + '/' +  params.memberCode : customers + '/' +  params
+    console.log('queryByCode', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: customers + '/' + params.memberCode,
+    url: url,
+    data: params,
     method: 'get',
     headers: apiHeaderToken,
   })
@@ -34,13 +37,14 @@ export async function add (params) {
 }
 
 export async function edit (params) {
+  console.log('edit-params', params)
   const url = params.id ? `${customers}/${params.id}` : customers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
     method: 'put',
-    data: params.data,
-    body: params.data,
+    data: params.data ? params.data : JSON.stringify(params.point),
+    body: params.data ? params.data : JSON.stringify(params.point),
     headers: apiHeaderToken,
   })
 }

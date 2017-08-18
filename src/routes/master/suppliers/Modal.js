@@ -239,7 +239,7 @@ const modal = ({
                 initialValue: item.phoneNumber,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'Input a Phone No.[xxxx xxxx xxxx]',
                   },

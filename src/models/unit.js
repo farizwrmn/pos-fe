@@ -123,6 +123,10 @@ export default modelExtend(pageModel, {
           type: 'pos/chooseMemberUnit',
           payload: { policeNo: data.data[0].policeNo },
         })
+        yield put({
+          type: 'payment/setPoliceNo',
+          payload: { policeNo: data.data[0].policeNo },
+        })
       } else {
         console.log('not success')
       }

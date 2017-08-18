@@ -55,7 +55,6 @@ const Unit = ({
       dataIndex: 'memberCode',
       key: 'memberCode',
       width: '8%',
-      render: (text, record) => <Link to={`customer/${record.policeNo}`}>{text}</Link>,
     },
     {
       title: 'Nomor Polisi',

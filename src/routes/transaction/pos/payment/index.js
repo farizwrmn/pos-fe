@@ -22,7 +22,7 @@ const dataTrans = () => {
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, } = payment
+  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo } = payment
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
@@ -125,14 +125,17 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           lastMeter: lastMeter,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
+          policeNo: policeNo,
           rounding: curRounding,
           memberCode: memberInformation.memberCode,
-          technicianId: mechanicInformation.employeeId,
+          technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
+          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid
         }
       })
+      dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
 

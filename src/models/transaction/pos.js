@@ -12,9 +12,7 @@ import { parse } from 'qs'
 import { Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 
-const { query, queryByCode } = stockService
 const { memberByCode = memberService.queryByCode } = memberService
-// const { queryService, queryServiceByCode } = serviceService
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
 export default {
@@ -42,6 +40,7 @@ export default {
     modalVisible: false,
     visiblePopover: false,
     modalType: 'add',
+    lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     pagination: {
       showSizeChanger: true,
@@ -55,17 +54,18 @@ export default {
     curTotal: 0,
     curTotalDiscount: 0,
     kodeUtil: 'member',
-    infoUtil: 'Input Member Code',
+    infoUtil: 'Member',
     dataPosLoaded: false,
-    memberInformation: [],
+    memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
     tmpMemberList: [],
     tmpMechanicList: [],
     tmpProductList: [],
-    mechanicInformation: [],
-    memberUnitInfo: [],
+    mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
+    memberUnitInfo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : [],
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
+    curQty: 1,
     filterDropdownVisible: false,
     searchText: '',
     filtered: false,
@@ -172,11 +172,10 @@ export default {
     },
 
     *getStock ({ payload }, { call, put }) {
-      console.log('getStock', payload)
       const data = yield call(queryProductCode, payload.productCode)
       let newData = data.data
 
-      if ( data.success ) {
+      if ( data.data != null ) {
         var arrayProd
         if ( JSON.stringify(payload.listByCode) == "[]" ) {
           arrayProd = payload.listByCode.slice()
@@ -187,16 +186,15 @@ export default {
 
         arrayProd.push({
           'no': payload.curRecord,
-          'id': newData.id,
           'code': newData.productCode,
           'name': newData.productName,
           'qty': 1,
-          'price': (payload.memberCode ? newData.distPrice02 : newData.sellPrice),
+          'price': newData.sellPrice,
           'discount': 0,
           'disc1': 0,
           'disc2': 0,
           'disc3': 0,
-          'total': (payload.memberCode ? newData.distPrice02 : newData.sellPrice) * 1
+          'total': newData.sellPrice * payload.curQty
         })
 
         localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
@@ -221,9 +219,10 @@ export default {
 
     *getService ({ payload }, { call, put }) {
       const data = yield call(queryServiceByCode, payload.serviceId)
-      let newData = data.services
+      console.log('getService', payload);
+      let newData = data.data
 
-      if ( data.success ) {
+      if ( data.data != null ) {
         var arrayProd
         if ( JSON.stringify(payload.listByCode) == "[]" ) {
           arrayProd = payload.listByCode.slice()
@@ -234,15 +233,15 @@ export default {
 
         arrayProd.push({
           'no': payload.curRecord,
-          'code': newData.serviceId,
-          'name': newData.serviceDescription,
+          'code': newData.serviceCode,
+          'name': newData.serviceName,
           'qty': payload.curQty,
-          'price':  (payload.memberCode ? newData.memberPrice : newData.normalPrice),
+          'price': newData.serviceCost,
           'discount': 0,
           'disc1': 0,
           'disc2': 0,
           'disc3': 0,
-          'total': (payload.memberCode ? newData.memberPrice : newData.normalPrice) * payload.curQty
+          'total': newData.serviceCost * payload.curQty
         })
 
         localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
@@ -292,33 +291,7 @@ export default {
           var disc2 = arrayProd[i].disc2
           var disc3 = arrayProd[i].disc3
 
-          /*
-          if ( arrayProd[i].barcode.substr(0, 3) != 'SVC' ) {
-            const dataStock = yield call(queryByCode, arrayProd[i].barcode)
-            let newDataStock = dataStock.stocks
-            arrayProd[i].price = newDataStock.sellingPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataStock.sellingPrice)
-            var tmpDisc = (tmpTotal * disc1) / 100
-            var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
-          }
-          else {
-            const dataService = yield call(queryServiceByCode, arrayProd[i].barcode)
-            let newDataService = dataService.services
-            arrayProd[i].price = newDataService.normalPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataService.normalPrice)
-            var tmpDisc = (tmpTotal * disc1) / 100
-            var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
-          }
-          */
-          curRecord += 1 //Untuk mengambil jumlah record
+          curRecord += 1
         }
         yield put({
           type: 'setStatePosLoaded',
@@ -335,21 +308,22 @@ export default {
 
     *getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
-      let newData = payload ? data.member : data.data
-      if ( data.success ) {
+      console.log('getMember', data);
+      let newData = payload ? data.data : data.member
+      if ( data.data === null ) {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!',
+        })
+        yield put({ type: 'setUtil', payload: { kodeUtil: 'member', infoUtil: 'Member' }})
+      }
+      else {
         yield put({
           type: 'queryGetMemberSuccess',
           payload: {
             memberInformation: newData,
           },
         })
-      }
-      else {
-        const modal = Modal.warning({
-          title: 'Warning',
-          content: 'Member Not Found...!',
-        })
-        setTimeout(() => modal.destroy(), 1000)
         //throw data
       }
     },
@@ -379,7 +353,7 @@ export default {
     *getServices ({ payload }, { call, put }) {
       const data = yield call(queryService, payload)
       let newData = payload ? data.service : data.data
-      if ( data.success ) {
+      if ( data.data != null ) {
         yield put({
           type: 'queryGetServicesSuccess',
           payload: {
@@ -401,7 +375,7 @@ export default {
     *getMechanic ({ payload }, { call, put }) {
       const data = yield call(queryMechanicCode, payload)
       let newData = payload ? data.mechanic : data.data
-      if ( data.success ) {
+      if ( data.mechanic != null ) {
         yield put({
           type: 'queryGetMechanicSuccess',
           payload: {
@@ -412,9 +386,9 @@ export default {
       else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Member Not Found...!',
+          content: 'Mechanic Information Not Found...!',
         })
-        setTimeout(() => modal.destroy(), 1000)
+        yield put({ type: 'setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' }})
         //throw data
       }
     },
@@ -466,7 +440,11 @@ export default {
     *setCashierTrans ({ payload }, { call, put }) {
       const dataCashierTransById = yield call(getCashierTrans, {cashierId: payload.cashierId, cashierNo: null, shift: null, status: "O"})
       const dataCashierTransByNo = yield call(getCashierTrans, {cashierId: null, cashierNo: payload.cashierNo, shift: null, status: "O"})
-      const dataCashierTransByShift = yield call(getCashierTrans, {cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: "C"})
+      let dataCashierTransByShift = {}
+      if(dataCashierTransByNo.success === false  && dataCashierTransById.success === false){
+        dataCashierTransByShift = yield call(getCashierTrans, {cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: "C"})
+      }
+
 
       const newDataCashierTransById = dataCashierTransById.data
       const newDataCashierTransByNo = dataCashierTransByNo.data
@@ -562,24 +540,13 @@ export default {
           var disc2 = arrayProd[i].disc2
           var disc3 = arrayProd[i].disc3
 
-          if ( arrayProd[i].barcode.substr(0, 3) != 'SVC' ) {
-            const dataStock = yield call(queryByCode, arrayProd[i].barcode)
-            let newDataStock = dataStock.stocks
-            arrayProd[i].price = newDataStock.sellingPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataStock.sellingPrice)
-            var tmpDisc = (tmpTotal * disc1) / 100
-            var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
-          }
-          else {
-            const dataService = yield call(queryServiceByCode, arrayProd[i].barcode)
-            let newDataService = dataService.services
-            arrayProd[i].price = newDataService.normalPrice
-
-            var tmpTotal = (arrayProd[i].qty * newDataService.normalPrice)
+          if ( arrayProd[i].code != null ) {
+            let dataStock = yield call(queryProductCode, arrayProd[i].code)
+            let validData = yield call(queryServiceByCode, arrayProd[i].code)
+            let newDataStock = dataStock.data ? dataStock.data : validData.data
+            arrayProd[i].price = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+            const sell = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+            var tmpTotal = (arrayProd[i].qty * sell)
             var tmpDisc = (tmpTotal * disc1) / 100
             var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
             var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
@@ -890,7 +857,7 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
+      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: [], lastMeter: '',listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
     },
 
 
@@ -947,7 +914,12 @@ export default {
         curTotal: grandTotal,
         curTotalDiscount: (parseInt(totalDiscount) + parseInt(totalDisc1) + parseInt(totalDisc2) + parseInt(totalDisc3)),
         curRounding: curRounding,
-        curRecord: curRecord + 1, }
+        curRecord: curRecord + 1,
+        memberInformation: JSON.parse(localStorage.getItem('member'))[0],
+        lastMeter: localStorage.getItem('lastMeter'),
+        memberUnitInfo: localStorage.getItem('memberUnit'),
+        mechanicInformation: JSON.parse(localStorage.getItem('mechanic'))[0]
+      }
     },
 
     //untuk filter

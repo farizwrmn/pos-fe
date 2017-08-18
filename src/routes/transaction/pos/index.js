@@ -22,18 +22,37 @@ const formItemLayout = {
 }
 
 const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
-  const { modalVisible, modalServiceVisible, modalMemberVisible,
-    modalMechanicVisible, modalProductVisible, visiblePopover,
-    curBarcode, curQty, curTotal, listByCode, kodeUtil, infoUtil,
-    memberInformation, setCurTotal, memberUnitInfo, mechanicInformation } = pos
-  const { listLovMemberUnit } = unit
-  const { curRecord, effectedRecord, modalShiftVisible, listCashier, dataCashierTrans, curCashierNo, curShift, modalQueueVisible } = pos
+  const { modalVisible,
+          modalServiceVisible,
+          modalMemberVisible,
+          modalMechanicVisible,
+          modalProductVisible,
+          visiblePopover,
+          curBarcode,
+          curQty,
+          curTotal,
+          listByCode,
+          kodeUtil,
+          infoUtil,
+          memberInformation,
+          setCurTotal,
+          memberUnitInfo,
+          mechanicInformation,
+          curRecord,
+          effectedRecord,
+          modalShiftVisible,
+          listCashier,
+          dataCashierTrans,
+          curCashierNo,
+          curShift,
+          lastMeter,
+          modalQueueVisible } = pos
+  const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
     51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false }
-
   /*
   Ascii => Desc
   17 => Ctrl
@@ -179,6 +198,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
     dispatch(routerRedux.push('/transaction/pos/payment'))
+  }
+
+  const hdlUnitClick = () => {
+    dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
   }
 
   const handleDiscount = (tipe, value) => {
@@ -369,7 +392,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       })
     },
   }
-
   const modalMemberProps = {
     location: location,
     loading: loading,
@@ -379,7 +401,8 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member',[])
+      localStorage.removeItem('member',[{}])
+      localStorage.setItem('memberUnit', '')
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       var arrayProd
@@ -389,16 +412,18 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       else {
         arrayProd = JSON.parse(listByCode.slice())
       }
-
+      console.log('item chooseitem', item);
       arrayProd.push({
         'memberCode': item.memberCode,
         'memberName': item.memberName,
+        'point': item.point ? item.point : 0,
+        'id': item.id
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' }})
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode }}),
       dispatch({
         type: 'pos/hideMemberModal',
       })
@@ -423,10 +448,17 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
+      console.log('modalMechanicProps', item);
+      localStorage.removeItem('mechanic')
+      var arrayProd = []
+      arrayProd.push({
+        mechanicName: item.employeeName,
+        mechanicCode: item.employeeId
+      })
+      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
       dispatch({ type: 'pos/hideMechanicModal' })
-      // dispatch({ type: 'pos/getMechanicSuccess', payload: { mechanicInformation: item } })
-      // dispatch({ type: 'pos/hideMechanicModal' })
     },
   }
 
@@ -454,7 +486,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         'code': item.productCode,
         'name': item.productName,
         'qty': curQty,
-        'price': (memberInformation.memberCode ? item.distPrice02 : item.sellPrice),
+        'price': (item.memberCode ? item.distPrice02 : item.sellPrice),
         'discount': 0,
         'disc1': 0,
         'disc2': 0,
@@ -464,6 +496,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/querySuccessByCode', payload: { listByCode: item, curRecord: curRecord + 1, } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
       dispatch({ type: 'pos/hideProductModal' })
     },
   }
@@ -567,7 +600,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Search Mechanic',
+            infoUtil: 'Mechanic',
           },
         })
       }
@@ -644,10 +677,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             var tmpDisc = ((tmpQty * price) * disc1) / 100
             var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
             var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-            console.log('tempDisc1', tmpDisc)
-            console.log('tempDisc2', tmpDisc2)
-            console.log('tempDisc3', tmpDisc3)
-            console.log('discount', discount)
             arrayProd[effectedRecord - 1].qty = tmpQty
             arrayProd[effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
           }
@@ -708,7 +737,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'member',
-            infoUtil: 'Search Member Code',
+            infoUtil: 'Member',
           },
         })
       }
@@ -721,7 +750,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Search Mechanic Code',
+            infoUtil: 'Mechanic',
           },
         })
       }
@@ -783,11 +812,42 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           })
         }
       }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[85] ) { //shortcut untuk insert antrian (Ctrl + Shift + U)
+      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[85] ) { //shortcut for insertQueue (Ctrl + Shift + U)
         keyShortcut[17] = false
         keyShortcut[16] = false
         keyShortcut[85] = false
 
+        var arrayProd = []
+
+        const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+        const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+        const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+
+        var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+        var memberInformation
+        if ( JSON.stringify(listByCode) == "[]" ) {
+          memberInformation = listByCode.slice()
+        }
+        else {
+          memberInformation = listByCode
+        }
+        const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+
+        //start-mechanicInfo
+        const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+        const mechanic = mechanicInfo[0]
+        //end-mechanicInfo
+
+        arrayProd.push({
+            cashier_trans: cashier_trans,
+            memberCode: memberInfo.memberCode,
+            memberName: memberInfo.memberName,
+            point: memberInfo.point,
+            memberUnit: memberUnit,
+            lastMeter: lastMeter,
+            mechanicCode: mechanic.mechanicCode,
+            mechanicName: mechanic.mechanicName
+        })
         if ( localStorage.getItem('cashier_trans') === null ) {
           Modal.warning({
             title: 'Warning',
@@ -796,9 +856,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
         }
         else {
           if ( localStorage.getItem('queue1') === null ) {
-            localStorage.setItem('queue1', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue1', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -807,9 +870,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             })
           }
           else if ( localStorage.getItem('queue2') === null ) {
-            localStorage.setItem('queue2', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue2', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -818,9 +884,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             })
           }
           else if ( localStorage.getItem('queue3') === null ) {
-            localStorage.setItem('queue3', localStorage.getItem('cashier_trans'))
+            localStorage.setItem('queue3', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
-
+            localStorage.removeItem('member')
+            localStorage.removeItem('memberUnit')
+            localStorage.removeItem('mechanic')
+            localStorage.removeItem('lastMeter')
             dispatch({
               type: 'pos/insertQueue',
               payload: {
@@ -848,7 +917,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           },
         })
       }
-      else if ( kodeUtil == 'service' ) {
+      else if ( kodeUtil == 'service' || kodeUtil == 'member' || kodeUtil == 'mechanic' ) {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -900,6 +969,15 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       type: 'pos/chooseMemberUnit',
       payload: { policeNo: record.policeNo },
     })
+    localStorage.setItem('memberUnit',record.policeNo)
+    dispatch({
+      type: 'payment/setPoliceNo',
+      payload: { policeNo: record.policeNo },
+    })
+    dispatch({
+      type: 'payment/setLastMeter',
+      payload: { policeNo: record.policeNo },
+    })
   }
 
   const columns = [{
@@ -931,7 +1009,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     <div>
       <Table
         columns={columns}
-        dataSource={listLovMemberUnit}
+        dataSource={listUnit ? listUnit : listLovMemberUnit}
         size='small'
         bordered
         pagination={{ pageSize: 5 }}
@@ -940,21 +1018,80 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     </div>
   )
 
-  function formatNumber(value) {
-  value += '';
-  const list = value.split('.');
-  const prefix = list[0].charAt(0) === '-' ? '-' : '';
-  let num = prefix ? list[0].slice(1) : list[0];
-  let result = '';
-  while (num.length > 3) {
-    result = `,${num.slice(-3)}${result}`;
-    num = num.slice(0, num.length - 3);
+//   function formatNumber(value) {
+//   value += '';
+//   const list = value.split('.');
+//   const prefix = list[0].charAt(0) === '-' ? '-' : '';
+//   let num = prefix ? list[0].slice(1) : list[0];
+//   let result = '';
+//   while (num.length > 3) {
+//     result = `,${num.slice(-3)}${result}`;
+//     num = num.slice(0, num.length - 3);
+//   }
+//   if (num) {
+//     result = num + result;
+//   }
+//   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
+// }
+/*===================BEGIN=====================*/
+/*=================LAST KM=====================*/
+const CustomizedForm = Form.create({
+  onFieldsChange(props, changedFields) {
+    props.onChange(changedFields);
+  },
+  mapPropsToFields(props) {
+    return {
+      lastMeter: {
+        ...props.lastMeter,
+        value: props.lastMeter.value,
+      },
+    };
+  },
+  onValuesChange(_, values) {
+    localStorage.setItem('lastMeter', values.lastMeter ? values.lastMeter : 0)
+    dispatch({
+      type: 'payment/setLastMeter',
+      payload: {
+        lastMeter: values.lastMeter,
+        policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
+      },
+    })
+  },
+})((props) => {
+  const { getFieldDecorator } = props.form;
+  return (
+      <FormItem label="KM" {...formItemLayout}>
+        {getFieldDecorator('lastMeter', {
+          rules: [{ required: true, message: 'Required' }],
+        })(<Input />)}
+      </FormItem>
+  );
+});
+
+class LastMeter extends React.Component {
+  state = {
+    fields: {
+      lastMeter: {
+        value: lastMeter,
+      },
+    },
+  };
+  handleFormChange = (changedFields) => {
+    this.setState({
+      fields: { ...this.state.fields, ...changedFields },
+    });
   }
-  if (num) {
-    result = num + result;
+  render() {
+    const fields = this.state.fields;
+    return (
+      <div>
+        <CustomizedForm {...fields} onChange={this.handleFormChange} />
+      </div>
+    );
   }
-  return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
 }
+/*=================LAST KM=====================*/
+/*===================END=======================*/
 
   return (
     <div className="content-inner">
@@ -1091,7 +1228,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                 </FormItem>
                 <FormItem label='Unit' hasFeedback {...formItemLayout}>
                   <Col span={20}>
-                    <Input value={memberUnitInfo.unitNo} />
+                    <Input value={memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo ? memberUnitInfo : '------'} />
                   </Col>
                   <Col span={4}>
                     <Popover title={titlePopover}
@@ -1099,14 +1236,12 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
                              visible={visiblePopover}
                              onVisibleChange={() => hdlPopoverVisibleChange()}
                              placement="left" trigger='click'>
-                      <Button type='primary' icon="down-square-o" >
+                      <Button type='primary' icon="down-square-o" onClick={hdlUnitClick}>
                       </Button>
                     </Popover>
                   </Col>
                 </FormItem>
-                <FormItem label="KM" {...formItemLayout}>
-                  <Input />
-                </FormItem>
+                  <LastMeter />
                 <FormItem label="Code" {...formItemLayout}>
                   <Input  value={memberInformation.memberCode} disabled />
                 </FormItem>
@@ -1118,10 +1253,10 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
             <Panel header="Mechanic Info" key="2">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName} disabled />
+                  <Input value={mechanicInformation.employeeName ?  mechanicInformation.employeeName : mechanicInformation.mechanicCode} disabled />
                 </FormItem>
                 <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeId} disabled />
+                  <Input value={mechanicInformation.employeeId ?  mechanicInformation.employeeId : mechanicInformation.mechanicName} disabled />
                 </FormItem>
               </Form>
             </Panel>

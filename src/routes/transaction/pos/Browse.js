@@ -51,6 +51,7 @@ const Browse = ({ location, pos, loading, onChooseItem, ...modalProps }) => {
       { (modalType == 'browseProduct') && <ListProduct {...listProps} /> }
       { (modalType == 'browseService') && <ListService {...listProps} /> }
       {/*{(modalType == 'browse' ? <List {...listProps} /> : (modalType == 'browseMechanic' ? <ListMechanic {...listProps} /> : (modalType == 'browseService' ? <ListService {...listProps} /> : <ListQueue {...listProps} />)))}*/}
+      { (modalType == 'queue') && <ListQueue {...listProps} /> }
     </Modal>
   )
 }

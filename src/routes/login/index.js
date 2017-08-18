@@ -39,7 +39,7 @@ const Login = ({
       <form>
         <FormItem hasFeedback>
           {getFieldDecorator('user' + authBy, {
-            initialValue: '000001',
+            initialValue: '000002',
             rules: [
               {
                 required: true,
