@@ -127,7 +127,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
           rounding: curRounding,
-          memberCode: memberInformation.memberCode,
+          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),

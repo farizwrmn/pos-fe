@@ -6,7 +6,6 @@ export default modelExtend(pageModel, {
   namespace: 'purchase',
 
   state: {
-    listPurchase: [],
     currentItem: {},
     addItem: {},
     modalVisible: false,
@@ -81,7 +80,7 @@ export default modelExtend(pageModel, {
     },
 
     *edit ({ payload }, { select, call, put }) {
-      const stockCode = yield select(({ purchase }) => purchase.currentItem.purchaseId)
+      const stockCode = yield select(({ purchase }) => purchase.currentItem.transNo)
       const newStock = { ...payload, stockCode }
       const data = yield call(edit, newStock)
       if (data.success) {

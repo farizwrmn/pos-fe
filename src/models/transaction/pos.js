@@ -1,6 +1,3 @@
-import * as stockService from '../../services/stock'
-import * as memberService from '../../services/member'
-// import * as serviceService from '../../services/service'
 import * as cashierService from '../../services/cashier'
 
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
@@ -9,10 +6,9 @@ import { query as queryProducts, queryProductByCode as queryProductCode } from '
 import { query as queryService, queryServiceByCode as queryServiceByCode } from '../../services/service'
 
 import { parse } from 'qs'
-import { Modal } from 'antd'
+import { Modal, Alert } from 'antd'
 import { routerRedux } from 'dva/router'
 
-const { memberByCode = memberService.queryByCode } = memberService
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
 export default {
@@ -31,6 +27,7 @@ export default {
     curQueue: 1,
     currentItem: {},
     modalMemberVisible: false,
+    modalPaymentVisible: false,
     modalHelpVisible: false,
     modalWarningVisible: false,
     modalMechanicVisible: false,
@@ -38,6 +35,7 @@ export default {
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVisible: false,
+    itemPayment: {},
     visiblePopover: false,
     modalType: 'add',
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
@@ -61,7 +59,7 @@ export default {
     tmpMechanicList: [],
     tmpProductList: [],
     mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
-    memberUnitInfo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : [],
+    memberUnitInfo: localStorage.getItem('memberUnit') ? {unitNo: localStorage.getItem('memberUnit')} : {unitNo : '-----'},
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
@@ -530,6 +528,152 @@ export default {
       }
     },
 
+    *editPayment ({payload}, {put}) {
+      console.log('editPayment', payload.value, 'effectedRecord:', payload.effectedRecord, 'kodeUtil', payload.kodeUtil)
+      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      var arrayProd = dataPos.slice()
+      var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      var Qty = arrayProd[payload.effectedRecord - 1].qty
+      var price = arrayProd[payload.effectedRecord - 1].price
+      var disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      var disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      var disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      var discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      if ( payload.kodeUtil == 'discount' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+
+        arrayProd[payload.effectedRecord - 1].discount = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
+      }
+      else if ( payload.kodeUtil == 'disc1' ) {
+        var tmpDisc = (total * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc1 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc2 = 0
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
+      }
+      else if ( payload.kodeUtil == 'disc2' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc2 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
+      }
+      else if ( payload.kodeUtil == 'disc3' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc3 = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+      }
+      else if ( payload.kodeUtil == 'quantity') {
+        var tmpQty = payload.value
+        var tmpDisc = ((tmpQty * price) * disc1) / 100
+        var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        arrayProd[payload.effectedRecord - 1].qty = tmpQty
+        arrayProd[payload.effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+      }
+
+      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+    },
+
+    *insertQueueCache ({payload}, {put}) {
+      var arrayProd = []
+
+      const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+      const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+      const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+
+      var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      var memberInformation
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        memberInformation = listByCode.slice()
+      }
+      else {
+        memberInformation = listByCode
+      }
+      const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+
+      //start-mechanicInfo
+      const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+      const mechanic = mechanicInfo[0]
+      //end-mechanicInfo
+
+      arrayProd.push({
+        cashier_trans: cashier_trans,
+        memberCode: memberInfo.memberCode,
+        memberName: memberInfo.memberName,
+        point: memberInfo.point,
+        memberUnit: memberUnit,
+        lastMeter: lastMeter,
+        mechanicCode: mechanic.mechanicCode,
+        mechanicName: mechanic.mechanicName
+      })
+      if ( localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
+          localStorage.getItem('cashier_trans') === null) {
+        Modal.warning({
+          title: 'Warning',
+          content: 'Transaction Not Found...!',
+        })
+      }
+      else {
+        if ( localStorage.getItem('queue1') === null ) {
+          localStorage.setItem('queue1', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '1'
+            }
+          })
+        }
+        else if ( localStorage.getItem('queue2') === null ) {
+          localStorage.setItem('queue2', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '2'
+            }
+          })
+        }
+        else if ( localStorage.getItem('queue3') === null ) {
+          localStorage.setItem('queue3', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '3'
+            }
+          })
+        }
+        else {
+          Modal.warning({
+            title: 'Warning',
+            content: 'Queues are full, Please finish previous transaction first...!'
+          })
+        }
+      }
+    },
+
     *insertQueue ({ payload }, { call, put }) {
       var dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
       var arrayProd = dataPos.slice()
@@ -554,7 +698,10 @@ export default {
             arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
           }
         }
-
+        Modal.info({
+          title: 'Payment Suspend',
+          content: `Your Payment has stored in queue ${payload.queue}`
+        })
         localStorage.setItem('queue' + payload.queue, JSON.stringify(arrayProd))
 
         yield put({
@@ -795,14 +942,24 @@ export default {
     },
 
     hideModalShift (state) {
-      return { ...state, modalShiftVisible: false }
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
     },
 
     showMemberModal (state, action) {
+      console.log('showMemberModal', action.payload)
       return { ...state, ...action.payload, modalMemberVisible: true }
     },
     hideMemberModal (state) {
       return { ...state, modalMemberVisible: false }
+    },
+
+
+    showPaymentModal (state, action) {
+      console.log('showPaymentModal', action.payload)
+      return { ...state, ...action.payload, itemPayment: action.payload.item, modalPaymentVisible: true }
+    },
+    hidePaymentModal (state) {
+      return { ...state, modalPaymentVisible: false }
     },
 
     showMechanicModal (state, action) {
@@ -857,7 +1014,7 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: [], lastMeter: '',listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
+      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: '', lastMeter: '',listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
     },
 
 
@@ -915,10 +1072,10 @@ export default {
         curTotalDiscount: (parseInt(totalDiscount) + parseInt(totalDisc1) + parseInt(totalDisc2) + parseInt(totalDisc3)),
         curRounding: curRounding,
         curRecord: curRecord + 1,
-        memberInformation: JSON.parse(localStorage.getItem('member'))[0],
+        memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
         lastMeter: localStorage.getItem('lastMeter'),
-        memberUnitInfo: localStorage.getItem('memberUnit'),
-        mechanicInformation: JSON.parse(localStorage.getItem('mechanic'))[0]
+        memberUnitInfo: {unitNo: localStorage.getItem('memberUnit')},
+        mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
       }
     },
 

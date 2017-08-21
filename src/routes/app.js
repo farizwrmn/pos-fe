@@ -35,8 +35,6 @@ const App = ({ children, dispatch, app, loading, location }) => {
     }
   }
 
-  console.log('user', user.userid)
-
   const headerProps = {
     menu,
     user,

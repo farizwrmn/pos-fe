@@ -28,7 +28,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
 
   const handleClick = () => {
-    console.log('pilih antrian ke ' + curQueue)
+    console.log(`queue ${curQueue}`)
     if (localStorage.getItem('queue' + curQueue) === null ) {
       const modal = Modal.warning({
         title: 'Warning',
@@ -79,13 +79,12 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         <TabPane  tab="Queue 2" key="2"/>
         <TabPane  tab="Queue 3" key="3"/>
       </Tabs>
-        <Card bodyStyle={{ padding : 0, fontSize: '200%' }} bordered={false} style={{ width: '100%', marginBottom:5 }}>
+        <Card bodyStyle={{ padding : 0, fontSize: '150%' }} bordered={false} style={{ width: '100%', marginBottom:5 }}>
           <div style={{textAlign: 'center'}}>
-            Member Information
+            General Information
           </div>
           <div>
             <Table
-            pagination={true}
             bordered
             columns={[
               {
@@ -119,6 +118,9 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
             ]}
             dataSource={listQueue}
             pagination={false}
+            locale = {{
+              emptyText: 'No General Information',
+            }}
             />
           </div>
         </Card>
@@ -129,7 +131,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
           <div>
           <Table
             rowKey={(record, key) => key}
-            pagination={true}
+            pagination={false}
             bordered
             scroll={{ x: 800 }}
             columns={[
@@ -174,9 +176,11 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
                 dataIndex: 'total',
               },
             ]}
-            dataSource={listQueue ? listQueue[0].cashier_trans : []}
-            pagination={false}
+            dataSource={listQueue[0] ? listQueue[0].cashier_trans : []}
             style={{ marginBottom: 16 }}
+            locale = {{
+              emptyText: 'No Payment Information',
+            }}
           />
           </div>
         </Card>

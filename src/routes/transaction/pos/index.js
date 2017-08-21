@@ -21,34 +21,37 @@ const formItemLayout = {
   },
 }
 
-const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
-  const { modalVisible,
-          modalServiceVisible,
-          modalMemberVisible,
-          modalMechanicVisible,
-          modalProductVisible,
-          visiblePopover,
-          curBarcode,
-          curQty,
-          curTotal,
-          listByCode,
-          kodeUtil,
-          infoUtil,
-          memberInformation,
-          setCurTotal,
-          memberUnitInfo,
-          mechanicInformation,
-          curRecord,
-          effectedRecord,
-          modalShiftVisible,
-          listCashier,
-          dataCashierTrans,
-          curCashierNo,
-          curShift,
-          lastMeter,
-          modalQueueVisible } = pos
-  const { listLovMemberUnit, listUnit } = unit
-  const { user } = app
+const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
+  const {
+    modalServiceVisible,
+    modalMemberVisible,
+    modalMechanicVisible,
+    modalProductVisible,
+    modalPaymentVisible,
+    visiblePopover,
+    curBarcode,
+    curQty,
+    curTotal,
+    listByCode,
+    kodeUtil,
+    itemPayment,
+    infoUtil,
+    memberInformation,
+    setCurTotal,
+    memberUnitInfo,
+    mechanicInformation,
+    curRecord,
+    effectedRecord,
+    modalShiftVisible,
+    listCashier,
+    dataCashierTrans,
+    curCashierNo,
+    curShift,
+    lastMeter,
+    modalQueueVisible
+  } = pos
+  const {listLovMemberUnit, listUnit} = unit
+  const {user} = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   var keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
@@ -152,6 +155,20 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     })
   }
 
+  const handleSuspend = () => {
+    dispatch({type: 'pos/insertQueueCache'})
+  }
+
+  const modalEditPayment = (record) => {
+    dispatch({
+      type: 'pos/showPaymentModal',
+      payload: {
+        item: record,
+        modalType: 'modalPayment'
+      },
+    })
+  }
+
   const handleMechanicBrowse = () => {
     //get mechanic data
      dispatch({
@@ -219,9 +236,9 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           type: 'pos/setUtil',
           payload: {
             kodeUtil: (tipe == 4 ? 'discount' :
-                      tipe === 5 ? 'quantity'
-                        :'disc' + tipe),
-            infoUtil: `Insert ${discountQty} ` + (tipe == 4 ? 'Nominal' : tipe === 5 ? '' :(tipe + ' (%)')) + ' for Record ' + value,
+              tipe === 5 ? 'quantity'
+                : 'disc' + tipe),
+            infoUtil: `Insert ${discountQty} ` + (tipe == 4 ? 'Nominal' : tipe === 5 ? '' : (tipe + ' (%)')) + ' for Record ' + value,
           },
         })
 
@@ -245,7 +262,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     else {
       const modal = Modal.warning({
         title: 'Warning',
-        content: 'Please define Record to be Discounted...!',
+        content: `Please define Record to be Change !`,
       })
 
       setTimeout(() => modal.destroy(), 1000)
@@ -255,8 +272,8 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   }
 
   const handleVoid = (value) => {
-    if ( value ) {
-      if ( value < (curRecord) ) {
+    if (value) {
+      if (value < (curRecord)) {
         Modal.confirm({
           title: 'Are you sure want to void/delete item Record ' + value + '?',
           content: 'This Operation cannot be undone...!',
@@ -312,61 +329,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     })
   }
 
-  // const modalProps = {
-  //   location: location,
-  //   loading: loading,
-  //   pos: pos,
-  //   visible: modalVisible,
-  //   maskClosable: false,
-  //   wrapClassName: 'vertical-center-modal',
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'pos/hideModal',
-  //     })
-  //   },
-  //   onChooseItem (item) {
-  //     var listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
-  //
-  //     var arrayProd
-  //     if ( JSON.stringify(listByCode) == "[]" ) {
-  //       arrayProd = listByCode.slice()
-  //     }
-  //     else {
-  //       arrayProd = JSON.parse(listByCode.slice())
-  //     }
-  //
-  //
-  //     arrayProd.push({
-  //       'no': curRecord,
-  //       'barcode': item.productBarcode1,
-  //       'name': item.productName,
-  //       'qty': curQty,
-  //       'price': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice),
-  //       //'price': item.sellingPrice,
-  //       'discount': 0,
-  //       'disc1': 0,
-  //       'disc2': 0,
-  //       'disc3': 0,
-  //       'total': (memberInformation.memberCode ? item.memberPrice : item.sellingPrice) * curQty
-  //     })
-  //
-  //     localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-  //
-  //     dispatch({
-  //       type: 'pos/querySuccessByCode',
-  //       payload: {
-  //         listByCode: item,
-  //         curRecord: curRecord + 1,
-  //       },
-  //     })
-  //
-  //     dispatch({
-  //       type: 'pos/hideModal',
-  //     })
-  //
-  //     setCurBarcode('', 1)
-  //   },
-  // }
   const modalShiftProps = {
     item: dataCashierTrans,
     listCashier: listCashier,
@@ -401,7 +363,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member')
+      localStorage.removeItem('member', [])
       localStorage.removeItem('memberUnit')
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
@@ -437,6 +399,23 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
     //     curRecord: curRecord + 1,
     //   },
     // })
+  }
+  const modalPaymentProps = {
+    location: location,
+    loading: loading,
+    pos: pos,
+    item: itemPayment,
+    visible: modalPaymentVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({type: 'pos/hidePaymentModal'})
+    },
+    onChooseItem (data) {
+      console.log('onOk', data)
+      dispatch({ type: 'pos/editPayment', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
+      dispatch({type: 'pos/hidePaymentModal'})
+    },
   }
 
   const modalMechanicProps = {
@@ -632,56 +611,7 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
       else if ( kodeUtil == 'discount' || kodeUtil == 'disc1' || kodeUtil == 'disc2' || kodeUtil == 'disc3' || kodeUtil === 'quantity' ) {
         console.log('quantity value', value)
         if ( value ) {
-          var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-          var arrayProd = dataPos.slice()
-          var total = arrayProd[effectedRecord - 1].qty * arrayProd[effectedRecord - 1].price
-          var price = arrayProd[effectedRecord - 1].price
-          var disc1 = arrayProd[effectedRecord - 1].disc1
-          var disc2 = arrayProd[effectedRecord - 1].disc2
-          var disc3 = arrayProd[effectedRecord - 1].disc3
-          var discount = arrayProd[effectedRecord - 1].discount
-          if ( kodeUtil == 'discount' ) {
-            var tmpDisc = (total * disc1) / 100
-            var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[effectedRecord - 1].discount = value
-            arrayProd[effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - value
-          }
-          else if ( kodeUtil == 'disc1' ) {
-            var tmpDisc = (total * value) / 100
-
-            arrayProd[effectedRecord - 1].disc1 = value
-            arrayProd[effectedRecord - 1].disc2 = 0
-            arrayProd[effectedRecord - 1].disc3 = 0
-            arrayProd[effectedRecord - 1].total = total - tmpDisc - discount
-          }
-          else if ( kodeUtil == 'disc2' ) {
-            var tmpDisc = (total * disc1) / 100
-            var tmpDisc2 = ((total - tmpDisc) * value) / 100
-
-            arrayProd[effectedRecord - 1].disc2 = value
-            arrayProd[effectedRecord - 1].disc3 = 0
-            arrayProd[effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
-          }
-          else if ( kodeUtil == 'disc3' ) {
-            var tmpDisc = (total * disc1) / 100
-            var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * value) / 100
-
-            arrayProd[effectedRecord - 1].disc3 = value
-            arrayProd[effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
-          }
-          else if ( kodeUtil == 'quantity') {
-            var tmpQty = value
-            var tmpDisc = ((tmpQty * price) * disc1) / 100
-            var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-            arrayProd[effectedRecord - 1].qty = tmpQty
-            arrayProd[effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
-          }
-
-          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          dispatch({ type: 'pos/editPayment', payload:{ value: value, effectedRecord: effectedRecord, kodeUtil: kodeUtil } })
         }
 
         dispatch({
@@ -708,14 +638,6 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
           setCurBarcode('', 1)
         }
       }
-
-      /*dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'barcode',
-          infoUtil: 'Product',
-        },
-      })*/
     }
   }
 
@@ -1007,32 +929,19 @@ const Pos = ({ location, loading, dispatch, pos, member, unit, app }) => {
   )
   const contentPopover = (
     <div>
-      <Table
-        columns={columns}
-        dataSource={listUnit ? listUnit : listLovMemberUnit}
-        size='small'
-        bordered
-        pagination={{ pageSize: 5 }}
-        onRowClick={(record) => hdlTableRowClick(record)}
-      />
+        <Table
+          columns={columns}
+          dataSource={listUnit ? listUnit : listLovMemberUnit}
+          size='small'
+          bordered
+          pagination={{ pageSize: 5 }}
+          onRowClick={(record) => hdlTableRowClick(record)}
+          locale = {{
+            emptyText: 'No Unit',
+          }}
+        />
     </div>
   )
-
-//   function formatNumber(value) {
-//   value += '';
-//   const list = value.split('.');
-//   const prefix = list[0].charAt(0) === '-' ? '-' : '';
-//   let num = prefix ? list[0].slice(1) : list[0];
-//   let result = '';
-//   while (num.length > 3) {
-//     result = `,${num.slice(-3)}${result}`;
-//     num = num.slice(0, num.length - 3);
-//   }
-//   if (num) {
-//     result = num + result;
-//   }
-//   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
-// }
 /*===================BEGIN=====================*/
 /*=================LAST KM=====================*/
 const CustomizedForm = Form.create({
@@ -1048,11 +957,11 @@ const CustomizedForm = Form.create({
     };
   },
   onValuesChange(_, values) {
-    localStorage.setItem('lastMeter', values.lastMeter ? values.lastMeter : 0)
+    localStorage.setItem('lastMeter', memberUnitInfo.unitNo === "" ? 0 : values.lastMeter ? values.lastMeter : 0)
     dispatch({
       type: 'payment/setLastMeter',
       payload: {
-        lastMeter: values.lastMeter,
+        lastMeter: memberUnitInfo.unitNo ? lastMeter : 0,
         policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
       },
     })
@@ -1160,63 +1069,78 @@ class LastMeter extends React.Component {
             <Table
               rowKey={(record, key) => key}
               pagination={true}
-              bordered
-              scroll={{ x: 1500 }}
+              bordered={false}
+              scroll={{ x: '120%' }}
+              locale = {{
+                emptyText: 'Your Payment List',
+              }}
               columns={[
                 {
                   title: 'No',
                   dataIndex: 'no',
-                  width: 30,
+                  maxWidth: '4%',
+                  maxHeight: 31
                 },
                 {
                   title: 'Code',
                   dataIndex: 'code',
-                  width: 100,
+                  maxWidth: '40%',
+                  maxHeight: 31
                 },
                 {
                   title: 'Product Name',
                   dataIndex: 'name',
-                  width: 400,
+                  maxWidth: '30%',
+                  maxHeight: 31
                 },
                 {
-                  title: 'Qty',
+                  title: 'Q',
                   dataIndex: 'qty',
-                  width: 50,
+                  maxWidth: '4%',
+                  maxHeight: 31
                 },
                 {
                   title: 'Price',
                   dataIndex: 'price',
-                  width: 100,
+                  maxWidth: '20%',
+                  maxHeight: 31
                 },
                 {
-                  title: 'Disc 1(%)',
+                  title: 'Disc1(%)',
                   dataIndex: 'disc1',
-                  width: 100,
+                  maxWidth: '10%',
+                  maxHeight: 31
                 },
                 {
-                  title: 'Disc 2(%)',
+                  title: 'Disc2(%)',
                   dataIndex: 'disc2',
-                  width: 100,
+                  maxWidth: '10%',
+                  maxHeight: 31
                 },
                 {
-                  title: 'Disc 3(%)',
+                  title: 'Disc3(%)',
                   dataIndex: 'disc3',
-                  width: 100,
+                  maxWidth: '10%',
+                  maxHeight: 31
                 },
                 {
-                  title: 'Discount',
+                  title: 'Disc',
                   dataIndex: 'discount',
-                  width: 100,
+                  maxWidth: '7%',
+                  maxHeight: 31
                 },
                 {
                   title: 'Total',
                   dataIndex: 'total',
-                  width: 100,
+                  maxWidth: '20%',
+                  maxHeight: 31
                 },
               ]}
+              onRowClick={(record)=>modalEditPayment(record)}
               dataSource={dataTrans()}
               style={{ marginBottom: 16 }}
             />
+            {modalPaymentVisible && <Browse {...modalPaymentProps} />}
           </Card>
         </Col>
         <Col lg={6} md={4}>
@@ -1228,7 +1152,7 @@ class LastMeter extends React.Component {
                 </FormItem>
                 <FormItem label='Unit' hasFeedback {...formItemLayout}>
                   <Col span={20}>
-                    <Input value={memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo ? memberUnitInfo : '------'} />
+                    <Input value={ memberUnitInfo.unitNo } />
                   </Col>
                   <Col span={4}>
                     <Popover title={titlePopover}
@@ -1267,7 +1191,14 @@ class LastMeter extends React.Component {
         <Col span={24}>
           <Form layout="vertical">
             <FormItem>
-              <Button type="primary" size="large" className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>
+              <Row>
+                <Col span={2}>
+                  <Button style={{ fontSize: 'large', width: 100, height: 40, color: '#ffffff', background: '#00b32d' }} className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>
+                </Col>
+                <Col span={2} offset={0}>
+                  <Button style={{ fontSize: 'large', width: 100, height: 40, color: '#ffffff', background: '#ff6208' }} onClick={handleSuspend}> Suspend </Button>
+                </Col>
+              </Row>
             </FormItem>
           </Form>
         </Col>
