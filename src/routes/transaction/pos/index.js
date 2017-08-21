@@ -613,11 +613,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         if ( value ) {
           dispatch({ type: 'pos/editPayment', payload:{ value: value, effectedRecord: effectedRecord, kodeUtil: kodeUtil } })
         }
-
-        dispatch({
-          type: 'pos/setCurTotal',
-        })
-
         dispatch({
           type: 'pos/setUtil',
           payload: {

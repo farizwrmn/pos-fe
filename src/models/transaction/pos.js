@@ -566,7 +566,7 @@ export default {
       else if ( payload.kodeUtil == 'disc3' ) {
         var tmpDisc = (total * disc1) / 100
         var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * value) / 100
+        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc3 = payload.value
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
@@ -576,11 +576,15 @@ export default {
         var tmpDisc = ((tmpQty * price) * disc1) / 100
         var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
         var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        var tmpDiscount = (discount * tmpQty)
         arrayProd[payload.effectedRecord - 1].qty = tmpQty
-        arrayProd[payload.effectedRecord - 1].total = (tmpQty * price) - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+        arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
       }
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+      yield put({
+        type: 'setCurTotal',
+      })
     },
 
     *insertQueueCache ({payload}, {put}) {
