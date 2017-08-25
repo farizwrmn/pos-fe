@@ -265,7 +265,7 @@ const modal = ({
                 ><Icon type="down-square-o" />
                 </Button>
               </Popover>
-              {getFieldDecorator('brandCode', {
+              {getFieldDecorator('brandId', {
                 initialValue: item.brandId ? item.brandId : item.brandCode,
                 rules: [
                   {

@@ -12,7 +12,6 @@ const FormItem = Form.Item
 const List = ({ onChooseItem, isMotion, pos, dispatch, location, ...tableProps }) => {
   const { filterDropdownVisible, searchText, filtered, list, tmpList } = pos
 
-  console.log('listss', tableProps)
   const handleMenuClick = (record, e) => {
     onChooseItem(record)
   }

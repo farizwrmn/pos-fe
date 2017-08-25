@@ -13,8 +13,8 @@ export async function query (params) {
 }
 
 export async function queryByCode (params) {
-  const url = params.memberCode ? customers + '/' +  params.memberCode : customers + '/' +  params
-    console.log('queryByCode', url);
+  const url = params.memberCode ? customers + '/' + params.memberCode : customers + '/' + params
+  console.log('queryByCode', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -45,6 +45,18 @@ export async function edit (params) {
     method: 'put',
     data: params.data ? params.data : JSON.stringify(params.point),
     body: params.data ? params.data : JSON.stringify(params.point),
+    headers: apiHeaderToken,
+  })
+}
+
+export async function editPoint (params) {
+  const url = params.memberCode ? `${customers}/${params.memberCode}/points` : null
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
+    data: params,
+    body: params,
     headers: apiHeaderToken,
   })
 }

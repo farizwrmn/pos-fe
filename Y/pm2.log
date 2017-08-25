@@ -1,0 +1,99 @@
+2017-08-21 15:07:16: ===============================================================================
+2017-08-21 15:07:16: --- New PM2 Daemon started ----------------------------------------------------
+2017-08-21 15:07:16: Time                 : Mon Aug 21 2017 15:07:16 GMT+0700 (SE Asia Standard Time)
+2017-08-21 15:07:16: PM2 version          : 2.6.1
+2017-08-21 15:07:16: Node.js version      : 6.11.0
+2017-08-21 15:07:16: Current arch         : x64
+2017-08-21 15:07:16: PM2 home             : Y
+2017-08-21 15:07:16: PM2 PID file         : C:\Users\Veirry\Project DMI\dmi-pos\Y\pm2.pid
+2017-08-21 15:07:16: RPC socket file      : \\.\pipe\rpc.sock
+2017-08-21 15:07:16: BUS socket file      : \\.\pipe\pub.sock
+2017-08-21 15:07:16: Application log path : C:\Users\Veirry\Project DMI\dmi-pos\Y\logs
+2017-08-21 15:07:16: Process dump file    : C:\Users\Veirry\Project DMI\dmi-pos\Y\dump.pm2
+2017-08-21 15:07:16: Concurrent actions   : 2
+2017-08-21 15:07:16: SIGTERM timeout      : 1600
+2017-08-21 15:07:16: ===============================================================================
+2017-08-21 15:07:16: Starting execution sequence in -fork mode- for app name:node id:0
+2017-08-21 15:07:16: App name:node id:0 online
+2017-08-21 15:07:16: Starting execution sequence in -fork mode- for app name:runServer id:1
+2017-08-21 15:07:16: App name:runServer id:1 online
+2017-08-21 15:07:29: Stopping app:node id:0
+2017-08-21 15:07:29: App [node] with id [0] and pid [2476], exited with code [1] via signal [SIGINT]
+2017-08-21 15:07:29: pid=2476 msg=process killed
+2017-08-21 15:07:29: Starting execution sequence in -fork mode- for app name:node id:0
+2017-08-21 15:07:29: App name:node id:0 online
+2017-08-21 15:07:41: Stopping app:node id:0
+2017-08-21 15:07:41: App [node] with id [0] and pid [4284], exited with code [1] via signal [SIGINT]
+2017-08-21 15:07:41: pid=4284 msg=process killed
+2017-08-21 15:07:41: Starting execution sequence in -fork mode- for app name:node id:0
+2017-08-21 15:07:41: App name:node id:0 online
+2017-08-21 15:07:55: 0
+2017-08-21 15:07:55: Stopping app:node id:0
+2017-08-21 15:07:55: 1
+2017-08-21 15:07:55: Stopping app:runServer id:1
+2017-08-21 15:07:55: App [node] with id [0] and pid [3520], exited with code [1] via signal [SIGINT]
+2017-08-21 15:07:55: [HandleExit] PM2 is being killed, stopping restart procedure...
+2017-08-21 15:07:55: pid=6380 msg=process killed
+2017-08-21 15:07:55: pid=3520 msg=process killed
+2017-08-21 15:07:55: App [runServer] with id [1] and pid [0], exited with code [1] via signal [SIGINT]
+2017-08-21 15:07:55: Process undefined ? with process id  1
+2017-08-21 15:07:55: ===============================================================================
+2017-08-21 15:07:55: --- Stopping PM2 --------------------------------------------------------------
+2017-08-21 15:07:55: Time                 : Mon Aug 21 2017 15:07:55 GMT+0700 (SE Asia Standard Time)
+2017-08-21 15:07:55: ===============================================================================
+2017-08-21 15:07:55: RPC closed
+2017-08-21 15:07:55: PUB closed
+2017-08-21 15:07:55: PM2 successfully stopped
+2017-08-21 15:10:37: ===============================================================================
+2017-08-21 15:10:37: --- New PM2 Daemon started ----------------------------------------------------
+2017-08-21 15:10:37: Time                 : Mon Aug 21 2017 15:10:37 GMT+0700 (SE Asia Standard Time)
+2017-08-21 15:10:37: PM2 version          : 2.6.1
+2017-08-21 15:10:37: Node.js version      : 6.11.0
+2017-08-21 15:10:37: Current arch         : x64
+2017-08-21 15:10:37: PM2 home             : Y
+2017-08-21 15:10:37: PM2 PID file         : C:\Users\Veirry\Project DMI\dmi-pos\Y\pm2.pid
+2017-08-21 15:10:37: RPC socket file      : \\.\pipe\rpc.sock
+2017-08-21 15:10:37: BUS socket file      : \\.\pipe\pub.sock
+2017-08-21 15:10:37: Application log path : C:\Users\Veirry\Project DMI\dmi-pos\Y\logs
+2017-08-21 15:10:37: Process dump file    : C:\Users\Veirry\Project DMI\dmi-pos\Y\dump.pm2
+2017-08-21 15:10:37: Concurrent actions   : 2
+2017-08-21 15:10:37: SIGTERM timeout      : 1600
+2017-08-21 15:10:37: ===============================================================================
+2017-08-21 15:10:37: Starting execution sequence in -fork mode- for app name:node id:0
+2017-08-21 15:10:37: App name:node id:0 online
+2017-08-21 15:10:38: Starting execution sequence in -fork mode- for app name:runServer id:1
+2017-08-21 15:10:38: App name:runServer id:1 online
+2017-08-24 09:53:05: ===============================================================================
+2017-08-24 09:53:05: --- New PM2 Daemon started ----------------------------------------------------
+2017-08-24 09:53:05: Time                 : Thu Aug 24 2017 09:53:05 GMT+0700 (SE Asia Standard Time)
+2017-08-24 09:53:05: PM2 version          : 2.6.1
+2017-08-24 09:53:05: Node.js version      : 6.11.0
+2017-08-24 09:53:05: Current arch         : x64
+2017-08-24 09:53:05: PM2 home             : Y
+2017-08-24 09:53:05: PM2 PID file         : C:\Users\Veirry\Project DMI\dmi-pos\Y\pm2.pid
+2017-08-24 09:53:05: RPC socket file      : \\.\pipe\rpc.sock
+2017-08-24 09:53:05: BUS socket file      : \\.\pipe\pub.sock
+2017-08-24 09:53:05: Application log path : C:\Users\Veirry\Project DMI\dmi-pos\Y\logs
+2017-08-24 09:53:05: Process dump file    : C:\Users\Veirry\Project DMI\dmi-pos\Y\dump.pm2
+2017-08-24 09:53:05: Concurrent actions   : 2
+2017-08-24 09:53:05: SIGTERM timeout      : 1600
+2017-08-24 09:53:05: ===============================================================================
+2017-08-24 09:53:05: Starting execution sequence in -fork mode- for app name:node id:0
+2017-08-24 09:53:05: App name:node id:0 online
+2017-08-24 09:53:06: Starting execution sequence in -fork mode- for app name:runServer id:1
+2017-08-24 09:53:06: App name:runServer id:1 online
+2017-08-24 09:59:53: 0
+2017-08-24 09:59:53: Stopping app:node id:0
+2017-08-24 09:59:53: 1
+2017-08-24 09:59:53: Stopping app:runServer id:1
+2017-08-24 09:59:53: App [node] with id [0] and pid [12432], exited with code [1] via signal [SIGINT]
+2017-08-24 09:59:53: [HandleExit] PM2 is being killed, stopping restart procedure...
+2017-08-24 09:59:53: pid=12432 msg=process killed
+2017-08-24 09:59:53: pid=5036 msg=process killed
+2017-08-24 09:59:54: ===============================================================================
+2017-08-24 09:59:54: --- Stopping PM2 --------------------------------------------------------------
+2017-08-24 09:59:54: Time                 : Thu Aug 24 2017 09:59:54 GMT+0700 (SE Asia Standard Time)
+2017-08-24 09:59:54: ===============================================================================
+2017-08-24 09:59:54: RPC closed
+2017-08-24 09:59:54: PUB closed
+2017-08-24 09:59:54: PM2 successfully stopped

@@ -171,6 +171,7 @@ const Routers = function ({ history, app }) {
           path: 'transaction/purchase',
           getComponent (nextState, cb) {
             require.ensure([], require => {
+              registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/transaction/purchase/'))
             }, 'transaction-purchase')

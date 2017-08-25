@@ -222,7 +222,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const handleDiscount = (tipe, value) => {
-    console.log('handleDiscount', value);
     let discountQty
     if(tipe<5){
       discountQty = 'Discount'
@@ -427,7 +426,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
-      console.log('modalMechanicProps', item);
+      console.log('modalMechanicProps');
       localStorage.removeItem('mechanic')
       var arrayProd = []
       arrayProd.push({
@@ -461,7 +460,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       }
 
       arrayProd.push({
-        'no': curRecord,
+        'no': arrayProd.length + 1,
         'code': item.productCode,
         'name': item.productName,
         'qty': curQty,
@@ -505,7 +504,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
 
       arrayProd.push({
-        'no': curRecord,
+        'no': arrayProd.length + 1,
         'code': item.serviceCode,
         'name': item.serviceName,
         'qty': curQty,
@@ -1063,9 +1062,10 @@ class LastMeter extends React.Component {
 
             <Table
               rowKey={(record, key) => key}
-              pagination={true}
-              bordered={false}
-              scroll={{ x: '120%' }}
+              pagination={false}
+              bordered={true}
+              size="small"
+              scroll={{ x: '170%' }}
               locale = {{
                 emptyText: 'Your Payment List',
               }}
@@ -1073,62 +1073,42 @@ class LastMeter extends React.Component {
                 {
                   title: 'No',
                   dataIndex: 'no',
-                  maxWidth: '4%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Code',
                   dataIndex: 'code',
-                  maxWidth: '40%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Product Name',
                   dataIndex: 'name',
-                  maxWidth: '30%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Q',
                   dataIndex: 'qty',
-                  maxWidth: '4%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Price',
                   dataIndex: 'price',
-                  maxWidth: '20%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Disc1(%)',
                   dataIndex: 'disc1',
-                  maxWidth: '10%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Disc2(%)',
                   dataIndex: 'disc2',
-                  maxWidth: '10%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Disc3(%)',
                   dataIndex: 'disc3',
-                  maxWidth: '10%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Disc',
                   dataIndex: 'discount',
-                  maxWidth: '7%',
-                  maxHeight: 31
                 },
                 {
                   title: 'Total',
                   dataIndex: 'total',
-                  maxWidth: '20%',
-                  maxHeight: 31
                 },
               ]}
               onRowClick={(record)=>modalEditPayment(record)}
@@ -1187,11 +1167,15 @@ class LastMeter extends React.Component {
           <Form layout="vertical">
             <FormItem>
               <Row>
-                <Col span={2}>
-                  <Button style={{ fontSize: 'large', width: 100, height: 40, color: '#ffffff', background: '#00b32d' }} className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>
-                </Col>
-                <Col span={2} offset={0}>
-                  <Button style={{ fontSize: 'large', width: 100, height: 40, color: '#ffffff', background: '#ff6208' }} onClick={handleSuspend}> Suspend </Button>
+                <Col span={12} style={{padding:12}}>
+                  <Row>
+                    <Col xs={24} sm={24} md={16} lg={16} xl={18}>
+                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '200%', height: 40, color: '#000000', background: '#8fc9fb' }} className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>
+                    </Col>
+                    <Col xs={24} sm={24} md={16} lg={10} xl={8}>
+                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40, color: '#000000', background: '#ffff66' }} onClick={handleSuspend}> Suspend </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </FormItem>
@@ -1202,11 +1186,11 @@ class LastMeter extends React.Component {
       <Row>
         <Card bordered={false} title="Information">
           <Row gutter={32}>
-            <Col span={4}> Cashier : {curCashierNo} </Col>
-            <Col span={4}> Name : {user.userid} </Col>
-            <Col span={4}> Shift : {curShift} </Col>
-            <Col span={4}> Date : {getDate(1)} </Col>
-            <Col span={4}> Time : {setTime()} </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {curCashierNo} </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {user.userid} </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {curShift} </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {getDate(1)} </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Time : {setTime()} </Col>
           </Row>
         </Card>
       </Row>

@@ -2,19 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Browse from './Browse'
-import Modal from './Modal'
+import PurchaseForm from './PurchaseForm'
+import PurchaseList from './PurchaseList'
+import { Col, Row, Icon, Button } from 'antd'
 
-const Purchase = ({ location, purchasegroup, dispatch, purchase, loading, unit }) => {
-  const { list, pagination, currentItem, modalVisible, searchVisible,
-     modalType, selectedRowKeys, disableMultiSelect } = purchase
-
-  const { pageSize } = pagination
+const Purchase = ({ location, dispatch, purchase, loading }) => {
+  const {
+    item, supplierInformation, listProduct, listSupplier, pagination, date, datePicker,modalVisible, searchVisible, modalProductVisible,
+    modalPurchaseVisible, modalType, selectedRowKeys, disableMultiSelect, curQty, curTotal
+  } = purchase
 
   const modalProps = {
     closable: false,
-    item: currentItem,
-    loading: loading.effects['payment/query'],
+    loading: loading.effects['purchase/query'],
     width: 950,
     visible: modalVisible,
     maskClosable: false,
@@ -46,110 +46,166 @@ const Purchase = ({ location, purchasegroup, dispatch, purchase, loading, unit }
     },
   }
 
-  const browseProps = {
-    dataSource: list,
-    loading: loading.effects['purchase/query'],
-    pagination,
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
-    },
-    onAddItem () {
-      dispatch({
-        type: 'purchase/modalShow',
-        payload: {
-          modalType: 'add',
-        },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: 'purchase/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: item,
-        },
-      })
-    },
-    onDeleteItem (id) {
-      dispatch({
-        type: 'purchase/delete',
-        payload: {
-          id,
-        },
-      })
-    },
-    onDeleteBatch (selectedRowKeys) {
-      dispatch({
-        type: 'purchase/deleteBatch',
-        payload: {
-          purchaseId: selectedRowKeys,
-        },
-      })
-    },
-    onSearchShow () { dispatch({ type: 'purchase/searchShow' }) },
-    modalPopoverClose () {
-      dispatch({
-        type: 'purchase/modalPopoverClose',
-      })
-    },
-    size: 'small',
+  const modalPurchaseProps = {
+    location: location,
+    loading: loading,
+    purchase: purchase,
+    visible: modalPurchaseVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
   }
-  Object.assign(browseProps, disableMultiSelect ? null :
-    { rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'purchase/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    } }
-  )
 
-  const filterProps = {
-    visiblePanel: searchVisible,
-    filter: {
-      ...location.query,
+  const purchaseProps = {
+    date: date,
+    datePicker: datePicker,
+    item: item ? item : '',
+    tempo: 0,
+    listSupplier: listSupplier,
+    modalProductVisible: modalProductVisible,
+    modalPurchaseVisible: modalPurchaseVisible,
+    supplierInformation: supplierInformation ? supplierInformation : null,
+    tmpSupplierData: listSupplier,
+    dataSource: listProduct,
+    location: location,
+    loading: loading,
+    purchase: purchase,
+    visible: modalProductVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onOk(data) {
+      dispatch({
+        type: 'purchase/add',
+        payload: data,
+      })
     },
-    onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          ...value,
-          page: 1,
-          pageSize,
+    handleBrowseProduct () {
+      dispatch({
+        type: 'purchase/getProducts',
+      })
+
+      dispatch({
+        type: 'purchase/showProductModal',
+        payload: {
+          modalType: 'browseProduct',
         },
-      }))
+      })
     },
-    onSearch (fieldsValue) {
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/master/purchase',
-        query: {
-          field: fieldsValue.field,
-          keyword: fieldsValue.keyword,
+    onChangeDatePicker (e) {
+      dispatch({
+        type: 'purchase/chooseDatePicker',
+        payload: e,
+      })
+    },
+    onChangeDate (date) {
+      dispatch({
+        type: 'purchase/chooseDate',
+        payload: date,
+      })
+    },
+    onSearchSupplier (data, e) {
+      dispatch({
+        type: 'purchase/onSupplierSearch',
+        payload: {
+          searchText: data,
+          tmpSupplierData: e,
         },
-      })) : dispatch(routerRedux.push({
-        pathname: '/master/purchase',
-      }))
+      })
     },
-    onSearchHide () { dispatch({ type: 'purchase/searchHide' }) },
+    onChooseSupplier(data) {
+      dispatch({
+        type: 'purchase/onChooseSupplier',
+        payload: data,
+      })
+    },
+    onChangePPN (data) {
+      dispatch({ type: 'purchase/editPurchase', payload:{ value: 0, kodeUtil: data, effectedRecord: 0 } })
+    },
+    onChooseItem (data) {
+      console.log('onChooseItem', data)
+      dispatch({ type: 'purchase/editPurchase', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Detail } })
+    },
+    onGetSupplier () {
+      dispatch({ type: 'purchase/querySupplier' })
+    },
+    onCancel () { dispatch({ type: 'purchase/modalEditHide'}), dispatch({ type: 'purchase/hideProductModal' }) },
+    onChooseItemItem (item) {
+      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      var arrayProd
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        arrayProd = listByCode.slice()
+      }
+      else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      arrayProd.push({
+        'no': arrayProd.length + 1,
+        'code': item.productCode,
+        'name': item.productName,
+        'qty': curQty,
+        'price': item.costPrice,
+        'discount': 0,
+        'disc1': 0,
+        'dpp': 0,
+        'ppn': 0,
+        'ket': '',
+        'total': curQty * item.sellPrice,
+      })
+      console.log('onChooseItemItem', arrayProd)
+      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
+      dispatch({ type: 'purchase/hideProductModal' })
+    },
+    modalShow (data) {
+      dispatch({
+        type: 'purchase/modalEditShow',
+        payload: {
+          data: data,
+        },
+      })
+    },
+  }
+
+  const modalProductProps = {
+    dataSource: listProduct,
+    location: location,
+    loading: loading,
+    purchase: purchase,
+    visible: modalProductVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () { dispatch({ type: 'purchase/hideProductModal' }) },
+    onChooseItem (item) {
+      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      var arrayProd
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        arrayProd = listByCode.slice()
+      }
+      else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      arrayProd.push({
+        'no': arrayProd.length + 1,
+        'code': item.productCode,
+        'name': item.productName,
+        'qty': curQty,
+        'price': item.costPrice,
+        'total': curQty * item.sellPrice
+      })
+      console.log('arrayProd', arrayProd)
+      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
+      dispatch({ type: 'purchase/hideProductModal' })
+    },
   }
 
   return (
     <div className="content-inner">
-      <Browse {...browseProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      <Row gutter={24}>
+        <Row span={'100%'}>
+          <PurchaseForm {...purchaseProps} />
+          <PurchaseList {...purchaseProps}/>
+        </Row>
+      </Row>
     </div>
   )
 }
@@ -162,4 +218,4 @@ Purchase.propTypes = {
 }
 
 
-export default connect(({ purchase, loading, unit }) => ({ purchase, loading, unit }))(Purchase)
+export default connect(({ purchase, loading }) => ({ purchase, loading }))(Purchase)

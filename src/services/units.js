@@ -15,7 +15,7 @@ export async function query (params) {
 
 export async function queryField (member, params) {
   const url = params ? `${customers}/${member.code}/` + 'units' : null
-  console.log('url', url)
+  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

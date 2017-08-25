@@ -40,8 +40,6 @@ const modal = ({
     })
   }
 
-  console.log('visiblePopover', visiblePopover);
-
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,

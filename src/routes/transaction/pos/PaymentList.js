@@ -18,7 +18,6 @@ const PaymentList = ({ onChooseItem, item, form: { getFieldDecorator, validateFi
       const data = {
         ...getFieldsValue(),
       }
-      console.log('data paymentList:', data)
       onChooseItem(data)
     })
   }

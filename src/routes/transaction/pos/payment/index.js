@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DataTable } from 'components'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Form, Input, Table, Row, Col, Card, Select, Button, Popconfirm, Modal } from 'antd'
-import { Link } from 'dva/router'
+import { Form, Input, Table, Row, Col, Card, Button, Modal } from 'antd'
 import ModalCredit from './ModalCreditCard'
 import moment from 'moment'
 
@@ -128,6 +126,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
           rounding: curRounding,
           memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+          memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),

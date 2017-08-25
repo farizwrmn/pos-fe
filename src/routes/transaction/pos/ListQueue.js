@@ -28,7 +28,6 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
 
   const handleClick = () => {
-    console.log(`queue ${curQueue}`)
     if (localStorage.getItem('queue' + curQueue) === null ) {
       const modal = Modal.warning({
         title: 'Warning',

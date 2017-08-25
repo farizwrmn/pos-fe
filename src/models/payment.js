@@ -1,7 +1,7 @@
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
-import { queryByCode as queryCode, edit as updateMembers} from '../services/customers'
+import { editPoint as updateMemberPoint} from '../services/customers'
 
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -60,6 +60,7 @@ export default {
       }
       var data = yield call(queryLastTransNo, payload.periode)
 
+      console.log('data', data)
       datatrans= [`FJ${moment().format('MMYY')}0000`]
 
       let newData = datatrans
@@ -81,6 +82,8 @@ export default {
       // yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
 
       var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
+      lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
+      console.log(lastNo)
       var newMonth = lastNo.substr(2,4)
       var lastTransNo = lastNo.substr(lastNo.length - 4)
       var sendTransNo = parseInt(lastTransNo) + 1
@@ -93,12 +96,15 @@ export default {
         if (newMonth==`${moment().format('MMYY')}`){
           var transNo = `FJ${moment().format('MMYY')}${padding}`
         } else {
-          transNo = `FJ${moment().format('MMYY')}0001`
+          var transNo = `FJ${moment().format('MMYY')}0001`
         }
         var arrayProd = []
 
         const dataPos = JSON.parse(localStorage.getItem('cashier_trans'))
-
+        if (transNo.indexOf('FJ') > -1) {
+          transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
+        }
+        console.log('transNo = ', transNo)
         for (var key in dataPos) {
           arrayProd.push({
             'transNo': transNo,
@@ -114,7 +120,7 @@ export default {
         }
 
         const detailPOS = {"dataPos": arrayProd,
-          "transNo": transNo,
+          "transNo": `FJ${moment().format('MMYY')}${padding}`,
           "memberCode": payload.memberCode,
           "technicianId": payload.technicianId,
           "cashierNo": payload.curCashierNo,
@@ -134,8 +140,8 @@ export default {
           "policeNo": localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
           "change": payload.totalChange
         }
-
-
+        const point = parseInt(payload.grandTotal / 10000)
+        console.log('point', point)
 
         const data_create = yield call(create, detailPOS)
         if (data_create.success) {
@@ -145,8 +151,9 @@ export default {
                                                                             "cashierNo": payload.curCashierNo,
                                                                             "shift": payload.curShift,
                                                                             "transDate": payload.transDate2,})
-          yield call (createDetail, { "data": arrayProd, "transNo": transNo})
+          yield call (createDetail, { "data": arrayProd, "transNo": `FJ${moment().format('MMYY')}${padding}`})
           if ( data_cashier_trans_update.success ) {
+            yield call (updateMemberPoint, { point: point, memberCode: payload.memberId })
             yield put({
               type: 'successPost',
               payload: {

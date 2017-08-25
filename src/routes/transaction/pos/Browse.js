@@ -19,7 +19,7 @@ const Browse = ({ location, pos, loading, onChooseItem, ...modalProps }) => {
     ...modalProps,
   }
   // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list ))),
-
+  console.log('modalType', modalType)
   const listProps = {
     // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list )))),
     dataSource: (

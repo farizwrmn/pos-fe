@@ -25,8 +25,6 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   }
 
   const handleSearch = () => {
-    console.log('searchText', searchText)
-    console.log('tmpMechanicList', tmpMechanicList)
     dispatch({
       type: 'pos/onMechanicSearch',
       payload: {

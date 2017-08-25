@@ -1,13 +1,14 @@
 import { request, config, crypt } from '../utils'
 // const { apiURL, apiPrefix, api } = config
-// const { cashier } = api
 const { pos, posdetail } = config.api
 
 
 export async function queryLastTransNo (params) {
   const apiHeaderToken = crypt.apiheader()
+  const url = pos + '/last'
+  console.log('url', url)
   return request({
-    url: pos + '/last',
+    url: url,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -16,7 +17,7 @@ export async function queryLastTransNo (params) {
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: pos+ '/code/' + params.transNo,
+    url: pos + '/code/' + params.transNo,
     method: 'post',
     data: JSON.stringify(params),
     body: JSON.stringify(params),

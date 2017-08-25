@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { query, queryField, add, edit, remove } from '../services/units'
 import { pageModel } from './common'
 import { config } from 'utils'
+import { Modal } from 'antd'
 
 const { disableMultiSelect } = config
 
@@ -85,8 +86,13 @@ export default modelExtend(pageModel, {
     *add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
+        const modal = Modal.info({
+          title: 'Information',
+          content: 'Unit has been saved...!',
+        })
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
+        yield put({ type: 'customer/modalHide' })
       } else {
         throw data
       }

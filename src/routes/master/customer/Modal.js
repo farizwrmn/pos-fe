@@ -199,7 +199,6 @@ const modal = ({
         ...getFieldsValue(),
       }
       modalButtonSaveUnitClick(data.policeNo, data)
-      modalButtonCancelClick2()
     })
   }
 

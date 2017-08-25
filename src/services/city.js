@@ -13,7 +13,6 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  console.log('params:', params, city);
   const url = params.cityCode ? city + '/' + params.cityCode : null
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -26,7 +25,6 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  console.log('edit-params:', params);
   const url = params.cityCode ? `${city}/${params.cityCode}` : cityCode
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -39,7 +37,6 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  console.log('params', params);
   const url = params.id.groupCode ? `${city}/${params.id.groupCode}` : city
   const apiHeaderToken = crypt.apiheader()
   return request({

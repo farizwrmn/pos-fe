@@ -3,7 +3,6 @@ import { request, config, crypt } from 'utils'
 const { services } = config.api
 
 export async function query (params) {
-  console.log('query_params', params,services);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: services,
@@ -26,7 +25,6 @@ export async function queryServiceByCode (params) {
 }
 
 export async function add (params) {
-  console.log('params:', params, services);
   const url = params.serviceCode ? services + '/' + params.serviceCode : null
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -52,8 +50,8 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  console.log('params', params);
   const url = params.id.serviceCode ? `${services}/${params.id.serviceCode}` : services
+  console.log('params', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
