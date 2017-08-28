@@ -217,7 +217,7 @@ export default {
 
     *getService ({ payload }, { call, put }) {
       const data = yield call(queryServiceByCode, payload.serviceId)
-      console.log('getService', payload);
+      console.log('getService');
       let newData = data.data
 
       if ( data.data != null ) {
@@ -306,7 +306,7 @@ export default {
 
     *getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
-      console.log('getMember', data);
+      console.log('getMember');
       let newData = payload ? data.data : data.member
       if ( data.data === null ) {
         const modal = Modal.warning({
@@ -529,7 +529,6 @@ export default {
     },
 
     *editPayment ({payload}, {put}) {
-      console.log('editPayment', payload.value, 'effectedRecord:', payload.effectedRecord, 'kodeUtil', payload.kodeUtil)
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var arrayProd = dataPos.slice()
       var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
@@ -950,7 +949,6 @@ export default {
     },
 
     showMemberModal (state, action) {
-      console.log('showMemberModal', action.payload)
       return { ...state, ...action.payload, modalMemberVisible: true }
     },
     hideMemberModal (state) {
@@ -1027,12 +1025,12 @@ export default {
     },
 
     setUtil (state, action) {
-      console.log('setUtil', action.payload);
+      console.log('setUtil');
       return { ...state, kodeUtil: action.payload.kodeUtil, infoUtil: action.payload.infoUtil}
     },
 
     setEffectedRecord (state, action) {
-      console.log('setEffectedRecord', action.payload)
+      console.log('setEffectedRecord')
       return { ...state, effectedRecord: action.payload.effectedRecord }
     },
 
@@ -1092,7 +1090,7 @@ export default {
       const { searchText, tmpMemberList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       var newData
-      console.log('tmpMemberList', tmpMemberList)
+      console.log('tmpMemberList')
       newData = tmpMemberList.map((record) => {
         const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
         if (!match) {
@@ -1109,7 +1107,7 @@ export default {
       const { searchText, tmpMechanicList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       var newData
-      console.log('tmpMechanicList', tmpMechanicList)
+      console.log('tmpMechanicList')
       newData = tmpMechanicList.map((record) => {
         const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
         if (!match) {
@@ -1126,7 +1124,7 @@ export default {
       const { searchText, tmpProductList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       var newData
-      console.log('tmpProductList', tmpProductList)
+      console.log('tmpProductList')
       newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)
         if (!match) {
@@ -1170,7 +1168,7 @@ export default {
           ...record,
         };
       }).filter(record => !!record)
-      console.log('newData', newData);
+      console.log('newData');
       return { ...state, listService: newData }
     },
 
@@ -1271,7 +1269,6 @@ export default {
     },
 
     setCurRecord (state, action) {
-      console.log('state', state, 'action', action)
       return { curRecord: 1, }
     },
 

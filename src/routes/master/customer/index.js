@@ -6,6 +6,9 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
+var pdfMake = require('pdfmake/build/pdfmake.js');
+var pdfFonts = require('pdfmake/build/vfs_fonts.js');
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import Unit from './Unit'
 
 const Customer = ({ location, customergroup, customertype, dispatch, customer, loading, employee, city,unit }) => {
@@ -338,6 +341,65 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
           id: page.memberCode,
         },
       })
+    },
+    onPrint () {
+      function createPdfLineItems(tabledata){
+        var headers = {
+          top:{
+            col_1:{ text: 'Code', style: 'tableHeader', alignment: 'center' },
+            col_2:{ text: 'Name', style: 'tableHeader', alignment: 'center' },
+            col_3:{ text: 'Point', style: 'tableHeader', alignment: 'center' },
+            col_4:{ text: 'Mobile', style: 'tableHeader', alignment: 'center' },
+            col_5:{ text: 'Phone', style: 'tableHeader', alignment: 'center'}
+          }
+        }
+        var rows = tabledata;
+        var body = [];
+        for (var key in headers){
+          if (headers.hasOwnProperty(key)){
+            var header = headers[key];
+            var row = new Array();
+            row.push( header.col_1 );
+            row.push( header.col_2 );
+            row.push( header.col_3 );
+            row.push( header.col_4 );
+            row.push( header.col_5 );
+            body.push(row);
+          }
+        }
+        for (var key in rows)
+        {
+          if (rows.hasOwnProperty(key))
+          {
+            var data = rows[key];
+            var row = new Array();
+            row.push( { text: data.memberCode.toString(), alignment: 'center' } );
+            row.push( { text: data.memberName.toString(), alignment: 'center' } );
+            row.push( { text: data.point.toString(), alignment: 'center' });
+            row.push( { text: data.mobileNumber.toString(), alignment: 'center' });
+            row.push( { text: data.phoneNumber.toString(), alignment: 'center' });
+            body.push(row);
+          }
+        }
+        return body;
+      }
+      var body = createPdfLineItems(list)
+      var docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'portrait',
+        pageMargins: [ 40, 60, 40, 60 ],
+        content: [
+          {
+            style: 'tableExample',
+            writable: true,
+            table: {
+              widths: ['25%', '25%', '10%', '20%','20%'],
+              body: body
+            },
+          },
+        ]
+      }
+      pdfMake.createPdf(docDefinition).open()
     },
     onChange (page) {
       const { query, pathname } = location

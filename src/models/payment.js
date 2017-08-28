@@ -52,7 +52,7 @@ export default {
     *create ({ payload }, { call, put }) {
       var datatrans
       var dataLast
-      console.log('payload',payload);
+      console.log('payload');
       function pad(n, width, z) {
         z = z || '0';
         n = n + '';

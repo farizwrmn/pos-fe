@@ -461,7 +461,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
       arrayProd.push({
         'no': arrayProd.length + 1,
-        'code': item.productCode,
+        'code': item.id,
         'name': item.productName,
         'qty': curQty,
         'price': (item.memberCode ? item.distPrice02 : item.sellPrice),

@@ -46,6 +46,12 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: '10%'
+    },
+    {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
@@ -54,12 +60,12 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '50%'
+      width: '45%'
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '25%'
+      width: '20%'
     }
   ]
 

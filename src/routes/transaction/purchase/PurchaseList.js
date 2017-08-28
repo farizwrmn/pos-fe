@@ -36,7 +36,7 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {getFieldDecorator, v
               message: 'Required',
             }],
           })(
-            <Input disabled/>
+            <Input />
           )
           }
         </FormItem>

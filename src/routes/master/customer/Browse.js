@@ -6,19 +6,23 @@ import { Link } from 'dva/router'
 import moment from 'moment'
 import styles from './List.less'
 import classnames from 'classnames'
+const pdfMake = require('pdfmake/build/pdfmake.js');
+const pdfFonts = require('pdfmake/build/vfs_fonts.js');
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 
 const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
 const Browse = ({
-  onChangeUnit, onAddItem, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
+  onChangeUnit, onPrint, onAddItem, dataSource, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
   ...tableProps
 }) => {
   const hdlButtonAddClick = () => {
     onAddItem()
   }
   const hdlButtonPrintClick = () => {
-    console.log('add print here')
+    onPrint()
   }
   const hdlButtonSearchClick = () => {
     onSearchShow()
@@ -186,7 +190,7 @@ const Browse = ({
           <Button type="primary" onClick={hdlButtonAddClick}>
             <Icon type="plus-circle-o" /> Add
           </Button>
-          <Button onClick={hdlButtonPrintClick}>
+          <Button onClick={() => hdlButtonPrintClick()}>
             <Icon type="printer" /> Print
           </Button>
           <Button onClick={hdlButtonSearchClick}>
@@ -213,6 +217,7 @@ const Browse = ({
         columns={columns}
         simple
         rowKey={record => record.memberCode}
+        dataSource={dataSource}
       />
     </div>
   )

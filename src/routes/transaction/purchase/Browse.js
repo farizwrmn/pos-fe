@@ -20,8 +20,8 @@ const Browse = ({
     },
     {
       title: 'Product Code',
-      dataIndex: 'code',
-      key: 'code',
+      dataIndex: 'productCode',
+      key: 'productCode',
     },
     {
       title: 'Product Name',

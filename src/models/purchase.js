@@ -26,6 +26,8 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     tmpProductList: [],
     listProduct: [],
+    curDiscPercent: 0,
+    curDiscNominal: 0,
     datePicker: '',
   },
 
@@ -113,6 +115,13 @@ export default modelExtend(pageModel, {
         }
         console.log('arrayProd', arrayProd)
         const detail = yield call(createDetail, { id: payload.transNo ,data: arrayProd })
+        if (detail.success) {
+          const modal = Modal.info({
+            title: 'Transaction Success',
+            content: `Transaction ${detail.id} has been saved`
+          })
+          localStorage.removeItem('product_detail')
+        }
       } else {
         const modal = Modal.error({
           title: 'Error Saving Payment',
@@ -154,7 +163,6 @@ export default modelExtend(pageModel, {
       }
     },
     *editPurchase ({payload}, {put}) {
-      console.log('editPayment', payload.value, 'effectedRecord:', payload.effectedRecord, 'kodeUtil', payload.kodeUtil)
       var dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
       var arrayProd = dataPos.slice()
       var price = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].price
@@ -162,7 +170,7 @@ export default modelExtend(pageModel, {
       var discount = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].discount
       var disc1 = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].disc1
       var ppn = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].ppn
-      var dpp = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].ppn
+      var dpp = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].dpp
       var ppnValue
       if ( payload.kodeUtil == 'price' ) {
         price = payload.value
@@ -170,7 +178,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].discount = discount
         arrayProd[payload.effectedRecord - 1].disc1 = disc1
         arrayProd[payload.effectedRecord - 1].qty = qty
-        var ppnTempValue = arrayProd[payload.effectedRecord - 1] === 0 ? 0 : 0.1
+        var ppnTempValue = arrayProd[payload.effectedRecord - 1].ppn === 0 ? 0 : 0.1
         ppn = ((ppnTempValue * price) * qty)
         dpp = ((qty * price) - ppn)
         arrayProd[payload.effectedRecord - 1].dpp = dpp
@@ -184,7 +192,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].discount = discount
         arrayProd[payload.effectedRecord - 1].disc1 = disc1
         arrayProd[payload.effectedRecord - 1].qty = qty
-        var ppnTempValue = arrayProd[payload.effectedRecord - 1] === 0 ? 0 : 0.1
+        var ppnTempValue = arrayProd[payload.effectedRecord - 1].ppn  === 0 ? 0 : 0.1
         ppn = ((ppnTempValue * price) * qty)
         dpp = ((qty * price) - ppn)
         arrayProd[payload.effectedRecord - 1].dpp = dpp
@@ -198,7 +206,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].discount = discount
         arrayProd[payload.effectedRecord - 1].disc1 = disc1
         arrayProd[payload.effectedRecord - 1].qty = qty
-        var ppnTempValue = arrayProd[payload.effectedRecord - 1] === 0 ? 0 : 0.1
+        var ppnTempValue = arrayProd[payload.effectedRecord - 1].ppn === 0 ? 0 : 0.1
         ppn = ((ppnTempValue * price) * qty)
         dpp = ((qty * price) - ppn)
         arrayProd[payload.effectedRecord - 1].dpp = dpp
@@ -212,7 +220,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].discount = discount
         arrayProd[payload.effectedRecord - 1].disc1 = disc1
         arrayProd[payload.effectedRecord - 1].qty = qty
-        var ppnTempValue = arrayProd[payload.effectedRecord - 1] === 0 ? 0 : 0.1
+        var ppnTempValue = arrayProd[payload.effectedRecord - 1].ppn === 0 ? 0 : 0.1
         ppn = ((ppnTempValue * price) * qty)
         dpp = ((qty * price) - ppn)
         arrayProd[payload.effectedRecord - 1].dpp = dpp
@@ -220,7 +228,7 @@ export default modelExtend(pageModel, {
         const total = (price * qty) - ((qty * (price * disc1) / 100)) - (qty * discount)
         arrayProd[payload.effectedRecord - 1].total = total
       }
-      else if ( payload.kodeUtil == 'E') {
+      else if ( payload.kodeUtil == 'I') {
         ppnValue = 0.1
         for (var n=1; n<=arrayProd.length; n++){
           ppn = (ppnValue * arrayProd[n-1].price)
@@ -230,7 +238,7 @@ export default modelExtend(pageModel, {
           arrayProd[n-1].dpp = dpp * qty
         }
       }
-      else if ( payload.kodeUtil == 'I') {
+      else if ( payload.kodeUtil == 'E') {
         ppnValue = 0
         for (var n=1; n<=arrayProd.length; n++){
           ppn = (ppnValue * arrayProd[n-1].price)
@@ -244,6 +252,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].ket = payload.value
       }
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      yield put ({ type: 'setAllNull' })
     },
 
   },
@@ -341,8 +350,13 @@ export default modelExtend(pageModel, {
     onInputChange (state, action) {
       return { ...state, searchText: action.payload.searchText }
     },
+    onDiscPercent (state, action) {
+      return { ...state, curDiscPercent: action.payload }
+    },
+    onDiscNominal (state, action) {
+      return { ...state, curDiscNominal: action.payload }
+    },
     chooseDate (state, action) {
-      console.log('chooseDate', action.payload)
       return {...state, date: action.payload}
     },
     chooseDatePicker (state, action) {
@@ -353,17 +367,19 @@ export default modelExtend(pageModel, {
       return {...state, ...action.payload, modalProductVisible: true}
     },
     modalEditShow (state, action) {
-      console.log('modalEditShow', action.payload)
       return {...state, ...action.payload, modalPurchaseVisible: true, item: action.payload.data}
     },
     modalEditHide (state, action) {
       return {...state, ...action.payload, modalPurchaseVisible: false }
     },
+    setAllNull (state, action) {
+      return {...state, ...action.payload, item: '' }
+    },
     hideProductModal (state) {
       return {...state, modalPurchaseVisible: false}
     },
     onChooseSupplier (state, action) {
-      console.log('onChooseSupplier', action.payload)
+      console.log('onChooseSupplier')
       return {...state, supplierInformation: action.payload}
     },
     hideProductModal (state) {

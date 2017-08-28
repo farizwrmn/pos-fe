@@ -15,15 +15,39 @@ const ButtonGroup = Button.Group
 const formItemLayout = {
   labelCol: {span: 11},
   wrapperCol: {span: 12},
+
 }
-const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct, modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier, onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields}, ...purchaseProps}) => {
-  const confirmPurchase = () => {
+const formItemLayout1 = {
+  labelCol: {span: 8},
+  wrapperCol: {span: 11},
+}
+const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct, modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier, onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields}, ...purchaseProps}) => {
+  var dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+  var g = dataPurchase
+  var grandTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  var realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
+  var totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
+  var totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
+  var totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  var discPercent = ((curDiscPercent * grandTotal) / 100)
+  var discNominal = curDiscNominal * totalQty
+  var totalDisc = discNominal + discPercent
+  console.log('discNominal', discPercent)
+    const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
         ...getFieldsValue(),
+        supplierCode: supplierInformation.id,
+        supplierName: supplierInformation.supplierName,
+        dueDate: date,
+        invoiceTotal: parseInt(grandTotal),
+        nettoTotal: parseInt(realTotal) + parseInt(grandTotal),
+        totalDPP: parseInt(totalDpp),
+        totalPPN: parseInt(totalPpn),
+        discTotal: totalDisc,
       }
       console.log('onOk data:', data)
       onOk(data)
@@ -34,20 +58,26 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
     marginBottom: 24,
     border: 0,
   }
-  console.log('tempo', tempo)
   const hdlDateChange = (e) => {
-    var a = e.format('YYYY/MM/DD')
+    var a = e.format('YYYY-MM-DD')
     localStorage.setItem('setDate', a)
     var b = localStorage.getItem('setDate')
     onChangeDate(b)
   }
 
+  const hdlChangePercent = (e) => {
+    onDiscPercent(e)
+  }
+
+  const hdlChangeNominal = (e) => {
+    onDiscNominal(e)
+  }
+
   const onChange = (e) => {
     const {value} = e.target
     var a = localStorage.getItem('setDate')
-    console.log('onChange', a)
-    var add = moment(a,'YYYY/MM/DD').add(value, 'd')
-    onChangeDate(add.format('YYYY/MM/DD'))
+    var add = moment(a,'YYYY-MM-DD').add(value, 'd')
+    onChangeDate(add.format('YYYY-MM-DD'))
   }
   const hdlSearch = (e) => {
     onSearchSupplier(e, listSupplier)
@@ -97,12 +127,10 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
       onRowClick={(record) => handleMenuClick(record)}
     />
   )
-
   const hdlPPN = (e) => {
     onChangePPN(e)
   }
-  const a = localStorage.getItem('setDate') ? moment(localStorage.getItem('setDate')).format('YYYY/MM/DD') : moment().format('YYYY/MM/DD')
-  console.log('date:', a)
+  const a = localStorage.getItem('setDate') ? moment(localStorage.getItem('setDate')).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
 
   return (
     <Form style={{padding: 3}}>
@@ -114,7 +142,6 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
                   <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transNo', {
-                      initialValue: 'MBM-0000031',
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -135,27 +162,27 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
                   </FormItem>
                   <FormItem label="Disc Invoice(%)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discPercent', {
-                      initialValue: 31,
+                      initialValue: 0,
                       rules: [{
-                        required: true,
+                        required: false,
                         message: 'Required',
                       }],
-                    })(<InputNumber size="large" min={0} max={100} step={0.1} defaultValue={0}/>)}
+                    })(<InputNumber onChange={(value) => hdlChangePercent(value)} size="large" min={0} max={100} step={0.1} defaultValue={0}/>)}
                   </FormItem>
                   <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discNominal', {
-                      initialValue: 10000,
+                      initialValue: 0,
                       rules: [{
-                        required: true,
+                        required: false,
                         message: 'Required',
                       }],
-                    })(<Input />)}
+                    })(<InputNumber defaultValue={0} step={500} onChange={(value) => hdlChangeNominal(value)}/>)}
                   </FormItem>
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transDate', {
-                      initialValue: moment.utc(a, 'YYYY/MM/DD'),
+                      initialValue: moment.utc(a, 'YYYY-MM-DD'),
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -164,8 +191,7 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
                   </FormItem>
                   <FormItem label="Tempo" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('tempo', {
-                      value: tempo,
-                      validateFirst: true,
+                      intialValue: tempo,
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -174,22 +200,18 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
                     })(<Input maxLength={5} onChange={(value) => onChange(value)}/>)}
                   </FormItem>
                   <FormItem label="Due Date" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('dueDate', {
-                      initialValue: date,
-                      rules: [{
-                        required: true,
-                        message: 'Required',
-                      }],
-                    })(<Input disabled/>)}
+                    <Input disabled value={date}/>
                   </FormItem>
                   <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('invoiceType', {
-                      initialValue: 'C',
                       rules: [{
                         required: true,
                         message: 'Required',
                       }],
-                    })(<Input />)}
+                    })((<Select onChange={(value) => hdlPPN(value)}>
+                      <Option value="C">CASH</Option>
+                      <Option value="K">KREDIT</Option>
+                    </Select>))}
                   </FormItem>
                 </Col>
               </Row>
@@ -208,22 +230,10 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
                 </div>
               </FormItem>
               <FormItem label="id" hasfeedback {...formItemLayout}>
-                {getFieldDecorator('supplierCode', {
-                  initialValue: supplierInformation ? supplierInformation.id : null,
-                  rules: [{
-                    required: true,
-                    message: 'Required',
-                  }],
-                })(<Input disabled/>)}
+                <Input disabled value={supplierInformation ? supplierInformation.id : null}/>
               </FormItem>
               <FormItem label="Supplier Name" hasfeedback {...formItemLayout}>
-                {getFieldDecorator('supplierName', {
-                  initialValue: supplierInformation ? supplierInformation.supplierName : null,
-                  rules: [{
-                    required: false,
-                    message: 'Required',
-                  }],
-                })(<Input disabled value={date}/>)}
+                <Input disabled value={supplierInformation ? supplierInformation.supplierName : null}/>
               </FormItem>
               <FormItem label="Address" hasfeedback {...formItemLayout}>
             <TextArea value={supplierInformation ? supplierInformation.address01 : null}
@@ -244,6 +254,18 @@ const PurchaseForm = ({onOk, onChooseSupplier, onChangeDatePicker, onChangePPN, 
       </Row>
       <Browse {...purchaseProps}/>
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
+      <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+        <Input disabled value={grandTotal} />
+      </FormItem>
+      <FormItem label="DPP" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+        <Input disabled value={totalDpp} />
+      </FormItem>
+      <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+        <Input disabled value={totalPpn} />
+      </FormItem>
+      <FormItem label="TotalDiscount" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+        <Input disabled value={totalDisc} />
+      </FormItem>
       <Button type="primary" size="large" onClick={confirmPurchase}>Confirm</Button>
     </Form>
   )

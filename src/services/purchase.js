@@ -45,7 +45,7 @@ export async function create (params) {
 
 export async function createDetail (params) {
   let url = params.id ? `${purchaseDetail}/purchase` : null
-  console.log('createDetail params:',params, url);
+  console.log(url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -70,7 +70,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  console.log('delete-params:',params);
+  console.log('delete-params:');
   let url = params.transNo ? purchase : null
   const apiHeaderToken = crypt.apiheader()
   return request({

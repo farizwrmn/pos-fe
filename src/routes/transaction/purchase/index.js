@@ -9,7 +9,7 @@ import { Col, Row, Icon, Button } from 'antd'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, listProduct, listSupplier, pagination, date, datePicker,modalVisible, searchVisible, modalProductVisible,
-    modalPurchaseVisible, modalType, selectedRowKeys, disableMultiSelect, curQty, curTotal
+    modalPurchaseVisible, modalType, selectedRowKeys, disableMultiSelect, curQty, curDiscPercent, curDiscNominal
   } = purchase
 
   const modalProps = {
@@ -60,6 +60,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     datePicker: datePicker,
     item: item ? item : '',
     tempo: 0,
+    curDiscPercent: curDiscPercent,
+    curDiscNominal: curDiscNominal,
     listSupplier: listSupplier,
     modalProductVisible: modalProductVisible,
     modalPurchaseVisible: modalPurchaseVisible,
@@ -117,11 +119,16 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         payload: data,
       })
     },
+    onDiscPercent (data) {
+      dispatch({ type: 'purchase/onDiscPercent', payload:data })
+    },
+    onDiscNominal (data) {
+      dispatch({ type: 'purchase/onDiscNominal', payload:data })
+    },
     onChangePPN (data) {
       dispatch({ type: 'purchase/editPurchase', payload:{ value: 0, kodeUtil: data, effectedRecord: 0 } })
     },
     onChooseItem (data) {
-      console.log('onChooseItem', data)
       dispatch({ type: 'purchase/editPurchase', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Detail } })
     },
     onGetSupplier () {
@@ -139,7 +146,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       }
       arrayProd.push({
         'no': arrayProd.length + 1,
-        'code': item.productCode,
+        'code': item.id,
+        'productCode': item.productCode,
         'name': item.productName,
         'qty': curQty,
         'price': item.costPrice,
@@ -150,7 +158,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         'ket': '',
         'total': curQty * item.sellPrice,
       })
-      console.log('onChooseItemItem', arrayProd)
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
       dispatch({ type: 'purchase/hideProductModal' })
