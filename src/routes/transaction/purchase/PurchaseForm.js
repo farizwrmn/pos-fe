@@ -18,7 +18,7 @@ const formItemLayout = {
 
 }
 const formItemLayout1 = {
-  labelCol: {span: 8},
+  labelCol: {span: 10},
   wrapperCol: {span: 11},
 }
 const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct, modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier, onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields}, ...purchaseProps}) => {
@@ -32,7 +32,6 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
   var discPercent = ((curDiscPercent * grandTotal) / 100)
   var discNominal = curDiscNominal * totalQty
   var totalDisc = discNominal + discPercent
-  console.log('discNominal', discPercent)
     const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -130,6 +129,9 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
   const hdlPPN = (e) => {
     onChangePPN(e)
   }
+  const resetProduct = () => {
+    localStorage.removeItem('product_detail')
+  }
   const a = localStorage.getItem('setDate') ? moment(localStorage.getItem('setDate')).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
 
   return (
@@ -151,6 +153,7 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
                   </FormItem>
                   <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('taxType', {
+                      initialValue: 'E',
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -250,20 +253,21 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
             <Button type="primary"><Icon type="plus-square-o"/></Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          <Button style={{marginLeft: 150}} type="danger" size="large" onClick={resetProduct}>Reset</Button>
         </Col>
       </Row>
       <Browse {...purchaseProps}/>
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
-      <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+      <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
         <Input disabled value={grandTotal} />
       </FormItem>
-      <FormItem label="DPP" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+      <FormItem label="DPP" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
         <Input disabled value={totalDpp} />
       </FormItem>
-      <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+      <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
         <Input disabled value={totalPpn} />
       </FormItem>
-      <FormItem label="TotalDiscount" {...formItemLayout1} style={{ marginLeft: '75%', marginBottom: 2, marginTop: 2 }}>
+      <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
         <Input disabled value={totalDisc} />
       </FormItem>
       <Button type="primary" size="large" onClick={confirmPurchase}>Confirm</Button>

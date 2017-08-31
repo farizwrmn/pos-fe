@@ -110,8 +110,8 @@ const Filter = ({
       <Panel header="Search" key="1">
         <Row gutter={24}>
           <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-            {getFieldDecorator('categoryName', { initialValue: name })(
-              <Search placeholder="Search Category Name" size="large" onSearch={handleSubmit} />
+            {getFieldDecorator('productCode', { initialValue: name })(
+              <Search placeholder="Search Product Code" size="large" onSearch={handleSubmit} />
             )}
           </Col>
           <Col {...ColProps} xl={{ span: 8 }} md={{ span: 10 }} sm={{ span: 14 }}>

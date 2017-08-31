@@ -212,6 +212,10 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   const handlePayment = () => {
     dispatch({ type: 'pos/setCurTotal' })
 
+    dispatch({ type: 'payment/setLastTrans' })
+
+    dispatch({ type: 'payment/setCompanyName', payload: { code: 'COMPANY'} })
+
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
     dispatch(routerRedux.push('/transaction/pos/payment'))
@@ -373,12 +377,14 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       else {
         arrayProd = JSON.parse(listByCode.slice())
       }
-      console.log('item chooseitem', item);
       arrayProd.push({
         'memberCode': item.memberCode,
         'memberName': item.memberName,
+        'address01': item.address01,
         'point': item.point ? item.point : 0,
-        'id': item.id
+        'id': item.id,
+        'gender': item.gender,
+        'phone': item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
@@ -461,7 +467,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
       arrayProd.push({
         'no': arrayProd.length + 1,
-        'code': item.id,
+        'code': item.productCode,
+        'productId': item.id,
         'name': item.productName,
         'qty': curQty,
         'price': (item.memberCode ? item.distPrice02 : item.sellPrice),
@@ -492,7 +499,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       })
     },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
+      var listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
 
       var arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
@@ -506,6 +513,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       arrayProd.push({
         'no': arrayProd.length + 1,
         'code': item.serviceCode,
+        'productId': item.serviceCode,
         'name': item.serviceName,
         'qty': curQty,
         'price':  item.serviceCost,
@@ -516,7 +524,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         'total':  item.serviceCost * curQty
       })
 
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+      localStorage.setItem('service_detail', JSON.stringify(arrayProd))
 
       dispatch({
         type: 'pos/queryServiceSuccessByCode',
@@ -774,6 +782,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           if ( localStorage.getItem('queue1') === null ) {
             localStorage.setItem('queue1', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
+            localStorage.removeItem('service_detail')
             localStorage.removeItem('member')
             localStorage.removeItem('memberUnit')
             localStorage.removeItem('mechanic')
@@ -788,6 +797,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           else if ( localStorage.getItem('queue2') === null ) {
             localStorage.setItem('queue2', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
+            localStorage.removeItem('service_detail')
             localStorage.removeItem('member')
             localStorage.removeItem('memberUnit')
             localStorage.removeItem('mechanic')
@@ -802,6 +812,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           else if ( localStorage.getItem('queue3') === null ) {
             localStorage.setItem('queue3', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
+            localStorage.removeItem('service_detail')
             localStorage.removeItem('member')
             localStorage.removeItem('memberUnit')
             localStorage.removeItem('mechanic')
@@ -852,6 +863,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         content: 'This Operation cannot be undone...!',
         onOk() {
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           dispatch({
             type: 'pos/setCurTotal',
           })
@@ -871,7 +883,25 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const dataTrans = () => {
-    return (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+    var product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+    var service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+    const cashier_trans = product.concat(service)
+    var arrayProd = []
+    for (var n = 0;   n < cashier_trans.length; n++) {
+      arrayProd.push({
+        no: n + 1,
+        code: cashier_trans[n].code,
+        disc1: cashier_trans[n].disc1,
+        disc2: cashier_trans[n].disc2,
+        disc3: cashier_trans[n].disc3,
+        discount: cashier_trans[n].discount,
+        name: cashier_trans[n].name,
+        price: cashier_trans[n].price,
+        qty: cashier_trans[n].qty,
+        total: cashier_trans[n].total,
+      })
+    }
+    return (arrayProd)
   }
 
   const hdlPopoverClose = () => {
@@ -1065,7 +1095,7 @@ class LastMeter extends React.Component {
               pagination={false}
               bordered={true}
               size="small"
-              scroll={{ x: '170%' }}
+              scroll={{ x: '130%' }}
               locale = {{
                 emptyText: 'Your Payment List',
               }}

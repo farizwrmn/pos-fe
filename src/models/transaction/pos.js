@@ -529,6 +529,7 @@ export default {
     },
 
     *editPayment ({payload}, {put}) {
+      console.log('payload:', payload)
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var arrayProd = dataPos.slice()
       var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
@@ -1035,7 +1036,9 @@ export default {
     },
 
     setCurTotal (state, action) {
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      var product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      var service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      var dataPos = product.concat(service)
       var a = dataPos
       var curRecord = a.reduce( function(cnt,o){ return cnt + 1; }, 0)
       var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)

@@ -125,7 +125,7 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
             categoryId: currentItem.categoryId,
             categoryName: currentItem.categoryName,
             brandName: data.brandName,
-            brandCode: data.brandCode,
+            brandCode: data.id,
             otherName01: currentItem.otherName01,
             otherName02: currentItem.otherName02,
             costPrice: currentItem.costPrice,

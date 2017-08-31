@@ -85,13 +85,7 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
-      if (data.userRole !== undefined) {
-        data.userRole = data.userRole.toString()
-      } else {
-        data.userRole = ''
-      }
-      data.active = data.active !== undefined
-
+      console.log('data:', data)
       modalButtonSaveClick(data)
     })
   }
@@ -153,7 +147,7 @@ const modal = ({
                 rules: [{
                   required: true,
                   min: 2,
-                  pattern: /^[a-zA-Z\s]{1,50}$/,
+                  pattern: /^[a-z0-9_./-\s]{1,50}$/i,
                   message: 'incorrect input inserted',
                 }],
               })(<Input placeholder="Input your supplier name" maxLength={50} />)}

@@ -16,7 +16,25 @@ const formItemLayout = {
   },
 }
 const dataTrans = () => {
-  return (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+  var product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+  var service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+  const cashier_trans = product.concat(service)
+  var arrayProd = []
+  for (var n = 0; n < cashier_trans.length; n++) {
+    arrayProd.push({
+      no: n + 1,
+      code: cashier_trans[n].code,
+      disc1: cashier_trans[n].disc1,
+      disc2: cashier_trans[n].disc2,
+      disc3: cashier_trans[n].disc3,
+      discount: cashier_trans[n].discount,
+      name: cashier_trans[n].name,
+      price: cashier_trans[n].price,
+      qty: cashier_trans[n].qty,
+      total: cashier_trans[n].total,
+    })
+  }
+  return (arrayProd)
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
@@ -69,7 +87,6 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
 
     return today
   }
-
   const setTime = () => {
     var today = new Date()
     var h = today.getHours()
@@ -120,6 +137,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           creditCardType: '',
           creditCardCharge: 0,
           totalCreditCard: 0,
+          lastTransNo: lastTransNo,
           lastMeter: lastMeter,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
@@ -134,10 +152,71 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           cashierId: user.userid
         }
       })
+      dispatch ({
+        type: 'payment/print',
+        payload: {
+          periode: moment().format('MMYY'),
+          transDate: getDate(1),
+          transDate2: getDate(3),
+          transTime: setTime(),
+          grandTotal: parseInt(curTotal),
+          totalPayment: totalPayment,
+          company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+          gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+          phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+          address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+          lastMeter: lastMeter ? lastMeter : 0,
+          lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
+          totalChange: totalChange,
+          totalDiscount: curTotalDiscount,
+          policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
+          rounding: curRounding,
+          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+          memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+          memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+          technicianId: mechanicInformation.mechanicCode,
+          curShift: curShift,
+          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
+          curCashierNo: curCashierNo,
+          cashierId: user.userid
+        }
+      })
       dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
 
+  }
+
+  const printPreview = () => {
+    dispatch ({
+      type: 'payment/print',
+      payload: {
+        periode: moment().format('MMYY'),
+        transDate: getDate(1),
+        transDate2: getDate(3),
+        transTime: setTime(),
+        grandTotal: parseInt(curTotal),
+        totalPayment: totalPayment,
+        company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+        gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+        phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+        address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+        lastMeter: lastMeter ? lastMeter : 0,
+        lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
+        totalChange: totalChange,
+        totalDiscount: curTotalDiscount,
+        policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
+        rounding: curRounding,
+        memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+        memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+        memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+        technicianId: mechanicInformation.mechanicCode,
+        curShift: curShift,
+        point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
+        curCashierNo: curCashierNo,
+        cashierId: user.userid
+      }
+    })
   }
 
   const cancelPayment = () => {
@@ -188,7 +267,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
 
       <Row style={{ marginBottom: 16 }} gutter={16}>
         <Col span={16}>
-          <Card bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
+          <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
+            <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null}/>
           <Table
             rowKey={(record, key) => key}
             bordered
@@ -197,52 +277,42 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
               {
                 title: 'No',
                 dataIndex: 'no',
-                width: 20,
               },
               {
                 title: 'Code',
                 dataIndex: 'code',
-                width: 100,
               },
               {
                 title: 'Product Name',
                 dataIndex: 'name',
-                width: 200,
               },
               {
                 title: 'Qty',
                 dataIndex: 'qty',
-                width: 50,
               },
               {
                 title: 'Price',
                 dataIndex: 'price',
-                width: 100,
               },
               {
                 title: 'Disc 1(%)',
                 dataIndex: 'disc1',
-                width: 100,
               },
               {
                 title: 'Disc 2(%)',
                 dataIndex: 'disc2',
-                width: 100,
               },
               {
                 title: 'Disc 3(%)',
                 dataIndex: 'disc3',
-                width: 100,
               },
               {
                 title: 'Discount',
                 dataIndex: 'discount',
-                width: 100,
               },
               {
                 title: 'Total',
                 dataIndex: 'total',
-                width: 100,
               },
             ]}
             dataSource={dataTrans()}
@@ -253,28 +323,28 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         </Col>
         <Col span={8}>
           <Form layout="horizontal">
-            <FormItem style={{ fontSize: '20px' }} label="Grand Total" {...formItemLayout}>
-              <Input value={parseInt(curTotal) + parseInt(curTotalDiscount)} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Grand Total" {...formItemLayout}>
+              <Input value={parseInt(curTotal)} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Discount" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
               <Input value={curTotalDiscount} defaultValue="0" style={{height: '40px', fontSize: '20pt'}}  size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Rounding" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
               <Input value={curRounding} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Credit Card" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card" {...formItemLayout}>
               <Input value={creditCardTotal} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Credit Card Charge" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card Charge" {...formItemLayout}>
               <Input value={creditCharge} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Netto" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
               <Input value={parseInt(curTotal) + parseInt(curRounding)} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Total Cash" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
               <Input value={totalPayment} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
-            <FormItem style={{ fontSize: '20px' }} label="Change" {...formItemLayout}>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
               <Input value={totalChange} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
             </FormItem>
           </Form>
@@ -284,6 +354,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
       <Row>
         <Col span={24}>
           <Form layout="vertical">
+            <FormItem>
+              <Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>
+            </FormItem>
             <FormItem>
                 <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
             </FormItem>

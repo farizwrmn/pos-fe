@@ -186,6 +186,7 @@ const modal = ({
       //   data.customerRole = ''
       // }
       // data.active = data.active !== undefined ? true : false
+      console.log('member', data)
       modalButtonSaveClick(data.memberCode, data)
     })
   }
@@ -395,7 +396,7 @@ const modal = ({
                     initialValue: item.memberCode,
                     rules: [{ required: true, message: "Required" }],
                   })(
-                    <Input disabled={disableItem.code} />
+                    <Input />
                   )}
                 </FormItem>
                 <FormItem label="Identity Type" hasFeedback {...formItemLayout}>
@@ -524,17 +525,19 @@ const modal = ({
                     ],
                   })(<Input />)}
                 </FormItem>
-                <FormItem label="Post Code" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('zipCode', {
-                    initialValue: item.zipCode,
+                <FormItem label="Gender" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('gender', {
+                    initialValue: item.gender,
                     rules: [
                       {
-                        required: false,
-                        pattern: /^\d{5}$/,
-                        message: 'invalid data',
+                        required: true,
+                        message: 'Required',
                       },
                     ],
-                  })(<Input maxLength="5" />)}
+                  })(<Select style={{ width: 120 }}>
+                    <Option value="M">Male</Option>
+                    <Option value="F">Female</Option>
+                  </Select>)}
                 </FormItem>
                 <FormItem label="E-mail" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('email', {

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Icon, Popconfirm } from 'antd'
+import { Table, Modal, Button, Icon, Popconfirm, Tag } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -41,118 +41,120 @@ const Browse = ({
       title: 'Active',
       dataIndex: 'active',
       key: 'active',
-      width: 80,
+      width: '114px',
+      render: (text) =>
+        <span>
+          <Tag color={text?'red':'blue'}>
+            {text?'Non-Active':'Active'}
+          </Tag>
+        </span>,
     },
     {
       title: 'P.Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: 130,
+      width: '125px',
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: 200,
+      width: '260px',
     }, {
       title: 'Brand',
       dataIndex: 'brandName',
       key: 'brandName',
-      width: 170,
+      width: '100px',
+    }, {
+      title: 'Category',
+      dataIndex: 'categoryName',
+      key: 'categoryName',
+      width: '100px',
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: 90,
-    }, {
-      title: 'Category Name',
-      dataIndex: 'categoryName',
-      key: 'categoryName',
-      width: 150,
-    }, {
-      title: 'Location 1',
-      dataIndex: 'location01',
-      key: 'location01',
-      width: 160,
-    }, {
-      title: 'Location 2',
-      dataIndex: 'location02',
-      key: 'location02',
-      width: 160,
-    }, {
+      width: '90px',
+    },
+    // {
+    //   title: 'Location 1',
+    //   dataIndex: 'location01',
+    //   key: 'location01',
+    // }, {
+    //   title: 'Location 2',
+    //   dataIndex: 'location02',
+    //   key: 'location02',
+    // },
+    {
       title: 'Cost Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: 90,
+      width: '90px',
     }, {
-      title: 'Pre Price',
-      dataIndex: 'sellPricePre',
-      key: 'sellPricePre',
-      width: 90,
-    }, {
-      title: 'Dist Price 1',
+      title: 'Dist 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
-      width: 90,
+      width: '90px',
     }, {
-      title: 'Dist Price 2',
+      title: 'Dist 2',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
-      width: 90,
+      width: '90px',
     }, {
       title: 'Track Qty',
       dataIndex: 'trackQty',
       key: 'trackQty',
-      width: 80,
+      width: '90px',
     }, {
       title: 'Alert Qty',
       dataIndex: 'alertQty',
       key: 'alertQty',
-      width: 100,
+      width: '90px',
     }, {
       title: 'Exception',
       dataIndex: 'exception01',
       key: 'exception01',
-      width: 100,
+      width: '90px',
     }, {
       title: 'Image',
       dataIndex: 'productImage',
       key: 'productImage',
-      width: 100,
+      width: '90px',
     }, {
       title: 'D.Code',
       dataIndex: 'dummyCode',
       key: 'dummyCode',
-      width: 200,
+      width: '125px',
     }, {
       title: 'Dummy Name',
       dataIndex: 'dummyName',
       key: 'dummyName',
-      width: 220,
-    }, {
-      title: 'Similar 1',
-      dataIndex: 'otherName01',
-      key: 'otherName01',
-      width: 200,
-    }, {
-      title: 'Similar 2',
-      dataIndex: 'otherName02',
-      key: 'otherName02',
-      width: 200,
-    }, {
-      title: 'barCode 1',
-      dataIndex: 'barCode01',
-      key: 'barCode01',
-      width: 200,
-    }, {
-      title: 'barCode 2',
-      dataIndex: 'barCode02',
-      key: 'barCode02',
-      width: 200,
-    }, {
+      width: '260px',
+    },
+    // {
+    //   title: 'Similar 1',
+    //   dataIndex: 'otherName01',
+    //   key: 'otherName01',
+    //   width: '260px',
+    // }, {
+    //   title: 'Similar 2',
+    //   dataIndex: 'otherName02',
+    //   key: 'otherName02',
+    //   width: '260px',
+    // },
+    // {
+    //   title: 'barCode 1',
+    //   dataIndex: 'barCode01',
+    //   key: 'barCode01',
+    // }, {
+    //   title: 'barCode 2',
+    //   dataIndex: 'barCode02',
+    //   key: 'barCode02',
+    // },
+    {
       title: 'B.ID',
       dataIndex: 'brandId',
       key: 'brandId',
-      width: 60,
+      width: '90px',
     }, {
       title: 'Created',
       children: [
@@ -160,12 +162,11 @@ const Browse = ({
           title: 'By',
           dataIndex: 'createdBy',
           key: 'createdBy',
-          width: 100
+          width: '90px',
         }, {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
-          width: 180,
           render: (text) => `${moment(text).format('LL LTS')}`
         }
       ]
@@ -176,12 +177,11 @@ const Browse = ({
           title: 'By',
           dataIndex: 'updatedBy',
           key: 'updatedBy',
-          width: 100
+          width: '90px',
         }, {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
-          width: 180,
           render: (text) => `${moment(text).format('LL LTS')}`
         }
       ]
@@ -189,6 +189,7 @@ const Browse = ({
       title: 'Operation',
       key: 'operation',
       fixed: 'right',
+      width: '73px',
       render: (text, record) => {
         return <DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions = {[
@@ -234,11 +235,11 @@ const Browse = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '3800', y: 240 }}
+        scroll={{ x: 2550, y: 240 }}
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.categoryCode}
+        rowKey={record => record.productCode}
       />
     </div>
   )

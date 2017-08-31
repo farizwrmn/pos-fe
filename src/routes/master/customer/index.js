@@ -219,6 +219,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
             email: data.email,
             idNo: data.idNo,
             idType: data.idType,
+            gender: data.gender,
             memberCode: data.memberCode,
             memberGroupId: data.memberGroupId,
             memberGroupName: data.memberGroupName,
@@ -385,8 +386,8 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       }
       var body = createPdfLineItems(list)
       var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'portrait',
+        pageSize: { width: 813, height: 530 },
+        pageOrientation: 'landscape',
         pageMargins: [ 40, 60, 40, 60 ],
         content: [
           {
