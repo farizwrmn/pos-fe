@@ -9,20 +9,26 @@ const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
 const BrowseType = ({
-  ...tableProps }) => {
+  onChooseItem,
+  ...modalProps }) => {
   const columns = [{
       dataIndex: 'miscName',
       key: 'miscName',
     },
   ]
+  const hdlRowService = (e) => {
+    console.log('onChooseItem', e)
+    onChooseItem(e)
+  }
   return (
     <div>
       <Table
-        {...tableProps}
+        {...modalProps}
         bordered
         scroll={{ x: 200, y: 240 }}
         columns={columns}
         simple
+        onRowClick ={(record)=>hdlRowService(record)}
       />
     </div>
   )

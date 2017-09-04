@@ -137,6 +137,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           creditCardType: '',
           creditCardCharge: 0,
           totalCreditCard: 0,
+          company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+          gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+          phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+          address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
           lastTransNo: lastTransNo,
           lastMeter: lastMeter,
           totalChange: totalChange,
@@ -145,6 +149,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           rounding: curRounding,
           memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
           memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+          mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+          memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
@@ -153,12 +159,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         }
       })
       dispatch ({
-        type: 'payment/print',
+        type: 'payment/printPayment',
         payload: {
           periode: moment().format('MMYY'),
           transDate: getDate(1),
           transDate2: getDate(3),
           transTime: setTime(),
+          transDatePrint: moment().format('DD/MM/YYYY'),
           grandTotal: parseInt(curTotal),
           totalPayment: totalPayment,
           company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
@@ -171,9 +178,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
           rounding: curRounding,
+          dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+          dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
           memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
           memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
           memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+          mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
@@ -189,7 +199,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
 
   const printPreview = () => {
     dispatch ({
-      type: 'payment/print',
+      type: 'payment/printPayment',
       payload: {
         periode: moment().format('MMYY'),
         transDate: getDate(1),
@@ -207,9 +217,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         totalDiscount: curTotalDiscount,
         policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
         rounding: curRounding,
+        dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+        dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
         memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
         memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
         memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+        mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
         technicianId: mechanicInformation.mechanicCode,
         curShift: curShift,
         point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),

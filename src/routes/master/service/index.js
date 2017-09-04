@@ -18,6 +18,7 @@ const Service = ({ location, dispatch, loading, service, servicetype, misc }) =>
     visiblePopover: visiblePopover,
     disabledItem: disabledItem,
     listServType,
+    pagination,
     maskClosable: false,
     confirmLoading: loading.effects['service/update'],
     title: `${modalType === 'add' ? 'Add service' : 'Edit service'}`,

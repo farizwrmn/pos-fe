@@ -13,8 +13,8 @@ export async function query (params) {
 }
 
 export async function queryByCode (params) {
-  const url = params.memberCode ? customers + '/' + params.memberCode : customers + '/' + params
-  console.log('queryByCode', url);
+  const url = params.memberCode  ? customers + '/' + params.memberCode : customers + '/' + params.data.memberCode
+  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

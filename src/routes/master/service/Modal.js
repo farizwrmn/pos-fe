@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Table, Modal, Row, Col, Icon, Popover, Button} from 'antd'
+import { Select,Form, Input, Table, Modal, Row, Col, Icon, Popover, Button} from 'antd'
 import BrowseType from './servicetype'
+const Option = Select.Option;
 
 const FormItem = Form.Item
 
@@ -143,8 +144,8 @@ const modal = ({
           })(<Input maxLength={50}/>)}
         </FormItem>
         <FormItem label="Cost" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('Cost', {
-            initialValue: item.Cost,
+          {getFieldDecorator('cost', {
+            initialValue: item.cost,
             rules: [{
               required: false,
             }],
@@ -159,25 +160,18 @@ const modal = ({
           })(<Input maxLength={19}/>)}
         </FormItem>
         <FormItem label="Service Type" hasFeedback {...formItemLayout}>
-          <Popover visible={visiblePopover}
-            onVisibleChange={() => hdlPopoverVisibleChange()}
-            title={titlePopover}
-            content={contentPopover}
-            trigger="click"
-          >
-            <Button
-              type="primary"
-              onClick={() => hdlPopoverVisibleChange()}
-            >
-            <Icon type="down-square-o" />
-            </Button>
-          </Popover>
           {getFieldDecorator('serviceTypeId', {
             initialValue: item.serviceTypeId,
             rules: [{
               required: false,
             }],
-          })(<Input />)}
+          })(<Select defaultValue="PS" style={{ width: 120 }}>
+            <Option value="PS">PS</Option>
+            <Option value="GT">GT</Option>
+            <Option value="SCRAP">SCRAP</Option>
+            <Option value="SR">SR</Option>
+            <Option value="TDF">TDF</Option>
+          </Select>)}
         </FormItem>
       </Form>
     </Modal>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Button, Input, Form, Select, Col, Row, Modal} from 'antd'
+import {Button, Input, Form, Select, Row, Col, Modal} from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PaymentList = ({ onChooseItem, item, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
+const ServiceList = ({ onChooseItem, itemService, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -49,7 +49,7 @@ const PaymentList = ({ onChooseItem, item, form: { getFieldDecorator, validateFi
     <Form>
       <FormItem {...formItemLayout} label="Record">
         {getFieldDecorator('Record', {
-          initialValue: item.no,
+          initialValue: itemService.no,
           rules: [{
             required: true,
             message: 'Required',
@@ -71,7 +71,6 @@ const PaymentList = ({ onChooseItem, item, form: { getFieldDecorator, validateFi
             <Option value="disc1">Disc 1(%)</Option>
             <Option value="disc2">Disc 2(%)</Option>
             <Option value="disc3">Disc 3(%)</Option>
-            <Option value="quantity">Quantity</Option>
           </Select>
         )
         }
@@ -98,10 +97,10 @@ const PaymentList = ({ onChooseItem, item, form: { getFieldDecorator, validateFi
   )
 }
 
-PaymentList.propTypes = {
+ServiceList.propTypes = {
   form: PropTypes.object.isRequired,
   pos: PropTypes.object,
   item: PropTypes.object,
   onChooseItem: PropTypes.func
 }
-export default Form.create()(PaymentList)
+export default Form.create()(ServiceList)

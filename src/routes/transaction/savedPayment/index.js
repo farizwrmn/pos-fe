@@ -1,0 +1,154 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import BrowseGroup from './Browse'
+import Modal from './Modal'
+import moment from 'moment'
+
+const Pos = ({ location, dispatch, loading, pos }) => {
+  const { listPayment, listPaymentDetail, memberPrint, mechanicPrint, companyPrint,
+    pagination, selectedRowKeys, modalPrintVisible,posData } = pos
+
+  const { pageSize } = pagination
+
+  const modalProps = {
+    visible: modalPrintVisible,
+    listPayment,
+    listPaymentDetail,
+    memberPrint,
+    mechanicPrint,
+    companyPrint,
+    posData,
+    maskClosable: false,
+    title: `Print the Transaction Duplicate?`,
+    confirmLoading: loading.effects['payment/printPayment'],
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      console.log('data', data)
+      var dataPos = []
+      var dataService = []
+      for (var n = 0; n < data.data.length; n++) {
+        if (data.data[n].serviceCode === null || data.data[n].serviceName === null) {
+          var productId = data.data[n].productCode
+          var productName = data.data[n].productName
+          dataPos.push({
+            no: '',
+            code: productId,
+            name: productName,
+            qty: data.data[n].qty,
+            price: data.data[n].sellingPrice,
+            discount: data.data[n].discount,
+            disc1: data.data[n].disc1,
+            disc2: data.data[n].disc2,
+            disc3: data.data[n].disc3,
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+          })
+        } else if (data.data[n].productCode === null || data.data[n].productName === null) {
+          var productId = data.data[n].serviceCode
+          var productName = data.data[n].serviceName
+          dataService.push({
+            no: '',
+            code: productId,
+            name: productName,
+            qty: data.data[n].qty,
+            price: data.data[n].sellingPrice,
+            discount: data.data[n].discount,
+            disc1: data.data[n].disc1,
+            disc2: data.data[n].disc2,
+            disc3: data.data[n].disc3,
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+          })
+        }
+      }
+      for (var j = 0; j < dataService.length; j++) {
+        dataService[j].no = j + 1
+      }
+      for (var k = 0; k < dataPos.length; k++) {
+        dataPos[k].no = k + 1
+      }
+      dispatch({
+        type: `payment/printPayment`,
+        payload: {
+          dataPos: dataPos,
+          dataService: dataService,
+          transDatePrint: moment(posData.transDate).format('DD/MM/YYYY'),
+          memberId: data.memberPrint.memberCode,
+          gender: data.memberPrint.gender,
+          company: data.companyPrint,
+          lastTransNo: listPaymentDetail.id,
+          memberName: data.memberPrint.memberName,
+          phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
+          policeNo: listPaymentDetail.policeNo,
+          lastMeter: listPaymentDetail.lastMeter,
+          mechanicName: data.mechanicPrint.employeeName,
+          address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
+          cashierId: listPaymentDetail.cashierId
+        },
+      })
+      dispatch({
+        type: 'pos/hidePrintModal',
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/hidePrintModal',
+      })
+    },
+  }
+
+  const browseProps = {
+    dataSource: listPayment,
+    width: 90,
+    loading: loading.effects['service/query'],
+    pagination,
+    location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      }))
+    },
+    onGetDetail (e) {
+      const transNo = e.transNo.replace(/[^a-z0-9]/gi,'')
+      dispatch({
+        type: 'pos/queryPosDetail',
+        payload: {
+          id: transNo,
+          data: e,
+        },
+      })
+      dispatch({
+        type: 'pos/showPrintModal',
+      })
+    },
+
+    size:'small',
+  }
+
+  return (
+    <div className="content-inner">
+      <BrowseGroup {...browseProps} />
+      <Modal {...modalProps} />
+    </div>
+  )
+}
+
+Pos.propTypes = {
+  pos: PropTypes.object,
+  location: PropTypes.object,
+  dispatch: PropTypes.func,
+  loading: PropTypes.object
+}
+
+
+export default connect(({ pos, loading }) => ({  pos, loading }))(Pos)

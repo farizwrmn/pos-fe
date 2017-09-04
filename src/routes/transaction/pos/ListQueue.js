@@ -42,7 +42,10 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         memberCode: trans.memberCode,
         memberName: trans.memberName,
         point: trans.point,
-        id: trans.id
+        id: trans.id,
+        address01: trans.address01,
+        gender: trans.gender,
+        phone: trans.phone,
       })
       arrayMechanic.push({
         mechanicCode: trans.mechanicCode,

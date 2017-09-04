@@ -13,7 +13,6 @@ export async function query (params) {
 
 export async function queryProductByCode (params) {
   let url = `${stock}/${params}`
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -23,7 +22,6 @@ export async function queryProductByCode (params) {
 }
 
 export async function add (params) {
-  console.log('add params:',params);
   let url = params.id ? stock + '/' + params.id : stock
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -36,9 +34,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  console.log('edit params: ',params);
   let url = params.id ? stock + '/' + params.id : stock
-  console.log('editparams url:',url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -50,7 +46,6 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  console.log('delete-params:',params);
   let url = params.id ? stock + '/' + params.id : stock
   const apiHeaderToken = crypt.apiheader()
   return request({

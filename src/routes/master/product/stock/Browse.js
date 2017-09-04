@@ -42,10 +42,10 @@ const Browse = ({
       dataIndex: 'active',
       key: 'active',
       width: '114px',
-      render: (text) =>
+      render: (active) =>
         <span>
-          <Tag color={text?'red':'blue'}>
-            {text?'Non-Active':'Active'}
+          <Tag color={active?'blue' : 'red'}>
+            {active?'Active' : 'Non-Active'}
           </Tag>
         </span>,
     },
@@ -104,6 +104,12 @@ const Browse = ({
       dataIndex: 'trackQty',
       key: 'trackQty',
       width: '90px',
+      render: (active) =>
+        <span>
+          <Tag color={active?'blue' : 'red'}>
+            {active?'True' : 'False'}
+          </Tag>
+        </span>,
     }, {
       title: 'Alert Qty',
       dataIndex: 'alertQty',
@@ -114,6 +120,12 @@ const Browse = ({
       dataIndex: 'exception01',
       key: 'exception01',
       width: '90px',
+      render: (active) =>
+        <span>
+          <Tag color={active?'blue' : 'red'}>
+            {active?'True' : 'False'}
+          </Tag>
+        </span>,
     }, {
       title: 'Image',
       dataIndex: 'productImage',

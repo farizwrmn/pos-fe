@@ -32,9 +32,10 @@ export async function queryMechanics (params) {
 }
 
 export async function queryMechanicByCode (params) {
+  const url = params.employeeId ? employees + '/mechanics/' + params.employeeId : employees + '/mechanics/' + params
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: employees + '/mechanics/' + params.employeeId,
+    url: url,
     method: 'get',
     headers: apiHeaderToken
   })

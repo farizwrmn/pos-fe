@@ -34,11 +34,13 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     curTotal,
     listByCode,
     kodeUtil,
+    itemService,
     itemPayment,
     infoUtil,
     memberInformation,
     setCurTotal,
     memberUnitInfo,
+    modalServiceListVisible,
     mechanicInformation,
     curRecord,
     effectedRecord,
@@ -165,6 +167,16 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       payload: {
         item: record,
         modalType: 'modalPayment'
+      },
+    })
+  }
+
+  const modalEditService = (record) => {
+    dispatch({
+      type: 'pos/showServiceListModal',
+      payload: {
+        item: record,
+        modalType: 'modalService'
       },
     })
   }
@@ -417,9 +429,25 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({type: 'pos/hidePaymentModal'})
     },
     onChooseItem (data) {
-      console.log('onOk', data)
       dispatch({ type: 'pos/editPayment', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
       dispatch({type: 'pos/hidePaymentModal'})
+    },
+  }
+  const ModalServiceListProps = {
+    location: location,
+    loading: loading,
+    pos: pos,
+    item: itemService,
+    visible: modalServiceListVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({type: 'pos/hideServiceListModal'})
+    },
+    onChooseItem (data) {
+      console.log('Service')
+      dispatch({ type: 'pos/editService', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
+      dispatch({type: 'pos/hideServiceListModal'})
     },
   }
 
@@ -884,24 +912,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
   const dataTrans = () => {
     var product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+    return (product)
+  }
+
+  const dataService = () => {
     var service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
-    const cashier_trans = product.concat(service)
-    var arrayProd = []
-    for (var n = 0;   n < cashier_trans.length; n++) {
-      arrayProd.push({
-        no: n + 1,
-        code: cashier_trans[n].code,
-        disc1: cashier_trans[n].disc1,
-        disc2: cashier_trans[n].disc2,
-        disc3: cashier_trans[n].disc3,
-        discount: cashier_trans[n].discount,
-        name: cashier_trans[n].name,
-        price: cashier_trans[n].price,
-        qty: cashier_trans[n].qty,
-        total: cashier_trans[n].total,
-      })
-    }
-    return (arrayProd)
+    return (service)
   }
 
   const hdlPopoverClose = () => {
@@ -1146,6 +1162,62 @@ class LastMeter extends React.Component {
               style={{ marginBottom: 16 }}
             />
             {modalPaymentVisible && <Browse {...modalPaymentProps} />}
+            <Table
+              rowKey={(record, key) => key}
+              pagination={false}
+              bordered={true}
+              size="small"
+              scroll={{ x: '130%' }}
+              locale = {{
+                emptyText: 'Your Payment List',
+              }}
+              columns={[
+                {
+                  title: 'No',
+                  dataIndex: 'no',
+                },
+                {
+                  title: 'Code',
+                  dataIndex: 'code',
+                },
+                {
+                  title: 'Service Name',
+                  dataIndex: 'name',
+                },
+                {
+                  title: 'Q',
+                  dataIndex: 'qty',
+                },
+                {
+                  title: 'Price',
+                  dataIndex: 'price',
+                },
+                {
+                  title: 'Disc1(%)',
+                  dataIndex: 'disc1',
+                },
+                {
+                  title: 'Disc2(%)',
+                  dataIndex: 'disc2',
+                },
+                {
+                  title: 'Disc3(%)',
+                  dataIndex: 'disc3',
+                },
+                {
+                  title: 'Disc',
+                  dataIndex: 'discount',
+                },
+                {
+                  title: 'Total',
+                  dataIndex: 'total',
+                },
+              ]}
+              onRowClick={(record)=>modalEditService(record)}
+              dataSource={dataService()}
+              style={{ marginBottom: 16 }}
+            />
+            {modalServiceListVisible && <Browse {...ModalServiceListProps} />}
           </Card>
         </Col>
         <Col lg={6} md={4}>

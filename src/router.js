@@ -168,6 +168,15 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           },
         }, {
+          path: 'transaction/pos/history',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              cb(null, require('./routes/transaction/savedPayment/'))
+            }, 'transaction-pos-history')
+          },
+        }, {
           path: 'transaction/purchase',
           getComponent (nextState, cb) {
             require.ensure([], require => {

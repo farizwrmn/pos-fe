@@ -1,5 +1,6 @@
 import * as cashierService from '../../services/cashier'
-
+import { query as queryPos, queryDetail as queryDetail, queryPos as queryaPos } from '../../services/payment'
+import { queryMode as miscQuery} from '../../services/misc'
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
 import { queryMechanics as queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
 import { query as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
@@ -19,15 +20,22 @@ export default {
     list: [],
     tmpList: [],
     listCashier: [],
+    listPayment: [],
+    listPaymentDetail: [],
     listMember: [],
     listMechanic: [],
     listProduct: [],
+    posData: [],
     listByCode: [],
     listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))),
+    memberPrint: [],
+    mechanicPrint: [],
+    companyPrint: [],
     curQueue: 1,
     currentItem: {},
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalServiceListVisible: false,
     modalHelpVisible: false,
     modalWarningVisible: false,
     modalMechanicVisible: false,
@@ -35,7 +43,9 @@ export default {
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVisible: false,
+    modalPrintVisible: false,
     itemPayment: {},
+    itemService: {},
     visiblePopover: false,
     modalType: 'add',
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
@@ -80,6 +90,10 @@ export default {
         if (location.pathname === '/transaction/pos') {
           dispatch({
             type: 'loadDataPos',
+          })
+        } else if (location.pathname === '/transaction/pos/history') {
+          dispatch({
+            type: 'queryHistory',
           })
         }
       })
@@ -126,6 +140,83 @@ export default {
             },
           },
         })
+      }
+    },
+
+    * queryHistory ({ payload = {} }, { call, put }) {
+      const data = yield call(queryPos, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessPayment',
+          payload: {
+            listPayment: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              // pageSizeOptions: ['5','10','20','50'],
+              total: data.total,
+            },
+          },
+        })
+      }
+    },
+
+    * queryPosDetail ({ payload }, { call, put }) {
+      console.log('payload', payload)
+      const data = yield call(queryDetail, payload)
+      const PosData = yield call(queryaPos, payload.id)
+      const member = yield call(queryMemberCode, payload)
+      const company = yield call(miscQuery, { code: 'COMPANY' })
+      const mechanic = yield call(queryMechanicCode, payload.data.technicianId)
+      console.log(PosData)
+      if (data) {
+        yield put({
+          type: 'querySuccessPaymentDetail',
+          payload: {
+            posData: PosData.pos,
+            listPaymentDetail: {id: payload.data.transNo, cashierId: payload.data.cashierId, policeNo: payload.data.policeNo, lastMeter: payload.data.lastMeter, data: data.pos},
+            memberPrint: member.data,
+            companyPrint: company.data,
+            mechanicPrint: mechanic.mechanic,
+          },
+        })
+        var dataPos = []
+        var dataService = []
+        for (var n = 0; n < data.pos.length; n++) {
+          if (data.pos[n].serviceCode === null || data.pos[n].serviceName === null) {
+            var productId = data.pos[n].productCode
+            var productName = data.pos[n].productName
+            dataPos.push({
+              code: productId,
+              name: productName,
+              qty: data.pos[n].qty,
+              price: data.pos[n].sellingPrice,
+              discount: data.pos[n].discount,
+              disc1: data.pos[n].disc1,
+              disc2: data.pos[n].disc2,
+              disc3: data.pos[n].disc3,
+              total: (data.pos[n].qty * data.pos[n].sellingPrice) - (data.pos[n].discount  * data.pos[n].qty) -
+              ((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) - (((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) * data.pos[n].disc2 / 100) -
+              ((((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) * data.pos[n].disc2 / 100) * data.pos[n].disc2 / 100)
+            })
+          } else if (data.pos[n].productCode === null || data.pos[n].productName === null) {
+            var productId = data.pos[n].serviceCode
+            var productName = data.pos[n].serviceName
+            dataService.push({
+              code: productId,
+              name: productName,
+              qty: data.pos[n].qty,
+              price: data.pos[n].sellingPrice,
+              discount: data.pos[n].discount,
+              disc1: data.pos[n].disc1,
+              disc2: data.pos[n].disc2,
+              disc3: data.pos[n].disc3,
+              total: (data.pos[n].qty * data.pos[n].sellingPrice) - (data.pos[n].discount  * data.pos[n].qty) -
+              ((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) - (((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) * data.pos[n].disc2 / 100) -
+              ((((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) * data.pos[n].disc2 / 100) * data.pos[n].disc2 / 100)
+            })
+          }
+        }
       }
     },
 
@@ -529,7 +620,6 @@ export default {
     },
 
     *editPayment ({payload}, {put}) {
-      console.log('payload:', payload)
       var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       var arrayProd = dataPos.slice()
       var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
@@ -580,11 +670,138 @@ export default {
         arrayProd[payload.effectedRecord - 1].qty = tmpQty
         arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
       }
+      else if ( payload.kodeUtil == 'Delete') {
+        console.log('Delete')
+        console.log('effectedRecord', arrayProd[payload.effectedRecord - 1])
+        Array.prototype.remove = function() {
+          var what, a = arguments, L = a.length, ax;
+          while (L && this.length) {
+            what = a[--L];
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1);
+            }
+          }
+          return this;
+        };
 
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-      yield put({
-        type: 'setCurTotal',
-      })
+        var ary = arrayProd;
+        ary.remove(arrayProd[payload.effectedRecord - 1])
+        arrayProd=[]
+        for (var n = 0;   n < ary.length; n++) {
+          arrayProd.push({
+            no: n + 1,
+            code: ary[n].code,
+            disc1: ary[n].disc1,
+            disc2: ary[n].disc2,
+            disc3: ary[n].disc3,
+            discount: ary[n].discount,
+            name: ary[n].name,
+            price: ary[n].price,
+            qty: ary[n].qty,
+            total: ary[n].total,
+          })
+        }
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('cashier_trans')
+      } else {
+        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
+      }
+    },
+
+    *editService ({payload}, {put}) {
+      console.log('payload:', payload)
+      var dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      var arrayProd = dataPos.slice()
+      var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      var Qty = arrayProd[payload.effectedRecord - 1].qty
+      var price = arrayProd[payload.effectedRecord - 1].price
+      var disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      var disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      var disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      var discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      if ( payload.kodeUtil == 'discount' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+
+        arrayProd[payload.effectedRecord - 1].discount = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
+      }
+      else if ( payload.kodeUtil == 'disc1' ) {
+        var tmpDisc = (total * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc1 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc2 = 0
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
+      }
+      else if ( payload.kodeUtil == 'disc2' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc2 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
+      }
+      else if ( payload.kodeUtil == 'disc3' ) {
+        var tmpDisc = (total * disc1) / 100
+        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc3 = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+      }
+      else if ( payload.kodeUtil == 'quantity') {
+        var tmpQty = payload.value
+        var tmpDisc = ((tmpQty * price) * disc1) / 100
+        var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        var tmpDiscount = (discount * tmpQty)
+        arrayProd[payload.effectedRecord - 1].qty = tmpQty
+        arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
+      }
+      else if ( payload.kodeUtil == 'Delete') {
+        Array.prototype.remove = function() {
+          var what, a = arguments, L = a.length, ax;
+          while (L && this.length) {
+            what = a[--L];
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1);
+            }
+          }
+          return this;
+        };
+        var ary = arrayProd;
+        ary.remove(arrayProd[payload.effectedRecord - 1])
+        arrayProd=[]
+        for (var n = 0;   n < ary.length; n++) {
+          arrayProd.push({
+            no: n + 1,
+            code: ary[n].code,
+            disc1: ary[n].disc1,
+            disc2: ary[n].disc2,
+            disc3: ary[n].disc3,
+            discount: ary[n].discount,
+            name: ary[n].name,
+            price: ary[n].price,
+            qty: ary[n].qty,
+            total: ary[n].total,
+          })
+        }
+      }
+
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('service_detail')
+      } else {
+        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
+      }
     },
 
     *insertQueueCache ({payload}, {put}) {
@@ -603,7 +820,7 @@ export default {
         memberInformation = listByCode
       }
       const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
-
+      console.log('memberInfo', memberInfo)
       //start-mechanicInfo
       const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
       const mechanic = mechanicInfo[0]
@@ -616,11 +833,15 @@ export default {
         point: memberInfo.point,
         memberUnit: memberUnit,
         lastMeter: lastMeter,
+        address01: memberInfo.address01,
+        gender: memberInfo.gender,
+        id: memberInfo.id,
+        phone: memberInfo.phone,
         mechanicCode: mechanic.mechanicCode,
         mechanicName: mechanic.mechanicName
       })
       if ( localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
-          localStorage.getItem('cashier_trans') === null) {
+          localStorage.getItem('mechanic') === null ) {
         Modal.warning({
           title: 'Warning',
           content: 'Transaction Not Found...!',
@@ -681,6 +902,7 @@ export default {
     *insertQueue ({ payload }, { call, put }) {
       var dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
       var arrayProd = dataPos.slice()
+      console.log('arrayProd', dataPos,arrayProd)
 
       if ( JSON.stringify(arrayProd) != "[]" ) {
         for (var i in arrayProd) {
@@ -736,6 +958,30 @@ export default {
           ...pagination,
         },
         curTotal: grandTotal, }
+    },
+
+    querySuccessPayment (state, action) {
+      const { listPayment, pagination } = action.payload
+      return { ...state,
+        listPayment,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        } }
+    },
+
+    querySuccessPaymentDetail (state, action) {
+      const { posData, listPaymentDetail, memberPrint, mechanicPrint, companyPrint, pagination } = action.payload
+      return { ...state,
+        listPaymentDetail,
+        memberPrint,
+        mechanicPrint,
+        companyPrint,
+        posData,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        } }
     },
 
     queryMechanicSuccess (state, action) {
@@ -956,6 +1202,13 @@ export default {
       return { ...state, modalMemberVisible: false }
     },
 
+    showPrintModal (state, action) {
+      return { ...state, ...action.payload, modalPrintVisible: true }
+    },
+    hidePrintModal (state) {
+      return { ...state, modalPrintVisible: false }
+    },
+
 
     showPaymentModal (state, action) {
       console.log('showPaymentModal', action.payload)
@@ -963,6 +1216,13 @@ export default {
     },
     hidePaymentModal (state) {
       return { ...state, modalPaymentVisible: false }
+    },
+
+    showServiceListModal (state, action) {
+      return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
+    },
+    hideServiceListModal (state) {
+      return { ...state, modalServiceListVisible: false }
     },
 
     showMechanicModal (state, action) {

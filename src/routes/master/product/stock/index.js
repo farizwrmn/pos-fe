@@ -172,7 +172,6 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
       })
     },
     onEditItem (item) {
-      console.log('onEditItem item, ',item);
       dispatch({
         type: 'stock/modalShow',
         payload: {
@@ -182,7 +181,6 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
       })
     },
     onDeleteItem (id) {
-      console.log('onDeleteItem:', id);
       dispatch({
         type: 'stock/delete',
         payload: {

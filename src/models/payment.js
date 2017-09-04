@@ -11,6 +11,7 @@ import moment from 'moment'
 const pdfMake = require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+const terbilang = require('terbilang-spelling')
 const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
@@ -36,6 +37,7 @@ export default {
     creditCharge: 0,
     creditChargeAmount: 0,
     netto: 0,
+    print: '',
     company: [],
     lastTransNo: '',
     totalPayment: 0,
@@ -55,127 +57,155 @@ export default {
 
   effects: {
     *create ({ payload }, { call, put }) {
-      var datatrans
-      var dataLast
-      console.log('payload');
-      function pad(n, width, z) {
-        z = z || '0';
-        n = n + '';
-        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-      }
-      var data = yield call(queryLastTransNo, payload.periode)
-      datatrans= [`FJ${moment().format('MMYY')}0000`]
-
-      let newData = datatrans
-      if (data.data.length > 0){
-        dataLast = data.data
+      if (payload.address === undefined) {
+        const modal = Modal.error({
+          title: 'Payment Fail',
+          content: 'Address is Undefined',
+        })
+      } else if (payload.memberId === undefined) {
+        Modal.error({
+          title: 'Payment Fail',
+          content: 'Member Id is Undefined',
+        })
+      } else if (payload.phone === undefined) {
+        Modal.error({
+          title: 'Payment Fail',
+          content: 'Phone is Undefined',
+        })
+      } else if (payload.policeNo === undefined || payload.policeNo === null) {
+        Modal.error({
+          title: 'Payment Fail',
+          content: 'Unit is Undefined',
+        })
       }
       else {
-        dataLast = datatrans
-      }
-
-      var parseTransNo = dataLast.reduce(function(prev, current) {
-        return (prev.transNo > current.transNo) ? prev : current
-      })
-
-      // var dataCodeMember = yield call(queryCode, payload.memberCode)
-      // console.log('dataCodeMember.member.point', dataCodeMember.data.point);
-      // const pointTotal = parseInt(payload.point) + parseInt(dataCodeMember.data.point)
-      // console.log('dataCodeMember', dataCodeMember, 'pointTotal', pointTotal)
-      // yield call(updateMembers, {id: payload.memberCode, point: pointTotal})
-
-      var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
-      lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
-      var newMonth = lastNo.substr(2,4)
-      var lastTransNo = lastNo.substr(lastNo.length - 4)
-      var sendTransNo = parseInt(lastTransNo) + 1
-      var padding = pad(sendTransNo,4)
-
-
-
-
-      if ( data.success ) {
-        if (newMonth==`${moment().format('MMYY')}`){
-          var transNo = `FJ${moment().format('MMYY')}${padding}`
-        } else {
-          var transNo = `FJ${moment().format('MMYY')}0001`
+        var datatrans
+        var dataLast
+        var data = yield call(queryLastTransNo, payload.periode)
+        function pad(n, width, z) {
+          z = z || '0';
+          n = n + '';
+          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
         }
-        var arrayProd = []
-        const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-        const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-        const dataPos = product.concat(service)
-        if (transNo.indexOf('FJ') > -1) {
-          transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
+        datatrans= [`FJ${moment().format('MMYY')}0000`]
+
+        let newData = datatrans
+        if (data.data.length > 0){
+          dataLast = data.data
         }
-        for (var key in dataPos) {
-          arrayProd.push({
-            'transNo': transNo,
-            'productId': dataPos[key].code,
-            'productName': dataPos[key].name,
-            'qty': dataPos[key].qty,
-            'sellingPrice': dataPos[key].price,
-            'discount': dataPos[key].discount,
-            'disc1': dataPos[key].disc1,
-            'disc2': dataPos[key].disc2,
-            'disc3': dataPos[key].disc3
-          })
+        else {
+          dataLast = datatrans
         }
 
-        const detailPOS = {"dataPos": arrayProd,
-          "transNo": `FJ${moment().format('MMYY')}${padding}`,
-          "memberCode": payload.memberCode,
-          "technicianId": payload.technicianId,
-          "cashierNo": payload.curCashierNo,
-          "cashierId": payload.cashierId,
-          "shift": payload.curShift,
-          "transDate": `${moment().format('YYYYMMDD')}`,
-          "transTime": payload.transTime,
-          "total": payload.grandTotal,
-          "lastMeter": localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : payload.lastMeter ? payload.lastMeter : 0,
-          "creditCardNo": payload.creditCardNo,
-          "creditCardType": payload.creditCardType,
-          "creditCardCharge": payload.creditCardCharge,
-          "totalCreditCard": payload.totalCreditCard,
-          "discount": payload.totalDiscount,
-          "rounding": payload.rounding,
-          "paid": payload.totalPayment,
-          "policeNo": localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
-          "change": payload.totalChange
-        }
-        const point = parseInt(payload.grandTotal / 10000)
-        console.log('point', point)
+        var parseTransNo = dataLast.reduce(function(prev, current) {
+          return (prev.transNo > current.transNo) ? prev : current
+        })
 
-        const data_create = yield call(create, detailPOS)
-        if (data_create.success) {
-          const data_cashier_trans_update = yield call(updateCashierTrans, {"total": (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
-                                                                            "totalCreditCard": payload.totalCreditCard,
-                                                                            "status": "O",
-                                                                            "cashierNo": payload.curCashierNo,
-                                                                            "shift": payload.curShift,
-                                                                            "transDate": payload.transDate2,})
-          yield call (createDetail, { "data": arrayProd, "transNo": `FJ${moment().format('MMYY')}${padding}`})
-          if ( data_cashier_trans_update.success ) {
-            yield call (updateMemberPoint, { point: point, memberCode: payload.memberId })
-            yield put({
-              type: 'successPost',
-              payload: {
-                posMessage: 'Data has been saved',
-              },
-            })
+        var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
+        lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
+        var newMonth = lastNo.substr(2,4)
+        var lastTransNo = lastNo.substr(lastNo.length - 4)
+        var sendTransNo = parseInt(lastTransNo) + 1
+        var padding = pad(sendTransNo,4)
 
-            yield put({ type: 'pos/setAllNull' })
-
-            const modal = Modal.info({
-              title: 'Information',
-              content: 'Transaction has been saved...!',
+        if ( data.success ) {
+          if (newMonth==`${moment().format('MMYY')}`){
+            var transNo = `FJ${moment().format('MMYY')}${padding}`
+          } else {
+            var transNo = `FJ${moment().format('MMYY')}0001`
+          }
+          var arrayProd = []
+          const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+          const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+          const dataPos = product.concat(service)
+          if (transNo.indexOf('FJ') > -1) {
+            transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
+          }
+          const trans = transNo.replace(/[^a-z0-9]/gi, '');
+          for (var key in dataPos) {
+            arrayProd.push({
+              'transNo': trans,
+              'productId': dataPos[key].code,
+              'productName': dataPos[key].name,
+              'qty': dataPos[key].qty,
+              'sellingPrice': dataPos[key].price,
+              'discount': dataPos[key].discount,
+              'disc1': dataPos[key].disc1,
+              'disc2': dataPos[key].disc2,
+              'disc3': dataPos[key].disc3
             })
           }
 
-        } else {
-          Modal.error({
-            title: 'Error Saving Payment',
-            content: 'Your Data not saved',
-          })
+          const detailPOS = {"dataPos": arrayProd,
+            "transNo": trans,
+            "memberCode": payload.memberCode,
+            "technicianId": payload.technicianId,
+            "cashierNo": payload.curCashierNo,
+            "cashierId": payload.cashierId,
+            "shift": payload.curShift,
+            "transDate": `${moment().format('YYYYMMDD')}`,
+            "transTime": payload.transTime,
+            "total": payload.grandTotal,
+            "lastMeter": localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : payload.lastMeter ? payload.lastMeter : 0,
+            "creditCardNo": payload.creditCardNo,
+            "creditCardType": payload.creditCardType,
+            "creditCardCharge": payload.creditCardCharge,
+            "totalCreditCard": payload.totalCreditCard,
+            "discount": payload.totalDiscount,
+            "rounding": payload.rounding,
+            "paid": payload.totalPayment,
+            "policeNo": localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
+            "change": payload.totalChange
+          }
+          const point = parseInt(payload.grandTotal / 10000)
+
+          const data_create = yield call(create, detailPOS)
+          if (data_create.success) {
+            yield put({
+              type: 'printPayment',
+              payload: {
+                memberId: payload.memberId,
+                gender: payload.gender,
+                company: payload.company,
+                lastTransNo: payload.lastTransNo,
+                phone: payload.phone,
+                memberName: payload.memberName,
+                policeNo: payload.policeNo,
+                lastMeter: payload.lastMeter,
+                address: payload.address,
+                mechanicName: payload.mechanicName,
+                cashierId: payload.cashierId,
+              },
+            })
+            const data_cashier_trans_update = yield call(updateCashierTrans, {"total": (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
+              "totalCreditCard": payload.totalCreditCard,
+              "status": "O",
+              "cashierNo": payload.curCashierNo,
+              "shift": payload.curShift,
+              "transDate": payload.transDate2,})
+            yield call (createDetail, { 'data': arrayProd, 'transNo': trans})
+            if ( data_cashier_trans_update.success ) {
+              yield call (updateMemberPoint, { point: point, memberCode: payload.memberId })
+              yield put({
+                type: 'successPost',
+                payload: {
+                  posMessage: 'Data has been saved',
+                },
+              })
+
+              yield put({ type: 'pos/setAllNull' })
+              const modal = Modal.info({
+                title: 'Information',
+                content: 'Transaction has been saved...!',
+              })
+            }
+
+          } else {
+            Modal.error({
+              title: 'Error Saving Payment',
+              content: 'Your Data not saved',
+            })
+          }
         }
       }
     },
@@ -218,6 +248,7 @@ export default {
         transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
       }
       localStorage.setItem('transNo', transNo)
+      const trans = transNo.replace(/[^a-z0-9]/gi, '');
       yield put ({
         type: 'lastTransNo',
         payload: transNo
@@ -225,293 +256,318 @@ export default {
     },
 
     * print ({ payload }, { put,call }) {
-      const dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-      const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
-      var Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-      if (merge === [] ? false : true ) {
-        function createPdfLineItems(tabledata, payload, node){
-          var headers = {
-            top:{
-              col_1:{ fontSize: 12, text: 'No', style: 'tableHeader', alignment: 'center' },
-              col_2:{ fontSize: 12, text: 'Code', style: 'tableHeader', alignment: 'center' },
-              col_3:{ fontSize: 12, text: 'Deskripsi', style: 'tableHeader', alignment: 'center' },
-              col_4:{ fontSize: 12, text: 'Qty', style: 'tableHeader', alignment: 'center' },
-              col_5:{ fontSize: 12, text: 'Price', style: 'tableHeader', alignment: 'center' },
-              col_6:{ fontSize: 12, text: 'Discount', style: 'tableHeader', alignment: 'center' },
-              col_7:{ fontSize: 12, text: 'Subtotal', style: 'tableHeader', alignment: 'center' },
+      console.log('payload', payload)
+      if (payload.address === undefined) {
+        const modal = Modal.error({
+          title: 'Print Fail',
+          content: 'Address is Undefined',
+        })
+      } else if (payload.memberId === undefined) {
+        Modal.error({
+          title: 'Print Fail',
+          content: 'Member Id is Undefined',
+        })
+      } else if (payload.phone === undefined) {
+        Modal.error({
+          title: 'Print Fail',
+          content: 'Phone is Undefined',
+        })
+      } else if (payload.policeNo === undefined || payload.policeNo === null) {
+        Modal.error({
+          title: 'Print Fail',
+          content: 'Unit is Undefined',
+        })
+      }
+      else {
+        const dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
+        var Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+        if (merge === [] ? false : true ) {
+          function createPdfLineItems(tabledata, payload, node){
+            var code = ''
+            if (node === 1) {
+              code = 'Service'
+            } else if (node === 0) {
+              code = 'Product'
             }
-          }
-          var rows = tabledata;
-          var body = [];
-          for (var key in headers){
-            if (headers.hasOwnProperty(key)){
-              var header = headers[key];
-              var row = new Array();
-              row.push( header.col_1 );
-              row.push( header.col_2 );
-              row.push( header.col_3 );
-              row.push( header.col_4 );
-              row.push( header.col_5 );
-              row.push( header.col_6 );
-              row.push( header.col_7 );
-              body.push(row);
+            var headers = {
+              top:{
+                col_1:{ fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+                col_2:{ fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
+                col_3:{ fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
+                col_4:{ fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+                col_5:{ fontSize: 12, text: '@HET', style: 'tableHeader', alignment: 'center' },
+                col_6:{ fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
+                col_7:{ fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
+              }
             }
-          }
-          for (var key in rows)
-          {
-            if (rows.hasOwnProperty(key))
+            var rows = tabledata;
+            var body = [];
+            for (var key in headers){
+              if (headers.hasOwnProperty(key)){
+                var header = headers[key];
+                var row = new Array();
+                row.push( header.col_1 );
+                row.push( header.col_2 );
+                row.push( header.col_3 );
+                row.push( header.col_4 );
+                row.push( header.col_5 );
+                row.push( header.col_6 );
+                row.push( header.col_7 );
+                body.push(row);
+              }
+            }
+            for (var key in rows)
             {
-              var data = rows[key];
-              var totalDisc = (data.price * data.qty) - data.total
-              var row = new Array();
-              row.push( { text: data.no.toString(), alignment: 'center', fontSize: 11 } );
-              row.push( { text: data.code.toString(), alignment: 'center', fontSize: 11 } );
-              row.push( { text: data.name.toString(), alignment: 'center', fontSize: 11 } );
-              row.push( { text: data.qty.toString(), alignment: 'center', fontSize: 11 });
-              row.push( { text: `Rp ${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'center', fontSize: 11 });
-              row.push( { text: `Rp ${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'center', fontSize: 11 });
-              row.push( { text: `Rp ${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'center', fontSize: 11 });
-              body.push(row);
+              if (rows.hasOwnProperty(key))
+              {
+                var data = rows[key];
+                var totalDisc = (data.price * data.qty) - data.total
+                var row = new Array();
+                row.push( { text: data.no.toString(), alignment: 'center', fontSize: 11 } );
+                row.push( { text: data.code.toString(), alignment: 'left', fontSize: 11 } );
+                row.push( { text: data.name.toString(), alignment: 'left', fontSize: 11 } );
+                row.push( { text: data.qty.toString(), alignment: 'center', fontSize: 11 });
+                row.push( { text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+                row.push( { text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+                row.push( { text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+                body.push(row);
+              }
+            }
+            // if (node != 1) {
+            //   if(key < 2) {
+            //     for (var n = 0; n < (2-key); n++) {
+            //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
+            //     }
+            //   }
+            // } else {
+            //   if(key < 2) {
+            //     for (var n = 0; n < (2-key); n++) {
+            //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
+            //     }
+            //   }
+            // }
+            if (rows === null ? true : false) {
+              body.push([{text: ' ', fontSize: 11}, {}, {}, {}, {}, {}, {}])
+            }
+            return body;
+          }
+          var body = createPdfLineItems(dataService, payload, 1)
+          var product = createPdfLineItems(dataPos, payload, 0)
+          var salutation = ''
+          if(payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0,3) === 'MDN') {
+            if (payload.gender === 'M') {
+              salutation = 'TN. '
+            } else if (payload.gender === 'F') {
+              salutation = 'NY. '
             }
           }
-          // if (node != 1) {
-          //   if(key < 2) {
-          //     for (var n = 0; n < (2-key); n++) {
-          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
-          //     }
-          //   }
-          // } else {
-          //   if(key < 2) {
-          //     for (var n = 0; n < (2-key); n++) {
-          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
-          //     }
-          //   }
-          // }
-          if (rows === null ? true : false) {
-            body.push([{text: ' ', fontSize: 11}, {}, {}, {}, {}, {}, {}])
+          var pageBreak = ' '
+          if (merge.length > 4) {
+            pageBreak = 'before'
           }
-          return body;
-        }
-        var body = createPdfLineItems(dataService, payload, 1)
-        var product = createPdfLineItems(dataPos, payload, 0)
-        var salutation = ''
-        if(payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0,3) === 'MDN') {
-          if (payload.gender === 'M') {
-            salutation = 'TN. '
-          } else if (payload.gender === 'F') {
-            salutation = 'NY. '
-          }
-        }
-        console.log('dataPos', dataPos.length)
-        var pageBreak = ' '
-        // if ((merge.length > 2 && dataPos.length < 11 && dataService.length > 1 && dataService.length > 6) || (dataPos.length > 2 && dataService.length > 0) || (merge.length > 19 || merge.length > 3) ||(dataPos.length > 2 && dataPos.length <= 11 && dataService.length > 6)) {
-        //   pageBreak = 'after'
-        // }
-        if (merge.length > 4) {
-          pageBreak = 'after'
-        }
-        var docDefinition = {
-          pageSize: { width: 813, height: 530 },
-          pageOrientation: 'landscape',
-          pageMargins: [40, 170, 40, 60],
-          header : {
-            stack: [
+          var docDefinition = {
+            pageSize: { width: 813, height: 530 },
+            pageOrientation: 'landscape',
+            pageMargins: [40, 160, 40, 160],
+            header : {
+              stack: [
+                {
+                  columns: [
+                    {
+                      stack: [
+                        {
+                          text: payload.company[0].miscName,
+                          style: 'header',
+                          fontSize: 11,
+                          alignment: 'left'
+                        },
+                        {
+                          text: payload.company[0].miscDesc,
+                          style: 'header',
+                          fontSize: 11,
+                          alignment: 'left'
+                        },
+                        {
+                          text: payload.company[0].miscVariable,
+                          style: 'header',
+                          fontSize: 11,
+                          alignment: 'left'
+                        },
+                        {
+                          text: ' ',
+                          style: 'header',
+                          fontSize: 11,
+                          alignment: 'left'
+                        },
+                      ],
+                    },
+                    {
+                      text: 'NOTA PENJUALAN',
+                      style: 'header',
+                      fontSize: 18,
+                      alignment: 'center'
+                    },
+                    {
+                      text: ' ',
+                      style: 'header',
+                      fontSize: 18,
+                      alignment: 'right'
+                    },
+                  ],
+                },
+                {
+                  table: {
+                    widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+                    body: [
+                      [{text: 'No Faktur', fontSize: 12}, ':', {text: payload.lastTransNo.toString(), fontSize: 12}, {}, {text: 'No Polisi', fontSize: 12}, ':', {text: payload.policeNo.toString().toUpperCase(), fontSize: 12}],
+                      [{text: 'Tanggal Faktur', fontSize: 12}, ':', {text: moment().format('DD/MM/YYYY'), fontSize: 12}, {}, {text: 'KM Terakhir', fontSize: 12}, ':', {text: payload.lastMeter.toString().toUpperCase(), fontSize: 12}],
+                      [{text: 'Nama Customer', fontSize: 12}, ':', {text: `${salutation}${payload.memberName.toString().toUpperCase()}`, fontSize: 12}, {}, {text: 'Mechanic', fontSize: 12}, ':', {text: payload.mechanicName.toString().toUpperCase(), fontSize: 12}],
+                      [{text: 'Contact', fontSize: 12}, ':', {text: payload.phone.toString().toUpperCase(), fontSize: 12}, {}, {text: 'Alamat', fontSize: 12}, ':', {text: payload.address.toString().toUpperCase().substring(0, 22), fontSize: 12}],
+                    ]
+                  },
+                  layout: 'noBorders',
+                },
+                {
+                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }]
+                },
+              ],
+              margin: [30, 12, 12, 30],
+            },
+
+            content: [
+              {
+                writable: true,
+                table: {
+                  widths: ['4%', '22%', '40%', '4%', '10%', '10%', '10%'],
+                  headerRows: 1,
+                  body: product
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
+                  },
+                  vLineWidth: function (i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 0.01 : 0.01;
+                  },
+                  hLineColor: function (i, node) {
+                    return (i === 1 || i === 0 || i === node.table.body.length) ? 'black' : 'white';
+                  },
+                  vLineColor: function (i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
+                  },
+                },
+              },
               {
                 text: ' ',
                 style: 'header',
-                fontSize: 14,
-                alignment: 'center'
+                fontSize: 12,
+                alignment: 'left'
               },
               {
-                columns: [
-                  {
-                    stack: [
-                      {
-                        text: payload.company[0].miscName,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: payload.company[0].miscDesc,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: payload.company[0].miscVariable,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: ' ',
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                    ],
+                writable: true,
+                table: {
+                  headerRows: 1,
+                  widths: ['4%', '22%', '40%', '4%', '10%', '10%', '10%'],
+                  body: body
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
                   },
-                  {
-                    text: 'NOTA PENJUALAN',
-                    style: 'header',
-                    fontSize: 18,
-                    alignment: 'center'
+                  vLineWidth: function (i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 0.01 : 0.01;
                   },
-                  {
-                    text: ' ',
-                    style: 'header',
-                    fontSize: 18,
-                    alignment: 'right'
+                  hLineColor: function (i, node) {
+                    return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white';
                   },
+                  vLineColor: function (i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
+                  },
+                },
+              },
+              {
+                stack: [
                 ],
               },
-              {
-                style: 'tableExample',
-                table: {
-                  widths: ['15%', '1%', '25%', '20%', '15%', '1%', '24%'],
-                  body: [
-                    [{text: 'No Faktur', fontSize: 12}, ':', {text: payload.lastTransNo.toString(), fontSize: 12}, {}, {text: 'No Polisi', fontSize: 12}, ':', {text: payload.policeNo.toString().toUpperCase(), fontSize: 12}],
-                    [{text: 'Tanggal Faktur', fontSize: 12}, ':', {text: moment().format('DD/MM/YYYY'), fontSize: 12}, {}, {text: 'KM Terakhir', fontSize: 12}, ':', {text: payload.lastMeter.toString().toUpperCase(), fontSize: 12}],
-                    [{text: 'Kode Customer', fontSize: 12}, ':', {text: payload.memberId.toString().toUpperCase(), fontSize: 12}, {}, {text: 'Contact', fontSize: 12}, ':', {text: payload.phone.toString().toUpperCase(), fontSize: 12}],
-                    [{text: 'Nama Customer', fontSize: 12}, ':', {text: `${salutation}${payload.memberName.toString().toUpperCase()}`, fontSize: 12}, {}, {text: 'Alamat', fontSize: 12}, ':', {text: payload.address.toString().toUpperCase(), fontSize: 12}],
-                  ]
-                },
-                layout: 'noBorders',
-              },
             ],
-            margin: [30, 12, 12, 30]
-          },
 
-          content: [
-            {
-              text: 'Product Item',
-              style: 'header',
-              fontSize: 12,
-              alignment: 'left'
-            },
-            {
-              style: 'tableExample',
-              writable: true,
-              table: {
-                widths: ['4%', '25%', '37%', '4%', '10%', '10%', '10%'],
-                headerRows: 1,
-                body: product
-              },
-              layout: {
-                hLineWidth: function (i, node) {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
-                },
-                vLineWidth: function (i, node) {
-                  return (i === 0 || i === node.table.widths.length) ? 0.01 : 0.01;
-                },
-                hLineColor: function (i, node) {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 'black' : 'white';
-                },
-                vLineColor: function (i, node) {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
-                },
-              },
-            },
-            {
-              text: ' ',
-              style: 'header',
-              fontSize: 12,
-              alignment: 'left'
-            },
-            {
-              text: 'Service',
-              style: 'header',
-              fontSize: 12,
-              alignment: 'left'
-            },
-            {
-              style: 'tableExample',
-              writable: true,
-              table: {
-                headerRows: 1,
-                widths: ['4%', '25%', '37%', '4%', '10%', '10%', '10%'],
-                body: body
-              },
-              layout: {
-                hLineWidth: function (i, node) {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
-                },
-                vLineWidth: function (i, node) {
-                  return (i === 0 || i === node.table.widths.length) ? 0.01 : 0.01;
-                },
-                hLineColor: function (i, node) {
-                  return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white';
-                },
-                vLineColor: function (i, node) {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
-                },
-              },
-            },
-            {fontSize: 12, text: `TOTAL : Rp ${Total.toLocaleString(['ban', 'id'])}`, style: 'tableHeader', alignment: 'right'},
-            {
-              style: 'tableExample',
-              table: {
-                widths: ['20%', '60%','20%'],
-                body: [
-                  [{text: ' ', fontSize: 9, alignment: 'center', pageBreak: pageBreak}, {}, {text: ' ', fontSize: 9, pageBreak: pageBreak}],
-                  [{text: 'Dibuat oleh', fontSize: 12, alignment: 'center'}, {}, {text: 'Diterima oleh', fontSize: 12, alignment: 'center'}],
-                  [{text: ' ', fontSize: 15, alignment: 'center'}, {}, {}],
-                  [{text: ' ', fontSize: 15, alignment: 'center'}, {}, {}],
-                  [{text: ' ', fontSize: 15, alignment: 'center'}, {}, {}],
-                  [{text: '..............', fontSize: 15, alignment: 'center'}, {}, {text: '..............', fontSize: 15, alignment: 'center'}],
-                  [{text: payload.cashierId.toString(), fontSize: 12, alignment: 'center'}, {}, {text: `${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center'}],
-                ]
-              },
-              layout: {
-                hLineWidth: function (i, node) {
-                  return (i === node.table.body.length) ? 0 : 0;
-                },
-                vLineWidth: function (i, node) {
-                  return (i === node.table.widths.length) ? 0 : 0;
-                },
-                hLineColor: function (i, node) {
-                  return (i === node.table.body.length) ? 'black' : 'white';
-                },
-                vLineColor: function (i, node) {
-                  return (i === node.table.widths.length) ? 'black' : 'black';
-                },
-              },
-            },
-          ],
-
-          footer: function(currentPage, pageCount) {
-            return {
-              margin:[40, 0, 40, 0],
-              columns: [
-                {
-                  fontSize: 9,
-                  text:[
+            footer: function(currentPage, pageCount) {
+              if (currentPage == pageCount) {
+                return {
+                  margin: [40, 0, 40, 0],
+                  height: 160,
+                  stack: [
+                    {fontSize: 12, text: `TOTAL : Rp ${Total.toLocaleString(['ban', 'id'])}`, style: 'tableHeader', alignment: 'right'},
                     {
-                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}      Cetakan ke: 1                Dicetak Oleh: ${payload.cashierId}`, margin: [0, 0, 0, 40], fontSize: 11, alignment: 'center'
+                      columns: [
+                        {text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.cashierId.toString()}`, fontSize: 12, alignment: 'center'},
+                        {text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center'},
+                      ],
                     },
                     {
-                      text: '                   page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
-                      fontSize: 11,
-                    },
-                    {
-                      text: '_______________________________________________________________________________' +
-                      '\n',
-                      margin: [0, 20]
-                    },
-                    {
-                      text: 'Pos © 2017 Darkotech Mandiri Indonesia'
+                      fontSize: 9,
+                      text: [
+                        {
+                          text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}      Cetakan ke: 1                Dicetak Oleh: ${payload.cashierId}`,
+                          margin: [0, 0, 0, 40],
+                          fontSize: 11,
+                          alignment: 'center'
+                        },
+                        {
+                          text: '                   page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
+                          fontSize: 11,
+                        },
+                        {
+                          text: '_______________________________________________________________________________' +
+                          '\n',
+                          margin: [0, 0]
+                        },
+                        {
+                          text: 'Pos © 2017 Darkotech Mandiri Indonesia'
+                        }
+                      ],
+                      alignment: 'center'
                     }
-                  ],
-                  alignment: 'center'
-                }
-              ]
-            };
-
-          },
+                  ]
+                };
+              } else {
+                return {
+                  margin: [40, 100, 40, 10],
+                  height: 160,
+                  stack: [
+                    {
+                      fontSize: 9,
+                      text: [
+                        {
+                          text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}      Cetakan ke: 1                Dicetak Oleh: ${payload.cashierId}`,
+                          margin: [0, 0, 0, 40],
+                          fontSize: 11,
+                          alignment: 'center'
+                        },
+                        {
+                          text: '                   page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
+                          fontSize: 11,
+                        },
+                        {
+                          text: '_______________________________________________________________________________' +
+                          '\n',
+                          margin: [0, 20]
+                        },
+                        {
+                          text: 'Pos © 2017 Darkotech Mandiri Indonesia'
+                        }
+                      ],
+                      alignment: 'center'
+                    }
+                  ]
+                };
+              }
+            },
+          }
+          pdfMake.createPdf(docDefinition).print()
         }
-          pdfMake.createPdf(docDefinition).open()
       }
     },
 
@@ -544,7 +600,6 @@ export default {
     },
 
     *setCompanyName ({ payload }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(miscQuery, payload)
       if(data.data != []) {
         localStorage.setItem('company', JSON.stringify(data.data))
@@ -666,6 +721,319 @@ export default {
 
     setCashPaymentNull (state, action) {
       return { ...state, inputPayment: 0, totalPayment: 0, totalChange: 0}
+    },
+
+    printPayment (state, action) {
+      const payload = action.payload
+      console.log('payload', payload)
+      const dataPos = payload.dataPos
+      const dataService = payload.dataService
+      const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
+      var Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      if (merge != []) {
+        const createPdfLineItems = (tabledata, payload, node) => {
+          var code = ''
+          if (node === 1) {
+            code = 'Service'
+          } else if (node === 0) {
+            code = 'Product'
+          }
+          var headers = {
+            top:{
+              col_1:{ fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+              col_2:{ fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
+              col_3:{ fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
+              col_4:{ fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+              col_5:{ fontSize: 12, text: '@HET', style: 'tableHeader', alignment: 'center' },
+              col_6:{ fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
+              col_7:{ fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
+            }
+          }
+          var rows = tabledata;
+          var body = [];
+          for (var key in headers){
+            if (headers.hasOwnProperty(key)){
+              var header = headers[key];
+              var row = new Array();
+              row.push( header.col_1 );
+              row.push( header.col_2 );
+              row.push( header.col_3 );
+              row.push( header.col_4 );
+              row.push( header.col_5 );
+              row.push( header.col_6 );
+              row.push( header.col_7 );
+              body.push(row);
+            }
+          }
+          for (var key in rows)
+          {
+            if (rows.hasOwnProperty(key))
+            {
+              var data = rows[key];
+              var totalDisc = (data.price * data.qty) - data.total
+              var row = new Array();
+              row.push( { text: data.no.toString(), alignment: 'center', fontSize: 11 } );
+              row.push( { text: data.code.toString(), alignment: 'left', fontSize: 11 } );
+              row.push( { text: data.name.toString(), alignment: 'left', fontSize: 11 } );
+              row.push( { text: data.qty.toString(), alignment: 'center', fontSize: 11 });
+              row.push( { text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+              row.push( { text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+              row.push( { text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 });
+              body.push(row);
+            }
+          }
+          // if (node != 1) {
+          //   if(key < 2) {
+          //     for (var n = 0; n < (2-key); n++) {
+          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
+          //     }
+          //   }
+          // } else {
+          //   if(key < 2) {
+          //     for (var n = 0; n < (2-key); n++) {
+          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
+          //     }
+          //   }
+          // }
+          if (rows === null ? true : false) {
+            body.push([{text: ' ', fontSize: 11}, {}, {}, {}, {}, {}, {}])
+          }
+          return body;
+        }
+        var body = createPdfLineItems(dataService, payload, 1)
+        var product = createPdfLineItems(dataPos, payload, 0)
+        var salutation = ''
+        if(payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0,3) === 'MDN') {
+          if (payload.gender === 'M') {
+            salutation = 'TN. '
+          } else if (payload.gender === 'F') {
+            salutation = 'NY. '
+          }
+        }
+        var pageBreak = ' '
+        if (merge.length > 4) {
+          pageBreak = 'before'
+        }
+        var docDefinition = {
+          pageSize: { width: 813, height: 530 },
+          pageOrientation: 'landscape',
+          pageMargins: [40, 160, 40, 150],
+          header : {
+            stack: [
+              {
+                columns: [
+                  {
+                    stack: [
+                      {
+                        text: payload.company[0].miscName,
+                        style: 'header',
+                        fontSize: 11,
+                        alignment: 'left'
+                      },
+                      {
+                        text: payload.company[0].miscDesc,
+                        style: 'header',
+                        fontSize: 11,
+                        alignment: 'left'
+                      },
+                      {
+                        text: payload.company[0].miscVariable,
+                        style: 'header',
+                        fontSize: 11,
+                        alignment: 'left'
+                      },
+                      {
+                        text: ' ',
+                        style: 'header',
+                        fontSize: 11,
+                        alignment: 'left'
+                      },
+                    ],
+                  },
+                  {
+                    text: 'NOTA PENJUALAN',
+                    style: 'header',
+                    fontSize: 18,
+                    alignment: 'center'
+                  },
+                  {
+                    text: ' ',
+                    style: 'header',
+                    fontSize: 18,
+                    alignment: 'right'
+                  },
+                ],
+              },
+              {
+                table: {
+                  widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+                  body: [
+                    [{text: 'No Faktur', fontSize: 12}, ':', {text: payload.lastTransNo.toString(), fontSize: 12}, {}, {text: 'No Polisi', fontSize: 12}, ':', {text: payload.policeNo.toString().toUpperCase(), fontSize: 12}],
+                    [{text: 'Tanggal Faktur', fontSize: 12}, ':', {text: payload.transDatePrint.toString(), fontSize: 12}, {}, {text: 'KM Terakhir', fontSize: 12}, ':', {text: payload.lastMeter.toString().toUpperCase(), fontSize: 12}],
+                    [{text: 'Nama Customer', fontSize: 12}, ':', {text: `${salutation}${payload.memberName.toString().toUpperCase()}`, fontSize: 12}, {}, {text: 'Mechanic', fontSize: 12}, ':', {text: payload.mechanicName.toString().toUpperCase(), fontSize: 12}],
+                    [{text: 'Contact', fontSize: 12}, ':', {text: payload.phone.toString().toUpperCase(), fontSize: 12}, {}, {text: 'Alamat', fontSize: 12}, ':', {text: payload.address.toString().toUpperCase().substring(0, 22), fontSize: 12}],
+                  ]
+                },
+                layout: 'noBorders',
+              },
+              {
+                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }]
+              },
+            ],
+            margin: [30, 12, 12, 30],
+          },
+
+          content: [
+            {
+              writable: true,
+              table: {
+                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+                headerRows: 1,
+                body: product
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
+                },
+                vLineWidth: function (i, node) {
+                  return (i === 0 || i === node.table.widths.length) ? 0 : 0;
+                },
+                hLineColor: function (i, node) {
+                  return (i === 1 || i === 0 || i === node.table.body.length) ? 'black' : 'white';
+                },
+                vLineColor: function (i, node) {
+                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
+                },
+              },
+            },
+            {
+              text: ' ',
+              style: 'header',
+              fontSize: 12,
+              alignment: 'left'
+            },
+            {
+              writable: true,
+              table: {
+                headerRows: 1,
+                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+                body: body
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0;
+                },
+                vLineWidth: function (i, node) {
+                  return (i === 0 || i === node.table.widths.length) ? 0 : 0;
+                },
+                hLineColor: function (i, node) {
+                  return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white';
+                },
+                vLineColor: function (i, node) {
+                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black';
+                },
+              },
+            },
+          ],
+
+          footer: function(currentPage, pageCount) {
+            if (currentPage == pageCount) {
+              return {
+                margin: [40, 0, 40, 0],
+                height: 160,
+                stack: [
+                  {
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }]
+                  },
+                  {
+                    columns: [
+                      {fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left'},
+                      {fontSize: 12, text: `TOTAL : Rp ${Total.toLocaleString(['ban', 'id'])}`, alignment: 'right'},
+                    ],
+                  },
+                  {
+                    columns: [
+                      {text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.cashierId.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+                      {text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+                    ],
+                  },
+                  {
+                    fontSize: 9,
+                    columns: [
+                      {
+                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: `Cetakan ke: 1`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: `Dicetak Oleh: ${payload.cashierId}`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
+                        fontSize: 9,
+                        margin: [0, 20, 0, 40],
+                        alignment: 'right',
+                      },
+                    ],
+                    alignment: 'center'
+                  }
+                ]
+              };
+            } else {
+              return {
+                margin: [40, 100, 40, 10],
+                height: 160,
+                stack: [
+                  {
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }]
+                  },
+                  {
+                    columns: [
+                      {
+                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: `Cetakan ke: 1`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: `Dicetak Oleh: ${payload.cashierId}`,
+                        margin: [0, 20, 0, 40],
+                        fontSize: 9,
+                        alignment: 'center'
+                      },
+                      {
+                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
+                        fontSize: 9,
+                        margin: [0, 20, 0, 40],
+                        alignment: 'right',
+                      },
+                    ]
+                  },
+                ]
+              }
+            }
+          },
+        }
+        pdfMake.createPdf(docDefinition).print()
+        pdfMake.createPdf(docDefinition).download()
+      }
+      return { ...state}
     },
 
     setCreditCardPaymentNull (state, action) {

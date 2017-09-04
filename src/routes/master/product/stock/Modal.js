@@ -11,10 +11,6 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const onChange = (value) => {
-  console.log('checked:',value);
-}
-
 const props = {
   name: 'file',
   action: '//jsonplaceholder.typicode.com/posts/',
@@ -79,7 +75,6 @@ const modal = ({
       </Col>
     </Row>
   )
-
   const Browseprops = {
     pagination: false,
     size: 'small',
@@ -91,7 +86,6 @@ const modal = ({
     size: 'small',
     dataSource: listBrand,
   }
-
   const contentPopover = (
     <div>
       <Browse
@@ -130,12 +124,10 @@ const modal = ({
   }
 
   const hdlTableRowClick = (record) => {
-    console.log('hdlTableRowClick', record);
     onChooseItem(record)
   }
 
   const hdlTableBrandRowClick = (record) => {
-    console.log('hdlTableBrandRowClick', record);
     onChooseBrand(record)
   }
 
@@ -143,7 +135,7 @@ const modal = ({
     ...modalProps,
     onOk: handleOk,
   }
-
+ console.log('item Modal', item)
   const hdlButtonCancelClick = () => {
     modalButtonCancelClick()
   }
@@ -155,12 +147,12 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
-      console.log('Modal Data: ', data);
-      data.active = data.active !== undefined ? '1' : '0'
+      console.log('data', data)
+      data.trackQty = data.trackQty ? '1' : '0'
+      data.active = data.active ? '1' : '0'
       modalButtonSaveClick(data.productCode, data)
     })
   }
-
   return (
     <Modal {...modalOpts}
       footer={[
@@ -357,12 +349,13 @@ const modal = ({
             <FormItem label="Track Qty" hasFeedback {...formItemLayout}>
               {getFieldDecorator('trackQty', {
                 initialValue: item.trackQty,
+                valuePropName: 'checked',
                 rules: [
                   {
                     required: false,
                   },
                 ],
-              })(<Input />)}
+              })(<Checkbox>Track</Checkbox>)}
             </FormItem>
             <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
               {getFieldDecorator('alertQty', {
@@ -434,13 +427,14 @@ const modal = ({
             </FormItem>
             <FormItem label="Exception" hasFeedback {...formItemLayout}>
               {getFieldDecorator('exception01', {
+                valuePropName: 'checked',
                 initialValue: item.exception01,
                 rules: [
                   {
                     required: false,
                   },
                 ],
-              })(<Input />)}
+              })(<Checkbox>Exception</Checkbox>)}
             </FormItem>
           </Col>
         </Row>

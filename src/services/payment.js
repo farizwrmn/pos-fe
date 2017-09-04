@@ -14,6 +14,40 @@ export async function queryLastTransNo (params) {
   })
 }
 
+export async function query (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = pos
+  console.log(url)
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPos (params) {
+  console.log('params', params)
+  const apiHeaderToken = crypt.apiheader()
+  const url = pos + '/' + 'code' + '/' + params
+  console.log('url', url)
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posdetail}/${params.id}`
+  console.log(url)
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}
+
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
