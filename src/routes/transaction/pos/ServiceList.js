@@ -71,6 +71,7 @@ const ServiceList = ({ onChooseItem, itemService, form: { getFieldDecorator, val
             <Option value="disc1">Disc 1(%)</Option>
             <Option value="disc2">Disc 2(%)</Option>
             <Option value="disc3">Disc 3(%)</Option>
+            <Option value="quantity">Quantity</Option>
           </Select>
         )
         }
