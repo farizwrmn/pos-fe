@@ -211,7 +211,7 @@ const modal = ({
             rules: [
               {
                 required: true,
-                pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+                pattern: /^([a-zA-Z0-9._-])+@([a-zA-Z0-9._-])+(.[a-zA-Z0-9._-])+/,
                 message: 'The input is not valid E-mail!',
               },
             ],

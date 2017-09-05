@@ -15,7 +15,7 @@ const ButtonGroup = Button.Group
 const formItemLayout = {
   labelCol: {span: 11},
   wrapperCol: {span: 12},
-
+  style: {marginBottom: 5},
 }
 const formItemLayout1 = {
   labelCol: {span: 10},
@@ -138,7 +138,7 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
     <Form style={{padding: 3}}>
       <Row>
         <Col xs={24} sm={24} md={10} lg={12} xl={14}>
-          <Collapse stylebordered={false} defaultActiveKey={['1', '2']}>
+          <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1', '2']}>
             <Panel header="Invoice Information" key="1" style={customPanelStyle}>
               <Row>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
@@ -222,7 +222,7 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
           </Collapse>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={14}>
-          <Collapse stylebordered={false} defaultActiveKey={['1']}>
+          <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1']}>
             <Panel header="Search Supplier" key="1" style={customPanelStyle}>
               <FormItem label="Search" {...formItemLayout}>
                 <div style={{marginLeft: 20, clear: 'both', whiteSpace: 'nowrap'}}>

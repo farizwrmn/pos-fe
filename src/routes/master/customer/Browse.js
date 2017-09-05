@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag, Button, Icon, Popconfirm } from 'antd'
+import FaFileExcelO from 'react-icons/lib/fa/file-excel-o'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -210,6 +211,7 @@ const Browse = ({
           { selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
         </span>
       </div>
+      <div style={{ margin: '0px 0px 10px 0px' }}><Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button></div>
       <Table
         {...tableProps}
         bordered

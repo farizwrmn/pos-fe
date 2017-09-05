@@ -117,12 +117,12 @@ export default {
           var arrayProd = []
           const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-          const dataPos = product.concat(service)
+          const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
           if (transNo.indexOf('FJ') > -1) {
             transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
           }
           const trans = transNo.replace(/[^a-z0-9]/gi, '');
-          for (var key in dataPos) {
+          for (var key = 0; key < dataPos.length; key++) {
             arrayProd.push({
               'transNo': trans,
               'productId': dataPos[key].code,

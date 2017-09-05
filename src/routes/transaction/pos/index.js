@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Collapse, Popover } from 'antd'
+import { Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 
 import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 
 const Panel = Collapse.Panel
+const TabPane = Tabs.TabPane
 const FormItem = Form.Item
 const ButtonGroup = Button.Group
 const formItemLayout = {
@@ -1049,7 +1050,7 @@ class LastMeter extends React.Component {
 
       <Row gutter={24} style={{ marginBottom: 16 }}>
         <Col lg={18} md={20}>
-          <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }}>
+          <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <Input placeholder="Name" disabled style={{ marginBottom: 8}}/>
               {infoUtil && <Tag color="green" style={{ marginBottom: 8}}> {infoUtil} </Tag> }
@@ -1106,119 +1107,122 @@ class LastMeter extends React.Component {
                 </Col>
               </Row>
             </Form>
-
-            <Table
-              rowKey={(record, key) => key}
-              pagination={false}
-              bordered={true}
-              size="small"
-              scroll={{ x: '130%' }}
-              locale = {{
-                emptyText: 'Your Payment List',
-              }}
-              columns={[
-                {
-                  title: 'No',
-                  dataIndex: 'no',
-                },
-                {
-                  title: 'Code',
-                  dataIndex: 'code',
-                },
-                {
-                  title: 'Product Name',
-                  dataIndex: 'name',
-                },
-                {
-                  title: 'Q',
-                  dataIndex: 'qty',
-                },
-                {
-                  title: 'Price',
-                  dataIndex: 'price',
-                },
-                {
-                  title: 'Disc1(%)',
-                  dataIndex: 'disc1',
-                },
-                {
-                  title: 'Disc2(%)',
-                  dataIndex: 'disc2',
-                },
-                {
-                  title: 'Disc3(%)',
-                  dataIndex: 'disc3',
-                },
-                {
-                  title: 'Disc',
-                  dataIndex: 'discount',
-                },
-                {
-                  title: 'Total',
-                  dataIndex: 'total',
-                },
-              ]}
-              onRowClick={(record)=>modalEditPayment(record)}
-              dataSource={dataTrans()}
-              style={{ marginBottom: 16 }}
-            />
-            {modalPaymentVisible && <Browse {...modalPaymentProps} />}
-            <Table
-              rowKey={(record, key) => key}
-              pagination={false}
-              bordered={true}
-              size="small"
-              scroll={{ x: '130%' }}
-              locale = {{
-                emptyText: 'Your Payment List',
-              }}
-              columns={[
-                {
-                  title: 'No',
-                  dataIndex: 'no',
-                },
-                {
-                  title: 'Code',
-                  dataIndex: 'code',
-                },
-                {
-                  title: 'Service Name',
-                  dataIndex: 'name',
-                },
-                {
-                  title: 'Q',
-                  dataIndex: 'qty',
-                },
-                {
-                  title: 'Price',
-                  dataIndex: 'price',
-                },
-                {
-                  title: 'Disc1(%)',
-                  dataIndex: 'disc1',
-                },
-                {
-                  title: 'Disc2(%)',
-                  dataIndex: 'disc2',
-                },
-                {
-                  title: 'Disc3(%)',
-                  dataIndex: 'disc3',
-                },
-                {
-                  title: 'Disc',
-                  dataIndex: 'discount',
-                },
-                {
-                  title: 'Total',
-                  dataIndex: 'total',
-                },
-              ]}
-              onRowClick={(record)=>modalEditService(record)}
-              dataSource={dataService()}
-              style={{ marginBottom: 16 }}
-            />
-            {modalServiceListVisible && <Browse {...ModalServiceListProps} />}
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="Product" key="1">
+                <Table
+                rowKey={(record, key) => key}
+                pagination={{ pageSize: 5 }}
+                bordered={true}
+                size="small"
+                scroll={{ x: '130%' }}
+                locale = {{
+                  emptyText: 'Your Payment List',
+                }}
+                columns={[
+                  {
+                    title: 'No',
+                    dataIndex: 'no',
+                  },
+                  {
+                    title: 'Code',
+                    dataIndex: 'code',
+                  },
+                  {
+                    title: 'Product Name',
+                    dataIndex: 'name',
+                  },
+                  {
+                    title: 'Q',
+                    dataIndex: 'qty',
+                  },
+                  {
+                    title: 'Price',
+                    dataIndex: 'price',
+                  },
+                  {
+                    title: 'Disc1(%)',
+                    dataIndex: 'disc1',
+                  },
+                  {
+                    title: 'Disc2(%)',
+                    dataIndex: 'disc2',
+                  },
+                  {
+                    title: 'Disc3(%)',
+                    dataIndex: 'disc3',
+                  },
+                  {
+                    title: 'Disc',
+                    dataIndex: 'discount',
+                  },
+                  {
+                    title: 'Total',
+                    dataIndex: 'total',
+                  },
+                ]}
+                onRowClick={(record)=>modalEditPayment(record)}
+                dataSource={dataTrans()}
+                style={{ marginBottom: 16 }}
+              />
+                {modalPaymentVisible && <Browse {...modalPaymentProps} />}
+              </TabPane>
+              <TabPane tab="Service" key="2"><Table
+                rowKey={(record, key) => key}
+                pagination={{ pageSize: 5 }}
+                bordered={true}
+                size="small"
+                scroll={{ x: '130%' }}
+                locale = {{
+                  emptyText: 'Your Payment List',
+                }}
+                columns={[
+                  {
+                    title: 'No',
+                    dataIndex: 'no',
+                  },
+                  {
+                    title: 'Code',
+                    dataIndex: 'code',
+                  },
+                  {
+                    title: 'Service Name',
+                    dataIndex: 'name',
+                  },
+                  {
+                    title: 'Q',
+                    dataIndex: 'qty',
+                  },
+                  {
+                    title: 'Price',
+                    dataIndex: 'price',
+                  },
+                  {
+                    title: 'Disc1(%)',
+                    dataIndex: 'disc1',
+                  },
+                  {
+                    title: 'Disc2(%)',
+                    dataIndex: 'disc2',
+                  },
+                  {
+                    title: 'Disc3(%)',
+                    dataIndex: 'disc3',
+                  },
+                  {
+                    title: 'Disc',
+                    dataIndex: 'discount',
+                  },
+                  {
+                    title: 'Total',
+                    dataIndex: 'total',
+                  },
+                ]}
+                onRowClick={(record)=>modalEditService(record)}
+                dataSource={dataService()}
+                style={{ marginBottom: 16 }}
+              />
+                {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
+            </Tabs>
           </Card>
         </Col>
         <Col lg={6} md={4}>

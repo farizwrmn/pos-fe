@@ -29,7 +29,7 @@ const Pos = ({ location, dispatch, loading, pos }) => {
       var dataPos = []
       var dataService = []
       for (var n = 0; n < data.data.length; n++) {
-        if (data.data[n].serviceCode === null || data.data[n].serviceName === null) {
+        if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
           var productId = data.data[n].productCode
           var productName = data.data[n].productName
           dataPos.push({
@@ -46,9 +46,26 @@ const Pos = ({ location, dispatch, loading, pos }) => {
             ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })
-        } else if (data.data[n].productCode === null || data.data[n].productName === null) {
+        } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
           var productId = data.data[n].serviceCode
           var productName = data.data[n].serviceName
+          dataService.push({
+            no: '',
+            code: productId,
+            name: productName,
+            qty: data.data[n].qty,
+            price: data.data[n].sellingPrice,
+            discount: data.data[n].discount,
+            disc1: data.data[n].disc1,
+            disc2: data.data[n].disc2,
+            disc3: data.data[n].disc3,
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+          })
+        } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
+          var productId = '-'
+          var productName = '-'
           dataService.push({
             no: '',
             code: productId,
