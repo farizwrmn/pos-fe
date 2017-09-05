@@ -395,6 +395,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         'address01': item.address01,
         'point': item.point ? item.point : 0,
         'id': item.id,
+        'memberTypeId': item.memberTypeId ? item.memberTypeId : 7,
         'gender': item.gender,
         'phone': item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       })
@@ -499,12 +500,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         'productId': item.id,
         'name': item.productName,
         'qty': curQty,
-        'price': (memberInformation.memberGroupId != 7 ? item.distPrice02 : item.sellPrice),
+        'price': (memberInformation.memberTypeId != 2 ? item.sellPrice : item.distPrice02),
         'discount': 0,
         'disc1': 0,
         'disc2': 0,
         'disc3': 0,
-        'total': (memberInformation.memberGroupId != 7 ? item.distPrice02 : item.sellPrice) * curQty
+        'total': (memberInformation.memberTypeId != 2 ? item.sellPrice : item.distPrice02) * curQty,
       })
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))

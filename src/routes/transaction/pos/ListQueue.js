@@ -42,6 +42,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         memberCode: trans.memberCode,
         memberName: trans.memberName,
         point: trans.point,
+        memberTypeId: trans.memberTypeId,
         id: trans.id,
         address01: trans.address01,
         gender: trans.gender,

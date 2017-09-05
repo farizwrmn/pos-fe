@@ -831,6 +831,7 @@ export default {
         memberCode: memberInfo.memberCode,
         memberName: memberInfo.memberName,
         point: memberInfo.point,
+        memberTypeId: memberInfo.memberTypeId,
         memberUnit: memberUnit,
         lastMeter: lastMeter,
         address01: memberInfo.address01,
