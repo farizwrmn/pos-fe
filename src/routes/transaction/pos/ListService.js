@@ -56,12 +56,19 @@ const ListService = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =
   //   },
   // },
   const columns = [
- {
+    {
+      title: 'No',
+      dataIndex: 'id',
+      key: 'id',
+      width: 175
+    },
+    {
       title: 'Service Code',
       dataIndex: 'serviceCode',
       key: 'serviceCode',
       width: 175
-    }, {
+    },
+    {
       title: 'Description',
       dataIndex: 'serviceName',
       key: 'serviceName',

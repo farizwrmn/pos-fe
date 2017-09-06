@@ -125,7 +125,8 @@ export default {
           for (var key = 0; key < dataPos.length; key++) {
             arrayProd.push({
               'transNo': trans,
-              'productId': dataPos[key].code,
+              'productId': dataPos[key].productId,
+              'productCode': dataPos[key].code,
               'productName': dataPos[key].name,
               'qty': dataPos[key].qty,
               'sellingPrice': dataPos[key].price,

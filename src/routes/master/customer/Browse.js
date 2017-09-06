@@ -212,13 +212,13 @@ const Browse = ({
           { selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
         </span>
       </div>
-      <div style={{ margin: '0px 0px 10px 0px' }}>
-        <Workbook filename="example.xlsx" element={<Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button>}>
+      <div style={{ margin: '0px 10px 10px 0px' }}>
+        <Workbook filename={`customer${moment().format('YYYYMMDD')}.xlsx`} element={<Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button>}>
           <Workbook.Sheet data={dataSource} name="Sheet 1">
             <Workbook.Column label="ID" value="memberCode"/>
             <Workbook.Column label="Name" value="memberName"/>
             <Workbook.Column label="Point" value="point"/>
-            <Workbook.Column label="Phone" value="mobilePhone"/>
+            <Workbook.Column label="Phone" value="mobileNumber"/>
             <Workbook.Column label="address" value="address01"/>
           </Workbook.Sheet>
         </Workbook>

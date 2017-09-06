@@ -75,7 +75,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   73 => I
   85 => U
    */
-
+  var product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+  var service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+  var dataPos = product.concat(service)
+  var a = dataPos
+  var totalPayment = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  var totalQty = a.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
   const getDate = (mode) => {
     var today = new Date()
     var dd = today.getDate()
@@ -543,7 +548,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       arrayProd.push({
         'no': arrayProd.length + 1,
         'code': item.serviceCode,
-        'productId': item.serviceCode,
+        'productId': item.id,
         'name': item.serviceName,
         'qty': curQty,
         'price':  item.serviceCost,
@@ -1097,12 +1102,12 @@ class LastMeter extends React.Component {
               <Row>
                 <Col lg={{ span: 10 }}>
                   <FormItem label="Qty">
-                    <Input value={curQty} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} disabled/>
                   </FormItem>
                 </Col>
                 <Col xs={{ span: 5, offset: 2 }} lg={{ span: 10, offset: 4 }}>
                   <FormItem label="Total">
-                    <Input value={curTotal} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} disabled/>
                   </FormItem>
                 </Col>
               </Row>
