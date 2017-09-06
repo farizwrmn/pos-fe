@@ -1,8 +1,10 @@
 module.exports = (webpackConfig) => {
   // FilenameHash
   webpackConfig.output.chunkFilename = '[name].[hash].js' // http://webpack.github.io/docs/configuration.html#output-chunkfilename
-
-  // ClassnameHash
+  // webpackConfig.module.noParse = /[\/\\]node_modules[\/\\]exceljs[\/\\]dist[\/\\]exceljs\.js$/ //for windows ignore warning exceljs
+  webpackConfig.module.noParse = /[\/\\]node_modules[\/\\]react-excel-workbook[\/\\]node_modules[\/\\]xlsx[\/\\]jszip\.js$/ //for windows ignore warning exceljs
+  // webpackConfig.module.noParse = /node_modules\/exceljs\/dist\/exceljs.js/ //for linux ignore warning exceljs
+  // ClassnasmeHash
   const cssLoaderOption = {
     importLoaders: 1,
     modules: true,

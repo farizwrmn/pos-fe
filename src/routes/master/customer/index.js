@@ -6,6 +6,8 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
+// import * as ExcelJs from 'exceljs/dist/exceljs.js'
+// webpack.config.js, exceljs compiled warning
 var pdfMake = require('pdfmake/build/pdfmake.js');
 var pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -342,6 +344,9 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
           id: page.memberCode,
         },
       })
+    },
+    onExportXlsx () {
+
     },
     onPrint () {
       function createPdfLineItems(tabledata){

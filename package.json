@@ -6,6 +6,7 @@
     "draftjs-to-markdown": "^0.4.0",
     "dva": "^1.2.0",
     "dva-loading": "^0.2.0",
+    "eslint": "^4.6.1",
     "exceljs": "^0.5.1",
     "lodash": "^4.17.4",
     "moment": "2.18.1",

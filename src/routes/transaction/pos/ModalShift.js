@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
-import { Table, Modal, Button, Form, Card, Input, Cascader } from 'antd'
-import { browserHistory } from 'dva/router'
+import {connect} from 'dva'
+import {Table, Modal, Button, Form, Card, Input, Cascader} from 'antd'
+import {browserHistory} from 'dva/router'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -14,52 +14,60 @@ const formItemLayout = {
   },
 }
 
-const listShift = [{value: "1",
-                    label: "1"},
-                    {value: "2",
-                    label: "2"},
-                    {value: "3",
-                    label: "3"}]
+const listShift = [{
+  value: "1",
+  label: "1"
+},
+  {
+    value: "2",
+    label: "2"
+  },
+  {
+    value: "3",
+    label: "3"
+  }]
 
 const getDate = (mode) => {
   var today = new Date()
   var dd = today.getDate()
-  var mm = today.getMonth()+1 //January is 0!
+  var mm = today.getMonth() + 1 //January is 0!
   var yyyy = today.getFullYear()
 
-  if(dd<10) {
-    dd='0'+dd
+  if (dd < 10) {
+    dd = '0' + dd
   }
 
-  if(mm<10) {
-    mm='0'+mm
+  if (mm < 10) {
+    mm = '0' + mm
   }
 
-  if ( mode == 1 ) {
-    today = dd+mm+yyyy
+  if (mode == 1) {
+    today = dd + mm + yyyy
   }
-  else if ( mode == 2 ) {
-    today = mm+yyyy
+  else if (mode == 2) {
+    today = mm + yyyy
   }
-  else if ( mode == 3 ) {
+  else if (mode == 3) {
     today = yyyy + '-' + mm + '-' + dd
   }
 
   return today
 }
 
-const ModalShift = ({item,
-  listCashier,
-  curCashierNo,
-  cashierId,
-  onBack,
-  onOk,
-    form: {
-            getFieldDecorator,
-            validateFields,
-            getFieldsValue,
-          },
-  ...modalProps}) => {
+const ModalShift = ({
+                      item,
+                      listCashier,
+                      curCashierNo,
+                      cashierId,
+                      onBack,
+                      onOk,
+                      form: {
+                        getFieldDecorator,
+                        validateFields,
+                        getFieldsValue,
+                      },
+                      ...modalProps
+                    }) => {
 
 
   const handleOk = () => {
@@ -92,59 +100,57 @@ const ModalShift = ({item,
   }
 
   return (
-    <Modal {...modalOpts} footer={[
+    <Modal title="Cashier Information" {...modalOpts} footer={[
       <Button key="back" size="large" onClick={handleOk}>Back</Button>,
       <Button key="submit" type="primary" size="large" onClick={handleOk}>
         Confirm
       </Button>,
     ]} closable={false}>
-      <Card bordered={false} title="Cashier Information" bodyStyle={{ padding: 0, margin: 0 }}>
-        <Form layout="horizontal">
-          <FormItem label="Cashier No" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('cashierNo', {
-              initialValue: item.cashierNo && item.cashierNo.split(' '),
-              rules: [
-                {
-                  required: true
-                },
-              ],
-            })(<Cascader
-              size="large"
-              style={{ width: '100%' }}
-              options={listCashier}
-              placeholder="Pick Cashier No"
-            />)}
-          </FormItem>
-          <FormItem label="Shift" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('shift', {
-              initialValue: ( item.shift ? item.shift.toString() && item.shift.toString().split(' ') : "" ),
-              rules: [
-                {
-                  required: true
-                },
-              ],
-            })(<Cascader
-              size="large"
-              style={{ width: '100%' }}
-              options={listShift}
-              placeholder="Pick a Shift"
-            />)}
-          </FormItem>
-          <FormItem label="Balance" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('balance', {
-              initialValue: item.balance || 0,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[0-9]{1,50}$/i,
-                  message: 'Balance must be a number...!',
+      <Form layout="horizontal">
+        <FormItem label="Cashier No" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('cashierNo', {
+            initialValue: item.cashierNo && item.cashierNo.split(' '),
+            rules: [
+              {
+                required: true
+              },
+            ],
+          })(<Cascader
+            size="large"
+            style={{width: '100%'}}
+            options={listCashier}
+            placeholder="Pick Cashier No"
+          />)}
+        </FormItem>
+        <FormItem label="Shift" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('shift', {
+            initialValue: ( item.shift ? item.shift.toString() && item.shift.toString().split(' ') : "" ),
+            rules: [
+              {
+                required: true
+              },
+            ],
+          })(<Cascader
+            size="large"
+            style={{width: '100%'}}
+            options={listShift}
+            placeholder="Pick a Shift"
+          />)}
+        </FormItem>
+        <FormItem label="Balance" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('balance', {
+            initialValue: item.balance || 0,
+            rules: [
+              {
+                required: true,
+                pattern: /^[0-9]{1,50}$/i,
+                message: 'Balance must be a number...!',
 
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-        </Form>
-      </Card>
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+      </Form>
     </Modal>
   )
 }
