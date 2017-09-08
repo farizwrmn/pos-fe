@@ -186,6 +186,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase')
           },
         }, {
+          path: 'transaction/adjust',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/adjust'))
+              cb(null, require('./routes/transaction/adjust/'))
+            }, 'transaction-adjust')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {

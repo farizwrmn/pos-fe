@@ -6,13 +6,14 @@ import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import Workbook from 'react-excel-workbook'
+// import * as Excel from 'exceljs/dist/exceljs.min.js'
 import styles from './List.less'
 import classnames from 'classnames'
 const pdfMake = require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-
+// const workbook = new Excel.Workbook()
 const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
@@ -213,13 +214,13 @@ const Browse = ({
         </span>
       </div>
       <div style={{ margin: '0px 10px 10px 0px' }}>
-        <Workbook filename={`customer${moment().format('YYYYMMDD')}.xlsx`} element={<Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button>}>
+        <Workbook filename={`customer${moment().format('YYYYMMDD')}.xls`} element={<Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button>}>
           <Workbook.Sheet data={dataSource} name="Sheet 1">
-            <Workbook.Column label="ID" value="memberCode"/>
-            <Workbook.Column label="Name" value="memberName"/>
-            <Workbook.Column label="Point" value="point"/>
-            <Workbook.Column label="Phone" value="mobileNumber"/>
-            <Workbook.Column label="address" value="address01"/>
+            <Workbook.Column label=" " value="memberCode"/>
+            <Workbook.Column label=" " value="memberName"/>
+            <Workbook.Column label="DATA CUSTOMER" value="point"/>
+            <Workbook.Column label=" " value="mobileNumber"/>
+            <Workbook.Column label=" " value="address01"/>
           </Workbook.Sheet>
         </Workbook>
       </div>

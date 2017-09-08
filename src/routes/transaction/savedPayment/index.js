@@ -15,6 +15,7 @@ const Pos = ({ location, dispatch, loading, pos }) => {
   const modalProps = {
     visible: modalPrintVisible,
     listPayment,
+    loading: loading.effects['pos/queryHistory'],
     listPaymentDetail,
     memberPrint,
     mechanicPrint,

@@ -118,10 +118,26 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const confirmPayment = () => {
+    const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const dataPos = product.concat(service)
+    var checkProductId = false
+    for (var n = 0; n < dataPos.length; n ++) {
+      if(dataPos[n].productId === 0) {
+        checkProductId = true
+        break
+      }
+    }
     if ( (parseInt(totalPayment) < parseInt(curTotal) + parseInt(curRounding)) ) {
       Modal.error({
         title: 'Payment',
         content: 'Total Payment must be greater than Netto...!',
+      })
+    } else if (checkProductId) {
+      console.log(checkProductId)
+      Modal.error({
+        title: 'Payment',
+        content: 'Something Wrong with Product',
       })
     }
     else {

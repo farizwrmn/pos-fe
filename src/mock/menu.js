@@ -145,6 +145,14 @@ let database = [
     route: '/transaction/pos/history',
   },
   {
+    id: '34',
+    bpid: '3',
+    mpid: '3',
+    name: 'Adjustment',
+    icon: 'edit',
+    route: '/transaction/adjust',
+  },
+  {
     id: '9',
     icon: 'setting',
     name: 'Setting',

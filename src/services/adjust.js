@@ -1,54 +1,58 @@
-import { request, config, crypt } from 'utils'
-const { stock } = config.api
+import { request, config, crypt } from '../utils'
+const { adjust, adjustDetail } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: stock,
+    url: adjust,
     method: 'get',
     data: params,
     headers: apiHeaderToken
   })
 }
 
-export async function queryProductByCode (params) {
-  let url = `${stock}/${params.replace(/\//g, "%2F")}`
-  console.log('url', url)
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: url,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
-
-export async function add (params) {
-  let url = params.id ? stock + '/' + params.id.replace(/\//g, "%2F") : stock
+export async function create (params) {
+  let url = params.id ? `${adjust}/code/${encodeURIComponent(params.id)}` : null
+  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'post',
-    data: params.data,
-    body: params.data,
+    data: params,
+    body: params,
+    headers: apiHeaderToken,
+  })
+}
+
+export async function createDetail (params) {
+  let url = params.id ? `${adjustDetail}/purchase` : null
+  console.log(url)
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'post',
+    data: params,
+    body: params,
     headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
-  let url = params.id ? stock + '/' + params.id.replace(/\//g, "%2F") : stock
-  console.log('url', url)
+  let url = params.id ? `${adjust}/${params.id}` : null
+  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'put',
-    data: params.data,
-    body: params.data,
+    data: params,
+    body: params,
     headers: apiHeaderToken
   })
 }
 
 export async function remove (params) {
-  let url = params.id ? stock + '/' + params.id : stock
+  console.log('delete-params:');
+  let url = params.id ? `${adjust}/${params.id}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

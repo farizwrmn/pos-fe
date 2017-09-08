@@ -1,0 +1,218 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import AdjustForm from './AdjustForm'
+import { Tabs } from 'antd'
+import AdjustList from './AdjustList'
+
+const TabPane = Tabs.TabPane
+
+const Adjust = ({ location, dispatch, adjust, loading }) => {
+  const {
+    searchText, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+  } = adjust
+  const modalProps = {
+    closable: false,
+    loading: loading.effects['adjust/query'],
+    width: 950,
+    visible: modalVisible,
+    maskClosable: false,
+    confirmLoading: loading.effects['adjust/edit'],
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: `adjust/${modalType}`,
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'adjust/modalHide',
+      })
+    },
+    onDeleteUnit (id) {
+      dispatch({
+        type: 'units/delete',
+        payload: {
+          id,
+        },
+      })
+    },
+  }
+
+  const editProps = {
+    visible: modalEditVisible,
+    item,
+    onOk(data) {
+      console.log('onOk', data)
+      dispatch({
+        type: 'adjust/adjustEdit',
+        payload: data,
+      })
+    },
+    onCancel() {
+      dispatch({
+        type: 'adjust/modalEditHide',
+      })
+    },
+    onChooseitem(data) {
+      console.log('data',data)
+    },
+  }
+
+  const adjustProps = {
+    location: location,
+    loading: loading.effects['adjust/create'],
+    listType,
+    itemEmployee,
+    popoverVisible,
+    listEmployee,
+    dataSource: listProduct,
+    dataBrowse: dataBrowse,
+    visible: modalProductVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onOk(data) {
+      dispatch({
+        type: 'adjust/add',
+        payload: data,
+      })
+    },
+    handleBrowseProduct () {
+      dispatch({
+        type: 'adjust/getProducts',
+      })
+
+      dispatch({
+        type: 'adjust/showProductModal',
+        payload: {
+          modalType: 'browseProduct',
+        },
+      })
+    },
+    onSearchProduct (data, e) {
+      console.log('searchtext', searchText)
+      if (e.length === 0) {
+        dispatch({ type: 'adjust/query' })
+      } else if (searchText === '') {
+        dispatch({ type: 'adjust/query' })
+      } else {
+        dispatch({
+          type: 'adjust/onProductSearch',
+          payload: {
+            searchText: searchText,
+            tmpProductData: e,
+          },
+        })
+      }
+    },
+    onGetProduct () {
+      dispatch({ type: 'adjust/query' })
+    },
+    onGetEmployee (data) {
+      dispatch({ type: 'adjust/queryEmployee', payload: data })
+    },
+    onChooseProduct () {
+      dispatch({ type: 'adjust/queryProductSuccess' })
+    },
+    onChangeSearch (e) {
+      dispatch({
+        type: 'adjust/onInputChange',
+        payload: {
+          searchText: e,
+        },
+      })
+    },
+    onHidePopover() {
+      dispatch({
+        type: 'adjust/hidePopover',
+      })
+    },
+    modalShow (data) {
+      dispatch({
+        type: 'adjust/modalEditShow',
+        payload: {
+          data: data,
+        },
+      })
+    },
+    onChooseItem (item) {
+      var listByCode = (localStorage.getItem('adjust') ? localStorage.getItem('adjust') : [] )
+      var arrayProd
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        arrayProd = listByCode.slice()
+      }
+      else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      arrayProd.push({
+        'no': arrayProd.length + 1,
+        'code': item.productCode,
+        'productId': item.id,
+        'name': item.productName,
+        'In': 0,
+        'Out': 0,
+        'price': item.sellPrice,
+      })
+      localStorage.setItem('adjust', JSON.stringify(arrayProd))
+      const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
+      dispatch({ type: 'adjust/setDataBrowse', payload: data })
+    },
+  }
+
+  const modalProductProps = {
+    location: location,
+    loading: loading,
+    adjust: adjust,
+    visible: modalProductVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
+    onChooseItem (item) {
+      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      var arrayProd
+      if ( JSON.stringify(listByCode) == "[]" ) {
+        arrayProd = listByCode.slice()
+      }
+      else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      arrayProd.push({
+        'no': arrayProd.length + 1,
+        'code': item.productCode,
+        'name': item.productName,
+        'qty': curQty,
+        'price': item.costPrice,
+        'total': curQty * item.sellPrice
+      })
+      console.log('arrayProd', arrayProd)
+      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })
+      dispatch({ type: 'adjust/hideProductModal' })
+    },
+  }
+
+  return (
+    <div className="content-inner">
+      <Tabs>
+        <TabPane tab="Adjustment" key="1">
+            <AdjustForm {...adjustProps} />
+            <AdjustList {...editProps} />
+        </TabPane>
+        <TabPane tab="Archive" key="2">
+        </TabPane>
+      </Tabs>
+    </div>
+  )
+}
+
+Adjust.propTypes = {
+  adjust: PropTypes.object,
+  location: PropTypes.object,
+  dispatch: PropTypes.func,
+  loading: PropTypes.object,
+}
+
+
+export default connect(({ adjust, loading }) => ({ adjust, loading }))(Adjust)

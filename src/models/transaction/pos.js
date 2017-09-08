@@ -691,6 +691,7 @@ export default {
           arrayProd.push({
             no: n + 1,
             code: ary[n].code,
+            productId: ary[n].productId,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -782,6 +783,7 @@ export default {
           arrayProd.push({
             no: n + 1,
             code: ary[n].code,
+            productId: ary[n].productId,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,

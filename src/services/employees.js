@@ -11,6 +11,17 @@ export async function query (params) {
   })
 }
 
+export async function queryByCode (params) {
+  const url = params ? `${employees}/${params}` : `${employees}`
+  console.log(url)
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken,
+  })
+}
 
 export async function queryField (params) {
   const apiHeaderToken = crypt.apiheader()

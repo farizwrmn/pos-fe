@@ -963,26 +963,26 @@ export default {
                     columns: [
                       {
                         text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                        margin: [0, 20, 0, 40],
+                        margin: [0, 10, 0, 10],
                         fontSize: 9,
-                        alignment: 'center'
+                        alignment: 'left'
                       },
                       {
                         text: `Cetakan ke: 1`,
-                        margin: [0, 20, 0, 40],
+                        margin: [0, 10, 0, 10],
                         fontSize: 9,
                         alignment: 'center'
                       },
                       {
                         text: `Dicetak Oleh: ${payload.cashierId}`,
-                        margin: [0, 20, 0, 40],
+                        margin: [0, 10, 0, 10],
                         fontSize: 9,
                         alignment: 'center'
                       },
                       {
                         text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
                         fontSize: 9,
-                        margin: [0, 20, 0, 40],
+                        margin: [0, 10, 0, 10],
                         alignment: 'right',
                       },
                     ],
@@ -1004,7 +1004,7 @@ export default {
                         text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
                         margin: [0, 20, 0, 40],
                         fontSize: 9,
-                        alignment: 'center'
+                        alignment: 'left'
                       },
                       {
                         text: `Cetakan ke: 1`,
