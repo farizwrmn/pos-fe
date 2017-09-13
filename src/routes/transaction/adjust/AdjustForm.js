@@ -19,9 +19,9 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 },
 }
-const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct,
+const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
                       popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields}, ...adjustProps}) => {
-    const handleButtonSaveClick = () => {
+  const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -32,7 +32,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
         picId: itemEmployee !== null ? itemEmployee.employeeId : '',
       }
       data.transType = data.transType[0]
-      console.log('onOk data:', data.transType)
+      console.log('onOk data:', data)
       onOk(data)
     })
   }
@@ -66,13 +66,13 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
       title: 'code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '20%',
+      width: '25%',
     },
     {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: '60%',
+      width: '55%',
     },
     {
       title: 'Cost',
@@ -84,7 +84,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
   const contentPopover = (
     <Table
       pagination={{ total: dataSource.length, pageSize: 5 }}
-      scroll={{x: 500, y: 150}}
+      scroll={{ x: 600, y: 150 }}
       columns={columns}
       simple
       dataSource={dataSource}
@@ -97,7 +97,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
     />
   )
   return (
-    <Form style={{padding: 3}}>
+    <Form style={{ padding: 3 }}>
       <Row>
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
           <FormItem label="Trans No" {...formItemLayout}>
@@ -120,6 +120,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
                 style={{ width: '100%' }}
                 options={listType}
                 placeholder="Pick a Type"
+
               />
             )}
           </FormItem>
@@ -130,7 +131,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
               rules: [{
                 required: true,
               }],
-            })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} />)}
+            })(<DatePicker format={dateFormat} />)}
           </FormItem>
         </Col>
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -166,18 +167,19 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
                 onChange={(value) => handleGetEmployee(value)}
                 placeholder="Select Employee"
                 filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+
               />
             )}
           </FormItem>
         </Col>
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
           <FormItem label="PIC" {...formItemLayout}>
-            <Input disabled value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
+            <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
           </FormItem>
         </Col>
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
           <FormItem label="PIC ID" {...formItemLayout}>
-            <Input disabled value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
+            <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
           </FormItem>
         </Col>
       </Row>
@@ -197,7 +199,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
       <div>
         <Browse {...adjustProps} />
       </div>
-      <Button type="primary" style={{ height: 50, width: 200 }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
+      <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
     </Form>
   )
 }
@@ -205,6 +207,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
 AdjustForm.propTyps = {
   form: PropTypes.object.isRequired,
   location: PropTypes.object,
+  item: PropTypes.object,
   onGetEmployee: PropTypes.func,
   dispatch: PropTypes.func,
 }

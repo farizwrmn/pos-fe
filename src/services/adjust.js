@@ -11,6 +11,16 @@ export async function query (params) {
   })
 }
 
+export async function queryDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: adjustDetail,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function create (params) {
   let url = params.id ? `${adjust}/code/${encodeURIComponent(params.id)}` : null
   console.log(url)

@@ -6,12 +6,12 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
-// import * as ExcelJs from 'exceljs/dist/exceljs.js'
-// webpack.config.js, exceljs compiled warning
+import Unit from './Unit'
+
 var pdfMake = require('pdfmake/build/pdfmake.js');
 var pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import Unit from './Unit'
+
 
 const Customer = ({ location, customergroup, customertype, dispatch, customer, loading, employee, city,unit }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
@@ -345,9 +345,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
         },
       })
     },
-    onExportXlsx () {
-
-    },
     onPrint () {
       function createPdfLineItems(tabledata){
         var headers = {
@@ -500,6 +497,10 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       }))
     },
     onSearchHide () { dispatch({ type: 'customer/searchHide' }) },
+  }
+
+  const reportProps = {
+    list,
   }
 
   return (

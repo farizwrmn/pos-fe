@@ -194,6 +194,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-adjust')
           },
         }, {
+          path: 'report/pos/monthly',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/monthly/'))
+            }, 'report-pos-monthly')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {

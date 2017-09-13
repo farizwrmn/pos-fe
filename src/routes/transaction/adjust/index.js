@@ -3,21 +3,22 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import AdjustForm from './AdjustForm'
-import { Tabs } from 'antd'
+import History from './History'
+import { Tabs, Modal, Row, Col } from 'antd'
 import AdjustList from './AdjustList'
+import AdjustFormEdit from './AdjustFormEdit'
 
 const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    searchText, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+    currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
   } = adjust
   const modalProps = {
-    closable: false,
     loading: loading.effects['adjust/query'],
-    width: 950,
     visible: modalVisible,
     maskClosable: false,
+    title: 'Add Adjustment',
     confirmLoading: loading.effects['adjust/edit'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -60,8 +61,9 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       console.log('data',data)
     },
   }
-
   const adjustProps = {
+    item: currentItem,
+    disableItem: disableItem,
     location: location,
     loading: loading.effects['adjust/create'],
     listType,
@@ -72,7 +74,6 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     dataBrowse: dataBrowse,
     visible: modalProductVisible,
     maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
     onOk(data) {
       dispatch({
         type: 'adjust/add',
@@ -161,6 +162,24 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     },
   }
 
+  const historyProps = {
+    dataSource: listAdjust,
+    onGetAdjust () {
+      dispatch({
+        type: 'adjust/queryAdjust',
+      })
+    },
+    onEditItem (e) {
+      dispatch({
+        type: 'adjust/modalShow',
+        payload: {
+          modalType: 'edit',
+          currentItem: e,
+        },
+      })
+    },
+  }
+
   const modalProductProps = {
     location: location,
     loading: loading,
@@ -197,10 +216,18 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     <div className="content-inner">
       <Tabs>
         <TabPane tab="Adjustment" key="1">
-            <AdjustForm {...adjustProps} />
-            <AdjustList {...editProps} />
+          <AdjustForm {...adjustProps} />
+          <AdjustList {...editProps} />
         </TabPane>
         <TabPane tab="Archive" key="2">
+          <History {...historyProps} />
+          <Row>
+            <Col xs={8} sm={8} md={18} lg={18} xl={18}>
+              <Modal footer={null} {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+                <AdjustFormEdit {...adjustProps} />
+              </Modal>
+            </Col>
+          </Row>
         </TabPane>
       </Tabs>
     </div>

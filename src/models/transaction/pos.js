@@ -1,5 +1,5 @@
 import * as cashierService from '../../services/cashier'
-import { query as queryPos, queryDetail as queryDetail, queryPos as queryaPos } from '../../services/payment'
+import { query as queryPos, queryDetail as queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { queryMode as miscQuery} from '../../services/misc'
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
 import { queryMechanics as queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
@@ -44,6 +44,7 @@ export default {
     modalQueueVisible: false,
     modalVisible: false,
     modalPrintVisible: false,
+    modalCancelVisible: false,
     itemPayment: {},
     itemService: {},
     visiblePopover: false,
@@ -81,6 +82,7 @@ export default {
     modalShiftVisible: true,
     curCashierNo: localStorage.getItem('cashierNo'),
     curShift: '',
+    invoiceCancel: '',
     dataCashierTrans: {},
   },
 
@@ -161,6 +163,35 @@ export default {
       }
     },
 
+    * cancelInvoice ({ payload }, { call, put }) {
+      payload.status = 'C'
+      const cancel = yield call(updatePos, payload)
+      if (cancel) {
+        const data = yield call(queryPos, payload)
+        if (data) {
+          Modal.info({
+            title: 'Info',
+            content: `Invoice No ${payload.transNo} Has Been Cancel...!`,
+          })
+          yield put({
+            type: 'hidePrintModal'
+          })
+          yield put({
+            type: 'querySuccessPayment',
+            payload: {
+              listPayment: data.data,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 5,
+                // pageSizeOptions: ['5','10','20','50'],
+                total: data.total,
+              },
+            },
+          })
+        }
+      }
+    },
+
     * queryPosDetail ({ payload }, { call, put }) {
       console.log('payload', payload)
       const data = yield call(queryDetail, payload)
@@ -168,7 +199,6 @@ export default {
       const member = yield call(queryMemberCode, payload)
       const company = yield call(miscQuery, { code: 'COMPANY' })
       const mechanic = yield call(queryMechanicCode, payload.data.technicianId)
-      console.log(PosData)
       if (data) {
         yield put({
           type: 'querySuccessPaymentDetail',
@@ -1209,7 +1239,10 @@ export default {
       return { ...state, ...action.payload, modalPrintVisible: true }
     },
     hidePrintModal (state) {
-      return { ...state, modalPrintVisible: false }
+      return { ...state, modalPrintVisible: false, modalCancelVisible: false, listPaymentDetail: null, invoiceCancel: '' }
+    },
+    showCancelModal (state, action) {
+      return { ...state, ...action.payload, modalCancelVisible: true, invoiceCancel: action.payload.transNo }
     },
 
 

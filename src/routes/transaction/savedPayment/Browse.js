@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Icon, Input, Popconfirm } from 'antd'
+import { Table, Modal, Button, Icon, Input, Tag } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 
@@ -8,7 +8,7 @@ const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
 const BrowseGroup = ({
-  dataSource, onGetDetail,
+  dataSource, onGetDetail, onShowCancelModal,
   ...tableProps }) => {
   const data = dataSource;
   class App extends React.Component {
@@ -97,25 +97,41 @@ const BrowseGroup = ({
           width: 220,
         },
         {
+          title: 'Status',
+          dataIndex: 'status',
+          key: 'status',
+          width: 100,
+          render: (text) =>
+            <span>
+              <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+                {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+              </Tag>
+            </span>,
+        },
+        {
           title: <Icon type="setting" />,
           key: 'operation',
           fixed: 'right',
           width: 75,
           render: (text, record) => {
             return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
-                                menuOptions={[
-                                  { key: '1', name: 'Print', icon: 'printer' },
-                                ]}
+              type="primary"
+              menuOptions={[
+                { key: '1', name: 'Print', icon: 'printer' },
+                { key: '2', name: 'Void', icon: 'delete' },
+              ]}
             />)
           },
         },
       ]
-      return <Table pageSize={5} size="small" scroll={{ x: 881, y: 500 }} bordered columns={columns} dataSource={this.state.data} />;
+      return <Table pageSize={5} size="small" scroll={{ x: 1225, y: 500 }} bordered columns={columns} dataSource={this.state.data} />;
     }
   }
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
+    } else if (e.key === '2') {
+      onShowCancelModal(record)
     }
   }
 
@@ -129,6 +145,8 @@ const BrowseGroup = ({
 BrowseGroup.propTypes = {
   location: PropTypes.object,
   onGetDetail: PropTypes.func,
+  onShowCancelModal: PropTypes.func,
+  dataSource: PropTypes.array,
 }
 
 export default BrowseGroup
