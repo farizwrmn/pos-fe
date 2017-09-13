@@ -69,7 +69,7 @@ export async function createDetail (params) {
     headers: apiHeaderToken
   })
 }
-
+//when void an Invoice
 export async function updatePos (params) {
   const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}` : null
   console.log(url)

@@ -93,6 +93,9 @@ export default {
           dispatch({
             type: 'loadDataPos',
           })
+          dispatch({
+            type: 'showShiftModal',
+          })
         } else if (location.pathname === '/transaction/pos/history') {
           dispatch({
             type: 'queryHistory',
