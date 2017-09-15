@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 15 },
 }
 
-const AdjustList = ({ onOk, onChooseItem, item, form: { getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
+const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
   const handleClick = () => {
     console.log('click')
     validateFields((errors) => {
@@ -20,7 +20,9 @@ const AdjustList = ({ onOk, onChooseItem, item, form: { getFieldDecorator, valid
       const data = {
         ...getFieldsValue(),
       }
+      data.Record = item.no
       onOk(data)
+      resetFields()
     })
   }
 

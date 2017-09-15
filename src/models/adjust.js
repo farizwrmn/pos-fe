@@ -1,9 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import {query, createDetail, create, edit, remove} from '../services/adjust'
 import {pageModel} from './common'
+import { routerRedux } from 'dva/router'
 import {query as queryProducts} from '../services/stock'
 import {query as queryTransType} from '../services/transType'
 import {query as queryEmployee, queryByCode as queryEmployeeId} from '../services/employees'
+import { queryModeName as miscQuery } from '../services/misc'
 import {Modal} from 'antd'
 import moment from 'moment'
 
@@ -16,6 +18,7 @@ export default modelExtend(pageModel, {
     itemEmployee: [],
     dataBrowse: [],
     listType: [],
+    lastTrans: '',
     listAdjust: [],
     listEmployee: [],
     curTotal: 0,
@@ -42,6 +45,9 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'queryAdjust',
+          })
+          dispatch({
+            type: 'queryLastAdjust',
           })
           dispatch({
             type: 'setDataBrowse',
@@ -106,6 +112,41 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryLastAdjust ({ payload }, { call, put }) {
+      var data = []
+      try {
+        data = yield call(query, payload)
+      } catch (e) {
+        console.log('error', e)
+      }
+      const format = yield call(miscQuery, { code: 'FORMAT', name: 'ADJTRANS' })
+      let datatrans = `${format.data.miscVariable}/${moment().format('MMYY')}/00000`
+      let dataLast
+      let length = data.data.length - 1
+      function pad(n, width, z) {
+        z = z || '0'
+        n = n + ''
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+      }
+      if (length > -1) {
+        dataLast = data.data[length].transNo
+      } else {
+        dataLast = datatrans
+      }
+      let lastNo = dataLast.replace(/[^a-z0-9]/gi, '')
+      let newMonth = lastNo.substr(format.data.miscVariable.length, 4)
+      let lastTransNo = lastNo.substr(lastNo.length - 5)
+      let sendTransNo = parseInt(lastTransNo) + 1
+      let padding = pad(sendTransNo, 5)
+      let transNo = ''
+      if (newMonth === `${moment().format('MMYY')}`) {
+        transNo = `${format.data.miscVariable}/${moment().format('MMYY')}/${padding}`
+      } else {
+        transNo = `${format.data.miscVariable}/${moment().format('MMYY')}/00001`
+      }
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
+
     *'delete' ({payload}, {call, put, select}) {
       const data = yield call(remove, payload)
       const {selectedRowKeys} = yield select(_ => _.purchaseId)
@@ -150,6 +191,7 @@ export default modelExtend(pageModel, {
             title: 'Success',
             content: 'Data has been saved...!',
           })
+          yield put(routerRedux.push('/transaction/adjust'))
           yield put({ type: 'SuccessData' })
           yield put({ type: 'hidePopover' })
           yield put({ type: 'modalHide' })
@@ -212,7 +254,7 @@ export default modelExtend(pageModel, {
           Out: ary[n].Out,
         })
       }
-      yield put ({ type: 'modalEditHide' })
+      yield put({ type: 'modalEditHide' })
     },
 
     *getProducts ({payload}, {call, put}) {
@@ -340,7 +382,7 @@ export default modelExtend(pageModel, {
     },
     SuccessData (state) {
       localStorage.removeItem('adjust')
-      return { ...state, dataBrowse: [], item: [] }
+      return { ...state, dataBrowse: [], item: [], listEmployee: [], lastTrans: '', itemEmployee: '' }
     },
     modalShow (state, { payload }) {
       return { ...state, ...payload, modalVisible: true, disableItem: true }
@@ -357,8 +399,13 @@ export default modelExtend(pageModel, {
     showProductModal (state, action) {
       return {...state, ...action.payload, modalProductVisible: true}
     },
+    resetAll (state) {
+      return { ...state, dataBrowse: [] }
+    },
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
     modalEditShow (state, action) {
-      console.log('modalEditShow', action.payload.data)
       return {...state, ...action.payload, modalEditVisible: true, item: action.payload.data}
     },
     modalEditHide (state, action) {

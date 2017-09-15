@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+    lastTrans, currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
@@ -46,7 +46,6 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     visible: modalEditVisible,
     item,
     onOk(data) {
-      console.log('onOk', data)
       dispatch({
         type: 'adjust/adjustEdit',
         payload: data,
@@ -63,6 +62,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
   }
   const adjustProps = {
     item: currentItem,
+    lastTrans,
     disableItem: disableItem,
     location: location,
     loading: loading.effects['adjust/create'],
@@ -78,6 +78,11 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       dispatch({
         type: 'adjust/add',
         payload: data,
+      })
+    },
+    onResetAll () {
+      dispatch({
+        type: 'adjust/resetAll',
       })
     },
     handleBrowseProduct () {

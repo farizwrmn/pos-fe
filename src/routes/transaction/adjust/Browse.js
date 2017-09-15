@@ -55,7 +55,7 @@ const Browse = ({
       columns={columns}
       simple
       bordered
-      pagination={{ pageSize: 10 }}
+      pagination={{ pageSize: 5 }}
       size="small"
       dataSource={dataBrowse}
       onRowClick={(record) => hdlModalShow(record)}

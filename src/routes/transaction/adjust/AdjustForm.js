@@ -19,8 +19,8 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 },
 }
-const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-                      popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields}, ...adjustProps}) => {
+const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+                      popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...adjustProps}) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -34,6 +34,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
       data.transType = data.transType[0]
       console.log('onOk data:', data)
       onOk(data)
+      resetFields()
     })
   }
 
@@ -60,6 +61,10 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
 
   const handleMenuClick = (item) => {
     onChooseItem(item)
+  }
+  const handleButtonDeleteClick = () => {
+    localStorage.removeItem('adjust')
+    onResetAll()
   }
   const columns = [
     {
@@ -102,10 +107,11 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
           <FormItem label="Trans No" {...formItemLayout}>
             {getFieldDecorator('transNo', {
+              initialValue: lastTrans,
               rules: [{
                 required: true,
               }],
-            })(<Input maxLength={25} />)}
+            })(<Input disabled maxLength={25} />)}
           </FormItem>
         </Col>
         <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -200,6 +206,7 @@ const AdjustForm = ({onChooseItem, onGetEmployee, itemEmployee, listType, listEm
         <Browse {...adjustProps} />
       </div>
       <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
+      <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
     </Form>
   )
 }

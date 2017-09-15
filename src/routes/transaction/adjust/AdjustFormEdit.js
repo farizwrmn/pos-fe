@@ -18,7 +18,7 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 4 }, sm: { span: 11 }, md: { span: 11 }, lg: { span: 15 } },
   style: { marginBottom: 3 },
 }
-const AdjustForm = ({onChooseItem, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
                       popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields}, ...adjustProps}) => {
   if (item) {
     itemEmployee.employeeId=item.picId,
@@ -45,6 +45,11 @@ const AdjustForm = ({onChooseItem, disableItem, onGetEmployee, itemEmployee, lis
 
   const hdlGetProduct = () => {
     onGetProduct()
+  }
+
+  const handleButtonDeleteClick = () => {
+    localStorage.removeItem('adjust')
+    onResetAll()
   }
 
   const handleGetEmployee = (e) => {
@@ -105,7 +110,7 @@ const AdjustForm = ({onChooseItem, disableItem, onGetEmployee, itemEmployee, lis
   return (
     <Form style={{ padding: 3 }}>
       <FormItem label="Trans No" {...formItemLayout}>
-        <Input value={item.transNo} maxLength={25} disabled={disableItem} />
+        <Input value={item.transNo} maxLength={25} />
       </FormItem>
       <FormItem label="Type" {...formItemLayout}>
         {getFieldDecorator('transType', {
@@ -119,24 +124,23 @@ const AdjustForm = ({onChooseItem, disableItem, onGetEmployee, itemEmployee, lis
             style={{ width: '100%' }}
             options={listType}
             placeholder="Pick a Type"
-            disabled={disableItem}
           />
         )}
       </FormItem>
       <FormItem label="Date" {...formItemLayout}>
-        <DatePicker disabled={disableItem} value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
+        <DatePicker value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
       </FormItem>
       <FormItem label="Reference" {...formItemLayout}>
-        <Input maxLength={40} disabled={disableItem} value={item.reference} />
+        <Input maxLength={40} value={item.reference} />
       </FormItem>
       <FormItem label="Memo" {...formItemLayout}>
-        <TextArea disabled={disableItem} maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} value={item.memo} />
+        <TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} value={item.memo} />
       </FormItem>
       <FormItem label="PIC" {...formItemLayout}>
-        <Input disabled={disableItem} value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
+        <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
       </FormItem>
       <FormItem label="PIC ID" {...formItemLayout}>
-        <Input disabled={disableItem} value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
+        <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
       </FormItem>
       <FormItem label="Search" {...formItemLayout}>
         <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
@@ -156,6 +160,7 @@ const AdjustForm = ({onChooseItem, disableItem, onGetEmployee, itemEmployee, lis
       </FormItem>
       <FormItem {...formItemLayout}>
         <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
+        <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
       </FormItem>
     </Form>
   )

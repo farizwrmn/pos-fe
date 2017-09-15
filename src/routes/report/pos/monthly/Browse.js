@@ -21,7 +21,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
   var grandTotal = list.reduce(function(cnt, o) { return cnt + o.Total }, 0)
   var discountTotal = list.reduce(function(cnt, o) { return cnt + o.discountTotal }, 0)
   var dppTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
-  var nettoTotal = list.reduce(function(cnt, o) { return cnt + o.Total }, 0)
+  var nettoTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS';
   workbook.created = new Date(1985, 8, 30);
@@ -78,11 +78,21 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         row.push( { text: data.discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push( { text: `${(data.Total - data.discountTotal).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
         row.push( { text: `${ppn.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
-        row.push( { text: `${data.Total.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
+        row.push( { text: `${(data.Total - data.discountTotal).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count = count + 1
     }
+    let totalRow = []
+    totalRow.push({ text: 'Grand Total', colSpan: 2, alignment: 'center', fontSize: 12 })
+    totalRow.push({})
+    totalRow.push({ text: `${qtyTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${ppn.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
+    totalRow.push({ text: `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    body.push(totalRow)
     return body
   }
 
@@ -170,7 +180,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`H${m}`).value = `0`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(list[n].Total)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`I${m}`).value = `${(parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -216,7 +226,26 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
           {
             stack: [
               {
-                text: `LAPORAN REKAP PENJUALAN\n${company[0].miscName}`,
+                stack: [
+                  {
+                    text: company[0].miscName,
+                    fontSize: 11,
+                    alignment: 'left',
+                  },
+                  {
+                    text: company[0].miscDesc,
+                    fontSize: 11,
+                    alignment: 'left',
+                  },
+                  {
+                    text: company[0].miscVariable,
+                    fontSize: 11,
+                    alignment: 'left',
+                  },
+                ],
+              },
+              {
+                text: 'LAPORAN REKAP PENJUALAN',
                 style: 'header',
                 fontSize: 18,
                 alignment: 'center',
@@ -227,12 +256,12 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
               {
                 columns: [
                   {
-                    text: ``,
+                    text: `\nPERIODE: ${fromDate} TO ${toDate}`,
                     fontSize: 12,
                     alignment: 'left',
                   },
                   {
-                    text: `\nPERIODE: ${fromDate} TO ${toDate}`,
+                    text: '',
                     fontSize: 12,
                     alignment: 'center',
                   },

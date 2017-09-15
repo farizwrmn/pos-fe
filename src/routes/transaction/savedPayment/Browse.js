@@ -52,6 +52,7 @@ const BrowseGroup = ({
           dataIndex: 'transNo',
           key: 'transNo',
           width: 200,
+          fixed: 'left',
           filterDropdown: (
             <div className="custom-filter-dropdown">
               <Input

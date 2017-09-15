@@ -8,7 +8,7 @@ import { Col, Row, Icon, Button } from 'antd'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, supplierInformation, listProduct, listSupplier, pagination, date, datePicker,modalVisible, searchVisible, modalProductVisible,
+    item, supplierInformation, listProduct, dataBrowse, listSupplier, pagination, date, datePicker,modalVisible, searchVisible, modalProductVisible,
     modalPurchaseVisible, modalType, selectedRowKeys, disableMultiSelect, curQty, curDiscPercent, curDiscNominal
   } = purchase
 
@@ -60,6 +60,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     datePicker: datePicker,
     item: item ? item : '',
     tempo: 0,
+    dataBrowse: dataBrowse,
     curDiscPercent: curDiscPercent,
     curDiscNominal: curDiscNominal,
     listSupplier: listSupplier,
@@ -130,6 +131,9 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     },
     onChooseItem (data) {
       dispatch({ type: 'purchase/editPurchase', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Detail } })
+    },
+    onResetBrowse () {
+      dispatch({ type: 'purchase/resetBrowse' })
     },
     onGetSupplier () {
       dispatch({ type: 'purchase/querySupplier' })
