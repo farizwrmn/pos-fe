@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: {span: 10},
 }
 
-const PurchaseList = ({onChooseItem, item, onCancel, form: {getFieldDecorator, validateFields, getFieldsValue}, modalPurchaseVisible, ...purchaseProps}) => {
+const PurchaseList = ({onChooseItem, item, onCancel, form: {resetFields, getFieldDecorator, validateFields, getFieldsValue}, modalPurchaseVisible, ...purchaseProps}) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -19,6 +19,7 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {getFieldDecorator, v
         ...getFieldsValue(),
       }
       onChooseItem(data)
+      resetFields()
     })
   }
   const hdlCancel = () => {
@@ -36,7 +37,7 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {getFieldDecorator, v
               message: 'Required',
             }],
           })(
-            <Input />
+            <Input disabled />
           )
           }
         </FormItem>

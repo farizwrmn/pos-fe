@@ -23,6 +23,18 @@ export async function queryMode (params) {
   })
 }
 
+export async function queryModeName (params) {
+  const { code, name, ...fields } = params
+  let url = `${misc}/code/${code}/name/${name}`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'get',
+    data: fields,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   let url = params.id ? misc + '/code/' + params.id : misc
   url = params.name ? url + '/name/' + params.name : url

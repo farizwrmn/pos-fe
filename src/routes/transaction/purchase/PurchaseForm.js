@@ -21,18 +21,20 @@ const formItemLayout1 = {
   labelCol: {span: 10},
   wrapperCol: {span: 11},
 }
-const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct, modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier, onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields}, ...purchaseProps}) => {
-  var dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-  var g = dataPurchase
-  var grandTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  var realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
-  var totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
-  var totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
-  var totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
-  var discPercent = ((curDiscPercent * grandTotal) / 100)
-  var discNominal = curDiscNominal * totalQty
-  var totalDisc = discNominal + discPercent
-    const confirmPurchase = () => {
+const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
+                        modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
+                         onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...purchaseProps}) => {
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+  let g = dataPurchase
+  let grandTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
+  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
+  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
+  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  let discPercent = ((curDiscPercent * grandTotal) / 100)
+  let discNominal = curDiscNominal * totalQty
+  let totalDisc = discNominal + discPercent
+  const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -44,12 +46,13 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
         dueDate: date,
         invoiceTotal: parseInt(grandTotal),
         nettoTotal: parseInt(realTotal) + parseInt(grandTotal),
-        totalDPP: parseInt(totalDpp),
+        totalDPP: parseInt(totalDpp) - parseInt(totalDisc),
         totalPPN: parseInt(totalPpn),
         discTotal: totalDisc,
       }
       console.log('onOk data:', data)
       onOk(data)
+      resetFields()
     })
   }
   const customPanelStyle = {
@@ -131,6 +134,7 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
   }
   const resetProduct = () => {
     localStorage.removeItem('product_detail')
+    onResetBrowse()
   }
   const a = localStorage.getItem('setDate') ? moment(localStorage.getItem('setDate')).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
 
@@ -179,13 +183,12 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
                         required: false,
                         message: 'Required',
                       }],
-                    })(<InputNumber defaultValue={0} step={500} onChange={(value) => hdlChangeNominal(value)}/>)}
+                    })(<InputNumber defaultValue={0} step={500} min={0} onChange={(value) => hdlChangeNominal(value)}/>)}
                   </FormItem>
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transDate', {
-                      initialValue: moment.utc(a, 'YYYY-MM-DD'),
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -258,19 +261,22 @@ const PurchaseForm = ({onDiscPercent, onDiscNominal, onOk, curDiscNominal, curDi
       </Row>
       <Browse {...purchaseProps}/>
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
-      <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
-        <Input disabled value={grandTotal} />
-      </FormItem>
-      <FormItem label="DPP" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
-        <Input disabled value={totalDpp} />
-      </FormItem>
-      <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
-        <Input disabled value={totalPpn} />
-      </FormItem>
-      <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
-        <Input disabled value={totalDisc} />
-      </FormItem>
-      <Button type="primary" size="large" onClick={confirmPurchase}>Confirm</Button>
+      <Row>
+        <Col span="12">
+          <Button type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Confirm</Button>
+        </Col>
+        <Col span="12">
+          <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={grandTotal} />
+          </FormItem>
+          <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={totalPpn} />
+          </FormItem>
+          <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={totalDisc} />
+          </FormItem>
+        </Col>
+      </Row>
     </Form>
   )
 }
@@ -279,6 +285,7 @@ PurchaseForm.propTyps = {
   form: PropTypes.object.isRequired,
   location: PropTypes.object,
   onGetSupplier: PropTypes.func,
+  dataBrowse: PropTypes.array,
 }
 
 export default Form.create()(PurchaseForm)

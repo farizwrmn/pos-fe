@@ -26,6 +26,7 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     tmpProductList: [],
     listProduct: [],
+    dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [],
     curDiscPercent: 0,
     curDiscNominal: 0,
     datePicker: '',
@@ -92,19 +93,24 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(create, {id: payload.transNo, data: payload})
       if (data.success) {
         var arrayProd = []
         var purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : null
         for (var n = 0; n < purchase_detail.length; n++) {
+          if (payload.taxType === 'I') {
+            purchase_detail[n].ppn = 0.1 * purchase_detail[n].price
+          } else if (payload.taxType === 'E') {
+            purchase_detail[n].ppn = 0
+          }
           arrayProd.push({
             transNo: payload.transNo,
             productId: purchase_detail[n].code,
             productName: purchase_detail[n].name,
             qty: purchase_detail[n].qty,
-            purchasePrice: purchase_detail[n].qty,
-            DPP: purchase_detail[n].dpp,
+            purchasePrice: purchase_detail[n].price,
+            DPP: ((purchase_detail[n].price) - (((purchase_detail[n].disc1 / 100) * purchase_detail[n].price)) - (purchase_detail[n].discount)),
             PPN: purchase_detail[n].ppn,
             discPercent: purchase_detail[n].disc1,
             discNominal: purchase_detail[n].discount,
@@ -113,14 +119,14 @@ export default modelExtend(pageModel, {
             periode: moment().format('M')
           })
         }
-        console.log('arrayProd', arrayProd)
         const detail = yield call(createDetail, { id: payload.transNo ,data: arrayProd })
         if (detail.success) {
           const modal = Modal.info({
             title: 'Transaction Success',
-            content: `Transaction ${detail.id} has been saved`
+            content: `Transaction ${payload.transNo} has been saved`
           })
           localStorage.removeItem('product_detail')
+          yield put({ type: 'resetBrowse' })
         }
       } else {
         const modal = Modal.error({
@@ -252,7 +258,8 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].ket = payload.value
       }
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-      yield put ({ type: 'setAllNull' })
+      yield put({ type: 'setAllNull' })
+      yield put({ type: 'modalEditHide' })
     },
 
   },
@@ -370,26 +377,26 @@ export default modelExtend(pageModel, {
       return {...state, ...action.payload, modalPurchaseVisible: true, item: action.payload.data}
     },
     modalEditHide (state, action) {
-      return {...state, ...action.payload, modalPurchaseVisible: false }
+      return {...state, ...action.payload, modalPurchaseVisible: false, dataBrowse: JSON.parse(localStorage.getItem('product_detail')) }
     },
     setAllNull (state, action) {
       return {...state, ...action.payload, item: '' }
-    },
-    hideProductModal (state) {
-      return {...state, modalPurchaseVisible: false}
     },
     onChooseSupplier (state, action) {
       console.log('onChooseSupplier')
       return {...state, supplierInformation: action.payload}
     },
     hideProductModal (state) {
-      return {...state, modalProductVisible: false}
+      return { ...state, modalProductVisible: false, dataBrowse: JSON.parse(localStorage.getItem('product_detail')) }
     },
     modalHide (state) {
       return {...state, modalVisible: false}
     },
     searchShow (state) {
       return {...state, searchVisible: true}
+    },
+    resetBrowse (state) {
+      return { ...state, dataBrowse: [] }
     },
     searchHide (state) {
       return {...state, searchVisible: false}

@@ -11,7 +11,7 @@ const gridStyle = {
 const confirm = Modal.confirm
 
 const Browse = ({
-  modalShow, }) => {
+  modalShow, ...purchaseProps }) => {
   const columns = [
     {
       title: 'No',
@@ -75,25 +75,20 @@ const Browse = ({
   }
 
   return (
-    <Row gutter={35}>
-      <Row style={{padding: 24}}>
-        <Col>
-          <Table
-            bordered
-            scroll={{x: 1300}}
-            columns={columns}
-            simple
-            size="small"
-            dataSource={localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : null}
-            onRowClick={(record) => hdlModalShow(record)}
-          />
-        </Col>
-      </Row>
-    </Row>
+    <Table
+      bordered
+      scroll={{x: 1300}}
+      columns={columns}
+      simple
+      size="small"
+      pagination={{pageSize: 5}}
+      dataSource={purchaseProps.purchase.dataBrowse}
+      onRowClick={(record) => hdlModalShow(record)}
+    />
   )
 }
 
-Browse.propTyps = {
+Browse.propTypes = {
 }
 
 export default Browse
