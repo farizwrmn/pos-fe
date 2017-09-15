@@ -5,3 +5,4 @@ npm-debug.log
 .idea/*
 Y
 build
+package-lock.json
