@@ -10,7 +10,13 @@ const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps 
       case 'Edit':
         styleMenuItem = { color: '#108ee9', background: '#d2eafb', bordercolor: '#d2eafb' }
         break
+      case 'Print':
+        styleMenuItem = { color: '#108ee9', background: '#d2eafb', bordercolor: '#d2eafb' }
+        break
       case 'Delete':
+        styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
+        break
+      case 'Void':
         styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
         break
       case 'Password':

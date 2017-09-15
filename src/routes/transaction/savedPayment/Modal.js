@@ -43,7 +43,7 @@ const modal = ({
     >
       <Form>
         <FormItem label="No" {...formItemLayout}>
-          <Input value={listPaymentDetail.id}/>
+          <Input value={listPaymentDetail ? listPaymentDetail.id : ''}/>
         </FormItem>
       </Form>
     </Modal>
@@ -52,6 +52,7 @@ const modal = ({
 
 modal.propTypes = {
   form: PropTypes.object.isRequired,
+  location: PropTypes.object,
   type: PropTypes.string,
   item: PropTypes.object,
   onOk: PropTypes.func,

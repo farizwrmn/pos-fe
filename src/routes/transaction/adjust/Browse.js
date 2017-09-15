@@ -50,22 +50,16 @@ const Browse = ({
   }
 
   return (
-    <Row gutter={35}>
-      <Row style={{padding: 24}}>
-        <Col>
-          <Table
-            scroll={{ x: 800 }}
-            columns={columns}
-            simple
-            bordered
-            pagination={{ pageSize: 10 }}
-            size="small"
-            dataSource={dataBrowse}
-            onRowClick={ (record) => hdlModalShow(record)}
-          />
-        </Col>
-      </Row>
-    </Row>
+    <Table
+      scroll={{ x: 800 }}
+      columns={columns}
+      simple
+      bordered
+      pagination={{ pageSize: 10 }}
+      size="small"
+      dataSource={dataBrowse}
+      onRowClick={(record) => hdlModalShow(record)}
+    />
   )
 }
 

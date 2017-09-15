@@ -26,10 +26,9 @@ export async function query (params) {
 }
 
 export async function queryPos (params) {
-  console.log('params', params)
   const apiHeaderToken = crypt.apiheader()
   const url = pos + '/' + 'code' + '/' + params
-  console.log('url', url)
+  console.log(url)
   return request({
     url: url,
     method: 'get',
@@ -67,6 +66,19 @@ export async function createDetail (params) {
     method: 'post',
     data: params.data,
     body: params.data,
+    headers: apiHeaderToken
+  })
+}
+//when void an Invoice
+export async function updatePos (params) {
+  const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}` : null
+  console.log(url)
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
+    data: params,
+    body: params,
     headers: apiHeaderToken
   })
 }

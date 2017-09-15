@@ -1,19 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag, Button, Icon, Popconfirm } from 'antd'
-import FaFileExcelO from 'react-icons/lib/fa/file-excel-o'
 import { DropOption } from 'components'
-import { Link } from 'dva/router'
+import Report from './reportCustomer'
 import moment from 'moment'
-import Workbook from 'react-excel-workbook'
-// import * as Excel from 'exceljs/dist/exceljs.min.js'
-import styles from './List.less'
-import classnames from 'classnames'
-const pdfMake = require('pdfmake/build/pdfmake.js');
-const pdfFonts = require('pdfmake/build/vfs_fonts.js');
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-// const workbook = new Excel.Workbook()
 const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
@@ -101,18 +92,6 @@ const Browse = ({
       key: 'idNo',
       width: '6%',
     },
-    // {
-    //   title: 'Province',
-    //   dataIndex: 'state',
-    //   key: 'state',
-    //   width: '4%',
-    // },
-    //  {
-    //   title: 'Post Code',
-    //   dataIndex: 'zipCode',
-    //   key: 'zipCode',
-    //   width: '5%',
-    // },
     {
       title: 'E-mail',
       dataIndex: 'email',
@@ -199,6 +178,7 @@ const Browse = ({
           <Button onClick={hdlButtonSearchClick}>
             <Icon type="search" /> Search
           </Button>
+          <Report />
           { selectedRowKeysLen > 1 &&
           <Popconfirm title={'Are you sure delete these items?'}
             onConfirm={() => hdlButtonDeleteClick(selectedRowKeys)}
@@ -212,17 +192,6 @@ const Browse = ({
         <span style={{ marginLeft: 8 }}>
           { selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
         </span>
-      </div>
-      <div style={{ margin: '0px 10px 10px 0px' }}>
-        <Workbook filename={`customer${moment().format('YYYYMMDD')}.xls`} element={<Button style={{ backgroundColor: '#207347', color: 'white' }} size='large'><FaFileExcelO />  Excel</Button>}>
-          <Workbook.Sheet data={dataSource} name="Sheet 1">
-            <Workbook.Column label=" " value="memberCode"/>
-            <Workbook.Column label=" " value="memberName"/>
-            <Workbook.Column label="DATA CUSTOMER" value="point"/>
-            <Workbook.Column label=" " value="mobileNumber"/>
-            <Workbook.Column label=" " value="address01"/>
-          </Workbook.Sheet>
-        </Workbook>
       </div>
       <Table
         {...tableProps}

@@ -4,10 +4,11 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import BrowseGroup from './Browse'
 import Modal from './Modal'
+import ModalCancel from './ModalCancel'
 import moment from 'moment'
 
 const Pos = ({ location, dispatch, loading, pos }) => {
-  const { listPayment, listPaymentDetail, memberPrint, mechanicPrint, companyPrint,
+  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint, companyPrint,
     pagination, selectedRowKeys, modalPrintVisible,posData } = pos
 
   const { pageSize } = pagination
@@ -15,7 +16,7 @@ const Pos = ({ location, dispatch, loading, pos }) => {
   const modalProps = {
     visible: modalPrintVisible,
     listPayment,
-    loading: loading.effects['pos/queryHistory'],
+    loading: loading.effects['pos/queryPosDetail'],
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
@@ -26,7 +27,6 @@ const Pos = ({ location, dispatch, loading, pos }) => {
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
-      console.log('data', data)
       var dataPos = []
       var dataService = []
       for (var n = 0; n < data.data.length; n++) {
@@ -119,10 +119,31 @@ const Pos = ({ location, dispatch, loading, pos }) => {
     },
   }
 
+  const modalCancelProps = {
+    visible: modalCancelVisible,
+    loading: loading.effects['pos/queryPosDetail'],
+    maskClosable: false,
+    invoiceCancel,
+    title: `Cancel the Transaction Duplicate?`,
+    confirmLoading: loading.effects['payment/printPayment'],
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: 'pos/cancelInvoice',
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/hidePrintModal',
+      })
+    },
+  }
+
   const browseProps = {
     dataSource: listPayment,
     width: 90,
-    loading: loading.effects['service/query'],
+    loading: loading.effects['pos/queryHistory'],
     pagination,
     location,
     onChange (page) {
@@ -135,6 +156,12 @@ const Pos = ({ location, dispatch, loading, pos }) => {
           pageSize: page.pageSize,
         },
       }))
+    },
+    onShowCancelModal (e) {
+      dispatch({
+        type: 'pos/showCancelModal',
+        payload: e,
+      })
     },
     onGetDetail (e) {
       const transNo = e.transNo.replace(/[^a-z0-9]/gi,'')
@@ -157,6 +184,7 @@ const Pos = ({ location, dispatch, loading, pos }) => {
     <div className="content-inner">
       <BrowseGroup {...browseProps} />
       <Modal {...modalProps} />
+      <ModalCancel {...modalCancelProps} />
     </div>
   )
 }

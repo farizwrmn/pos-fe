@@ -726,7 +726,6 @@ export default {
 
     printPayment (state, action) {
       const payload = action.payload
-      console.log('payload', payload)
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos === [] ? dataService : dataPos.concat(dataService)

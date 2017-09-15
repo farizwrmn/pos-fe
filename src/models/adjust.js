@@ -16,14 +16,15 @@ export default modelExtend(pageModel, {
     itemEmployee: [],
     dataBrowse: [],
     listType: [],
+    listAdjust: [],
     listEmployee: [],
     curTotal: 0,
     popoverVisible: false,
     modalEditVisible: false,
+    disableItem: false,
     modalVisible: false,
     modalType: '',
     item: [],
-    disableItem: {},
     selectedRowKeys: [],
     tmpProductList: [],
     listProduct: [],
@@ -37,11 +38,10 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/transaction/adjust') {
           dispatch({
-            type: 'query',
-            payload: location.query,
+            type: 'loadDataAdjust',
           })
           dispatch({
-            type: 'loadDataAdjust',
+            type: 'queryAdjust',
           })
           dispatch({
             type: 'setDataBrowse',
@@ -84,6 +84,23 @@ export default modelExtend(pageModel, {
           type: 'queryEmployeeSuccess',
           payload: {
             item: data.employee,
+          },
+        })
+      }
+    },
+
+    * queryAdjust ({payload}, {call, put}) {
+      var data = []
+      try {
+        data = yield call(query, payload)
+      } catch (e) {
+        console.log('error', e)
+      }
+      if (data) {
+        yield put({
+          type: 'queryAdjustSuccess',
+          payload: {
+            item: data.data,
           },
         })
       }
@@ -133,7 +150,9 @@ export default modelExtend(pageModel, {
             title: 'Success',
             content: 'Data has been saved...!',
           })
-          yield put({type: 'SuccessData'})
+          yield put({ type: 'SuccessData' })
+          yield put({ type: 'hidePopover' })
+          yield put({ type: 'modalHide' })
         }
       } else {
         const modal = Modal.warning({
@@ -159,8 +178,8 @@ export default modelExtend(pageModel, {
       console.log('adjustEdit', payload)
       var dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       var arrayProd = dataPos.slice()
-      arrayProd[payload.Record - 1].In = payload.InQty
-      arrayProd[payload.Record - 1].Out = payload.OutQty
+      arrayProd[payload.Record - 1].In = parseInt(payload.InQty)
+      arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty)
       localStorage.setItem('adjust', JSON.stringify(arrayProd))
       yield put ({ type:'modalEditHide' })
     },
@@ -250,6 +269,14 @@ export default modelExtend(pageModel, {
       }
     },
 
+    queryAdjustSuccess (state, action) {
+      const {item} = action.payload
+      return {
+        ...state,
+        listAdjust: item,
+      }
+    },
+
     queryGetProductsSuccess (state, action) {
       const {productInformation, tmpProductList} = action.payload
       var dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
@@ -313,7 +340,13 @@ export default modelExtend(pageModel, {
     },
     SuccessData (state) {
       localStorage.removeItem('adjust')
-      return {...state, dataBrowse: []}
+      return { ...state, dataBrowse: [], item: [] }
+    },
+    modalShow (state, { payload }) {
+      return { ...state, ...payload, modalVisible: true, disableItem: true }
+    },
+    modalHide (state, { payload }) {
+      return { ...state, ...payload, modalVisible: false, disableItem: false, modalProductVisible: true }
     },
     onInputChange (state, action) {
       return {...state, searchText: action.payload.searchText, popoverVisible: true}
