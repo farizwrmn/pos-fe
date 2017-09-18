@@ -1057,7 +1057,7 @@ class LastMeter extends React.Component {
         <Col lg={18} md={20}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              <Input placeholder="Name" disabled style={{ marginBottom: 8}}/>
+              {/*<Input placeholder="Name" disabled style={{ marginBottom: 8}}/>*/}
               {infoUtil && <Tag color="green" style={{ marginBottom: 8}}> {infoUtil} </Tag> }
               <Input size="large" autoFocus={true} value={curBarcode} style={{ fontSize: 24, marginBottom: 8 }}
                      placeholder="Search Code Here" onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)}
@@ -1102,12 +1102,12 @@ class LastMeter extends React.Component {
               <Row>
                 <Col lg={{ span: 10 }}>
                   <FormItem label="Qty">
-                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} />
                   </FormItem>
                 </Col>
                 <Col xs={{ span: 5, offset: 2 }} lg={{ span: 10, offset: 4 }}>
                   <FormItem label="Total">
-                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} />
                   </FormItem>
                 </Col>
               </Row>

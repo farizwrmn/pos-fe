@@ -25,7 +25,7 @@ export async function queryMode (params) {
 
 export async function queryModeName (params) {
   const { code, name, ...fields } = params
-  let url = `${misc}/code/${code}/name/${name}`
+  let url = `${misc}/code/${encodeURIComponent(code)}/name/${encodeURIComponent(name)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -36,8 +36,8 @@ export async function queryModeName (params) {
 }
 
 export async function add (params) {
-  let url = params.id ? misc + '/code/' + params.id : misc
-  url = params.name ? url + '/name/' + params.name : url
+  let url = params.id ? misc + '/code/' + encodeURIComponent(params.id) : misc
+  url = params.name ? url + '/name/' + encodeURIComponent(params.name) : url
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -49,8 +49,8 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  let url = params.id ? misc + '/code/' + params.id  : misc
-  url = params.name ? url + '/name/' + params.name : url
+  let url = params.id ? misc + '/code/' + encodeURIComponent(params.id) : misc
+  url = params.name ? url + '/name/' + encodeURIComponent(params.name) : url
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -63,8 +63,8 @@ export async function edit (params) {
 
 export async function remove (params) {
   console.log('misc-dele-url', params)
-  let url = params.id ? misc + '/code/' + params.id  : misc
-  url = params.name ? url + '/name/' + params.name : url
+  let url = params.id ? misc + '/code/' + encodeURIComponent(params.id) : misc
+  url = params.name ? url + '/name/' + encodeURIComponent(params.name) : url
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

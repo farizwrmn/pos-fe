@@ -23,14 +23,6 @@ export async function queryLastTransNo (params) {
 }
 
 export async function create (params) {
-  var transNo = params.id
-  if (transNo.indexOf('SP') > -1) {
-    transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 4) + '/' + transNo.substring(4, 8) + '/' + transNo.substring(8, 13)
-  } else if (transNo.indexOf('FJ') > -1) {
-    transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 6) + '/' + transNo.substring(6, 10)
-  } else {
-    transNo = params.id
-  }
   let url = params.id ? purchase : null
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
@@ -45,7 +37,7 @@ export async function create (params) {
 
 export async function createDetail (params) {
   let url = params.id ? `${purchaseDetail}/purchase` : null
-  console.log(url);
+  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

@@ -13,7 +13,7 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  const url = params.supplierCode ? `${suppliers}/${params.supplierCode}` : suppliers
+  const url = params.supplierCode ? `${suppliers}/${encodeURIComponent(params.supplierCode)}` : suppliers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -25,7 +25,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  const url = params.supplierCode ? `${suppliers}/${params.supplierCode}` : suppliers
+  const url = params.supplierCode ? `${suppliers}/${encodeURIComponent(params.supplierCode)}` : suppliers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -37,7 +37,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  const url = params.id ? `${suppliers}/${params.id}` : suppliers
+  const url = params.id ? `${suppliers}/${encodeURIComponent(params.id)}` : suppliers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

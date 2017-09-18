@@ -12,7 +12,7 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  let url = params.id ? stockcategory + '/' + params.id : stockcategory
+  let url = params.id ? stockcategory + '/' + encodeURIComponent(params.id) : stockcategory
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -25,7 +25,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  let url = params.id ? stockcategory + '/' + params.id  : stockcategory
+  let url = params.id ? stockcategory + '/' + encodeURIComponent(params.id) : stockcategory
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -38,7 +38,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  let url = params.id ? stockcategory + '/' + params.id  : stockcategory
+  let url = params.id ? stockcategory + '/' + encodeURIComponent(params.id) : stockcategory
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({

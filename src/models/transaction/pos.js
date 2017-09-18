@@ -845,6 +845,7 @@ export default {
       const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
       const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
       const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
 
       var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
       var memberInformation
@@ -863,6 +864,7 @@ export default {
 
       arrayProd.push({
         cashier_trans: cashier_trans,
+        service_detail: service_detail,
         memberCode: memberInfo.memberCode,
         memberName: memberInfo.memberName,
         point: memberInfo.point,
@@ -887,6 +889,7 @@ export default {
         if ( localStorage.getItem('queue1') === null ) {
           localStorage.setItem('queue1', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
@@ -901,6 +904,7 @@ export default {
         else if ( localStorage.getItem('queue2') === null ) {
           localStorage.setItem('queue2', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
@@ -915,6 +919,7 @@ export default {
         else if ( localStorage.getItem('queue3') === null ) {
           localStorage.setItem('queue3', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')

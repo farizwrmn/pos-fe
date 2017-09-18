@@ -27,7 +27,7 @@ export async function query (params) {
 
 export async function queryPos (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = pos + '/' + 'code' + '/' + params
+  const url = pos + '/' + 'code' + '/' + encodeURIComponent(params)
   console.log(url)
   return request({
     url: url,
@@ -38,7 +38,7 @@ export async function queryPos (params) {
 
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = `${posdetail}/${params.id}`
+  const url = `${posdetail}/${encodeURIComponent(params.id)}`
   console.log(url)
   return request({
     url: url,
@@ -48,9 +48,10 @@ export async function queryDetail (params) {
 }
 
 export async function create (params) {
+  const url = pos + '/code/' + encodeURIComponent(params.transNo)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: pos + '/code/' + params.transNo,
+    url: url,
     method: 'post',
     data: JSON.stringify(params),
     body: JSON.stringify(params),
@@ -59,10 +60,10 @@ export async function create (params) {
 }
 
 export async function createDetail (params) {
-  console.log('createDetail', params);
+  const url = posdetail + '/' + encodeURIComponent(params.transNo)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: posdetail + '/' + params.transNo,
+    url: url,
     method: 'post',
     data: params.data,
     body: params.data,

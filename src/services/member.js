@@ -5,12 +5,12 @@ const idToken = localStorage.getItem('id_token')
 
 export async function queryByCode (params) {
   return request({
-    url: apiURL + apiPrefix + member + '/' + params,
+    url: apiURL + apiPrefix + member + '/' + encodeURIComponent(params),
     method: 'get',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
-    }
+      'Authorization': 'JWT ' + idToken,
+    },
   })
 }

@@ -3,7 +3,7 @@ import { request, config, crypt } from 'utils'
 const { customers } = config.api
 
 export async function query (params) {
-  const url = params ? `${customers}/${params.id}/` + 'units' : null
+  const url = params ? `${customers}/${encodeURIComponent(params.id)}/` + 'units' : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -14,7 +14,7 @@ export async function query (params) {
 }
 
 export async function queryField (member, params) {
-  const url = params ? `${customers}/${member.code}/` + 'units' : null
+  const url = params ? `${customers}/${encodeURIComponent(member.code)}/` + 'units' : null
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -26,7 +26,7 @@ export async function queryField (member, params) {
 }
 
 export async function add (params) {
-  const url = params.id ? `${customers}/${params.data.memberCode}/` + 'units' + `/${params.id}` : null
+  const url = params.id ? `${customers}/${encodeURIComponent(params.data.memberCode)}/` + 'units' + `/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -38,7 +38,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  const url = params.id ? `${customers}/${params.data.memberCode}/` + 'units' + `/${params.id}` : null
+  const url = params.id ? `${customers}/${encodeURIComponent(params.data.memberCode)}/` + 'units' + `/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -50,7 +50,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  const url = params.id ? `${customers}/${params.id.data}/` + 'units' + `/${params.id.id}` : null
+  const url = params.id ? `${customers}/${encodeURIComponent(params.id.data)}/` + 'units' + `/${encodeURIComponent(params.id.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
