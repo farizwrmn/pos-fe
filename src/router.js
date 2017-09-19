@@ -202,12 +202,28 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-monthly')
           },
         }, {
+          path: 'report/pos/summary/trans',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/summary/trans/'))
+            }, 'report-pos-summary-trans')
+          },
+        }, {
           path: 'report/service/trans',
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/report/service'))
               cb(null, require('./routes/report/service/TransNo/'))
             }, 'report-service-trans')
+          },
+        }, {
+          path: 'report/purchase/summary/trans',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/purchase'))
+              cb(null, require('./routes/report/purchase/summary/trans/'))
+            }, 'report-purchase-summary-trans')
           },
         }, {
           path: 'setting/user',

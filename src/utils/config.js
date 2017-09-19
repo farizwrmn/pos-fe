@@ -1,7 +1,7 @@
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIHOST = 'localhost'//'202.162.198.43'
-const APIPORT = 5557
+const APIHOST = '192.168.88.193'//'202.162.198.43'
+const APIPORT = 80
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
@@ -57,7 +57,8 @@ module.exports = {
     pos: `${APIURL}${APIV1}/pos`,
     posdetail: `${APIURL}${APIV1}/posdetail`,
     posreport: `${APIURL}${APIV1}/posreport`,
-    servicereport: `${APIURL}${APIV1}/report/service/trans`,
+    purchasereport: `${APIURL}${APIV1}/report/purchase`,
+    servicereport: `${APIURL}${APIV1}/report/service`,
     purchase: `${APIURL}${APIV1}/purchase`,
     purchaseDetail: `${APIURL}${APIV1}/purchasedetail`,
     adjust: `${APIURL}${APIV1}/adjust`,

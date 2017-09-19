@@ -9,12 +9,14 @@ import moment from 'moment'
 import Browse from './Browse'
 import { saveAs } from 'file-saver'
 
-const Report = ({ location, dispatch, loading, serviceReport }) => {
+const Report = ({ location, dispatch, loading, serviceReport, app }) => {
   const { list, pagination, fromDate, toDate, productCode, company } = serviceReport
   const { pageSize } = pagination
+  const { user } = app
   const browseProps = {
     dataSource: list,
     list,
+    user,
     company,
     fromDate,
     toDate,
@@ -80,9 +82,10 @@ const Report = ({ location, dispatch, loading, serviceReport }) => {
 
 Report.propTyps = {
   location: PropTypes.object,
+  app: PropTypes.app,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
   serviceReport: PropTypes.object,
 }
 
-export default connect(({ loading, serviceReport }) => ({ loading, serviceReport }))(Report)
+export default connect(({ loading, serviceReport, app }) => ({ loading, serviceReport, app }))(Report)

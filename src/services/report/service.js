@@ -6,7 +6,7 @@ const { servicereport } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? `${servicereport}?from=${params.from}&to=${params.to}` : `${servicereport}`
+  const url = params ? `${servicereport}/trans?from=${params.from}&to=${params.to}` : `${servicereport}/trans`
   console.log(url)
   return request({
     url: url,

@@ -83,7 +83,7 @@ const modal = ({
             }],
           })(<Input />)}
         </FormItem>
-        <FormItem label="Group Name" hasFeedback {...formItemLayout}>
+        <FormItem label="City Name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('cityName', {
             initialValue: item.cityName,
             rules: [{

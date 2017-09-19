@@ -1,10 +1,8 @@
 /**
- * Created by Veirry on 10/09/2017.
+ * Created by Veirry on 19/09/2017.
  */
-import { query as queryReport, queryTrans } from '../../services/report/pos'
+import { query as queryReport, queryTrans } from '../../services/report/purchase'
 import { queryMode as miscQuery} from '../../services/misc'
-import { parse } from 'qs'
-import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'posReport',
@@ -36,23 +34,6 @@ export default {
     },
   },
   effects: {
-    * queryPart ({ payload }, { call, put }) {
-      var data = []
-      if (payload) {
-        data = yield call (queryReport, payload)
-      } else {
-        data = yield call (queryReport)
-      }
-      yield put ({
-        type: 'querySuccessPart',
-        payload: {
-          list: data.data,
-          pagination: {
-            total: data.total,
-          },
-        },
-      })
-    },
     * queryTrans ({ payload }, { call, put }) {
       var data = []
       if (payload) {
@@ -81,18 +62,6 @@ export default {
     },
   },
   reducers: {
-    querySuccessPart (state, action) {
-      const { list, pagination, tmpList } = action.payload
-
-      return { ...state,
-        list,
-        tmpList,
-        pagination: {
-          ...state.pagination,
-          ...pagination,
-        },
-      }
-    },
     querySuccessTrans (state, action) {
       const { listTrans, pagination, tmpList } = action.payload
 

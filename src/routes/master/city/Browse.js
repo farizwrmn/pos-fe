@@ -30,7 +30,7 @@ const BrowseGroup = ({
       confirm({
         title: 'Are you sure delete this record?',
         onOk () {
-          onDeleteItem(record.groupCode)
+          onDeleteItem(record.cityCode)
         },
       })
     }

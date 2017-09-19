@@ -153,14 +153,14 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         'code': item.id,
         'productCode': item.productCode,
         'name': item.productName,
-        'qty': null,
+        'qty': 0,
         'price': item.costPrice,
         'discount': 0,
         'disc1': 0,
         'dpp': 0,
         'ppn': 0,
         'ket': '',
-        'total': null,
+        'total': 0 * item.costPrice,
       })
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })

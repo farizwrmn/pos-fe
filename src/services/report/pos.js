@@ -14,3 +14,14 @@ export async function query (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryTrans (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = params ? `${posreport}/trans?from=${params.from}&to=${params.to}` : `${posreport}/trans`
+  console.log(url)
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}

@@ -16,7 +16,7 @@ const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }) => {
+const Browse = ({ list, company, user, productCode, fromDate, toDate, ...browseProps }) => {
   var grandTotal = list.reduce(function(cnt, o) { return cnt + o.total }, 0)
   var discountTotal = list.reduce(function(cnt, o) { return cnt + o.discount }, 0)
   var dppTotal = list.reduce(function(cnt, o) { return cnt + o.dpp }, 0)
@@ -69,7 +69,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         var row = new Array()
         row.push( { text: count, alignment: 'center', fontSize: 11 } );
         row.push( { text: data.transNo.toString(), alignment: 'left', fontSize: 11 } );
-        row.push( { text: data.transDate.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 } )
+        row.push( { text: moment(data.transDate).format('DD-MM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 } )
         row.push( { text: data.total.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push( { text: data.discount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push( { text: data.dpp.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
@@ -163,7 +163,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${list[n].transNo}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${list[n].transDate}`
+        sheet.getCell(`D${m}`).value = `${moment(list[n].transDate).format('DD-MM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = `${(parseFloat(list[n].total)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
@@ -201,7 +201,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then(function (data) {
         var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `POS-summary${moment().format('YYYYMMDD')}.xlsx`)
+        saveAs(blob, `Service-summary${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
@@ -254,7 +254,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
                 ],
               },
               {
-                text: 'LAPORAN JASA BENKEL PER FAKTUR',
+                text: 'LAPORAN JASA BENGKEL PER FAKTUR',
                 style: 'header',
                 fontSize: 18,
                 alignment: 'center',
@@ -286,6 +286,12 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
               columns: [
                 {
                   text: `Date: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                  margin: [0, 0, 0, 0],
+                  fontSize: 9,
+                  alignment: 'center',
+                },
+                {
+                  text: `Dicetak oleh: ${user.username}`,
                   margin: [0, 0, 0, 0],
                   fontSize: 9,
                   alignment: 'center',

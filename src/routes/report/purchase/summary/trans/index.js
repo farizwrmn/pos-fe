@@ -1,5 +1,5 @@
 /**
- * Created by Veirry on 09/09/2017.
+ * Created by Veirry on 19/09/2017.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -8,12 +8,12 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 
 const Report = ({ location, dispatch, loading, posReport, app }) => {
-  const { list, pagination, fromDate, toDate, productCode, company } = posReport
+  const { listTrans, pagination, fromDate, toDate, productCode, company } = posReport
   const { user } = app
   const { pageSize } = pagination
   const browseProps = {
-    dataSource: list,
-    list,
+    dataSource: listTrans,
+    listTrans,
     company,
     user,
     fromDate,
@@ -27,7 +27,7 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     },
     onDateChange(from, to) {
       dispatch({
-        type: 'posReport/queryPart',
+        type: 'posReport/queryTrans',
         payload: {
           from: from,
           to: to,

@@ -94,44 +94,51 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(create, {id: payload.transNo, data: payload})
-      if (data.success) {
-        var arrayProd = []
-        var purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : null
-        for (var n = 0; n < purchase_detail.length; n++) {
-          if (payload.taxType === 'I') {
-            purchase_detail[n].ppn = 0.1 * purchase_detail[n].price
-          } else if (payload.taxType === 'E') {
-            purchase_detail[n].ppn = 0
+      let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
+      if (purchase_detail.length != 0) {
+        const data = yield call(create, {id: payload.transNo, data: payload})
+        if (data.success) {
+          let arrayProd = []
+          for (let n = 0; n < purchase_detail.length; n++) {
+            if (payload.taxType === 'I') {
+              purchase_detail[n].ppn = 0.1 * purchase_detail[n].price
+            } else if (payload.taxType === 'E') {
+              purchase_detail[n].ppn = 0
+            }
+            arrayProd.push({
+              transNo: payload.transNo,
+              productId: purchase_detail[n].code,
+              productName: purchase_detail[n].name,
+              qty: purchase_detail[n].qty,
+              purchasePrice: purchase_detail[n].price,
+              DPP: ((purchase_detail[n].price) - (((purchase_detail[n].disc1 / 100) * purchase_detail[n].price)) - (purchase_detail[n].discount)),
+              PPN: purchase_detail[n].ppn,
+              discPercent: purchase_detail[n].disc1,
+              discNominal: purchase_detail[n].discount,
+              transType: payload.transType,
+              year: moment().format('YYYY'),
+              periode: moment().format('M')
+            })
           }
-          arrayProd.push({
-            transNo: payload.transNo,
-            productId: purchase_detail[n].code,
-            productName: purchase_detail[n].name,
-            qty: purchase_detail[n].qty,
-            purchasePrice: purchase_detail[n].price,
-            DPP: ((purchase_detail[n].price) - (((purchase_detail[n].disc1 / 100) * purchase_detail[n].price)) - (purchase_detail[n].discount)),
-            PPN: purchase_detail[n].ppn,
-            discPercent: purchase_detail[n].disc1,
-            discNominal: purchase_detail[n].discount,
-            transType: payload.transType,
-            year: moment().format('YYYY'),
-            periode: moment().format('M')
+          const detail = yield call(createDetail, { id: payload.transNo ,data: arrayProd })
+          if (detail.success) {
+            const modal = Modal.info({
+              title: 'Transaction Success',
+              content: `Transaction ${payload.transNo} has been saved`
+            })
+            localStorage.removeItem('product_detail')
+            yield put({ type: 'resetBrowse' })
+          }
+        } else {
+          const modal = Modal.error({
+            title: 'Error Saving Payment',
+            content: 'Your Data not saved',
           })
-        }
-        const detail = yield call(createDetail, { id: payload.transNo ,data: arrayProd })
-        if (detail.success) {
-          const modal = Modal.info({
-            title: 'Transaction Success',
-            content: `Transaction ${payload.transNo} has been saved`
-          })
-          localStorage.removeItem('product_detail')
-          yield put({ type: 'resetBrowse' })
         }
       } else {
-        const modal = Modal.error({
+        Modal.warning({
           title: 'Error Saving Payment',
-          content: 'Your Data not saved',
+          content: 'Please complete your payment',
         })
       }
     },
