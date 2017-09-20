@@ -222,7 +222,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/report/purchase'))
-              cb(null, require('./routes/report/purchase/summary/trans/'))
+              cb(null, require('./routes/report/purchase/summary-trans/'))
             }, 'report-purchase-summary-trans')
           },
         }, {

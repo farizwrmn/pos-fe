@@ -17,10 +17,10 @@ const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...browseProps }) => {
-  var grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
-  var discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
-  var dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp }, 0)
-  var nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
+  let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
+  let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
+  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp }, 0)
+  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
@@ -29,7 +29,7 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
       x: 0, y: 0, width: 10000, height: 20000, firstSheet: 0, activeTab: 1, visibility: 'visible',
     },
   ]
-  var sheet = workbook.addWorksheet('POS 1',
+  const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize: 9, orientation: 'portrait' } })
 
   const createPdfLineItems = (e) => {
@@ -62,11 +62,11 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
     }
     let ppn = 0
     let count = 1
-    for (var key in rows) {
+    for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
-        var data = rows[key]
-        var totalDisc = (data.price * data.qty) - data.total
-        var row = new Array()
+        let data = rows[key]
+        let totalDisc = (data.price * data.qty) - data.total
+        let row = new Array()
         row.push( { text: count, alignment: 'center', fontSize: 11 } );
         row.push( { text: data.transNo.toString(), alignment: 'left', fontSize: 11 } );
         row.push( { text: moment(data.transDate).format('DD-MM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 } )
@@ -123,9 +123,9 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
         family: 4,
         size: 10,
       }
-      for (var n = 0; n <= listTrans.length; n++) {
-        for (var m = 65; m < 74; m++) {
-          var o = 9 + n
+      for (let n = 0; n <= listTrans.length; n++) {
+        for (let m = 65; m < 74; m++) {
+          let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
             family: 4,
@@ -133,8 +133,8 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
           }
         }
       }
-      var header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'DPP', 'NETTO']
-      var footer = [
+      let header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'DPP', 'NETTO']
+      let footer = [
         '',
         '',
         '',
@@ -143,9 +143,9 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
         `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
         `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
-      for (var m = 65; m < 73; m++) {
-        var o = 7
-        var count = m - 65
+      for (let m = 65; m < 73; m++) {
+        let o = 7
+        let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
@@ -155,8 +155,8 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
       }
 
-      for (var n = 0; n < listTrans.length; n++) {
-        var m = 9 + n
+      for (let n = 0; n < listTrans.length; n++) {
+        let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n+1)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`B${m}`).value = '.'
@@ -175,9 +175,9 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (var m = 65; m < 73; m++) {
-        var n = listTrans.length + 10
-        var count = m - 65
+      for (let m = 65; m < 73; m++) {
+        let n = listTrans.length + 10
+        let count = m - 65
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
           family: 4,
@@ -200,14 +200,14 @@ const Browse = ({ listTrans, user, company, productCode, fromDate, toDate, ...br
       sheet.getCell('F4').value = `PERIODE : ${fromDate} TO ${toDate}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then(function (data) {
-        var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `POS-summary${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
   const handlePdf = () => {
-    var body = createPdfLineItems(listTrans)
-    var docDefinition = {
+    let body = createPdfLineItems(listTrans)
+    let docDefinition = {
       pageSize: 'A4',
       pageOrientation: 'landscape',
       pageMargins: [50, 130, 50, 60],

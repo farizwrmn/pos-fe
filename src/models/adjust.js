@@ -79,7 +79,7 @@ export default modelExtend(pageModel, {
 
     * queryEmployee ({payload}, {call, put}) {
       console.log('payload', payload)
-      var data = ''
+      let data = ''
       try {
         data = yield call(queryEmployeeId, payload)
       } catch (e) {
@@ -96,7 +96,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryAdjust ({payload}, {call, put}) {
-      var data = []
+      let data = []
       try {
         data = yield call(query, payload)
       } catch (e) {
@@ -113,7 +113,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryLastAdjust ({ payload }, { call, put }) {
-      var data = []
+      let data = []
       try {
         data = yield call(query, payload)
       } catch (e) {
@@ -172,8 +172,8 @@ export default modelExtend(pageModel, {
       const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       console.log('dataAdj', dataAdj)
       if (dataAdj.length > 0) {
-        var arrayProd = []
-        for (var n = 0; n < dataAdj.length; n++) {
+        let arrayProd = []
+        for (let n = 0; n < dataAdj.length; n++) {
           arrayProd.push({
             transNo: payload.transNo,
             transType: payload.transType,
@@ -218,8 +218,9 @@ export default modelExtend(pageModel, {
 
     * adjustEdit ({payload}, {call, put}) {
       console.log('adjustEdit', payload)
-      var dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
-      var arrayProd = dataPos.slice()
+      let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
+      let arrayProd = dataPos.slice()
+      arrayProd[payload.Record - 1].price = parseInt(payload.price)
       arrayProd[payload.Record - 1].In = parseInt(payload.InQty)
       arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty)
       localStorage.setItem('adjust', JSON.stringify(arrayProd))
@@ -227,10 +228,10 @@ export default modelExtend(pageModel, {
     },
 
     * adjustDelete ({payload}, {call, put}) {
-      var dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
-      var arrayProd = dataPos.slice()
+      let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
+      let arrayProd = dataPos.slice()
       Array.prototype.remove = function() {
-        var what, a = arguments, L = a.length, ax;
+        let what, a = arguments, L = a.length, ax;
         while (L && this.length) {
           what = a[--L];
           while ((ax = this.indexOf(what)) !== -1) {
@@ -240,10 +241,10 @@ export default modelExtend(pageModel, {
         return this;
       };
 
-      var ary = arrayProd;
+      let ary = arrayProd;
       ary.remove(arrayProd[payload.Record - 1])
       arrayProd=[]
-      for (var n = 0;   n < ary.length; n++) {
+      for (let n = 0;   n < ary.length; n++) {
         arrayProd.push({
           no: n + 1,
           code: ary[n].code,
@@ -321,9 +322,9 @@ export default modelExtend(pageModel, {
 
     queryGetProductsSuccess (state, action) {
       const {productInformation, tmpProductList} = action.payload
-      var dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
-      var a = dataPurchase
-      var grandTotal = a.reduce(function (cnt, o) {
+      let dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
+      let a = dataPurchase
+      let grandTotal = a.reduce(function (cnt, o) {
         return cnt + o.total;
       }, 0)
       return {
@@ -336,7 +337,7 @@ export default modelExtend(pageModel, {
     onProductSearch (state, action) {
       const {searchText, tmpProductData} = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
       newData = tmpProductData.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)
         if (!match) {
@@ -373,7 +374,7 @@ export default modelExtend(pageModel, {
       let EMPLOYEE_FIXED = (function () {
         let fixed = []
         for (let id in listEmployee) {
-          var employeeName = listEmployee[id].employeeName
+          let employeeName = listEmployee[id].employeeName
           fixed.push(employeeName)
         }
         return fixed

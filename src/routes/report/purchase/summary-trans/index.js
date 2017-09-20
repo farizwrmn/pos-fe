@@ -7,8 +7,8 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 
-const Report = ({ location, dispatch, loading, posReport, app }) => {
-  const { listTrans, pagination, fromDate, toDate, productCode, company } = posReport
+const Report = ({ location, dispatch, loading, purchaseReport, app }) => {
+  const { listTrans, pagination, fromDate, toDate, productCode, company } = purchaseReport
   const { user } = app
   const { pageSize } = pagination
   const browseProps = {
@@ -18,23 +18,24 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     user,
     fromDate,
     toDate,
+    loading: loading.effects['purchaseReport/queryCompany'],
     productCode,
     onListReset () {
       console.log('onListReset')
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'purchaseReport/setListNull',
       })
     },
     onDateChange(from, to) {
       dispatch({
-        type: 'posReport/queryTrans',
+        type: 'purchaseReport/queryTrans',
         payload: {
           from: from,
           to: to,
         },
       })
       dispatch({
-        type: 'posReport/setDate',
+        type: 'purchaseReport/setDate',
         payload: {
           from: from,
           to: to,
@@ -83,7 +84,7 @@ Report.propTyps = {
   dispatch: PropTypes.func,
   loading: PropTypes.object,
   app: PropTypes.object,
-  posReport: PropTypes.object,
+  purchaseReport: PropTypes.object,
 }
 
-export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)
+export default connect(({ loading, purchaseReport, app }) => ({ loading, purchaseReport, app }))(Report)

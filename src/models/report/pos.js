@@ -37,7 +37,7 @@ export default {
   },
   effects: {
     * queryPart ({ payload }, { call, put }) {
-      var data = []
+      let data = []
       if (payload) {
         data = yield call (queryReport, payload)
       } else {
@@ -54,7 +54,7 @@ export default {
       })
     },
     * queryTrans ({ payload }, { call, put }) {
-      var data = []
+      let data = []
       if (payload) {
         data = yield call (queryTrans, payload)
       } else {

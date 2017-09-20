@@ -5,7 +5,7 @@ import { query as queryReport, queryTrans } from '../../services/report/purchase
 import { queryMode as miscQuery} from '../../services/misc'
 
 export default {
-  namespace: 'posReport',
+  namespace: 'purchaseReport',
 
   state: {
     list: [],
@@ -35,7 +35,7 @@ export default {
   },
   effects: {
     * queryTrans ({ payload }, { call, put }) {
-      var data = []
+      let data = new Array()
       if (payload) {
         data = yield call (queryTrans, payload)
       } else {

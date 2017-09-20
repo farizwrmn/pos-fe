@@ -16,11 +16,11 @@ const formItemLayout = {
   },
 }
 const dataTrans = () => {
-  var product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
-  var service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+  let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+  let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
   const cashier_trans = product.concat(service)
-  var arrayProd = []
-  for (var n = 0; n < cashier_trans.length; n++) {
+  let arrayProd = []
+  for (let n = 0; n < cashier_trans.length; n++) {
     arrayProd.push({
       no: n + 1,
       code: cashier_trans[n].code,
@@ -42,7 +42,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
-  var keyShortcut = { 17: false, 16: false, 32: false }
+  const keyShortcut = { 17: false, 16: false, 32: false }
   /*
    Ascii => Desc
    17 => Ctrl
@@ -62,10 +62,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const getDate = (mode) => {
-    var today = new Date()
-    var dd = today.getDate()
-    var mm = today.getMonth()+1 //January is 0!
-    var yyyy = today.getFullYear()
+    let today = new Date()
+    let dd = today.getDate()
+    let mm = today.getMonth()+1 //January is 0!
+    let yyyy = today.getFullYear()
 
     if(dd<10) {
       dd='0'+dd
@@ -88,10 +88,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     return today
   }
   const setTime = () => {
-    var today = new Date()
-    var h = today.getHours()
-    var m = today.getMinutes()
-    var s = today.getSeconds()
+    let today = new Date()
+    let h = today.getHours()
+    let m = today.getMinutes()
+    let s = today.getSeconds()
     m = checkTime(m)
     s = checkTime(s)
 
@@ -121,8 +121,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
     const dataPos = product.concat(service)
-    var checkProductId = false
-    for (var n = 0; n < dataPos.length; n ++) {
+    let checkProductId = false
+    for (let n = 0; n < dataPos.length; n ++) {
       if(dataPos[n].productId === 0) {
         checkProductId = true
         break

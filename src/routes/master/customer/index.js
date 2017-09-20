@@ -8,8 +8,8 @@ import Filter from './Filter'
 import Modal from './Modal'
 import Unit from './Unit'
 
-var pdfMake = require('pdfmake/build/pdfmake.js');
-var pdfFonts = require('pdfmake/build/vfs_fonts.js');
+const pdfMake = require('pdfmake/build/pdfmake.js');
+const pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
@@ -347,7 +347,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
     },
     onPrint () {
       function createPdfLineItems(tabledata){
-        var headers = {
+        let headers = {
           top:{
             col_1:{ text: 'Code', style: 'tableHeader', alignment: 'center' },
             col_2:{ text: 'Name', style: 'tableHeader', alignment: 'center' },
@@ -356,12 +356,12 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
             col_5:{ text: 'Phone', style: 'tableHeader', alignment: 'center'}
           }
         }
-        var rows = tabledata;
-        var body = [];
-        for (var key in headers){
+        let rows = tabledata;
+        let body = [];
+        for (let key in headers){
           if (headers.hasOwnProperty(key)){
-            var header = headers[key];
-            var row = new Array();
+            let header = headers[key];
+            let row = new Array();
             row.push( header.col_1 );
             row.push( header.col_2 );
             row.push( header.col_3 );
@@ -370,12 +370,12 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
             body.push(row);
           }
         }
-        for (var key in rows)
+        for (let key in rows)
         {
           if (rows.hasOwnProperty(key))
           {
-            var data = rows[key];
-            var row = new Array();
+            let data = rows[key];
+            let row = new Array();
             row.push( { text: data.memberCode.toString(), alignment: 'center' } );
             row.push( { text: data.memberName.toString(), alignment: 'center' } );
             row.push( { text: data.point.toString(), alignment: 'center' });
@@ -386,8 +386,8 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
         }
         return body;
       }
-      var body = createPdfLineItems(list)
-      var docDefinition = {
+      let body = createPdfLineItems(list)
+      let docDefinition = {
         pageSize: { width: 813, height: 530 },
         pageOrientation: 'landscape',
         pageMargins: [ 40, 60, 40, 60 ],

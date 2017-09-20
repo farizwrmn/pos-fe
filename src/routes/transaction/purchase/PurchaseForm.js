@@ -24,16 +24,6 @@ const formItemLayout1 = {
 const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
                         modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
                          onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...purchaseProps}) => {
-  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-  let g = dataPurchase
-  let grandTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
-  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
-  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
-  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
-  let discPercent = ((curDiscPercent * grandTotal) / 100)
-  let discNominal = curDiscNominal * totalQty
-  let totalDisc = discNominal + discPercent
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -55,15 +45,26 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
       resetFields()
     })
   }
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+  let g = dataPurchase
+  let nettoTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
+  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
+  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
+  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  let discPercent = g.reduce( function(cnt,o){ return cnt + (o.disc1 * o.qty * o.price / 100) }, 0)
+  let discNominal = g.reduce( function(cnt,o){ return cnt + o.discount * o.qty  }, 0)
+  let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
+  let grandTotal = g.reduce( function(cnt,o){ return cnt + (o.price * o.qty) }, 0) - totalDisc
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
     border: 0,
   }
   const hdlDateChange = (e) => {
-    var a = e.format('YYYY-MM-DD')
+    let a = e.format('YYYY-MM-DD')
     localStorage.setItem('setDate', a)
-    var b = localStorage.getItem('setDate')
+    const b = localStorage.getItem('setDate')
     onChangeDate(b)
   }
 
@@ -77,8 +78,8 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
 
   const onChange = (e) => {
     const {value} = e.target
-    var a = localStorage.getItem('setDate')
-    var add = moment(a,'YYYY-MM-DD').add(value, 'd')
+    let a = localStorage.getItem('setDate')
+    let add = moment(a,'YYYY-MM-DD').add(value, 'd')
     onChangeDate(add.format('YYYY-MM-DD'))
   }
   const hdlSearch = (e) => {
@@ -157,7 +158,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                   </FormItem>
                   <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('taxType', {
-                      initialValue: 'E',
+                      initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -274,6 +275,9 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
           </FormItem>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={totalDisc} />
+          </FormItem>
+          <FormItem label="Netto Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={nettoTotal} />
           </FormItem>
         </Col>
       </Row>

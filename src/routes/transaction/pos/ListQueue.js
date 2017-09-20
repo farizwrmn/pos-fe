@@ -36,8 +36,8 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
     } else {
       const cashier_trans = JSON.parse(localStorage.getItem('queue' + curQueue))
       const trans = cashier_trans[0]
-      var arrayMember = []
-      var arrayMechanic = []
+      let arrayMember = []
+      let arrayMechanic = []
       arrayMember.push({
         memberCode: trans.memberCode,
         memberName: trans.memberName,

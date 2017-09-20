@@ -3,15 +3,14 @@ import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
 import { editPoint as updateMemberPoint} from '../services/customers'
 import { queryMode as miscQuery} from '../services/misc'
-
-import { routerRedux } from 'dva/router'
-import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
-const pdfMake = require('pdfmake/build/pdfmake.js');
-const pdfFonts = require('pdfmake/build/vfs_fonts.js');
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+const pdfMake = require('pdfmake/build/pdfmake.js')
+const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 const terbilang = require('terbilang-spelling')
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
@@ -79,9 +78,9 @@ export default {
         })
       }
       else {
-        var datatrans
-        var dataLast
-        var data = yield call(queryLastTransNo, payload.periode)
+        let datatrans
+        let dataLast
+        let data = yield call(queryLastTransNo, payload.periode)
         function pad(n, width, z) {
           z = z || '0';
           n = n + '';
@@ -97,16 +96,16 @@ export default {
           dataLast = datatrans
         }
 
-        var parseTransNo = dataLast.reduce(function(prev, current) {
+        let parseTransNo = dataLast.reduce(function(prev, current) {
           return (prev.transNo > current.transNo) ? prev : current
         })
 
-        var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
+        let lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
         lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
-        var newMonth = lastNo.substr(2,4)
-        var lastTransNo = lastNo.substr(lastNo.length - 4)
-        var sendTransNo = parseInt(lastTransNo) + 1
-        var padding = pad(sendTransNo,4)
+        let newMonth = lastNo.substr(2,4)
+        let lastTransNo = lastNo.substr(lastNo.length - 4)
+        let sendTransNo = parseInt(lastTransNo) + 1
+        let padding = pad(sendTransNo,4)
 
         if ( data.success ) {
           if (newMonth==`${moment().format('MMYY')}`){
@@ -114,7 +113,7 @@ export default {
           } else {
             var transNo = `FJ${moment().format('MMYY')}0001`
           }
-          var arrayProd = []
+          let arrayProd = []
           const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
@@ -122,7 +121,7 @@ export default {
             transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
           }
           const trans = transNo.replace(/[^a-z0-9]/gi, '');
-          for (var key = 0; key < dataPos.length; key++) {
+          for (let key = 0; key < dataPos.length; key++) {
             arrayProd.push({
               'transNo': trans,
               'productId': dataPos[key].productId,
@@ -212,14 +211,14 @@ export default {
     },
 
     * setLastTrans ({ payload }, { call, put }) {
-      var datatrans
-      var dataLast
+      let datatrans
+      let dataLast
       function pad(n, width, z) {
         z = z || '0';
         n = n + '';
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
       }
-      var data = yield call(queryLastTransNo)
+      let data = yield call(queryLastTransNo)
       datatrans= [`FJ${moment().format('MMYY')}0000`]
 
       let newData = datatrans
@@ -229,7 +228,7 @@ export default {
       else {
         dataLast = datatrans
       }
-      var parseTransNo = dataLast.reduce(function(prev, current) {
+      let parseTransNo = dataLast.reduce(function(prev, current) {
         return (prev.transNo > current.transNo) ? prev : current
       })
 
@@ -283,16 +282,16 @@ export default {
         const dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
-        var Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+        let Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
         if (merge === [] ? false : true ) {
           function createPdfLineItems(tabledata, payload, node){
-            var code = ''
+            let code = ''
             if (node === 1) {
               code = 'Service'
             } else if (node === 0) {
               code = 'Product'
             }
-            var headers = {
+            let headers = {
               top:{
                 col_1:{ fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
                 col_2:{ fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
@@ -303,12 +302,12 @@ export default {
                 col_7:{ fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
               }
             }
-            var rows = tabledata;
-            var body = [];
-            for (var key in headers){
+            let rows = tabledata;
+            let body = [];
+            for (let key in headers){
               if (headers.hasOwnProperty(key)){
-                var header = headers[key];
-                var row = new Array();
+                let header = headers[key];
+                let row = new Array();
                 row.push( header.col_1 );
                 row.push( header.col_2 );
                 row.push( header.col_3 );
@@ -319,13 +318,13 @@ export default {
                 body.push(row);
               }
             }
-            for (var key in rows)
+            for (let key in rows)
             {
               if (rows.hasOwnProperty(key))
               {
-                var data = rows[key];
-                var totalDisc = (data.price * data.qty) - data.total
-                var row = new Array();
+                let data = rows[key];
+                let totalDisc = (data.price * data.qty) - data.total
+                let row = new Array();
                 row.push( { text: data.no.toString(), alignment: 'center', fontSize: 11 } );
                 row.push( { text: data.code.toString(), alignment: 'left', fontSize: 11 } );
                 row.push( { text: data.name.toString(), alignment: 'left', fontSize: 11 } );
@@ -338,13 +337,13 @@ export default {
             }
             // if (node != 1) {
             //   if(key < 2) {
-            //     for (var n = 0; n < (2-key); n++) {
+            //     for (let n = 0; n < (2-key); n++) {
             //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
             //     }
             //   }
             // } else {
             //   if(key < 2) {
-            //     for (var n = 0; n < (2-key); n++) {
+            //     for (let n = 0; n < (2-key); n++) {
             //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
             //     }
             //   }
@@ -354,9 +353,9 @@ export default {
             }
             return body;
           }
-          var body = createPdfLineItems(dataService, payload, 1)
-          var product = createPdfLineItems(dataPos, payload, 0)
-          var salutation = ''
+          let body = createPdfLineItems(dataService, payload, 1)
+          let product = createPdfLineItems(dataPos, payload, 0)
+          let salutation = ''
           if(payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0,3) === 'MDN') {
             if (payload.gender === 'M') {
               salutation = 'TN. '
@@ -364,11 +363,11 @@ export default {
               salutation = 'NY. '
             }
           }
-          var pageBreak = ' '
+          let pageBreak = ' '
           if (merge.length > 4) {
             pageBreak = 'before'
           }
-          var docDefinition = {
+          let docDefinition = {
             pageSize: { width: 813, height: 530 },
             pageOrientation: 'landscape',
             pageMargins: [40, 160, 40, 160],
@@ -729,16 +728,16 @@ export default {
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
-      var Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let Total = merge.reduce( function(cnt,o){ return cnt + o.total; }, 0)
       if (merge != []) {
         const createPdfLineItems = (tabledata, payload, node) => {
-          var code = ''
+          let code = ''
           if (node === 1) {
             code = 'Service'
           } else if (node === 0) {
             code = 'Product'
           }
-          var headers = {
+          let headers = {
             top:{
               col_1:{ fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
               col_2:{ fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
@@ -749,12 +748,12 @@ export default {
               col_7:{ fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
             }
           }
-          var rows = tabledata;
-          var body = [];
-          for (var key in headers){
+          let rows = tabledata;
+          let body = [];
+          for (let key in headers){
             if (headers.hasOwnProperty(key)){
-              var header = headers[key];
-              var row = new Array();
+              let header = headers[key];
+              let row = new Array();
               row.push( header.col_1 );
               row.push( header.col_2 );
               row.push( header.col_3 );
@@ -765,13 +764,13 @@ export default {
               body.push(row);
             }
           }
-          for (var key in rows)
+          for (let key in rows)
           {
             if (rows.hasOwnProperty(key))
             {
-              var data = rows[key];
-              var totalDisc = (data.price * data.qty) - data.total
-              var row = new Array();
+              let data = rows[key];
+              let totalDisc = (data.price * data.qty) - data.total
+              let row = new Array();
               row.push( { text: data.no.toString(), alignment: 'center', fontSize: 11 } );
               row.push( { text: data.code.toString(), alignment: 'left', fontSize: 11 } );
               row.push( { text: data.name.toString(), alignment: 'left', fontSize: 11 } );
@@ -784,13 +783,13 @@ export default {
           }
           // if (node != 1) {
           //   if(key < 2) {
-          //     for (var n = 0; n < (2-key); n++) {
+          //     for (let n = 0; n < (2-key); n++) {
           //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
           //     }
           //   }
           // } else {
           //   if(key < 2) {
-          //     for (var n = 0; n < (2-key); n++) {
+          //     for (let n = 0; n < (2-key); n++) {
           //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
           //     }
           //   }
@@ -800,9 +799,9 @@ export default {
           }
           return body;
         }
-        var body = createPdfLineItems(dataService, payload, 1)
-        var product = createPdfLineItems(dataPos, payload, 0)
-        var salutation = ''
+        let body = createPdfLineItems(dataService, payload, 1)
+        let product = createPdfLineItems(dataPos, payload, 0)
+        let salutation = ''
         if(payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0,3) === 'MDN') {
           if (payload.gender === 'M') {
             salutation = 'TN. '
@@ -810,11 +809,11 @@ export default {
             salutation = 'NY. '
           }
         }
-        var pageBreak = ' '
+        let pageBreak = ' '
         if (merge.length > 4) {
           pageBreak = 'before'
         }
-        var docDefinition = {
+        let docDefinition = {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
           pageMargins: [40, 160, 40, 150],

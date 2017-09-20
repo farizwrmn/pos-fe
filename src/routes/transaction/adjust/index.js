@@ -144,8 +144,8 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       })
     },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('adjust') ? localStorage.getItem('adjust') : [] )
-      var arrayProd
+      const listByCode = (localStorage.getItem('adjust') ? localStorage.getItem('adjust') : [] )
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }
@@ -194,8 +194,8 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
-      var arrayProd
+      const listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }

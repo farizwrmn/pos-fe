@@ -36,7 +36,7 @@ export default {
   },
   effects: {
     * query ({ payload }, { call, put }) {
-      var data = []
+      let data = []
       if (payload) {
         data = yield call (queryReport, payload)
       } else {
