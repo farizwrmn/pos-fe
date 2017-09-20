@@ -215,7 +215,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         required: true,
                         message: 'Required',
                       }],
-                    })((<Select onChange={(value) => hdlPPN(value)}>
+                    })((<Select>
                       <Option value="C">CASH</Option>
                       <Option value="K">KREDIT</Option>
                     </Select>))}
