@@ -1,9 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag, Button, Icon, Popconfirm } from 'antd'
+import { Table, Modal, Tag, Button, Icon, Popconfirm, Dropdown, Menu } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
+
+const pdfMake = require('pdfmake/build/pdfmake.js')
+const pdfFonts = require('pdfmake/build/vfs_fonts.js')
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 const ButtonGroup = Button.Group
 const confirm = Modal.confirm
@@ -13,9 +17,6 @@ const BrowseGroup = ({
   ...tableProps }) => {
   const hdlButtonAddClick = () => {
     onAddItem()
-  }
-  const hdlButtonPrintClick = () => {
-    console.log('add print here')
   }
   const hdlButtonSearchClick = () => {
     onSearchShow()
@@ -35,6 +36,114 @@ const BrowseGroup = ({
       })
     }
   }
+
+  const hdlButtonPrintClick = (e) => {
+    if (e.key === '1') {
+      onPrintPDF()
+    } else if (e.key === '2') {
+      console.log('add print other here')
+    }
+  }
+
+  const onPrintPDF = () => {
+    function createPdfLineItems(tabledata) {
+
+      var headers = {
+        top:{
+          col_1:{ text: 'GROUP CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers'},
+          col_2:{ text: 'GROUP NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+          // col_3:{ text: 'Point', style: 'tableHeader', alignment: 'center' },
+          // col_4:{ text: 'Mobile', style: 'tableHeader', alignment: 'center' },
+          // col_5:{ text: 'Phone', style: 'tableHeader', alignment: 'center'}
+        }
+      }
+      var rows = tabledata;
+      var body = [];
+      for (var key in headers){
+        if (headers.hasOwnProperty(key)){
+          var header = headers[key]
+          var row = new Array()
+          row.push( header.col_1 )
+          row.push( header.col_2 )
+          // row.push( header.col_3 );
+          // row.push( header.col_4 );
+          // row.push( header.col_5 );
+          body.push(row);
+        }
+      }
+      for (var key in rows)
+      {
+        if (rows.hasOwnProperty(key))
+        {
+          console.log('data', data)
+          var data = rows[key];
+          var row = new Array();
+          row.push( { text: (data.groupCode||'').toString(), alignment: 'center'  } )
+          row.push( { text: (data.groupName||'').toString(), alignment: 'center', style:'core' } )
+          // row.push( { text: (data.point||'').toString(), alignment: 'center' })
+          // row.push( { text: (data.mobileNumber||'').toString(), alignment: 'center' })
+          // row.push( { text: (data.phoneNumber||'').toString(), alignment: 'center' })
+          body.push(row);
+        }
+      }
+      return body;
+    }
+    var body = createPdfLineItems(tableProps.dataSource)
+    var currentDate = new Date()
+    var datetime = currentDate.getDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear() + ' ' + currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds()
+
+    var docDefinition = {
+
+      footer: function(currentPage, pageCount) { return currentPage.toString() + ' of ' + pageCount },
+
+      function(getDate) {
+        var today = new Date(),
+          date = today.getDate() + "/" + (today.getMonth()+1) + "/" + today.getFullYear()
+
+        return date
+      },
+
+      pageSize: 'A4',
+      // pageOrientation: 'landscape',
+      pageMargins: [ 40, 30, 40, 30 ],
+      content: [
+        { text: 'TYRE MASTER', style: 'header2', fontSize: 15},
+        { text: 'Jalan Gatot Subroto No.132 C D'},
+        { text: 'Medan'},
+        { text: 'Telp. 061-42008012'},
+        { text: 'CUSTOMER GROUP TABLE', margin: [85, 20], style: 'header' },
+        {
+          style: 'tableExample',
+          writable: true,
+          table: {
+            widths: ['50%','50%'],
+            body: body,
+            // margin: [0,0,0,10]
+          },
+          layout: 'lightHorizontalLines',
+        },
+        { text: ' ', margin:[0,0,0,15] },
+        { text: 'Print Date: ' + datetime },
+
+      ],
+      styles: {
+        header: {
+          fontSize: 28,
+          bold: true,
+        },
+      },
+    }
+    pdfMake.createPdf(docDefinition).open()
+  }
+
+  const menu = (
+    <Menu onClick={e => hdlButtonPrintClick(e)}>
+      <Menu.Item key="1" >PDF</Menu.Item>
+      <Menu.Item key="2">Excel</Menu.Item>
+    </Menu>
+  )
+
+
   const columns = [
     {
       title: 'Group Code',
@@ -74,9 +183,11 @@ const BrowseGroup = ({
           <Button type="primary" onClick={hdlButtonAddClick}>
             <Icon type="plus-circle-o" /> Add
           </Button>
-          <Button onClick={hdlButtonPrintClick}>
-            <Icon type="printer" /> Print
-          </Button>
+          <Dropdown overlay={menu}>
+            <Button>
+              <Icon type="printer" /> Print
+            </Button>
+          </Dropdown>
           <Button onClick={hdlButtonSearchClick}>
             <Icon type="search" /> Search
           </Button>

@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag, Button, Icon, Popconfirm } from 'antd'
+import { Table, Modal, Tag, Button, Icon, Popconfirm, Dropdown, Menu } from 'antd'
 import { DropOption } from 'components'
-import Report from './reportCustomer'
+import PrintXLS from './PrintXLS'
+import PrintPDF from './PrintPDF'
 import moment from 'moment'
 
 const ButtonGroup = Button.Group
@@ -14,9 +15,6 @@ const Browse = ({
 }) => {
   const hdlButtonAddClick = () => {
     onAddItem()
-  }
-  const hdlButtonPrintClick = () => {
-    onPrint()
   }
   const hdlButtonSearchClick = () => {
     onSearchShow()
@@ -37,6 +35,14 @@ const Browse = ({
       })
     }
   }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" ><PrintPDF dataSource={dataSource} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS /></Menu.Item>
+    </Menu>
+  )
+
   const columns = [
     {
       title: 'Customer ID',
@@ -172,13 +178,14 @@ const Browse = ({
           <Button type="primary" onClick={hdlButtonAddClick}>
             <Icon type="plus-circle-o" /> Add
           </Button>
-          <Button onClick={() => hdlButtonPrintClick()}>
-            <Icon type="printer" /> Print
-          </Button>
+          <Dropdown overlay={menu}>
+            <Button>
+              <Icon type="printer" /> Print
+            </Button>
+          </Dropdown>
           <Button onClick={hdlButtonSearchClick}>
             <Icon type="search" /> Search
           </Button>
-          <Report />
           { selectedRowKeysLen > 1 &&
           <Popconfirm title={'Are you sure delete these items?'}
             onConfirm={() => hdlButtonDeleteClick(selectedRowKeys)}
@@ -206,7 +213,7 @@ const Browse = ({
   )
 }
 
-Browse.propTyps = {
+Browse.propTypes = {
   onAddItem: PropTypes.func,
   onEditItem: PropTypes.func,
   onChangeUnit: PropTypes.func,
