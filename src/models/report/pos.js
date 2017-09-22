@@ -2,9 +2,6 @@
  * Created by Veirry on 10/09/2017.
  */
 import { query as queryReport, queryTrans } from '../../services/report/pos'
-import { queryMode as miscQuery} from '../../services/misc'
-import { parse } from 'qs'
-import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'posReport',
@@ -14,7 +11,6 @@ export default {
     listTrans: [],
     fromDate: '',
     toDate: '',
-    company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
     productCode: 'ALL TYPE',
     pagination: {
       showSizeChanger: true,
@@ -60,15 +56,6 @@ export default {
           },
         },
       })
-    },
-    * queryCompany ({ payload }, { call, put }) {
-      const load = { code: 'company'}
-      const data = yield call(miscQuery, load)
-      if(data.data != []) {
-        localStorage.setItem('company', JSON.stringify(data.data))
-      } else {
-        console.log('unexpected error misc')
-      }
     },
   },
   reducers: {

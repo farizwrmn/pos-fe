@@ -68,6 +68,7 @@ module.exports = {
     cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,
     transTypeList: `${APIURL}${APIV1}/misc/code/TRANSTYPE?fields=miscName,miscDesc&as=code,type`,
     cashierTrans: `${APIURL}${APIV1}/cashierTrans`,
+    period: `${APIURL}${APIV1}/period`,
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
   },
 }
