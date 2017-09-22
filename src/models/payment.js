@@ -600,15 +600,6 @@ export default {
       }
     },
 
-    *setCompanyName ({ payload }, { call, put }) {
-      const data = yield call(miscQuery, payload)
-      if(data.data != []) {
-        localStorage.setItem('company', JSON.stringify(data.data))
-      } else {
-        console.log('unexpected error misc')
-      }
-    },
-
     *getCreditCharge ({ payload }, { call, put }) {
       const data = yield call(getCreditCharge, payload.creditCode)
       let newData = data.creditCharges

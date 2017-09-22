@@ -14,13 +14,13 @@ const PrintPDF = ({ dataSource, app }) => {
   const createPdfLineItems = (tabledata) => {
     let headers = {
       top:{
-        col_1: { text: 'ID', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_4: { text: 'KOTA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_5: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_6: { text: 'NO.HP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_7: { text: 'TIPE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_1: { text: 'KODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_2: { text: 'TIPE CUSTOMER', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_3: { text: 'DISC-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_4: { text: 'DISC-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_5: { text: 'DISC-3', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_6: { text: 'DISC(NOMINAL)', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_7: { text: 'KATEGORI', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
       },
     }
     let rows = tabledata
@@ -45,13 +45,13 @@ const PrintPDF = ({ dataSource, app }) => {
       {
         var data = rows[key]
         var row = new Array()
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.typeCode || '').toString(), alignment: 'center' })
+        row.push({ text: (data.typeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct01 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct02 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct03 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discNominal || '').toString(), alignment: 'center' })
+        row.push({ text: (data.sellPrice || '').toString(), alignment: 'center' })
         body.push(row)
       }
     }
@@ -102,7 +102,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
       header: [
         {text: `${storeInfo.name}`, fontSize: 18, margin: [45, 10, 0, 0]},
-        {text: 'LAPORAN DAFTAR CUSTOMER', fontSize: 16, margin: [45, 2, 0, 0]},
+        {text: 'LAPORAN DAFTAR TIPE CUSTOMER', fontSize: 16, margin: [45, 2, 0, 0]},
 
       ],
 
@@ -114,7 +114,7 @@ const PrintPDF = ({ dataSource, app }) => {
           style: 'tableExample',
           writable: true,
           table: {
-            widths: ['10%', '20%', '22%', '10%', '13%', '13%', '12%'],
+            widths: ['10%', '20%', '22%', '10%', '10%', '16%', '12%'],
             body,
           },
         },
@@ -137,7 +137,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
 PrintPDF.propTypes = {
   app: PropTypes.object,
-  customer: PropTypes.object,
+  customertype: PropTypes.object,
 }
 
-export default connect(({ app, customer }) => ({ app, customer }))(PrintPDF)
+export default connect(({ app, customertype }) => ({ app, customertype }))(PrintPDF)

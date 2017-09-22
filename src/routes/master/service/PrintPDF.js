@@ -14,13 +14,11 @@ const PrintPDF = ({ dataSource, app }) => {
   const createPdfLineItems = (tabledata) => {
     let headers = {
       top:{
-        col_1: { text: 'ID', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_4: { text: 'KOTA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_5: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_6: { text: 'NO.HP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_7: { text: 'TIPE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_1: { text: 'KODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_2: { text: 'NAMA SERVIS', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_3: { text: 'BIAYA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_4: { text: 'BIAYA SERVIS', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_5: { text: 'JENIS', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
       },
     }
     let rows = tabledata
@@ -29,13 +27,11 @@ const PrintPDF = ({ dataSource, app }) => {
       if (headers.hasOwnProperty(key)){
         var header = headers[key]
         var row = new Array()
-        row.push( header.col_1 )
-        row.push( header.col_2 )
-        row.push( header.col_3 )
-        row.push( header.col_4 )
-        row.push( header.col_5 )
-        row.push(header.col_6)
-        row.push(header.col_7)
+        row.push(header.col_1)
+        row.push(header.col_2)
+        row.push(header.col_3)
+        row.push(header.col_4)
+        row.push(header.col_5)
         body.push(row)
       }
     }
@@ -45,13 +41,11 @@ const PrintPDF = ({ dataSource, app }) => {
       {
         var data = rows[key]
         var row = new Array()
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.serviceCode || '').toString(), alignment: 'left' })
+        row.push({ text: (data.serviceName || '').toString(), alignment: 'left' })
+        row.push({ text: (data.cost || '').toString(), alignment: 'center' })
+        row.push({ text: (data.serviceCost || '').toString(), alignment: 'center' })
+        row.push({ text: (data.serviceTypeId || '').toString(), alignment: 'center' })
         body.push(row)
       }
     }
@@ -102,7 +96,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
       header: [
         {text: `${storeInfo.name}`, fontSize: 18, margin: [45, 10, 0, 0]},
-        {text: 'LAPORAN DAFTAR CUSTOMER', fontSize: 16, margin: [45, 2, 0, 0]},
+        {text: 'LAPORAN DAFTAR SERVIS', fontSize: 16, margin: [45, 2, 0, 0]},
 
       ],
 
@@ -114,7 +108,7 @@ const PrintPDF = ({ dataSource, app }) => {
           style: 'tableExample',
           writable: true,
           table: {
-            widths: ['10%', '20%', '22%', '10%', '13%', '13%', '12%'],
+            widths: ['20%', '32%', '14%', '20%', '14%'],
             body,
           },
         },
@@ -137,7 +131,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
 PrintPDF.propTypes = {
   app: PropTypes.object,
-  customer: PropTypes.object,
+  service: PropTypes.object,
 }
 
-export default connect(({ app, customer }) => ({ app, customer }))(PrintPDF)
+export default connect(({ app, service }) => ({ app, service }))(PrintPDF)

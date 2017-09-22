@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag, Button, Icon, Popconfirm } from 'antd'
+import { Table, Modal, Button, Icon, Popconfirm, Dropdown, Menu } from 'antd'
 import { DropOption } from 'components'
-import { Link } from 'dva/router'
+
 import moment from 'moment'
+import PrintXLS from './PrintXLS'
+import PrintPDF from './PrintPDF'
 
 const ButtonGroup = Button.Group
 const confirm = Modal.confirm
@@ -12,11 +14,9 @@ const Browse = ({
   onAddItem, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
   ...tableProps }) => {
 
+  console.log('tableProps.dataSource',tableProps.dataSource)
   const hdlButtonAddClick = () => {
     onAddItem()
-  }
-  const hdlButtonPrintClick = () => {
-    console.log('add print here')
   }
   const hdlButtonSearchClick = () => {
     onSearchShow()
@@ -36,6 +36,13 @@ const Browse = ({
       })
     }
   }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" ><PrintPDF dataSource={tableProps.dataSource} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS /></Menu.Item>
+    </Menu>
+  )
 
   const columns = [
     {
@@ -135,9 +142,11 @@ const Browse = ({
           <Button type='primary' onClick={hdlButtonAddClick}>
             <Icon type='plus-circle-o' /> Add
           </Button>
-          <Button onClick={hdlButtonPrintClick}>
-            <Icon type='printer'/> Print
-          </Button>
+          <Dropdown overlay={menu}>
+            <Button>
+              <Icon type="printer" /> Print
+            </Button>
+          </Dropdown>
           <Button onClick={hdlButtonSearchClick}>
             <Icon type='search'/> Search
           </Button>

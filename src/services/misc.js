@@ -62,7 +62,6 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  console.log('misc-dele-url', params)
   let url = params.id ? misc + '/code/' + params.id  : misc
   url = params.name ? url + '/name/' + params.name : url
   const apiHeaderToken = crypt.apiheader()

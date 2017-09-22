@@ -1,9 +1,12 @@
-
+/**
+ * Created by boo on 9/19/17.
+ */
 import React from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
+
 
 const PrintPDF = ({ dataSource, app }) => {
   const { user, storeInfo } = app
@@ -14,13 +17,15 @@ const PrintPDF = ({ dataSource, app }) => {
   const createPdfLineItems = (tabledata) => {
     let headers = {
       top:{
-        col_1: { text: 'ID', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_4: { text: 'KOTA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_5: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_6: { text: 'NO.HP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_7: { text: 'TIPE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+        col_1: { text: 'KODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_2: { text: 'NAMA BARANG', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_3: { text: 'MEREK', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_4: { text: 'KATEGORI', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_5: { text: 'HARGA JUAL', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_6: { text: 'BIAYA JUAL', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_7: { text: 'DIST PRICE-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_8: { text: 'DIST PRICe-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+        col_9: { text: 'NAMA LAIN', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
       },
     }
     let rows = tabledata
@@ -29,13 +34,15 @@ const PrintPDF = ({ dataSource, app }) => {
       if (headers.hasOwnProperty(key)){
         var header = headers[key]
         var row = new Array()
-        row.push( header.col_1 )
-        row.push( header.col_2 )
-        row.push( header.col_3 )
-        row.push( header.col_4 )
-        row.push( header.col_5 )
+        row.push(header.col_1)
+        row.push(header.col_2)
+        row.push(header.col_3)
+        row.push(header.col_4)
+        row.push(header.col_5)
         row.push(header.col_6)
         row.push(header.col_7)
+        row.push(header.col_8)
+        row.push(header.col_9)
         body.push(row)
       }
     }
@@ -45,13 +52,15 @@ const PrintPDF = ({ dataSource, app }) => {
       {
         var data = rows[key]
         var row = new Array()
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'center' })
+        row.push({ text: (data.productName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.brandName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.categoryName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.sellPrice || '').toString(), alignment: 'center' })
+        row.push({ text: (data.costPrice || '').toString(), alignment: 'center' })
+        row.push({ text: (data.distPrice01 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.distPrice02 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.otherName01 || '').toString(), alignment: 'center' })
         body.push(row)
       }
     }
@@ -102,7 +111,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
       header: [
         {text: `${storeInfo.name}`, fontSize: 18, margin: [45, 10, 0, 0]},
-        {text: 'LAPORAN DAFTAR CUSTOMER', fontSize: 16, margin: [45, 2, 0, 0]},
+        {text: 'LAPORAN DAFTAR STOK BARANG', fontSize: 16, margin: [45, 2, 0, 0]},
 
       ],
 
@@ -114,7 +123,7 @@ const PrintPDF = ({ dataSource, app }) => {
           style: 'tableExample',
           writable: true,
           table: {
-            widths: ['10%', '20%', '22%', '10%', '13%', '13%', '12%'],
+            widths: ['8%', '20%', '8%', '12%', '8%', '8%', '8%', '8%', '20%'],
             body,
           },
         },
@@ -137,7 +146,7 @@ const PrintPDF = ({ dataSource, app }) => {
 
 PrintPDF.propTypes = {
   app: PropTypes.object,
-  customer: PropTypes.object,
+  stock: PropTypes.object,
 }
 
-export default connect(({ app, customer }) => ({ app, customer }))(PrintPDF)
+export default connect(({ app, stock }) => ({ app, stock }))(PrintPDF)

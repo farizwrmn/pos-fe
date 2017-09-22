@@ -10,9 +10,10 @@ const ButtonGroup = Button.Group
 const confirm = Modal.confirm
 
 const Browse = ({
-  onChangeUnit, onPrint, onAddItem, dataSource, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
+  onChangeUnit, onAddItem, dataSource, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
   ...tableProps
 }) => {
+
   const hdlButtonAddClick = () => {
     onAddItem()
   }

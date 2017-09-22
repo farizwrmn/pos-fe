@@ -1,5 +1,6 @@
 import { query, logout, changePw } from '../services/app'
 import * as menusService from '../services/menus'
+import { queryMode as miscQuery } from '../services/misc'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import config from 'config'
@@ -11,6 +12,7 @@ export default {
   namespace: 'app',
   state: {
     user: {},
+    storeInfo: {},
     permissions: {
       visit: [],
     },
@@ -52,6 +54,7 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const { list } = yield call(menusService.query)
+        console.log('user',user)
         const { permissions } = user
 
         let menu = list
@@ -68,10 +71,23 @@ export default {
             return cases.every(_ => _)
           })
         }
+
+        const misc = yield call(miscQuery, { code: 'company'})
+        let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
+        const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
+        const storeInfo = { name, address01, address02 }
+
+        if(storeInfo != []) {
+          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
+        } else {
+          console.log('unexpected error misc')
+        }
+
         yield put({
           type: 'updateState',
           payload: {
             user,
+            storeInfo,
             permissions,
             menu,
           },

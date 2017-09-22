@@ -52,15 +52,6 @@ export default {
         },
       })
     },
-    * queryCompany ({ payload }, { call, put }) {
-      const load = { code: 'company'}
-      const data = yield call(miscQuery, load)
-      if(data.data != []) {
-        localStorage.setItem('company', JSON.stringify(data.data))
-      } else {
-        console.log('unexpected error misc')
-      }
-    },
   },
   reducers: {
     querySuccess (state, action) {
