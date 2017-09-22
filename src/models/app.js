@@ -1,4 +1,5 @@
 import { query, logout, changePw } from '../services/app'
+import { queryMode } from '../services/misc'
 import * as menusService from '../services/menus'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -11,6 +12,7 @@ export default {
   namespace: 'app',
   state: {
     user: {},
+    company: {},
     permissions: {
       visit: [],
     },
@@ -50,6 +52,14 @@ export default {
       payload,
     }, { call, put }) {
       const { success, user } = yield call(query, payload)
+      let company = yield call(queryMode, { code: 'company' })
+      company = company.data
+      if(company) {
+        localStorage.setItem('company', JSON.stringify(company))
+        yield put({ type: 'setCompany', payload: company })
+      } else {
+        console.log('unexpected error misc')
+      }
       if (success && user) {
         const { list } = yield call(menusService.query)
         const { permissions } = user
@@ -179,6 +189,13 @@ export default {
       return {
         ...state,
         isNavbar: payload,
+      }
+    },
+
+    setCompany (state, { payload }) {
+      return {
+        ...state,
+        company: payload
       }
     },
 

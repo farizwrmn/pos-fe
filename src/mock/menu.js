@@ -339,6 +339,14 @@ let database = [
     route: '/setting/misc',
   },
   {
+    id: '93',
+    bpid: '9',
+    mpid: '9',
+    name: 'Works Periods',
+    icon: 'book',
+    route: '/setting/periods',
+  },
+  {
     id: '921',
     mpid: '-1',
     bpid: '92',

@@ -195,7 +195,6 @@ export default {
     },
 
     * queryPosDetail ({ payload }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(queryDetail, payload)
       const PosData = yield call(queryaPos, payload.id)
       const member = yield call(queryMemberCode, payload)
@@ -1581,6 +1580,9 @@ export default {
     changeQueue (state, action) {
       let listQueue = (localStorage.getItem('queue' + action.payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + action.payload.queue)))
       return { ...state, listQueue: listQueue, curQueue: action.payload.queue }
+    },
+    setListPaymentDetail (state, action) {
+      return { ...state, listPaymentDetail: { id: action.payload.transNo } }
     },
   },
 }

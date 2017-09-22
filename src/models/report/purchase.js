@@ -12,7 +12,6 @@ export default {
     listTrans: [],
     fromDate: '',
     toDate: '',
-    company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
     productCode: 'ALL TYPE',
     pagination: {
       showSizeChanger: true,
@@ -23,15 +22,6 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen(location => {
-        if (location.pathname === '/report/pos/monthly' || location.pathname === '/report/pos/summary/trans') {
-          dispatch({
-            type: 'queryCompany',
-          })
-        }
-      })
-    },
   },
   effects: {
     * queryTrans ({ payload }, { call, put }) {
@@ -50,15 +40,6 @@ export default {
           },
         },
       })
-    },
-    * queryCompany ({ payload }, { call, put }) {
-      const load = { code: 'company'}
-      const data = yield call(miscQuery, load)
-      if(data.data != []) {
-        localStorage.setItem('company', JSON.stringify(data.data))
-      } else {
-        console.log('unexpected error misc')
-      }
     },
   },
   reducers: {

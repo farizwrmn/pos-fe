@@ -17,7 +17,7 @@ const modal = ({
   memberPrint,
   mechanicPrint,
   posData,
-  companyPrint,
+  company,
   ...modalProps
 }) => {
   const handleOk = () => {
@@ -26,7 +26,7 @@ const modal = ({
       data: listPaymentDetail.data,
       memberPrint: memberPrint,
       mechanicPrint: mechanicPrint,
-      companyPrint: companyPrint,
+      companyPrint: company,
     }
     onOk(data)
   }
@@ -43,7 +43,7 @@ const modal = ({
     >
       <Form>
         <FormItem label="No" {...formItemLayout}>
-          <Input value={listPaymentDetail ? listPaymentDetail.id : ''}/>
+          <Input value={listPaymentDetail ? listPaymentDetail.id : ''} />
         </FormItem>
       </Form>
     </Modal>
@@ -52,9 +52,6 @@ const modal = ({
 
 modal.propTypes = {
   form: PropTypes.object.isRequired,
-  location: PropTypes.object,
-  type: PropTypes.string,
-  item: PropTypes.object,
   onOk: PropTypes.func,
   onChooseItem: PropTypes.func,
   enablePopover: PropTypes.func,

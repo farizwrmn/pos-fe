@@ -7,10 +7,10 @@ import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 import moment from 'moment'
 
-const Pos = ({ location, dispatch, loading, pos }) => {
-  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint, companyPrint,
+const Pos = ({ location, dispatch, loading, pos, app }) => {
+  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
     pagination, selectedRowKeys, modalPrintVisible,posData } = pos
-
+  const { company } = app
   const { pageSize } = pagination
 
   const modalProps = {
@@ -20,7 +20,7 @@ const Pos = ({ location, dispatch, loading, pos }) => {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    companyPrint,
+    company,
     posData,
     maskClosable: false,
     title: `Print the Transaction Duplicate?`,
@@ -173,6 +173,10 @@ const Pos = ({ location, dispatch, loading, pos }) => {
         },
       })
       dispatch({
+        type: 'pos/setListPaymentDetail',
+        payload: e,
+      })
+      dispatch({
         type: 'pos/showPrintModal',
       })
     },
@@ -191,10 +195,11 @@ const Pos = ({ location, dispatch, loading, pos }) => {
 
 Pos.propTypes = {
   pos: PropTypes.object,
+  app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
 
-export default connect(({ pos, loading }) => ({  pos, loading }))(Pos)
+export default connect(({ pos, loading, app }) => ({  pos, loading, app }))(Pos)

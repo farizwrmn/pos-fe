@@ -8,8 +8,8 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 
 const Report = ({ location, dispatch, loading, posReport, app }) => {
-  const { listTrans, pagination, fromDate, toDate, productCode, company } = posReport
-  const { user } = app
+  const { listTrans, pagination, fromDate, toDate, productCode } = posReport
+  const { user, company } = app
   const { pageSize } = pagination
   const browseProps = {
     dataSource: listTrans,

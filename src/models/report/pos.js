@@ -25,15 +25,6 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen(location => {
-        if (location.pathname === '/report/pos/monthly' || location.pathname === '/report/pos/summary/trans') {
-          dispatch({
-            type: 'queryCompany',
-          })
-        }
-      })
-    },
   },
   effects: {
     * queryPart ({ payload }, { call, put }) {

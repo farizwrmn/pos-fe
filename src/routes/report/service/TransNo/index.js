@@ -10,9 +10,9 @@ import Browse from './Browse'
 import { saveAs } from 'file-saver'
 
 const Report = ({ location, dispatch, loading, serviceReport, app }) => {
-  const { list, pagination, fromDate, toDate, productCode, company } = serviceReport
+  const { list, pagination, fromDate, toDate, productCode } = serviceReport
   const { pageSize } = pagination
-  const { user } = app
+  const { user, company } = app
   const browseProps = {
     dataSource: list,
     list,

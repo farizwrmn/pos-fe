@@ -228,7 +228,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
                     alignment: 'left',
                   },
                   {
-                    text: company[0].miscletiable,
+                    text: company[0].miscVariable,
                     fontSize: 11,
                     alignment: 'left',
                   },
@@ -240,16 +240,6 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
                     text: `\nPERIODE: ${fromDate} TO ${toDate}`,
                     fontSize: 12,
                     alignment: 'left',
-                  },
-                  {
-                    text: '',
-                    fontSize: 12,
-                    alignment: 'center',
-                  },
-                  {
-                    text: '',
-                    fontSize: 12,
-                    alignment: 'center',
                   },
                 ],
               },

@@ -232,8 +232,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
     dispatch({ type: 'payment/setLastTrans' })
 
-    dispatch({ type: 'payment/setCompanyName', payload: { code: 'COMPANY'} })
-
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
     dispatch(routerRedux.push('/transaction/pos/payment'))
