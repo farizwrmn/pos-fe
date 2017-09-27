@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import { Form, Modal, Input, DatePicker } from 'antd'
 import moment from 'moment'
 
-const { TextArea } = Input;
 const FormItem = Form.Item
 const dateFormat = 'YYYY/MM/DD hh:mm:ss'
 
@@ -17,8 +16,7 @@ const formItemLayout = {
 
 const modal = ({
   onOk,
-  periodDate,
-  accountNumber,
+  accountActive,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
@@ -30,6 +28,7 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
+      console.log(data)
       onOk(data)
     })
   }
@@ -43,7 +42,7 @@ const modal = ({
       <Form layout="horizontal">
         <FormItem label="Account Number" {...formItemLayout}>
           {getFieldDecorator('accountNumber', {
-            initialValue: accountNumber,
+            initialValue: accountActive,
             rules: [
               {
                 required: true,
@@ -51,42 +50,15 @@ const modal = ({
             ],
           })(<Input disabled />)}
         </FormItem>
-        <FormItem label="Reference" {...formItemLayout}>
-          {getFieldDecorator('reference', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input maxLength={40} />)}
-        </FormItem>
-        <FormItem label="StartDate" {...formItemLayout}>
-          {getFieldDecorator('startPeriod', {
-            initialValue: moment.utc(periodDate.startDate, dateFormat),
-            rules: [
-              {
-                required: false,
-              },
-            ],
-          })(<DatePicker disabled format="YYYY-MM-DD" />)}
-        </FormItem>
         <FormItem label="EndDate" {...formItemLayout}>
           {getFieldDecorator('endPeriod', {
+            initialValue: moment.utc(moment().format(dateFormat), dateFormat),
             rules: [
               {
                 required: false,
               },
             ],
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
-        </FormItem>
-        <FormItem label="Memo" {...formItemLayout}>
-          {getFieldDecorator('memo', {
-            rules: [
-              {
-                required: false,
-              },
-            ],
-          })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
     </Modal>
@@ -97,7 +69,7 @@ modal.propTypes = {
   form: PropTypes.isRequired,
   periodDate: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
-  accountNumber: PropTypes.string.isRequired,
+  accountActive: PropTypes.string.isRequired,
 }
 
 export default Form.create()(modal)

@@ -134,7 +134,22 @@ let database = [
     mpid: '3',
     name: 'Purchase',
     icon: 'shopping-cart',
-    route: '/transaction/purchase',
+  },
+  {
+    id: '321',
+    bpid: '32',
+    mpid: '32',
+    name: 'Add Purchase',
+    icon: 'shopping-cart',
+    route: '/transaction/purchase/add',
+  },
+  {
+    id: '322',
+    bpid: '32',
+    mpid: '32',
+    name: 'Edit Purchase',
+    icon: 'edit',
+    route: '/transaction/purchase/edit',
   },
   {
     id: '33',

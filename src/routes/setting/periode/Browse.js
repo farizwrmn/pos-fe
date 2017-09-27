@@ -3,33 +3,52 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Input, Button, Row, Col } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 
 const confirm = Modal.confirm
 
 const Browse = ({
-  onEditItem, onDeleteItem,
+  onEndPeriod, onStartPeriod,
   ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
-      onEditItem(record)
+      onEndPeriod(record)
     } else if (e.key === '2') {
       confirm({
         title: `Are you sure delete this record [ ${record.miscCode} - ${record.miscName} ] ?`,
         onOk () {
-          onDeleteItem(record.miscCode, record.miscName)
+          // onDeleteItem(record.miscCode, record.miscName)
         },
       })
     }
   }
+  const handleStartPeriod = () => {
+    onStartPeriod()
+  }
+  const handleEndPeriod = () => {
+    onEndPeriod()
+  }
   const columns = [
+    {
+      title: 'No',
+      dataIndex: 'accountNumber',
+      key: 'accountNumber',
+      width: 200,
+    },
+    {
+      title: 'Reference',
+      dataIndex: 'reference',
+      key: 'reference',
+      width: 200,
+    },
     {
       title: 'Start',
       dataIndex: 'startPeriod',
       key: 'startPeriod',
       width: 190,
+      sorter: (a, b) => moment.utc(a.startPeriod, 'YYYY/MM/DD') - moment.utc(b.startPeriod, 'YYYY/MM/DD'),
       render: _text => `${moment(_text).format('ll LTS')}`,
     },
     {
@@ -37,6 +56,7 @@ const Browse = ({
       dataIndex: 'endPeriod',
       key: 'endPeriod',
       width: 190,
+      sorter: (a, b) => moment.utc(a.endPeriod, 'YYYY/MM/DD') - moment.utc(b.endPeriod, 'YYYY/MM/DD'),
       render: _text => `${moment(_text).format('ll LTS')}`,
     },
     {
@@ -96,22 +116,38 @@ const Browse = ({
   ]
   return (
     <div>
-      <Table
-        {...tableProps}
-        bordered
-        scroll={{ x: '1280px', y: '240px' }}
-        columns={columns}
-        simple
-        rowKey={record => record.userId}
-      />
+      <Row>
+        <Col span={4}>
+          <Button onClick={() => handleStartPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
+            Start Period
+          </Button>
+        </Col>
+        <Col span={4}>
+          <Button onClick={() => handleEndPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
+            End Period
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table
+            {...tableProps}
+            bordered
+            scroll={{ x: '1680px', y: '240px' }}
+            columns={columns}
+            simple
+            rowKey={record => record.userId}
+          />
+        </Col>
+      </Row>
     </div>
   )
 }
 
 Browse.propTypes = {
-  onEditItem: PropTypes.func.isRequired,
-  onDeleteItem: PropTypes.func.isRequired,
-  location: PropTypes.object.isRequired,
+  onStartPeriod: PropTypes.func.isRequired,
+  onEndPeriod: PropTypes.func.isRequired,
+  location: PropTypes.isRequired,
 }
 
 export default Browse

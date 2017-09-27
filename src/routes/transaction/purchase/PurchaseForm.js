@@ -254,7 +254,6 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
             <Button type="primary"><Icon type="plus-square-o" /></Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
-          <Button style={{ marginLeft: 150 }} type="danger" size="large" onClick={resetProduct}>Reset</Button>
         </Col>
       </Row>
       <Browse {...purchaseProps} />

@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ onChooseItem, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -22,14 +22,9 @@ const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFie
       resetFields()
     })
   }
-  const hdlCancel = (e) => {
+  const hdlCancel = () => {
+    console.log('hdlCancel')
     onCancel()
-  }
-  const handleDelete = () => {
-    const data = {
-      ...getFieldsValue(),
-    }
-    onDelete(data)
   }
   return (
     <Modal visible={modalPurchaseVisible} onCancel={() => hdlCancel()} footer={[]}>
@@ -53,7 +48,7 @@ const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFie
               message: 'Required',
             }],
           })(
-            <Select defaultValue="discount" style={{width: 120}}>
+            <Select defaultValue="discount" style={{ width: 120 }}>
               <Option value="discount">Discount Nominal</Option>
               <Option value="disc1">Disc(%)</Option>
               <Option value="qty">Quantity</Option>
@@ -72,8 +67,9 @@ const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFie
             <Input />
           )}
         </FormItem>
-        <Button type="primary" onClick={handleClick}> Change </Button>
-        <Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>
+        <div>
+          <Button onClick={handleClick}> Change </Button>
+        </div>
       </Form>
     </Modal>
   )
@@ -81,11 +77,9 @@ const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFie
 
 PurchaseList.propTypes = {
   form: PropTypes.isRequired,
-  pos: PropTypes.isRequired,
   item: PropTypes.isRequired,
   onChooseItem: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   modalPurchaseVisible: PropTypes.isRequired,
 }
 export default Form.create()(PurchaseList)
