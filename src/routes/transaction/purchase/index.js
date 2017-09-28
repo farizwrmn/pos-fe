@@ -6,7 +6,7 @@ import PurchaseList from './PurchaseList'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, supplierInformation, listProduct, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
+    item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, curDiscPercent, curDiscNominal,
   } = purchase
 
@@ -15,6 +15,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     datePicker: datePicker,
     item: item ? item : '',
     tempo: 0,
+    rounding,
     dataBrowse: dataBrowse,
     curDiscPercent: curDiscPercent,
     curDiscNominal: curDiscNominal,
@@ -34,6 +35,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({
         type: 'purchase/add',
         payload: data,
+      })
+    },
+    onChangeRounding (e) {
+      dispatch({
+        type: 'purchase/changeRounding',
+        payload: e,
       })
     },
     handleBrowseProduct () {

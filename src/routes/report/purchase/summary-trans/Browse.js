@@ -18,9 +18,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...browseProps }) => {
   let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
-  let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dicount }, 0)
-  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp }, 0)
-  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
+  let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
+  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp + o.rounding }, 0)
+  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto + o.rounding }, 0)
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
@@ -60,20 +60,20 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         body.push(row)
       }
     }
-    let ppn = 0
     let count = 1
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        console.log(data.rounding)
         let totalDisc = (data.price * data.qty) - data.total
         let row = new Array()
         row.push( { text: count, alignment: 'center', fontSize: 11 } );
         row.push( { text: data.transNo.toString(), alignment: 'left', fontSize: 11 } );
         row.push( { text: moment(data.transDate).format('DD-MM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 } )
         row.push( { text: data.total.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: data.dicount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: data.dpp.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: data.netto.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push( { text: data.discount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push( { text: (data.dpp + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push( { text: (data.netto + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count = count + 1
@@ -167,11 +167,11 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].total)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].dicount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].dpp)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].dpp) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -341,8 +341,8 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
     },
     {
       title: 'Discount',
-      dataIndex: 'dicount',
-      key: 'dicount',
+      dataIndex: 'discount',
+      key: 'discount',
       width: '100px',
     },
     {
@@ -355,6 +355,12 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
+      width: '100px',
+    },
+    {
+      title: 'Rounding',
+      dataIndex: 'rounding',
+      key: 'rounding',
       width: '100px',
     },
   ]
@@ -373,7 +379,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         style={{ clear: 'both' }}
         {...browseProps}
         bordered
-        scroll={{ x: 1000, y: 300 }}
+        scroll={{ x: 1100, y: 300 }}
         columns={columns}
         simple
         size="small"

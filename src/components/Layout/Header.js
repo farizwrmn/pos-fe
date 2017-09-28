@@ -15,7 +15,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
   handleChangePwShow, handleChangePwHide, handleTogglePw, handleSave,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
 }) => {
-  let handleClickMenu = e => {
+  let handleClickMenu = (e) => {
     e.key === 'logout' && logout()
     e.key === 'password' && handleChangePwShow()
   }
@@ -52,7 +52,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
     },
     onSaveButton (data) {
       handleSave(data)
-    }
+    },
   }
   return (
     <div className={styles.header}>
@@ -63,34 +63,35 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
           </div>
         </Popover>
         : <div className={styles.leftWrapper}>
-          <HeaderMenu prompt='toggle menu' icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
-          <HeaderMenu prompt='full-screen' icon='arrows-alt' onClick={screenFull} />
+          <HeaderMenu prompt="toggle menu" icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
+          <HeaderMenu prompt="full-screen" icon="arrows-alt" onClick={screenFull} />
         </div>
       }
 
       <div className={styles.rightWarpper}>
-        <HeaderMenu prompt='home' clickRoute='/#'/>
-        <HeaderMenu prompt='setting' />
-        <HeaderMenu prompt='calculator' />
-        <HeaderMenu prompt='calendar' popContent={<Calendar fullscreen={false} />} />
-        <HeaderMenu prompt='change theme' icon='bulb' />
-        <HeaderMenu prompt='shortcut key' icon='key' onClick={handleShortcutKeyShow} addClass='shortcut' />
-        <HeaderMenu prompt='notification' icon='bell'/>
+        <HeaderMenu prompt="home" clickRoute="/dashboard" />
+        <HeaderMenu prompt="setting" />
+        <HeaderMenu prompt="calculator" />
+        <HeaderMenu prompt="calendar" popContent={<Calendar fullscreen={false} />} />
+        <HeaderMenu prompt="change theme" icon="bulb" />
+        <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
+        <HeaderMenu prompt="notification" icon="bell" />
         <HeaderMenu separator={true} />
-        <HeaderMenu prompt='pos' icon='barcode' clickRoute='/transaction/pos' />
-        <HeaderMenu prompt='profit' icon='like-o' />
-        <HeaderMenu prompt='alert quantity' icon='exclamation-circle-o' addClass='alert' />
+        <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
+        <HeaderMenu prompt="profit" icon="like-o" />
+        <HeaderMenu prompt="alert quantity" icon="exclamation-circle-o" addClass="alert" />
         <HeaderMenu separator={true} />
 
         {visibleItem.shortcutKey && <ShortcutKey {...shortcutProps} />}
         {visibleItem.changePw && <ChangePw  {...changePwProps} />}
 
         <Menu mode="horizontal" onClick={handleClickMenu}>
-          <SubMenu style={{
-            float: 'right',
-          }}
+          <SubMenu
+            style={{
+              float: 'right',
+            }}
             title={<span> <Icon type="user" />
-            {user.username} </span>}
+              {user.username} </span>}
           >
             <Menu.Item key="logout">
               Sign out

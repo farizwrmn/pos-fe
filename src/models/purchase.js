@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import { query, queryDetail, createDetail, create, edit, remove } from '../services/purchase'
+import { query, queryDetail, createDetail, create, edit, editPurchase, remove } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/stock'
 import { query as querySupplier } from '../services/suppliers'
@@ -15,9 +15,10 @@ export default modelExtend(pageModel, {
     curTotal: 0,
     item: {},
     tempo: 0,
-    transNo: '',
+    transNo: null,
     discNML: 0,
     discPRC: 0,
+    rounding: 0,
     curRecord: 1,
     curQty: 1,
     modalVisible: false,
@@ -50,6 +51,7 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/transaction/purchase/add') {
           localStorage.removeItem('product_detail')
           dispatch({ type: 'modalEditHide' })
+          dispatch({ type: 'changeRounding', payload: 0 })
         } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
           dispatch({ type: 'modalEditHide' })
@@ -148,6 +150,7 @@ export default modelExtend(pageModel, {
             })
             localStorage.removeItem('product_detail')
             yield put({ type: 'resetBrowse' })
+            yield put({ type: 'changeRounding', payload: 0 })
           }
         } else {
           const modal = Modal.error({
@@ -174,6 +177,7 @@ export default modelExtend(pageModel, {
         }
       }
       let data = ''
+      let dataPurchase = ''
       let dataAdd = ''
       let arrayProdAdd = []
       let arrayProdEdit = []
@@ -213,9 +217,11 @@ export default modelExtend(pageModel, {
       if (payload.data.length > 0) {
         if (addData.length === 0) {
           data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
+          dataPurchase = yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
         } else if (addData.length > 0) {
           data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
           dataAdd = yield call(createDetail, { id: payload.id.transNo, data: arrayProdAdd })
+          dataPurchase = yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
         }
         if (data.success || dataAdd.success) {
           const modal = Modal.info({
@@ -225,6 +231,7 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('product_detail')
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'modalHide' })
+          yield put({ type: 'changeRounding', payload: 0 })
           yield put({ type: 'query' })
         } else {
           throw data
@@ -292,7 +299,15 @@ export default modelExtend(pageModel, {
           disc1: data.data[n].discPercent,
           dpp: data.data[n].dpp,
           ppn: data.data[n].ppn,
-          total: ((parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) - (parseFloat(data.data[n].discNominal) + parseFloat(data.data[n].discPercent))) + parseFloat(data.data[n].ppn),
+          total: (
+            (
+              (parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) -
+              (
+                (parseFloat(data.data[n].discNominal) * parseFloat(data.data[n].qty)) +
+                (parseFloat(data.data[n].discPercent) * ((parseFloat(data.data[n].purchasePrice) * parseFloat(data.data[n].qty)) / 100))
+              )
+            ) +
+            parseFloat(data.data[n].ppn)),
           ket: 'edit',
         })
       }
@@ -380,9 +395,9 @@ export default modelExtend(pageModel, {
           ppn = (ppnValue * arrayProd[n - 1].price)
           dpp = arrayProd[n - 1].price * arrayProd[n - 1].qty - (arrayProd[n - 1].price * arrayProd[n - 1].qty * arrayProd[n - 1].disc1 / 100 ) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount )
           qty = arrayProd[n - 1].qty
-          arrayProd[n-1].dpp = dpp
-          arrayProd[n-1].ppn = ppnTempValue * dpp
-          arrayProd[n-1].total = dpp + (ppnTempValue * dpp)
+          arrayProd[n - 1].dpp = dpp
+          arrayProd[n - 1].ppn = ppnTempValue * dpp
+          arrayProd[n - 1].total = dpp + (ppnTempValue * dpp)
         }
       }
       else if ( payload.kodeUtil === 'E') {
@@ -622,7 +637,6 @@ export default modelExtend(pageModel, {
       return { ...state, ...action.payload, modalPurchaseVisible: true, item: action.payload.data }
     },
     modalEditHide (state, action) {
-      console.log('modal')
       return { ...state, ...action.payload, modalPurchaseVisible: false, dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [] }
     },
     setAllNull (state, action) {
@@ -653,7 +667,10 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: false }
     },
     setTransNo (state, action) {
-      return { ...state, transNo: action.payload }
+      return { ...state, transNo: action.payload, rounding: action.payload.rounding }
+    },
+    changeRounding (state, action) {
+      return { ...state, rounding: action.payload }
     },
   },
 })
