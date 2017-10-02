@@ -40,16 +40,19 @@ const BrowseGroup = ({
       title: 'Group Code',
       dataIndex: 'groupCode',
       key: 'groupCode',
-      width: '45%',
-    }, {
+      width: '459px',
+    },
+    {
       title: 'Group Name',
       dataIndex: 'groupName',
       key: 'groupName',
-      width: '48%',
-    }, {
+      width: '480px',
+    },
+    {
       title: 'Operation',
       key: 'operation',
       fixed: 'right',
+      width: '71px',
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[
@@ -95,7 +98,7 @@ const BrowseGroup = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '100%', y: 240 }}
+        scroll={{ x: '1000px', y: 240 }}
         columns={columns}
         simple
         size="small"

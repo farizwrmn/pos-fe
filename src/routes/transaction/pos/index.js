@@ -1110,7 +1110,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                   pagination={{ pageSize: 5 }}
                   bordered={true}
                   size="small"
-                  scroll={{ x: '130%' }}
+                  scroll={{ x: '908px', y: '220px' }}
                   locale={{
                     emptyText: 'Your Payment List',
                   }}
@@ -1118,10 +1118,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                     {
                       title: 'No',
                       dataIndex: 'no',
+                      width: '41px',
                     },
                     {
                       title: 'Code',
                       dataIndex: 'code',
+                      width: '100px',
                     },
                     {
                       title: 'Product Name',
@@ -1130,30 +1132,37 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                     {
                       title: 'Q',
                       dataIndex: 'qty',
+                      width: '40px',
                     },
                     {
                       title: 'Price',
                       dataIndex: 'price',
+                      width: '100px',
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
+                      width: '90px',
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
+                      width: '90px',
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
+                      width: '90px',
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
+                      width: '100px',
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
+                      width: '100px',
                     },
                   ]}
                   onRowClick={(record) => modalEditPayment(record)}
@@ -1167,18 +1176,20 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                 pagination={{ pageSize: 5 }}
                 bordered={true}
                 size="small"
-                scroll={{ x: '130%' }}
-                locale = {{
+                scroll={{ x: '908px', y: '220px' }}
+                locale={{
                   emptyText: 'Your Payment List',
                 }}
                 columns={[
                   {
                     title: 'No',
                     dataIndex: 'no',
+                    width: '41px',
                   },
                   {
                     title: 'Code',
                     dataIndex: 'code',
+                    width: '100px',
                   },
                   {
                     title: 'Service Name',
@@ -1187,30 +1198,37 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                   {
                     title: 'Q',
                     dataIndex: 'qty',
+                    width: '40px',
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
+                    width: '100px',
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
+                    width: '90px',
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
+                    width: '90px',
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
+                    width: '90px',
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
+                    width: '100px',
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
+                    width: '100px',
                   },
                 ]}
                 onRowClick={_record => modalEditService(_record)}

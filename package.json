@@ -62,7 +62,6 @@
     "babel-build": "babel src -d dist",
     "profile": "node --prof dist/bin/www.js",
     "serve": "serve -s dist",
-    "start": "node ./build/runServer.js",
-    "yarn": "yarn run dev"
+    "start": "node ./build/runServer.js"
   }
 }

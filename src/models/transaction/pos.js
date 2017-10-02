@@ -338,9 +338,8 @@ export default {
 
     * getService ({ payload }, { call, put }) {
       const data = yield call(queryServiceByCode, payload.serviceId)
-      console.log('getService')
       let newData = data.data
-
+      console.log('let newData = data.data', data.data)
       if (data.data !== null) {
         let arrayProd
         if (JSON.stringify(payload.listByCode) === '[]') {
@@ -428,7 +427,6 @@ export default {
 
     * getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
-      console.log('getMember');
       let newData = payload ? data.data : data.member
       if ( data.data === null ) {
         const modal = Modal.warning({

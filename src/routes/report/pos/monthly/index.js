@@ -20,7 +20,6 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     toDate,
     productCode,
     onListReset () {
-      console.log('onListReset')
       dispatch({
         type: 'posReport/setListNull',
       })

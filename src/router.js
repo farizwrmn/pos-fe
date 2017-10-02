@@ -235,6 +235,22 @@ const Routers = function ({ history, app }) {
             }, 'report-purchase-summary-trans')
           },
         }, {
+          path: 'report/adjust/in',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/in/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
+          path: 'report/adjust/out',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/out/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {

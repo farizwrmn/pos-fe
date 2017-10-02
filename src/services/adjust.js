@@ -23,7 +23,6 @@ export async function queryDetail (params) {
 
 export async function create (params) {
   let url = params.id ? `${adjust}/code/${encodeURIComponent(params.id)}` : null
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

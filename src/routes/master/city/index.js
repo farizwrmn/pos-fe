@@ -90,7 +90,6 @@ const City = ({ location, dispatch, city, loading, misc }) => {
 
   const browseProps = {
     dataSource: listCity,
-    width: 90,
     loading: loading.effects['city/query'],
     pagination,
     location,
@@ -144,7 +143,7 @@ const City = ({ location, dispatch, city, loading, misc }) => {
         type: `city/modalPopoverClose`,
       })
     },
-    size:'small',
+    size: 'small',
   }
 
   Object.assign(browseProps, disableMultiSelect ? null :

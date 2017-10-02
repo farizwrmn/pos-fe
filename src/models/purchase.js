@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
     date: '',
     addItem: {},
     curTotal: 0,
+    tmpSupplierData: [],
     item: {},
     tempo: 0,
     transNo: null,
@@ -86,6 +87,7 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             listSupplier: data.data,
+            tmpSupplierData: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -482,11 +484,12 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const { listPurchase, listSupplier, pagination } = action.payload
+      const { listPurchase, listSupplier, tmpSupplierData, pagination } = action.payload
       return {
         ...state,
         listPurchase,
         listSupplier,
+        tmpSupplierData,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -557,20 +560,38 @@ export default modelExtend(pageModel, {
       return { ...state, listInvoice: newData }
     },
     onSupplierSearch (state, action) {
-      const { searchText, tmpSupplierData } = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+      const { searchText, tmpSupplierData } = action.payload
+      console.log('onSupplierSearch', searchText, tmpSupplierData)
+      const reg = new RegExp(searchText, 'gi')
       let newData
-
       newData = tmpSupplierData.map((record) => {
-        const match = record.supplierName.match(reg) || record.supplierCode.match(reg) || record.address01.match(reg)
+        const match = record.supplierName.match(reg) || record.supplierCode.match(reg)
         if (!match) {
-          return null
+          return null;
         }
         return {
           ...record,
-        }
+        };
       }).filter(record => !!record)
+
       return { ...state, listSupplier: newData }
+    },
+    onSupplierReset (state, action) {
+      const { searchText, tmpSupplierData } = action.payload
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+
+      newData = tmpMemberList.map((record) => {
+        const match = record.supplierName.match(reg) || record.supplierCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listSupplier: newData, searchText: searchText }
     },
     onProductReset (state, action) {
       const { searchText, tmpProductList } = action.payload

@@ -23,7 +23,7 @@ const formItemLayout1 = {
 }
 const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
                         modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                         onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps}) => {
+                         onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps}) => {
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -40,23 +40,20 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
         totalPPN: parseInt(totalPpn),
         discTotal: totalDisc,
       }
-      console.log('onOk data:', data)
       onOk(data)
       resetFields()
     })
   }
   let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
   let g = dataPurchase
-  console.log(rounding)
-  let nettoTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0) + parseFloat(rounding)
-  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
-  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
-  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
-  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
-  let discPercent = g.reduce( function(cnt,o){ return cnt + (o.disc1 * o.qty * o.price / 100) }, 0)
-  let discNominal = g.reduce( function(cnt,o){ return cnt + o.discount * o.qty  }, 0)
+  let nettoTotal = g.reduce((cnt, o) => cnt + o.total, 0) + parseFloat(rounding)
+  let realTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
+  let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
+  let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
+  let discNominal = g.reduce((cnt, o) => cnt + (o.discount * o.qty), 0)
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
-  let grandTotal = g.reduce( function(cnt,o){ return cnt + (o.price * o.qty) }, 0) - totalDisc
+  let grandTotal = g.reduce((cnt, o) => cnt + (o.price * o.qty), 0) - totalDisc
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
@@ -83,8 +80,9 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
     let add = moment(a, 'YYYY-MM-DD').add(value, 'd')
     onChangeDate(add.format('YYYY-MM-DD'))
   }
+  console.log(tmpSupplierData)
   const hdlSearch = (e) => {
-    onSearchSupplier(e, listSupplier)
+    onSearchSupplier(e, tmpSupplierData)
   }
 
   const hdlGetSupplier = () => {

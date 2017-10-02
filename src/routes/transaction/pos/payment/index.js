@@ -221,6 +221,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         transDate: getDate(1),
         transDate2: getDate(3),
         transTime: setTime(),
+        transDatePrint: moment().format('DD/MM/YYYY'),
         grandTotal: parseInt(curTotal),
         totalPayment: totalPayment,
         company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],

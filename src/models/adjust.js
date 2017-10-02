@@ -67,6 +67,7 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             listProduct: data.data,
+            tmpProductList: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -293,10 +294,11 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const {listProduct, pagination} = action.payload
+      const { listProduct, tmpProductList, pagination } = action.payload
       return {
         ...state,
         listProduct,
+        tmpProductList,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -335,8 +337,8 @@ export default modelExtend(pageModel, {
       }
     },
     onProductSearch (state, action) {
-      const {searchText, tmpProductData} = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+      const {searchText, tmpProductData} = action.payload
+      const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpProductData.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)

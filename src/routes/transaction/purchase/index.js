@@ -6,7 +6,7 @@ import PurchaseList from './PurchaseList'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
+    item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, tmpSupplierData, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, curDiscPercent, curDiscNominal,
   } = purchase
 
@@ -23,7 +23,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     modalProductVisible: modalProductVisible,
     modalPurchaseVisible: modalPurchaseVisible,
     supplierInformation: supplierInformation ? supplierInformation : null,
-    tmpSupplierData: listSupplier,
+    tmpSupplierData: tmpSupplierData,
     dataSource: listProduct,
     location: location,
     loading: loading,

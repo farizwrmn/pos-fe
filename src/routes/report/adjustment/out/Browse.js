@@ -1,26 +1,25 @@
 /**
- * Created by Veirry on 19/09/2017.
+ * Created by Veirry on 29/09/2017.
  */
 import React from 'react'
 import { saveAs } from 'file-saver'
+import * as Excel from 'exceljs/dist/exceljs.min.js'
 import PropTypes from 'prop-types'
 import { Table, Button, Row, Col, Modal } from 'antd'
 import moment from 'moment'
 import Filter from './Filter'
-import * as Excel from 'exceljs/dist/exceljs.min.js'
 // webpack.config.js, exceljs compiled warning
 
 const warning = Modal.warning
+const dateFormat = 'DD-MM-YYYY'
 
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...browseProps }) => {
-  let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
-  let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
-  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp + o.rounding }, 0)
-  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto + o.rounding }, 0)
+const Browse = ({ listOut, company, user, productCode, fromDate, toDate, ...browseProps }) => {
+  let qtyTotal = listOut.reduce((cnt, o) => cnt + o.qtyOut, 0)
+  let grandTotal = listOut.reduce((cnt, o) => cnt + o.amount, 0)
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
@@ -36,12 +35,11 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
     const headers = {
       top: {
         col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
-        col_5: { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
-        col_6: { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
-        col_7: { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' },
+        col_2: { fontSize: 12, text: 'PART_NUMBER', style: 'tableHeader', alignment: 'center' },
+        col_3: { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
+        col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+        col_5: { fontSize: 12, text: 'HARGA POKOK', style: 'tableHeader', alignment: 'center' },
+        col_6: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
       },
     }
     const rows = e
@@ -56,7 +54,6 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         row.push(header.col_4)
         row.push(header.col_5)
         row.push(header.col_6)
-        row.push(header.col_7)
         body.push(row)
       }
     }
@@ -66,13 +63,12 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         let data = rows[key]
         let totalDisc = (data.price * data.qty) - data.total
         let row = new Array()
-        row.push( { text: count, alignment: 'center', fontSize: 11 } );
-        row.push( { text: data.transNo.toString(), alignment: 'left', fontSize: 11 } );
-        row.push( { text: moment(data.transDate).format('DD-MM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 } )
-        row.push( { text: data.total.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: data.discount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: (data.dpp + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push( { text: (data.netto + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: count, alignment: 'center', fontSize: 11 })
+        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.qtyOut.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count = count + 1
@@ -81,21 +77,19 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
     totalRow.push({ text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 })
     totalRow.push({})
     totalRow.push({})
-    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({})
+    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }
-
   const handleExcel = () => {
-    if (fromDate === '' && toDate === '') {
+    if (fromDate === null && toDate === null) {
       warning({
         title: 'Parameter cannot be null',
         content: 'your CreateAt paramater probably not set...',
       })
-    } else if (listTrans.length === 0) {
+    } else if (listOut.length === 0) {
       warning({
         title: 'Parameter cannot be null',
         content: 'your CreateAt paramater probably not set...',
@@ -122,7 +116,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         family: 4,
         size: 10,
       }
-      for (let n = 0; n <= listTrans.length; n++) {
+      for (let n = 0; n <= listOut.length; n++) {
         for (let m = 65; m < 74; m++) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
@@ -132,17 +126,16 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
           }
         }
       }
-      let header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'DPP', 'NETTO']
+      let header = ['NO.', '', 'PART_NO', 'DESKRIPSI', 'QTY', 'HPP', 'AMOUNT']
       let footer = [
         '',
         '',
         '',
+        '',
         'GRAND TOTAL',
-        `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
-      for (let m = 65; m < 73; m++) {
+        `${qtyTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+        `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
+      for (let m = 65; m < 72; m++) {
         let o = 7
         let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
@@ -154,28 +147,26 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
       }
 
-      for (let n = 0; n < listTrans.length; n++) {
+      for (let n = 0; n < listOut.length; n++) {
         let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n+1)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`B${m}`).value = '.'
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = `${listTrans[n].transNo}`
+        sheet.getCell(`C${m}`).value = `${listOut[n].productCode}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
+        sheet.getCell(`D${m}`).value = `${listOut[n].productName}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].total)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`E${m}`).value = `${(parseFloat(listOut[n].qtyOut)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`F${m}`).value = `${(parseFloat(listOut[n].costPrice)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].dpp) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listOut[n].amount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-        sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < 73; m++) {
-        let n = listTrans.length + 10
+      for (let m = 65; m < 72; m++) {
+        let n = listOut.length + 10
         let count = m - 65
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
@@ -192,20 +183,20 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F2').value = 'LAPORAN PEMBELIAN PER FAKTUR'
+      sheet.getCell('F2').value = 'LAPORAN ADJUST OUT PER PART'
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F3').value = `${localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company'))[0].miscName : ''}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${fromDate} TO ${toDate}`
+      sheet.getCell('F4').value = `PERIODE : ${fromDate ? fromDate : 'BEGIN'} TO ${toDate ? toDate : moment().format(dateFormat)}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then(function (data) {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `PURCHASE-summary${moment().format('YYYYMMDD')}.xlsx`)
+        saveAs(blob, `ADJUST-summary${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
   const handlePdf = () => {
-    let body = createPdfLineItems(listTrans)
+    let body = createPdfLineItems(listOut)
     let docDefinition = {
       pageSize: 'A4',
       pageOrientation: 'landscape',
@@ -243,7 +234,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
                 ],
               },
               {
-                text: 'LAPORAN PEMBELIAN PER FAKTUR',
+                text: 'LAPORAN ADJUST OUT PER PART',
                 style: 'header',
                 fontSize: 18,
                 alignment: 'center',
@@ -260,7 +251,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         {
           writable: true,
           table: {
-            widths: ['6%', '17%', '21%', '14%', '14%', '14%', '14%' ],
+            widths: ['6%', '18%', '28%', '15%', '15%', '15%' ],
             headerRows: 1,
             body: body,
           },
@@ -319,12 +310,23 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
     }
     pdfMake.createPdf(docDefinition).open()
   }
+  const filterProps = {
+    fromDate,
+    toDate,
+    ...browseProps
+  }
   const columns = [
     {
-      title: 'invoice',
-      dataIndex: 'transNo',
-      key: 'transNo',
+      title: 'Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
       width: '155px',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '200px',
     },
     {
       title: 'Date',
@@ -333,33 +335,21 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
       width: '175px',
     },
     {
+      title: 'QTY',
+      dataIndex: 'qtyOut',
+      key: 'qtyOut',
+      width: '100px',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      width: '100px',
+    },
+    {
       title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
-      width: '100px',
-    },
-    {
-      title: 'Discount',
-      dataIndex: 'discount',
-      key: 'discount',
-      width: '100px',
-    },
-    {
-      title: 'DPP',
-      dataIndex: 'dpp',
-      key: 'dpp',
-      width: '100px',
-    },
-    {
-      title: 'Netto',
-      dataIndex: 'netto',
-      key: 'netto',
-      width: '100px',
-    },
-    {
-      title: 'Rounding',
-      dataIndex: 'rounding',
-      key: 'rounding',
+      dataIndex: 'amount',
+      key: 'amount',
       width: '100px',
     },
   ]
@@ -367,7 +357,7 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
     <div>
       <Row>
         <Col xs={24} sm={24} md={15} lg={15} xl={15} style={{ marginBottom: '10px' }}>
-          <Filter {...browseProps} />
+          <Filter {...filterProps} />
         </Col>
         <Col xs={24} sm={24} md={9} lg={9} xl={9}>
           <Button size="large" icon="file-excel" onClick={() => handleExcel()} style={{ backgroundColor: '#ffffff', borderColor: '#207347', borderWidth: '3px',color: '#000000', height: '42px', width: '42px', fontSize: 'x-large', float: 'right', marginBottom: '10px' }} />
@@ -378,20 +368,20 @@ const Browse = ({ listTrans, company, user, productCode, fromDate, toDate, ...br
         style={{ clear: 'both' }}
         {...browseProps}
         bordered
-        scroll={{ x: 1100, y: 300 }}
+        scroll={{ x: 890, y: 300 }}
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.transNo}
+        rowKey={record => record.productCode}
       />
     </div>
   )
 }
 
-Browse.propTyps = {
-  location: PropTypes.object,
-  onExportExcel: PropTypes.func,
-  listTrans: PropTypes.Array,
+Browse.propTypes = {
+  location: PropTypes.isRequired,
+  onExportExcel: PropTypes.func.isRequired,
+  listOut: PropTypes.isRequired,
 }
 
 export default Browse

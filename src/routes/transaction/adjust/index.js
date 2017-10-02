@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    lastTrans, currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+    lastTrans, tmpProductList, currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
@@ -70,6 +70,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     itemEmployee,
     popoverVisible,
     listEmployee,
+    tmpProductList,
     dataSource: listProduct,
     dataBrowse: dataBrowse,
     visible: modalProductVisible,
@@ -99,19 +100,13 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     },
     onSearchProduct (data, e) {
       console.log('searchtext', searchText)
-      if (e.length === 0) {
-        dispatch({ type: 'adjust/query' })
-      } else if (searchText === '') {
-        dispatch({ type: 'adjust/query' })
-      } else {
-        dispatch({
-          type: 'adjust/onProductSearch',
-          payload: {
-            searchText: searchText,
-            tmpProductData: e,
-          },
-        })
-      }
+      dispatch({
+        type: 'adjust/onProductSearch',
+        payload: {
+          searchText: searchText,
+          tmpProductData: e,
+        },
+      })
     },
     onGetProduct () {
       dispatch({ type: 'adjust/query' })

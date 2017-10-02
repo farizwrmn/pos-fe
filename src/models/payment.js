@@ -927,7 +927,7 @@ export default {
           ],
 
           footer: function(currentPage, pageCount) {
-            if (currentPage == pageCount) {
+            if (currentPage === pageCount) {
               return {
                 margin: [40, 0, 40, 0],
                 height: 160,
@@ -938,7 +938,7 @@ export default {
                   {
                     columns: [
                       {fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left'},
-                      {fontSize: 12, text: `TOTAL : Rp ${Total.toLocaleString(['ban', 'id'])}`, alignment: 'right'},
+                      { fontSize: 12, text: `TOTAL : Rp ${(Total + payload.rounding).toLocaleString(['ban', 'id'])}`, alignment: 'right' },
                     ],
                   },
                   {
