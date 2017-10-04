@@ -9,7 +9,7 @@ import { Col, Row, Icon, Button } from 'antd'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, listProduct, dataBrowse, listSupplier, pagination, date, datePicker,modalVisible, searchVisible, modalProductVisible,
-    modalPurchaseVisible, modalType, selectedRowKeys, disableMultiSelect, curQty, curDiscPercent, curDiscNominal
+    modalPurchaseVisible, discPRC, discNML, modalType, selectedRowKeys, disableMultiSelect, curQty, curDiscPercent, curDiscNominal
   } = purchase
 
   const modalProps = {
@@ -121,12 +121,15 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       })
     },
     onDiscPercent (data) {
-      dispatch({ type: 'purchase/onDiscPercent', payload:data })
+      dispatch({ type: 'purchase/onDiscPercent', payload: data })
+      dispatch({ type: 'purchase/editPurchase', payload: { value: data, kodeUtil: 'discountPercent', effectedRecord: 0 } })
     },
     onDiscNominal (data) {
-      dispatch({ type: 'purchase/onDiscNominal', payload:data })
+      dispatch({ type: 'purchase/onDiscNominal', payload: data })
+      dispatch({ type: 'purchase/editPurchase', payload: { value: data, kodeUtil: 'discountNominal', effectedRecord: 0 } })
     },
     onChangePPN (data) {
+      localStorage.setItem('taxType', data)
       dispatch({ type: 'purchase/editPurchase', payload:{ value: 0, kodeUtil: data, effectedRecord: 0 } })
     },
     onChooseItem (data) {
@@ -140,8 +143,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     },
     onCancel () { dispatch({ type: 'purchase/modalEditHide'}), dispatch({ type: 'purchase/hideProductModal' }) },
     onChooseItemItem (item) {
-      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
-      var arrayProd
+      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }
@@ -153,14 +156,14 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         'code': item.id,
         'productCode': item.productCode,
         'name': item.productName,
-        'qty': null,
+        'qty': 0,
         'price': item.costPrice,
-        'discount': 0,
-        'disc1': 0,
+        'discount': discNML,
+        'disc1': discPRC,
         'dpp': 0,
         'ppn': 0,
         'ket': '',
-        'total': null,
+        'total': 0 * item.costPrice,
       })
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
@@ -186,8 +189,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'purchase/hideProductModal' }) },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
-      var arrayProd
+      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }

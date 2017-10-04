@@ -5,17 +5,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import moment from 'moment'
 import Browse from './Browse'
-import { saveAs } from 'file-saver'
 
-const Report = ({ location, dispatch, loading, posReport }) => {
-  const { list, pagination, fromDate, toDate, productCode, company } = posReport
+const Report = ({ location, dispatch, posReport, app }) => {
+  const { list, pagination, fromDate, toDate, productCode } = posReport
+  const { user, storeInfo } = app
   const { pageSize } = pagination
   const browseProps = {
     dataSource: list,
     list,
-    company,
+    storeInfo,
+    user,
     fromDate,
     toDate,
     productCode,
@@ -27,7 +27,7 @@ const Report = ({ location, dispatch, loading, posReport }) => {
     },
     onDateChange(from, to) {
       dispatch({
-        type: 'posReport/query',
+        type: 'posReport/queryPart',
         payload: {
           from: from,
           to: to,
@@ -82,7 +82,8 @@ Report.propTyps = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
+  app: PropTypes.object,
   posReport: PropTypes.object,
 }
 
-export default connect(({ loading, posReport }) => ({ loading, posReport }))(Report)
+export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)

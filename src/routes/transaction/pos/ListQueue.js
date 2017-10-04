@@ -36,8 +36,8 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
     } else {
       const cashier_trans = JSON.parse(localStorage.getItem('queue' + curQueue))
       const trans = cashier_trans[0]
-      var arrayMember = []
-      var arrayMechanic = []
+      let arrayMember = []
+      let arrayMechanic = []
       arrayMember.push({
         memberCode: trans.memberCode,
         memberName: trans.memberName,
@@ -57,6 +57,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
+      localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
       localStorage.removeItem('queue' + curQueue)
       dispatch({
         type: 'pos/setCurTotal',
@@ -185,6 +186,61 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
               emptyText: 'No Payment Information',
             }}
           />
+          </div>
+          <div>
+            <Table
+              rowKey={(record, key) => key}
+              pagination={false}
+              bordered
+              scroll={{x: 800}}
+              columns={[
+                {
+                  title: 'No',
+                  dataIndex: 'no',
+                },
+                {
+                  title: 'Barcode',
+                  dataIndex: 'code',
+                },
+                {
+                  title: 'Product Name',
+                  dataIndex: 'name',
+                },
+                {
+                  title: 'Qty',
+                  dataIndex: 'qty',
+                },
+                {
+                  title: 'Price',
+                  dataIndex: 'price',
+                },
+                {
+                  title: 'Disc 1(%)',
+                  dataIndex: 'disc1',
+                },
+                {
+                  title: 'Disc 2(%)',
+                  dataIndex: 'disc2',
+                },
+                {
+                  title: 'Disc 3(%)',
+                  dataIndex: 'disc3',
+                },
+                {
+                  title: 'Discount',
+                  dataIndex: 'discount',
+                },
+                {
+                  title: 'Total',
+                  dataIndex: 'total',
+                },
+              ]}
+              dataSource={listQueue[0] ? listQueue[0].service_detail : []}
+              style={{marginBottom: 16}}
+              locale={{
+                emptyText: 'No Payment Information',
+              }}
+            />
           </div>
         </Card>
         <Button onClick={handleClick} > RESTORE </Button>

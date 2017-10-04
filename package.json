@@ -16,7 +16,6 @@
     "pdfmake": "^0.1.32",
     "qs": "^6.5.0",
     "react": "^15.6.1",
-    "react-calculator": "0.0.2",
     "react-countup": "^2.1.1",
     "react-dom": "^15.6.1",
     "react-draft-wysiwyg": "^1.8.1",

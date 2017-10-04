@@ -67,8 +67,17 @@ const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDec
         <FormItem {...formItemLayout} label="Code">
           <Input value={item.code} />
         </FormItem>
-        <FormItem {...formItemLayout} label="Sell Price">
-          <Input value={item.price} />
+        <FormItem {...formItemLayout} label="Cost Price">
+          {getFieldDecorator('price', {
+            initialValue: item.price,
+            rules: [{
+              required: true,
+              message: 'Required',
+            }],
+          })(
+            <Input />
+          )
+          }
         </FormItem>
         <FormItem {...formItemLayout} label="In">
           {getFieldDecorator('InQty', {

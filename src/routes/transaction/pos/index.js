@@ -56,7 +56,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   const {listLovMemberUnit, listUnit} = unit
   const {user} = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
-  var keyShortcut = {
+  const keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
     51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false }
   /*
@@ -75,17 +75,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   73 => I
   85 => U
    */
-  var product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-  var service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
-  var dataPos = product.concat(service)
-  var a = dataPos
-  var totalPayment = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  var totalQty = a.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+  let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+  let dataPos = product.concat(service)
+  let a = dataPos
+  let totalPayment = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  let totalQty = a.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
   const getDate = (mode) => {
-    var today = new Date()
-    var dd = today.getDate()
-    var mm = today.getMonth()+1 //January is 0!
-    var yyyy = today.getFullYear()
+    let today = new Date()
+    let dd = today.getDate()
+    let mm = today.getMonth()+1 //January is 0!
+    let yyyy = today.getFullYear()
 
     if(dd<10) {
       dd='0'+dd
@@ -109,10 +109,10 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const setTime = () => {
-    var today = new Date()
-    var h = today.getHours()
-    var m = today.getMinutes()
-    var s = today.getSeconds()
+    let today = new Date()
+    let h = today.getHours()
+    let m = today.getMinutes()
+    let s = today.getSeconds()
     m = checkTime(m)
     s = checkTime(s)
 
@@ -232,8 +232,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
     dispatch({ type: 'payment/setLastTrans' })
 
-    dispatch({ type: 'payment/setCompanyName', payload: { code: 'COMPANY'} })
-
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
     dispatch(routerRedux.push('/transaction/pos/payment'))
@@ -299,8 +297,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           title: 'Are you sure want to void/delete item Record ' + value + '?',
           content: 'This Operation cannot be undone...!',
           onOk() {
-            var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-            var arrayProd = dataPos.slice()
+            let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+            let arrayProd = dataPos.slice()
 
             arrayProd[value - 1].price = 0
             arrayProd[value - 1].qty = 0
@@ -386,9 +384,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     onChooseItem (item) {
       localStorage.removeItem('member', [])
       localStorage.removeItem('memberUnit')
-      var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
-      var arrayProd
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }
@@ -469,7 +467,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     onChooseItem (item) {
       console.log('modalMechanicProps');
       localStorage.removeItem('mechanic')
-      var arrayProd = []
+      let arrayProd = []
       arrayProd.push({
         mechanicName: item.employeeName,
         mechanicCode: item.employeeId
@@ -490,9 +488,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
+      let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
 
-      var arrayProd
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }
@@ -534,9 +532,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       })
     },
     onChooseItem (item) {
-      var listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
+      let listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
 
-      var arrayProd
+      let arrayProd
       if ( JSON.stringify(listByCode) == "[]" ) {
         arrayProd = listByCode.slice()
       }
@@ -730,11 +728,11 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         handleDiscount(5, value)
       }
       else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[76] ) { //shortcut untuk Closing Cashier (Ctrl + Shift + L)
-        var curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+        let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
 
-        var curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
-        var curQueue2 = (localStorage.getItem('queue2') === null ? [] : JSON.parse(localStorage.getItem('queue2')))
-        var curQueue3 = (localStorage.getItem('queue3') === null ? [] : JSON.parse(localStorage.getItem('queue3')))
+        let curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
+        let curQueue2 = (localStorage.getItem('queue2') === null ? [] : JSON.parse(localStorage.getItem('queue2')))
+        let curQueue3 = (localStorage.getItem('queue3') === null ? [] : JSON.parse(localStorage.getItem('queue3')))
 
         keyShortcut[17] = false
         keyShortcut[16] = false
@@ -776,14 +774,14 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         keyShortcut[16] = false
         keyShortcut[85] = false
 
-        var arrayProd = []
+        let arrayProd = []
 
         const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
         const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
         const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
 
-        var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-        var memberInformation
+        let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+        let memberInformation
         if ( JSON.stringify(listByCode) == "[]" ) {
           memberInformation = listByCode.slice()
         }
@@ -918,12 +916,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const dataTrans = () => {
-    var product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+    let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
     return (product)
   }
 
   const dataService = () => {
-    var service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+    let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
     return (service)
   }
 
@@ -1057,7 +1055,7 @@ class LastMeter extends React.Component {
         <Col lg={18} md={20}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              <Input placeholder="Name" disabled style={{ marginBottom: 8}}/>
+              {/*<Input placeholder="Name" disabled style={{ marginBottom: 8}}/>*/}
               {infoUtil && <Tag color="green" style={{ marginBottom: 8}}> {infoUtil} </Tag> }
               <Input size="large" autoFocus={true} value={curBarcode} style={{ fontSize: 24, marginBottom: 8 }}
                      placeholder="Search Code Here" onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)}
@@ -1067,7 +1065,7 @@ class LastMeter extends React.Component {
             <ButtonGroup>
               <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
               <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" className="button-width02">
+                <Button type="primary" style={{ height: '36px'}} icon="plus-square-o" className="button-width02">
                 </Button>
               </Tooltip>
             </ButtonGroup>
@@ -1102,12 +1100,12 @@ class LastMeter extends React.Component {
               <Row>
                 <Col lg={{ span: 10 }}>
                   <FormItem label="Qty">
-                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} />
                   </FormItem>
                 </Col>
                 <Col xs={{ span: 5, offset: 2 }} lg={{ span: 10, offset: 4 }}>
                   <FormItem label="Total">
-                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} disabled/>
+                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} />
                   </FormItem>
                 </Col>
               </Row>

@@ -7,10 +7,10 @@ import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 import moment from 'moment'
 
-const Pos = ({ location, dispatch, loading, pos }) => {
-  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint, companyPrint,
+const Pos = ({ location, dispatch, loading, pos, app }) => {
+  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
     pagination, selectedRowKeys, modalPrintVisible,posData } = pos
-
+  const { company } = app
   const { pageSize } = pagination
 
   const modalProps = {
@@ -20,19 +20,19 @@ const Pos = ({ location, dispatch, loading, pos }) => {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    companyPrint,
+    company,
     posData,
     maskClosable: false,
     title: `Print the Transaction Duplicate?`,
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
-      var dataPos = []
-      var dataService = []
-      for (var n = 0; n < data.data.length; n++) {
+      let dataPos = []
+      let dataService = []
+      for (let n = 0; n < data.data.length; n++) {
         if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
-          var productId = data.data[n].productCode
-          var productName = data.data[n].productName
+          let productId = data.data[n].productCode
+          let productName = data.data[n].productName
           dataPos.push({
             no: '',
             code: productId,
@@ -48,8 +48,8 @@ const Pos = ({ location, dispatch, loading, pos }) => {
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
-          var productId = data.data[n].serviceCode
-          var productName = data.data[n].serviceName
+          let productId = data.data[n].serviceCode
+          let productName = data.data[n].serviceName
           dataService.push({
             no: '',
             code: productId,
@@ -65,8 +65,8 @@ const Pos = ({ location, dispatch, loading, pos }) => {
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
-          var productId = '-'
-          var productName = '-'
+          let productId = '-'
+          let productName = '-'
           dataService.push({
             no: '',
             code: productId,
@@ -83,10 +83,10 @@ const Pos = ({ location, dispatch, loading, pos }) => {
           })
         }
       }
-      for (var j = 0; j < dataService.length; j++) {
+      for (let j = 0; j < dataService.length; j++) {
         dataService[j].no = j + 1
       }
-      for (var k = 0; k < dataPos.length; k++) {
+      for (let k = 0; k < dataPos.length; k++) {
         dataPos[k].no = k + 1
       }
       dispatch({
@@ -173,6 +173,10 @@ const Pos = ({ location, dispatch, loading, pos }) => {
         },
       })
       dispatch({
+        type: 'pos/setListPaymentDetail',
+        payload: e,
+      })
+      dispatch({
         type: 'pos/showPrintModal',
       })
     },
@@ -191,10 +195,11 @@ const Pos = ({ location, dispatch, loading, pos }) => {
 
 Pos.propTypes = {
   pos: PropTypes.object,
+  app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
 
-export default connect(({ pos, loading }) => ({  pos, loading }))(Pos)
+export default connect(({ pos, loading, app }) => ({  pos, loading, app }))(Pos)

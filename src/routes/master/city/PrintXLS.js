@@ -20,12 +20,12 @@ const PrintXLS = () => {
       firstSheet: 0, activeTab: 1, visibility: 'visible'
     }
   ]
-  var sheet = workbook.addWorksheet('My Sheet',
+  const sheet = workbook.addWorksheet('My Sheet',
     { pageSetup: { paperSize: 9, orientation: 'landscape' } })
   const handleExcel = () => {
     console.log('handleExcel', workbook)
     workbook.xlsx.writeBuffer().then(function (data) {
-      var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `pointReport${moment().format('YYYYMMDD')}.xlsx`)
       console.log('Excel')
     })

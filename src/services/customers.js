@@ -4,6 +4,7 @@ const { customers } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  console.log(customers)
   return request({
     url: customers,
     method: 'get',
@@ -13,7 +14,7 @@ export async function query (params) {
 }
 
 export async function queryByCode (params) {
-  const url = params.memberCode  ? customers + '/' + params.memberCode : customers + '/' + params.data.memberCode
+  const url = params.memberCode  ? customers + '/' + encodeURIComponent(params.memberCode) : customers + '/' + encodeURIComponent(params.data.memberCode)
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -25,7 +26,7 @@ export async function queryByCode (params) {
 }
 
 export async function add (params) {
-  const url = params.id ? `${customers}/${params.id}` : customers
+  const url = params.id ? `${customers}/${encodeURIComponent(params.id)}` : customers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -38,7 +39,7 @@ export async function add (params) {
 
 export async function edit (params) {
   console.log('edit-params', params)
-  const url = params.id ? `${customers}/${params.id}` : customers
+  const url = params.id ? `${customers}/${encodeURIComponent(params.id)}` : customers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -50,7 +51,7 @@ export async function edit (params) {
 }
 
 export async function editPoint (params) {
-  const url = params.memberCode ? `${customers}/${params.memberCode}/points` : null
+  const url = params.memberCode ? `${customers}/${encodeURIComponent(params.memberCode)}/points` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -62,7 +63,7 @@ export async function editPoint (params) {
 }
 
 export async function remove (params) {
-  const url = params.id ? `${customers}/${params.id}` : customers
+  const url = params.id ? `${customers}/${encodeURIComponent(params.id)}` : customers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

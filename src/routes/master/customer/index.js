@@ -340,7 +340,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
         },
       })
     },
-    
+
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({

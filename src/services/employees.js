@@ -34,16 +34,17 @@ export async function queryField (params) {
 }
 
 export async function queryMechanics (params) {
+  const url = `${employees}/mechanics/`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: employees + '/mechanics/',
+    url: url,
     method: 'get',
     headers: apiHeaderToken
   })
 }
 
 export async function queryMechanicByCode (params) {
-  const url = params.employeeId ? employees + '/mechanics/' + params.employeeId : employees + '/mechanics/' + params
+  const url = params.employeeId ? `${employees}/mechanics/${encodeURIComponent(params.employeeId)}` : `${employees}/mechanics/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

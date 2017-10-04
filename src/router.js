@@ -202,6 +202,30 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-monthly')
           },
         }, {
+          path: 'report/pos/summary/trans',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/summary/trans/'))
+            }, 'report-pos-summary-trans')
+          },
+        }, {
+          path: 'report/service/trans',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/service'))
+              cb(null, require('./routes/report/service/TransNo/'))
+            }, 'report-service-trans')
+          },
+        }, {
+          path: 'report/purchase/summary/trans',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/purchase'))
+              cb(null, require('./routes/report/purchase/summary-trans/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -244,6 +268,16 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/setting/misc/'))
             }, 'setting-misc')
           },
+        /* remark -- on bbucket there is no './routes/setting/periode'
+        }, {
+          path: 'setting/periods',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/setting/periode/'))
+            }, 'setting-misc')
+          },
+         */
         }, {
           path: '*',
           getComponent (nextState, cb) {

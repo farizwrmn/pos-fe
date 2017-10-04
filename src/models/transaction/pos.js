@@ -1,13 +1,13 @@
 import * as cashierService from '../../services/cashier'
-import { query as queryPos, queryDetail as queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
+import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { queryMode as miscQuery} from '../../services/misc'
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
-import { queryMechanics as queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
+import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
 import { query as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
-import { query as queryService, queryServiceByCode as queryServiceByCode } from '../../services/service'
+import { query as queryService, queryServiceByCode } from '../../services/service'
 
 import { parse } from 'qs'
-import { Modal, Alert } from 'antd'
+import { Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
@@ -27,7 +27,7 @@ export default {
     listProduct: [],
     posData: [],
     listByCode: [],
-    listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))),
+    listQueue: localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')),
     memberPrint: [],
     mechanicPrint: [],
     companyPrint: [],
@@ -59,7 +59,6 @@ export default {
       total: null,
     },
     curBarcode: '',
-    lastMeter: '',
     curTotal: 0,
     curTotalDiscount: 0,
     kodeUtil: 'member',
@@ -70,7 +69,7 @@ export default {
     tmpMechanicList: [],
     tmpProductList: [],
     mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
-    memberUnitInfo: localStorage.getItem('memberUnit') ? {unitNo: localStorage.getItem('memberUnit')} : {unitNo : '-----'},
+    memberUnitInfo: localStorage.getItem('memberUnit') ? { unitNo: localStorage.getItem('memberUnit') } : { unitNo : '-----' },
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
@@ -106,47 +105,47 @@ export default {
   },
 
   effects: {
-    *query ({ payload }, { call, put }) {
-      console.log('location.search', location.search)
-      payload = parse(location.search.substr(1))
-      let { pageSize, page, ...other } = payload
-      const data = yield call(query, payload)
-      let newData = data.data
-
-      if ( data.success ) {
-        //filter
-        for (let key in other) {
-          if ({}.hasOwnProperty.call(other, key)) {
-            newData = newData.filter((item) => {
-              if ({}.hasOwnProperty.call(item, key)) {
-                return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
-              }
-              return true
-            })
-          }
-        }
-        //---------------
-        pageSize = pageSize || 10
-        page = page || 1
-
-        const stocks = newData.slice((page - 1) * pageSize, page * pageSize)
-        const totalData = newData.length
-
-        //yield put({ type: 'hideModal' })
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: stocks,
-            tmpList: stocks,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: totalData,
-            },
-          },
-        })
-      }
-    },
+    // *query ({ payload }, { call, put }) {
+    //   console.log('location.search', location.search)
+    //   payload = parse(location.search.substr(1))
+    //   let { pageSize, page, ...other } = payload
+    //   // const data = yield call(query, payload)
+    //   let newData = data.data
+    //
+    //   if ( data.success ) {
+    //     //filter
+    //     for (let key in other) {
+    //       if ({}.hasOwnProperty.call(other, key)) {
+    //         newData = newData.filter((item) => {
+    //           if ({}.hasOwnProperty.call(item, key)) {
+    //             return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
+    //           }
+    //           return true
+    //         })
+    //       }
+    //     }
+    //     //---------------
+    //     pageSize = pageSize || 10
+    //     page = page || 1
+    //
+    //     const stocks = newData.slice((page - 1) * pageSize, page * pageSize)
+    //     const totalData = newData.length
+    //
+    //     //yield put({ type: 'hideModal' })
+    //     yield put({
+    //       type: 'querySuccess',
+    //       payload: {
+    //         list: stocks,
+    //         tmpList: stocks,
+    //         pagination: {
+    //           current: Number(payload.page) || 1,
+    //           pageSize: Number(payload.pageSize) || 10,
+    //           total: totalData,
+    //         },
+    //       },
+    //     })
+    //   }
+    // },
 
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
@@ -196,7 +195,6 @@ export default {
     },
 
     * queryPosDetail ({ payload }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(queryDetail, payload)
       const PosData = yield call(queryaPos, payload.id)
       const member = yield call(queryMemberCode, payload)
@@ -213,12 +211,12 @@ export default {
             mechanicPrint: mechanic.mechanic,
           },
         })
-        var dataPos = []
-        var dataService = []
-        for (var n = 0; n < data.pos.length; n++) {
+        let dataPos = []
+        let dataService = []
+        for (let n = 0; n < data.pos.length; n++) {
           if (data.pos[n].serviceCode === null || data.pos[n].serviceName === null) {
-            var productId = data.pos[n].productCode
-            var productName = data.pos[n].productName
+            let productId = data.pos[n].productCode
+            let productName = data.pos[n].productName
             dataPos.push({
               code: productId,
               name: productName,
@@ -233,8 +231,8 @@ export default {
               ((((data.pos[n].qty * data.pos[n].sellingPrice) * data.pos[n].disc1 / 100 ) * data.pos[n].disc2 / 100) * data.pos[n].disc2 / 100)
             })
           } else if (data.pos[n].productCode === null || data.pos[n].productName === null) {
-            var productId = data.pos[n].serviceCode
-            var productName = data.pos[n].serviceName
+            let productId = data.pos[n].serviceCode
+            let productName = data.pos[n].serviceName
             dataService.push({
               code: productId,
               name: productName,
@@ -298,7 +296,7 @@ export default {
       let newData = data.data
 
       if ( data.data != null ) {
-        var arrayProd
+        let arrayProd
         if ( JSON.stringify(payload.listByCode) == "[]" ) {
           arrayProd = payload.listByCode.slice()
         }
@@ -345,7 +343,7 @@ export default {
       let newData = data.data
 
       if ( data.data != null ) {
-        var arrayProd
+        let arrayProd
         if ( JSON.stringify(payload.listByCode) == "[]" ) {
           arrayProd = payload.listByCode.slice()
         }
@@ -389,14 +387,14 @@ export default {
     },
 
     *loadDataPos ({ payload }, { call, put }) {
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var arrayProd = dataPos.slice()
-      var curRecord = 0
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let arrayProd = dataPos.slice()
+      let curRecord = 0
 
-      var curCashierNo = localStorage.getItem('cashierNo')
-      var curShift = localStorage.getItem('cashierShift')
+      let curCashierNo = localStorage.getItem('cashierNo')
+      let curShift = localStorage.getItem('cashierShift')
 
-      var curItem
+      let curItem
       const dataCashier = yield call(getCashierNo)
       const dataCashierTrans = yield call(getCashierTrans, {cashierId: null, cashierNo: curCashierNo, shift: null, status: "O"})
 
@@ -408,10 +406,10 @@ export default {
       }
 
       if ( JSON.stringify(arrayProd) != "[]" ) {
-        for (var i in arrayProd) {
-          var disc1 = arrayProd[i].disc1
-          var disc2 = arrayProd[i].disc2
-          var disc3 = arrayProd[i].disc3
+        for (let i in arrayProd) {
+          let disc1 = arrayProd[i].disc1
+          let disc2 = arrayProd[i].disc2
+          let disc3 = arrayProd[i].disc3
 
           curRecord += 1
         }
@@ -653,61 +651,61 @@ export default {
     },
 
     *editPayment ({payload}, {put}) {
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var arrayProd = dataPos.slice()
-      var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
-      var Qty = arrayProd[payload.effectedRecord - 1].qty
-      var price = arrayProd[payload.effectedRecord - 1].price
-      var disc1 = arrayProd[payload.effectedRecord - 1].disc1
-      var disc2 = arrayProd[payload.effectedRecord - 1].disc2
-      var disc3 = arrayProd[payload.effectedRecord - 1].disc3
-      var discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
-      if ( payload.kodeUtil == 'discount' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let arrayProd = dataPos.slice()
+      let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      let Qty = arrayProd[payload.effectedRecord - 1].qty
+      let price = arrayProd[payload.effectedRecord - 1].price
+      let disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      let disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      let disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      if (payload.kodeUtil === 'discount') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
 
         arrayProd[payload.effectedRecord - 1].discount = payload.value
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
       }
-      else if ( payload.kodeUtil == 'disc1' ) {
-        var tmpDisc = (total * payload.value) / 100
+      else if (payload.kodeUtil === 'disc1') {
+        let tmpDisc = (total * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc1 = payload.value
         arrayProd[payload.effectedRecord - 1].disc2 = 0
         arrayProd[payload.effectedRecord - 1].disc3 = 0
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
       }
-      else if ( payload.kodeUtil == 'disc2' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
+      else if (payload.kodeUtil === 'disc2') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc2 = payload.value
         arrayProd[payload.effectedRecord - 1].disc3 = 0
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
       }
-      else if ( payload.kodeUtil == 'disc3' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
+      else if (payload.kodeUtil === 'disc3' ) {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc3 = payload.value
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
       }
-      else if ( payload.kodeUtil == 'quantity') {
-        var tmpQty = payload.value
-        var tmpDisc = ((tmpQty * price) * disc1) / 100
-        var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-        var tmpDiscount = (discount * tmpQty)
+      else if (payload.kodeUtil === 'quantity') {
+        let tmpQty = payload.value
+        let tmpDisc = ((tmpQty * price) * disc1) / 100
+        let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        let tmpDiscount = (discount * tmpQty)
         arrayProd[payload.effectedRecord - 1].qty = tmpQty
         arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
       }
-      else if ( payload.kodeUtil == 'Delete') {
+      else if (payload.kodeUtil === 'Delete') {
         console.log('Delete')
         console.log('effectedRecord', arrayProd[payload.effectedRecord - 1])
         Array.prototype.remove = function() {
-          var what, a = arguments, L = a.length, ax;
+          let what, a = arguments, L = a.length, ax
           while (L && this.length) {
             what = a[--L];
             while ((ax = this.indexOf(what)) !== -1) {
@@ -717,10 +715,10 @@ export default {
           return this;
         };
 
-        var ary = arrayProd;
+        let ary = arrayProd
         ary.remove(arrayProd[payload.effectedRecord - 1])
         arrayProd=[]
-        for (var n = 0;   n < ary.length; n++) {
+        for (let n = 0;   n < ary.length; n++) {
           arrayProd.push({
             no: n + 1,
             code: ary[n].code,
@@ -748,25 +746,25 @@ export default {
 
     *editService ({payload}, {put}) {
       console.log('payload:', payload)
-      var dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
-      var arrayProd = dataPos.slice()
-      var total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
-      var Qty = arrayProd[payload.effectedRecord - 1].qty
-      var price = arrayProd[payload.effectedRecord - 1].price
-      var disc1 = arrayProd[payload.effectedRecord - 1].disc1
-      var disc2 = arrayProd[payload.effectedRecord - 1].disc2
-      var disc3 = arrayProd[payload.effectedRecord - 1].disc3
-      var discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let arrayProd = dataPos.slice()
+      let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      let Qty = arrayProd[payload.effectedRecord - 1].qty
+      let price = arrayProd[payload.effectedRecord - 1].price
+      let disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      let disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      let disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
       if ( payload.kodeUtil == 'discount' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
 
         arrayProd[payload.effectedRecord - 1].discount = payload.value
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
       }
       else if ( payload.kodeUtil == 'disc1' ) {
-        var tmpDisc = (total * payload.value) / 100
+        let tmpDisc = (total * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc1 = payload.value
         arrayProd[payload.effectedRecord - 1].disc2 = 0
@@ -774,33 +772,33 @@ export default {
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
       }
       else if ( payload.kodeUtil == 'disc2' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc2 = payload.value
         arrayProd[payload.effectedRecord - 1].disc3 = 0
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
       }
       else if ( payload.kodeUtil == 'disc3' ) {
-        var tmpDisc = (total * disc1) / 100
-        var tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
 
         arrayProd[payload.effectedRecord - 1].disc3 = payload.value
         arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
       }
       else if ( payload.kodeUtil == 'quantity') {
-        var tmpQty = payload.value
-        var tmpDisc = ((tmpQty * price) * disc1) / 100
-        var tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
-        var tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-        var tmpDiscount = (discount * tmpQty)
+        let tmpQty = payload.value
+        let tmpDisc = ((tmpQty * price) * disc1) / 100
+        let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        let tmpDiscount = (discount * tmpQty)
         arrayProd[payload.effectedRecord - 1].qty = tmpQty
         arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
       }
       else if ( payload.kodeUtil == 'Delete') {
         Array.prototype.remove = function() {
-          var what, a = arguments, L = a.length, ax;
+          let what, a = arguments, L = a.length, ax;
           while (L && this.length) {
             what = a[--L];
             while ((ax = this.indexOf(what)) !== -1) {
@@ -809,10 +807,10 @@ export default {
           }
           return this;
         };
-        var ary = arrayProd;
+        let ary = arrayProd;
         ary.remove(arrayProd[payload.effectedRecord - 1])
         arrayProd=[]
-        for (var n = 0;   n < ary.length; n++) {
+        for (let n = 0;   n < ary.length; n++) {
           arrayProd.push({
             no: n + 1,
             code: ary[n].code,
@@ -840,14 +838,15 @@ export default {
     },
 
     *insertQueueCache ({payload}, {put}) {
-      var arrayProd = []
+      let arrayProd = []
 
       const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
       const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
       const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
 
-      var listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-      var memberInformation
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      let memberInformation
       if ( JSON.stringify(listByCode) == "[]" ) {
         memberInformation = listByCode.slice()
       }
@@ -863,6 +862,7 @@ export default {
 
       arrayProd.push({
         cashier_trans: cashier_trans,
+        service_detail: service_detail,
         memberCode: memberInfo.memberCode,
         memberName: memberInfo.memberName,
         point: memberInfo.point,
@@ -887,6 +887,7 @@ export default {
         if ( localStorage.getItem('queue1') === null ) {
           localStorage.setItem('queue1', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
@@ -901,6 +902,7 @@ export default {
         else if ( localStorage.getItem('queue2') === null ) {
           localStorage.setItem('queue2', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
@@ -915,6 +917,7 @@ export default {
         else if ( localStorage.getItem('queue3') === null ) {
           localStorage.setItem('queue3', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
@@ -936,15 +939,15 @@ export default {
     },
 
     *insertQueue ({ payload }, { call, put }) {
-      var dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
-      var arrayProd = dataPos.slice()
+      let dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
+      let arrayProd = dataPos.slice()
       console.log('arrayProd', dataPos,arrayProd)
 
       if ( JSON.stringify(arrayProd) != "[]" ) {
-        for (var i in arrayProd) {
-          var disc1 = arrayProd[i].disc1
-          var disc2 = arrayProd[i].disc2
-          var disc3 = arrayProd[i].disc3
+        for (let i in arrayProd) {
+          let disc1 = arrayProd[i].disc1
+          let disc2 = arrayProd[i].disc2
+          let disc3 = arrayProd[i].disc3
 
           if ( arrayProd[i].code != null ) {
             let dataStock = yield call(queryProductCode, arrayProd[i].code)
@@ -952,10 +955,10 @@ export default {
             let newDataStock = dataStock.data ? dataStock.data : validData.data
             arrayProd[i].price = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
             const sell = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
-            var tmpTotal = (arrayProd[i].qty * sell)
-            var tmpDisc = (tmpTotal * disc1) / 100
-            var tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            var tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
+            let tmpTotal = (arrayProd[i].qty * sell)
+            let tmpDisc = (tmpTotal * disc1) / 100
+            let tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
+            let tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
 
             arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
           }
@@ -982,9 +985,9 @@ export default {
   reducers: {
     querySuccess (state, action) {
       const { list, pagination, tmpList } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         list,
@@ -1033,9 +1036,9 @@ export default {
 
     queryServiceSuccess (state, action) {
       const { listService, pagination } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listService,
@@ -1049,9 +1052,9 @@ export default {
     querySuccessByCode (state, action) {
       const { listByCode, curRecord } = action.payload
 
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listByCode,
@@ -1062,9 +1065,9 @@ export default {
     queryServiceSuccessByCode (state, action) {
       const { listByCode, curRecord } = action.payload
 
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listByCode,
@@ -1074,9 +1077,9 @@ export default {
 
     queryGetMemberSuccess (state, action) {
       const { memberInformation } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         memberInformation,
@@ -1086,9 +1089,9 @@ export default {
 
     queryGetMembersSuccess (state, action) {
       const { memberInformation, tmpMemberList } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listMember: memberInformation,
@@ -1098,9 +1101,9 @@ export default {
 
     queryGetServicesSuccess (state, action) {
       const { serviceInformation, tmpServiceList } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listService: serviceInformation,
@@ -1110,9 +1113,9 @@ export default {
 
     queryGetMechanicSuccess (state, action) {
       const { mechanicInformation } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         mechanicInformation,
@@ -1121,9 +1124,9 @@ export default {
 
     queryGetMechanicsSuccess (state, action) {
       const { mechanicInformation, tmpMechanicList } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
       return { ...state,
         listMechanic: mechanicInformation,
@@ -1133,9 +1136,9 @@ export default {
 
     queryGetProductsSuccess (state, action) {
       const { productInformation, tmpProductList } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
       return { ...state,
         listProduct: productInformation,
         tmpProductList: tmpProductList,
@@ -1144,9 +1147,9 @@ export default {
 
     chooseMemberUnit (state, action) {
       const { policeNo } = action.payload
-      var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var a = dataPos
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
       return { ...state,
         memberUnitInfo: { unitNo: policeNo },
         visiblePopover: false,
@@ -1178,9 +1181,9 @@ export default {
       if ( !state.dataPosLoaded ) {
         localStorage.setItem('cashier_trans', action.payload.arrayProd)
 
-        var dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-        var a = dataPos
-        var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+        let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+        let a = dataPos
+        let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
 
         return { ...state,
           dataPosLoaded: true,
@@ -1335,34 +1338,34 @@ export default {
     },
 
     setCurTotal (state, action) {
-      var product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      var service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
-      var dataPos = product.concat(service)
-      var a = dataPos
-      var curRecord = a.reduce( function(cnt,o){ return cnt + 1; }, 0)
-      var grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-      var totalDiscount = a.reduce( function(cnt,o){ return cnt + parseInt(o.discount); }, 0)
-      var totalDisc1 =  a.reduce( function(cnt,o){
-                                    var tmpTotal = o.qty * o.price
+      let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let dataPos = product.concat(service)
+      let a = dataPos
+      let curRecord = a.reduce( function(cnt,o){ return cnt + 1; }, 0)
+      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let totalDiscount = a.reduce( function(cnt,o){ return cnt + parseInt(o.discount); }, 0)
+      let totalDisc1 =  a.reduce( function(cnt,o){
+                                    let tmpTotal = o.qty * o.price
                                     return cnt + ((tmpTotal * o.disc1) / 100);
                                   }, 0)
 
-      var totalDisc2 =  a.reduce( function(cnt,o){
-                                    var tmpTotal = o.qty * o.price
-                                    var tmpDisc1 = ((tmpTotal * o.disc1) / 100)
+      let totalDisc2 =  a.reduce( function(cnt,o){
+                                    let tmpTotal = o.qty * o.price
+                                    let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
                                     return cnt + (((tmpTotal - tmpDisc1) * o.disc2) / 100);
                                   }, 0)
-      var totalDisc3 =  a.reduce( function(cnt,o){
-                                    var tmpTotal = o.qty * o.price
-                                    var tmpDisc1 = ((tmpTotal * o.disc1) / 100)
-                                    var tmpDisc2 = (((tmpTotal - tmpDisc1) * o.disc2) / 100)
+      let totalDisc3 =  a.reduce( function(cnt,o){
+                                    let tmpTotal = o.qty * o.price
+                                    let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
+                                    let tmpDisc2 = (((tmpTotal - tmpDisc1) * o.disc2) / 100)
                                     return cnt + (((tmpTotal - tmpDisc1 - tmpDisc2) * o.disc3) / 100);
                                   }, 0)
 
-      var ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
+      let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
       //Ganti 100 dengan Jumlah Pembulatan yang diinginkan
-      var selisih = 100 - parseInt(ratusan)
-      var curRounding
+      let selisih = 100 - parseInt(ratusan)
+      let curRounding
 
       if ( selisih > 50 ) {
         curRounding = parseInt(ratusan) * -1
@@ -1391,7 +1394,7 @@ export default {
     onMemberSearch (state, action) {
       const { searchText, tmpMemberList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
       console.log('tmpMemberList')
       newData = tmpMemberList.map((record) => {
         const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
@@ -1408,7 +1411,7 @@ export default {
     onMechanicSearch (state, action) {
       const { searchText, tmpMechanicList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
       console.log('tmpMechanicList')
       newData = tmpMechanicList.map((record) => {
         const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
@@ -1425,7 +1428,7 @@ export default {
     onProductSearch (state, action) {
       const { searchText, tmpProductList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
       console.log('tmpProductList')
       newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)
@@ -1442,7 +1445,7 @@ export default {
     onReset (state, action) {
       const { searchText, tmpList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpList.map((record) => {
         const match = record.memberName.match(reg)
@@ -1460,7 +1463,7 @@ export default {
     onServiceSearch (state, action) {
       const { searchText, tmpServiceList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
       newData = tmpServiceList.map((record) => {
         const match = record.serviceName.match(reg) || record.serviceCode.match(reg)
         if (!match) {
@@ -1477,7 +1480,7 @@ export default {
     onSearch (state, action) {
       const { searchText, tmpList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpList.map((record) => {
         const match = record.productName.match(reg)
@@ -1495,7 +1498,7 @@ export default {
     onMemberReset (state, action) {
       const { searchText, tmpMemberList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpMemberList.map((record) => {
         const match = record.memberName.match(reg)
@@ -1513,7 +1516,7 @@ export default {
     onMechanicReset (state, action) {
       const { searchText, tmpMechanicList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpMechanicList.map((record) => {
         const match = record.employeeName.match(reg)
@@ -1531,7 +1534,7 @@ export default {
     onServiceReset (state, action) {
       const { searchText, tmpServiceList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpServiceList.map((record) => {
         const match = record.serviceName.match(reg)
@@ -1549,7 +1552,7 @@ export default {
     onProductReset (state, action) {
       const { searchText, tmpProductList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
-      var newData
+      let newData
 
       newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg)
@@ -1575,9 +1578,11 @@ export default {
     },
 
     changeQueue (state, action) {
-      var listQueue = (localStorage.getItem('queue' + action.payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + action.payload.queue)))
-
+      let listQueue = (localStorage.getItem('queue' + action.payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + action.payload.queue)))
       return { ...state, listQueue: listQueue, curQueue: action.payload.queue }
-    }
-  }
+    },
+    setListPaymentDetail (state, action) {
+      return { ...state, listPaymentDetail: { id: action.payload.transNo } }
+    },
+  },
 }

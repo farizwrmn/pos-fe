@@ -12,7 +12,7 @@ export async function query (params) {
 }
 
 export async function queryProductByCode (params) {
-  let url = `${stock}/${params.replace(/\//g, "%2F")}`
+  let url = `${stock}/${encodeURIComponent(params)}`
   console.log('url', url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -23,7 +23,7 @@ export async function queryProductByCode (params) {
 }
 
 export async function add (params) {
-  let url = params.id ? stock + '/' + params.id.replace(/\//g, "%2F") : stock
+  let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -35,8 +35,8 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  let url = params.id ? stock + '/' + params.id.replace(/\//g, "%2F") : stock
-  console.log('url', url)
+  let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
+  console.log('editStock', url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -48,7 +48,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  let url = params.id ? stock + '/' + params.id : stock
+  let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

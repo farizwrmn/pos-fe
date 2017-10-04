@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button, Row, Col, Modal } from 'antd'
+import { Table, Button, Row, Col, Modal, Icon } from 'antd'
 import moment from 'moment'
 import Filter from './Filter'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
@@ -11,27 +11,27 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { saveAs } from 'file-saver'
 
 const warning = Modal.warning
+const ButtonGroup = Button.Group
 
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }) => {
-  var qtyTotal = list.reduce(function(cnt, o) { return cnt + o.Qty }, 0)
-  var grandTotal = list.reduce(function(cnt, o) { return cnt + o.Total }, 0)
-  var discountTotal = list.reduce(function(cnt, o) { return cnt + o.discountTotal }, 0)
-  var dppTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
-  var nettoTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
+const Browse = ({ list, user, storeInfo, productCode, fromDate, toDate, onListReset, ...browseProps }) => {
+  let qtyTotal = list.reduce(function(cnt, o) { return cnt + o.Qty }, 0)
+  let grandTotal = list.reduce(function(cnt, o) { return cnt + o.Total }, 0)
+  let discountTotal = list.reduce(function(cnt, o) { return cnt + o.discountTotal }, 0)
+  let dppTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
+  let nettoTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS';
-  workbook.created = new Date(1985, 8, 30);
-  workbook.lastPrinted = new Date(2016, 9, 27);
+  workbook.creator = 'dmiPOS'
+  workbook.created = new Date()
   workbook.views = [
     {
       x: 0, y: 0, width: 10000, height: 20000, firstSheet: 0, activeTab: 1, visibility: 'visible',
     },
   ]
-  var sheet = workbook.addWorksheet('POS 1',
+  const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize: 9, orientation: 'portrait' } })
 
   const createPdfLineItems = (e) => {
@@ -66,11 +66,11 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
     }
     let ppn = 0
     let count = 1
-    for (var key in rows) {
+    for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
-        var data = rows[key]
-        var totalDisc = (data.price * data.qty) - data.total
-        var row = new Array()
+        let data = rows[key]
+        let totalDisc = (data.price * data.qty) - data.total
+        let row = new Array()
         row.push( { text: count, alignment: 'center', fontSize: 11 } );
         row.push( { text: data.productCode.toString(), alignment: 'left', fontSize: 11 } );
         row.push( { text: data.Qty.toString(), alignment: 'right', fontSize: 11 } );
@@ -129,9 +129,9 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         family: 4,
         size: 10,
       }
-      for (var n = 0; n <= list.length; n++) {
-        for (var m = 65; m < 74; m++) {
-          var o = 9 + n
+      for (let n = 0; n <= list.length; n++) {
+        for (let m = 65; m < 74; m++) {
+          let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
             family: 4,
@@ -139,8 +139,8 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
           }
         }
       }
-      var header = ['NO.', '', 'PRODUCT', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
-      var footer = [
+      let header = ['NO.', '', 'PRODUCT', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
+      let footer = [
         '',
         '',
         'GRAND TOTAL',
@@ -150,9 +150,9 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
         0,
         `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
-      for (var m = 65; m < 74; m++) {
-        var o = 7
-        var count = m - 65
+      for (let m = 65; m < 74; m++) {
+        let o = 7
+        let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
@@ -162,8 +162,8 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
       }
 
-      for (var n = 0; n < list.length; n++) {
-        var m = 9 + n
+      for (let n = 0; n < list.length; n++) {
+        let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n+1)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`B${m}`).value = '.'
@@ -184,9 +184,9 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (var m = 65; m < 74; m++) {
-        var n = list.length + 10
-        var count = m - 65
+      for (let m = 65; m < 74; m++) {
+        let n = list.length + 10
+        let count = m - 65
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
           family: 4,
@@ -204,20 +204,20 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F2').value = 'LAPORAN  PENJUALAN PER PART'
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F3').value = `${localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company'))[0].miscName : ''}`
+      sheet.getCell('F3').value = `${storeInfo.name}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F4').value = `PERIODE : ${fromDate} TO ${toDate}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       sheet.getCell('J5').value = `PRODUCT CODE : ${productCode}`
       workbook.xlsx.writeBuffer().then(function (data) {
-        var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `POS-summary${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
   const handlePdf = () => {
-    var body = createPdfLineItems(list)
-    var docDefinition = {
+    let body = createPdfLineItems(list)
+    let docDefinition = {
       pageSize: 'A4',
       pageOrientation: 'landscape',
       pageMargins: [50, 130, 50, 60],
@@ -226,23 +226,7 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
           {
             stack: [
               {
-                stack: [
-                  {
-                    text: company[0].miscName,
-                    fontSize: 11,
-                    alignment: 'left',
-                  },
-                  {
-                    text: company[0].miscDesc,
-                    fontSize: 11,
-                    alignment: 'left',
-                  },
-                  {
-                    text: company[0].miscVariable,
-                    fontSize: 11,
-                    alignment: 'left',
-                  },
-                ],
+                stack: storeInfo.stackHeader01,
               },
               {
                 text: 'LAPORAN REKAP PENJUALAN',
@@ -295,13 +279,19 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
             {
               columns: [
                 {
-                  text: `Date: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                  text: `Tanggal cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
                   margin: [0, 0, 0, 0],
                   fontSize: 9,
                   alignment: 'center',
                 },
                 {
-                  text: `page: ${currentPage.toString()} of ${pageCount}`,
+                  text: `Dicetak oleh: ${user.username}`,
+                  margin: [0, 0, 0, 0],
+                  fontSize: 9,
+                  alignment: 'center',
+                },
+                {
+                  text: `halaman: ${currentPage.toString()} of ${pageCount}`,
                   fontSize: 9,
                   margin: [0, 0, 0, 0],
                   alignment: 'center',
@@ -377,15 +367,36 @@ const Browse = ({ list, company, productCode, fromDate, toDate, ...browseProps }
       width: '100px',
     },
   ]
+
+  const handleReset = () => {
+    onListReset()
+  }
   return (
     <div>
       <Row>
-        <Col xs={24} sm={24} md={15} lg={15} xl={15} style={{ marginBottom: '10px' }}>
+        <Col span={12}>
           <Filter {...browseProps} />
         </Col>
-        <Col xs={24} sm={24} md={9} lg={9} xl={9}>
-          <Button size="large" icon="file-excel" onClick={() => handleExcel()} style={{ backgroundColor: '#ffffff', borderColor: '#207347', borderWidth: '3px',color: '#000000', height: '42px', width: '42px', fontSize: 'x-large', float: 'right', marginBottom: '10px' }} />
-          <Button size="large" icon="file-pdf" onClick={() => handlePdf()} style={{ backgroundColor: '#000000', borderColor: '#ff0000', borderWidth: '3px', color: 'white', height: '42px', width: '42px', fontSize: 'x-large', float: 'right', marginBottom: '10px' }} />
+        <Col span={6} offset={6} style={{ textAlign: 'right'}}>
+          <Button type="dashed" size="large"
+                  className="button-width02 button-extra-large bgcolor-grey"
+                  onClick={() => handleReset()}
+
+          >
+            <Icon type="rollback" className="icon-large"/>
+          </Button>
+          <Button type="dashed" size="large"
+                  className="button-width02 button-extra-large bgcolor-blue"
+                  onClick={() => handlePdf()}
+          >
+            <Icon type="file-pdf" className="icon-large"/>
+          </Button>
+          <Button type="dashed" size="large"
+                  className="button-width02 button-extra-large bgcolor-green"
+                  onClick={() => handleExcel()}
+          >
+            <Icon type="file-excel" className="icon-large"/>
+          </Button>
         </Col>
       </Row>
       <Table

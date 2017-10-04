@@ -24,7 +24,6 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
     itemEmployee.employeeId=item.picId,
     itemEmployee.employeeName=item.pic
   }
-  console.log('date', item.transDate)
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {

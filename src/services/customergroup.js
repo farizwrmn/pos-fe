@@ -13,7 +13,7 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  const url = params.groupCode ? `${customergroup}/${params.groupCode}` : customergroup
+  const url = params.groupCode ? `${customergroup}/${encodeURIComponent(params.groupCode)}` : customergroup
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -25,7 +25,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  const url = params.groupCode ? `${customergroup}/${params.groupCode}` : customergroup
+  const url = params.groupCode ? `${customergroup}/${encodeURIComponent(params.groupCode)}` : customergroup
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -37,7 +37,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  const url = params.id.groupCode ? `${customergroup}/${params.id.groupCode}` : customergroup
+  const url = params.id.groupCode ? `${customergroup}/${encodeURIComponent(params.id.groupCode)}` : customergroup
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

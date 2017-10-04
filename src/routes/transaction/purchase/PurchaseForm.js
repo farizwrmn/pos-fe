@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {DatePicker, Form, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon} from 'antd'
+import { DatePicker, Form, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
@@ -13,27 +13,17 @@ const Option = Select.Option
 const ButtonGroup = Button.Group
 
 const formItemLayout = {
-  labelCol: {span: 11},
-  wrapperCol: {span: 12},
-  style: {marginBottom: 5},
+  labelCol: { span: 11 },
+  wrapperCol: { span: 12 },
+  style: { marginBottom: 5 },
 }
 const formItemLayout1 = {
-  labelCol: {span: 10},
-  wrapperCol: {span: 11},
+  labelCol: { span: 10 },
+  wrapperCol: { span: 11 },
 }
 const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
                         modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                         onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...purchaseProps}) => {
-  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-  let g = dataPurchase
-  let grandTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
-  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
-  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
-  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
-  let discPercent = ((curDiscPercent * grandTotal) / 100)
-  let discNominal = curDiscNominal * totalQty
-  let totalDisc = discNominal + discPercent
+                         onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps}) => {
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -55,15 +45,26 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
       resetFields()
     })
   }
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+  let g = dataPurchase
+  let nettoTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
+  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
+  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
+  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  let discPercent = g.reduce( function(cnt,o){ return cnt + (o.disc1 * o.qty * o.price / 100) }, 0)
+  let discNominal = g.reduce( function(cnt,o){ return cnt + o.discount * o.qty  }, 0)
+  let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
+  let grandTotal = g.reduce( function(cnt,o){ return cnt + (o.price * o.qty) }, 0) - totalDisc
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
     border: 0,
   }
   const hdlDateChange = (e) => {
-    var a = e.format('YYYY-MM-DD')
+    let a = e.format('YYYY-MM-DD')
     localStorage.setItem('setDate', a)
-    var b = localStorage.getItem('setDate')
+    const b = localStorage.getItem('setDate')
     onChangeDate(b)
   }
 
@@ -76,9 +77,9 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
   }
 
   const onChange = (e) => {
-    const {value} = e.target
-    var a = localStorage.getItem('setDate')
-    var add = moment(a,'YYYY-MM-DD').add(value, 'd')
+    const { value } = e.target
+    let a = localStorage.getItem('setDate')
+    let add = moment(a, 'YYYY-MM-DD').add(value, 'd')
     onChangeDate(add.format('YYYY-MM-DD'))
   }
   const hdlSearch = (e) => {
@@ -94,19 +95,19 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
       title: 'ID',
       dataIndex: 'supplierCode',
       key: 'supplierCode',
-      width: '10%'
+      width: '10%',
     },
     {
       title: 'Name',
       dataIndex: 'supplierName',
       key: 'supplierName',
-      width: '45%'
+      width: '45%',
     },
     {
       title: 'Address',
       dataIndex: 'address01',
       key: 'address01',
-      width: '45%'
+      width: '45%',
     },
   ]
   const handleMenuClick = (record) => {
@@ -119,14 +120,14 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
     <Table
       bordered
       pagination={false}
-      scroll={{x: 500, y: 100}}
+      scroll={{ x: 500, y: 100 }}
       columns={columns}
       simple
       dataSource={listSupplier}
       size="small"
       pageSize={5}
       rowKey={record => record.productCode}
-      onRowClick={(record) => handleMenuClick(record)}
+      onRowClick={_record => handleMenuClick(_record)}
     />
   )
   const hdlPPN = (e) => {
@@ -136,10 +137,9 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
     localStorage.removeItem('product_detail')
     onResetBrowse()
   }
-  const a = localStorage.getItem('setDate') ? moment(localStorage.getItem('setDate')).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
 
   return (
-    <Form style={{padding: 3}}>
+    <Form style={{ padding: 3 }}>
       <Row>
         <Col xs={24} sm={24} md={10} lg={12} xl={14}>
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1', '2']}>
@@ -153,11 +153,11 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         message: 'Required',
                         pattern: /^[a-z0-9/-]{6,25}$/i,
                       }],
-                    })(<Input maxLength={25}/>)}
+                    })(<Input maxLength={25} />)}
                   </FormItem>
                   <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('taxType', {
-                      initialValue: 'E',
+                      initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -174,7 +174,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         required: false,
                         message: 'Required',
                       }],
-                    })(<InputNumber onChange={(value) => hdlChangePercent(value)} size="large" min={0} max={100} step={0.1} defaultValue={0}/>)}
+                    })(<InputNumber onChange={_value => hdlChangePercent(_value)} size="large" min={0} max={100} step={0.1} defaultValue={0} />)}
                   </FormItem>
                   <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discNominal', {
@@ -183,7 +183,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         required: false,
                         message: 'Required',
                       }],
-                    })(<InputNumber defaultValue={0} step={500} min={0} onChange={(value) => hdlChangeNominal(value)}/>)}
+                    })(<InputNumber defaultValue={0} step={500} min={0} onChange={_value => hdlChangeNominal(_value)} />)}
                   </FormItem>
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
@@ -193,7 +193,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         required: true,
                         message: 'Required',
                       }],
-                    })(<DatePicker onChange={(value) => hdlDateChange(value)}/>)}
+                    })(<DatePicker onChange={_value => hdlDateChange(_value)} />)}
                   </FormItem>
                   <FormItem label="Tempo" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('tempo', {
@@ -203,10 +203,10 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         message: 'Required',
                         pattern: /^\d+$/gi,
                       }],
-                    })(<Input maxLength={5} onChange={(value) => onChange(value)}/>)}
+                    })(<Input maxLength={5} onChange={_value => onChange(_value)} />)}
                   </FormItem>
                   <FormItem label="Due Date" hasFeedback {...formItemLayout}>
-                    <Input disabled value={date}/>
+                    <Input disabled value={date} />
                   </FormItem>
                   <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('invoiceType', {
@@ -214,7 +214,7 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
                         required: true,
                         message: 'Required',
                       }],
-                    })((<Select onChange={(value) => hdlPPN(value)}>
+                    })((<Select>
                       <Option value="C">CASH</Option>
                       <Option value="K">KREDIT</Option>
                     </Select>))}
@@ -228,38 +228,36 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1']}>
             <Panel header="Search Supplier" key="1" style={customPanelStyle}>
               <FormItem label="Search" {...formItemLayout}>
-                <div style={{marginLeft: 20, clear: 'both', whiteSpace: 'nowrap'}}>
-                  <Popover placement="bottomLeft" content={contentPopover} trigger={"focus"}>
-                    <Search onEnter={value => hdlSearch(value)} onSearch={value => hdlSearch(value)}
-                            onFocus={() => hdlGetSupplier()}/>
+                <div style={{ marginLeft: 20, clear: 'both', whiteSpace: 'nowrap' }}>
+                  <Popover placement="bottomLeft" content={contentPopover} trigger={'focus'}>
+                    <Search onEnter={value => hdlSearch(value)} onSearch={value => hdlSearch(value)} onFocus={() => hdlGetSupplier()} />
                   </Popover>
                 </div>
               </FormItem>
               <FormItem label="id" hasfeedback {...formItemLayout}>
-                <Input disabled value={supplierInformation ? supplierInformation.id : null}/>
+                <Input disabled value={supplierInformation ? supplierInformation.id : null} />
               </FormItem>
               <FormItem label="Supplier Name" hasfeedback {...formItemLayout}>
-                <Input disabled value={supplierInformation ? supplierInformation.supplierName : null}/>
+                <Input disabled value={supplierInformation ? supplierInformation.supplierName : null} />
               </FormItem>
               <FormItem label="Address" hasfeedback {...formItemLayout}>
-            <TextArea value={supplierInformation ? supplierInformation.address01 : null}
-                      autosize={{minRows: 2, maxRows: 6}} disabled/>
+                <TextArea value={supplierInformation ? supplierInformation.address01 : null} autosize={{ minRows: 2, maxRows: 6 }} disabled />
               </FormItem>
             </Panel>
           </Collapse>
         </Col>
       </Row>
-      <Row style={{padding: 1}}>
+      <Row style={{ padding: 1 }}>
         <Col span={24}>
           <ButtonGroup size="large">
             <Button type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
-            <Button type="primary"><Icon type="plus-square-o"/></Button>
+            <Button type="primary"><Icon type="plus-square-o" /></Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
-          <Button style={{marginLeft: 150}} type="danger" size="large" onClick={resetProduct}>Reset</Button>
+          <Button style={{ marginLeft: 150 }} type="danger" size="large" onClick={resetProduct}>Reset</Button>
         </Col>
       </Row>
-      <Browse {...purchaseProps}/>
+      <Browse {...purchaseProps} />
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
       <Row>
         <Col span="12">
@@ -274,6 +272,9 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
           </FormItem>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={totalDisc} />
+          </FormItem>
+          <FormItem label="Netto Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={nettoTotal} />
           </FormItem>
         </Col>
       </Row>

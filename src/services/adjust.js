@@ -48,7 +48,7 @@ export async function createDetail (params) {
 }
 
 export async function edit (params) {
-  let url = params.id ? `${adjust}/${params.id}` : null
+  let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -62,7 +62,7 @@ export async function edit (params) {
 
 export async function remove (params) {
   console.log('delete-params:');
-  let url = params.id ? `${adjust}/${params.id}` : null
+  let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

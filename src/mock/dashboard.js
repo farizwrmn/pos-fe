@@ -9,9 +9,9 @@ const Dashboard = Mock.mock({
   'sales|8': [
     {
       'name|+1': 2008,
-      'Clothes|200-500': 1,
-      'Food|180-400': 1,
-      'Electronics|300-550': 1,
+      'Battery|200-500': 1,
+      'Filter|180-400': 1,
+      'Oil|300-550': 1,
     },
   ],
   cpu: {

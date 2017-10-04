@@ -54,7 +54,6 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const { list } = yield call(menusService.query)
-        console.log('user',user)
         const { permissions } = user
 
         let menu = list
@@ -76,6 +75,22 @@ export default {
         let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02 }
+        storeInfo.stackHeader01 = [{
+            text: name,
+            fontSize: 11,
+            alignment: 'left',
+          },
+          {
+            text: address01,
+            fontSize: 11,
+            alignment: 'left',
+          },
+          {
+            text: address02,
+            fontSize: 11,
+            alignment: 'left',
+          },
+        ]
 
         if(storeInfo != []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
