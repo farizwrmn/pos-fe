@@ -32,6 +32,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     visiblePopover,
     curBarcode,
     curQty,
+    totalItem,
     curTotal,
     listByCode,
     kodeUtil,
@@ -172,17 +173,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       type: 'pos/showPaymentModal',
       payload: {
         item: record,
-        modalType: 'modalPayment'
+        modalType: 'modalPayment',
       },
     })
   }
-
   const modalEditService = (record) => {
     dispatch({
       type: 'pos/showServiceListModal',
       payload: {
         item: record,
-        modalType: 'modalService'
+        totalItem: record.total,
+        modalType: 'modalService',
       },
     })
   }
@@ -417,6 +418,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     location: location,
     loading: loading,
     pos: pos,
+    totalItem: totalItem,
     item: itemPayment,
     visible: modalPaymentVisible,
     maskClosable: false,
@@ -425,13 +427,19 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({type: 'pos/hidePaymentModal'})
     },
     onChooseItem (data) {
-      dispatch({ type: 'pos/editPayment', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
-      dispatch({type: 'pos/hidePaymentModal'})
+      dispatch({ type: 'pos/paymentEdit', payload: data })
+    },
+    onChangeTotalItem (total) {
+      dispatch({
+        type: 'pos/setTotalItem',
+        payload: total,
+      })
     },
   }
   const ModalServiceListProps = {
     location: location,
     loading: loading,
+    totalItem: totalItem,
     pos: pos,
     item: itemService,
     visible: modalServiceListVisible,
@@ -441,9 +449,14 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({type: 'pos/hideServiceListModal'})
     },
     onChooseItem (data) {
-      console.log('Service')
-      dispatch({ type: 'pos/editService', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
-      dispatch({type: 'pos/hideServiceListModal'})
+      dispatch({ type: 'pos/serviceEdit', payload: data })
+      dispatch({ type: 'pos/hideServiceListModal' })
+    },
+    onChangeTotalItem (total) {
+      dispatch({
+        type: 'pos/setTotalItem',
+        payload: total,
+      })
     },
   }
 
@@ -456,7 +469,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
-      console.log('modalMechanicProps');
       localStorage.removeItem('mechanic')
       let arrayProd = []
       arrayProd.push({
@@ -652,7 +664,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           })
         }
       } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
-        console.log('quantity value', value)
         if (value) {
           dispatch({
             type: 'pos/editPayment',
@@ -706,7 +717,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           },
         })
       } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[72]) {// shortcut untuk Help (Ctrl + ALT + H)
-        console.log('shortcut key help')
         dispatch({ type: 'app/shortcutKeyShow' })
       } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[67]) {// shortcut mechanic (Ctrl + Alt + C)
         dispatch({
@@ -725,7 +735,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[51]) { // shortcut discount 3 (Ctrl + Shift + 3)
         handleDiscount(3, value)
       } else if (keyShortcut[17] && keyShortcut[75]) { // shortcut modified quantity (Ctrl + Shift + Q)
-        console.log('handle quantity')
         handleDiscount(5, value)
       } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[76]) { // shortcut untuk Closing Cashier (Ctrl + Shift + L)
         let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
@@ -863,7 +872,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         }
       }
     } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
-      console.log('F2', kodeUtil)
       if (kodeUtil === 'barcode') {
         dispatch({
           type: 'pos/setUtil',

@@ -1,13 +1,13 @@
 import modelExtend from 'dva-model-extend'
-import {query, createDetail, create, edit, remove} from '../services/adjust'
-import {pageModel} from './common'
-import { routerRedux } from 'dva/router'
-import {query as queryProducts} from '../services/stock'
-import {query as queryTransType} from '../services/transType'
-import {query as queryEmployee, queryByCode as queryEmployeeId} from '../services/employees'
-import { queryModeName as miscQuery } from '../services/misc'
-import {Modal} from 'antd'
+import { Modal } from 'antd'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
+import { query, createDetail, create, edit, remove } from '../services/adjust'
+import { pageModel } from './common'
+import { query as queryProducts } from '../services/stock'
+import { query as queryTransType } from '../services/transType'
+import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/employees'
+import { queryModeName as miscQuery } from '../services/misc'
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -37,7 +37,7 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup ({dispatch, history}) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/transaction/adjust') {
           dispatch({
@@ -60,7 +60,7 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({payload = {}}, {call, put}) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(queryProducts, payload)
       if (data) {
         yield put({
@@ -78,7 +78,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryEmployee ({payload}, {call, put}) {
+    * queryEmployee ({ payload }, { call, put }) {
       console.log('payload', payload)
       let data = ''
       try {
@@ -96,7 +96,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryAdjust ({payload}, {call, put}) {
+    * queryAdjust ({ payload }, { call, put }) {
       let data = []
       try {
         data = yield call(query, payload)
@@ -148,33 +148,33 @@ export default modelExtend(pageModel, {
       yield put({ type: 'SuccessTransNo', payload: transNo })
     },
 
-    *'delete' ({payload}, {call, put, select}) {
+    * 'delete' ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
-      const {selectedRowKeys} = yield select(_ => _.purchaseId)
+      const { selectedRowKeys } = yield select(_ => _.purchaseId)
       if (data.success) {
-        yield put({type: 'updateState', payload: {selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload)}})
-        yield put({type: 'query'})
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    *'deleteBatch' ({payload}, {call, put}) {
+    * 'deleteBatch' ({payload}, {call, put}) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({type: 'updateState', payload: {selectedRowKeys: []}})
-        yield put({type: 'query'})
+        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    * add ({payload}, {call, put}) {
+    * add ({ payload }, { call, put }) {
       const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       console.log('dataAdj', dataAdj)
       if (dataAdj.length > 0) {
         let arrayProd = []
-        for (let n = 0; n < dataAdj.length; n++) {
+        for (let n = 0; n < dataAdj.length; n += 1) {
           arrayProd.push({
             transNo: payload.transNo,
             transType: payload.transType,
@@ -205,47 +205,47 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({payload}, {select, call, put}) {
+    *edit ({ payload }, { select, call, put }) {
       const stockCode = yield select(({purchase}) => purchase.currentItem.transNo)
-      const newStock = {...payload, stockCode}
+      const newStock = { ...payload, stockCode }
       const data = yield call(edit, newStock)
       if (data.success) {
-        yield put({type: 'modalHide'})
-        yield put({type: 'query'})
+        yield put({ type: 'modalHide' })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    * adjustEdit ({payload}, {call, put}) {
+    * adjustEdit ({ payload }, { put }) {
       console.log('adjustEdit', payload)
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       let arrayProd = dataPos.slice()
-      arrayProd[payload.Record - 1].price = parseInt(payload.price)
-      arrayProd[payload.Record - 1].In = parseInt(payload.InQty)
-      arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty)
+      arrayProd[payload.Record - 1].price = parseInt(payload.price, 10)
+      arrayProd[payload.Record - 1].In = parseInt(payload.InQty, 10)
+      arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty, 10)
       localStorage.setItem('adjust', JSON.stringify(arrayProd))
-      yield put ({ type:'modalEditHide' })
+      yield put({ type:'modalEditHide' })
     },
 
-    * adjustDelete ({payload}, {call, put}) {
+    * adjustDelete ({ payload }, { call, put }) {
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function() {
-        let what, a = arguments, L = a.length, ax;
+        let what, a = arguments, L = a.length, ax
         while (L && this.length) {
-          what = a[--L];
+          what = a[--L]
           while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
+            this.splice(ax, 1)
           }
         }
-        return this;
-      };
+        return this
+      }
 
-      let ary = arrayProd;
+      let ary = arrayProd
       ary.remove(arrayProd[payload.Record - 1])
-      arrayProd=[]
-      for (let n = 0;   n < ary.length; n++) {
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
         arrayProd.push({
           no: n + 1,
           code: ary[n].code,
@@ -259,7 +259,7 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
 
-    *getProducts ({payload}, {call, put}) {
+    *getProducts ({ payload }, { call, put }) {
       const data = yield call(queryProducts, payload)
       let newData = payload ? data.product : data.data
       if (data.success) {
@@ -270,23 +270,22 @@ export default modelExtend(pageModel, {
             tmpProductList: newData,
           },
         })
-      }
-      else {
+      } else {
         const modal = Modal.warning({
           title: 'Warning',
           content: 'Product Not Found...!',
         })
         setTimeout(() => modal.destroy(), 1000)
-        //throw data
+        // throw data
       }
     },
-    * loadDataAdjust ({payload}, {call, put}) {
+    * loadDataAdjust ({ payload }, { call, put }) {
       const dataAdjust = yield call(queryTransType)
       const dataEmployee = yield call(queryEmployee)
 
       yield put({
         type: 'setTransType',
-        payload: {listType: dataAdjust.data, listEmployee: dataEmployee.data}
+        payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data },
       })
     },
   },
@@ -307,7 +306,7 @@ export default modelExtend(pageModel, {
     },
 
     queryEmployeeSuccess (state, action) {
-      const {item} = action.payload
+      const { item } = action.payload
       return {
         ...state,
         itemEmployee: item,
@@ -315,7 +314,7 @@ export default modelExtend(pageModel, {
     },
 
     queryAdjustSuccess (state, action) {
-      const {item} = action.payload
+      const { item } = action.payload
       return {
         ...state,
         listAdjust: item,
@@ -323,11 +322,11 @@ export default modelExtend(pageModel, {
     },
 
     queryGetProductsSuccess (state, action) {
-      const {productInformation, tmpProductList} = action.payload
+      const { productInformation, tmpProductList } = action.payload
       let dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
       let a = dataPurchase
       let grandTotal = a.reduce(function (cnt, o) {
-        return cnt + o.total;
+        return cnt + o.total
       }, 0)
       return {
         ...state,
@@ -337,7 +336,7 @@ export default modelExtend(pageModel, {
       }
     },
     onProductSearch (state, action) {
-      const {searchText, tmpProductData} = action.payload
+      const { searchText, tmpProductData } = action.payload
       const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpProductData.map((record) => {
@@ -357,7 +356,7 @@ export default modelExtend(pageModel, {
       return {...state, listProduct: newData}
     },
     setTransType (state, action) {
-      const {listType, listEmployee} = action.payload
+      const { listType, listEmployee } = action.payload
 
       let DICT_FIXED = (function () {
         let fixed = []
@@ -381,7 +380,7 @@ export default modelExtend(pageModel, {
         }
         return fixed
       }())
-      return {...state, listType: DICT_FIXED, listEmployee: EMPLOYEE_FIXED}
+      return { ...state, listType: DICT_FIXED, listEmployee: EMPLOYEE_FIXED }
     },
     SuccessData (state) {
       localStorage.removeItem('adjust')
@@ -394,13 +393,13 @@ export default modelExtend(pageModel, {
       return { ...state, ...payload, modalVisible: false, disableItem: false, modalProductVisible: true }
     },
     onInputChange (state, action) {
-      return {...state, searchText: action.payload.searchText, popoverVisible: true}
+      return { ...state, searchText: action.payload.searchText, popoverVisible: true }
     },
-    hidePopover (state, action) {
-      return {...state, searchText: '', popoverVisible: false}
+    hidePopover (state) {
+      return { ...state, searchText: '', popoverVisible: false }
     },
     showProductModal (state, action) {
-      return {...state, ...action.payload, modalProductVisible: true}
+      return { ...state, ...action.payload, modalProductVisible: true }
     },
     resetAll (state) {
       return { ...state, dataBrowse: [] }
@@ -409,14 +408,14 @@ export default modelExtend(pageModel, {
       return { ...state, lastTrans: action.payload }
     },
     modalEditShow (state, action) {
-      return {...state, ...action.payload, modalEditVisible: true, item: action.payload.data}
+      return { ...state, ...action.payload, modalEditVisible: true, item: action.payload.data }
     },
     modalEditHide (state, action) {
-      return {...state, ...action.payload, modalEditVisible: false,
+      return { ...state, ...action.payload, modalEditVisible: false,
         dataBrowse: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []}
     },
     setDataBrowse (state, action) {
-      return {...state, ...action.payload, dataBrowse: action.payload}
+      return { ...state, ...action.payload, dataBrowse: action.payload }
     },
   },
 })

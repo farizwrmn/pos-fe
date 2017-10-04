@@ -378,6 +378,8 @@ let database = [
   },
   {
     id: '11',
+    mpid: '-1',
+    bpid: '31',
     route: '/transaction/pos/payment',
   },
 ]

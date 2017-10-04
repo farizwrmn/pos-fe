@@ -48,6 +48,7 @@ export default {
     itemService: {},
     visiblePopover: false,
     modalType: 'add',
+    totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     pagination: {
@@ -145,6 +146,21 @@ export default {
     //     })
     //   }
     // },
+
+    * paymentEdit ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      dataPos[payload.no - 1] = payload
+      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      yield put({ type: 'hidePaymentModal' })
+    },
+
+    * serviceEdit ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      dataPos[payload.no - 1] = payload
+      console.log(dataPos)
+      localStorage.setItem('service_detail', JSON.stringify(dataPos))
+      yield put({ type: 'hideServiceModal' })
+    },
 
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
@@ -387,7 +403,7 @@ export default {
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let arrayProd = dataPos.slice()
       let curRecord = 0
-
+      localStorage.removeItem('transNo')
       let curCashierNo = localStorage.getItem('cashierNo')
       let curShift = localStorage.getItem('cashierShift')
 
@@ -1250,15 +1266,14 @@ export default {
 
 
     showPaymentModal (state, action) {
-      console.log('showPaymentModal', action.payload)
-      return { ...state, ...action.payload, itemPayment: action.payload.item, modalPaymentVisible: true }
+      return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
       return { ...state, modalPaymentVisible: false }
     },
 
     showServiceListModal (state, action) {
-      return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
+      return { ...state, ...action.payload, itemPayment: action.payload.item, modalServiceListVisible: true }
     },
     hideServiceListModal (state) {
       return { ...state, modalServiceListVisible: false }
@@ -1572,6 +1587,10 @@ export default {
 
     setCurRecord (state, action) {
       return { curRecord: 1, }
+    },
+
+    setTotalItem (state, action) {
+      return { ...state, totalItem: action.payload }
     },
 
     changeQueue (state, action) {

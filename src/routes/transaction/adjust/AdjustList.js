@@ -12,7 +12,6 @@ const formItemLayout = {
 
 const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
   const handleClick = () => {
-    console.log('click')
     validateFields((errors) => {
       if (errors) {
         return
