@@ -318,7 +318,14 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}>
             <Form layout="horizontal">
               <FormItem>
-                <Input size="large" autoFocus={true} style={{ fontSize: 24 }} value={inputPayment} onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)} placeholder="Input Payment Amount Here"/>
+                <Input size="large"
+                  autoFocus={true}
+                  style={{ fontSize: 24 }}
+                  value={inputPayment}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  onChange={(e) => onChange(e)}
+                  placeholder="Input Payment Amount Here"
+                />
                 <Cascader showSearch
                   options={options}
                   onChange={_value => onChangeCascader(_value)}
