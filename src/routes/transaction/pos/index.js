@@ -32,6 +32,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     visiblePopover,
     curBarcode,
     curQty,
+    totalItem,
     curTotal,
     listByCode,
     kodeUtil,
@@ -172,17 +173,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       type: 'pos/showPaymentModal',
       payload: {
         item: record,
-        modalType: 'modalPayment'
+        modalType: 'modalPayment',
       },
     })
   }
-
   const modalEditService = (record) => {
     dispatch({
       type: 'pos/showServiceListModal',
       payload: {
         item: record,
-        modalType: 'modalService'
+        totalItem: record.total,
+        modalType: 'modalService',
       },
     })
   }
@@ -356,17 +357,16 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     cashierId: user.userid,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onBack() {
+    onBack () {
       dispatch({ type: 'pos/backPrevious' })
     },
     onCancel () {
       Modal.error({
-          title: 'Error',
-          content: 'Please Use Confirm Button...!'})
+        title: 'Error',
+        content: 'Please Use Confirm Button...!'})
     },
     onOk (data) {
       dispatch({ type: 'app/foldSider' })
-
       dispatch({
         type: 'pos/setCashierTrans',
         payload: data,
@@ -387,21 +387,20 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       let arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (JSON.stringify(listByCode) === '[]') {
         arrayProd = listByCode.slice()
-      }
-      else {
+      } else {
         arrayProd = JSON.parse(listByCode.slice())
       }
       arrayProd.push({
-        'memberCode': item.memberCode,
-        'memberName': item.memberName,
-        'address01': item.address01,
-        'point': item.point ? item.point : 0,
-        'id': item.id,
-        'memberTypeId': item.memberTypeId ? item.memberTypeId : 7,
-        'gender': item.gender,
-        'phone': item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
+        memberCode: item.memberCode,
+        memberName: item.memberName,
+        address01: item.address01,
+        point: item.point ? item.point : 0,
+        id: item.id,
+        memberTypeId: item.memberTypeId ? item.memberTypeId : 7,
+        gender: item.gender,
+        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber,
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
@@ -414,18 +413,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
       setCurBarcode('', 1)
     },
-    // dispatch({
-    //   type: 'pos/querySuccessByCode',
-    //   payload: {
-    //     listByCode: item,
-    //     curRecord: curRecord + 1,
-    //   },
-    // })
   }
   const modalPaymentProps = {
     location: location,
     loading: loading,
     pos: pos,
+    totalItem: totalItem,
     item: itemPayment,
     visible: modalPaymentVisible,
     maskClosable: false,
@@ -434,13 +427,19 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({type: 'pos/hidePaymentModal'})
     },
     onChooseItem (data) {
-      dispatch({ type: 'pos/editPayment', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
-      dispatch({type: 'pos/hidePaymentModal'})
+      dispatch({ type: 'pos/paymentEdit', payload: data })
+    },
+    onChangeTotalItem (total) {
+      dispatch({
+        type: 'pos/setTotalItem',
+        payload: total,
+      })
     },
   }
   const ModalServiceListProps = {
     location: location,
     loading: loading,
+    totalItem: totalItem,
     pos: pos,
     item: itemService,
     visible: modalServiceListVisible,
@@ -450,9 +449,14 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({type: 'pos/hideServiceListModal'})
     },
     onChooseItem (data) {
-      console.log('Service')
-      dispatch({ type: 'pos/editService', payload:{ value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Payment } })
-      dispatch({type: 'pos/hideServiceListModal'})
+      dispatch({ type: 'pos/serviceEdit', payload: data })
+      dispatch({ type: 'pos/hideServiceListModal' })
+    },
+    onChangeTotalItem (total) {
+      dispatch({
+        type: 'pos/setTotalItem',
+        payload: total,
+      })
     },
   }
 
@@ -465,7 +469,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
-      console.log('modalMechanicProps');
       localStorage.removeItem('mechanic')
       let arrayProd = []
       arrayProd.push({
@@ -491,30 +494,38 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
 
       let arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (JSON.stringify(listByCode) === '[]') {
         arrayProd = listByCode.slice()
-      }
-      else {
+      } else {
         arrayProd = JSON.parse(listByCode.slice())
       }
 
       arrayProd.push({
-        'no': arrayProd.length + 1,
-        'code': item.productCode,
-        'productId': item.id,
-        'name': item.productName,
-        'qty': curQty,
-        'price': (memberInformation.memberTypeId != 2 ? item.sellPrice : item.distPrice02),
-        'discount': 0,
-        'disc1': 0,
-        'disc2': 0,
-        'disc3': 0,
-        'total': (memberInformation.memberTypeId != 2 ? item.sellPrice : item.distPrice02) * curQty,
+        no: arrayProd.length + 1,
+        code: item.productCode,
+        productId: item.id,
+        name: item.productName,
+        qty: curQty,
+        price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
       })
 
       localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-      dispatch({ type: 'pos/querySuccessByCode', payload: { listByCode: item, curRecord: curRecord + 1, } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
+      dispatch({
+        type: 'pos/querySuccessByCode',
+        payload: {
+          listByCode: item,
+          curRecord: curRecord + 1,
+        },
+      })
+      dispatch({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
+      })
       dispatch({ type: 'pos/hideProductModal' })
     },
   }
@@ -535,26 +546,25 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       let listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
 
       let arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (JSON.stringify(listByCode) === '[]') {
         arrayProd = listByCode.slice()
-      }
-      else {
+      } else {
         arrayProd = JSON.parse(listByCode.slice())
       }
 
 
       arrayProd.push({
-        'no': arrayProd.length + 1,
-        'code': item.serviceCode,
-        'productId': item.id,
-        'name': item.serviceName,
-        'qty': curQty,
-        'price':  item.serviceCost,
-        'discount': 0,
-        'disc1': 0,
-        'disc2': 0,
-        'disc3': 0,
-        'total':  item.serviceCost * curQty
+        no: arrayProd.length + 1,
+        code: item.serviceCode,
+        productId: item.id,
+        name: item.serviceName,
+        qty: curQty,
+        price:  item.serviceCost,
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total:  item.serviceCost * curQty
       })
 
       localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -591,25 +601,25 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
   const handleKeyPress = (e) => {
     const { value } = e.target
-    if ( e.key == '+' ) {
+    if (e.key === '+') {
       setCurBarcode('', value)
     }
-    else if ( e.key == 'Enter' ) {
-      if ( kodeUtil == 'barcode' ) {
-        if ( value ) {
+    else if (e.key === 'Enter') {
+      if (kodeUtil === 'barcode') {
+        if (value) {
           dispatch({
             type: 'pos/getStock',
             payload: { productCode: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
               curQty: curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,}
+              curRecord: curRecord,
+            },
           })
         }
       }
-      else if ( kodeUtil == 'member' ) {
-
-        if ( value ) {
+      else if (kodeUtil === 'member') {
+        if (value) {
           dispatch({ type: 'pos/getMember', payload: { memberCode: value, } })
 
           dispatch({ type: 'unit/lov', payload: { id: value } })
@@ -623,9 +633,14 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           },
         })
       }
-      else if ( kodeUtil == 'mechanic' ) {
-        if ( value ) {
-          dispatch({ type: 'pos/getMechanic', payload: { employeeId: value, } })
+      else if (kodeUtil === 'mechanic') {
+        if (value) {
+          dispatch({
+            type: 'pos/getMechanic',
+            payload: {
+              employeeId: value,
+            }
+          })
         }
 
         dispatch({
@@ -636,22 +651,28 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           },
         })
       }
-      else if ( kodeUtil == 'service' ) {
-        if ( value ) {
+      else if (kodeUtil === 'service') {
+        if (value) {
           dispatch({
             type: 'pos/getService',
             payload: { serviceId: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
               curQty: curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,}
+              curRecord: curRecord,
+            },
           })
         }
-      }
-      else if ( kodeUtil == 'discount' || kodeUtil == 'disc1' || kodeUtil == 'disc2' || kodeUtil == 'disc3' || kodeUtil === 'quantity' ) {
-        console.log('quantity value', value)
-        if ( value ) {
-          dispatch({ type: 'pos/editPayment', payload:{ value: value, effectedRecord: effectedRecord, kodeUtil: kodeUtil } })
+      } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
+        if (value) {
+          dispatch({
+            type: 'pos/editPayment',
+            payload: {
+              value: value,
+              effectedRecord: effectedRecord,
+              kodeUtil: kodeUtil,
+            },
+          })
         }
         dispatch({
           type: 'pos/setUtil',
@@ -662,14 +683,12 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         })
       }
 
-      if ( kodeUtil != 'refund' ) {
+      if (kodeUtil !== 'refund') {
         setCurBarcode('', 1)
-      }
-      else {
-        if ( value ) {
+      } else {
+        if (value) {
           setCurBarcode('', value * -1)
-        }
-        else {
+        } else {
           setCurBarcode('', 1)
         }
       }
@@ -677,8 +696,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const onChange = (e) => {
-    const {value} = e.target
-    if (value != '+') {
+    const { value } = e.target
+    if (value !== '+') {
       setCurBarcode(value, curQty)
     }
   }
@@ -689,7 +708,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     if (e.keyCode in keyShortcut) {
       keyShortcut[e.keyCode] = true
 
-      if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[77] ) { //shortcut member (Ctrl + Alt + M)
+      if (keyShortcut[17] && keyShortcut[18] && keyShortcut[77]) { //shortcut member (Ctrl + Alt + M)
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -697,12 +716,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
             infoUtil: 'Member',
           },
         })
-      }
-      else if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[72] ) { //shortcut untuk Help (Ctrl + ALT + H)
-        console.log('shortcut key help');
+      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[72]) {// shortcut untuk Help (Ctrl + ALT + H)
         dispatch({ type: 'app/shortcutKeyShow' })
-      }
-      else if ( keyShortcut[17] && keyShortcut[18] && keyShortcut[67] ) { //shortcut mechanic (Ctrl + Alt + C)
+      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[67]) {// shortcut mechanic (Ctrl + Alt + C)
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -710,24 +726,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
             infoUtil: 'Mechanic',
           },
         })
-      }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[52] ) { //shortcut discount nominal (Ctrl + Shift + 4)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[52]) { // shortcut discount nominal (Ctrl + Shift + 4)
         handleDiscount(4, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[49] ) { //shortcut discount 1 (Ctrl + Shift + 1)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[49]) { // shortcut discount 1 (Ctrl + Shift + 1)
         handleDiscount(1, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[50] ) { //shortcut discount 2 (Ctrl + Shift + 2)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[50]) { // shortcut discount 2 (Ctrl + Shift + 2)
         handleDiscount(2, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[51] ) { //shortcut discount 3 (Ctrl + Shift + 3)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[51]) { // shortcut discount 3 (Ctrl + Shift + 3)
         handleDiscount(3, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[75] ) { //shortcut modified quantity (Ctrl + Shift + Q)
-        console.log('handle quantity')
+      } else if (keyShortcut[17] && keyShortcut[75]) { // shortcut modified quantity (Ctrl + Shift + Q)
         handleDiscount(5, value)
-      }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[76] ) { //shortcut untuk Closing Cashier (Ctrl + Shift + L)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[76]) { // shortcut untuk Closing Cashier (Ctrl + Shift + L)
         let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
 
         let curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
@@ -738,28 +747,28 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         keyShortcut[16] = false
         keyShortcut[76] = false
 
-        if ( JSON.stringify(curData) == '[]' && JSON.stringify(curQueue1) == '[]' && JSON.stringify(curQueue2) == '[]' && JSON.stringify(curQueue3) == '[]' ) {
+        if (JSON.stringify(curData) === '[]' && JSON.stringify(curQueue1) === '[]' && JSON.stringify(curQueue2) === '[]' && JSON.stringify(curQueue3) === '[]') {
           Modal.confirm({
             title: 'Are you sure want to close this Cashier?',
             content: 'This Operation cannot be undone...!',
-            onOk() {
+            onOk () {
               dispatch({
                 type: 'pos/setCloseCashier',
                 payload: {
                   total: 0,
                   totalCreditCard: 0,
-                  status: "C",
+                  status: 'C',
                   cashierNo: curCashierNo,
                   shift: curShift,
                   transDate: getDate(3),
-                }
+                },
               })
 
               dispatch({
                 type: 'pos/showShiftModal',
               })
             },
-            onCancel() {},
+            onCancel () {},
           })
         }
         else {
@@ -769,7 +778,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           })
         }
       }
-      else if ( keyShortcut[17] && keyShortcut[16] && keyShortcut[85] ) { //shortcut for insertQueue (Ctrl + Shift + U)
+      else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
         keyShortcut[17] = false
         keyShortcut[16] = false
         keyShortcut[85] = false
@@ -782,37 +791,35 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
         let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
         let memberInformation
-        if ( JSON.stringify(listByCode) == "[]" ) {
+        if (JSON.stringify(listByCode) === '[]') {
           memberInformation = listByCode.slice()
-        }
-        else {
+        } else {
           memberInformation = listByCode
         }
         const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
 
-        //start-mechanicInfo
+        // start-mechanicInfo
         const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
         const mechanic = mechanicInfo[0]
-        //end-mechanicInfo
+        // end-mechanicInfo
 
         arrayProd.push({
-            cashier_trans: cashier_trans,
-            memberCode: memberInfo.memberCode,
-            memberName: memberInfo.memberName,
-            point: memberInfo.point,
-            memberUnit: memberUnit,
-            lastMeter: lastMeter,
-            mechanicCode: mechanic.mechanicCode,
-            mechanicName: mechanic.mechanicName
+          cashier_trans: cashier_trans,
+          memberCode: memberInfo.memberCode,
+          memberName: memberInfo.memberName,
+          point: memberInfo.point,
+          memberUnit: memberUnit,
+          lastMeter: lastMeter,
+          mechanicCode: mechanic.mechanicCode,
+          mechanicName: mechanic.mechanicName,
         })
-        if ( localStorage.getItem('cashier_trans') === null ) {
+        if (localStorage.getItem('cashier_trans') === null) {
           Modal.warning({
             title: 'Warning',
             content: 'Transaction Not Found...!',
           })
-        }
-        else {
-          if ( localStorage.getItem('queue1') === null ) {
+        } else {
+          if (localStorage.getItem('queue1') === null) {
             localStorage.setItem('queue1', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
             localStorage.removeItem('service_detail')
@@ -827,7 +834,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
               },
             })
           }
-          else if ( localStorage.getItem('queue2') === null ) {
+          else if (localStorage.getItem('queue2') === null) {
             localStorage.setItem('queue2', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
             localStorage.removeItem('service_detail')
@@ -841,8 +848,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                 queue: '2',
               },
             })
-          }
-          else if ( localStorage.getItem('queue3') === null ) {
+          } else if (localStorage.getItem('queue3') === null) {
             localStorage.setItem('queue3', JSON.stringify(arrayProd))
             localStorage.removeItem('cashier_trans')
             localStorage.removeItem('service_detail')
@@ -865,10 +871,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           }
         }
       }
-    }
-    else if ( e.keyCode == '113' ) { //Tombol F2 untuk memilih antara product atau service
-      console.log('F2', kodeUtil)
-      if ( kodeUtil == 'barcode' ) {
+    } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
+      if (kodeUtil === 'barcode') {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -876,8 +880,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
             infoUtil: 'Service',
           },
         })
-      }
-      else if ( kodeUtil == 'service' || kodeUtil == 'member' || kodeUtil == 'mechanic' ) {
+      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'mechanic') {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -886,11 +889,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
           },
         })
       }
-    }
-    else if ( e.keyCode == '118' ) { //Tombol F7 untuk void/hapus item
+    } else if (e.keyCode == '118') { // Tombol F7 untuk void/hapus item
       handleVoid(value)
-    }
-    else if ( e.keyCode == '120' ) { //Tombol F9 untuk void/hapus all item
+    } else if (e.keyCode == '120') { // Tombol F9 untuk void/hapus all item
       Modal.confirm({
         title: 'Are you sure want to void/delete all items?',
         content: 'This Operation cannot be undone...!',
@@ -904,7 +905,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
         onCancel() {},
       })
     }
-    else if ( e.keyCode == '115' ) { //Tombol F4 untuk refund
+    else if (e.keyCode === '115') { // Tombol F4 untuk refund
       dispatch({
         type: 'pos/setUtil',
         payload: {
@@ -968,61 +969,61 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       <Col span={8}>Choose Member Unit</Col>
       <Col span={1} offset={15}>
         <Button shape="circle" icon="close-circle" size="small"
-                onClick={() => hdlPopoverClose()}/>
+          onClick={() => hdlPopoverClose()}/>
       </Col>
     </Row>
   )
   const contentPopover = (
     <div>
-        <Table
-          columns={columns}
-          dataSource={listUnit ? listUnit : listLovMemberUnit}
-          size='small'
-          bordered
-          pagination={{ pageSize: 5 }}
-          onRowClick={(record) => hdlTableRowClick(record)}
-          locale = {{
-            emptyText: 'No Unit',
-          }}
-        />
+      <Table
+        columns={columns}
+        dataSource={listUnit ? listUnit : listLovMemberUnit}
+        size="small"
+        bordered
+        pagination={{ pageSize: 5 }}
+        onRowClick={_record => hdlTableRowClick(_record)}
+        locale={{
+          emptyText: 'No Unit',
+        }}
+      />
     </div>
   )
-/*===================BEGIN=====================*/
-/*=================LAST KM=====================*/
-const CustomizedForm = Form.create({
-  onFieldsChange(props, changedFields) {
-    props.onChange(changedFields);
-  },
-  mapPropsToFields(props) {
-    return {
-      lastMeter: {
-        ...props.lastMeter,
-        value: props.lastMeter.value,
-      },
-    };
-  },
-  onValuesChange(_, values) {
-    localStorage.setItem('lastMeter', memberUnitInfo.unitNo === "" ? 0 : values.lastMeter ? values.lastMeter : 0)
-    dispatch({
-      type: 'payment/setLastMeter',
-      payload: {
-        lastMeter: memberUnitInfo.unitNo ? lastMeter : 0,
-        policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
-      },
-    })
-  },
-})((props) => {
-  const { getFieldDecorator } = props.form;
-  return (
+  /* ===================BEGIN===================== */
+  /* =================LAST KM===================== */
+  const CustomizedForm = Form.create({
+    onFieldsChange (props, changedFields) {
+      props.onChange(changedFields)
+    },
+     mapPropsToFields (props) {
+      return {
+        lastMeter: {
+          ...props.lastMeter,
+          value: props.lastMeter.value,
+        },
+      };
+    },
+    onValuesChange(_, values) {
+      localStorage.setItem('lastMeter', memberUnitInfo.unitNo === "" ? 0 : values.lastMeter ? values.lastMeter : 0)
+      dispatch({
+        type: 'payment/setLastMeter',
+         payload: {
+          lastMeter: memberUnitInfo.unitNo ? lastMeter : 0,
+          policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
+        },
+      })
+    },
+  })((props) => {
+   const { getFieldDecorator } = props.form;
+   return (
       <FormItem label="KM" {...formItemLayout}>
         {getFieldDecorator('lastMeter', {
           rules: [{ required: true, message: 'Required' }],
         })(<Input />)}
       </FormItem>
-  );
-});
+    )
+  })
 
-class LastMeter extends React.Component {
+  class LastMeter extends React.Component {
   state = {
     fields: {
       lastMeter: {
@@ -1033,19 +1034,19 @@ class LastMeter extends React.Component {
   handleFormChange = (changedFields) => {
     this.setState({
       fields: { ...this.state.fields, ...changedFields },
-    });
+    })
   }
-  render() {
+  render () {
     const fields = this.state.fields;
     return (
       <div>
         <CustomizedForm {...fields} onChange={this.handleFormChange} />
       </div>
-    );
+    )
   }
-}
-/*=================LAST KM=====================*/
-/*===================END=======================*/
+  }
+  /* =================LAST KM===================== */
+  /* ===================END======================= */
 
   return (
     <div className="content-inner">
@@ -1065,7 +1066,7 @@ class LastMeter extends React.Component {
             <ButtonGroup>
               <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
               <Tooltip title="add Member">
-                <Button type="primary" style={{ height: '36px'}} icon="plus-square-o" className="button-width02">
+                <Button type="primary" size="large" icon="plus-square-o" className="button-width02">
                 </Button>
               </Tooltip>
             </ButtonGroup>
@@ -1113,60 +1114,69 @@ class LastMeter extends React.Component {
             <Tabs defaultActiveKey="1">
               <TabPane tab="Product" key="1">
                 <Table
-                rowKey={(record, key) => key}
-                pagination={{ pageSize: 5 }}
-                bordered={true}
-                size="small"
-                scroll={{ x: '130%' }}
-                locale = {{
-                  emptyText: 'Your Payment List',
-                }}
-                columns={[
-                  {
-                    title: 'No',
-                    dataIndex: 'no',
-                  },
-                  {
-                    title: 'Code',
-                    dataIndex: 'code',
-                  },
-                  {
-                    title: 'Product Name',
-                    dataIndex: 'name',
-                  },
-                  {
-                    title: 'Q',
-                    dataIndex: 'qty',
-                  },
-                  {
-                    title: 'Price',
-                    dataIndex: 'price',
-                  },
-                  {
-                    title: 'Disc1(%)',
-                    dataIndex: 'disc1',
-                  },
-                  {
-                    title: 'Disc2(%)',
-                    dataIndex: 'disc2',
-                  },
-                  {
-                    title: 'Disc3(%)',
-                    dataIndex: 'disc3',
-                  },
-                  {
-                    title: 'Disc',
-                    dataIndex: 'discount',
-                  },
-                  {
-                    title: 'Total',
-                    dataIndex: 'total',
-                  },
-                ]}
-                onRowClick={(record)=>modalEditPayment(record)}
-                dataSource={dataTrans()}
-                style={{ marginBottom: 16 }}
-              />
+                  rowKey={(record, key) => key}
+                  pagination={{ pageSize: 5 }}
+                  bordered={true}
+                  size="small"
+                  scroll={{ x: '908px', y: '220px' }}
+                  locale={{
+                    emptyText: 'Your Payment List',
+                  }}
+                  columns={[
+                    {
+                      title: 'No',
+                      dataIndex: 'no',
+                      width: '41px',
+                    },
+                    {
+                      title: 'Code',
+                      dataIndex: 'code',
+                      width: '100px',
+                    },
+                    {
+                      title: 'Product Name',
+                      dataIndex: 'name',
+                    },
+                    {
+                      title: 'Q',
+                      dataIndex: 'qty',
+                      width: '40px',
+                    },
+                    {
+                      title: 'Price',
+                      dataIndex: 'price',
+                      width: '100px',
+                    },
+                    {
+                      title: 'Disc1(%)',
+                      dataIndex: 'disc1',
+                      width: '90px',
+                    },
+                    {
+                      title: 'Disc2(%)',
+                      dataIndex: 'disc2',
+                      width: '90px',
+                    },
+                    {
+                      title: 'Disc3(%)',
+                      dataIndex: 'disc3',
+                      width: '90px',
+                    },
+                    {
+                      title: 'Disc',
+                      dataIndex: 'discount',
+                      width: '100px',
+                    },
+                    {
+                      title: 'Total',
+                      dataIndex: 'total',
+                      width: '100px',
+                    },
+                  ]}
+                  onRowClick={(record) => modalEditPayment(record)}
+                  dataSource={dataTrans()}
+                  style={{marginBottom: 16}}
+                />
                 {modalPaymentVisible && <Browse {...modalPaymentProps} />}
               </TabPane>
               <TabPane tab="Service" key="2"><Table
@@ -1174,18 +1184,20 @@ class LastMeter extends React.Component {
                 pagination={{ pageSize: 5 }}
                 bordered={true}
                 size="small"
-                scroll={{ x: '130%' }}
-                locale = {{
+                scroll={{ x: '908px', y: '220px' }}
+                locale={{
                   emptyText: 'Your Payment List',
                 }}
                 columns={[
                   {
                     title: 'No',
                     dataIndex: 'no',
+                    width: '41px',
                   },
                   {
                     title: 'Code',
                     dataIndex: 'code',
+                    width: '100px',
                   },
                   {
                     title: 'Service Name',
@@ -1194,65 +1206,74 @@ class LastMeter extends React.Component {
                   {
                     title: 'Q',
                     dataIndex: 'qty',
+                    width: '40px',
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
+                    width: '100px',
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
+                    width: '90px',
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
+                    width: '90px',
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
+                    width: '90px',
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
+                    width: '100px',
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
+                    width: '100px',
                   },
                 ]}
-                onRowClick={(record)=>modalEditService(record)}
+                onRowClick={_record => modalEditService(_record)}
                 dataSource={dataService()}
                 style={{ marginBottom: 16 }}
               />
-                {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
+              {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
             </Tabs>
           </Card>
         </Col>
         <Col lg={6} md={4}>
-          <Collapse defaultActiveKey={['1','2']}>
+          <Collapse defaultActiveKey={['1', '2']}>
             <Panel header="Member Info" key="1">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
-                  <Input  value={memberInformation.memberName} disabled />
+                  <Input value={memberInformation.memberName} disabled />
                 </FormItem>
-                <FormItem label='Unit' hasFeedback {...formItemLayout}>
+                <FormItem label="Unit" hasFeedback {...formItemLayout}>
                   <Col span={20}>
-                    <Input value={ memberUnitInfo.unitNo } />
+                    <Input value={memberUnitInfo.unitNo} />
                   </Col>
                   <Col span={4}>
                     <Popover title={titlePopover}
-                             content={contentPopover}
-                             visible={visiblePopover}
-                             onVisibleChange={() => hdlPopoverVisibleChange()}
-                             placement="left" trigger='click'>
-                      <Button type='primary' icon="down-square-o" onClick={hdlUnitClick}>
+                      content={contentPopover}
+                      visible={visiblePopover}
+                      onVisibleChange={() => hdlPopoverVisibleChange()}
+                      placement="left"
+                      trigger="click"
+                    >
+                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick}>
                       </Button>
                     </Popover>
                   </Col>
                 </FormItem>
-                  <LastMeter />
+                <LastMeter />
                 <FormItem label="Code" {...formItemLayout}>
-                  <Input  value={memberInformation.memberCode} disabled />
+                  <Input value={memberInformation.memberCode} disabled />
                 </FormItem>
                 <FormItem label="Point" {...formItemLayout}>
                   <Input value={memberInformation.point} disabled />
@@ -1262,10 +1283,10 @@ class LastMeter extends React.Component {
             <Panel header="Mechanic Info" key="2">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName ?  mechanicInformation.employeeName : mechanicInformation.mechanicCode} disabled />
+                  <Input value={mechanicInformation.employeeName ? mechanicInformation.employeeName : mechanicInformation.mechanicCode} disabled />
                 </FormItem>
                 <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeId ?  mechanicInformation.employeeId : mechanicInformation.mechanicName} disabled />
+                  <Input value={mechanicInformation.employeeId ? mechanicInformation.employeeId : mechanicInformation.mechanicName} disabled />
                 </FormItem>
               </Form>
             </Panel>
@@ -1277,7 +1298,7 @@ class LastMeter extends React.Component {
           <Form layout="vertical">
             <FormItem>
               <Row>
-                <Col span={12} style={{padding:12}}>
+                <Col span={12} style={{ padding: 12 }}>
                   <Row>
                     <Col xs={24} sm={24} md={16} lg={16} xl={18}>
                       <Button style={{ fontWeight: 400, fontSize: 'large', width: '200%', height: 40, color: '#000000', background: '#8fc9fb' }} className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>

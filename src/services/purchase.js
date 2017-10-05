@@ -7,57 +7,66 @@ export async function query (params) {
     url: purchase,
     method: 'get',
     data: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
-export async function queryLastTransNo (params) {
+export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = purchase + '/last'
-  console.log(url)
   return request({
-    url: url,
+    url: purchaseDetail,
     method: 'get',
-    headers: apiHeaderToken
+    data: params,
+    headers: apiHeaderToken,
   })
 }
 
 export async function create (params) {
   let url = params.id ? purchase : null
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
 export async function createDetail (params) {
   let url = params.id ? `${purchaseDetail}/purchase` : null
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
 export async function edit (params) {
-  let url = params.transNo ? purchase : null
-  console.log(url);
+  let url = params.id !== null ? purchaseDetail : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'put',
     data: params,
     body: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
+  })
+}
+
+export async function editPurchase (params) {
+  let url = params.id !== null ? purchase : null
+  console.log('editHeader', params)
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken,
   })
 }
 
@@ -69,6 +78,6 @@ export async function remove (params) {
     url: url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }

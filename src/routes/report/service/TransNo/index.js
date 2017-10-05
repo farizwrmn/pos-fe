@@ -4,25 +4,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
-import moment from 'moment'
 import Browse from './Browse'
-import { saveAs } from 'file-saver'
+import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, serviceReport, app }) => {
-  const { list, pagination, fromDate, toDate, productCode } = serviceReport
-  const { pageSize } = pagination
-  const { user, company } = app
+const Report = ({ dispatch, serviceReport, app }) => {
+  const { list, fromDate, toDate, productCode } = serviceReport
+  const { user, storeInfo } = app
   const browseProps = {
     dataSource: list,
     list,
+    storeInfo,
     user,
-    company,
     fromDate,
     toDate,
     productCode,
-    onListReset () {
-      console.log('onListReset')
+  }
+
+  const filterProps = {
+    list: list,
+    user,
+    storeInfo,
+    fromDate,
+    toDate,
+    productCode,
+    onListReset(){
       dispatch({
         type: 'serviceReport/setListNull',
       })
@@ -45,47 +50,18 @@ const Report = ({ location, dispatch, loading, serviceReport, app }) => {
     },
   }
 
-  const filterProps = {
-    filter: {
-      ...location.query,
-    },
-    onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          ...value,
-          page: 1,
-          pageSize,
-        },
-      }))
-    },
-    onSearch (fieldsValue) {
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/report/pos/monthly',
-        query: {
-          field: fieldsValue.field,
-          keyword: fieldsValue.keyword,
-        },
-      })) : dispatch(routerRedux.push({
-        pathname: '/report/pos/monthly',
-      }))
-    },
-    onSearchHide () { dispatch({ type: 'customer/searchHide' }) },
-  }
-
   return (
     <div className="content-inner">
+      <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>
   )
 }
 
 Report.propTyps = {
-  location: PropTypes.object,
-  app: PropTypes.app,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  app: PropTypes.app,
   serviceReport: PropTypes.object,
 }
 
-export default connect(({ loading, serviceReport, app }) => ({ loading, serviceReport, app }))(Report)
+export default connect(({ serviceReport, app }) => ({ serviceReport, app }))(Report)

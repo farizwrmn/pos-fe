@@ -2,9 +2,6 @@
  * Created by Veirry on 10/09/2017.
  */
 import { query as queryReport, queryTrans } from '../../services/report/pos'
-import { queryMode as miscQuery} from '../../services/misc'
-import { parse } from 'qs'
-import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'posReport',

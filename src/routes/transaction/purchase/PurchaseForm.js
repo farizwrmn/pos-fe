@@ -6,7 +6,7 @@ import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
 
-const {TextArea, Search} = Input
+const { TextArea, Search } = Input
 const Panel = Collapse.Panel
 const FormItem = Form.Item
 const Option = Select.Option
@@ -21,9 +21,9 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 },
 }
-const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
+const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onDiscNominal, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
                         modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                         onChooseItem, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps}) => {
+                         onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps}) => {
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -40,22 +40,20 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
         totalPPN: parseInt(totalPpn),
         discTotal: totalDisc,
       }
-      console.log('onOk data:', data)
       onOk(data)
       resetFields()
     })
   }
   let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
   let g = dataPurchase
-  let nettoTotal = g.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  let realTotal = g.reduce( function(cnt,o){ return cnt + (o.qty * o.price); }, 0)
-  let totalPpn = g.reduce( function(cnt,o){ return cnt + o.ppn; }, 0)
-  let totalDpp = g.reduce( function(cnt,o){ return cnt + o.dpp; }, 0)
-  let totalQty = g.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
-  let discPercent = g.reduce( function(cnt,o){ return cnt + (o.disc1 * o.qty * o.price / 100) }, 0)
-  let discNominal = g.reduce( function(cnt,o){ return cnt + o.discount * o.qty  }, 0)
+  let nettoTotal = g.reduce((cnt, o) => cnt + o.total, 0) + parseFloat(rounding)
+  let realTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
+  let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
+  let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
+  let discNominal = g.reduce((cnt, o) => cnt + (o.discount * o.qty), 0)
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
-  let grandTotal = g.reduce( function(cnt,o){ return cnt + (o.price * o.qty) }, 0) - totalDisc
+  let grandTotal = g.reduce((cnt, o) => cnt + (o.price * o.qty), 0) - totalDisc
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
@@ -82,8 +80,9 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
     let add = moment(a, 'YYYY-MM-DD').add(value, 'd')
     onChangeDate(add.format('YYYY-MM-DD'))
   }
+  console.log(tmpSupplierData)
   const hdlSearch = (e) => {
-    onSearchSupplier(e, listSupplier)
+    onSearchSupplier(e, tmpSupplierData)
   }
 
   const hdlGetSupplier = () => {
@@ -115,6 +114,10 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
   }
   const hdlBrowseProduct = () => {
     handleBrowseProduct()
+  }
+  const hdlChangeRounding = (e) => {
+    const { value } = e.target
+    onChangeRounding(value)
   }
   const contentPopover = (
     <Table
@@ -254,30 +257,45 @@ const PurchaseForm = ({onDiscPercent, dataBrowse, onResetBrowse, onDiscNominal, 
             <Button type="primary"><Icon type="plus-square-o" /></Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
-          <Button style={{ marginLeft: 150 }} type="danger" size="large" onClick={resetProduct}>Reset</Button>
         </Col>
       </Row>
       <Browse {...purchaseProps} />
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
-      <Row>
-        <Col span="12">
-          <Button type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Confirm</Button>
-        </Col>
-        <Col span="12">
-          <FormItem label="Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+      <div style={{ float: 'right' }}>
+        <Row>
+          <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={grandTotal} />
           </FormItem>
-          <FormItem label="PPN" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+        </Row>
+        <Row>
+          <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={totalPpn} />
           </FormItem>
-          <FormItem label="Total Discount" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+        </Row>
+        <Row>
+          <FormItem label="Total Discount" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={totalDisc} />
           </FormItem>
-          <FormItem label="Netto Total" {...formItemLayout1} style={{ marginLeft: '50%', marginBottom: 2, marginTop: 2 }}>
+        </Row>
+        <Row>
+          <FormItem label="Rounding" hasFeedback style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }} {...formItemLayout1}>
+            {getFieldDecorator('rounding', {
+              initialValue: 0,
+              rules: [{
+                required: true,
+              }],
+            })((<Input onChange={_value => hdlChangeRounding(_value)} />))}
+          </FormItem>
+        </Row>
+        <Row>
+          <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={nettoTotal} />
           </FormItem>
-        </Col>
-      </Row>
+        </Row>
+      </div>
+      <div style={{ marginBottom: '150px' }}>
+        <Button type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
+      </div>
     </Form>
   )
 }

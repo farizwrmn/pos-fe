@@ -177,13 +177,22 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-history')
           },
         }, {
-          path: 'transaction/purchase',
+          path: 'transaction/purchase/add',
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/transaction/purchase/'))
-            }, 'transaction-purchase')
+            }, 'transaction-purchase-add')
+          },
+        }, {
+          path: 'transaction/purchase/edit',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/purchase/edit/'))
+            }, 'transaction-purchase-edit')
           },
         }, {
           path: 'transaction/adjust',
@@ -223,6 +232,22 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               registerModel(app, require('./models/report/purchase'))
               cb(null, require('./routes/report/purchase/summary-trans/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
+          path: 'report/adjust/in',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/in/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
+          path: 'report/adjust/out',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/out/'))
             }, 'report-purchase-summary-trans')
           },
         }, {
@@ -273,7 +298,7 @@ const Routers = function ({ history, app }) {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/period'))
               cb(null, require('./routes/setting/periode/'))
             }, 'setting-misc')
           },

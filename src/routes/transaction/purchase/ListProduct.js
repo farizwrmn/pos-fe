@@ -14,7 +14,7 @@ const ListProduct = ({onChooseItem, purchase, dispatch, ...tableProps}) => {
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
 
     dispatch({
       type: 'purchase/onInputChange',
@@ -49,23 +49,23 @@ const ListProduct = ({onChooseItem, purchase, dispatch, ...tableProps}) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '10%'
+      width: '10%',
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%'
+      width: '25%',
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '45%'
+      width: '45%',
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '20%'
+      width: '20%',
     }
   ]
 

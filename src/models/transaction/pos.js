@@ -8,7 +8,6 @@ import { query as queryService, queryServiceByCode } from '../../services/servic
 
 import { parse } from 'qs'
 import { Modal } from 'antd'
-import { routerRedux } from 'dva/router'
 
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
@@ -49,6 +48,7 @@ export default {
     itemService: {},
     visiblePopover: false,
     modalType: 'add',
+    totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     pagination: {
@@ -146,6 +146,21 @@ export default {
     //     })
     //   }
     // },
+
+    * paymentEdit ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      dataPos[payload.no - 1] = payload
+      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      yield put({ type: 'hidePaymentModal' })
+    },
+
+    * serviceEdit ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      dataPos[payload.no - 1] = payload
+      console.log(dataPos)
+      localStorage.setItem('service_detail', JSON.stringify(dataPos))
+      yield put({ type: 'hideServiceModal' })
+    },
 
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
@@ -337,17 +352,15 @@ export default {
       }
     },
 
-    *getService ({ payload }, { call, put }) {
+    * getService ({ payload }, { call, put }) {
       const data = yield call(queryServiceByCode, payload.serviceId)
-      console.log('getService');
       let newData = data.data
-
-      if ( data.data != null ) {
+      console.log('let newData = data.data', data.data)
+      if (data.data !== null) {
         let arrayProd
-        if ( JSON.stringify(payload.listByCode) == "[]" ) {
+        if (JSON.stringify(payload.listByCode) === '[]') {
           arrayProd = payload.listByCode.slice()
-        }
-        else {
+        } else {
           arrayProd = JSON.parse(payload.listByCode.slice())
         }
 
@@ -390,22 +403,21 @@ export default {
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let arrayProd = dataPos.slice()
       let curRecord = 0
-
+      localStorage.removeItem('transNo')
       let curCashierNo = localStorage.getItem('cashierNo')
       let curShift = localStorage.getItem('cashierShift')
 
       let curItem
       const dataCashier = yield call(getCashierNo)
-      const dataCashierTrans = yield call(getCashierTrans, {cashierId: null, cashierNo: curCashierNo, shift: null, status: "O"})
+      const dataCashierTrans = yield call(getCashierTrans, { cashierId: null, cashierNo: curCashierNo, shift: null, status: 'O' })
 
-      if ( dataCashierTrans.success ) {
+      if (dataCashierTrans.success) {
         curItem = dataCashierTrans.data
-      }
-      else {
+      } else {
         curItem = {}
       }
 
-      if ( JSON.stringify(arrayProd) != "[]" ) {
+      if (JSON.stringify(arrayProd) !== '[]') {
         for (let i in arrayProd) {
           let disc1 = arrayProd[i].disc1
           let disc2 = arrayProd[i].disc2
@@ -416,19 +428,21 @@ export default {
         yield put({
           type: 'setStatePosLoaded',
           payload: { arrayProd: JSON.stringify(arrayProd),
-            curRecord: curRecord + 1}
+            curRecord: curRecord + 1,
+          },
         })
       }
       yield put({
         type: 'setCashierNo',
-        payload: { listCashier: dataCashier.data,
-                    dataCashierTrans: curItem, }
+        payload: {
+          listCashier: dataCashier.data,
+          dataCashierTrans: curItem,
+        },
       })
     },
 
-    *getMember ({ payload }, { call, put }) {
+    * getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
-      console.log('getMember');
       let newData = payload ? data.data : data.member
       if ( data.data === null ) {
         const modal = Modal.warning({
@@ -976,9 +990,8 @@ export default {
       }
     },
 
-    *backPrevious ({ payload }, { call, put }) {
+    * backPrevious ({ payload }, { put }) {
       yield put({ type: 'hideModalShift' })
-      yield put(routerRedux.push('/#'))
     },
   },
 
@@ -1253,15 +1266,14 @@ export default {
 
 
     showPaymentModal (state, action) {
-      console.log('showPaymentModal', action.payload)
-      return { ...state, ...action.payload, itemPayment: action.payload.item, modalPaymentVisible: true }
+      return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
       return { ...state, modalPaymentVisible: false }
     },
 
     showServiceListModal (state, action) {
-      return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
+      return { ...state, ...action.payload, itemPayment: action.payload.item, modalServiceListVisible: true }
     },
     hideServiceListModal (state) {
       return { ...state, modalServiceListVisible: false }
@@ -1575,6 +1587,10 @@ export default {
 
     setCurRecord (state, action) {
       return { curRecord: 1, }
+    },
+
+    setTotalItem (state, action) {
+      return { ...state, totalItem: action.payload }
     },
 
     changeQueue (state, action) {

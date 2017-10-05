@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Modal, Button, Input, Form, Select} from 'antd'
+import { Modal, Button, Input, Form, Select } from 'antd'
 
 const FormItem = Form.Item
 
 const formItemLayout = {
-  labelCol: {span: 8},
-  wrapperCol: {span: 10},
+  labelCol: { span: 8 },
+  wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({onChooseItem, item, onCancel, form: {resetFields, getFieldDecorator, validateFields, getFieldsValue}, modalPurchaseVisible, ...purchaseProps}) => {
+const PurchaseList = ({ onChooseItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -22,9 +22,14 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {resetFields, getFiel
       resetFields()
     })
   }
-  const hdlCancel = () => {
-    console.log('hdlCancel')
+  const hdlCancel = (e) => {
     onCancel()
+  }
+  const handleDelete = () => {
+    const data = {
+      ...getFieldsValue(),
+    }
+    onDelete(data)
   }
   return (
     <Modal visible={modalPurchaseVisible} onCancel={() => hdlCancel()} footer={[]}>
@@ -53,7 +58,6 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {resetFields, getFiel
               <Option value="disc1">Disc(%)</Option>
               <Option value="qty">Quantity</Option>
               <Option value="price">PRICE</Option>
-              <Option value="ket">KETERANGAN</Option>
             </Select>
           )
           }
@@ -68,18 +72,20 @@ const PurchaseList = ({onChooseItem, item, onCancel, form: {resetFields, getFiel
             <Input />
           )}
         </FormItem>
-        <div>
-          <Button onClick={handleClick}> Change </Button>
-        </div>
+        <Button type="primary" onClick={handleClick}> Change </Button>
+        <Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>
       </Form>
     </Modal>
   )
 }
 
 PurchaseList.propTypes = {
-  form: PropTypes.object.isRequired,
-  pos: PropTypes.object,
-  item: PropTypes.object,
-  onChooseItem: PropTypes.func,
+  form: PropTypes.isRequired,
+  pos: PropTypes.isRequired,
+  item: PropTypes.isRequired,
+  onChooseItem: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  modalPurchaseVisible: PropTypes.isRequired,
 }
 export default Form.create()(PurchaseList)

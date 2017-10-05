@@ -134,7 +134,22 @@ let database = [
     mpid: '3',
     name: 'Purchase',
     icon: 'shopping-cart',
-    route: '/transaction/purchase',
+  },
+  {
+    id: '321',
+    bpid: '32',
+    mpid: '32',
+    name: 'Add Purchase',
+    icon: 'shopping-cart',
+    route: '/transaction/purchase/add',
+  },
+  {
+    id: '322',
+    bpid: '32',
+    mpid: '32',
+    name: 'Edit Purchase',
+    icon: 'edit',
+    route: '/transaction/purchase/edit',
   },
   {
     id: '33',
@@ -271,14 +286,22 @@ let database = [
     name: 'Adjustment',
     icon: 'edit',
   },
-  // {
-  //   id: '441',
-  //   bpid: '44',
-  //   mpid: '44',
-  //   name: 'Daily',
-  //   icon: 'calendar',
-  //   // route: '/report/pos/daily',
-  // },
+  {
+    id: '441',
+    bpid: '44',
+    mpid: '44',
+    name: 'In',
+    icon: 'download',
+    route: '/report/adjust/in',
+  },
+  {
+    id: '442',
+    bpid: '44',
+    mpid: '44',
+    name: 'Out',
+    icon: 'upload',
+    route: '/report/adjust/out',
+  },
   // {
   //   id: '442',
   //   bpid: '44',
@@ -355,6 +378,8 @@ let database = [
   },
   {
     id: '11',
+    mpid: '-1',
+    bpid: '31',
     route: '/transaction/pos/payment',
   },
 ]

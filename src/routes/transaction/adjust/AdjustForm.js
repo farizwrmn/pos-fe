@@ -20,7 +20,7 @@ const formItemLayout1 = {
   style: { marginBottom: 3 },
 }
 const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-                      popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...adjustProps}) => {
+                      popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...adjustProps}) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -47,7 +47,8 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
   }
 
   const hdlSearch = (e) => {
-    onSearchProduct(e, dataSource)
+    console.log('dataSource', tmpProductList)
+    onSearchProduct(e, tmpProductList)
   }
 
   const hidePopover = () => {
@@ -197,9 +198,9 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
                   placeholder="Search Product By Code or Name"
                   onEnter={value => hdlSearch(value)}
                   onSearch={value => hdlSearch(value)}
-                  onChange={(value) => handleChangeSearch(value)}
+                  onChange={_value => handleChangeSearch(_value)}
                   onFocus={() => hdlGetProduct()}
-                  onClick={() => hdlGetProduct()} />
+          />
         </Popover>
       </div>
       <div>

@@ -46,13 +46,13 @@ const BrowseGroup = ({
       title: 'Code',
       dataIndex: 'cityCode',
       key: 'cityCode',
-      width: '10%',
+      width: '100px',
     },
     {
       title: 'City',
       dataIndex: 'cityName',
       key: 'cityName',
-      width: '25%',
+      width: '249px',
     }, {
       title: 'Created',
       children: [
@@ -60,12 +60,12 @@ const BrowseGroup = ({
           title: 'By',
           dataIndex: 'createdBy',
           key: 'createdBy',
-          width: '10%',
+          width: '100px',
         }, {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
-          width: '19%',
+          width: '190px',
           render: text => `${moment(text).format('LL LTS')}`,
         },
       ],
@@ -76,12 +76,12 @@ const BrowseGroup = ({
           title: 'By',
           dataIndex: 'updatedBy',
           key: 'updatedBy',
-          width: '10%',
+          width: '100px',
         }, {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
-          width: '19%',
+          width: '190px',
           render: text => `${moment(text).format('LL LTS')}`,
         },
       ],
@@ -89,6 +89,7 @@ const BrowseGroup = ({
       title: 'Operation',
       key: 'operation',
       fixed: 'right',
+      width: '86px',
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[
@@ -136,7 +137,7 @@ const BrowseGroup = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '100%', y: 240 }}
+        scroll={{ x: '1000px', y: '240px' }}
         columns={columns}
         simple
         size="small"

@@ -46,42 +46,43 @@ const BrowseGroup = ({
       title: 'Code',
       dataIndex: 'typeCode',
       key: 'typeCode',
-      width: '8%'
+      width: '80px',
     }, {
       title: 'Type',
       dataIndex: 'typeName',
       key: 'typeName',
-      width: '15%'
+      width: '150px',
     }, {
       title: 'DISC(%)-1',
       dataIndex: 'discPct01',
       key: 'discPct01',
-      width: '13%'
+      width: '130px',
     }, {
       title: 'DISC(%)-2',
       dataIndex: 'discPct02',
       key: 'discPct02',
-      width: '12%'
+      width: '120px',
     }, {
       title: 'DISC(%)-3',
       dataIndex: 'discPct03',
       key: 'discPct03',
-      width: '12%'
+      width: '120px',
     }, {
       title: 'DISC(nominal)',
       dataIndex: 'discNominal',
       key: 'discNominal',
-      width: '20%',
+      width: '200px',
     },
     {
       title: 'Category',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '13%',
+      width: '130px',
     }, {
       title: 'Operation',
       key: 'operation',
       fixed: 'right',
+      width: '71px',
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[
@@ -129,7 +130,7 @@ const BrowseGroup = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 300, y: 240 }}
+        scroll={{ x: '1000px', y: '240px' }}
         columns={columns}
         simple
         rowKey={record => record.userId}

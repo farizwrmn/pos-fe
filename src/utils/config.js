@@ -1,6 +1,6 @@
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIHOST = 'localhost'//'202.162.198.43'
+const APIHOST = 'localhost' // '202.162.198.43'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
@@ -58,6 +58,7 @@ module.exports = {
     posdetail: `${APIURL}${APIV1}/posdetail`,
     posreport: `${APIURL}${APIV1}/posreport`,
     purchasereport: `${APIURL}${APIV1}/report/purchase`,
+    adjustreport: `${APIURL}${APIV1}/report/adjust`,
     servicereport: `${APIURL}${APIV1}/report/service`,
     purchase: `${APIURL}${APIV1}/purchase`,
     purchaseDetail: `${APIURL}${APIV1}/purchasedetail`,
@@ -68,6 +69,7 @@ module.exports = {
     cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,
     transTypeList: `${APIURL}${APIV1}/misc/code/TRANSTYPE?fields=miscName,miscDesc&as=code,type`,
     cashierTrans: `${APIURL}${APIV1}/cashierTrans`,
+    period: `${APIURL}${APIV1}/period`,
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
   },
 }

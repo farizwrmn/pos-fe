@@ -1,0 +1,130 @@
+/**
+ * Created by Veirry on 22/09/2017.
+ */
+import moment from 'moment'
+import { query as queryAllPeriod, create as createPeriod, queryLastCode as lastCode, queryLastActive, update as updatePeriod } from '../services/period'
+import { queryModeName as miscQuery } from '../services/misc'
+
+export default {
+  namespace: 'period',
+
+  state: {
+    list: [],
+    accountNumber: '',
+    accountActive: '',
+    periodDate: {},
+    searchVisible: false,
+    currentItem: {},
+    modalType: 'add',
+    modalVisible: false,
+    modalEndVisible: false,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      showTotal: total => `Total ${total} Records`,
+      current: 1,
+      total: null,
+    },
+  },
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/setting/periods') {
+          dispatch({
+            type: 'queryPeriod',
+            payload: location.query,
+          })
+        }
+      })
+    },
+  },
+  effects: {
+    * queryPeriod ({ payload = {} }, { call, put }) {
+      const format = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
+      const data = yield call(queryAllPeriod)
+      const last = yield call(lastCode)
+      const lastAccount = last.data[0].accountNumber
+      let datatrans = `${format.data.miscVariable}/${moment().format('YYYYMMDD')}/0000`
+      function pad(n, width, z) {
+        z = z || '0'
+        n = n + ''
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+      }
+      let lastNo = lastAccount.replace(/[^a-z0-9]/gi, '')
+      let newMonth = lastNo.substr(format.data.miscVariable.length, 8)
+      let lastTransNo = lastNo.substr(lastNo.length - 4)
+      let sendTransNo = parseInt(lastTransNo, 10) + 1
+      let padding = pad(sendTransNo, 4)
+      let transNo = ''
+      if (newMonth === `${moment().format('YYYYMMDD')}`) {
+        transNo = `${format.data.miscVariable}/${moment().format('YYYYMMDD')}/${padding}`
+      } else {
+        transNo = `${format.data.miscVariable}/${moment().format('YYYYMMDD')}/0001`
+      }
+      const activeAccount = yield call(queryLastActive)
+      yield put({
+        type: 'querySuccessPeriod',
+        payload: {
+          list: data.data,
+          accountActive: activeAccount.data.length === 0 ? {} : activeAccount.data[0].accountNumber,
+          lastAccountNumber: transNo,
+          pagination: {
+            current: Number(payload.page) || 1,
+            pageSize: Number(payload.pageSize) || 5,
+            total: data.total,
+          },
+        },
+      })
+    },
+    * add ({ payload }, { call, put }) {
+      console.log('payload', payload)
+      const data = yield call(createPeriod, { id: payload.accountNumber, data: payload })
+      if (data.success) {
+        yield put({ type: 'modalHide' })
+        yield put({ type: 'queryPeriod' })
+      } else {
+        throw data
+      }
+    },
+    * end ({ payload }, { call, put }) {
+      console.log('payload', payload)
+      const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
+      if (data.success) {
+        yield put({ type: 'modalCloseHide' })
+        yield put({ type: 'queryPeriod' })
+      } else {
+        throw data
+      }
+    },
+  },
+  reducers: {
+    querySuccessPeriod (state, action) {
+      const { list, lastAccountNumber, accountActive, pagination } = action.payload
+
+      return { ...state,
+        list,
+        accountNumber: lastAccountNumber,
+        accountActive,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
+    },
+    setDate (state, action) {
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
+    },
+    modalShow (state, { payload }) {
+      return { ...state, ...payload, modalVisible: true}
+    },
+    modalHide (state) {
+      return { ...state, modalVisible: false }
+    },
+    modalCloseShow (state, { payload }) {
+      return { ...state, ...payload, modalEndVisible: true}
+    },
+    modalCloseHide (state) {
+      return { ...state, modalEndVisible: false }
+    },
+  },
+}

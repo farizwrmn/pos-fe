@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Form, Input, Table, Row, Col, Card, Button, Modal } from 'antd'
-import ModalCredit from './ModalCreditCard'
+import { Form, Input, Table, Row, Col, Card, Cascader, Button, Modal } from 'antd'
 import moment from 'moment'
+import ModalCredit from './ModalCreditCard'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -38,7 +38,7 @@ const dataTrans = () => {
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo } = payment
+  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans } = payment
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
   const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
@@ -117,6 +117,16 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     }
   }
 
+  const onChangeCascader = (e) => {
+    console.log(e)
+    dispatch({
+      type: 'payment/changeCascader',
+      payload: {
+        value: e,
+      },
+    })
+  }
+
   const confirmPayment = () => {
     const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -159,6 +169,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
           lastTransNo: lastTransNo,
           lastMeter: lastMeter,
+          paymentVia: typeTrans,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
@@ -221,6 +232,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         transDate: getDate(1),
         transDate2: getDate(3),
         transTime: setTime(),
+        transDatePrint: moment().format('DD/MM/YYYY'),
         grandTotal: parseInt(curTotal),
         totalPayment: totalPayment,
         company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
@@ -251,6 +263,24 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const cancelPayment = () => {
     dispatch(routerRedux.push('/transaction/pos'))
   }
+
+  const options = [
+    {
+      value: 'C',
+      label: 'Cash',
+    },
+    {
+      value: 'K',
+      label: 'Credit Card',
+    },
+    {
+      value: 'D',
+      label: 'Debit Card',
+    },
+    {
+      value: 'P',
+      label: 'Pending',
+    }]
 
   const handleCreditCard = () => {
     console.log('input credit card')
@@ -284,70 +314,85 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   return (
     <div className="content-inner">
       <Row style={{ marginBottom: 16 }}>
-        <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}>
-          <Form layout="horizontal">
-            <FormItem>
-              <Input size="large" autoFocus={true} style={{ fontSize: 24 }} value={inputPayment} onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)} placeholder="Input Payment Amount Here"/>
-            </FormItem>
-            {modalCreditVisible && <ModalCredit {...modalCreditProps} />}
-          </Form>
-        </Card>
+        <Col span={16}>
+          <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}>
+            <Form layout="horizontal">
+              <FormItem>
+                <Input size="large"
+                  autoFocus={true}
+                  style={{ fontSize: 24 }}
+                  value={inputPayment}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  onChange={(e) => onChange(e)}
+                  placeholder="Input Payment Amount Here"
+                />
+                <Cascader showSearch
+                  options={options}
+                  onChange={_value => onChangeCascader(_value)}
+                  placeholder="Please select"
+                  defaultValue={['C']}
+                />
+              </FormItem>
+              {modalCreditVisible && <ModalCredit {...modalCreditProps} />}
+            </Form>
+          </Card>
+        </Col>
       </Row>
 
       <Row style={{ marginBottom: 16 }} gutter={16}>
         <Col span={16}>
           <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
             <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null}/>
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            scroll={{ x: 1500 }}
-            columns={[
-              {
-                title: 'No',
-                dataIndex: 'no',
-              },
-              {
-                title: 'Code',
-                dataIndex: 'code',
-              },
-              {
-                title: 'Product Name',
-                dataIndex: 'name',
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-              },
-              {
-                title: 'Price',
-                dataIndex: 'price',
-              },
-              {
-                title: 'Disc 1(%)',
-                dataIndex: 'disc1',
-              },
-              {
-                title: 'Disc 2(%)',
-                dataIndex: 'disc2',
-              },
-              {
-                title: 'Disc 3(%)',
-                dataIndex: 'disc3',
-              },
-              {
-                title: 'Discount',
-                dataIndex: 'discount',
-              },
-              {
-                title: 'Total',
-                dataIndex: 'total',
-              },
-            ]}
-            dataSource={dataTrans()}
-            pagination={false}
-            style={{ marginBottom: 4, marginLeft: 4, marginRight: 4, marginTop: 4 }}
-          />
+            <Table
+              rowKey={(record, key) => key}
+              bordered
+              scroll={{ x: 1500 }}
+              columns={[
+                {
+                  title: 'No',
+                  dataIndex: 'no',
+                },
+                {
+                  title: 'Code',
+                  dataIndex: 'code',
+                },
+                {
+                  title: 'Product Name',
+                  dataIndex: 'name',
+                },
+                {
+                  title: 'Qty',
+                  dataIndex: 'qty',
+                },
+                {
+                  title: 'Price',
+                  dataIndex: 'price',
+                },
+                {
+                  title: 'Disc 1(%)',
+                  dataIndex: 'disc1',
+                },
+                {
+                  title: 'Disc 2(%)',
+                  dataIndex: 'disc2',
+                },
+                {
+                  title: 'Disc 3(%)',
+                  dataIndex: 'disc3',
+                },
+                {
+                  title: 'Discount',
+                  dataIndex: 'discount',
+                },
+                {
+                  title: 'Total',
+                  dataIndex: 'total',
+                },
+              ]}
+              dataSource={dataTrans()}
+              pagination={false}
+              style={{ marginBottom: 4, marginLeft: 4, marginRight: 4, marginTop: 4 }}
+            />
           </Card>
         </Col>
         <Col span={8}>

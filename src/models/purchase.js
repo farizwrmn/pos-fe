@@ -1,10 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { query, createDetail, create, edit, remove } from '../services/purchase'
+import { Modal } from 'antd'
+import { query, queryDetail, createDetail, create, edit, editPurchase, remove } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/stock'
 import { query as querySupplier } from '../services/suppliers'
-import { Modal } from 'antd'
-import moment from 'moment'
 
 export default modelExtend(pageModel, {
   namespace: 'purchase',
@@ -14,9 +13,13 @@ export default modelExtend(pageModel, {
     date: '',
     addItem: {},
     curTotal: 0,
+    tmpSupplierData: [],
+    item: {},
     tempo: 0,
+    transNo: null,
     discNML: 0,
     discPRC: 0,
+    rounding: 0,
     curRecord: 1,
     curQty: 1,
     modalVisible: false,
@@ -27,17 +30,30 @@ export default modelExtend(pageModel, {
     modalProductVisible: false,
     selectedRowKeys: [],
     tmpProductList: [],
+    tmpInvoiceList: [],
     listProduct: [],
+    listInvoice: [],
     dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [],
     curDiscPercent: 0,
     curDiscNominal: 0,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      showTotal: total => `Total ${total} Records`,
+      current: 1,
+      total: null,
+    },
     datePicker: '',
   },
 
   subscriptions: {
-    setup ({dispatch, history}) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/purchase') {
+        if (location.pathname === '/transaction/purchase/add') {
+          localStorage.removeItem('product_detail')
+          dispatch({ type: 'modalEditHide' })
+          dispatch({ type: 'changeRounding', payload: 0 })
+        } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
           dispatch({ type: 'modalEditHide' })
         }
@@ -47,9 +63,8 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    *query ({payload = {}}, {call, put}) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      console.log('purchase query', data);
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -65,13 +80,14 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * querySupplier ({payload = {}}, {call, put}) {
+    * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
           payload: {
-              listSupplier: data.data,
+            listSupplier: data.data,
+            tmpSupplierData: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -82,22 +98,22 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'delete' ({payload}, {call, put, select}) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
-      const {selectedRowKeys} = yield select(_ => _.purchaseId)
+      const { selectedRowKeys } = yield select(_ => _.purchaseId)
       if (data.success) {
-        yield put({type: 'updateState', payload: {selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload)}})
-        yield put({type: 'query'})
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    *'deleteBatch' ({payload}, {call, put}) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({type: 'updateState', payload: {selectedRowKeys: []}})
-        yield put({type: 'query'})
+        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
@@ -105,8 +121,8 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
-      if (purchase_detail.length != 0) {
-        const data = yield call(create, {id: payload.transNo, data: payload})
+      if (purchase_detail.length !== 0) {
+        const data = yield call(create, { id: payload.transNo, data: payload })
         if (data.success) {
           let arrayProd = []
           for (let n = 0; n < purchase_detail.length; n++) {
@@ -126,8 +142,6 @@ export default modelExtend(pageModel, {
               discPercent: purchase_detail[n].disc1,
               discNominal: purchase_detail[n].discount,
               transType: payload.transType,
-              year: moment().format('YYYY'),
-              periode: moment().format('M')
             })
           }
           const detail = yield call(createDetail, { id: payload.transNo ,data: arrayProd })
@@ -138,6 +152,7 @@ export default modelExtend(pageModel, {
             })
             localStorage.removeItem('product_detail')
             yield put({ type: 'resetBrowse' })
+            yield put({ type: 'changeRounding', payload: 0 })
           }
         } else {
           const modal = Modal.error({
@@ -153,39 +168,161 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({payload}, {select, call, put}) {
-      const stockCode = yield select(({purchase}) => purchase.currentItem.transNo)
-      const newStock = {...payload, stockCode}
-      const data = yield call(edit, newStock)
-      if (data.success) {
-        yield put({type: 'modalHide'})
-        yield put({type: 'query'})
+    * update ({ payload }, { call, put }) {
+      let addData = []
+      let editData = []
+      for (let n = 0; n < payload.data.length; n++) {
+        if (payload.data[n].ket === 'add') {
+          addData.push(payload.data[n])
+        } else if (payload.data[n].ket === 'edit') {
+          editData.push(payload.data[n])
+        }
+      }
+      let data = ''
+      let dataPurchase = ''
+      let dataAdd = ''
+      let arrayProdAdd = []
+      let arrayProdEdit = []
+      if (addData.length > 0) {
+        for (let n = 0; n < addData.length; n++) {
+          if (payload.id.taxType === 'I') {
+            addData[n].ppn = 0.1 * addData[n].price
+          } else if (payload.id.taxType === 'E') {
+            addData[n].ppn = 0
+          }
+          arrayProdAdd.push({
+            transNo: payload.id.transNo,
+            productId: addData[n].code,
+            productName: addData[n].name,
+            qty: addData[n].qty,
+            purchasePrice: addData[n].price,
+            DPP: addData[n].dpp,
+            PPN: addData[n].ppn,
+            discPercent: addData[n].disc1,
+            discNominal: addData[n].discount,
+          })
+        }
+      }
+      for (let n = 0; n < editData.length; n++ ) {
+        arrayProdEdit.push({
+          transNo: payload.id.transNo,
+          productId: editData[n].code,
+          productName: editData[n].name,
+          qty: editData[n].qty,
+          purchasePrice: editData[n].price,
+          DPP: editData[n].dpp,
+          PPN: editData[n].ppn,
+          discPercent: editData[n].disc1,
+          discNominal: editData[n].discount,
+        })
+      }
+      if (payload.data.length > 0) {
+        if (addData.length === 0) {
+          data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
+          dataPurchase = yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
+        } else if (addData.length > 0) {
+          data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
+          dataAdd = yield call(createDetail, { id: payload.id.transNo, data: arrayProdAdd })
+          dataPurchase = yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
+        }
+        if (data.success || dataAdd.success) {
+          const modal = Modal.info({
+            title: 'Information',
+            content: 'Transaction has been saved...!',
+          })
+          localStorage.removeItem('product_detail')
+          yield put({ type: 'resetBrowse' })
+          yield put({ type: 'modalHide' })
+          yield put({ type: 'changeRounding', payload: 0 })
+          yield put({ type: 'query' })
+        } else {
+          throw data
+        }
       } else {
-        throw data
+        Modal.warning({
+          title: 'Your payment list not exists',
+          content: 'Please select an Invoice',
+        })
       }
     },
-    *getProducts ({payload}, {call, put}) {
-      const data = yield call(queryProducts, payload)
+
+    * getProducts ({ payload }, { call, put }) {
+      let data = []
+      let dataDetail = []
+      if (payload ? payload.modalType === 'browseInvoice' : false) {
+        dataDetail = yield call(query)
+      } else {
+        data = yield call(queryProducts)
+      }
       let newData = payload ? data.product : data.data
-      if (data.success) {
+      let dataInvoice = dataDetail.data
+      if (data.length === 0 || dataDetail.length === 0) {
         yield put({
           type: 'queryGetProductsSuccess',
           payload: {
             productInformation: newData,
             tmpProductList: newData,
+            pagination: {
+              total: data.total,
+            },
+          },
+        })
+        yield put({
+          type: 'queryGetInvoiceSuccess',
+          payload: {
+            dataInvoice: dataInvoice,
+            tmpInvoiceList: dataInvoice,
+            pagination: {
+              total: dataDetail.total,
+            },
           },
         })
       }
       else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Product Not Found...!',
+          content: 'Content Not Found...!',
         })
         setTimeout(() => modal.destroy(), 1000)
-        //throw data
       }
     },
-    *editPurchase ({payload}, {put}) {
+    * getInvoiceDetail ({ payload }, { call, put }) {
+      const data = yield call(queryDetail, { transNo: encodeURIComponent(payload.transNo) })
+      let arrayProd = []
+      for (let n = 0; n < data.data.length; n++) {
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: data.data[n].productId,
+          productCode: data.data[n].productCode,
+          name: data.data[n].productName,
+          qty: data.data[n].qty,
+          price: data.data[n].purchasePrice,
+          discount: data.data[n].discNominal,
+          disc1: data.data[n].discPercent,
+          dpp: data.data[n].dpp,
+          ppn: data.data[n].ppn,
+          total: (
+            (
+              (parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) -
+              (
+                (parseFloat(data.data[n].discNominal) * parseFloat(data.data[n].qty)) +
+                (parseFloat(data.data[n].discPercent) * ((parseFloat(data.data[n].purchasePrice) * parseFloat(data.data[n].qty)) / 100))
+              )
+            ) +
+            parseFloat(data.data[n].ppn)),
+          ket: 'edit',
+        })
+      }
+      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      yield put({
+        type: 'hideProductModal',
+      })
+      yield put({
+        type: 'setTransNo',
+        payload: payload,
+      })
+    },
+    * editPurchase ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
       let taxType = localStorage.getItem('taxType')
       let ppnTempValue = taxType === 'I' ? 0.1 : 0
@@ -202,7 +339,7 @@ export default modelExtend(pageModel, {
       let ppn = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].ppn
       let dpp = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].dpp
       let ppnValue
-      if ( payload.kodeUtil === 'price' ) {
+      if (payload.kodeUtil === 'price') {
         price = payload.value
         arrayProd[payload.effectedRecord - 1].price = price
         arrayProd[payload.effectedRecord - 1].discount = discount
@@ -215,7 +352,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].dpp = total
         arrayProd[payload.effectedRecord - 1].total = total + ppn
       }
-      else if ( payload.kodeUtil === 'discount' ) {
+      else if (payload.kodeUtil === 'discount') {
         discount = payload.value
         arrayProd[payload.effectedRecord - 1].price = price
         arrayProd[payload.effectedRecord - 1].discount = discount
@@ -228,7 +365,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].dpp = total
         arrayProd[payload.effectedRecord - 1].total = total + ppn
       }
-      else if ( payload.kodeUtil === 'disc1' ) {
+      else if (payload.kodeUtil === 'disc1') {
         disc1 = payload.value
         arrayProd[payload.effectedRecord - 1].price = price
         arrayProd[payload.effectedRecord - 1].discount = discount
@@ -241,7 +378,7 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].dpp = total
         arrayProd[payload.effectedRecord - 1].total = total + ppn
       }
-      else if ( payload.kodeUtil === 'qty') {
+      else if (payload.kodeUtil === 'qty') {
         qty = payload.value
         arrayProd[payload.effectedRecord - 1].price = price
         arrayProd[payload.effectedRecord - 1].discount = discount
@@ -254,15 +391,15 @@ export default modelExtend(pageModel, {
         arrayProd[payload.effectedRecord - 1].dpp = total
         arrayProd[payload.effectedRecord - 1].total = total + ppn
       }
-      else if ( payload.kodeUtil === 'I') {
+      else if (payload.kodeUtil === 'I') {
         ppnValue = 0.1
-        for (let n=1; n<=arrayProd.length; n++){
-          ppn = (ppnValue * arrayProd[n-1].price)
-          dpp = arrayProd[n-1].price * arrayProd[n-1].qty - (arrayProd[n-1].price * arrayProd[n-1].qty * arrayProd[n-1].disc1 / 100 ) - (arrayProd[n-1].qty * arrayProd[n-1].discount )
+        for (let n = 1; n <= arrayProd.length; n++) {
+          ppn = (ppnValue * arrayProd[n - 1].price)
+          dpp = arrayProd[n - 1].price * arrayProd[n - 1].qty - (arrayProd[n - 1].price * arrayProd[n - 1].qty * arrayProd[n - 1].disc1 / 100 ) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount )
           qty = arrayProd[n - 1].qty
-          arrayProd[n-1].dpp = dpp
-          arrayProd[n-1].ppn = ppnTempValue * dpp
-          arrayProd[n-1].total = dpp + (ppnTempValue * dpp)
+          arrayProd[n - 1].dpp = dpp
+          arrayProd[n - 1].ppn = ppnTempValue * dpp
+          arrayProd[n - 1].total = dpp + (ppnTempValue * dpp)
         }
       }
       else if ( payload.kodeUtil === 'E') {
@@ -291,12 +428,55 @@ export default modelExtend(pageModel, {
           arrayProd[n - 1].total = arrayProd[n - 1].dpp + arrayProd[n - 1].ppn
         }
         yield put({ type: 'setDiscountNominal', payload: payload.value })
-      } else if (payload.kodeUtil === 'ket') {
-        arrayProd[payload.effectedRecord - 1].ket = payload.value
       }
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       yield put({ type: 'setAllNull' })
       yield put({ type: 'modalEditHide' })
+    },
+    * deleteList ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+      let arrayProd = dataPos.slice()
+      Array.prototype.remove = function () {
+        let what, a = arguments, L = a.length, ax
+        while (L && this.length) {
+          what = a[--L]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.Record - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n++) {
+        arrayProd.push({
+          no: n + 1,
+          code: ary[n].code,
+          productCode: ary[n].productCode,
+          name: ary[n].name,
+          disc1: ary[n].disc1,
+          discount: ary[n].discount,
+          price: ary[n].price,
+          dpp: ary[n].dpp,
+          ppn: ary[n].ppn,
+          ket: '',
+          qty: ary[n].qty,
+          total: ary[n].total,
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('product_detail')
+        yield put({
+          type: 'modalEditHide',
+        })
+      } else {
+        localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'modalEditHide',
+        })
+      }
     },
 
   },
@@ -304,11 +484,12 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const { listPurchase, listSupplier, pagination } = action.payload
+      const { listPurchase, listSupplier, tmpSupplierData, pagination } = action.payload
       return {
         ...state,
         listPurchase,
         listSupplier,
+        tmpSupplierData,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -317,7 +498,7 @@ export default modelExtend(pageModel, {
     },
 
     queryGetProductsSuccess (state, action) {
-      const { productInformation, tmpProductList } = action.payload
+      const { productInformation, tmpProductList, pagination } = action.payload
       let dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
       let a = dataPurchase
       let grandTotal = a.reduce(function (cnt, o) {
@@ -328,31 +509,63 @@ export default modelExtend(pageModel, {
         listProduct: productInformation,
         tmpProductList: tmpProductList,
         curTotal: grandTotal,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        }
+      }
+    },
+    queryGetInvoiceSuccess (state, action) {
+      const { dataInvoice, pagination, tmpInvoiceList } = action.payload
+      return {
+        ...state,
+        listInvoice: dataInvoice,
+        tmpInvoiceList: tmpInvoiceList,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
       }
     },
     onProductSearch (state, action) {
-      const { searchText, tmpProductList } = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+      const { searchText, tmpProductList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)
         if (!match) {
-          return null;
+          return null
         }
         return {
           ...record,
-        };
+        }
       }).filter(record => !!record)
 
       return { ...state, listProduct: newData }
     },
-    onSupplierSearch (state, action) {
-      const { searchText, tmpSupplierData } = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+    onInvoiceSearch (state, action) {
+      const { searchText, tmpInvoiceList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
       let newData
+      newData = tmpInvoiceList.map((record) => {
+        const match = record.transNo.match(reg) || record.transDate.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record,
+        }
+      }).filter(record => !!record)
 
+      return { ...state, listInvoice: newData }
+    },
+    onSupplierSearch (state, action) {
+      const { searchText, tmpSupplierData } = action.payload
+      console.log('onSupplierSearch', searchText, tmpSupplierData)
+      const reg = new RegExp(searchText, 'gi')
+      let newData
       newData = tmpSupplierData.map((record) => {
-        const match = record.supplierName.match(reg) || record.supplierCode.match(reg) || record.address01.match(reg)
+        const match = record.supplierName.match(reg) || record.supplierCode.match(reg)
         if (!match) {
           return null;
         }
@@ -360,11 +573,29 @@ export default modelExtend(pageModel, {
           ...record,
         };
       }).filter(record => !!record)
+
       return { ...state, listSupplier: newData }
     },
+    onSupplierReset (state, action) {
+      const { searchText, tmpSupplierData } = action.payload
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+
+      newData = tmpMemberList.map((record) => {
+        const match = record.supplierName.match(reg) || record.supplierCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listSupplier: newData, searchText: searchText }
+    },
     onProductReset (state, action) {
-      const { searchText, tmpProductList } = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+      const { searchText, tmpProductList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
       let newData
 
       newData = tmpProductList.map((record) => {
@@ -379,12 +610,29 @@ export default modelExtend(pageModel, {
 
       return { ...state, listProduct: newData, searchText: searchText }
     },
+    onInvoiceReset (state, action) {
+      const { searchText, tmpInvoiceList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+
+      newData = tmpInvoiceList.map((record) => {
+        const match = record.transNo.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record,
+        }
+      }).filter(record => !!record)
+
+      return { ...state, listInvoice: newData, searchText: searchText }
+    },
     querySuccessByCode (state, action) {
       const { listByCode, curRecord } = action.payload
 
       let dataPos = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
       let a = dataPos
-      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
 
       return { ...state,
         listByCode,
@@ -401,48 +649,49 @@ export default modelExtend(pageModel, {
       return { ...state, curDiscNominal: action.payload }
     },
     chooseDate (state, action) {
-      return {...state, date: action.payload}
-    },
-    chooseDatePicker (state, action) {
-      console.log('chooseDatePicker', action.payload)
-      return {...state, tempo: 0,datePicker: action.payload}
+      return { ...state, date: action.payload }
     },
     showProductModal (state, action) {
-      return {...state, ...action.payload, modalProductVisible: true}
+      return { ...state, ...action.payload, modalProductVisible: true }
     },
     modalEditShow (state, action) {
-      return {...state, ...action.payload, modalPurchaseVisible: true, item: action.payload.data}
+      return { ...state, ...action.payload, modalPurchaseVisible: true, item: action.payload.data }
     },
     modalEditHide (state, action) {
-      return {...state, ...action.payload, modalPurchaseVisible: false, dataBrowse: JSON.parse(localStorage.getItem('product_detail')) }
+      return { ...state, ...action.payload, modalPurchaseVisible: false, dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [] }
     },
     setAllNull (state, action) {
-      return {...state, ...action.payload, item: '' }
+      return { ...state, ...action.payload, item: '' }
     },
     onChooseSupplier (state, action) {
-      console.log('onChooseSupplier')
-      return {...state, supplierInformation: action.payload}
+      return { ...state, supplierInformation: action.payload }
     },
     hideProductModal (state) {
-      return { ...state, modalProductVisible: false, dataBrowse: JSON.parse(localStorage.getItem('product_detail')) }
+      return { ...state, modalProductVisible: false, dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [] }
     },
     modalHide (state) {
-      return {...state, modalVisible: false}
+      return { ...state, modalVisible: false }
     },
     setDiscountNominal (state, action) {
       return { ...state, discNML: action.payload }
     },
     setDiscountPerc (state, action) {
-      return {...state, discPRC: action.payload}
+      return { ...state, discPRC: action.payload }
     },
     searchShow (state) {
-      return {...state, searchVisible: true}
+      return { ...state, searchVisible: true }
     },
     resetBrowse (state) {
       return { ...state, dataBrowse: [] }
     },
     searchHide (state) {
-      return {...state, searchVisible: false}
+      return { ...state, searchVisible: false }
+    },
+    setTransNo (state, action) {
+      return { ...state, transNo: action.payload, rounding: action.payload.rounding }
+    },
+    changeRounding (state, action) {
+      return { ...state, rounding: action.payload }
     },
   },
 })

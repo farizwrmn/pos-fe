@@ -4,6 +4,8 @@ yarn.lock
 npm-debug.log
 .idea/*
 Y
+yarn-error.log
+package-lock.json
 build
 package-lock.json
 *.sh
