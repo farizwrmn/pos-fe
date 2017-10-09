@@ -87,12 +87,12 @@ const Browse = ({ listOut, company, user, productCode, fromDate, toDate, ...brow
     if (fromDate === null && toDate === null) {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your CreateAt paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...',
       })
     } else if (listOut.length === 0) {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your CreateAt paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...',
       })
     } else {
       sheet.getCell('F2').font = {

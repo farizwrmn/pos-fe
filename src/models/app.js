@@ -1,6 +1,6 @@
 import { query, logout, changePw } from '../services/app'
-import { queryMode } from '../services/misc'
 import * as menusService from '../services/menus'
+import { queryMode as miscQuery } from '../services/misc'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import config from 'config'
@@ -12,7 +12,7 @@ export default {
   namespace: 'app',
   state: {
     user: {},
-    company: {},
+    storeInfo: {},
     permissions: {
       visit: [],
     },
@@ -52,14 +52,6 @@ export default {
       payload,
     }, { call, put }) {
       const { success, user } = yield call(query, payload)
-      let company = yield call(queryMode, { code: 'company' })
-      company = company.data
-      if(company) {
-        localStorage.setItem('company', JSON.stringify(company))
-        yield put({ type: 'setCompany', payload: company })
-      } else {
-        console.log('unexpected error misc')
-      }
       if (success && user) {
         const { list } = yield call(menusService.query)
         const { permissions } = user
@@ -78,10 +70,39 @@ export default {
             return cases.every(_ => _)
           })
         }
+
+        const misc = yield call(miscQuery, { code: 'company'})
+        let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
+        const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
+        const storeInfo = { name, address01, address02 }
+        storeInfo.stackHeader01 = [{
+            text: name,
+            fontSize: 11,
+            alignment: 'left',
+          },
+          {
+            text: address01,
+            fontSize: 11,
+            alignment: 'left',
+          },
+          {
+            text: address02,
+            fontSize: 11,
+            alignment: 'left',
+          },
+        ]
+
+        if(storeInfo != []) {
+          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
+        } else {
+          console.log('unexpected error misc')
+        }
+
         yield put({
           type: 'updateState',
           payload: {
             user,
+            storeInfo,
             permissions,
             menu,
           },
@@ -189,13 +210,6 @@ export default {
       return {
         ...state,
         isNavbar: payload,
-      }
-    },
-
-    setCompany (state, { payload }) {
-      return {
-        ...state,
-        company: payload
       }
     },
 

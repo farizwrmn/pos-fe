@@ -3,14 +3,13 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import { Button, Icon } from 'antd'
 import { saveAs } from 'file-saver'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 // webpack.config.js, exceljs compiled warning
 import moment from 'moment'
 
-const Report = ({
-}) => {
+const PrintXLS = () => {
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS';
   workbook.created = new Date(1985, 8, 30);
@@ -32,12 +31,12 @@ const Report = ({
     })
   }
   return(
-    <Button icon="file-excel" style={{ backgroundColor: '#207347', color: 'white' }} size='large' onClick={() => handleExcel()}>Excel</Button>
+    <div onClick={() => handleExcel()}><Icon type="file-excel" /> Excel</div>
   )
 }
 
-Report.propTyps = {
+PrintXLS.propTypes = {
   location: PropTypes.object,
 }
 
-export default Report
+export default PrintXLS

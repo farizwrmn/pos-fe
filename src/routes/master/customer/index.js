@@ -8,11 +8,6 @@ import Filter from './Filter'
 import Modal from './Modal'
 import Unit from './Unit'
 
-const pdfMake = require('pdfmake/build/pdfmake.js');
-const pdfFonts = require('pdfmake/build/vfs_fonts.js');
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-
 const Customer = ({ location, customergroup, customertype, dispatch, customer, loading, employee, city,unit }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
     disabledItem, disableItem, modalType, selectedRowKeys, disableMultiSelect,
@@ -345,65 +340,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
         },
       })
     },
-    onPrint () {
-      function createPdfLineItems(tabledata){
-        let headers = {
-          top:{
-            col_1:{ text: 'Code', style: 'tableHeader', alignment: 'center' },
-            col_2:{ text: 'Name', style: 'tableHeader', alignment: 'center' },
-            col_3:{ text: 'Point', style: 'tableHeader', alignment: 'center' },
-            col_4:{ text: 'Mobile', style: 'tableHeader', alignment: 'center' },
-            col_5:{ text: 'Phone', style: 'tableHeader', alignment: 'center'}
-          }
-        }
-        let rows = tabledata;
-        let body = [];
-        for (let key in headers){
-          if (headers.hasOwnProperty(key)){
-            let header = headers[key];
-            let row = new Array();
-            row.push( header.col_1 );
-            row.push( header.col_2 );
-            row.push( header.col_3 );
-            row.push( header.col_4 );
-            row.push( header.col_5 );
-            body.push(row);
-          }
-        }
-        for (let key in rows)
-        {
-          if (rows.hasOwnProperty(key))
-          {
-            let data = rows[key];
-            let row = new Array();
-            row.push( { text: data.memberCode.toString(), alignment: 'center' } );
-            row.push( { text: data.memberName.toString(), alignment: 'center' } );
-            row.push( { text: data.point.toString(), alignment: 'center' });
-            row.push( { text: data.mobileNumber.toString(), alignment: 'center' });
-            row.push( { text: data.phoneNumber.toString(), alignment: 'center' });
-            body.push(row);
-          }
-        }
-        return body;
-      }
-      let body = createPdfLineItems(list)
-      let docDefinition = {
-        pageSize: { width: 813, height: 530 },
-        pageOrientation: 'landscape',
-        pageMargins: [ 40, 60, 40, 60 ],
-        content: [
-          {
-            style: 'tableExample',
-            writable: true,
-            table: {
-              widths: ['25%', '25%', '10%', '20%','20%'],
-              body: body
-            },
-          },
-        ]
-      }
-      pdfMake.createPdf(docDefinition).open()
-    },
+
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -497,10 +434,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       }))
     },
     onSearchHide () { dispatch({ type: 'customer/searchHide' }) },
-  }
-
-  const reportProps = {
-    list,
   }
 
   return (

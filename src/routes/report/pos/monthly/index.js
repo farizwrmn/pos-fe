@@ -4,22 +4,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Browse from './Browse'
+import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, posReport, app }) => {
-  const { list, pagination, fromDate, toDate, productCode, company } = posReport
-  const { user } = app
-  const { pageSize } = pagination
+const Report = ({ dispatch, posReport, app }) => {
+  const { list, fromDate, toDate, productCode } = posReport
+  const { user, storeInfo } = app
   const browseProps = {
     dataSource: list,
     list,
-    company,
+    storeInfo,
     user,
     fromDate,
     toDate,
     productCode,
-    onListReset () {
+  }
+
+  const filterProps = {
+    list: list,
+    user,
+    storeInfo,
+    fromDate,
+    toDate,
+    productCode,
+    onListReset(){
       dispatch({
         type: 'posReport/setListNull',
       })
@@ -42,47 +50,18 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     },
   }
 
-  const filterProps = {
-    filter: {
-      ...location.query,
-    },
-    onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          ...value,
-          page: 1,
-          pageSize,
-        },
-      }))
-    },
-    onSearch (fieldsValue) {
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/report/pos/monthly',
-        query: {
-          field: fieldsValue.field,
-          keyword: fieldsValue.keyword,
-        },
-      })) : dispatch(routerRedux.push({
-        pathname: '/report/pos/monthly',
-      }))
-    },
-    onSearchHide () { dispatch({ type: 'customer/searchHide' }) },
-  }
-
   return (
     <div className="content-inner">
+      <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>
   )
 }
 
 Report.propTyps = {
-  location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
   app: PropTypes.object,
   posReport: PropTypes.object,
 }
 
-export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)
+export default connect(({ posReport, app }) => ({ posReport, app }))(Report)

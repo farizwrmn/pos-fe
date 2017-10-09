@@ -6,10 +6,10 @@ module.exports = {
     red: '#f69899',
     yellow: '#f8c82e',
     peach: '#f797d6',
+    grass: '#d6fbb5',
+    sky: '#c1e0fc',
     borderBase: '#e5e5e5',
     // borderSplit: '#f4f4f4',
     borderSplit: '#e9e9e9',
-    grass: '#d6fbb5',
-    sky: '#c1e0fc',
   },
 }
