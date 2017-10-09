@@ -162,6 +162,112 @@ export default {
       yield put({ type: 'hideServiceModal' })
     },
 
+    * paymentDelete ({ payload }, { put }) {
+      console.log('paymentDelete', payload)
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let arrayProd = dataPos.slice()
+      console.log('effectedRecord', arrayProd)
+      Array.prototype.remove = function() {
+        let what, a = arguments, L = a.length, ax
+        while (L && this.length) {
+          what = a[--L]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.Record - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          code: ary[n].code,
+          productId: ary[n].productId,
+          disc1: ary[n].disc1,
+          disc2: ary[n].disc2,
+          disc3: ary[n].disc3,
+          discount: ary[n].discount,
+          name: ary[n].name,
+          price: ary[n].price,
+          qty: ary[n].qty,
+          total: ary[n].total,
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('cashier_trans')
+        yield put({
+          type: 'setCurTotal',
+        })
+        yield put({
+          type: 'hidePaymentModal',
+        })
+      } else {
+        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
+        yield put({
+          type: 'hidePaymentModal',
+        })
+      }
+    },
+
+    * serviceDelete ({ payload }, { put }) {
+      console.log('paymentDelete', payload)
+      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let arrayProd = dataPos.slice()
+      console.log('effectedRecord', arrayProd)
+      Array.prototype.remove = function() {
+        let what, a = arguments, L = a.length, ax
+        while (L && this.length) {
+          what = a[--L]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.Record - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          code: ary[n].code,
+          productId: ary[n].productId,
+          disc1: ary[n].disc1,
+          disc2: ary[n].disc2,
+          disc3: ary[n].disc3,
+          discount: ary[n].discount,
+          name: ary[n].name,
+          price: ary[n].price,
+          qty: ary[n].qty,
+          total: ary[n].total,
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('service_detail')
+        yield put({
+          type: 'setCurTotal',
+        })
+        yield put({
+          type: 'hideServiceListModal',
+        })
+      } else {
+        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
+        yield put({
+          type: 'hideServiceListModal',
+        })
+      }
+    },
+
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
       if (data) {
@@ -1269,11 +1375,11 @@ export default {
       return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
-      return { ...state, modalPaymentVisible: false }
+      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
     },
 
     showServiceListModal (state, action) {
-      return { ...state, ...action.payload, itemPayment: action.payload.item, modalServiceListVisible: true }
+      return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
     },
     hideServiceListModal (state) {
       return { ...state, modalServiceListVisible: false }
@@ -1590,7 +1696,12 @@ export default {
     },
 
     setTotalItem (state, action) {
-      return { ...state, totalItem: action.payload }
+      return { ...state, itemPayment: action.payload }
+    },
+
+    setTotalItemService (state, action) {
+      console.log('setTotalItemService', action.payload)
+      return { ...state, itemService: action.payload }
     },
 
     changeQueue (state, action) {

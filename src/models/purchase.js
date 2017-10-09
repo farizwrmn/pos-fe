@@ -119,6 +119,13 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * editPurchaseList ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
+      dataPos[payload.no - 1] = payload
+      localStorage.setItem('product_detail', JSON.stringify(dataPos))
+      yield put({ type: 'modalEditHide' })
+    },
+
     * add ({ payload }, { call, put }) {
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       if (purchase_detail.length !== 0) {
@@ -277,8 +284,7 @@ export default modelExtend(pageModel, {
             },
           },
         })
-      }
-      else {
+      } else {
         const modal = Modal.warning({
           title: 'Warning',
           content: 'Content Not Found...!',
@@ -289,6 +295,7 @@ export default modelExtend(pageModel, {
     * getInvoiceDetail ({ payload }, { call, put }) {
       const data = yield call(queryDetail, { transNo: encodeURIComponent(payload.transNo) })
       let arrayProd = []
+      console.log(data)
       for (let n = 0; n < data.data.length; n++) {
         arrayProd.push({
           no: arrayProd.length + 1,
@@ -561,7 +568,6 @@ export default modelExtend(pageModel, {
     },
     onSupplierSearch (state, action) {
       const { searchText, tmpSupplierData } = action.payload
-      console.log('onSupplierSearch', searchText, tmpSupplierData)
       const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpSupplierData.map((record) => {
@@ -692,6 +698,9 @@ export default modelExtend(pageModel, {
     },
     changeRounding (state, action) {
       return { ...state, rounding: action.payload }
+    },
+    setTotalItem (state, action) {
+      return { ...state, item: action.payload }
     },
   },
 })

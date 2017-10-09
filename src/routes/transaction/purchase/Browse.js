@@ -3,13 +3,6 @@ import PropTypes from 'prop-types'
 import {Table, Modal, Row, Col, Icon, Button} from 'antd'
 import {DropOption} from 'components'
 
-const gridStyle = {
-  width: '60%',
-  textAlign: 'center',
-};
-
-const confirm = Modal.confirm
-
 const Browse = ({
   modalShow, ...purchaseProps }) => {
   const columns = [
@@ -77,13 +70,13 @@ const Browse = ({
   return (
     <Table
       bordered
-      scroll={{x: 1300}}
+      scroll={{ x: 1300 }}
       columns={columns}
       simple
       size="small"
-      pagination={{pageSize: 5}}
+      pagination={{ pageSize: 5 }}
       dataSource={purchaseProps.purchase.dataBrowse}
-      onRowClick={(record) => hdlModalShow(record)}
+      onRowClick={_record => hdlModalShow(_record)}
     />
   )
 }

@@ -182,7 +182,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       type: 'pos/showServiceListModal',
       payload: {
         item: record,
-        totalItem: record.total,
         modalType: 'modalService',
       },
     })
@@ -426,13 +425,16 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     onCancel () {
       dispatch({type: 'pos/hidePaymentModal'})
     },
+    DeleteItem (data) {
+      dispatch({ type: 'pos/paymentDelete', payload: data })
+    },
     onChooseItem (data) {
       dispatch({ type: 'pos/paymentEdit', payload: data })
     },
-    onChangeTotalItem (total) {
+    onChangeTotalItem (data) {
       dispatch({
         type: 'pos/setTotalItem',
-        payload: total,
+        payload: data,
       })
     },
   }
@@ -452,10 +454,13 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       dispatch({ type: 'pos/serviceEdit', payload: data })
       dispatch({ type: 'pos/hideServiceListModal' })
     },
-    onChangeTotalItem (total) {
+    DeleteItem (data) {
+      dispatch({ type: 'pos/serviceDelete', payload: data })
+    },
+    onChangeTotalItem (data) {
       dispatch({
-        type: 'pos/setTotalItem',
-        payload: total,
+        type: 'pos/setTotalItemService',
+        payload: data,
       })
     },
   }

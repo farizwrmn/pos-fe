@@ -80,11 +80,9 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
     let add = moment(a, 'YYYY-MM-DD').add(value, 'd')
     onChangeDate(add.format('YYYY-MM-DD'))
   }
-  console.log(tmpSupplierData)
   const hdlSearch = (e) => {
     onSearchSupplier(e, tmpSupplierData)
   }
-
   const hdlGetSupplier = () => {
     onGetSupplier()
   }

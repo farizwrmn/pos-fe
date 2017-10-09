@@ -10,8 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 12 },
 }
 
-const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
-  let total = totalItem
+const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -20,10 +19,8 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
       const data = {
         ...getFieldsValue(),
       }
-      data.total = total
-      data.no = data.Record
-      delete data.Record
       data.productId = item.productId
+      console.log(item)
       onChooseItem(data)
     })
   }
@@ -33,9 +30,10 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
     let H2 = H1 * (1 - (data.disc2 / 100))
     let H3 = H2 * (1 - (data.disc3 / 100))
     let TOTAL = H3 - data.discount
-    onChangeTotalItem(TOTAL)
+    data.total = TOTAL
+    data.productId = item.productId
+    onChangeTotalItem(data)
   }
-
   const handleDelete = () => {
     const Record = {
       ...getFieldsValue(),
@@ -50,9 +48,9 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
       content: `Record ${data.Record} will remove from list !`,
       onOk() {
         console.log('Ok')
-        onChooseItem(data)
+        DeleteItem(data)
       },
-      onCancel() {
+      onCancel () {
         console.log('Cancel')
       },
     })
@@ -60,8 +58,8 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
 
   return (
     <Form>
-      <FormItem {...formItemLayout} label="Record">
-        {getFieldDecorator('Record', {
+      <FormItem {...formItemLayout} label="no">
+        {getFieldDecorator('no', {
           initialValue: item.no,
           rules: [{
             required: true,
@@ -72,33 +70,6 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
         )
         }
       </FormItem>
-      {/*<FormItem {...formItemLayout} label="Payment">*/}
-        {/*{getFieldDecorator('Payment', {*/}
-          {/*rules: [{*/}
-            {/*required: true,*/}
-            {/*message: 'Required',*/}
-          {/*}],*/}
-        {/*})(*/}
-          {/*<Select defaultValue="lucy" style={{width: 120}}>*/}
-            {/*<Option value="discount">Discount Nominal</Option>*/}
-            {/*<Option value="disc1">Disc 1(%)</Option>*/}
-            {/*<Option value="disc2">Disc 2(%)</Option>*/}
-            {/*<Option value="disc3">Disc 3(%)</Option>*/}
-            {/*<Option value="quantity">Quantity</Option>*/}
-          {/*</Select>*/}
-        {/*)*/}
-        {/*}*/}
-      {/*</FormItem>*/}
-      {/*<FormItem {...formItemLayout} label="VALUE">*/}
-        {/*{getFieldDecorator('VALUE', {*/}
-          {/*rules: [{*/}
-            {/*required: true,*/}
-            {/*message: 'Required',*/}
-          {/*}],*/}
-        {/*})(*/}
-          {/*<Input />*/}
-        {/*)}*/}
-      {/*</FormItem>*/}
       <FormItem {...formItemLayout} label="Product Code">
         {getFieldDecorator('code', {
           initialValue: item.code,
@@ -127,13 +98,12 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           rules: [{
             required: true,
             message: 'Required',
+            pattern: /^([0-9.]{0,13})$/i,
           }],
         })(
-          <Input
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+          <InputNumber
+            min={0}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
@@ -143,14 +113,13 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           rules: [{
             required: true,
             message: 'Required',
+            pattern: /^([0-9]{0,13})$/i,
           }],
         })(
           <InputNumber
             defaultValue={0}
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+            min={0}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
@@ -159,15 +128,15 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           initialValue: item.disc1,
           rules: [{
             required: true,
-            message: 'Required',
+            message: 'Invalid',
+            pattern: /^([0-9.]{0,5})$/i,
           }],
         })(
           <InputNumber
             defaultValue={0}
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+            min={0}
+            max={100}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
@@ -176,15 +145,15 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           initialValue: item.disc2,
           rules: [{
             required: true,
-            message: 'Required',
+            message: 'Invalid',
+            pattern: /^([0-9.]{0,5})$/i,
           }],
         })(
           <InputNumber
             defaultValue={0}
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+            min={0}
+            max={100}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
@@ -193,15 +162,15 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           initialValue: item.disc3,
           rules: [{
             required: true,
-            message: 'Required',
+            message: 'Invalid',
+            pattern: /^([0-9.]{0,5})$/i,
           }],
         })(
           <InputNumber
             defaultValue={0}
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+            min={0}
+            max={100}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
@@ -210,20 +179,28 @@ const PaymentList = ({ totalItem, onChooseItem, onChangeTotalItem, item, form: {
           initialValue: item.discount,
           rules: [{
             required: true,
-            message: 'Required',
+            message: 'Invalid',
+            pattern: /^([0-9.]{0,13})$/i,
           }],
         })(
           <InputNumber
             defaultValue={0}
-            onBlur={(value) => handleTotalChange(value)}
-            onEnter={(value) => handleTotalChange(value)}
-            onFocus={(value) => handleTotalChange(value)}
-            onChange={(value) => handleTotalChange(value)}
+            min={0}
+            max={item.total}
+            onBlur={value => handleTotalChange(value)}
           />
         )}
       </FormItem>
       <FormItem {...formItemLayout} label="Total">
-        <Input value={total} />
+        {getFieldDecorator('total', {
+          initialValue: item.total,
+          rules: [{
+            required: true,
+            message: 'Required',
+          }],
+        })(
+          <Input disabled />
+        )}
       </FormItem>
       <Row>
         <Col span={6}>
@@ -241,6 +218,7 @@ PaymentList.propTypes = {
   form: PropTypes.object.isRequired,
   pos: PropTypes.object,
   item: PropTypes.object,
+  DeleteItem: PropTypes.func,
   totalItem: PropTypes.string,
   onChooseItem: PropTypes.func,
   onChangeTotalItem: PropTypes.func.isRequired,

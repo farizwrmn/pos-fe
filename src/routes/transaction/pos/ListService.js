@@ -1,23 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Input, Icon, Form } from 'antd'
 import { connect } from 'dva'
-import { DropOption } from 'components'
-// import styles from './List.less'
-// import classnames from 'classnames'
-// import AnimTableBody from 'components/DataTable/AnimTableBody'
+import { Table, Button, Input, Form } from 'antd'
 
 const FormItem = Form.Item
 
-const ListService = ({ onChooseItem, pos, dispatch, location, ...tableProps }) => {
-  const { searchText, filtered, tmpServiceList } = pos
+const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
+  const { searchText, tmpServiceList } = pos
 
-  const handleMenuClick = (record, e) => {
+  const handleMenuClick = (record) => {
     onChooseItem(record)
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
 
     dispatch({
       type: 'pos/onInputChange',
@@ -60,44 +56,36 @@ const ListService = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =
       title: 'No',
       dataIndex: 'id',
       key: 'id',
-      width: 175
+      width: 175,
     },
     {
       title: 'Service Code',
       dataIndex: 'serviceCode',
       key: 'serviceCode',
-      width: 175
+      width: 175,
     },
     {
       title: 'Description',
       dataIndex: 'serviceName',
       key: 'serviceName',
-      width: 400
+      width: 400,
     }, {
       title: 'Service Cost',
       dataIndex: 'serviceCost',
       key: 'serviceCost',
-      width: 125
+      width: 125,
     },
   ]
-
-  // const getBodyWrapperProps = {
-  //   page: location.query.page,
-  //   current: tableProps.pagination.current,
-  // }
-  //
-  // const getBodyWrapper = body => { return isMotion ? <AnimTableBody {...getBodyWrapperProps} body={body} /> : body }
-// className={classnames({ [styles.table]: true })}
   return (
     <div>
       <Form layout="inline">
         <FormItem>
           <Input placeholder="Search Service Name"
-                 value={searchText}
-                 size="small"
-                 onChange={(e) => handleChange(e)}
-                 onPressEnter={handleSearch}
-                 style={{ marginBottom: 16 }} />
+            value={searchText}
+            size="small"
+            onChange={(e) => handleChange(e)}
+            onPressEnter={handleSearch}
+            style={{ marginBottom: 16 }} />
         </FormItem>
         <FormItem>
           <Button size="small" type="primary" onClick={handleSearch}>Search</Button>

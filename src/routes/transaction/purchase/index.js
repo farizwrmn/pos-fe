@@ -43,6 +43,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         payload: e,
       })
     },
+    onChangeTotalItem (data) {
+      dispatch({
+        type: 'purchase/setTotalItem',
+        payload: data,
+      })
+    },
     handleBrowseProduct () {
       dispatch({
         type: 'purchase/getProducts',
@@ -95,7 +101,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
     },
     onChooseItem (data) {
-      dispatch({ type: 'purchase/editPurchase', payload: { value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Detail } })
+      dispatch({ type: 'purchase/editPurchaseList', payload: data })
     },
     onResetBrowse () {
       dispatch({ type: 'purchase/resetBrowse' })

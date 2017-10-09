@@ -73,7 +73,7 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     <div>
       <Form layout="inline">
         <FormItem>
-          <Input placeholder="Search Member Name"
+          <Input placeholder="Search Product Name"
                  value={searchText}
                  size="small"
                  onChange={(e) => handleChange(e)}

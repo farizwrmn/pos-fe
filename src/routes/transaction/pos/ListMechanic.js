@@ -64,7 +64,7 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     <div>
       <Form layout="inline">
         <FormItem>
-          <Input placeholder="Search Member Name"
+          <Input placeholder="Search Mechanic Name"
                  value={searchText}
                  size="small"
                  onChange={(e) => handleChange(e)}
