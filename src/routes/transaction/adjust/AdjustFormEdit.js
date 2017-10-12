@@ -37,7 +37,6 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
         picId: itemEmployee !== null ? itemEmployee.employeeId : '',
       }
       data.transType = data.transType[0]
-      console.log('onOk data:', data.transType)
       onOk(data)
     })
   }

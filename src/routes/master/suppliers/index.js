@@ -52,7 +52,6 @@ const Suppliers = ({ city, location, dispatch, suppliers, loading, misc, employe
       })
     },
     onChooseCity (data) {
-      console.log('data', data);
       dispatch({
         type: 'suppliers/chooseCity',
         payload: {

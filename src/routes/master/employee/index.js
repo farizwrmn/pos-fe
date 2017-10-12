@@ -39,7 +39,6 @@ const Employee = ({ location, dispatch, employee, jobposition, city, loading  })
       dispatch({ type: `employee/modalHide` })
     },
     modalButtonSaveClick (id, data) {
-      console.log('modalButtonSaveClick', id)
       dispatch({
         type: `employee/${modalType}`,
         payload: {
@@ -65,7 +64,6 @@ const Employee = ({ location, dispatch, employee, jobposition, city, loading  })
       })
     },
     onChooseCity (data) {
-      console.log('onChooseCity', data, 'currentItem', currentItem)
       dispatch({
         type: 'employee/chooseCity',
         payload: {

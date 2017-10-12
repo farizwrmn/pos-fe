@@ -7,7 +7,6 @@ const { posreport } = config.api
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params ? `${posreport}?from=${params.from}&to=${params.to}` : `${posreport}`
-  console.log(url)
   return request({
     url: url,
     method: 'get',
@@ -18,7 +17,6 @@ export async function query (params) {
 export async function queryTrans (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params ? `${posreport}/trans?from=${params.from}&to=${params.to}` : `${posreport}/trans`
-  console.log(url)
   return request({
     url: url,
     method: 'get',

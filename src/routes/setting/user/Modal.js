@@ -102,7 +102,6 @@ const modal = ({
         delete data.password
         delete data.confirm
       }
-      console.log('hdlButtonSaveClick', data)
       modalButtonSaveClick(data.userId, data)
     })
   }

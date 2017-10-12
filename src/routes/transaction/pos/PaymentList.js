@@ -20,7 +20,6 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
         ...getFieldsValue(),
       }
       data.productId = item.productId
-      console.log(item)
       onChooseItem(data)
     })
   }
@@ -39,7 +38,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
       ...getFieldsValue(),
     }
     const data = {
-      Record: Record.Record,
+      Record: item.no,
       Payment: 'Delete',
       VALUE: 0,
     }
@@ -186,7 +185,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
           <InputNumber
             defaultValue={0}
             min={0}
-            max={item.total}
+            max={item.price * item.qty}
             onBlur={value => handleTotalChange(value)}
           />
         )}

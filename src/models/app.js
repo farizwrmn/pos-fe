@@ -1,10 +1,12 @@
-import { query, logout, changePw } from '../services/app'
-import * as menusService from '../services/menus'
-import { queryMode as miscQuery } from '../services/misc'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import config from 'config'
+import moment from 'moment'
 import { EnumRoleType } from 'enums'
+import { query, logout, changePw } from '../services/app'
+import * as menusService from '../services/menus'
+import { queryMode as miscQuery } from '../services/misc'
+import { queryLastActive } from '../services/period'
 
 const { prefix } = config
 
@@ -70,12 +72,14 @@ export default {
             return cases.every(_ => _)
           })
         }
-
-        const misc = yield call(miscQuery, { code: 'company'})
-        let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
+        const period = yield call(queryLastActive)
+        const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
+        const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
+        const misc = yield call(miscQuery, { code: 'company' })
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
-        const storeInfo = { name, address01, address02 }
-        storeInfo.stackHeader01 = [{
+        const storeInfo = { name, address01, address02, startPeriod, endPeriod }
+        storeInfo.stackHeader01 = [
+          {
             text: name,
             fontSize: 11,
             alignment: 'left',

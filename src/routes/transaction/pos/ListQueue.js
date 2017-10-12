@@ -16,7 +16,6 @@ const TabPane = Tabs.TabPane;
 const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
   const { listQueue, curQueue } = pos
   const handleChange = (e) => {
-    console.log('handleChange', e);
 
     dispatch({
       type: 'pos/changeQueue',

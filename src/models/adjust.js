@@ -79,7 +79,6 @@ export default modelExtend(pageModel, {
     },
 
     * queryEmployee ({ payload }, { call, put }) {
-      console.log('payload', payload)
       let data = ''
       try {
         data = yield call(queryEmployeeId, payload)
@@ -171,7 +170,6 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
-      console.log('dataAdj', dataAdj)
       if (dataAdj.length > 0) {
         let arrayProd = []
         for (let n = 0; n < dataAdj.length; n += 1) {
@@ -218,7 +216,6 @@ export default modelExtend(pageModel, {
     },
 
     * adjustEdit ({ payload }, { put }) {
-      console.log('adjustEdit', payload)
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       let arrayProd = dataPos.slice()
       arrayProd[payload.Record - 1].price = parseInt(payload.price, 10)

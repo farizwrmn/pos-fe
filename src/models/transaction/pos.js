@@ -1,3 +1,6 @@
+import { parse } from 'qs'
+import { Modal } from 'antd'
+import config from 'config'
 import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { queryMode as miscQuery} from '../../services/misc'
@@ -6,8 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { query as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
 import { query as queryService, queryServiceByCode } from '../../services/service'
 
-import { parse } from 'qs'
-import { Modal } from 'antd'
+const { prefix } = config
 
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
@@ -96,8 +98,13 @@ export default {
             type: 'showShiftModal',
           })
         } else if (location.pathname === '/transaction/pos/history') {
+          const infoStore =  localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',
+            payload: {
+              startPeriod: infoStore.startPeriod,
+              endPeriod: infoStore.endPeriod,
+            }
           })
         }
       })
@@ -105,48 +112,6 @@ export default {
   },
 
   effects: {
-    // *query ({ payload }, { call, put }) {
-    //   console.log('location.search', location.search)
-    //   payload = parse(location.search.substr(1))
-    //   let { pageSize, page, ...other } = payload
-    //   // const data = yield call(query, payload)
-    //   let newData = data.data
-    //
-    //   if ( data.success ) {
-    //     //filter
-    //     for (let key in other) {
-    //       if ({}.hasOwnProperty.call(other, key)) {
-    //         newData = newData.filter((item) => {
-    //           if ({}.hasOwnProperty.call(item, key)) {
-    //             return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
-    //           }
-    //           return true
-    //         })
-    //       }
-    //     }
-    //     //---------------
-    //     pageSize = pageSize || 10
-    //     page = page || 1
-    //
-    //     const stocks = newData.slice((page - 1) * pageSize, page * pageSize)
-    //     const totalData = newData.length
-    //
-    //     //yield put({ type: 'hideModal' })
-    //     yield put({
-    //       type: 'querySuccess',
-    //       payload: {
-    //         list: stocks,
-    //         tmpList: stocks,
-    //         pagination: {
-    //           current: Number(payload.page) || 1,
-    //           pageSize: Number(payload.pageSize) || 10,
-    //           total: totalData,
-    //         },
-    //       },
-    //     })
-    //   }
-    // },
-
     * paymentEdit ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       dataPos[payload.no - 1] = payload
@@ -157,16 +122,13 @@ export default {
     * serviceEdit ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
       dataPos[payload.no - 1] = payload
-      console.log(dataPos)
       localStorage.setItem('service_detail', JSON.stringify(dataPos))
       yield put({ type: 'hideServiceModal' })
     },
 
     * paymentDelete ({ payload }, { put }) {
-      console.log('paymentDelete', payload)
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let arrayProd = dataPos.slice()
-      console.log('effectedRecord', arrayProd)
       Array.prototype.remove = function() {
         let what, a = arguments, L = a.length, ax
         while (L && this.length) {
@@ -216,10 +178,8 @@ export default {
     },
 
     * serviceDelete ({ payload }, { put }) {
-      console.log('paymentDelete', payload)
       let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
       let arrayProd = dataPos.slice()
-      console.log('effectedRecord', arrayProd)
       Array.prototype.remove = function() {
         let what, a = arguments, L = a.length, ax
         while (L && this.length) {
@@ -275,6 +235,7 @@ export default {
           type: 'querySuccessPayment',
           payload: {
             listPayment: data.data,
+            tmpListPayment: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -461,7 +422,6 @@ export default {
     * getService ({ payload }, { call, put }) {
       const data = yield call(queryServiceByCode, payload.serviceId)
       let newData = data.data
-      console.log('let newData = data.data', data.data)
       if (data.data !== null) {
         let arrayProd
         if (JSON.stringify(payload.listByCode) === '[]') {
@@ -822,8 +782,6 @@ export default {
         arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
       }
       else if (payload.kodeUtil === 'Delete') {
-        console.log('Delete')
-        console.log('effectedRecord', arrayProd[payload.effectedRecord - 1])
         Array.prototype.remove = function() {
           let what, a = arguments, L = a.length, ax
           while (L && this.length) {
@@ -865,7 +823,6 @@ export default {
     },
 
     *editService ({payload}, {put}) {
-      console.log('payload:', payload)
       let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
       let arrayProd = dataPos.slice()
       let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
@@ -974,7 +931,6 @@ export default {
         memberInformation = listByCode
       }
       const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
-      console.log('memberInfo', memberInfo)
       //start-mechanicInfo
       const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
       const mechanic = mechanicInfo[0]
@@ -1061,7 +1017,6 @@ export default {
     *insertQueue ({ payload }, { call, put }) {
       let dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
       let arrayProd = dataPos.slice()
-      console.log('arrayProd', dataPos,arrayProd)
 
       if ( JSON.stringify(arrayProd) != "[]" ) {
         for (let i in arrayProd) {
@@ -1119,9 +1074,10 @@ export default {
     },
 
     querySuccessPayment (state, action) {
-      const { listPayment, pagination } = action.payload
+      const { listPayment, pagination, tmpListPayment } = action.payload
       return { ...state,
         listPayment,
+        tmpListPayment,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -1446,12 +1402,10 @@ export default {
     },
 
     setUtil (state, action) {
-      console.log('setUtil');
       return { ...state, kodeUtil: action.payload.kodeUtil, infoUtil: action.payload.infoUtil}
     },
 
     setEffectedRecord (state, action) {
-      console.log('setEffectedRecord')
       return { ...state, effectedRecord: action.payload.effectedRecord }
     },
 
@@ -1510,18 +1464,17 @@ export default {
     },
 
     onMemberSearch (state, action) {
-      const { searchText, tmpMemberList } = action.payload;
-      const reg = new RegExp(searchText, 'gi');
+      const { searchText, tmpMemberList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
       let newData
-      console.log('tmpMemberList')
       newData = tmpMemberList.map((record) => {
         const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
         if (!match) {
-          return null;
+          return null
         }
         return {
           ...record,
-        };
+        }
       }).filter(record => !!record)
 
       return { ...state, listMember: newData }
@@ -1530,7 +1483,6 @@ export default {
       const { searchText, tmpMechanicList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       let newData
-      console.log('tmpMechanicList')
       newData = tmpMechanicList.map((record) => {
         const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
         if (!match) {
@@ -1547,7 +1499,6 @@ export default {
       const { searchText, tmpProductList } = action.payload;
       const reg = new RegExp(searchText, 'gi');
       let newData
-      console.log('tmpProductList')
       newData = tmpProductList.map((record) => {
         const match = record.productName.match(reg) || record.productCode.match(reg)
         if (!match) {
@@ -1700,7 +1651,6 @@ export default {
     },
 
     setTotalItemService (state, action) {
-      console.log('setTotalItemService', action.payload)
       return { ...state, itemService: action.payload }
     },
 
@@ -1710,6 +1660,9 @@ export default {
     },
     setListPaymentDetail (state, action) {
       return { ...state, listPaymentDetail: { id: action.payload.transNo } }
+    },
+    searchPOS (state, action) {
+      return { ...state, listPayment: action.payload }
     },
   },
 }

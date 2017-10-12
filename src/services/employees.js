@@ -13,7 +13,6 @@ export async function query (params) {
 
 export async function queryByCode (params) {
   const url = params ? `${employees}/${encodeURIComponent(params)}` : `${encodeURIComponent(employees)}`
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

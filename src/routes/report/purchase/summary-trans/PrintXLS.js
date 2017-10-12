@@ -14,8 +14,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
 
   let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
   let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
-  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp + o.rounding }, 0)
-  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto + o.rounding }, 0)
+  let roundingTotal = listTrans.reduce(function(cnt, o) { return cnt + o.rounding }, 0)
+  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
@@ -62,7 +62,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         size: 10,
       }
       for (let n = 0; n <= listTrans.length; n++) {
-        for (let m = 65; m < 74; m++) {
+        for (let m = 65; m < 73; m++) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
@@ -71,7 +71,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           }
         }
       }
-      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'DPP', 'NETTO']
+      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'ROUNDING', 'NETTO']
       const footer = [
         '',
         '',
@@ -79,9 +79,9 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         'GRAND TOTAL',
         `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
         `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+        `${roundingTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
-      for (let m = 65; m < 74; m++) {
+      for (let m = 65; m < 73; m++) {
         let o = 7
         let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
@@ -107,13 +107,13 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].dpp) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto) + parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < 74; m++) {
+      for (let m = 65; m < 73; m++) {
         let n = listTrans.length + 10
         let count = m - 65
         sheet.getCell(`C${n}`).font = {

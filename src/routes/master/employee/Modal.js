@@ -45,7 +45,6 @@ const modal = ({
   const hdlPopoverClose = () => {
     modalPopoverClose()
   }
-  console.log('item', item);
   const hdlTableCityRowClick = (record) => {
     onChooseCity(record)
   }

@@ -25,7 +25,6 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
   }
 
   const handleSearch = () => {
-    console.log('searchText', searchText)
     console.log('tmpMemberList', tmpMemberList)
     dispatch({
       type: 'pos/onMemberSearch',

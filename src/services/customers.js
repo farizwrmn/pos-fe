@@ -4,7 +4,6 @@ const { customers } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  console.log(customers)
   return request({
     url: customers,
     method: 'get',
@@ -15,7 +14,6 @@ export async function query (params) {
 
 export async function queryByCode (params) {
   const url = params.memberCode  ? customers + '/' + encodeURIComponent(params.memberCode) : customers + '/' + encodeURIComponent(params.data.memberCode)
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -38,7 +36,6 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  console.log('edit-params', params)
   const url = params.id ? `${customers}/${encodeURIComponent(params.id)}` : customers
   const apiHeaderToken = crypt.apiheader()
   return request({

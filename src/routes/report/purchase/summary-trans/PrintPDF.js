@@ -15,8 +15,8 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
 
   let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
   let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
-  let dppTotal = listTrans.reduce(function(cnt, o) { return cnt + o.dpp + o.rounding }, 0)
-  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto + o.rounding }, 0)
+  let roundingTotal = listTrans.reduce(function(cnt, o) { return cnt + o.rounding }, 0)
+  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
@@ -26,7 +26,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         col_3: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
         col_4: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
         col_5: { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
-        col_6: { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
+        col_6: { fontSize: 12, text: 'ROUNDING', style: 'tableHeader', alignment: 'center' },
         col_7: { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' },
       },
     }
@@ -59,11 +59,11 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push({ text: data.discount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.dpp + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.netto + data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.rounding).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.netto).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
-      count = count + 1
+      count += 1
     }
 
     let totalRow = []
@@ -72,7 +72,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
     totalRow.push({})
     totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${dppTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${roundingTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body

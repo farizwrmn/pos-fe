@@ -58,7 +58,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       })
     },
     onChooseItem (data) {
-      console.log('onChooseItem', data, 'currentItem', currentItem)
       dispatch({
         type: 'customer/chooseEmployee',
         payload: {
@@ -88,7 +87,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       })
     },
     onChooseCity (data) {
-      console.log('onChooseCity', data, 'currentItem', currentItem)
       dispatch({
         type: 'customer/chooseCity',
         payload: {
@@ -118,7 +116,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
       })
     },
     onChooseType (data) {
-      console.log('onChooseItem', data, 'currentItem', currentItem)
       dispatch({
         type: 'customer/chooseType',
         payload: {

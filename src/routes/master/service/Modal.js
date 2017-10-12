@@ -60,7 +60,6 @@ const modal = ({
   )
 
   const hdlTableRowClick = (record) => {
-    console.log('hdlTableRowClick', record);
     onChooseItem(record)
   }
 
@@ -76,7 +75,6 @@ const modal = ({
   )
 
   const hdlPopoverVisibleTypeChange = () => {
-    console.log('hdlPopoverVisibleTypeChange');
     modalPopoverVisibleType()
   }
 

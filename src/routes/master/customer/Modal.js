@@ -186,7 +186,6 @@ const modal = ({
       //   data.customerRole = ''
       // }
       // data.active = data.active !== undefined ? true : false
-      console.log('member', data)
       modalButtonSaveClick(data.memberCode, data)
     })
   }

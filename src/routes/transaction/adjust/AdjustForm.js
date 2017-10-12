@@ -32,7 +32,6 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
         picId: itemEmployee !== null ? itemEmployee.employeeId : '',
       }
       data.transType = data.transType[0]
-      console.log('onOk data:', data)
       onOk(data)
       resetFields()
     })
@@ -47,7 +46,6 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
   }
 
   const hdlSearch = (e) => {
-    console.log('dataSource', tmpProductList)
     onSearchProduct(e, tmpProductList)
   }
 

@@ -59,7 +59,6 @@ export async function edit (params) {
 
 export async function editPurchase (params) {
   let url = params.id !== null ? purchase : null
-  console.log('editHeader', params)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -71,7 +70,6 @@ export async function editPurchase (params) {
 }
 
 export async function remove (params) {
-  console.log('delete-params:');
   let url = params.transNo ? purchase : null
   const apiHeaderToken = crypt.apiheader()
   return request({

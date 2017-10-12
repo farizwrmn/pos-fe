@@ -6,8 +6,9 @@ import PropTypes from 'prop-types'
 import { Form, Modal, Input, DatePicker } from 'antd'
 import moment from 'moment'
 
+const { TextArea } = Input
 const FormItem = Form.Item
-const dateFormat = 'YYYY/MM/DD hh:mm:ss'
+const dateFormat = 'YYYY-MM-DD'
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -20,6 +21,13 @@ const modal = ({
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
+  const startDate = moment(accountActive.startPeriod).format(dateFormat)
+  const endPeriod = moment(moment(startDate).endOf('month')).format(dateFormat)
+  const now = moment().format(dateFormat)
+  let uiDate
+  if (now >= endPeriod) {
+    uiDate = endPeriod
+  }
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -28,8 +36,16 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
-      console.log(data)
-      onOk(data)
+      if (now >= endPeriod) {
+        data.endPeriod = endPeriod
+        onOk(data)
+      } else {
+        data.endPeriod = endPeriod
+        Modal.warning({
+          title: 'Period is not over yet',
+          content: `${now} is not end of this period`,
+        })
+      }
     })
   }
   const modalOpts = {
@@ -42,7 +58,7 @@ const modal = ({
       <Form layout="horizontal">
         <FormItem label="Account Number" {...formItemLayout}>
           {getFieldDecorator('accountNumber', {
-            initialValue: accountActive,
+            initialValue: accountActive.accountActive,
             rules: [
               {
                 required: true,
@@ -52,13 +68,31 @@ const modal = ({
         </FormItem>
         <FormItem label="EndDate" {...formItemLayout}>
           {getFieldDecorator('endPeriod', {
-            initialValue: moment.utc(moment().format(dateFormat), dateFormat),
+            initialValue: moment.utc(moment(uiDate).format('YYYY-MM-DD'), dateFormat),
             rules: [
               {
                 required: false,
               },
             ],
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
+        </FormItem>
+        <FormItem label="Reference" {...formItemLayout}>
+          {getFieldDecorator('reference', {
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input maxLength={40} />)}
+        </FormItem>
+        <FormItem label="Memo" {...formItemLayout}>
+          {getFieldDecorator('memo', {
+            rules: [
+              {
+                required: false,
+              },
+            ],
+          })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
     </Modal>

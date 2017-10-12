@@ -30,7 +30,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
     const data = getFieldsValue()
     data.code = item.code
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
-    let TOTAL = H1 - (parseFloat(data.discount) * parseFloat(data.qty))
+    let TOTAL = H1 - (parseFloat(data.discount))
     let tax = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
     if (tax === 'E') {
       data.dpp = TOTAL
@@ -125,7 +125,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
           })(<InputNumber
             maxLength={13}
             min={0}
-            max={item.price}
+            max={(item.price * item.qty) - ((item.price * item.qty) * (item.disc1 / 100))}
             onBlur={value => hdlChange(value)}
           />)}
         </FormItem>

@@ -15,7 +15,6 @@ const BrowseType = ({
     onAddItem()
   }
   const hdlButtonPrintClick = () => {
-    console.log('add print here')
   }
   const hdlButtonSearchClick = () => {
     onSearchShow()

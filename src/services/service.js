@@ -14,7 +14,6 @@ export async function query (params) {
 
 export async function queryServiceByCode (params) {
   const url = params.serviceCode? services + '/' + encodeURIComponent(params.serviceCode) : services + '/' + encodeURIComponent(params)
-  console.log('query_params', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
@@ -37,7 +36,6 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  console.log('edit-params:', params);
   const url = `${services}/${encodeURIComponent(params.serviceCode)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -51,7 +49,6 @@ export async function edit (params) {
 
 export async function remove (params) {
   const url = params.id.serviceCode ? `${services}/${params.id.serviceCode}` : services
-  console.log('params', url);
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

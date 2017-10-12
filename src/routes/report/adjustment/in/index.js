@@ -22,7 +22,6 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
     loading: loading.effects['adjustReport/query'],
     productCode,
     onListReset () {
-      console.log('onListReset')
       dispatch({
         type: 'adjustReport/setListNull',
       })

@@ -117,11 +117,11 @@ const Browse = ({
   return (
     <div>
       <Row>
-        <Col span={4}>
-          <Button onClick={() => handleStartPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
-            Start Period
-          </Button>
-        </Col>
+        {/*<Col span={4}>*/}
+          {/*<Button onClick={() => handleStartPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>*/}
+            {/*Start Period*/}
+          {/*</Button>*/}
+        {/*</Col>*/}
         <Col span={4}>
           <Button onClick={() => handleEndPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
             End Period

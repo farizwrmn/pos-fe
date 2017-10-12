@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Form, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
+import config from 'config'
+import { DatePicker, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
@@ -8,6 +9,7 @@ import PurchaseList from './PurchaseList'
 
 const { TextArea, Search } = Input
 const Panel = Collapse.Panel
+const { prefix } = config
 const FormItem = Form.Item
 const Option = Select.Option
 const ButtonGroup = Button.Group
@@ -29,6 +31,7 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
       if (errors) {
         return
       }
+      const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
       const data = {
         ...getFieldsValue(),
         supplierCode: supplierInformation.id,
@@ -40,8 +43,16 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
         totalPPN: parseInt(totalPpn),
         discTotal: totalDisc,
       }
-      onOk(data)
-      resetFields()
+      console.log(moment(data.transDate).format('YYYY-MM-DD'))
+      if (moment(data.transDate).format('YYYY-MM-DD') >= moment(startPeriod).format('YYYY-MM-DD')) {
+        onOk(data)
+        resetFields()
+      } else {
+        Modal.warning({
+          title: 'Period has been closed',
+          content: 'This period has been closed'
+        })
+      }
     })
   }
   let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))

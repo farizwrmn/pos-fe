@@ -293,7 +293,6 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/setting/misc/'))
             }, 'setting-misc')
           },
-        /* remark -- on bbucket there is no './routes/setting/periode'
         }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
@@ -302,7 +301,6 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/setting/periode/'))
             }, 'setting-misc')
           },
-         */
         }, {
           path: '*',
           getComponent (nextState, cb) {

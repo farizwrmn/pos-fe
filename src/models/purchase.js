@@ -1,9 +1,12 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
+import config from 'config'
 import { query, queryDetail, createDetail, create, edit, editPurchase, remove } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/stock'
 import { query as querySupplier } from '../services/suppliers'
+
+const { prefix } = config
 
 export default modelExtend(pageModel, {
   namespace: 'purchase',
@@ -257,7 +260,12 @@ export default modelExtend(pageModel, {
       let data = []
       let dataDetail = []
       if (payload ? payload.modalType === 'browseInvoice' : false) {
-        dataDetail = yield call(query)
+        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        const period = {
+          startPeriod: storeInfo.startPeriod,
+          endPeriod: storeInfo.endPeriod,
+        }
+        dataDetail = yield call(query, period)
       } else {
         data = yield call(queryProducts)
       }

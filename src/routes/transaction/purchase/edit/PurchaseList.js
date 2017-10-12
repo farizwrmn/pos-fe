@@ -23,7 +23,6 @@ const PurchaseList = ({ onChooseItem, item, onCancel, form: { resetFields, getFi
     })
   }
   const hdlCancel = () => {
-    console.log('hdlCancel')
     onCancel()
   }
   return (

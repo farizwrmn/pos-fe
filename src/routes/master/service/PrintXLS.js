@@ -23,7 +23,6 @@ const PrintXLS = () => {
   var sheet = workbook.addWorksheet('My Sheet',
     { pageSetup: { paperSize: 9, orientation: 'landscape' } })
   const handleExcel = () => {
-    console.log('handleExcel', workbook)
     workbook.xlsx.writeBuffer().then(function (data) {
       var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `pointReport${moment().format('YYYYMMDD')}.xlsx`)

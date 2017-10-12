@@ -5,7 +5,6 @@ import styles from './index.less'
 
 const Detail = ({ userDetail }) => {
   const data = userDetail.data.data[0]
-  // console.log('userDetail',data)
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {

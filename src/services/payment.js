@@ -6,7 +6,6 @@ const { pos, posdetail } = config.api
 export async function queryLastTransNo (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = pos + '/last'
-  console.log('url', url)
   return request({
     url: url,
     method: 'get',
@@ -17,10 +16,10 @@ export async function queryLastTransNo (params) {
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = pos
-  console.log(url)
   return request({
     url: url,
     method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }
@@ -28,7 +27,6 @@ export async function query (params) {
 export async function queryPos (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = pos + '/' + 'code' + '/' + encodeURIComponent(params)
-  console.log(url)
   return request({
     url: url,
     method: 'get',
@@ -39,7 +37,6 @@ export async function queryPos (params) {
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${posdetail}/${encodeURIComponent(params.id)}`
-  console.log(url)
   return request({
     url: url,
     method: 'get',
@@ -73,7 +70,6 @@ export async function createDetail (params) {
 //when void an Invoice
 export async function updatePos (params) {
   const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}` : null
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

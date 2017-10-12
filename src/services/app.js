@@ -21,7 +21,6 @@ export async function logout (params) {
 }
 
 export async function changePw (params) {
-  console.log('changePw', params)
   const url = params.id ? users + '/' + params.id  : users
   const apiHeaderToken = crypt.apiheader()
   return request({

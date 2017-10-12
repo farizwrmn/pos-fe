@@ -67,7 +67,6 @@ const Filter = ({
   const handleReset = () => {
     const fields = getFieldsValue()
     for (let item in fields) {
-      console.log('handleReset',item)
       if ({}.hasOwnProperty.call(fields, item)) {
         if (fields[item] instanceof Array) {
           fields[item] = []

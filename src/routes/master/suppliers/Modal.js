@@ -41,7 +41,6 @@ const modal = ({
   }
 
   const hdlTableCityRowClick = (record) => {
-    console.log('hdlTableCityRowClick', record);
     onChooseCity(record)
   }
 
@@ -85,7 +84,6 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
-      console.log('data:', data)
       modalButtonSaveClick(data)
     })
   }

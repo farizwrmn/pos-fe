@@ -2,15 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import BrowseGroup from './Browse'
+import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 import moment from 'moment'
 
 const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, selectedRowKeys, modalPrintVisible,posData } = pos
-  const { company } = app
+    pagination, selectedRowKeys, modalPrintVisible, tmpListPayment, posData } = pos
+  const { storeInfo } = app
   const { pageSize } = pagination
 
   const modalProps = {
@@ -20,10 +20,14 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    company,
+    company: [{
+      miscName: storeInfo.name,
+      miscDesc: storeInfo.address01,
+      miscVariable: storeInfo.address02,
+    }],
     posData,
     maskClosable: false,
-    title: `Print the Transaction Duplicate?`,
+    title: 'Print the Transaction Duplicate?',
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -142,10 +146,17 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
 
   const browseProps = {
     dataSource: listPayment,
+    tmpDataSource: tmpListPayment,
     width: 90,
     loading: loading.effects['pos/queryHistory'],
     pagination,
     location,
+    onSearchChange (data) {
+      dispatch({
+        type: 'pos/searchPOS',
+        payload: data,
+      })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -181,12 +192,12 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
       })
     },
 
-    size:'small',
+    size: 'small',
   }
 
   return (
     <div className="content-inner">
-      <BrowseGroup {...browseProps} />
+      <Browse {...browseProps} />
       <Modal {...modalProps} />
       <ModalCancel {...modalCancelProps} />
     </div>

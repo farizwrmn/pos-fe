@@ -11,7 +11,6 @@ const formItemLayout = {
 }
 
 const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
-  console.log(itemService)
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -31,7 +30,7 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
     let H3 = H2 * (1 - (data.disc3 / 100))
     let TOTAL = H3 - data.discount
     data.total = TOTAL
-    data.productId = item.productId
+    data.productId = itemService.productId
     onChangeTotalItem(data)
   }
 
@@ -40,7 +39,7 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
       ...getFieldsValue(),
     }
     const data = {
-      Record: Record.Record,
+      Record: itemService.no,
       Payment: 'Delete',
       VALUE: 0,
     }
@@ -48,7 +47,6 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
       title: `Remove Record ${data.Record} ?`,
       content: `Record ${data.Record} will remove from list !`,
       onOk() {
-        console.log('Ok')
         DeleteItem(data)
       },
       onCancel() {

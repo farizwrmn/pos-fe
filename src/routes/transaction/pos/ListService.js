@@ -24,7 +24,6 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   }
 
   const handleSearch = () => {
-    console.log('Search Service')
     dispatch({
       type: 'pos/onServiceSearch',
       payload: {

@@ -56,9 +56,6 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         type: 'adjust/modalEditHide',
       })
     },
-    onChooseitem(data) {
-      console.log('data',data)
-    },
   }
   const adjustProps = {
     item: currentItem,
@@ -205,7 +202,6 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         'price': item.costPrice,
         'total': curQty * item.sellPrice
       })
-      console.log('arrayProd', arrayProd)
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })
       dispatch({ type: 'adjust/hideProductModal' })

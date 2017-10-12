@@ -2,6 +2,7 @@
  * Created by Veirry on 22/09/2017.
  */
 import moment from 'moment'
+import { Modal } from 'antd'
 import { query as queryAllPeriod, create as createPeriod, queryLastCode as lastCode, queryLastActive, update as updatePeriod } from '../services/period'
 import { queryModeName as miscQuery } from '../services/misc'
 
@@ -66,7 +67,10 @@ export default {
         type: 'querySuccessPeriod',
         payload: {
           list: data.data,
-          accountActive: activeAccount.data.length === 0 ? {} : activeAccount.data[0].accountNumber,
+          accountActive: {
+            accountActive: activeAccount.data.length === 0 ? {} : activeAccount.data[0].accountNumber,
+            startPeriod: activeAccount.data.length === 0 ? {} : activeAccount.data[0].startPeriod,
+          },
           lastAccountNumber: transNo,
           pagination: {
             current: Number(payload.page) || 1,
@@ -76,22 +80,36 @@ export default {
         },
       })
     },
-    * add ({ payload }, { call, put }) {
-      console.log('payload', payload)
+    * addPeriod ({ payload }, { call, put }) {
+      const misc = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
+      const { miscVariable: formatType } = (misc.data)
+      const dateFormat = moment(moment(payload.endPeriod).add(1, 'days')).format('YYYYMMDD')
+      const formatAccount = `${formatType}/${dateFormat}/0001`
+      payload.accountNumber = formatAccount
+      payload.active = 1
+      payload.startPeriod = moment(moment(payload.endPeriod).add(1, 'days')).format('YYYY-MM-DD')
       const data = yield call(createPeriod, { id: payload.accountNumber, data: payload })
       if (data.success) {
-        yield put({ type: 'modalHide' })
+        // yield put({ type: 'modalHide' })
         yield put({ type: 'queryPeriod' })
+        Modal.info({
+          title: 'New period',
+          content: 'New period has been opened',
+        })
       } else {
         throw data
       }
     },
     * end ({ payload }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
-      if (data.success) {
+      yield put({ type: 'addPeriod', payload: payload })
+      if (data.statusCode === 200) {
         yield put({ type: 'modalCloseHide' })
         yield put({ type: 'queryPeriod' })
+        Modal.info({
+          title: 'Last period',
+          content: 'Last period has been closed',
+        })
       } else {
         throw data
       }

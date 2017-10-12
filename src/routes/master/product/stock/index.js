@@ -41,7 +41,6 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
       dispatch({ type: `stock/modalHide` })
     },
     modalButtonSaveClick (id, data) {
-      console.log('modalButtonSaveClick', id, data);
       dispatch({
         type: `stock/${modalType}`,
         payload: {
@@ -111,7 +110,6 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
       })
     },
     onChooseBrand (data) {
-      console.log('data:',data, 'currentItem', currentItem);
       dispatch({
         type: 'stock/chooseEmployee',
         payload: {

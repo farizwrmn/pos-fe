@@ -33,14 +33,13 @@ const City = ({ location, dispatch, city, loading, misc }) => {
       })
     },
     modalDropdownClick() {
-      console.log('modalDropdownClick');
       dispatch({
-        type: `sellprice/query`,
+        type: 'sellprice/query',
       })
     },
     modalPopoverVisible () {
       dispatch({
-        type: `city/modalPopoverVisible`,
+        type: 'city/modalPopoverVisible',
       })
     },
     modalPopoverClose () {
@@ -62,7 +61,6 @@ const City = ({ location, dispatch, city, loading, misc }) => {
       dispatch({ type: `sellprice/query` })
     },
     modalButtonSaveClick (data) {
-      console.log('modalButtonSaveClick',data);
       dispatch({
         type: `city/${modalType}`,
         payload: data,
