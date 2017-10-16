@@ -9,10 +9,9 @@ const Browse = ({ location, purchase, loading, onChooseItemItem, onChooseInvoice
   const modalOpts = {
     ...purchaseProps,
   }
+  let listProductFilter = listProduct ? listProduct.filter(el => el.active === true) : []
   const listProps = {
-    dataSource: (
-      modalType === 'browseProduct' ? listProduct : listInvoice
-    ),
+    dataSource: modalType === 'browseProduct' ? listProductFilter : listInvoice,
     loading: loading.effects[(
       modalType === 'browseProduct' ? 'purchase/getProducts' : 'purchase/getInvoice'
     )],

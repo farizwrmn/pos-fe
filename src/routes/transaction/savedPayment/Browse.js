@@ -6,23 +6,20 @@ import { DropOption } from 'components'
 import moment from 'moment'
 
 const { MonthPicker, RangePicker } = DatePicker;
-const ButtonGroup = Button.Group
-const confirm = Modal.confirm
 const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = config
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange,
+  dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,
   form: { getFieldDecorator },
   ...tableProps }) => {
   const data = dataSource
+  const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
-      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      console.log(storeInfo.startPeriod)
       if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod) {
         onShowCancelModal(record)
       } else {
@@ -142,10 +139,10 @@ const BrowseGroup = ({
       },
     },
   ]
-
   const onChange = (date, dateString) => {
     let dateFormat = moment(dateString).format('YYYY-MM-DD')
     let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
+    onChangePeriod(dateFormat, lastDate)
   }
 
   return (
@@ -154,9 +151,9 @@ const BrowseGroup = ({
         <Col xl={12} lg={12} md={12}>
           <FormItem hasFeedBack >
             {getFieldDecorator('typeCode', {
+              initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
               rules: [{
                 required: true,
-                pattern: /^([a-zA-Z]{0,6})$/,
               }],
             })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
@@ -179,6 +176,7 @@ BrowseGroup.propTypes = {
   form: PropTypes.isRequired,
   location: PropTypes.object,
   onGetDetail: PropTypes.func,
+  onChangePeriod: PropTypes.func,
   onSearchChange: PropTypes.func,
   onShowCancelModal: PropTypes.func,
   dataSource: PropTypes.array,

@@ -19,13 +19,14 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
   const modalOpts = {
     ...modalProps,
   }
+  let listProductFilter = listProduct.filter(el => el.active === true)
   // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list ))),
   const listProps = {
     // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list )))),
     dataSource: (
       modalType === 'browseMember' ? listMember :
         modalType === 'browseMechanic' ? listMechanic :
-          modalType === 'browseProduct' ? listProduct :
+          modalType === 'browseProduct' ? listProductFilter :
             modalType === 'browseService' ? listService : listMember
     ),
     // loading: loading.effects[(modalType == 'browse' ? 'pos/query' : (modalType == 'browseMechanic' ? 'pos/queryMechanic' : (modalType == 'browseService' ? 'pos/queryService' : '')))],

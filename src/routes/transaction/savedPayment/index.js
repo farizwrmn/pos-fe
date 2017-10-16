@@ -20,11 +20,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    company: [{
-      miscName: storeInfo.name,
-      miscDesc: storeInfo.address01,
-      miscVariable: storeInfo.address02,
-    }],
+    company: storeInfo,
     posData,
     maskClosable: false,
     title: 'Print the Transaction Duplicate?',
@@ -191,7 +187,15 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         type: 'pos/showPrintModal',
       })
     },
-
+    onChangePeriod (start, end) {
+      dispatch({
+        type: 'pos/queryHistory',
+        payload: {
+          startPeriod: start,
+          endPeriod: end,
+        }
+      })
+    },
     size: 'small',
   }
 

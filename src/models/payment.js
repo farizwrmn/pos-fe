@@ -365,7 +365,7 @@ export default {
     },
 
     setLastMeter (state, action) {
-      return { state, policeNo: action.payload.policeNo, lastMeter: action.payload.lastMeter}
+      return { state, lastMeter: action.payload.lastMeter}
     },
 
     setPoliceNo (state, action) {
@@ -494,19 +494,19 @@ export default {
                   {
                     stack: [
                       {
-                        text: payload.company[0].miscName,
+                        text: payload.company.name,
                         style: 'header',
                         fontSize: 11,
                         alignment: 'left'
                       },
                       {
-                        text: payload.company[0].miscDesc,
+                        text: payload.company.address01,
                         style: 'header',
                         fontSize: 11,
                         alignment: 'left'
                       },
                       {
-                        text: payload.company[0].miscVariable,
+                        text: payload.company.address02,
                         style: 'header',
                         fontSize: 11,
                         alignment: 'left'
@@ -675,7 +675,7 @@ export default {
                         alignment: 'left',
                       },
                       {
-                        text: 'Cetakan ke: 1',
+                        text: `Cetakan ke: ${payload.printNo}`,
                         margin: [0, 20, 0, 40],
                         fontSize: 9,
                         alignment: 'center',

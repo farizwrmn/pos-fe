@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import config from 'config'
 import { routerRedux } from 'dva/router'
 import { Form, Input, Table, Row, Col, Card, Cascader, Button, Modal } from 'antd'
 import moment from 'moment'
 import ModalCredit from './ModalCreditCard'
 
+const { prefix } = config
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: {
@@ -163,12 +165,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           creditCardType: '',
           creditCardCharge: 0,
           totalCreditCard: 0,
-          company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+          company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
           gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
           phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
           lastTransNo: lastTransNo,
-          lastMeter: lastMeter,
+          lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
           paymentVia: typeTrans,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
@@ -180,12 +182,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
-          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
+          printNo: 1,
+          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid
         }
       })
-      dispatch ({
+      dispatch({
         type: 'payment/printPayment',
         payload: {
           periode: moment().format('MMYY'),
@@ -195,11 +198,11 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           transDatePrint: moment().format('DD/MM/YYYY'),
           grandTotal: parseInt(curTotal),
           totalPayment: totalPayment,
-          company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+          company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
           gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
           phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-          lastMeter: lastMeter ? lastMeter : 0,
+          lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
           lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
@@ -213,6 +216,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
           technicianId: mechanicInformation.mechanicCode,
           curShift: curShift,
+          printNo: 1,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid
@@ -225,7 +229,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const printPreview = () => {
-    dispatch ({
+    dispatch({
       type: 'payment/printPayment',
       payload: {
         periode: moment().format('MMYY'),
@@ -235,11 +239,11 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         transDatePrint: moment().format('DD/MM/YYYY'),
         grandTotal: parseInt(curTotal),
         totalPayment: totalPayment,
-        company: localStorage.getItem('company') ? JSON.parse(localStorage.getItem('company')) : [],
+        company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
         gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
         phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
         address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-        lastMeter: lastMeter ? lastMeter : 0,
+        lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
         lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
         totalChange: totalChange,
         totalDiscount: curTotalDiscount,
@@ -253,6 +257,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
         technicianId: mechanicInformation.mechanicCode,
         curShift: curShift,
+        printNo: 1,
         point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
         curCashierNo: curCashierNo,
         cashierId: user.userid

@@ -993,65 +993,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       />
     </div>
   )
-  /* ===================BEGIN===================== */
-  /* =================LAST KM===================== */
-  const CustomizedForm = Form.create({
-    onFieldsChange (props, changedFields) {
-      props.onChange(changedFields)
-    },
-     mapPropsToFields (props) {
-      return {
-        lastMeter: {
-          ...props.lastMeter,
-          value: props.lastMeter.value,
-        },
-      };
-    },
-    onValuesChange(_, values) {
-      localStorage.setItem('lastMeter', memberUnitInfo.unitNo === "" ? 0 : values.lastMeter ? values.lastMeter : 0)
-      dispatch({
-        type: 'payment/setLastMeter',
-         payload: {
-          lastMeter: memberUnitInfo.unitNo ? lastMeter : 0,
-          policeNo: memberUnitInfo.unitNo ? memberUnitInfo.unitNo : memberUnitInfo
-        },
-      })
-    },
-  })((props) => {
-   const { getFieldDecorator } = props.form;
-   return (
-      <FormItem label="KM" {...formItemLayout}>
-        {getFieldDecorator('lastMeter', {
-          rules: [{ required: true, message: 'Required' }],
-        })(<Input />)}
-      </FormItem>
-    )
-  })
-
-  class LastMeter extends React.Component {
-  state = {
-    fields: {
-      lastMeter: {
-        value: lastMeter,
+  const onChangeLastMeter = (e) => {
+    const { value } = e.target
+    let lastMeter = value.replace( /^\D+/g, '')
+    localStorage.setItem('lastMeter', JSON.stringify(parseFloat(lastMeter)))
+    dispatch({
+      type: 'payment/setLastMeter',
+      payload: {
+        lastMeter: lastMeter,
       },
-    },
-  };
-  handleFormChange = (changedFields) => {
-    this.setState({
-      fields: { ...this.state.fields, ...changedFields },
     })
   }
-  render () {
-    const fields = this.state.fields;
-    return (
-      <div>
-        <CustomizedForm {...fields} onChange={this.handleFormChange} />
-      </div>
-    )
-  }
-  }
-  /* =================LAST KM===================== */
-  /* ===================END======================= */
 
   return (
     <div className="content-inner">
@@ -1276,7 +1228,9 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                     </Popover>
                   </Col>
                 </FormItem>
-                <LastMeter />
+                <FormItem label="KM"  hasFeedback {...formItemLayout}>
+                  <Input defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} type="number" onChange={value => onChangeLastMeter(value)} />
+                </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input value={memberInformation.memberCode} disabled />
                 </FormItem>

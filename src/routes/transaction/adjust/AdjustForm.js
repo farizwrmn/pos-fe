@@ -85,13 +85,14 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
       width: '20%',
     },
   ]
+  let listProductFilter = dataSource.filter(el => el.active === true)
   const contentPopover = (
     <Table
       pagination={{ total: dataSource.length, pageSize: 5 }}
       scroll={{ x: 600, y: 150 }}
       columns={columns}
       simple
-      dataSource={dataSource}
+      dataSource={listProductFilter}
       locale={{
         emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
       }}
