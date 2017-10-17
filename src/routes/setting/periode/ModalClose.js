@@ -76,15 +76,6 @@ const modal = ({
             ],
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
         </FormItem>
-        <FormItem label="Reference" {...formItemLayout}>
-          {getFieldDecorator('reference', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input maxLength={40} />)}
-        </FormItem>
         <FormItem label="Memo" {...formItemLayout}>
           {getFieldDecorator('memo', {
             rules: [

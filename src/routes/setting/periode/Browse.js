@@ -33,14 +33,8 @@ const Browse = ({
   const columns = [
     {
       title: 'No',
-      dataIndex: 'accountNumber',
-      key: 'accountNumber',
-      width: 200,
-    },
-    {
-      title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference',
+      dataIndex: 'transNo',
+      key: 'transNo',
       width: 200,
     },
     {
@@ -133,7 +127,7 @@ const Browse = ({
           <Table
             {...tableProps}
             bordered
-            scroll={{ x: '1680px', y: '240px' }}
+            scroll={{ x: '1480px', y: '240px' }}
             columns={columns}
             simple
             rowKey={record => record.userId}
