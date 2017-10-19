@@ -8,7 +8,7 @@ import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
 
-const { prefix } = config
+const { prefix, apiHost } = config
 
 export default {
   namespace: 'app',
@@ -72,12 +72,58 @@ export default {
             return cases.every(_ => _)
           })
         }
+
         const period = yield call(queryLastActive)
+
+        // Opera 8.0+
+        let isOpera = (!!window.opr && !!opr.addons) || window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
+
+        // Firefox 1.0+
+        let isFirefox = typeof InstallTrigger !== 'undefined'
+
+        // Chrome 1+
+        let isChrome = !!window.chrome && !!window.chrome.webstore
+
+        // Blink engine detection
+        let isBlink = (isChrome || isOpera) && !!window.CSS
+
+        const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
+          let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection //compatibility for firefox and chrome
+          const pc = new MyPeerConnection({ iceServers: [] }),
+            noop = function () {},
+            localIPs = {},
+            ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
+          function ipIterate (ip) {
+            if (!localIPs[ip]) onNewIP(ip)
+            localIPs[ip] = true
+          }
+          pc.createDataChannel('') // create a bogus data channel
+          pc.createOffer((sdp) => {
+            sdp.sdp.split('\n').forEach((line) => {
+              if (line.indexOf('candidate') < 0) return
+              line.match(ipRegex).forEach(ipIterate)
+            })
+            pc.setLocalDescription(sdp, noop, noop)
+          }, noop) // create offer and set local description
+          pc.onicecandidate = (ice) => { // listen for candidate events
+            if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return
+            ice.candidate.candidate.match(ipRegex).forEach(ipIterate)
+          }
+        }
+        let ipAddress = apiHost
+        const addIP = (ip) => {
+          console.log(ip)
+        }
+        if (isChrome || isFirefox || isBlink) {
+          findIP(addIP)
+        } else {
+          alert('Browser cannot find IP address')
+        }
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
         const misc = yield call(miscQuery, { code: 'company' })
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
-        const storeInfo = { name, address01, address02, startPeriod, endPeriod }
+        const storeInfo = { name, address01, address02, startPeriod, endPeriod, ipAddress }
         storeInfo.stackHeader01 = [
           {
             text: name,
@@ -96,7 +142,7 @@ export default {
           },
         ]
 
-        if(storeInfo != []) {
+        if (storeInfo !== []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {
           console.log('unexpected error misc')

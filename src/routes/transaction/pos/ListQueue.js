@@ -77,10 +77,17 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
   return (
     <div>
-      <Tabs onChange={handleChange} defaultActiveKey="1">
-        <TabPane  tab="Queue 1" key="1"/>
-        <TabPane  tab="Queue 2" key="2"/>
-        <TabPane  tab="Queue 3" key="3"/>
+      <Tabs onChange={handleChange} defaultActiveKey="1" style={{ marginTop: '20px' }}>
+        <TabPane tab="Queue 1" key="1" />
+        <TabPane tab="Queue 2" key="2" />
+        <TabPane tab="Queue 3" key="3" />
+        <TabPane tab="Queue 4" key="4" />
+        <TabPane tab="Queue 5" key="5" />
+        <TabPane tab="Queue 6" key="6" />
+        <TabPane tab="Queue 7" key="7" />
+        <TabPane tab="Queue 8" key="8" />
+        <TabPane tab="Queue 9" key="9" />
+        <TabPane tab="Queue 10" key="10" />
       </Tabs>
         <Card bodyStyle={{ padding : 0, fontSize: '150%' }} bordered={false} style={{ width: '100%', marginBottom:5 }}>
           <div style={{textAlign: 'center'}}>

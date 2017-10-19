@@ -44,7 +44,6 @@ export default {
       const format = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
       const data = yield call(queryAllPeriod)
       const last = yield call(lastCode)
-      console.log(last)
       const lastAccount = last.data[0].transNo
       let datatrans = `${format.data.miscVariable}/${moment().format('YYYYMMDD')}/0000`
       function pad(n, width, z) {

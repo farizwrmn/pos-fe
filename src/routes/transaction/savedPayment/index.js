@@ -43,7 +43,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
             ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })
@@ -60,7 +60,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
             ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })
@@ -77,7 +77,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount  * data.data[n].qty) -
+            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
             ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
             ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
           })

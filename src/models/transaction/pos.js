@@ -974,8 +974,7 @@ export default {
               queue: '1'
             }
           })
-        }
-        else if ( localStorage.getItem('queue2') === null ) {
+        } else if ( localStorage.getItem('queue2') === null ) {
           localStorage.setItem('queue2', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
@@ -989,8 +988,7 @@ export default {
               queue: '2'
             }
           })
-        }
-        else if ( localStorage.getItem('queue3') === null ) {
+        } else if ( localStorage.getItem('queue3') === null ) {
           localStorage.setItem('queue3', JSON.stringify(arrayProd))
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
@@ -1002,6 +1000,104 @@ export default {
             type: 'insertQueue',
             payload: {
               queue: '3'
+            }
+          })
+        } else if ( localStorage.getItem('queue4') === null ) {
+          localStorage.setItem('queue4', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '4'
+            }
+          })
+        } else if ( localStorage.getItem('queue5') === null ) {
+          localStorage.setItem('queue5', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '5'
+            }
+          })
+        } else if ( localStorage.getItem('queue6') === null ) {
+          localStorage.setItem('queue6', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '6'
+            }
+          })
+        } else if ( localStorage.getItem('queue7') === null ) {
+          localStorage.setItem('queue7', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '7'
+            }
+          })
+        } else if ( localStorage.getItem('queue8') === null ) {
+          localStorage.setItem('queue8', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '8'
+            }
+          })
+        } else if ( localStorage.getItem('queue9') === null ) {
+          localStorage.setItem('queue9', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '9'
+            }
+          })
+        } else if ( localStorage.getItem('queue10') === null ) {
+          localStorage.setItem('queue10', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          yield put({
+            type: 'insertQueue',
+            payload: {
+              queue: '10'
             }
           })
         }
