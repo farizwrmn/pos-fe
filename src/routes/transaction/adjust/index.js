@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    lastTrans, tmpProductList, currentItem, searchText, disableItem, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+    lastTrans, templistType, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
@@ -45,6 +45,8 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
   const editProps = {
     visible: modalEditVisible,
     item,
+    disabledItemIn,
+    disabledItemOut,
     onOk(data) {
       dispatch({
         type: 'adjust/adjustEdit',
@@ -60,10 +62,10 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
   const adjustProps = {
     item: currentItem,
     lastTrans,
-    disableItem: disableItem,
     location: location,
     loading: loading.effects['adjust/create'],
     listType,
+    templistType,
     itemEmployee,
     popoverVisible,
     listEmployee,
@@ -93,6 +95,17 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         payload: {
           modalType: 'browseProduct',
         },
+      })
+    },
+    loadData () {
+      dispatch({
+        type: 'adjust/modalEditHide',
+      })
+    },
+    changeDisabledItem (e) {
+      dispatch({
+        type: 'adjust/onChangeDisabledItem',
+        payload: e,
       })
     },
     onSearchProduct (data, e) {

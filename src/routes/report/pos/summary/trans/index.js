@@ -59,7 +59,7 @@ const Report = ({ dispatch, posReport, app }) => {
 }
 
 Report.propTyps = {
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
   posReport: PropTypes.object,
 }

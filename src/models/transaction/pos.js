@@ -914,17 +914,213 @@ export default {
       }
     },
 
-    *insertQueueCache ({payload}, {put}) {
+    // *insertQueueCache ({payload}, {put}) {
+    //   let arrayProd = []
+    //
+    //   const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+    //   const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+    //   const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+    //   const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    //
+    //   let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+    //   let memberInformation
+    //   if ( JSON.stringify(listByCode) == "[]" ) {
+    //     memberInformation = listByCode.slice()
+    //   }
+    //   else {
+    //     memberInformation = listByCode
+    //   }
+    //   const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+    //   //start-mechanicInfo
+    //   const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+    //   const mechanic = mechanicInfo[0]
+    //   //end-mechanicInfo
+    //
+    //   arrayProd.push({
+    //     cashier_trans: cashier_trans,
+    //     service_detail: service_detail,
+    //     memberCode: memberInfo.memberCode,
+    //     memberName: memberInfo.memberName,
+    //     point: memberInfo.point,
+    //     memberTypeId: memberInfo.memberTypeId,
+    //     memberUnit: memberUnit,
+    //     lastMeter: lastMeter,
+    //     address01: memberInfo.address01,
+    //     gender: memberInfo.gender,
+    //     id: memberInfo.id,
+    //     phone: memberInfo.phone,
+    //     mechanicCode: mechanic.mechanicCode,
+    //     mechanicName: mechanic.mechanicName
+    //   })
+    //   if ( localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
+    //       localStorage.getItem('mechanic') === null ) {
+    //     Modal.warning({
+    //       title: 'Warning',
+    //       content: 'Transaction Not Found...!',
+    //     })
+    //   }
+    //   else {
+    //     if ( localStorage.getItem('queue1') === null ) {
+    //       localStorage.setItem('queue1', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '1'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue2') === null ) {
+    //       localStorage.setItem('queue2', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '2'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue3') === null ) {
+    //       localStorage.setItem('queue3', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '3'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue4') === null ) {
+    //       localStorage.setItem('queue4', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '4'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue5') === null ) {
+    //       localStorage.setItem('queue5', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '5'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue6') === null ) {
+    //       localStorage.setItem('queue6', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '6'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue7') === null ) {
+    //       localStorage.setItem('queue7', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '7'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue8') === null ) {
+    //       localStorage.setItem('queue8', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '8'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue9') === null ) {
+    //       localStorage.setItem('queue9', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '9'
+    //         }
+    //       })
+    //     } else if ( localStorage.getItem('queue10') === null ) {
+    //       localStorage.setItem('queue10', JSON.stringify(arrayProd))
+    //       localStorage.removeItem('cashier_trans')
+    //       localStorage.removeItem('service_detail')
+    //       localStorage.removeItem('member')
+    //       localStorage.removeItem('memberUnit')
+    //       localStorage.removeItem('mechanic')
+    //       localStorage.removeItem('lastMeter')
+    //       yield put({
+    //         type: 'insertQueue',
+    //         payload: {
+    //           queue: '10'
+    //         }
+    //       })
+    //     }
+    //     else {
+    //       Modal.warning({
+    //         title: 'Warning',
+    //         content: 'Queues are full, Please finish previous transaction first...!'
+    //       })
+    //     }
+    //   }
+    // },
+
+    *insertQueueCache ( { payload } , { put }) {
       let arrayProd = []
 
       const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
-      const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+      const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
 
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
       let memberInformation
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (JSON.stringify(listByCode) == "[]") {
         memberInformation = listByCode.slice()
       }
       else {
@@ -935,7 +1131,7 @@ export default {
       const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
       const mechanic = mechanicInfo[0]
       //end-mechanicInfo
-
+      let array = []
       arrayProd.push({
         cashier_trans: cashier_trans,
         service_detail: service_detail,
@@ -952,199 +1148,92 @@ export default {
         mechanicCode: mechanic.mechanicCode,
         mechanicName: mechanic.mechanicName
       })
-      if ( localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
-          localStorage.getItem('mechanic') === null ) {
+      const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+      if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
+        localStorage.getItem('mechanic') === null) {
         Modal.warning({
           title: 'Warning',
           content: 'Transaction Not Found...!',
         })
       }
       else {
-        if ( localStorage.getItem('queue1') === null ) {
-          localStorage.setItem('queue1', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '1'
+        // console.log(JSON.parse(localStorage.getItem('queue')))
+        for (let n = 0; n < 10; n += 1) {
+          let tempQueue = `queue${n + 1}`
+          if (queue.hasOwnProperty(tempQueue)) {
+            console.log(queue.queue2)
+            console.log('this', `${queue.hasOwnProperty(tempQueue)} already exists`)
+          } else if (`${queue.hasOwnProperty(tempQueue)}`) {
+            // set Object by string value
+            const setDeepValue = (obj, value, path) => {
+              if (typeof path === 'string') {
+                path = path.split('.')
+              }
+
+              if(path.length > 1){
+                let p = path.shift()
+                if (obj[p] === null || typeof obj[p] !== 'object') {
+                  obj[p] = {}
+                }
+                setDeepValue(obj[p], value, path)
+              } else {
+                obj[path[0]] = value
+              }
             }
-          })
-        } else if ( localStorage.getItem('queue2') === null ) {
-          localStorage.setItem('queue2', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '2'
-            }
-          })
-        } else if ( localStorage.getItem('queue3') === null ) {
-          localStorage.setItem('queue3', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '3'
-            }
-          })
-        } else if ( localStorage.getItem('queue4') === null ) {
-          localStorage.setItem('queue4', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '4'
-            }
-          })
-        } else if ( localStorage.getItem('queue5') === null ) {
-          localStorage.setItem('queue5', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '5'
-            }
-          })
-        } else if ( localStorage.getItem('queue6') === null ) {
-          localStorage.setItem('queue6', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '6'
-            }
-          })
-        } else if ( localStorage.getItem('queue7') === null ) {
-          localStorage.setItem('queue7', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '7'
-            }
-          })
-        } else if ( localStorage.getItem('queue8') === null ) {
-          localStorage.setItem('queue8', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '8'
-            }
-          })
-        } else if ( localStorage.getItem('queue9') === null ) {
-          localStorage.setItem('queue9', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '9'
-            }
-          })
-        } else if ( localStorage.getItem('queue10') === null ) {
-          localStorage.setItem('queue10', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: '10'
-            }
-          })
-        }
-        else {
-          Modal.warning({
-            title: 'Warning',
-            content: 'Queues are full, Please finish previous transaction first...!'
-          })
+            // Object.assign(queue, tempQueue, arrayProd)
+            setDeepValue(queue, arrayProd, tempQueue)
+            localStorage.setItem('queue', JSON.stringify(queue))
+            yield put({
+              type: 'insertQueue',
+              payload: {
+                queue: n + 1,
+              },
+            })
+            break
+          }
         }
       }
     },
+    * insertQueue ({ payload }, { call, put }) {
+      // let dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
+      // let arrayProd = dataPos.slice()
+      //
+      // if ( JSON.stringify(arrayProd) !== "[]" ) {
+      //   for (let i in arrayProd) {
+      //     let disc1 = arrayProd[i].disc1
+      //     let disc2 = arrayProd[i].disc2
+      //     let disc3 = arrayProd[i].disc3
+      //
+      //     if ( arrayProd[i].code != null ) {
+      //       let dataStock = yield call(queryProductCode, arrayProd[i].code)
+      //       let validData = yield call(queryServiceByCode, arrayProd[i].code)
+      //       let newDataStock = dataStock.data ? dataStock.data : validData.data
+      //       arrayProd[i].price = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+      //       const sell = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
+      //       let tmpTotal = (arrayProd[i].qty * sell)
+      //       let tmpDisc = (tmpTotal * disc1) / 100
+      //       let tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
+      //       let tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
+      //
+      //       arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
+      //     }
+      //   }
+      Modal.info({
+        title: 'Payment Suspend',
+        content: `Your Payment has stored in queue ${payload.queue}`,
+      })
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('lastMeter')
 
-    *insertQueue ({ payload }, { call, put }) {
-      let dataPos = (localStorage.getItem('queue' + payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + payload.queue)))
-      let arrayProd = dataPos.slice()
+      yield put({
+        type: 'setAllNull',
+      })
 
-      if ( JSON.stringify(arrayProd) != "[]" ) {
-        for (let i in arrayProd) {
-          let disc1 = arrayProd[i].disc1
-          let disc2 = arrayProd[i].disc2
-          let disc3 = arrayProd[i].disc3
-
-          if ( arrayProd[i].code != null ) {
-            let dataStock = yield call(queryProductCode, arrayProd[i].code)
-            let validData = yield call(queryServiceByCode, arrayProd[i].code)
-            let newDataStock = dataStock.data ? dataStock.data : validData.data
-            arrayProd[i].price = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
-            const sell = newDataStock.sellPrice ? newDataStock.sellPrice : newDataStock.serviceCost
-            let tmpTotal = (arrayProd[i].qty * sell)
-            let tmpDisc = (tmpTotal * disc1) / 100
-            let tmpDisc2 = ((tmpTotal - tmpDisc) * disc2) / 100
-            let tmpDisc3 = ((tmpTotal - tmpDisc - tmpDisc2) * disc3) / 100
-
-            arrayProd[i].total = tmpTotal - tmpDisc - tmpDisc2 - tmpDisc3 - arrayProd[i].discount
-          }
-        }
-        Modal.info({
-          title: 'Payment Suspend',
-          content: `Your Payment has stored in queue ${payload.queue}`
-        })
-        localStorage.setItem('queue' + payload.queue, JSON.stringify(arrayProd))
-
-        yield put({
-          type: 'setAllNull',
-        })
-
-      }
+      // }
     },
 
     * backPrevious ({ payload }, { put }) {
@@ -1489,7 +1578,7 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: '', lastMeter: '',listQueue: (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1'))), }
+      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: '', lastMeter: 0 }
     },
 
 
@@ -1548,7 +1637,7 @@ export default {
         curRounding: curRounding,
         curRecord: curRecord + 1,
         memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
-        lastMeter: localStorage.getItem('lastMeter'),
+        lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
         memberUnitInfo: {unitNo: localStorage.getItem('memberUnit')},
         mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
       }
@@ -1751,7 +1840,8 @@ export default {
     },
 
     changeQueue (state, action) {
-      let listQueue = (localStorage.getItem('queue' + action.payload.queue) === null ? [] : JSON.parse(localStorage.getItem('queue' + action.payload.queue)))
+      let listQueue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+      listQueue = _.get(listQueue, `queue${action.payload.queue}`) ? _.get(listQueue, `queue${action.payload.queue}`) : []
       return { ...state, listQueue: listQueue, curQueue: action.payload.queue }
     },
     setListPaymentDetail (state, action) {

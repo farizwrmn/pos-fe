@@ -88,6 +88,7 @@ export default {
       payload.accountNumber = formatAccount
       payload.active = 1
       payload.startPeriod = moment(moment(payload.endPeriod).add(1, 'days')).format('YYYY-MM-DD')
+      payload.endPeriod = moment(payload.startPeriod).endOf('month')
       const data = yield call(createPeriod, { id: payload.accountNumber, data: payload })
       if (data.success) {
         // yield put({ type: 'modalHide' })

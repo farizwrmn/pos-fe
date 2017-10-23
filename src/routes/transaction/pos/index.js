@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
+import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 
 import { color } from 'utils'
 import Browse from './Browse'
@@ -22,7 +22,7 @@ const formItemLayout = {
   },
 }
 
-const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
+const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
   const {
     modalServiceVisible,
     modalMemberVisible,
@@ -96,13 +96,13 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
       mm='0'+mm
     }
 
-    if ( mode == 1 ) {
+    if (mode === 1) {
       today = dd + '-' + mm + '-' +yyyy
     }
-    else if ( mode == 2 ) {
+    else if (mode === 2) {
       today = mm+yyyy
     }
-    else if ( mode == 3 ) {
+    else if (mode === 3) {
       today = yyyy + '-' + mm + '-' + dd
     }
 
@@ -150,6 +150,19 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
     }
   }
 
+  const objectSize = () => {
+    let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+    Object.size = function (obj) {
+      let size = 0, key
+      for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++
+      }
+      return size
+    }
+    let size = Object.size(queue)
+    return size
+  }
+
   const handleMemberBrowse = () => {
     //get member data
     dispatch({
@@ -165,6 +178,7 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
   }
 
   const handleSuspend = () => {
+    document.getElementById('KM').value = 0
     dispatch({type: 'pos/insertQueueCache'})
   }
 
@@ -243,21 +257,20 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
 
   const handleDiscount = (tipe, value) => {
     let discountQty
-    if(tipe<5){
+    if(tipe < 5) {
       discountQty = 'Discount'
-    }
-    else if (tipe ===5){
+    } else if (tipe === 5) {
       discountQty = 'Quantity'
     }
-    if ( value ) {
-      if ( value < (curRecord) ) {
+    if (value) {
+      if (value < (curRecord)) {
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: (tipe == 4 ? 'discount' :
+            kodeUtil: (tipe === 4 ? 'discount' :
               tipe === 5 ? 'quantity'
-                : 'disc' + tipe),
-            infoUtil: `Insert ${discountQty} ` + (tipe == 4 ? 'Nominal' : tipe === 5 ? '' : (tipe + ' (%)')) + ' for Record ' + value,
+                : `disc${tipe}`),
+            infoUtil: `Insert ${discountQty} ${(tipe === 4 ? 'Nominal' : tipe === 5 ? '' : (tipe + ' (%)'))} for Record ${value}`,
           },
         })
 
@@ -1047,10 +1060,11 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                     onClick={handleServiceBrowse}>Service
             </Button>
             {modalServiceVisible && <Browse {...modalServiceProps} />}
-
-            <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-                    onClick={handleQueue}>Queue
-            </Button>
+            <Badge count={objectSize()}>
+              <Button type="primary" size="large" icon="down-square-o" className="button-width01"
+                      onClick={handleQueue}>Queue
+              </Button>
+            </Badge>
             {modalQueueVisible && <Browse {...modalQueueProps} />}
 
 
@@ -1228,8 +1242,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app}) => {
                     </Popover>
                   </Col>
                 </FormItem>
-                <FormItem label="KM"  hasFeedback {...formItemLayout}>
-                  <Input defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} type="number" onChange={value => onChangeLastMeter(value)} />
+                <FormItem label="KM" hasFeedback {...formItemLayout}>
+                  <Input type="number" onChange={value => onChangeLastMeter(value)} id="KM" defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} />
                 </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input value={memberInformation.memberCode} disabled />

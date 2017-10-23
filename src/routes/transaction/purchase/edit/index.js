@@ -7,7 +7,7 @@ import PurchaseList from './PurchaseList'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
-    modalPurchaseVisible, discPRC, discNML, transNo } = purchase
+    modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
 
   const purchaseProps = {
     date: date,
@@ -17,6 +17,9 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     rounding,
     transNo,
     dataBrowse: dataBrowse,
+    curDiscPercent: curDiscPercent,
+    curDiscNominal: curDiscNominal,
+    listSupplier: listSupplier,
     modalProductVisible: modalProductVisible,
     modalPurchaseVisible: modalPurchaseVisible,
     supplierInformation: supplierInformation ? supplierInformation : null,
@@ -42,6 +45,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({
         type: 'purchase/changeRounding',
         payload: e,
+      })
+    },
+    onChangeTotalItem (data) {
+      dispatch({
+        type: 'purchase/setTotalItem',
+        payload: data,
       })
     },
     handleBrowseProduct () {
@@ -72,7 +81,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       })
     },
     onChooseItem (data) {
-      dispatch({ type: 'purchase/editPurchase', payload: { value: data.VALUE, effectedRecord: data.Record, kodeUtil: data.Detail } })
+      console.log(data)
+      dispatch({ type: 'purchase/editPurchaseList', payload: data })
     },
     onResetBrowse () {
       dispatch({ type: 'purchase/resetBrowse' })

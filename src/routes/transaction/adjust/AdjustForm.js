@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
-import moment from 'moment'
 import Browse from './Browse'
 
 const dateFormat = 'YYYY/MM/DD'
@@ -19,7 +18,7 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 },
 }
-const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
                       popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...adjustProps}) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
@@ -60,6 +59,31 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
 
   const handleMenuClick = (item) => {
     onChooseItem(item)
+  }
+  const changeCascader = (e) => {
+    const value = e[0]
+    const variable = templistType.filter(x => x.code === value)
+    const { miscVariable } = variable[0]
+
+    let disabledItem = {}
+    let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
+    if (miscVariable === 'IN') {
+      disabledItem.disabledItemOut = true
+      disabledItem.disabledItemIn = false
+      for (let n = 0; n < adjust.length; n += 1) {
+        adjust[n].Out = 0
+      }
+      localStorage.setItem('adjust', JSON.stringify(adjust))
+    } else if (miscVariable === 'OUT') {
+      disabledItem.disabledItemOut = false
+      disabledItem.disabledItemIn = true
+      for (let n = 0; n < adjust.length; n += 1) {
+        adjust[n].In = 0
+      }
+      localStorage.setItem('adjust', JSON.stringify(adjust))
+    }
+    changeDisabledItem(disabledItem)
+    loadData()
   }
   const handleButtonDeleteClick = () => {
     localStorage.removeItem('adjust')
@@ -126,7 +150,7 @@ const AdjustForm = ({lastTrans, onChooseItem, onResetAll, onGetEmployee, itemEmp
                 style={{ width: '100%' }}
                 options={listType}
                 placeholder="Pick a Type"
-
+                onChange={value => changeCascader(value)}
               />
             )}
           </FormItem>
@@ -217,6 +241,9 @@ AdjustForm.propTyps = {
   item: PropTypes.object,
   onGetEmployee: PropTypes.func,
   dispatch: PropTypes.func,
+  loadData: PropTypes.func,
+  changeDisabledItem: PropTypes.func,
+  templistType: PropTypes.array.isRequired,
 }
 
 export default Form.create()(AdjustForm)

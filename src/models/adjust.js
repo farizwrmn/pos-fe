@@ -19,12 +19,14 @@ export default modelExtend(pageModel, {
     dataBrowse: [],
     listType: [],
     lastTrans: '',
+    templistType: [],
     listAdjust: [],
     listEmployee: [],
     curTotal: 0,
     popoverVisible: false,
     modalEditVisible: false,
-    disableItem: false,
+    disabledItemIn: true,
+    disabledItemOut: true,
     modalVisible: false,
     modalType: '',
     item: [],
@@ -279,7 +281,10 @@ export default modelExtend(pageModel, {
     * loadDataAdjust ({ payload }, { call, put }) {
       const dataAdjust = yield call(queryTransType)
       const dataEmployee = yield call(queryEmployee)
-
+      localStorage.removeItem('adjust')
+      yield put({
+        type: 'modalEditHide',
+      })
       yield put({
         type: 'setTransType',
         payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data },
@@ -354,7 +359,7 @@ export default modelExtend(pageModel, {
     },
     setTransType (state, action) {
       const { listType, listEmployee } = action.payload
-
+      const tmpListType = listType
       let DICT_FIXED = (function () {
         let fixed = []
         for (let id in listType) {
@@ -377,7 +382,7 @@ export default modelExtend(pageModel, {
         }
         return fixed
       }())
-      return { ...state, listType: DICT_FIXED, listEmployee: EMPLOYEE_FIXED }
+      return { ...state, templistType: tmpListType, listType: DICT_FIXED, listEmployee: EMPLOYEE_FIXED }
     },
     SuccessData (state) {
       localStorage.removeItem('adjust')
@@ -413,6 +418,10 @@ export default modelExtend(pageModel, {
     },
     setDataBrowse (state, action) {
       return { ...state, ...action.payload, dataBrowse: action.payload }
+    },
+    onChangeDisabledItem (state, action) {
+      console.log('onChangeDisabledItem',action.payload)
+      return { ...state, ...action.payload }
     },
   },
 })

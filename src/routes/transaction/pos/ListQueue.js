@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Table, Modal, Button, Input, Icon, Form, Radio, Tabs } from 'antd'
+import { Card, Table, Modal, Button, Badge, Form, Radio, Tabs } from 'antd'
 import { connect } from 'dva'
 import styles from './List.less'
 import classnames from 'classnames'
@@ -9,8 +9,6 @@ import { DropOption } from 'components'
 
 const FormItem = Form.Item
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const TabPane = Tabs.TabPane;
 
 const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
@@ -27,13 +25,16 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 
 
   const handleClick = () => {
-    if (localStorage.getItem('queue' + curQueue) === null ) {
-      const modal = Modal.warning({
+    const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+    const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+    const useQueue = `queue${curQueue}`
+    if (Object.keys(listQueue).length === 0) {
+      Modal.warning({
         title: 'Warning',
         content: `Queue ${curQueue} Not Found...!`,
       })
     } else {
-      const cashier_trans = JSON.parse(localStorage.getItem('queue' + curQueue))
+      const cashier_trans = listQueue
       const trans = cashier_trans[0]
       let arrayMember = []
       let arrayMechanic = []
@@ -51,13 +52,15 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         mechanicCode: trans.mechanicCode,
         mechanicName: trans.mechanicName
       })
+      Reflect.deleteProperty(queue, useQueue);
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
       localStorage.setItem('memberUnit', trans.memberUnit)
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
-      localStorage.removeItem('queue' + curQueue)
+      localStorage.setItem('queue', JSON.stringify(queue))
+      document.getElementById('KM').value = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       dispatch({
         type: 'pos/setCurTotal',
       })
@@ -188,7 +191,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
             ]}
             dataSource={listQueue[0] ? listQueue[0].cashier_trans : []}
             style={{ marginBottom: 16 }}
-            locale = {{
+            locale={{
               emptyText: 'No Payment Information',
             }}
           />
@@ -242,14 +245,14 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
                 },
               ]}
               dataSource={listQueue[0] ? listQueue[0].service_detail : []}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
               locale={{
                 emptyText: 'No Payment Information',
               }}
             />
           </div>
         </Card>
-        <Button onClick={handleClick} > RESTORE </Button>
+      <Button onClick={handleClick}> RESTORE </Button>
     </div>
   )
 }

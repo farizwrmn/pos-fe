@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 15 },
 }
 
-const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
+const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -44,7 +44,6 @@ const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDec
       },
     })
   }
-
   return (
     <Modal footer="" closable {...editProps}>
       <Form>
@@ -86,7 +85,7 @@ const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDec
               message: 'Required',
             }],
           })(
-            <Input />
+            <Input disabled={disabledItemIn} />
           )
           }
         </FormItem>
@@ -98,7 +97,7 @@ const AdjustList = ({ onOk, onChooseItem, item, form: { resetFields, getFieldDec
               message: 'Required',
             }],
           })(
-            <Input />
+            <Input disabled={disabledItemOut} />
           )
           }
         </FormItem>
@@ -119,6 +118,8 @@ AdjustList.propTypes = {
   form: PropTypes.object.isRequired,
   pos: PropTypes.object,
   item: PropTypes.object,
-  onChooseItem: PropTypes.func
+  onChooseItem: PropTypes.func,
+  disabledItemIn: PropTypes.bool.isRequired,
+  disabledItemOut: PropTypes.bool.isRequired,
 }
 export default Form.create()(AdjustList)

@@ -47,6 +47,7 @@ export default {
         payload: date,
       })
       const data = yield call(queryIn, payload)
+      console.log('data', data)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',
@@ -72,6 +73,7 @@ export default {
         payload: date,
       })
       const data = yield call(queryOut, payload)
+      console.log('data', data)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',

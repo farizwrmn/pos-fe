@@ -3,33 +3,58 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { FilterItem } from 'components'
-import { Form, Button, DatePicker } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import PrintXLS from './PrintXLS'
+import PrintPDF from './PrintPDF'
 
-const dateFormat = 'YYYY-MM-DD';
 const { RangePicker } = DatePicker
 
-const Filter = ({ onListReset, onFilterChange, onDateChange, fromDate, toDate, ...filterProps, form: { resetFields, getFieldsValue, setFieldsValue } }) => {
-  const handleReset = () => {
-    onListReset()
-    resetFields()
-  }
-  let from = fromDate ? moment(fromDate, dateFormat) : moment.utc(moment().format(dateFormat), dateFormat)
-  let to = toDate ?  moment(toDate, dateFormat) : moment.utc(moment().format(dateFormat), dateFormat)
+const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+
   const handleChange = (value) => {
     const from = value[0].format('YYYY-MM-DD')
     const to = value[1].format('YYYY-MM-DD')
     onDateChange(from, to)
   }
+
+  const handleReset = () => {
+    const fields = getFieldsValue()
+    for (let item in fields) {
+      if ({}.hasOwnProperty.call(fields, item)) {
+        if (fields[item] instanceof Array) {
+          fields[item] = []
+        } else {
+          fields[item] = undefined
+        }
+      }
+    }
+    setFieldsValue(fields)
+    resetFields()
+    onListReset()
+  }
+
   return (
     <div>
-      <FilterItem label="CreatedAt">
-        <RangePicker defaultValue={[from, to]} style={{ width: '100%' }} size="large" onChange={_value => handleChange(_value)} />
-      </FilterItem>
-      <div>
-        <Button type="primary" size="small" className="margin-right" onClick={handleReset}>Reset</Button>
-      </div>
+      <Row style={{ display: 'flex' }}>
+        <Col span={10} >
+          <FilterItem label="Trans Date">
+            {getFieldDecorator('rangePicker')(
+              <RangePicker size="large" onChange={(value) => handleChange(value)} format="DD-MMM-YYYY" />
+            )}
+          </FilterItem>
+        </Col>
+        <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
+          <Button type="dashed" size="large"
+            className="button-width02 button-extra-large bgcolor-grey"
+            onClick={() => handleReset()}
+          >
+            <Icon type="rollback" className="icon-large" />
+          </Button>
+          {<PrintPDF {...printProps} />}
+          {<PrintXLS {...printProps} />}
+        </Col>
+      </Row>
     </div>
   )
 }
@@ -37,10 +62,9 @@ const Filter = ({ onListReset, onFilterChange, onDateChange, fromDate, toDate, .
 Filter.propTypes = {
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
-  toDate: PropTypes.string.isRequired,
-  fromDate: PropTypes.string.isRequired,
-  onFilterChange: PropTypes.func,
-  onListReset: PropTypes.func,
+  onFilterChange: PropTypes.func.isRequired,
+  onListReset: PropTypes.func.isRequired,
+  onDateChange: PropTypes.func.isRequired,
 }
 
 export default Form.create()(Filter)
