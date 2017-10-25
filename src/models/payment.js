@@ -159,7 +159,7 @@ export default {
             policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
             change: payload.totalChange
           }
-          const point = parseInt(payload.grandTotal / 10000)
+          const point = parseInt((payload.grandTotal / 10000), 10)
 
           const data_create = yield call(create, detailPOS)
           if (data_create.success) {

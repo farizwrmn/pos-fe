@@ -4,6 +4,7 @@ import { Dropdown, Button, Icon, Menu } from 'antd'
 
 const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps }) => {
   let styleMenuItem
+  let disabledItem = false
   // const menu = menuOptions.map(item => <Menu.Item key={item.key}>{item.name}</Menu.Item>)
   const menu = menuOptions.map((item) => {
     switch (item.name) {
@@ -15,6 +16,7 @@ const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps 
         break
       case 'Delete':
         styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
+        disabledItem = true
         break
       case 'Void':
         styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
@@ -26,7 +28,7 @@ const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps 
         styleMenuItem = {}
         break
     }
-    return <Menu.Item style={styleMenuItem} key={item.key}><Icon type={item.icon} /> {item.name}</Menu.Item>
+    return <Menu.Item disabled={disabledItem} style={styleMenuItem} key={item.key}><Icon type={item.icon} /> {item.name}</Menu.Item>
   })
   return (<Dropdown
     overlay={<Menu onClick={onMenuClick}>{menu}</Menu>}

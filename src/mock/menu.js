@@ -319,6 +319,21 @@ let database = [
   //   // route: '/report/pos/yearly',
   // },
   {
+    id: '45',
+    bpid: '4',
+    mpid: '4',
+    name: 'FIFO',
+    icon: 'book',
+  },
+  {
+    id: '451',
+    bpid: '45',
+    mpid: '45',
+    name: 'Summary',
+    icon: 'file-text',
+    route: '/report/fifo/summary',
+  },
+  {
     id: '9',
     icon: 'setting',
     name: 'Setting',

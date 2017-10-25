@@ -220,9 +220,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid
-        }
+        },
       })
-      dispatch({ type: 'pos/setAllNull' })
+      // dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
 

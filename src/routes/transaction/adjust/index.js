@@ -148,23 +148,22 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         },
       })
     },
-    onChooseItem (item) {
+    onChooseItem (e) {
       const listByCode = (localStorage.getItem('adjust') ? localStorage.getItem('adjust') : [] )
       let arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (listByCode.length === 0) {
         arrayProd = listByCode.slice()
       }
-      else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
+      console.log('onChooseItem', e)
       arrayProd.push({
-        'no': arrayProd.length + 1,
-        'code': item.productCode,
-        'productId': item.id,
-        'name': item.productName,
-        'In': 0,
-        'Out': 0,
-        'price': item.sellPrice,
+        no: arrayProd.length + 1,
+        code: e.productCode,
+        name: e.productName,
+        productId: e.id,
+        productName: e.productName,
+        In: 0,
+        Out: 0,
+        price: e.sellPrice,
       })
       localStorage.setItem('adjust', JSON.stringify(arrayProd))
       const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
@@ -198,22 +197,19 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
-    onChooseItem (item) {
+    onChooseItem (e) {
       const listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
       let arrayProd
-      if ( JSON.stringify(listByCode) == "[]" ) {
+      if (listByCode.length === 0) {
         arrayProd = listByCode.slice()
       }
-      else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
       arrayProd.push({
-        'no': arrayProd.length + 1,
-        'code': item.productCode,
-        'name': item.productName,
-        'qty': curQty,
-        'price': item.costPrice,
-        'total': curQty * item.sellPrice
+        no: arrayProd.length + 1,
+        code: e.productCode,
+        name: e.productName,
+        qty: curQty,
+        price: e.costPrice,
+        total: curQty * e.sellPrice
       })
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
       dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })

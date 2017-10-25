@@ -219,41 +219,45 @@ export default modelExtend(pageModel, {
 
     * adjustEdit ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
-      let arrayProd = dataPos.slice()
-      arrayProd[payload.Record - 1].price = parseInt(payload.price, 10)
-      arrayProd[payload.Record - 1].In = parseInt(payload.InQty, 10)
-      arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty, 10)
-      localStorage.setItem('adjust', JSON.stringify(arrayProd))
-      yield put({ type:'modalEditHide' })
+      if (dataPos.length > 0) {
+        let arrayProd = dataPos.slice()
+        arrayProd[payload.Record - 1].price = parseInt(payload.price, 10)
+        arrayProd[payload.Record - 1].In = parseInt(payload.InQty, 10)
+        arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty, 10)
+        localStorage.setItem('adjust', JSON.stringify(arrayProd))
+      }
+      yield put({ type: 'modalEditHide' })
     },
 
     * adjustDelete ({ payload }, { call, put }) {
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function() {
-        let what, a = arguments, L = a.length, ax
-        while (L && this.length) {
-          what = a[--L]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
+      if (dataPos.length > 0) {
+        let arrayProd = dataPos.slice()
+        Array.prototype.remove = function() {
+          let what, a = arguments, L = a.length, ax
+          while (L && this.length) {
+            what = a[--L]
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1)
+            }
           }
+          return this
         }
-        return this
-      }
 
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          name: ary[n].name,
-          price: ary[n].price,
-          In: ary[n].In,
-          Out: ary[n].Out,
-        })
+        let ary = arrayProd
+        ary.remove(arrayProd[payload.Record - 1])
+        arrayProd = []
+        for (let n = 0; n < ary.length; n += 1) {
+          arrayProd.push({
+            no: n + 1,
+            code: ary[n].code,
+            productId: ary[n].productId,
+            name: ary[n].name,
+            price: ary[n].price,
+            In: ary[n].In,
+            Out: ary[n].Out,
+          })
+        }
       }
       yield put({ type: 'modalEditHide' })
     },
@@ -370,7 +374,6 @@ export default modelExtend(pageModel, {
             })
           }
         }
-
         return fixed
       }())
 
@@ -420,7 +423,7 @@ export default modelExtend(pageModel, {
       return { ...state, ...action.payload, dataBrowse: action.payload }
     },
     onChangeDisabledItem (state, action) {
-      console.log('onChangeDisabledItem',action.payload)
+      console.log('onChangeDisabledItem', action.payload)
       return { ...state, ...action.payload }
     },
   },

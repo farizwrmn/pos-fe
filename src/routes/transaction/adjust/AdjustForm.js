@@ -64,23 +64,27 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
     const value = e[0]
     const variable = templistType.filter(x => x.code === value)
     const { miscVariable } = variable[0]
-
+    console.log(miscVariable)
     let disabledItem = {}
     let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
     if (miscVariable === 'IN') {
       disabledItem.disabledItemOut = true
       disabledItem.disabledItemIn = false
-      for (let n = 0; n < adjust.length; n += 1) {
-        adjust[n].Out = 0
+      if (Object.keys(adjust).length > 0) {
+        for (let n = 0; n < adjust.length; n += 1) {
+          adjust[n].Out = 0
+        }
+        localStorage.setItem('adjust', JSON.stringify(adjust))
       }
-      localStorage.setItem('adjust', JSON.stringify(adjust))
     } else if (miscVariable === 'OUT') {
       disabledItem.disabledItemOut = false
       disabledItem.disabledItemIn = true
-      for (let n = 0; n < adjust.length; n += 1) {
-        adjust[n].In = 0
+      if (Object.keys(adjust).length > 0) {
+        for (let n = 0; n < adjust.length; n += 1) {
+          adjust[n].In = 0
+        }
+        localStorage.setItem('adjust', JSON.stringify(adjust))
       }
-      localStorage.setItem('adjust', JSON.stringify(adjust))
     }
     changeDisabledItem(disabledItem)
     loadData()

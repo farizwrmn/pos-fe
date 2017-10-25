@@ -1,0 +1,83 @@
+/**
+ * Created by Veirry on 17/09/2017.
+ */
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Table } from 'antd'
+import moment from 'moment'
+
+const Browse = ({ dataSource, ...browseProps }) => {
+  const columns = [
+    {
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: '227px',
+    },
+    {
+      title: 'Begin',
+      dataIndex: 'beginQty',
+      key: 'beginQty',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+    {
+      title: 'Purchase Qty',
+      dataIndex: 'purchaseQty',
+      key: 'purchaseQty',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+    {
+      title: 'Adjust IN',
+      dataIndex: 'adjInQty',
+      key: 'adjInQty',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+    {
+      title: 'POS Qty',
+      dataIndex: 'posQty',
+      key: 'posQty',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+    {
+      title: 'Adjust OUT',
+      dataIndex: 'adjOutQty',
+      key: 'adjOutQty',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      key: 'count',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+    },
+  ]
+
+  return (
+    <div>
+      <Table
+        style={{ clear: 'both' }}
+        {...browseProps}
+        bordered
+        scroll={{ x: 1000, y: 300 }}
+        columns={columns}
+        simple
+        size="small"
+        rowKey={record => record.transNo}
+        dataSource={dataSource}
+      />
+    </div>
+  )
+}
+
+Browse.propTypes = {
+  location: PropTypes.object,
+  onExportExcel: PropTypes.func,
+}
+
+export default Browse

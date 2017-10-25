@@ -5,6 +5,7 @@ import moment from 'moment'
 import { Modal } from 'antd'
 import { query as queryAllPeriod, create as createPeriod, queryLastCode as lastCode, queryLastActive, update as updatePeriod } from '../services/period'
 import { queryModeName as miscQuery } from '../services/misc'
+import { queryFifo } from '../services/report/fifo'
 
 export default {
   namespace: 'period',
@@ -102,17 +103,30 @@ export default {
       }
     },
     * end ({ payload }, { call, put }) {
-      const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
-      yield put({ type: 'addPeriod', payload: payload })
-      if (data.statusCode === 200) {
-        yield put({ type: 'modalCloseHide' })
-        yield put({ type: 'queryPeriod' })
-        Modal.info({
-          title: 'Last period',
-          content: 'Last period has been closed',
+      const period = moment(payload.endPeriod).format('M')
+      const periodClose = moment(payload.endPeriod).format('MM-YYYY')
+      const year = moment(payload.endPeriod).format('YYYY')
+      const check = yield call(queryFifo, { period: period, year: year })
+      const dataCheck = check.data.filter(el => el.count < 0)
+      console.log(dataCheck)
+      if (dataCheck.length > 0) {
+        Modal.warning({
+          title: 'Inventory Error',
+          content: 'Please Check Inventory before Closed transaction',
         })
-      } else {
-        throw data
+      } else if (dataCheck.length === 0) {
+        const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
+        yield put({ type: 'addPeriod', payload })
+        if (data.statusCode === 200) {
+          yield put({ type: 'modalCloseHide' })
+          yield put({ type: 'queryPeriod' })
+          Modal.info({
+            title: 'Last period',
+            content: 'Last period has been closed',
+          })
+        } else {
+          throw data
+        }
       }
     },
   },

@@ -251,6 +251,14 @@ const Routers = function ({ history, app }) {
             }, 'report-purchase-summary-trans')
           },
         }, {
+          path: 'report/fifo/summary',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/fifo'))
+              cb(null, require('./routes/report/fifo/summary/'))
+            }, 'report-purchase-summary-trans')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {

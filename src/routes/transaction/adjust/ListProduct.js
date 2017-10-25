@@ -7,7 +7,7 @@ import AdjustForm from './AdjustForm'
 
 const FormItem = Form.Item
 
-const ListProduct = ({onChooseItem, purchase, dispatch, ...adjustProps}) => {
+const ListProduct = ({ onChooseItem, purchase, dispatch, ...adjustProps }) => {
   const {searchText, filtered, tmpProductList} = purchase
 
   const handleMenuClick = (record) => {
@@ -15,7 +15,7 @@ const ListProduct = ({onChooseItem, purchase, dispatch, ...adjustProps}) => {
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
 
     dispatch({
       type: 'purchase/onInputChange',
@@ -54,17 +54,19 @@ const ListProduct = ({onChooseItem, purchase, dispatch, ...adjustProps}) => {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%'
-    }, {
+      width: '25%',
+    },
+    {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '45%'
-    }, {
+      width: '45%',
+    },
+    {
       title: 'Cost Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '20%'
+      width: '20%',
     }
   ]
   return (

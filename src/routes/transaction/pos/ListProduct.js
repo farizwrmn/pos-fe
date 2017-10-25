@@ -14,7 +14,7 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
 
     dispatch({
       type: 'pos/onInputChange',
