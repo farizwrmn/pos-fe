@@ -107,7 +107,7 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
       <Row style={{ padding: '10px' }}>
         <Col span={12}>
           <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
-          <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
+          {/*<Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>*/}
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
         </Col>
       </Row>

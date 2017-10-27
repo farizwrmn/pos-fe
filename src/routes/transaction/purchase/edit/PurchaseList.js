@@ -19,6 +19,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
         ...getFieldsValue(),
       }
       data.code = item.code
+      data.ket = 'edit'
       onChooseItem(data)
       resetFields()
     })

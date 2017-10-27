@@ -433,9 +433,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
       <Row>
         <Col span={24}>
           <Form layout="vertical">
-            <FormItem>
-              <Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>
-            </FormItem>
+            {/*<FormItem>*/}
+              {/*<Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>*/}
+            {/*</FormItem>*/}
             <FormItem>
                 <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
             </FormItem>

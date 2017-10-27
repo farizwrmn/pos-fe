@@ -194,7 +194,7 @@ export default modelExtend(pageModel, {
       let arrayProdAdd = []
       let arrayProdEdit = []
       if (addData.length > 0) {
-        for (let n = 0; n < addData.length; n++) {
+        for (let n = 0; n < addData.length; n += 1) {
           if (payload.id.taxType === 'I') {
             addData[n].ppn = 0.1 * addData[n].price
           } else if (payload.id.taxType === 'E') {
@@ -213,7 +213,7 @@ export default modelExtend(pageModel, {
           })
         }
       }
-      for (let n = 0; n < editData.length; n++ ) {
+      for (let n = 0; n < editData.length; n += 1) {
         arrayProdEdit.push({
           transNo: payload.id.transNo,
           productId: editData[n].code,
