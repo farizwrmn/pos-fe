@@ -7,7 +7,6 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 
 const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
-
   const pdfMake = require('pdfmake/build/pdfmake.js')
   const pdfFonts = require('pdfmake/build/vfs_fonts.js')
   const warning = Modal.warning
@@ -27,27 +26,66 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
 
   const createPdfLineItems = (tabledata) => {
+    const headersGroup = {
+      top: {
+        col_1: { fontSize: 12, text: 'NO', rowSpan: 1, alignment: 'center' },
+        col_2: { fontSize: 12, text: 'PRODUCT', rowSpan: 1, alignment: 'center' },
+        col_3: { fontSize: 12, text: 'SALDO AWAL', colSpan: 2, alignment: 'center' },
+        col_4: {},
+        col_5: { fontSize: 12, text: 'PEMBELIAN', colSpan: 2, alignment: 'center' },
+        col_6: {},
+        col_7: { fontSize: 12, text: 'ADJ IN + RETUR JUAL', colSpan: 2, alignment: 'center' },
+        col_8: {},
+        col_9: { fontSize: 12, text: 'PENJUALAN', colSpan: 2, alignment: 'center' },
+        col_10: {},
+        col_11: { fontSize: 12, text: 'ADJ OUT + RETUR BELI', colSpan: 2, alignment: 'center' },
+        col_12: {},
+        col_13: { fontSize: 12, text: 'SALDO AKHIR', colSpan: 2, alignment: 'center' },
+        col_14: {},
+      },
+    }
     const headers = {
       top: {
-        col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
+        col_1: '',
+        col_2: '',
+        col_3: { fontSize: 12, text: 'QTY', alignment: 'center' },
+        col_4: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
         col_5: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_6: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
-        col_7: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_8: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
-        col_9: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_10: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
-        col_11: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_12: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
-        col_13: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_14: { fontSize: 12, text: 'AMOUNT HPP', style: 'tableHeader', alignment: 'center' },
+        col_6: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
+        col_7: { fontSize: 12, text: 'QTY', alignment: 'center' },
+        col_8: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
+        col_9: { fontSize: 12, text: 'QTY', alignment: 'center' },
+        col_10: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
+        col_11: { fontSize: 12, text: 'QTY', alignment: 'center' },
+        col_12: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
+        col_13: { fontSize: 12, text: 'QTY', alignment: 'center' },
+        col_14: { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
       },
     }
 
     const rows = tabledata
     let body = []
+    for (let key in headersGroup) {
+      if (headersGroup.hasOwnProperty(key)) {
+        let header = headersGroup[key]
+        let row = []
+        row.push(header.col_1)
+        row.push(header.col_2)
+        row.push(header.col_3)
+        row.push(header.col_4)
+        row.push(header.col_5)
+        row.push(header.col_6)
+        row.push(header.col_7)
+        row.push(header.col_8)
+        row.push(header.col_9)
+        row.push(header.col_10)
+        row.push(header.col_11)
+        row.push(header.col_12)
+        row.push(header.col_13)
+        row.push(header.col_14)
+        body.push(row)
+      }
+    }
     for (let key in headers) {
       if (headers.hasOwnProperty(key)) {
         let header = headers[key]
@@ -69,6 +107,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
         body.push(row)
       }
     }
+
 
     let counter = 1
     for (let key in rows) {
@@ -97,18 +136,18 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     let totalRow = []
     totalRow.push({})
     totalRow.push({ text: 'Grand Total', colSpan: 1, alignment: 'center', fontSize: 12 })
-    totalRow.push({ text: `${beginQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${beginPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${purchaseQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${purchasePrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${adjInQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${adjInPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${posQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${posPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${adjOutQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${adjOutPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${count.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${amount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }
@@ -144,7 +183,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
                   alignment: 'center',
                 },
                 {
-                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }],
                 },
                 {
                   columns: [
@@ -176,7 +215,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
             table: {
               widths: ['4%', '18%', '5%', '8%', '5%', '8%', '5%', '8%', '5%', '8%', '5%', '8%', '5%', '8%'],
               headerRows: 1,
-              body: body,
+              body,
             },
             layout: 'noBorder',
           },
@@ -186,7 +225,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
             margin: [50, 30, 50, 0],
             stack: [
               {
-                canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - 2 * 40, y2: -8, lineWidth: 0.5 }]
+                canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }],
               },
               {
                 columns: [
@@ -250,10 +289,12 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
 }
 
 PrintPDF.propTypes = {
-  listRekap: PropTypes.array,
-  period: PropTypes.string,
-  yaer: PropTypes.string,
-  app: PropTypes.object,
+  listRekap: PropTypes.array.isRequired,
+  dataSource: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired,
+  period: PropTypes.string.isRequired,
+  year: PropTypes.string.isRequired,
+  storeInfo: PropTypes.object,
 }
 
 export default PrintPDF

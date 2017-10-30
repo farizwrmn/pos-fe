@@ -27,6 +27,11 @@ export default {
             type: 'queryInAdj',
             payload: location.query,
           })
+        } else if (location.pathname === '/report/fifo/balance' && location.query.period && location.query.year) {
+          dispatch({
+            type: 'queryInAdj',
+            payload: location.query,
+          })
         } else {
           dispatch({
             type: 'setNull',

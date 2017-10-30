@@ -49,7 +49,7 @@ let database = [
     mpid: '22',
     name: 'Customer Group',
     icon: 'usergroup-add',
-    route: '/master/customergroup'
+    route: '/master/customergroup',
   },
   {
     id: '223',
@@ -57,7 +57,7 @@ let database = [
     mpid: '22',
     name: 'Customer Type',
     icon: 'usergroup-add',
-    route: '/master/customertype'
+    route: '/master/customertype',
   },
   {
     id: '23',
@@ -332,6 +332,14 @@ let database = [
     name: 'Summary',
     icon: 'file-text',
     route: '/report/fifo/summary',
+  },
+  {
+    id: '452',
+    bpid: '45',
+    mpid: '45',
+    name: 'Balance Stock',
+    icon: 'inbox',
+    route: '/report/fifo/balance',
   },
   {
     id: '9',
