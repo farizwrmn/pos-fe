@@ -22,6 +22,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
   let adjOutQty = listRekap.reduce((cnt, o) => cnt + o.adjOutQty, 0)
   let adjOutPrice = listRekap.reduce((cnt, o) => cnt + o.adjOutPrice, 0)
   let count = listRekap.reduce((cnt, o) => cnt + o.count, 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -100,7 +101,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${(0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
       for (let m = 65; m < (65 + header2.length); m += 1) {
         let o = 7
         let counter = m - 65
@@ -154,7 +155,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`M${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`N${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`N${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`O${m}`).value = `${(parseFloat(0)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`O${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`O${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -180,7 +181,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F3').value = `${storeInfo.name}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(period).format('MM-YYYY')}`
+      sheet.getCell('F4').value = `PERIODE : ${moment(period).format('MMMM').concat('-', year)}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })

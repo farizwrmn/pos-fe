@@ -1,7 +1,6 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-// import { query as queryReport, queryTrans } from '../../services/report/purchase'
 import { queryFifo } from '../../services/report/fifo'
 
 export default {
@@ -43,8 +42,11 @@ export default {
         type: 'setPeriod',
         payload: date,
       })
+      yield put({
+        type: 'setNull',
+        payload: date,
+      })
       const data = yield call(queryFifo, payload)
-      console.log('data', data.data)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',

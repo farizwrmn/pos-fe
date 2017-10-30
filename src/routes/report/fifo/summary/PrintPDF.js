@@ -24,6 +24,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   let adjOutQty = listRekap.reduce((cnt, o) => cnt + o.adjOutQty, 0)
   let adjOutPrice = listRekap.reduce((cnt, o) => cnt + o.adjOutPrice, 0)
   let count = listRekap.reduce((cnt, o) => cnt + o.count, 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
@@ -50,7 +51,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     for (let key in headers) {
       if (headers.hasOwnProperty(key)) {
         let header = headers[key]
-        let row = new Array()
+        let row = []
         row.push(header.col_1)
         row.push(header.col_2)
         row.push(header.col_3)
@@ -87,7 +88,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
         row.push({ text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       counter += 1
@@ -107,7 +108,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     totalRow.push({ text: `${adjOutQty.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${adjOutPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${count.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({})
+    totalRow.push({ text: `${amount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }
@@ -148,7 +149,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
                 {
                   columns: [
                     {
-                      text: `\nPERIODE: ${moment(period).format('MMMM')} ${moment(year).format('YYYY')}`,
+                      text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
                       fontSize: 12,
                       alignment: 'left',
                     },
@@ -190,7 +191,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
               {
                 columns: [
                   {
-                    text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
+                    text: `Tanggal cetak: ${moment().format('LLLL')}`,
                     margin: [0, 0, 0, 0],
                     fontSize: 9,
                     alignment: 'left',
