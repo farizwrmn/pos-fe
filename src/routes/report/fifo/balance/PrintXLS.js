@@ -64,9 +64,9 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         family: 4,
         size: 10,
       }
-      const header2 = ['NO.', '', 'PRODUCT', 'SALDO', 'JUMLAH']
+      const header = ['NO.', '', 'PRODUCT', 'HARGA POKOK', 'SALDO', 'JUMLAH']
       for (let n = 0; n <= listRekap.length; n += 1) {
-        for (let m = 65; m < (65 + header2.length); m += 1) {
+        for (let m = 65; m < (65 + header.length); m += 1) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
@@ -81,7 +81,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         '',
         `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
-      for (let m = 65; m < (65 + header2.length); m += 1) {
+      for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
         let counter = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
@@ -90,7 +90,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
           size: 11,
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header2[counter]}`
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[counter]}`
       }
       for (let n = 0; n < listRekap.length; n += 1) {
         let m = 9 + n
@@ -100,13 +100,15 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${listRekap[n].productCode}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).value = `${(parseFloat(listRekap[n].amount) / parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`F${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < (65 + header2.length); m += 1) {
+      for (let m = 65; m < (65 + header.length); m += 1) {
         let n = listRekap.length + 10
         let counter = m - 65
         sheet.getCell(`C${n}`).font = {
@@ -148,13 +150,13 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  location: PropTypes.object,
-  listRekap: PropTypes.array,
-  dataSource: PropTypes.array,
-  storeInfo: PropTypes.string,
-  period: PropTypes.string,
-  year: PropTypes.string,
-  app: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  listRekap: PropTypes.array.isRequired,
+  dataSource: PropTypes.array.isRequired,
+  storeInfo: PropTypes.string.isRequired,
+  period: PropTypes.string.isRequired,
+  year: PropTypes.string.isRequired,
+  app: PropTypes.object.isRequired,
 }
 
 export default PrintXLS

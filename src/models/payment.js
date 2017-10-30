@@ -53,10 +53,10 @@ export default {
   subscriptions: {
 
   },
-//confirm payment
+  // confirm payment
 
   effects: {
-    *create ({ payload }, { call, put }) {
+    * create ({ payload }, { call, put }) {
       if (payload.address === undefined) {
         const modal = Modal.error({
           title: 'Payment Fail',
