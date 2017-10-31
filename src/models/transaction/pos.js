@@ -469,7 +469,6 @@ export default {
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let arrayProd = dataPos.slice()
       let curRecord = 0
-      localStorage.removeItem('transNo')
       let curCashierNo = localStorage.getItem('cashierNo')
       let curShift = localStorage.getItem('cashierShift')
 
