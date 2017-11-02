@@ -191,7 +191,13 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
           },
         },
       }
-      pdfMake.createPdf(docDefinition).open()
+      let isChrome = !!window.chrome
+      let isMozilla = !!window.mozilla
+      if (isChrome) {
+        pdfMake.createPdf(docDefinition).open()
+      } else {
+        pdfMake.createPdf(docDefinition).download()
+      }
     }
   }
 

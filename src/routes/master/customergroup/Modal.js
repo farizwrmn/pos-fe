@@ -170,9 +170,10 @@ const modal = ({
             initialValue: item.groupCode,
             rules: [{
               required: true,
-              pattern: /^([a-zA-Z]{0,4})$/,
+              pattern: /^[a-z0-9\_]{1,5}$/i,
+              message: "a-Z & 0-9"
             }],
-          })(<Input />)}
+          })(<Input maxLength={5} />)}
         </FormItem>
         <FormItem label="Group Name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('groupName', {

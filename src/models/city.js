@@ -16,8 +16,8 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: 'add',
     selectedRowKeys: [],
-    disableMultiSelect,
-    pagination: {
+    disableSelect: disableMultiSelect,
+    paginationCity: {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,

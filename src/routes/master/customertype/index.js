@@ -7,10 +7,10 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const CustomerType = ({ sellprice, location, dispatch, customertype, loading, misc }) => {
-  const { listType, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, modalType, selectedRowKeys, disableMultiSelect } = customertype
-
-  const { pageSize } = pagination
+  const { listType, paginationCustomerType, currentItem, modalVisible, searchVisible, visiblePopover,
+    disabledItem, modalType, selectedRowKeys, disableMultiSelectCusType } = customertype
+    console.log(listType)
+  const { pageSize } = paginationCustomerType
   const { listMisc } = misc
   const { listSellPrice } = sellprice
 
@@ -88,7 +88,7 @@ const CustomerType = ({ sellprice, location, dispatch, customertype, loading, mi
   const browseProps = {
     dataSource: listType,
     loading: loading.effects['customertype/query'],
-    pagination,
+    pagination: paginationCustomerType,
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -143,7 +143,7 @@ const CustomerType = ({ sellprice, location, dispatch, customertype, loading, mi
     size:'small',
   }
 
-  Object.assign(browseProps, disableMultiSelect ? null :
+  Object.assign(browseProps, disableMultiSelectCusType ? null :
     {rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {

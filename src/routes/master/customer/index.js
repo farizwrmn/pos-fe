@@ -9,15 +9,15 @@ import Modal from './Modal'
 import Unit from './Unit'
 
 const Customer = ({ location, customergroup, customertype, dispatch, customer, loading, employee, city,unit }) => {
-  const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, disableItem, modalType, selectedRowKeys, disableMultiSelect,
+  const { listCustomer, paginationCustomer, currentItem, modalVisible, searchVisible, visiblePopoverGroup,
+    disabledItem, disableItem, modalType, selectedRowKeys, disableMultiSelectCustomer,
   visiblePopoverType, visiblePopoverCity } = customer
 
   const { listCity } = city
   const { listUnit } = unit
   const { listGroup } = customergroup
-  const { pageSize } = pagination
   const { listType } = customertype
+  const { pageSize } = paginationCustomer
 
   const modalProps = {
     closable: false,
@@ -27,13 +27,11 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
     listCity,
     listGroup,
     listType,
-    width: 950,
     visible: modalVisible,
-    visiblePopover,
+    visiblePopoverGroup,
     visiblePopoverType,
     visiblePopoverCity,
     disableItem,
-    // disabledCustomerId: (disabledCustomerId) ? true : false,
     maskClosable: false,
     confirmLoading: loading.effects['customer/update'],
     title: `${modalType === 'add' ? 'Add Customer' : 'Edit Customer'}`,
@@ -186,14 +184,6 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
         type: 'city/query',
       })
     },
-    // modalButtonCancelClick () {
-    //   dispatch(
-    //     routerRedux.push(
-    //     {
-    //     pathname: '/master/customer',
-    //   }),
-    // )
-    // },
     modalButtonCancelClick2 () {
       dispatch({ type: 'customer/modalHide' })
     },
@@ -324,9 +314,9 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
   }
 
   const browseProps = {
-    dataSource: list,
+    dataSource: listCustomer,
     loading: loading.effects['customer/query'],
-    pagination,
+    pagination: paginationCustomer,
     location,
     onChangeUnit (page) {
       const { query, pathname } = location
@@ -390,7 +380,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
     },
     size: 'small',
   }
-  Object.assign(browseProps, disableMultiSelect ? null :
+  Object.assign(browseProps, disableMultiSelectCustomer ? null :
     { rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {

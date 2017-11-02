@@ -8,7 +8,7 @@ export default modelExtend(pageModel, {
   namespace: 'employee',
 
   state: {
-    list: [],
+    listEmployee: [],
     listLovEmployee: [],
     currentItem: {},
     addItem: {},
@@ -56,7 +56,7 @@ export default modelExtend(pageModel, {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.employee)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'updateStateEmployee', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -66,7 +66,7 @@ export default modelExtend(pageModel, {
     *'deleteBatch' ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'updateStateEmployee', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -101,7 +101,7 @@ export default modelExtend(pageModel, {
         const employees = data.data
         const totalData = data.data.length
         yield put({
-          type: 'querySuccess',
+          type: 'querySuccessEmployee',
           payload: {
             listLovEmployee: employees,
             pagination: {
@@ -117,17 +117,17 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    querySuccess (state, action) {
+    querySuccessEmployee (state, action) {
       const { list, listLovEmployee, pagination } = action.payload
       return { ...state,
-        list,
+        listEmployee: list,
         listLovEmployee,
         pagination: {
           ...state.pagination,
           ...pagination,
         } }
     },
-    updateState (state, { payload }) {
+    updateStateEmployee (state, { payload }) {
       return {
         ...state,
         ...payload,

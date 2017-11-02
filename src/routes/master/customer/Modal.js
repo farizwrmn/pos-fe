@@ -71,9 +71,9 @@ const modal = ({
   onChooseItem,
   onChooseCity,
   modalButtonCityClick,
-  visiblePopover = false,
-  visiblePopoverCity = false,
-  visiblePopoverType = false,
+  visiblePopoverGroup,
+  visiblePopoverCity,
+  visiblePopoverType,
   disabledItem = { memberCode: true, getEmployee: true },
   modalPopoverVisible,
   modalPopoverVisibleType,
@@ -321,11 +321,11 @@ const modal = ({
         <TabPane tab="View" key="1">
           <Form layout="horizontal">
             <Row gutter={3}>
-              <Col span={12}>
+              <Col span={24}>
                 <FormItem label="Customer Group" hasFeedback {...formItemLayout}>
                   <Row gutter={1}>
                     <Col span={6}>
-                    <Popover visible={visiblePopover}
+                    <Popover visible={visiblePopoverGroup}
                       onVisibleChange={() => hdlPopoverVisibleChange()}
                       title={titlePopover}
                       content={contentPopover}
@@ -393,15 +393,25 @@ const modal = ({
                 <FormItem label="Customer ID" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberCode', {
                     initialValue: item.memberCode,
-                    rules: [{ required: true, message: "Required" }],
+                    rules: [{
+                      required: true,
+                      message: "Required",
+                      pattern: /^[a-z0-9\_-]{3,15}$/i,
+                      message: "a-Z & 0-9",
+                    }],
                   })(
-                    <Input />
+                    <Input maxLength={15}/>
                   )}
                 </FormItem>
                 <FormItem label="Identity Type" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idType', {
                     initialValue: item.idType,
-                    rules: [{ required: true, message: "Required" }],
+                    rules: [{
+                      required: true,
+                      message: "Required",
+                      pattern: /^[a-z0-9\_\-]{3,10}$/i,
+                      message: "a-Z & 0-9"
+                    }],
                   })(<Select
                     value={item.idType}
                     size="large"
@@ -414,14 +424,24 @@ const modal = ({
                 <FormItem label="Identity Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idNo', {
                     initialValue: item.idNo,
-                    rules: [{ pattern: /^[0-9-_.]{4,15}\S+$/, required: true, message: "Required, No space min: 5"}],
-                  })(<Input />)}
+                    rules: [{ 
+                      pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                      required: true,
+                      message: "a-Z & 0-9"
+                    }],
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Customer Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberName', {
                     initialValue: item.memberName,
-                    rules: [{ required: true, min: 4, message: "Required"}],
-                  })(<Input />)}
+                    rules: [{
+                      required: true,
+                      min: 4,
+                      message: "Required",
+                      pattern: "/^[a-z0-9\_.,\- ]{3,50}$/i",
+                      message: "a-Z & 0-9"
+                    }],
+                  })(<Input maxLength={15} />)}
                 </FormItem>
                 <FormItem label="Birthdate" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('birthDate', {
@@ -451,17 +471,19 @@ const modal = ({
                   })(<Input maxLength="15" />)}
                 </FormItem>
               </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <FormItem label="Address 1" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('address01', {
                     initialValue: item.address01,
                     rules: [
                       {
                         required: true,
-                        message: "Required"
+                        message: "Required",
+                        pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
+                        message: "a-Z & 0-9"
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input maxLength={50} />)}
                 </FormItem>
                 <FormItem label="Address 2" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('address02', {
@@ -520,9 +542,11 @@ const modal = ({
                     rules: [
                       {
                         required: false,
+                        validate: /^[a-z0-9\_\-]{3,20}$/i,
+                        message: "a-Z & 0-9"
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem label="Gender" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('gender', {
@@ -548,7 +572,7 @@ const modal = ({
                         message: 'The input is not valid E-mail!',
                       },
                     ],
-                  })(<Input value="veirry@gmail.com" />)}
+                  })(<Input />)}
                 </FormItem>
                 <FormItem label="Phone" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('phoneNumber', {
@@ -560,7 +584,7 @@ const modal = ({
                         message: 'Input a Phone No.[xxxx xxxx xxxx]',
                       },
                     ],
-                  })(<Input defaultvalue="0811658292" />)}
+                  })(<Input />)}
                 </FormItem>
                 <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('mobileNumber', {
@@ -572,7 +596,7 @@ const modal = ({
                         message: 'Input a Phone No.[xxxx xxxx xxxx]',
                       },
                     ],
-                  })(<Input defaultvalue="0811658292" />)}
+                  })(<Input />)}
                 </FormItem>
               </Col>
             </Row>
@@ -581,7 +605,7 @@ const modal = ({
 
         <TabPane tab="Detail Kendaraan" key={2}>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <Form layout="horizontal">
                 <FormItem label="No Polisi" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('policeNo', {
@@ -607,7 +631,7 @@ const modal = ({
                 </FormItem>
               </Form>
             </Col>
-            <Col span={12}>
+            <Col span={24}>
               <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('type', {
                   initialValue: item.type,
@@ -644,7 +668,7 @@ const modal = ({
           <ButtonGroup>
             <Button key="submit" onClick={() => hdlButtonEditUnitClick()}>Edit Unit</Button>
           </ButtonGroup>
-          <Button key="submit" style={{ marginLeft: '60%' }} type="danger" onClick={() => hdlButtonDeleteUnitClick()}>Delete Unit</Button>
+          <Button key="submit" type="danger" onClick={() => hdlButtonDeleteUnitClick()}>Delete Unit</Button>
           <Row>
             <Col>
               <Unit

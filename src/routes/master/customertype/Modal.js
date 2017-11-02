@@ -176,9 +176,9 @@ const modal = ({
             initialValue: item.typeCode,
             rules: [{
               required: true,
-              pattern: /^([a-zA-Z]{0,6})$/,
+              pattern: /^[a-z0-9\_]{1,5}$/i,
             }],
-          })(<Input maxLength={6} />)}
+          })(<Input maxLength={5} />)}
         </FormItem>
         <FormItem label="Type" hasFeedback {...formItemLayout}>
           {getFieldDecorator('typeName', {

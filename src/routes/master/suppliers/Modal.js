@@ -134,9 +134,13 @@ const modal = ({
             <FormItem label="ID" hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierCode', {
                 initialValue: item.supplierCode,
-                rules: [{ required: true }],
+                rules: [{
+                  required: true,
+                  pattern: /^[a-z0-9\_]{2,15}$/i,
+                  message: "a-Z & 0-9"
+                }],
               })(
-                <Input />
+                <Input maxLength={15} />
               )}
             </FormItem>
             <FormItem label="Supplier Name" hasFeedback {...formItemLayout}>
@@ -144,9 +148,8 @@ const modal = ({
                 initialValue: item.supplierName,
                 rules: [{
                   required: true,
-                  min: 2,
-                  pattern: /^[a-z0-9_./-\s]{1,50}$/i,
-                  message: 'incorrect input inserted',
+                  pattern: /^[a-z0-9\_\- ]{3,50}$/i,
+                  message: 'a-Z & 0-9',
                 }],
               })(<Input placeholder="Input your supplier name" maxLength={50} />)}
             </FormItem>
@@ -156,10 +159,11 @@ const modal = ({
                 rules: [
                   {
                     required: true,
-                    min: 5,
+                    pattern: /^[a-z0-9-_. ]{5,50}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input />)}
+              })(<Input maxLength={50} />)}
             </FormItem>
             <FormItem label="Address 2" hasFeedback {...formItemLayout}>
               {getFieldDecorator('address02', {
@@ -167,10 +171,11 @@ const modal = ({
                 rules: [
                   {
                     required: false,
-                    min: 5,
+                    pattern: /^[a-z0-9-_. ]{5,50}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input />)}
+              })(<Input maxLength={50} />)}
             </FormItem>
             <FormItem label="City" hasFeedback {...formItemLayout}>
               <Popover visible={visiblePopoverCity}
@@ -208,6 +213,8 @@ const modal = ({
                 rules: [
                   {
                     required: false,
+                    pattern: /^[a-z0-9\_\-]{3,20}$/i,
+                    message: "a-Z & 0-9",
                   },
                 ],
               })(<Input />)}
@@ -220,8 +227,8 @@ const modal = ({
                 rules: [
                   {
                     required: false,
-                    pattern: /^\d{5}$/,
-                    message: 'invalid data',
+                    pattern: /^[a-z0-9\_\-]{3,5}$/i,
+                    message: 'Not a Postal Code',
                   },
                 ],
               })(<Input maxLength="5" />)}

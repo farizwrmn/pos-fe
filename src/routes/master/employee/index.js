@@ -7,7 +7,7 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const Employee = ({ location, dispatch, employee, jobposition, city, loading  }) => {
-  const { list, pagination, currentItem, modalVisible, searchVisible, modalType,
+  const { listEmployee, pagination, currentItem, modalVisible, searchVisible, modalType,
     selectedRowKeys, disableItem, visiblePopoverCity, disableMultiSelect } = employee
 
   const { listLovJobPosition } = jobposition
@@ -87,7 +87,7 @@ const Employee = ({ location, dispatch, employee, jobposition, city, loading  })
   }
 
   const browseProps = {
-    dataSource: list,
+    dataSource: listEmployee,
     loading: loading.effects['employee/query'],
     pagination,
     location,
