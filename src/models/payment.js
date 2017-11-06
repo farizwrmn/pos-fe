@@ -1,11 +1,13 @@
 import { Modal } from 'antd'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
+import config from 'config'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
 import { editPoint as updateMemberPoint} from '../services/customers'
 import { queryMode as miscQuery} from '../services/misc'
-
+const { prefix } = config
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 const terbilang = require('terbilang-spelling')
@@ -163,23 +165,42 @@ export default {
 
           const data_create = yield call(create, detailPOS)
           if (data_create.success) {
-            // yield put({
-            //   type: 'printPayment',
-            //   payload: {
-            //     memberId: payload.memberId,
-            //     gender: payload.gender,
-            //     company: payload.company,
-            //     lastTransNo: trans,
-            //     dataPOS: arrayProd,
-            //     phone: payload.phone,
-            //     memberName: payload.memberName,
-            //     policeNo: payload.policeNo,
-            //     lastMeter: payload.lastMeter,
-            //     address: payload.address,
-            //     mechanicName: payload.mechanicName,
-            //     cashierId: payload.cashierId,
-            //   },
-            // })
+            yield put({
+              type: 'printPayment',
+              payload: {
+                periode: payload.periode,
+                transDate: payload.transDate,
+                transDate2: payload.transDate2,
+                transTime: payload.transTime,
+                grandTotal: payload.grandTotal,
+                totalPayment: payload.totalPayment,
+                transDatePrint: payload.transDatePrint,
+                company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
+                gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+                phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+                address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+                lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+                lastTransNo: transNo,
+                totalChange: payload.totalChange,
+                totalDiscount: payload.totalDiscount,
+                policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
+                rounding: payload.rounding,
+                dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+                dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
+                memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+                memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+                memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+                mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+                technicianId: payload.technicianId,
+                curShift: payload.curShift,
+                printNo: 1,
+                point: point,
+                curCashierNo: payload.curCashierNo,
+                cashierId: payload.cashierId,
+                posMessage: 'Data has been saved',
+                type: 'POS'
+              },
+            })
             const data_cashier_trans_update = yield call(updateCashierTrans, {total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
               totalCreditCard: payload.totalCreditCard,
               status: 'O',
@@ -188,15 +209,15 @@ export default {
               transDate: payload.transDate2})
             yield call(createDetail, { data: arrayProd, transNo: trans })
             if (data_cashier_trans_update.success) {
-              yield call(updateMemberPoint, { point: point, memberCode: payload.memberIsd })
-              yield put({
-                type: 'successPost',
-                payload: {
-                  posMessage: 'Data has been saved',
-                },
-              })
+              yield call(updateMemberPoint, { point: point, memberCode: payload.memberId })
+              // yield put({
+              //   type: 'successPost',
+              //   payload: {
+              //     posMessage: 'Data has been saved',
+              //   },
+              // })
 
-              yield put({ type: 'pos/setAllNull' })
+              // yield put({ type: 'pos/setAllNull' })
               const modal = Modal.info({
                 title: 'Information',
                 content: 'Transaction has been saved...!',
@@ -403,9 +424,9 @@ export default {
       const payload = action.payload
       const dataPos = payload.dataPos
       const dataService = payload.dataService
-      const merge = dataPos === [] ? dataService : dataPos.concat(dataService)
+      const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
-      if (merge !== []) {
+      if (merge.length !== []) {
         const createPdfLineItems = (tabledata, payload, node) => {
           let code = ''
           if (node === 1) {
@@ -455,19 +476,6 @@ export default {
               body.push(row)
             }
           }
-          // if (node != 1) {
-          //   if(key < 2) {
-          //     for (let n = 0; n < (2-key); n++) {
-          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
-          //     }
-          //   }
-          // } else {
-          //   if(key < 2) {
-          //     for (let n = 0; n < (2-key); n++) {
-          //       body.push([{text: ' ', fontSize: 9}, {}, {}, {}, {}, {}, {}])
-          //     }
-          //   }
-          // }
           if (rows === null) {
             body.push([{ text: ' ', fontSize: 11}, {}, {}, {}, {}, {}, {}])
           }
@@ -483,7 +491,7 @@ export default {
             salutation = 'NY. '
           }
         }
-        let docDefinition = {
+        const docDefinition = {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
           pageMargins: [40, 160, 40, 150],
@@ -636,7 +644,7 @@ export default {
                         alignment: 'left',
                       },
                       {
-                        text: 'Cetakan ke: 1',
+                        text: `Cetakan ke: ${payload.printNo}`,
                         margin: [0, 10, 0, 10],
                         fontSize: 9,
                         alignment: 'center',
@@ -701,7 +709,28 @@ export default {
         }
         pdfMake.createPdf(docDefinition).print()
       }
-      return { ...state }
+      const { posMessage } = action.payload
+      if (payload.type === 'POS') {
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('member')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('lastMeter')
+      }
+      return { 
+        ...state,
+        posMessage: posMessage,
+        totalPayment: 0,
+        totalChange: 0,
+        lastTransNo: '',
+        inputPayment: '',
+        creditCardTotal: 0,
+        creditCharge: 0,
+        creditChargeAmount: 0,
+        creditCardNo: 0,
+        creditCardType: '',
+        modalCreditVisible: false, 
+      }
     },
 
     setCreditCardPaymentNull (state, action) {

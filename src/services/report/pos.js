@@ -23,3 +23,14 @@ export async function queryTrans (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryAll (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posreport}/all`
+  return request({
+    url: url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}

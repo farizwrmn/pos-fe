@@ -187,12 +187,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const handleAddMember = () => {
-    dispatch({
-      type: 'customer/modalShow',
-      payload: {
-        modalType: 'add',
-      },
-    })
+    // dispatch({
+    //   type: 'customer/modalShow',
+    //   payload: {
+    //     modalType: 'add',
+    //   },
+    // })
   }
 
   const handleSuspend = () => {

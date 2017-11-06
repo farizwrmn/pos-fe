@@ -149,11 +149,8 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       })
     },
     onChooseItem (e) {
-      const listByCode = (localStorage.getItem('adjust') ? localStorage.getItem('adjust') : [] )
-      let arrayProd
-      if (listByCode.length === 0) {
-        arrayProd = listByCode.slice()
-      }
+      const listByCode = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
+      let arrayProd = listByCode
       console.log('onChooseItem', e)
       arrayProd.push({
         no: arrayProd.length + 1,

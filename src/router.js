@@ -222,6 +222,14 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-summary-trans')
           },
         }, {
+          path: 'report/pos/service',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/posservice'))
+            }, 'report-pos-service')
+          },
+        }, {
           path: 'report/service/trans',
           getComponent (nextState, cb) {
             require.ensure([], require => {

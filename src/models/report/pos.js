@@ -1,7 +1,7 @@
 /**
- * Created by Veirry on 10/09/2017.
+ * Created by Veirry on 04/10/2017.
  */
-import { query as queryReport, queryTrans } from '../../services/report/pos'
+import { query as queryReport, queryTrans, queryAll } from '../../services/report/pos'
 
 export default {
   namespace: 'posReport',
@@ -21,6 +21,19 @@ export default {
     },
   },
   subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/report/pos/service' && location.query.from) {
+          dispatch({
+            type: 'setListNull'
+          })
+          dispatch({
+            type: 'queryTransAll',
+            payload: location.query,
+          })
+        }
+      })
+    },
   },
   effects: {
     * queryPart ({ payload }, { call, put }) {
@@ -39,6 +52,20 @@ export default {
           },
         },
       })
+    },
+    * queryTransAll ({ payload }, { call, put }) {
+        const data = yield call (queryAll, payload)
+        yield put ({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total,
+            },
+          },
+        })
     },
     * queryTrans ({ payload }, { call, put }) {
       let data = []
@@ -72,10 +99,12 @@ export default {
       }
     },
     querySuccessTrans (state, action) {
-      const { listTrans, pagination, tmpList } = action.payload
+      const { listTrans, pagination, tmpList, fromDate, toDate } = action.payload
 
       return { ...state,
         listTrans,
+        fromDate,
+        toDate,
         tmpList,
         pagination: {
           ...state.pagination,
@@ -86,7 +115,7 @@ export default {
     setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
     },
-    setListNull (state, action) {
+    setListNull (state) {
       return { ...state, list: [], listTrans: []}
     },
   },

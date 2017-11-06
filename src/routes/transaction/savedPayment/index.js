@@ -105,7 +105,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
           lastMeter: listPaymentDetail.lastMeter,
           mechanicName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
-          cashierId: listPaymentDetail.cashierId
+          cashierId: listPaymentDetail.cashierId,
+          printNo: 'copy',
         },
       })
       dispatch({
