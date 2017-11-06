@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data) {
         yield put({
-          type: 'querySuccess',
+          type: 'querySuccessEmployee',
           payload: {
             list: data.data,
             pagination: {
