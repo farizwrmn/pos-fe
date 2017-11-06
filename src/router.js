@@ -151,9 +151,12 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/member'))
+              registerModel(app, require('./models/customer'))
+              registerModel(app, require('./models/customergroup'))
+              registerModel(app, require('./models/customertype'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/city'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           },
@@ -217,6 +220,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/pos'))
               cb(null, require('./routes/report/pos/summary/trans/'))
             }, 'report-pos-summary-trans')
+          },
+        }, {
+          path: 'report/pos/service',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/posservice'))
+            }, 'report-pos-service')
           },
         }, {
           path: 'report/service/trans',

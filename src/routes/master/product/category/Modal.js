@@ -66,14 +66,20 @@ const modal = ({
         <FormItem label='Code' hasFeedback {...formItemLayout}>
           {getFieldDecorator('categoryCode', {
             initialValue: item.categoryCode,
-            rules: [{required: true, min: 3, max: 20}],
-          })(<Input disabled={disableItem.code} />)}
+            rules: [{
+              required: true,
+              pattern: /^[a-z0-9\_]{3,10}$/i,
+              message: "a-Z & 0-9"
+            }],
+          })(<Input disabled={disableItem.code} maxLength={10} />)}
         </FormItem>
         <FormItem label='Name' hasFeedback {...formItemLayout}>
           {getFieldDecorator('categoryName', {
             initialValue: item.categoryName,
-            rules: [{required: true, min:3, max: 20}],
-          })(<Input />)}
+            rules: [{
+              required: true,
+            }],
+          })(<Input maxLength={50} />)}
         </FormItem>
         <FormItem label='Image' hasFeedback {...formItemLayout}>
           <Row gutter={8}>

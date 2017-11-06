@@ -7,10 +7,10 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const City = ({ location, dispatch, city, loading, misc }) => {
-  const { listCity, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, modalType, selectedRowKeys, disableMultiSelect } = city
+  const { listCity, paginationCity, currentItem, modalVisible, searchVisible, visiblePopover,
+    disabledItem, modalType, selectedRowKeys, disableSelect } = city
 
-  const { pageSize } = pagination
+  const { pageSize } = paginationCity
 
   const modalProps = {
     item: currentItem,
@@ -89,7 +89,7 @@ const City = ({ location, dispatch, city, loading, misc }) => {
   const browseProps = {
     dataSource: listCity,
     loading: loading.effects['city/query'],
-    pagination,
+    paginationCity,
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -144,7 +144,7 @@ const City = ({ location, dispatch, city, loading, misc }) => {
     size: 'small',
   }
 
-  Object.assign(browseProps, disableMultiSelect ? null :
+  Object.assign(browseProps, disableSelect ? null :
     {rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {

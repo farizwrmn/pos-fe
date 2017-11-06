@@ -128,16 +128,18 @@ const modal = ({
             initialValue: item.serviceCode,
             rules: [{
               required: true,
-              pattern: /^([A-Za-z0-9_-_!. ]{0,30})$/,
+              pattern: /^[a-z0-9\_]{1,30}$/i,
+              message: "a-Z & 0-9"
             }],
-          })(<Input maxLength={25}/>)}
+          })(<Input maxLength={30}/>)}
         </FormItem>
         <FormItem label="Service" hasFeedback {...formItemLayout}>
           {getFieldDecorator('serviceName', {
             initialValue: item.serviceName,
             rules: [{
               required: true,
-              pattern: /^([a-zA-Z0-9_-_!. ]{0,30})$/,
+              pattern: /^[a-z0-9\_\- ]{1,50}$/i,
+              message: "a-Z & 0-9"
             }],
           })(<Input maxLength={50}/>)}
         </FormItem>

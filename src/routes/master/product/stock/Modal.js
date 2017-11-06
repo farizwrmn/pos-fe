@@ -200,9 +200,11 @@ const modal = ({
                 rules: [
                   {
                     required: true,
+                    pattern: /^[a-z0-9-_.]{3,30}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input />)}
+              })(<Input maxLength={30} />)}
             </FormItem>
             <FormItem label="Product Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('productName', {
@@ -210,9 +212,11 @@ const modal = ({
                 rules: [
                   {
                     required: true,
+                    pattern: /^[a-z0-9-_. ]{3,60}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input />)}
+              })(<Input maxLength={60} />)}
             </FormItem>
             <FormItem label="Category Id" hasFeedback {...formItemLayout}>
               <Popover visible={visiblePopover}
@@ -391,9 +395,11 @@ const modal = ({
                 rules: [
                   {
                     required: true,
+                    pattern: /^[a-z0-9-_.]{3,30}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input disabled={disableItem.code}/>)}
+              })(<Input disabled={disableItem.code} maxLength={30} />)}
             </FormItem>
             <FormItem label="Dummy Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('dummyName', {
@@ -401,9 +407,11 @@ const modal = ({
                 rules: [
                   {
                     required: true,
+                    pattern: /^[a-z0-9-_. ]{3,60}$/i,
+                    message: "a-Z & 0-9"
                   },
                 ],
-              })(<Input disabled={disableItem.code}/>)}
+              })(<Input disabled={disableItem.code} maxLength={60} />)}
             </FormItem>
             <FormItem label="Location 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('location01', {

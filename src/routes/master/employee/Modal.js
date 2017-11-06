@@ -106,13 +106,21 @@ const modal = ({
         <FormItem label='Employee Id' hasFeedback {...formItemLayout} >
           {getFieldDecorator('employeeId', {
             initialValue: item.employeeId,
-            rules: [{required: true, min:6, max: 10}],
-          })(<Input disabled={disableItem.employeeId} />)}
+            rules: [{
+              required: true,
+              pattern: /^[a-z0-9\_]{6,15}$/i,
+            }],
+          })(<Input maxLength={15} disabled={disableItem.employeeId} />)}
         </FormItem>
         <FormItem label='Employee Name' hasFeedback {...formItemLayout}>
           {getFieldDecorator('employeeName', {
             initialValue: item.employeeName,
-            rules: [{required: true, min: 3, max: 50}],
+            rules: [{
+              required: true,
+              min: 3,
+              max: 50,
+              pattern: /^[a-zA-Z0-9_ ]{3,50}$/i
+            }],
           })(<Input />)}
         </FormItem>
         <FormItem label='Position' hasFeedback {...formItemLayout}>

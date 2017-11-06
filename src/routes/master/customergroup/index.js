@@ -7,10 +7,9 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const Customergroup = ({ sellprice, location, dispatch, customergroup, loading, misc }) => {
-  const { listGroup, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, modalType, selectedRowKeys, disableMultiSelect } = customergroup
-
-  const { pageSize } = pagination
+  const { listGroup, paginationCustomerGroup, currentItem, modalVisible, searchVisible, visiblePopover,
+    disabledItem, modalType, selectedRowKeys, disableMultiSelectCusGroup } = customergroup
+  const { pageSize } = paginationCustomerGroup
   const { listMisc } = misc
   const { listSellPrice } = sellprice
 
@@ -91,9 +90,8 @@ const Customergroup = ({ sellprice, location, dispatch, customergroup, loading, 
 
   const browseProps = {
     dataSource: listGroup,
-    width: 90,
     loading: loading.effects['customergroup/query'],
-    pagination,
+    pagination: paginationCustomerGroup,
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -148,7 +146,7 @@ const Customergroup = ({ sellprice, location, dispatch, customergroup, loading, 
     size:'small',
   }
 
-  Object.assign(browseProps, disableMultiSelect ? null :
+  Object.assign(browseProps, disableMultiSelectCusGroup ? null :
     {rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {

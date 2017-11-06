@@ -16,8 +16,8 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: 'add',
     selectedRowKeys: [],
-    disableMultiSelect,
-    pagination: {
+    disableMultiSelectCusType: disableMultiSelect,
+    paginationCustomerType: {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
@@ -43,9 +43,10 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
+      console.log('data', data)
       if (data) {
         yield put({
-          type: 'querySuccess',
+          type: 'querySuccessCustomerType',
           payload: {
             listType: data.data,
             pagination: {
@@ -63,7 +64,7 @@ export default modelExtend(pageModel, {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.customertype)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'updateStateCustomerType', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -73,7 +74,7 @@ export default modelExtend(pageModel, {
     * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'updateStateCustomerType', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -105,16 +106,16 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    querySuccess (state, action) {
+    querySuccessCustomerType (state, action) {
       const { listType, pagination } = action.payload
       return { ...state,
         listType,
-        pagination: {
-          ...state.pagination,
+        paginationCustomerType: {
+          ...state.paginationCustomerType,
           ...pagination,
         } }
     },
-    updateState (state, { payload }) {
+    updateStateCustomerType (state, { payload }) {
       return {
         ...state,
         ...payload,

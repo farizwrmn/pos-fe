@@ -66,7 +66,11 @@ const modal = ({
         <FormItem label='Code' hasFeedback {...formItemLayout}>
           {getFieldDecorator('brandCode', {
             initialValue: item.brandCode,
-            rules: [{required: true, min: 3, max: 20}],
+            rules: [{
+              required: true,
+              pattern: /^[a-z0-9\_]{3,10}$/i,
+              message: "a-Z & 0-9"
+            }],
           })(<Input disabled={disableItem.code} />)}
         </FormItem>
         <FormItem label='Name' hasFeedback {...formItemLayout}>

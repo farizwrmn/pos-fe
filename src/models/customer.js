@@ -10,7 +10,7 @@ export default modelExtend(pageModel, {
   namespace: 'customer',
 
   state: {
-    list: [],
+    listCustomer: [],
     currentItem: {},
     addItem: {},
     disableItem: {},
@@ -18,8 +18,11 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: 'add',
     selectedRowKeys: [],
-    disableMultiSelect,
-    pagination: {
+    disableMultiSelectCustomer: disableMultiSelect,
+    visiblePopoverGroup: false,
+    visiblePopoverCity: false,
+    visiblePopoverType: false,
+    paginationCustomer: {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
@@ -47,9 +50,9 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data) {
         yield put({
-          type: 'querySuccess',
+          type: 'querySuccessCustomer',
           payload: {
-            list: data.data,
+            listCustomer: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -64,7 +67,7 @@ export default modelExtend(pageModel, {
       const data = yield call(remove, { id: payload.id })
       const { selectedRowKeys } = yield select(_ => _.customer)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'updateStateCustomer', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -74,7 +77,7 @@ export default modelExtend(pageModel, {
     *'deleteBatch' ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'updateStateCustomer', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -110,16 +113,16 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    querySuccess (state, action) {
-      const { list, pagination } = action.payload
+    querySuccessCustomer (state, action) {
+      const { listCustomer, pagination } = action.payload
       return { ...state,
-        list,
+        listCustomer,
         pagination: {
           ...state.pagination,
           ...pagination,
         } }
     },
-    updateState (state, { payload }) {
+    updateStateCustomer (state, { payload }) {
       return {
         ...state,
         ...payload,
@@ -132,7 +135,7 @@ export default modelExtend(pageModel, {
       return { ...state, modalVisible: false }
     },
     chooseEmployee (state, action) {
-      return { ...state, ...action.payload, visiblePopover: false }
+      return { ...state, ...action.payload, visiblePopoverGroup: false }
     },
     chooseCity (state, action) {
       return { ...state, ...action.payload, visiblePopoverCity: false }
@@ -144,16 +147,16 @@ export default modelExtend(pageModel, {
       return { ...state, ...action.payload }
     },
     modalPopoverVisible (state, action) {
-      return { ...state, ...action.payload, visiblePopover: true, visiblePopoverType: false, visiblePopoverCity: false }
+      return { ...state, ...action.payload, visiblePopoverGroup: true, visiblePopoverType: false, visiblePopoverCity: false }
     },
     modalPopoverVisibleCity (state, action) {
-      return { ...state, ...action.payload, visiblePopoverCity: true, visiblePopover: false, visiblePopoverType: false }
+      return { ...state, ...action.payload, visiblePopoverCity: true, visiblePopoverGroup: false, visiblePopoverType: false }
     },
     modalPopoverVisibleType (state, action) {
-      return { ...state, ...action.payload, visiblePopoverType: true, visiblePopover: false, visiblePopoverCity: false }
+      return { ...state, ...action.payload, visiblePopoverType: true, visiblePopoverGroup: false, visiblePopoverCity: false }
     },
     modalPopoverClose (state) {
-      return { ...state, visiblePopover: false, visiblePopoverType: false, visiblePopoverCity: false }
+      return { ...state, visiblePopoverGroup: false, visiblePopoverType: false, visiblePopoverCity: false }
     },
     searchShow (state) {
       return { ...state, searchVisible: true }

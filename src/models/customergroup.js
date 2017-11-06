@@ -16,8 +16,8 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: 'add',
     selectedRowKeys: [],
-    disableMultiSelect,
-    pagination: {
+    disableMultiSelectCusGroup: disableMultiSelect,
+    paginationCustomerGroup: {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
@@ -45,7 +45,7 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data) {
         yield put({
-          type: 'querySuccess',
+          type: 'querySuccessCustomerGroup',
           payload: {
             listGroup: data.data,
             pagination: {
@@ -62,7 +62,7 @@ export default modelExtend(pageModel, {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.customergroup)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'CustomerGroup', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -72,7 +72,7 @@ export default modelExtend(pageModel, {
     *'deleteBatch' ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'CustomerGroup', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -105,7 +105,7 @@ export default modelExtend(pageModel, {
     const data = yield call(query, payload)
     if (data) {
       yield put({
-        type: 'querySuccess',
+        type: 'querySuccessCustomerGroup',
         payload: {
           listGroup: data.data,
           pagination: {
@@ -120,16 +120,16 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    querySuccess (state, action) {
+    querySuccessCustomerGroup (state, action) {
       const { listGroup, pagination } = action.payload
       return { ...state,
         listGroup,
-        pagination: {
-          ...state.pagination,
+        paginationCustomerGroup: {
+          ...state.paginationCustomerGroup,
           ...pagination,
         } }
     },
-    updateState (state, { payload }) {
+    CustomerGroup (state, { payload }) {
       return {
         ...state,
         ...payload,
@@ -142,13 +142,13 @@ export default modelExtend(pageModel, {
       return { ...state, modalVisible: false }
     },
     choosePrice (state, action) {
-      return { ...state, ...action.payload, visiblePopover: false }
+      return { ...state, ...action.payload, visiblePopoverGroup: false }
     },
     modalPopoverVisible (state, action) {
-      return { ...state, ...action.payload, visiblePopover: true }
+      return { ...state, ...action.payload, visiblePopoverGroup: true }
     },
     modalPopoverClose (state) {
-      return { ...state, visiblePopover: false }
+      return { ...state, visiblePopoverGroup: false }
     },
     searchShow (state) {
       return { ...state, searchVisible: true }

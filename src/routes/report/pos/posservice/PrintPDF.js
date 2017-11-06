@@ -10,19 +10,18 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.amount, 0)
-  let costTotal = listTrans.reduce((cnt, o) => cnt + o.costPrice, 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + o.qtyIn, 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + o.product, 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + o.service, 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
       top: {
         col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
-        col_5: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-        col_6: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
+        col_2: { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
+        col_3: { fontSize: 12, text: 'TRANS NO', style: 'tableHeader', alignment: 'center' },
+        col_4: { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'right' },
+        col_5: { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'right' },
+        col_6: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'right' },
       },
     }
 
@@ -37,7 +36,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         row.push(header.col_3)
         row.push(header.col_4)
         row.push(header.col_5)
-        row.push(header.col_6)
+        row.push(header.col_6)        
         body.push(row)
       }
     }
@@ -48,11 +47,11 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         let data = rows[key]
         let row = new Array()
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qtyIn.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.amount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.product.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.service.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.product + data.service).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -62,9 +61,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
     totalRow.push({ text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 })
     totalRow.push({})
     totalRow.push({})
-    totalRow.push({ text: `${qtyTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${costTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${productTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${serviceTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${(productTotal + serviceTotal).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }
@@ -94,7 +93,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
                   stack: storeInfo.stackHeader01,
                 },
                 {
-                  text: 'LAPORAN ADJUSTMENT IN PER FAKTUR',
+                  text: 'LAPORAN JASA + PART PER FAKTUR',
                   style: 'header',
                   fontSize: 18,
                   alignment: 'center',

@@ -4,7 +4,7 @@ import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
-
+import ModalCustomer from '../../master/customer/Modal'
 import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
@@ -22,7 +22,16 @@ const formItemLayout = {
   },
 }
 
-const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
+const Pos = ({location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app }) => {
+  const {
+    modalVisible,
+    visiblePopoverCity,
+    visiblePopoverGroup,
+    visiblePopoverType
+  } = customer
+  const { listCity } = city
+  const { listGroup } = customergroup
+  const { listType } = customertype
   const {
     modalServiceVisible,
     modalMemberVisible,
@@ -175,6 +184,15 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
         modalType: 'browseMember',
       },
     })
+  }
+
+  const handleAddMember = () => {
+    // dispatch({
+    //   type: 'customer/modalShow',
+    //   payload: {
+    //     modalType: 'add',
+    //   },
+    // })
   }
 
   const handleSuspend = () => {
@@ -426,6 +444,62 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
       setCurBarcode('', 1)
     },
   }
+
+  const modalCustomerProps = {
+    visible: 'modalVisible',
+    visiblePopoverCity,
+    listCity,
+    visiblePopoverGroup,
+    listGroup,
+    visiblePopoverType,
+    listType,
+    onCancel () {
+      dispatch({
+        type: 'customer/modalHide',
+      })
+    },
+    modalButtonCancelClick2 () {
+      dispatch({
+        type: 'customer/modalHide',
+      })
+    },
+    modalButtonGroupClick () {
+      dispatch({
+        type: 'customergroup/query',
+      })
+    },
+    modalButtonTypeClick () {
+      dispatch({
+        type: 'customertype/query',
+      })
+    },
+    modalButtonCityClick () {
+      dispatch({
+        type: 'city/query',
+      })
+    },
+    modalPopoverVisible () {
+      dispatch({
+        type: 'customer/modalPopoverVisible',
+      })
+    },
+    modalPopoverVisibleCity () {
+      dispatch({
+        type: 'customer/modalPopoverVisibleCity',
+      })
+    },
+    modalPopoverVisibleType () {
+      dispatch({
+        type: 'customer/modalPopoverVisibleType',
+      })
+    },
+    modalPopoverClose () {
+      dispatch({
+        type: 'customer/modalPopoverClose',
+      })
+    }
+  }
+
   const modalPaymentProps = {
     location: location,
     loading: loading,
@@ -1036,8 +1110,8 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
             <ButtonGroup>
               <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
               <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" className="button-width02">
-                </Button>
+                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
+                {modalVisible && <ModalCustomer {...modalCustomerProps} />}
               </Tooltip>
             </ButtonGroup>
             {modalMemberVisible && <Browse {...modalMemberProps} />}
@@ -1286,7 +1360,6 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
           </Form>
         </Col>
       </Row>
-
       <Row>
         <Card bordered={false} title="Information">
           <Row gutter={32}>
@@ -1302,16 +1375,17 @@ const Pos = ({location, loading, dispatch, pos, member, unit, app }) => {
   )
 }
 
-
 Pos.propTypes = {
   pos: PropTypes.object,
+  customer: PropTypes.object,
   unit: PropTypes.object,
   app: PropTypes.object,
   position: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
+  customertype: PropTypes.object,
+  customergroup: PropTypes.object
 }
 
-
-export default connect(({ pos, unit, app, position, loading }) => ({ pos, unit, app, position, loading }))(Pos)
+export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading }))(Pos)

@@ -59,7 +59,7 @@ const BrowseGroup = ({
       title: 'Operation',
       key: 'operation',
       fixed: 'right',
-      width: '71px',
+      width: '86px',
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[

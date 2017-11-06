@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon, Popover, Calendar } from 'antd'
-import screenfull from 'screenfull'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
@@ -19,7 +18,6 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
     e.key === 'logout' && logout()
     e.key === 'password' && handleChangePwShow()
   }
-  let screenFull = () => { if (screenfull.enabled) { screenfull.request() } }
 
   const menusProps = {
     menu,
@@ -64,7 +62,6 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
         </Popover>
         : <div className={styles.leftWrapper}>
           <HeaderMenu prompt="toggle menu" icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
-          <HeaderMenu prompt="full-screen" icon="arrows-alt" onClick={screenFull} />
         </div>
       }
 

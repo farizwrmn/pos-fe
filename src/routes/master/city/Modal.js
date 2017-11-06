@@ -51,20 +51,6 @@ const modal = ({
       modalButtonSaveClick(data)
     })
   }
-  const hdlCheckPassword = (rule, value, callback) => {
-    const fieldPassword = getFieldsValue(['password'])
-    if (value && value !== fieldPassword.password) {
-      callback('Two passwords that you enter is inconsistent!')
-    } else {
-      callback()
-    }
-  }
-  const hdlCheckConfirm = (rule, value, callback) => {
-    if (value) {
-      validateFields(['confirm'], { force: true })
-    }
-    callback()
-  }
 
   return (
     <Modal {...modalOpts}
@@ -79,18 +65,20 @@ const modal = ({
             initialValue: item.cityCode,
             rules: [{
               required: true,
-              pattern: /^([a-zA-Z]{0,4})$/,
+              pattern: /^[a-z0-9\_]{3,10}$/i,
+              message: "a-Z & 0-9"
             }],
-          })(<Input />)}
+          })(<Input maxLength={10} />)}
         </FormItem>
         <FormItem label="City Name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('cityName', {
             initialValue: item.cityName,
             rules: [{
               required: true,
-              pattern: /^([a-zA-Z]{0,30})$/,
+              pattern: /^([a-zA-Z ]{0,25})$/,
+              message: "a-Z & 0-9"
             }],
-          })(<Input />)}
+          })(<Input maxLength={25} />)}
         </FormItem>
       </Form>
     </Modal>
