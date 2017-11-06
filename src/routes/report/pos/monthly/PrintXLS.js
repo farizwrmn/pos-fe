@@ -12,11 +12,11 @@ const warning = Modal.warning
 
 const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }) => {
 
-  let qtyTotal = list.reduce(function(cnt, o) { return cnt + o.Qty }, 0)
-  let grandTotal = list.reduce(function(cnt, o) { return cnt + o.Total }, 0)
-  let discountTotal = list.reduce(function(cnt, o) { return cnt + o.discountTotal }, 0)
-  let dppTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
-  let nettoTotal = list.reduce(function(cnt, o) { return cnt + o.Total - o.discountTotal }, 0)
+  let qtyTotal = list.reduce((cnt, o) => cnt + o.Qty , 0)
+  let grandTotal = list.reduce((cnt, o) =>  cnt + o.Total , 0)
+  let discountTotal = list.reduce((cnt, o) => cnt + o.discountTotal , 0)
+  let dppTotal = list.reduce((cnt, o) => cnt + o.Total - o.discountTotal, 0)
+  let nettoTotal = list.reduce((cnt, o) => cnt + o.Total - o.discountTotal, 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
