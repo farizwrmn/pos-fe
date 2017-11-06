@@ -10,3 +10,5 @@ build
 package-lock.json
 *.sh
 
+Dockerfile
+.dockerignore
