@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Table, Modal, Row, Col, Icon, Button} from 'antd'
+import { Table, Modal, Row, Col, Icon, Button, Tag } from 'antd'
 import {DropOption} from 'components'
 
 const gridStyle = {
@@ -62,6 +62,17 @@ const Browse = ({
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
+    },
+    {
+      title: 'KET',
+      dataIndex: 'ket',
+      key: 'ket',
+      render: ket =>
+      <span>
+        <Tag color={ ket === 'edit' ? 'blue' : 'green'}>
+          {ket === 'edit' ? 'EDIT' : 'ADD'}
+        </Tag>
+      </span>,
     },
   ]
 

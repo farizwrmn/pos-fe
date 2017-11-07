@@ -19,9 +19,11 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
         col_2: { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
         col_3: { fontSize: 12, text: 'TRANS NO', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'right' },
-        col_5: { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'right' },
-        col_6: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'right' },
+        col_4: { fontSize: 12, text: 'MEMBER', style: 'tableHeader', alignment: 'center' },
+        col_5: { fontSize: 12, text: 'POLICE NO.', style: 'tableHeader', alignment: 'center' },
+        col_6: { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'right' },
+        col_7: { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'right' },
+        col_8: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'right' },
       },
     }
 
@@ -36,7 +38,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         row.push(header.col_3)
         row.push(header.col_4)
         row.push(header.col_5)
-        row.push(header.col_6)        
+        row.push(header.col_6)
+        row.push(header.col_7)
+        row.push(header.col_8)
         body.push(row)
       }
     }
@@ -47,8 +51,10 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         let data = rows[key]
         let row = new Array()
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.memberName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.policeNo.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.product.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push({ text: data.service.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.product + data.service).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
@@ -58,7 +64,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 })
+    totalRow.push({ text: 'Grand Total', colSpan: 5, alignment: 'center', fontSize: 12 })
+    totalRow.push({})
+    totalRow.push({})
     totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: `${productTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
@@ -130,7 +138,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
           {
             writable: true,
             table: {
-              widths: ['6%', '22%', '21%', '17%', '17%', '17%'],
+              widths: ['4%', '12%', '12%', '16%', '14%', '14%', '14%', '14%'],
               headerRows: 1,
               body: body,
             },

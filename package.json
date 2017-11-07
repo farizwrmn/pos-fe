@@ -52,7 +52,7 @@
     "serve": "^6.0.6",
     "standard": "^10.0.3",
     "standard-loader": "^6.0.1",
-    "webpack": "3.8.1"
+    "webpack": "1.15.0"
   },
   "pre-commit": [
     "lint"

@@ -696,7 +696,7 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: true }
     },
     resetBrowse (state) {
-      return { ...state, dataBrowse: [] }
+      return { ...state, dataBrowse: [], supplierInformation: [] }
     },
     searchHide (state) {
       return { ...state, searchVisible: false }

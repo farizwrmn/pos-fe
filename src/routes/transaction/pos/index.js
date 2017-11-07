@@ -27,7 +27,9 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     modalVisible,
     visiblePopoverCity,
     visiblePopoverGroup,
-    visiblePopoverType
+    visiblePopoverType,
+    currentItem,
+    modalType    
   } = customer
   const { listCity } = city
   const { listGroup } = customergroup
@@ -187,12 +189,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const handleAddMember = () => {
-    // dispatch({
-    //   type: 'customer/modalShow',
-    //   payload: {
-    //     modalType: 'add',
-    //   },
-    // })
+    dispatch({
+      type: 'customer/modalShow',
+      payload: {
+        modalType: 'add',
+      },
+    })
   }
 
   const handleSuspend = () => {
@@ -446,6 +448,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const modalCustomerProps = {
+    item: currentItem,
     visible: 'modalVisible',
     visiblePopoverCity,
     listCity,
@@ -453,6 +456,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     listGroup,
     visiblePopoverType,
     listType,
+    onOk (data) {
+      dispatch({
+        type: `customer/${modalType}`,
+        payload: data,
+      })
+    },
     onCancel () {
       dispatch({
         type: 'customer/modalHide',
@@ -497,7 +506,94 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
       dispatch({
         type: 'customer/modalPopoverClose',
       })
-    }
+    },
+    onChooseItem (data) {
+      dispatch({
+        type: 'customer/chooseEmployee',
+        payload: {
+          modalType,
+          currentItem: {
+            memberGroupId: data.id,
+            memberGroupName: data.groupName,
+            memberCode: currentItem.memberCode,
+            memberTypeName: currentItem.memberTypeName,
+            memberTypeId: currentItem.memberTypeId,
+            idType: currentItem.idType,
+            idNo: currentItem.idNo,
+            cityId: currentItem.cityId,
+            memberName: currentItem.memberName,
+            birthDate: currentItem.birthDate,
+            address01: currentItem.address01,
+            address02: currentItem.address02,
+            cityName: currentItem.cityName,
+            state: currentItem.state,
+            zipCode: currentItem.zipCode,
+            taxId: currentItem.taxId,
+            email: currentItem.email,
+            phoneNumber: currentItem.phoneNumber,
+            mobileNumber: currentItem.mobileNumber,
+          },
+        },
+      })
+    },
+    onChooseType (data) {
+      dispatch({
+        type: 'customer/chooseType',
+        payload: {
+          modalType,
+          currentItem: {
+            memberGroupId: currentItem.memberGroupId,
+            memberGroupName: currentItem.memberGroupName,
+            memberTypeName: data.typeName,
+            memberTypeId: data.id,
+            memberCode: currentItem.memberCode,
+            idType: currentItem.idType,
+            idNo: currentItem.idNo,
+            cityId: currentItem.cityId,
+            memberName: currentItem.memberName,
+            birthDate: currentItem.birthDate,
+            address01: currentItem.address01,
+            address02: currentItem.address02,
+            cityName: currentItem.cityName,
+            state: currentItem.state,
+            zipCode: currentItem.zipCode,
+            taxId: currentItem.taxId,
+            email: currentItem.email,
+            phoneNumber: currentItem.phoneNumber,
+            mobileNumber: currentItem.mobileNumber,
+          },
+        },
+      })
+    },
+    onChooseCity (data) {
+      dispatch({
+        type: 'customer/chooseCity',
+        payload: {
+          modalType,
+          currentItem: {
+            cityId: data.id,
+            memberGroupName: currentItem.memberGroupName,
+            memberGroupId: currentItem.memberGroupId,
+            memberTypeId: currentItem.memberTypeId,
+            memberCode: currentItem.memberCode,
+            memberTypeName: currentItem.memberTypeName,
+            idType: currentItem.idType,
+            idNo: currentItem.idNo,
+            memberName: currentItem.memberName,
+            birthDate: currentItem.birthDate,
+            address01: currentItem.address01,
+            address02: currentItem.address02,
+            cityName: data.cityName,
+            state: currentItem.state,
+            zipCode: currentItem.zipCode,
+            taxId: currentItem.taxId,
+            email: currentItem.email,
+            phoneNumber: currentItem.phoneNumber,
+            mobileNumber: currentItem.mobileNumber,
+          },
+        },
+      })
+    },
   }
 
   const modalPaymentProps = {
