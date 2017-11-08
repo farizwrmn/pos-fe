@@ -188,13 +188,14 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     })
   }
 
-  const handleAddMember = () => {
+  const handleAddMember = (type) => {
     dispatch({
       type: 'customer/modalShow',
       payload: {
-        modalType: 'add',
+        modalType: type,
       },
     })
+    dispatch({ type: 'pos/modalPopoverClose' })
   }
 
   const handleSuspend = () => {
@@ -460,6 +461,82 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
       dispatch({
         type: `customer/${modalType}`,
         payload: data,
+      })
+    },
+    modalButtonSaveClick (id, data) {
+      console.log('modalButtonSaveClick data:', data);
+      dispatch({
+        type: `customer/${modalType}`,
+        payload: {
+          id,
+          data: {
+            address01: data.address01,
+            address02: data.address02,
+            birthDate: data.birthDate,
+            cityId: data.cityId,
+            cityName: data.cityName,
+            email: data.email,
+            idNo: data.idNo,
+            idType: data.idType,
+            gender: data.gender,
+            memberCode: data.memberCode,
+            memberGroupId: data.memberGroupId,
+            memberGroupName: data.memberGroupName,
+            memberName: data.memberName,
+            memberTypeId: data.memberTypeId,
+            memberTypeName: data.memberTypeName,
+            mobileNumber: data.mobileNumber,
+            phoneNumber: data.phoneNumber,
+            state: data.state,
+            taxId: data.taxId,
+            zipCode: data.zipCode,
+          },
+        },
+      })
+    },
+    modalButtonSaveUnitClick (id, data) {
+      dispatch({
+        type: 'unit/add',
+        payload: {
+          id,
+          data: {
+            memberCode: data.memberCode,
+            policeNo: data.policeNo,
+            merk: data.merk,
+            model: data.model,
+            type: data.type,
+            year: data.year,
+            chassisNo: data.chassisNo,
+            machineNo: data.machineNo,
+          },
+        },
+      })
+    },
+    modalButtonEditUnitClick (id, data) {
+      dispatch({
+        type: 'unit/edit',
+        payload: {
+          id,
+          data: {
+            memberCode: data.memberCode,
+            policeNo: data.policeNo,
+            merk: data.merk,
+            model: data.model,
+            type: data.type,
+            year: data.year,
+            chassisNo: data.chassisNo,
+            machineNo: data.machineNo,
+          },
+        },
+      })
+    },
+    modalButtonDeleteUnitClick (id, data) {
+      dispatch({
+        type: 'unit/delete',
+        payload: {
+          id,
+          data: data.memberCode,
+        },
       })
     },
     onCancel () {
@@ -1163,6 +1240,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   )
   const contentPopover = (
     <div>
+      <Button type="primary" onClick={handleAddMember}>Add</Button>
       <Table
         columns={columns}
         dataSource={listUnit ? listUnit : listLovMemberUnit}
@@ -1407,8 +1485,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
                       placement="left"
                       trigger="click"
                     >
-                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick}>
-                      </Button>
+                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick}/>
                     </Popover>
                   </Col>
                 </FormItem>

@@ -116,7 +116,18 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
     },
     setListNull (state) {
-      return { ...state, list: [], listTrans: []}
+      return { 
+        ...state,
+        list: [],
+        listTrans: [],
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: total => `Total ${total} Records`,
+          current: 1,
+          total: null,
+        },
+      }
     },
   },
 }

@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import PrintXLS from './PrintXLS'
@@ -10,7 +11,7 @@ import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 
-const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, dispatch, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
 
   const handleChange = (value) => {
     const from = value[0].format('YYYY-MM-DD')
@@ -19,17 +20,10 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
   }
 
   const handleReset = () => {
-    const fields = getFieldsValue()
-    for (let item in fields) {
-      if ({}.hasOwnProperty.call(fields, item)) {
-        if (fields[item] instanceof Array) {
-          fields[item] = []
-        } else {
-          fields[item] = undefined
-        }
-      }
-    }
-    setFieldsValue(fields)
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+    }))
     resetFields()
     onListReset()
   }
@@ -60,6 +54,7 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
 }
 
 Filter.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,

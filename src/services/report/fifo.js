@@ -14,3 +14,14 @@ export async function queryFifo (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryFifoValue (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${fiforeport}/value`
+  return request({
+    url: url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken,
+  })
+}

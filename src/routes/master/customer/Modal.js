@@ -425,7 +425,7 @@ const modal = ({
                   {getFieldDecorator('idNo', {
                     initialValue: item.idNo,
                     rules: [{ 
-                      pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                      pattern: /^[a-z0-9-_. ]{3,30}$/i,
                       required: true,
                       message: "a-Z & 0-9"
                     }],
@@ -438,7 +438,7 @@ const modal = ({
                       required: true,
                       min: 4,
                       message: "Required",
-                      pattern: "/^[a-z0-9\_.,\- ]{3,50}$/i",
+                      pattern: /^[a-z0-9\_.,\- ]{3,50}$/i,
                       message: "a-Z & 0-9"
                     }],
                   })(<Input maxLength={15} />)}

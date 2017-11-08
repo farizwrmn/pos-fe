@@ -39,6 +39,7 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     listTrans: listTrans,
     user,
     storeInfo,
+    dispatch,
     fromDate,
     toDate,
     productCode,

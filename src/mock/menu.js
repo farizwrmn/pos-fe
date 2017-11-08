@@ -294,6 +294,14 @@ let database = [
     route: '/report/fifo/balance',
   },
   {
+    id: '453',
+    bpid: '45',
+    mpid: '45',
+    name: 'Inventory Value',
+    icon: 'file-text',
+    route: '/report/fifo/value',
+  },
+  {
     id: '9',
     icon: 'setting',
     name: 'Setting',
