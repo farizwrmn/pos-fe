@@ -707,7 +707,12 @@ export default {
             }
           },
         }
-        pdfMake.createPdf(docDefinition).print()
+        try {
+          pdfMake.createPdf(docDefinition).print()
+        } catch (e) {
+          console.log(e)
+          pdfMake.createPdf(docDefinition).download()
+        }
       }
       const { posMessage } = action.payload
       if (payload.type === 'POS') {
