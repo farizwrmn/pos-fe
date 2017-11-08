@@ -189,13 +189,13 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const handleAddMember = (type) => {
-    dispatch({
-      type: 'customer/modalShow',
-      payload: {
-        modalType: type,
-      },
-    })
-    dispatch({ type: 'pos/modalPopoverClose' })
+    // dispatch({
+    //   type: 'customer/modalShow',
+    //   payload: {
+    //     modalType: type,
+    //   },
+    // })
+    // dispatch({ type: 'pos/modalPopoverClose' })
   }
 
   const handleSuspend = () => {
@@ -1240,7 +1240,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   )
   const contentPopover = (
     <div>
-      <Button type="primary" onClick={handleAddMember}>Add</Button>
+      {/* <Button type="primary" onClick={handleAddMember}>Add</Button> */}
       <Table
         columns={columns}
         dataSource={listUnit ? listUnit : listLovMemberUnit}
