@@ -121,7 +121,6 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
           <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
           <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>
-          {modalProductVisible && <ModalBrowse {...purchaseProps} />}
         </Col>
       </Row>
       <Browse {...purchaseProps} />
