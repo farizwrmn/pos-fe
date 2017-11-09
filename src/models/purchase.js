@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import config from 'config'
-import { query, queryDetail, createDetail, create, edit, editPurchase, remove } from '../services/purchase'
+import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/stock'
 import { query as querySupplier } from '../services/suppliers'
@@ -36,6 +36,7 @@ export default modelExtend(pageModel, {
     tmpInvoiceList: [],
     listProduct: [],
     listInvoice: [],
+    listVoid: [],
     dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [],
     curDiscPercent: 0,
     curDiscNominal: 0,
@@ -54,10 +55,12 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/transaction/purchase/add') {
           localStorage.removeItem('product_detail')
+          localStorage.removeItem('purchase_void')          
           dispatch({ type: 'modalEditHide' })
           dispatch({ type: 'changeRounding', payload: 0 })
         } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
+          localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
         }
       })
@@ -129,6 +132,13 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
 
+    * voidPurchaseList ({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void')))
+      dataPos.push(payload)
+      localStorage.setItem('purchase_void', JSON.stringify(dataPos))
+      yield put({ type: 'modalEditHide' })
+    },
+
     * add ({ payload }, { call, put }) {
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       if (purchase_detail.length !== 0) {
@@ -161,6 +171,7 @@ export default modelExtend(pageModel, {
               content: `Transaction ${payload.transNo} has been saved`
             })
             localStorage.removeItem('product_detail')
+            localStorage.removeItem('purchase_void')
             yield put({ type: 'resetBrowse' })
             yield put({ type: 'changeRounding', payload: 0 })
           }
@@ -181,12 +192,28 @@ export default modelExtend(pageModel, {
     * update ({ payload }, { call, put }) {
       let addData = []
       let editData = []
+      let voidData = []
       for (let n = 0; n < payload.data.length; n++) {
         if (payload.data[n].ket === 'add') {
           addData.push(payload.data[n])
         } else if (payload.data[n].ket === 'edit') {
           editData.push(payload.data[n])
         }
+      }
+      if (payload.dataVoid.length > 0) {
+        for (let n = 0; n < payload.dataVoid.length; n += 1){
+          voidData.push({ transNo: payload.id.transNo,
+            productId: payload.dataVoid[n].code,
+            productName: payload.dataVoid[n].name,
+            qty: payload.dataVoid[n].qty,
+            purchasePrice: payload.dataVoid[n].price,
+            DPP: payload.dataVoid[n].dpp,
+            PPN: payload.dataVoid[n].ppn,
+            discPercent: payload.dataVoid[n].disc1,
+            discNominal: payload.dataVoid[n].discount
+          })
+        }
+        const dataVoid = yield call(createVoidDetail, {id: payload.id.transNo, data: voidData})
       }
       let data = ''
       let dataPurchase = ''
@@ -210,9 +237,11 @@ export default modelExtend(pageModel, {
             PPN: addData[n].ppn,
             discPercent: addData[n].disc1,
             discNominal: addData[n].discount,
+            void: addData[n].void
           })
         }
       }
+
       for (let n = 0; n < editData.length; n += 1) {
         arrayProdEdit.push({
           transNo: payload.id.transNo,
@@ -224,6 +253,7 @@ export default modelExtend(pageModel, {
           PPN: editData[n].ppn,
           discPercent: editData[n].disc1,
           discNominal: editData[n].discount,
+          void: editData[n].void
         })
       }
       if (payload.data.length > 0) {
@@ -241,6 +271,7 @@ export default modelExtend(pageModel, {
             content: 'Transaction has been saved...!',
           })
           localStorage.removeItem('product_detail')
+          localStorage.removeItem('purchase_void')
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'modalHide' })
           yield put({ type: 'changeRounding', payload: 0 })
@@ -303,7 +334,6 @@ export default modelExtend(pageModel, {
     * getInvoiceDetail ({ payload }, { call, put }) {
       const data = yield call(queryDetail, { transNo: encodeURIComponent(payload.transNo) })
       let arrayProd = []
-      console.log(data)
       for (let n = 0; n < data.data.length; n++) {
         arrayProd.push({
           no: arrayProd.length + 1,
@@ -329,6 +359,7 @@ export default modelExtend(pageModel, {
         })
       }
       localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+      localStorage.removeItem('purchase_void')
       yield put({
         type: 'hideProductModal',
       })
@@ -449,6 +480,7 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
     * deleteList ({ payload }, { put }) {
+      console.log('payload', payload.no)
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
@@ -461,9 +493,8 @@ export default modelExtend(pageModel, {
         }
         return this
       }
-
       let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
+      ary.remove(arrayProd[payload.no - 1])
       arrayProd = []
       for (let n = 0; n < ary.length; n++) {
         arrayProd.push({
@@ -476,9 +507,10 @@ export default modelExtend(pageModel, {
           price: ary[n].price,
           dpp: ary[n].dpp,
           ppn: ary[n].ppn,
-          ket: '',
+          ket: ary[n].ket,
           qty: ary[n].qty,
           total: ary[n].total,
+          void: ary[n].void
         })
       }
       if (arrayProd.length === 0) {
@@ -488,6 +520,53 @@ export default modelExtend(pageModel, {
         })
       } else {
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'modalEditHide',
+        })
+      }
+    },
+    * deleteVoidList ({ payload }, { put }) {
+      console.log('payload', payload.no)
+      let dataPos = (localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void')))
+      let arrayProd = dataPos.slice()
+      Array.prototype.remove = function () {
+        let what, a = arguments, L = a.length, ax
+        while (L && this.length) {
+          what = a[--L]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.count - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n++) {
+        arrayProd.push({
+          count: n + 1,
+          no: ary[n].no,
+          code: ary[n].code,
+          productCode: ary[n].productCode,
+          name: ary[n].name,
+          disc1: ary[n].disc1,
+          discount: ary[n].discount,
+          price: ary[n].price,
+          dpp: ary[n].dpp,
+          ppn: ary[n].ppn,
+          ket: ary[n].ket,
+          qty: ary[n].qty,
+          total: ary[n].total,
+          void: ary[n].void
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('purchase_void')
+        yield put({
+          type: 'modalEditHide',
+        })
+      } else {
+        localStorage.setItem('purchase_void', JSON.stringify(arrayProd))
         yield put({
           type: 'modalEditHide',
         })
@@ -563,7 +642,7 @@ export default modelExtend(pageModel, {
       const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpInvoiceList.map((record) => {
-        const match = record.transNo.match(reg) || record.transDate.match(reg)
+        const match = record.transNo.match(reg) || record.transDate.match(reg) || record.supplierName.match(reg)
         if (!match) {
           return null
         }
@@ -696,7 +775,7 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: true }
     },
     resetBrowse (state) {
-      return { ...state, dataBrowse: [], supplierInformation: [] }
+      return { ...state, dataBrowse: [], supplierInformation: [], transNo: null }
     },
     searchHide (state) {
       return { ...state, searchVisible: false }
@@ -709,6 +788,9 @@ export default modelExtend(pageModel, {
     },
     setTotalItem (state, action) {
       return { ...state, item: action.payload }
+    },
+    getVoid (state, action) {
+      return { ...state, ...action.payload, dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [] }
     },
   },
 })

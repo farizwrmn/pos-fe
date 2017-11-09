@@ -12,6 +12,7 @@ const confirm = Modal.confirm
 
 const Browse = ({
   modalShow, ...purchaseProps }) => {
+  const dataBrowse = purchaseProps.purchase.dataBrowse ? purchaseProps.purchase.dataBrowse.filter(el => el.void !== 1) :  {}
   const columns = [
     {
       title: 'No',
@@ -88,7 +89,7 @@ const Browse = ({
       simple
       size="small"
       pagination={{ pageSize: 5 }}
-      dataSource={purchaseProps.purchase.dataBrowse}
+      dataSource={dataBrowse}
       onRowClick={_record => hdlModalShow(_record)}
     />
   )

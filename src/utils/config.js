@@ -1,6 +1,6 @@
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIHOST = 'localhost' // '202.162.198.43'
+const APIHOST = 'localhost'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 

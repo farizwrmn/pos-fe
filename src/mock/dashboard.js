@@ -2,7 +2,7 @@ import { color } from '../utils/theme'
 
 const Mock = require('mockjs')
 const config = require('../utils/config')
-
+const adder = 2881
 const { apiPrefix } = config
 
 const Dashboard = Mock.mock({
@@ -110,7 +110,7 @@ const Dashboard = Mock.mock({
       icon: 'trademark',
       color: color.blue,
       title: 'Returns',
-      number: 3241,
+      number: adder,
     }, {
       icon: 'wallet',
       color: color.purple,

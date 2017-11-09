@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Col, Row, Button, Collapse, Select, DatePicker } from 'antd'
+import { Form, Input, Col, Row, Button, Modal, Collapse, Select, DatePicker } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
@@ -18,8 +18,9 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 },
 }
 
-const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   let dataPurchase = localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail'))
+  let dataVoid = localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void'))
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -28,19 +29,29 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
       const data = {
         ...getFieldsValue(),
       }
-      onOk(transNo, dataPurchase, data)
+      onOk(transNo, dataPurchase, dataVoid, data)
       resetFields()
     })
   }
   let g = dataPurchase
-  let nettoTotal = g.reduce((cnt, o) => cnt + o.total + o.ppn, 0) + parseFloat(rounding)
-  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
-  let discPercent = g.reduce((cnt, o) => cnt + ((o.disc1 * o.qty * o.price) / 100), 0)
-  let discNominal = g.reduce((cnt, o) => cnt + (o.discount * o.qty), 0)
+  let nettoTotal = g.reduce((cnt, o) => cnt + parseFloat(o.total) + parseFloat(o.ppn), 0) + parseFloat(rounding)
+  let totalPpn = g.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
+  let discPercent = g.reduce((cnt, o) => cnt + ((parseFloat(o.disc1) * parseFloat(o.qty) * parseFloat(o.price)) / 100), 0)
+  let discNominal = g.reduce((cnt, o) => cnt + (parseFloat(o.discount) * parseFloat(o.qty)), 0)
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
-  let grandTotal = g.reduce((cnt, o) => cnt + (o.price * o.qty), 0)
+  let grandTotal = g.reduce((cnt, o) => cnt + (parseFloat(o.price) * parseFloat(o.qty)), 0)
   const hdlBrowseProduct = () => {
-    handleBrowseProduct()
+    if (transNo === null) {
+      Modal.warning({
+        title: 'Cannot Find Invoice',
+        content: 'Choose Invoice first'
+      })
+    } else {
+      handleBrowseProduct()
+    }
+  }
+  const hdlBrowseVoid = () => {
+    handleBrowseVoid()
   }
   const hdlBrowseInvoice = () => {
     handleBrowseInvoice()
@@ -105,9 +116,11 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
         </Col>
       </Row>
       <Row style={{ padding: '10px' }}>
-        <Col span={12}>
+        <Col span={24}>
           <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
           <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
+          {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
         </Col>
       </Row>
@@ -116,17 +129,17 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={grandTotal} />
+            <Input disabled value={grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalPpn} />
+            <Input disabled value={totalPpn.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalDisc} />
+            <Input disabled value={totalDisc.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
           </FormItem>
         </Row>
         <Row>
@@ -141,7 +154,7 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
         </Row>
         <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={nettoTotal} />
+            <Input disabled value={nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
           </FormItem>
         </Row>
       </div>
@@ -158,6 +171,7 @@ PurchaseForm.propTypes = {
   transNo: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
   handleBrowseProduct: PropTypes.func.isRequired,
+  handleBrowseVoid: PropTypes.func.isRequired,
   handleBrowseInvoice: PropTypes.func.isRequired,
   modalProductVisible: PropTypes.isRequired,
   modalPurchaseVisible: PropTypes.isRequired,

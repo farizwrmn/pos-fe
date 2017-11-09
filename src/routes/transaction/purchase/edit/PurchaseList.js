@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -43,11 +43,56 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
     data.total = TOTAL + data.ppn
     onChangeTotalItem(data)
   }
-  const handleDelete = () => {
-    const data = {
-      ...getFieldsValue(),
-    }
-    onDelete(data)
+  const handleVoid = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue(),
+      }
+      let dataVoid = {
+        ...getFieldsValue(),
+      }
+      data.code = item.code
+      data.ket = 'void'
+      dataVoid.code = item.code
+      dataVoid.ket = item.ket
+      dataVoid.void = 1
+      dataVoid.price = 0.00
+      dataVoid.qty = 0.00
+      dataVoid.disc1 = 0.00
+      dataVoid.discount = 0.00
+      dataVoid.dpp = 0.00
+      dataVoid.ppn = 0.00
+      dataVoid.total = 0.00
+      if (item.ket === 'edit') {
+        Modal.confirm({
+          title: `Are you sure Void ${data.name} ?`,
+          content: 'Void cannot be undone',
+          onOk () {
+            onVoid(data)
+            onChooseItem(dataVoid)
+            resetFields()
+          },
+          onCancel () {
+            console.log('cancel')
+          }
+        })
+      } else if (item.ket === 'add') {
+        Modal.confirm({
+          title: `Are you sure Delete ${data.name} ?`,
+          content: 'Delete cannot be undone',
+          onOk () {
+            onDelete(data)
+            resetFields()
+          },
+          onCancel () {
+            console.log('cancel')
+          }
+        })
+      }
+    })
   }
   return (
     <Modal visible={modalPurchaseVisible} onCancel={() => hdlCancel()} footer={[]}>
@@ -159,7 +204,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
           })(<Input disabled />)}
         </FormItem>
         <Button type="primary" onClick={handleClick}> Change </Button>
-        {/*<Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>*/}
+        <Button type="danger" onClick={handleVoid} style={{ marginLeft: '5px' }}> Void </Button>
       </Form>
     </Modal>
   )
@@ -173,6 +218,7 @@ PurchaseList.propTypes = {
   onChangeTotalItem: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onVoid: PropTypes.func.isRequired,
   modalPurchaseVisible: PropTypes.isRequired,
 }
 export default Form.create()(PurchaseList)

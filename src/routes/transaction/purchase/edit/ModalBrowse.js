@@ -3,23 +3,27 @@ import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import ListProduct from './ListProduct'
 import ListInvoice from './ListInvoice'
+import ListVoid from './ListVoid'
 
-const Browse = ({ location, purchase, loading, onChooseItemItem, onChooseInvoice, ...purchaseProps }) => {
-  const { listProduct, listInvoice, itemPayment, modalType, isMotion } = purchase
+const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, ...purchaseProps }) => {
+  const { listProduct, listInvoice, listVoid, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
     ...purchaseProps,
   }
   let listProductFilter = listProduct ? listProduct.filter(el => el.active === true) : []
   const listProps = {
-    dataSource: modalType === 'browseProduct' ? listProductFilter : listInvoice,
+    dataSource: modalType === 'browseProduct' ? listProductFilter : modalType === 'browseInvoice' ? listInvoice : listVoid,
     loading: loading.effects[(
-      modalType === 'browseProduct' ? 'purchase/getProducts' : 'purchase/getInvoice'
+      modalType === 'browseProduct' ? 'purchase/getProducts' : modalType === 'browseInvoice' ? 'purchase/getInvoice' : 'purchase/getVoid'
     )],
     location,
     item: itemPayment,
     isMotion,
     onChooseItem (item) {
       onChooseItemItem(item)
+    },
+    onRestoreVoid (item) {
+      onRestoreVoid(item)
     },
     onChooseInvoice (item) {
       onChooseInvoice(item)
@@ -29,6 +33,7 @@ const Browse = ({ location, purchase, loading, onChooseItemItem, onChooseInvoice
     <Modal {...modalOpts} width={'80%'} height="80%" footer={[]}>
       { (modalType === 'browseProduct') && <ListProduct {...listProps} /> }
       { (modalType === 'browseInvoice') && <ListInvoice {...listProps} /> }
+      { (modalType === 'browseVoid') && <ListVoid {...listProps} /> }
     </Modal>
   )
 }
@@ -38,6 +43,7 @@ Browse.propTypes = {
   location: PropTypes.isRequired,
   loading: PropTypes.isRequired,
   onChooseItemItem: PropTypes.func.isRequired,
+  onRestoreVoid: PropTypes.func.isRequired,
   onChooseInvoice: PropTypes.func.isRequired,
 }
 

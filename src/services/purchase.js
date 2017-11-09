@@ -45,6 +45,18 @@ export async function createDetail (params) {
   })
 }
 
+export async function createVoidDetail (params) {
+  let url = params.id ? `${purchaseDetail}/void` : null
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'post',
+    data: params,
+    body: params,
+    headers: apiHeaderToken,
+  })
+}
+
 export async function edit (params) {
   let url = params.id !== null ? purchaseDetail : null
   const apiHeaderToken = crypt.apiheader()

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { Modal } from 'antd'
 import PurchaseForm from './PurchaseForm'
 import PurchaseList from './PurchaseList'
 
@@ -31,12 +32,13 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onOk (id, data, e) {
+    onOk (id, data, dataVoid, e) {
       dispatch({
         type: 'purchase/update',
         payload: {
           id,
           data,
+          dataVoid,
           e,
         },
       })
@@ -64,6 +66,23 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           modalType: 'browseProduct',
         },
       })
+    },    
+    handleBrowseVoid () {
+      var voidList = localStorage.getItem('purchase_void') ? JSON.parse(localStorage.getItem('purchase_void')) : null
+      if (voidList === null) {
+        Modal.warning({
+          title: 'No Void in storage',
+          content: 'void list is empty'
+        })
+      } else {
+        dispatch({
+          type: 'purchase/showProductModal',
+          payload: {
+            modalType: 'browseVoid',
+            listVoid: voidList,
+          },
+        })
+      }
     },
     handleBrowseInvoice () {
       dispatch({
@@ -81,8 +100,23 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       })
     },
     onChooseItem (data) {
-      console.log(data)
+      console.log('confirm')
       dispatch({ type: 'purchase/editPurchaseList', payload: data })
+    },
+    onVoid (data) {
+      console.log('void')
+      let dataVoid = localStorage.getItem('purchase_void') ? JSON.parse(localStorage.getItem('purchase_void')) : []
+      data.count = dataVoid.length + 1
+      dispatch({ type: 'purchase/voidPurchaseList', payload: data })
+    },
+    onRestoreVoid (item) {
+      dispatch({ type: 'purchase/editPurchaseList', payload: item })
+      dispatch({ type: 'purchase/deleteVoidList', payload: item })
+      dispatch({ type: 'purchase/hideProductModal' })
+    },
+    onDelete (data) {
+      console.log('delete', data)
+      dispatch({ type: 'purchase/deleteList', payload: data })
     },
     onResetBrowse () {
       dispatch({ type: 'purchase/resetBrowse' })
