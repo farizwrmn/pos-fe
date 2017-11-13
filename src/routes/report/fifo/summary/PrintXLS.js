@@ -11,18 +11,18 @@ import moment from 'moment'
 const warning = Modal.warning
 
 const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
-  let beginQty = listRekap.reduce((cnt, o) => cnt + o.beginQty, 0)
-  let beginPrice = listRekap.reduce((cnt, o) => cnt + o.beginPrice, 0)
-  let purchaseQty = listRekap.reduce((cnt, o) => cnt + o.purchaseQty, 0)
-  let purchasePrice = listRekap.reduce((cnt, o) => cnt + o.purchasePrice, 0)
-  let adjInQty = listRekap.reduce((cnt, o) => cnt + o.adjInQty, 0)
-  let adjInPrice = listRekap.reduce((cnt, o) => cnt + o.adjInPrice, 0)
-  let posQty = listRekap.reduce((cnt, o) => cnt + o.posQty, 0)
-  let posPrice = listRekap.reduce((cnt, o) => cnt + o.posPrice, 0)
-  let adjOutQty = listRekap.reduce((cnt, o) => cnt + o.adjOutQty, 0)
-  let adjOutPrice = listRekap.reduce((cnt, o) => cnt + o.adjOutPrice, 0)
-  let count = listRekap.reduce((cnt, o) => cnt + o.count, 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
+  let beginQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.beginQty), 0)
+  let beginPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.beginPrice), 0)
+  let purchaseQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.purchaseQty), 0)
+  let purchasePrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.purchasePrice), 0)
+  let adjInQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjInQty), 0)
+  let adjInPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjInPrice), 0)
+  let posQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.posQty), 0)
+  let posPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.posPrice), 0)
+  let adjOutQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutQty), 0)
+  let adjOutPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutPrice), 0)
+  let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'

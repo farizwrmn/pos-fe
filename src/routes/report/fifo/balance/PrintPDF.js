@@ -15,8 +15,8 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let count = listRekap.reduce((cnt, o) => cnt + o.count, 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
+  let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {

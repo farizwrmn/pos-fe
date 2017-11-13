@@ -30,6 +30,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
   const hdlChange = () => {
     const data = getFieldsValue()
     data.code = item.code
+    data.ket = item.ket
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
     let TOTAL = H1 - (parseFloat(data.discount))
     let tax = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'

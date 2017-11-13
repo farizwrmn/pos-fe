@@ -212,7 +212,7 @@ const modal = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9-_. ]{3,60}$/i,
+                    pattern: /^[a-z0-9-_./ ]{3,60}$/i,
                     message: "a-Z & 0-9"
                   },
                 ],
@@ -407,7 +407,7 @@ const modal = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9-_. ]{3,60}$/i,
+                    pattern: /^[a-z0-9-_./ ]{3,60}$/i,
                     message: "a-Z & 0-9"
                   },
                 ],

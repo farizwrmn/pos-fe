@@ -11,8 +11,8 @@ import moment from 'moment'
 const warning = Modal.warning
 
 const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
-  let count = listRekap.reduce((cnt, o) => cnt + o.count, 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + o.amount, 0)
+  let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'

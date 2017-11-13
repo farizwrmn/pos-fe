@@ -15,7 +15,7 @@ const Stock = ({ productBrand, productCategory, location, dispatch, stock, loadi
   const { listBrand } = productBrand
 
   const modalProps = {
-    width: 1400,
+    width: 1000,
     item: currentItem,
     visible: modalVisible,
     list,

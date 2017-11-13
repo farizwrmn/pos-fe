@@ -13,10 +13,10 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let grandTotal = listTrans.reduce(function(cnt, o) { return cnt + o.total }, 0)
-  let discountTotal = listTrans.reduce(function(cnt, o) { return cnt + o.discount }, 0)
-  let roundingTotal = listTrans.reduce(function(cnt, o) { return cnt + o.rounding }, 0)
-  let nettoTotal = listTrans.reduce(function(cnt, o) { return cnt + o.netto }, 0)
+  let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
+  let discountTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.discount), 0)
+  let roundingTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.rounding), 0)
+  let nettoTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {

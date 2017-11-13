@@ -10,11 +10,11 @@ const PrintPDF = ({ user, list, dataSource, storeInfo, fromDate, toDate, product
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let qtyTotal = list.reduce((cnt, o) => cnt + o.Qty, 0)
-  let grandTotal = list.reduce((cnt, o) => cnt + o.Total, 0)
-  let discountTotal = list.reduce((cnt, o) => cnt + o.discountTotal, 0)
-  let dppTotal = list.reduce((cnt, o) => cnt + o.Total - o.discountTotal, 0)
-  let nettoTotal = list.reduce((cnt, o) => cnt + o.Total - o.discountTotal, 0)
+  let qtyTotal = list.reduce((cnt, o) => cnt + parseFloat(o.Qty), 0)
+  let grandTotal = list.reduce((cnt, o) => cnt + parseFloat(o.Total), 0)
+  let discountTotal = list.reduce((cnt, o) => cnt + parseFloat(o.discountTotal), 0)
+  let dppTotal = list.reduce((cnt, o) => cnt + parseFloat(o.Total) - parseFloat(o.discountTotal), 0)
+  let nettoTotal = list.reduce((cnt, o) => cnt + parseFloat(o.Total) - parseFloat(o.discountTotal), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
@@ -60,9 +60,9 @@ const PrintPDF = ({ user, list, dataSource, storeInfo, fromDate, toDate, product
         row.push({ text: data.Qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.Total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push({ text: data.discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(data.Total - data.discountTotal).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: `${(parseFloat(data.Total) - parseFloat(data.discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${ppn.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(data.Total - data.discountTotal).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: `${(parseFloat(data.Total) - parseFloat(data.discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count = count + 1

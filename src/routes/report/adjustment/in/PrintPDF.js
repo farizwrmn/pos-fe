@@ -10,9 +10,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.amount, 0)
-  let costTotal = listTrans.reduce((cnt, o) => cnt + o.costPrice, 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + o.qtyIn, 0)
+  let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
+  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyIn), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {

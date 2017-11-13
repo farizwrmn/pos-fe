@@ -10,8 +10,8 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let productTotal = listTrans.reduce((cnt, o) => cnt + o.product, 0)
-  let serviceTotal = listTrans.reduce((cnt, o) => cnt + o.service, 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
@@ -57,7 +57,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
         row.push({ text: data.policeNo.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.product.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         row.push({ text: data.service.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.product + data.service).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: (parseFloat(data.product) + parseFloat(data.service)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -71,7 +71,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
     totalRow.push({})
     totalRow.push({ text: `${productTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${serviceTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${(productTotal + serviceTotal).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({ text: `${(parseFloat(productTotal) + parseFloat(serviceTotal)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }

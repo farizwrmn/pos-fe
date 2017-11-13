@@ -12,8 +12,8 @@ const warning = Modal.warning
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
 
-  let productTotal = listTrans.reduce((cnt, o) => cnt + o.product, 0)
-  let serviceTotal = listTrans.reduce((cnt, o) => cnt + o.service, 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'

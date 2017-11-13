@@ -221,7 +221,7 @@ export default modelExtend(pageModel, {
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()
-        arrayProd[payload.Record - 1].price = parseInt(payload.price, 10)
+        arrayProd[payload.Record - 1].price = parseFloat(payload.price)
         arrayProd[payload.Record - 1].In = parseInt(payload.InQty, 10)
         arrayProd[payload.Record - 1].Out = parseInt(payload.OutQty, 10)
         localStorage.setItem('adjust', JSON.stringify(arrayProd))
