@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Dropdown, Button, Icon, Menu } from 'antd'
 
-const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps }) => {
+const DropOption = ({ menuName, onMenuClick, menuOptions = [], buttonStyle, dropdownProps }) => {
   let styleMenuItem
   let disabledItem = false
   // const menu = menuOptions.map(item => <Menu.Item key={item.key}>{item.name}</Menu.Item>)
@@ -36,6 +36,7 @@ const DropOption = ({ onMenuClick, menuOptions = [], buttonStyle, dropdownProps 
   >
     <Button style={{ border: 'none', ...buttonStyle }}>
       <Icon style={{ marginRight: 2 }} type="bars" />
+      {menuName}
       <Icon type="down" />
     </Button>
   </Dropdown>)
@@ -46,6 +47,7 @@ DropOption.propTypes = {
   menuOptions: PropTypes.array.isRequired,
   buttonStyle: PropTypes.object,
   dropdownProps: PropTypes.object,
+  menuName: PropTypes.string,
 }
 
 export default DropOption

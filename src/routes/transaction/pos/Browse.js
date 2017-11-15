@@ -19,7 +19,7 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
   const modalOpts = {
     ...modalProps,
   }
-  let listProductFilter = listProduct.filter(el => el.active === true)
+  let listProductFilter = listProduct.filter(el => el.count > 0)
   // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list ))),
   const listProps = {
     // dataSource: (modalType == 'browse' ? list : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseMechanic' ? listMechanic : (modalType == 'browseService' ? list : list )))),
@@ -36,7 +36,7 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
           modalType === 'browseProduct' ? 'pos/getProducts' :
             modalType === 'browseService' ? 'pos/queryService' : 'pos/queryMember'
     )],
-    pagination,
+    // pagination,
     location,
     item: modalType === 'modalPayment' ? itemPayment : {},
     itemService: modalType === 'modalService' ? itemService : {},

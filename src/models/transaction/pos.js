@@ -1,12 +1,13 @@
 import { parse } from 'qs'
 import { Modal } from 'antd'
+import moment from 'moment'
 import config from 'config'
 import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { queryMode as miscQuery} from '../../services/misc'
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/customers'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
-import { query as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
+import { queryPOSstock as queryProducts, queryProductByCode as queryProductCode } from '../../services/stock'
 import { query as queryService, queryServiceByCode } from '../../services/service'
 
 const { prefix } = config
@@ -338,7 +339,6 @@ export default {
       let { pageSize, page, ...other } = payload
       const data = yield call(queryService, payload)
       let newData = data.services
-
       if ( data.success ) {
         //filter
         for (let key in other) {
@@ -615,8 +615,9 @@ export default {
     },
 
     *getProducts ({ payload }, { call, put }) {
-      const data = yield call(queryProducts, payload)
-      let newData = payload ? data.product : data.data
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const data = yield call(queryProducts, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      let newData = data.data
       if ( data.success ) {
         yield put({
           type: 'queryGetProductsSuccess',
@@ -1397,7 +1398,7 @@ export default {
       const { productInformation, tmpProductList } = action.payload
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let a = dataPos
-      let grandTotal = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
+      let grandTotal = a.reduce((cnt,o) => cnt + o.total, 0)
       return { ...state,
         listProduct: productInformation,
         tmpProductList: tmpProductList,
@@ -1726,7 +1727,6 @@ export default {
           ...record,
         };
       }).filter(record => !!record)
-      console.log('newData');
       return { ...state, listService: newData }
     },
 

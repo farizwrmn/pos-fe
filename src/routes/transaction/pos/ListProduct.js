@@ -49,23 +49,28 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '10%'
+      width: '70px'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%'
+      width: '100px'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '45%'
+      width: '200px'
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '20%'
+      width: '100px'
+    }, {
+      title: 'QTY',
+      dataIndex: 'count',
+      key: 'count',
+      width: '70px'
     }
   ]
 
@@ -91,7 +96,7 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 500, y: 388}}
+        scroll={{ x: '640px', y: 388}}
         columns={columns}
         simple
         size="small"

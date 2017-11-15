@@ -73,5 +73,6 @@ module.exports = {
     cashierTrans: `${APIURL}${APIV1}/cashierTrans`,
     period: `${APIURL}${APIV1}/period`,
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
+    setting: `${APIURL}${APIV1}/setting`,
   },
 }

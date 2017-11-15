@@ -31,6 +31,14 @@ export default {
             type: 'queryTransAll',
             payload: location.query,
           })
+        } else if (location.pathname === '/report/pos/summary/trans') {
+          dispatch({
+            type: 'setListNull'
+          })
+        } else if (location.pathname === '/report/pos/monthly') {
+          dispatch({
+            type: 'setListNull'
+          })
         }
       })
     },

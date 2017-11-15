@@ -756,42 +756,81 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     wrapClassName: 'vertical-center-modal',
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
-      let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
-
-      let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
-      } else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
-
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: item.productCode,
-        productId: item.id,
-        name: item.productName,
-        qty: curQty,
-        price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
-        discount: 0,
-        disc1: 0,
-        disc2: 0,
-        disc3: 0,
-        total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
-      })
-
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-      dispatch({
-        type: 'pos/querySuccessByCode',
-        payload: {
-          listByCode: item,
-          curRecord: curRecord + 1,
-        },
-      })
-      dispatch({
+      if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
+        let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
+        let arrayProd
+        if (listByCode.length === 0) {
+          arrayProd = listByCode.slice()
+        } else {
+          arrayProd = JSON.parse(listByCode.slice())
+        }
+        
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: item.productCode,
+          productId: item.id,
+          name: item.productName,
+          qty: curQty,
+          price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
+        })
+        
+        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        dispatch({
+          type: 'pos/querySuccessByCode',
+          payload: {
+            listByCode: item,
+            curRecord: curRecord + 1,
+          },
+        })
+        dispatch({
         type: 'pos/setUtil',
         payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
-      })
-      dispatch({ type: 'pos/hideProductModal' })
+        })
+        dispatch({ type: 'pos/hideProductModal' })
+      } else {
+        if (memberInformation.length === 0) {
+          Modal.info({
+            title: 'Member Information is not found',
+            content: 'Insert Member',
+            onOk () {
+              dispatch({ type: 'pos/hideProductModal' })
+              dispatch({
+                type: 'pos/getMembers',
+              })
+          
+              dispatch({
+                type: 'pos/showMemberModal',
+                payload: {
+                  modalType: 'browseMember',
+                },
+              })
+            }
+          })
+        } else if (mechanicInformation.length === 0) {
+          Modal.info({
+            title: 'Mechanic Information is not found',
+            content: 'Insert Mechanic',
+            onOk () {
+              dispatch({ type: 'pos/hideProductModal' })
+              dispatch({
+                type: 'pos/getMechanics',
+              })
+         
+             dispatch({
+               type: 'pos/showMechanicModal',
+               payload: {
+                 modalType: 'browseMechanic',
+               },
+             })
+            }
+          })
+        }
+      }
     },
   }
 

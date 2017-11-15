@@ -329,6 +329,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-misc')
           },
         }, {
+          path: 'setting/configure',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/configure'))
+              cb(null, require('./routes/setting/configure/'))
+            }, 'setting-misc')
+          },
+        }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], require => {

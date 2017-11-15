@@ -1,10 +1,20 @@
 import { request, config, crypt } from 'utils'
-const { stock } = config.api
+const { stock, fiforeport } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: stock,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPOSstock (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${fiforeport}/balance`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

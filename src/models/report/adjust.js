@@ -42,12 +42,12 @@ export default {
   effects: {
     * queryInAdj ({ payload = {} }, { call, put }) {
       const date = payload
+      yield put({ type: 'setListNull' })
       yield put({
         type: 'setDate',
         payload: date,
       })
       const data = yield call(queryIn, payload)
-      console.log('data', data)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',
@@ -63,17 +63,17 @@ export default {
           },
         })
       } else {
-        console.log('no Data')
+        yield put({ type: 'setListNull' })
       }
     },
     * queryOutAdj ({ payload = {} }, { call, put }) {
       const date = payload
+      yield put({ type: 'setListNull' })
       yield put({
         type: 'setDate',
         payload: date,
       })
       const data = yield call(queryOut, payload)
-      console.log('data', data)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',
@@ -89,7 +89,7 @@ export default {
           },
         })
       } else {
-        console.log('no Data')
+        yield put({ type: 'setListNull' })
       }
     },
   },

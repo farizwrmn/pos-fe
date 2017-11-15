@@ -353,6 +353,15 @@ let database = [
     route: '/setting/periods',
   },
   {
+    id: '94',
+    bpid: '9',
+    mpid: '9',
+    icon: 'setting',
+    name: 'Configure',
+    icon: 'setting',
+    route: '/setting/configure'
+  },
+  {
     id: '921',
     mpid: '-1',
     bpid: '92',
