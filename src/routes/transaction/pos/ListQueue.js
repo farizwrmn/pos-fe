@@ -58,6 +58,10 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
           localStorage.setItem('memberUnit', trans.memberUnit)
         }
       } catch (e) {
+        Modal.warning({
+          title: 'Member Unit Not found',
+          content: 'Please Insert Member Unit'
+        })
         console.log(e)
       }
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
