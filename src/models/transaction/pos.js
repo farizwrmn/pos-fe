@@ -103,14 +103,10 @@ export default {
             })
             memberUnitInfo = localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' }
           } catch (e) {
-            try {
-              let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-              for (let n in queue) {
-                console.log(queue[n].memberUnit = "")
-              }
-            } catch (e) {
-              console.log(e)
-            }
+            Modal.warning({
+              title: 'Member Unit Not found',
+              content: 'Please Insert Member Unit'
+            })
             localStorage.removeItem('memberUnit')
           }
         } else if (location.pathname === '/transaction/pos/history') {

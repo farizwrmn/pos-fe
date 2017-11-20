@@ -52,9 +52,15 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         mechanicCode: trans.mechanicCode,
         mechanicName: trans.mechanicName
       })
-      Reflect.deleteProperty(queue, useQueue);
+      Reflect.deleteProperty(queue, useQueue)
+      try {
+        if (JSON.parse(trans.memberUnit).policeNo) {
+          localStorage.setItem('memberUnit', trans.memberUnit)
+        }
+      } catch (e) {
+        console.log(e)
+      }
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
-      localStorage.setItem('memberUnit', trans.memberUnit)
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
