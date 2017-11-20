@@ -94,7 +94,6 @@ export default {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = {}
           try {
-            memberUnitInfo = localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' }
             dispatch({
               type: 'showShiftModal',
               payload: memberUnitInfo
@@ -102,8 +101,16 @@ export default {
             dispatch({
               type: 'loadDataPos'
             })
+            memberUnitInfo = localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' }
           } catch (e) {
-            console.log(e)
+            try {
+              let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+              for (let n in queue) {
+                console.log(queue[n].memberUnit = "")
+              }
+            } catch (e) {
+              console.log(e)
+            }
             localStorage.removeItem('memberUnit')
           }
         } else if (location.pathname === '/transaction/pos/history') {
