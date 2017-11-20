@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Switch, Row, Col } from 'antd'
+import { Form, Input, Button, Switch, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -12,26 +12,41 @@ const formItemLayout = {
 const Inventory = ({
   formHeader,
   visible,
-  visibility,
+  visibilityCommit,
+  visibilitySave,
   config,
   onOk,
   changeVisible,
   form: { getFieldDecorator, validateFields, getFieldsValue },
 }) => {
-  const turnOnButton = () => {
-    const data = {
-      ...getFieldsValue(),
+  Object.compare = function (obj1, obj2) {
+    //Loop through properties in object 1
+    for (var p in obj1) {
+      //Check property exists on both objects
+      if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false;
+
+      switch (typeof (obj1[p])) {
+        //Deep compare objects
+        case 'object':
+          if (!Object.compare(obj1[p], obj2[p])) return false;
+          break;
+        //Compare function code
+        case 'function':
+          if (typeof (obj2[p]) == 'undefined' || (p != 'compare' && obj1[p].toString() != obj2[p].toString())) return false;
+          break;
+        //Compare values
+        default:
+          if (obj1[p] != obj2[p]) return false;
+      }
     }
-    let dataInventory = {}
-    dataInventory.posOrder = {}
-    dataInventory.posOrder.outOfStock = (data.outOfStock === true || data.outOfStock === 1 ? 1 : 0)
-    if (JSON.stringify(dataInventory) === JSON.stringify(config)) {
-      changeVisible('visible', 'Inventory')
-    } else {
-      changeVisible('hidden', 'Inventory')
+
+    //Check object 2 for any extra properties
+    for (var p in obj2) {
+      if (typeof (obj1[p]) == 'undefined') return false;
     }
+    return true;
   }
-  const saveClick = () => {
+  const saveClick = () => { 
     validateFields((errors) => {
       if (errors) {
         return
@@ -42,7 +57,17 @@ const Inventory = ({
       let dataInventory = {}
       dataInventory.posOrder = {}
       dataInventory.posOrder.outOfStock = (data.outOfStock === true || data.outOfStock === 1 ? 1 : 0)
-      onOk(formHeader, dataInventory)
+      dataInventory.posOrder.editPurchase = (data.editPurchase === true || data.editPurchase === 1 ? 1 : 0)
+      if (Object.compare(dataInventory, config)) {
+        changeVisible('visible', 'Inventory')
+        Modal.warning({
+          title: 'No Changes',
+          content: 'No Changes Detected'
+        })
+      } else {
+        onOk(formHeader, dataInventory)      
+        changeVisible('visible', 'Inventory')
+      }
     })
   }
   return (
@@ -52,16 +77,20 @@ const Inventory = ({
           <FormItem label='Enable Out of stock checkout' {...formItemLayout}>
             {getFieldDecorator('outOfStock', {
               initialValue: config.posOrder.outOfStock,
-            })(<Switch defaultChecked={config.posOrder.outOfStock} onChange={turnOnButton} />)}
+            })(<Switch defaultChecked={config.posOrder.outOfStock} />)}
           </FormItem>
         </Col>
         <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }}>
-
+          <FormItem label='Enable Edit Purchase' {...formItemLayout}>
+            {getFieldDecorator('editPurchase', {
+              initialValue: config.posOrder.editPurchase,
+            })(<Switch defaultChecked={config.posOrder.editPurchase} />)}
+          </FormItem>
         </Col>
       </Row>
-      <Button type="primary" htmlType="submit" className="ant-form-save-width-half" onClick={saveClick} style={{ visibility: visibility, margin: '5px 5px 5px 5px' }}>
+      {visibilitySave && <Button type="primary" htmlType="submit" className="ant-form-save-width-half" onClick={saveClick} style={{ visibility: visibilitySave, margin: '5px 5px 5px 5px' }}>
         Save
-      </Button>
+      </Button>}
     </Form>
   )
 }
@@ -69,7 +98,8 @@ const Inventory = ({
 Inventory.propTypes = {
   form: PropTypes.object.isRequired,
   onOk: PropTypes.func,
-  changeVisible: PropTypes.func
+  changeVisible: PropTypes.func,
+  loading: PropTypes.object
 }
 
 export default Form.create()(Inventory)

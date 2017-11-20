@@ -8,6 +8,7 @@ import ModalCustomer from '../../master/customer/Modal'
 import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
+import { read } from 'fs';
 
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
@@ -22,18 +23,19 @@ const formItemLayout = {
   },
 }
 
-const Pos = ({location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app }) => {
+const Pos = ({ location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app }) => {
   const {
     modalVisible,
     visiblePopoverCity,
     visiblePopoverGroup,
     visiblePopoverType,
     currentItem,
-    modalType    
+    modalType
   } = customer
   const { listCity } = city
   const { listGroup } = customergroup
   const { listType } = customertype
+  const { setting } = app
   const {
     modalServiceVisible,
     modalMemberVisible,
@@ -65,12 +67,13 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     lastMeter,
     modalQueueVisible
   } = pos
-  const {listLovMemberUnit, listUnit} = unit
-  const {user} = app
+  const { listLovMemberUnit, listUnit } = unit
+  const { user } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
-    51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false }
+    51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false
+  }
   /*
   Ascii => Desc
   17 => Ctrl
@@ -91,27 +94,27 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
   let dataPos = product.concat(service)
   let a = dataPos
-  let totalPayment = a.reduce( function(cnt,o){ return cnt + o.total; }, 0)
-  let totalQty = a.reduce( function(cnt,o){ return cnt + parseInt(o.qty); }, 0)
+  let totalPayment = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+  let totalQty = a.reduce(function (cnt, o) { return cnt + parseInt(o.qty); }, 0)
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
-    let mm = today.getMonth()+1 //January is 0!
+    let mm = today.getMonth() + 1 //January is 0!
     let yyyy = today.getFullYear()
 
-    if(dd<10) {
-      dd='0'+dd
+    if (dd < 10) {
+      dd = '0' + dd
     }
 
-    if(mm<10) {
-      mm='0'+mm
+    if (mm < 10) {
+      mm = '0' + mm
     }
 
     if (mode === 1) {
-      today = dd + '-' + mm + '-' +yyyy
+      today = dd + '-' + mm + '-' + yyyy
     }
     else if (mode === 2) {
-      today = mm+yyyy
+      today = mm + yyyy
     }
     else if (mode === 3) {
       today = yyyy + '-' + mm + '-' + dd
@@ -132,12 +135,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const checkTime = (i) => {
-    if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
+    if (i < 10) { i = "0" + i }  // add zero in front of numbers < 10
     return i
   }
 
   const handleQueue = () => {
-    if ( localStorage.getItem('cashier_trans') === null ) {
+    if (localStorage.getItem('cashier_trans') === null) {
       dispatch({
         type: 'pos/changeQueue',
         payload: {
@@ -200,7 +203,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
 
   const handleSuspend = () => {
     document.getElementById('KM').value = 0
-    dispatch({type: 'pos/insertQueueCache'})
+    dispatch({ type: 'pos/insertQueueCache' })
   }
 
   const modalEditPayment = (record) => {
@@ -223,10 +226,10 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const handleMechanicBrowse = () => {
-    //get mechanic data
-     dispatch({
-       type: 'pos/getMechanics',
-     })
+    // get mechanic data
+    dispatch({
+      type: 'pos/getMechanics',
+    })
 
     dispatch({
       type: 'pos/showMechanicModal',
@@ -237,16 +240,15 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   }
 
   const handleProductBrowse = () => {
-    //get product data
+    // get products data
+    let json = setting["Inventory"]
+    let jsondata = JSON.stringify(eval("(" + json + ")"));
+    const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
     dispatch({
       type: 'pos/getProducts',
-    })
-
-    dispatch({
-      type: 'pos/showProductModal',
       payload: {
-        modalType: 'browseProduct',
-      },
+        outOfStock
+      }
     })
   }
   const handleServiceBrowse = () => {
@@ -278,7 +280,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
 
   const handleDiscount = (tipe, value) => {
     let discountQty
-    if(tipe < 5) {
+    if (tipe < 5) {
       discountQty = 'Discount'
     } else if (tipe === 5) {
       discountQty = 'Quantity'
@@ -348,7 +350,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
               type: 'pos/setCurTotal',
             })
           },
-          onCancel() {},
+          onCancel() { },
         })
       }
       else {
@@ -390,15 +392,16 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     cashierId: user.userid,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onBack () {
+    onBack() {
       dispatch({ type: 'pos/backPrevious' })
     },
-    onCancel () {
+    onCancel() {
       Modal.error({
         title: 'Error',
-        content: 'Please Use Confirm Button...!'})
+        content: 'Please Use Confirm Button...!'
+      })
     },
-    onOk (data) {
+    onOk(data) {
       dispatch({ type: 'app/foldSider' })
       dispatch({
         type: 'pos/setCashierTrans',
@@ -413,8 +416,8 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalMemberVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
-    onChooseItem (item) {
+    onCancel() { dispatch({ type: 'pos/hideMemberModal' }) },
+    onChooseItem(item) {
       localStorage.removeItem('member', [])
       localStorage.removeItem('memberUnit')
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
@@ -438,11 +441,11 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' }})
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode }}),
-      dispatch({
-        type: 'pos/hideMemberModal',
-      })
+        dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
+        dispatch({
+          type: 'pos/hideMemberModal',
+        })
 
       setCurBarcode('', 1)
     },
@@ -457,13 +460,13 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     listGroup,
     visiblePopoverType,
     listType,
-    onOk (data) {
+    onOk(data) {
       dispatch({
         type: `customer/${modalType}`,
         payload: data,
       })
     },
-    modalButtonSaveClick (id, data) {
+    modalButtonSaveClick(id, data) {
       console.log('modalButtonSaveClick data:', data);
       dispatch({
         type: `customer/${modalType}`,
@@ -494,7 +497,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    modalButtonSaveUnitClick (id, data) {
+    modalButtonSaveUnitClick(id, data) {
       dispatch({
         type: 'unit/add',
         payload: {
@@ -512,7 +515,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    modalButtonEditUnitClick (id, data) {
+    modalButtonEditUnitClick(id, data) {
       dispatch({
         type: 'unit/edit',
         payload: {
@@ -530,7 +533,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    modalButtonDeleteUnitClick (id, data) {
+    modalButtonDeleteUnitClick(id, data) {
       dispatch({
         type: 'unit/delete',
         payload: {
@@ -539,52 +542,52 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    onCancel () {
+    onCancel() {
       dispatch({
         type: 'customer/modalHide',
       })
     },
-    modalButtonCancelClick2 () {
+    modalButtonCancelClick2() {
       dispatch({
         type: 'customer/modalHide',
       })
     },
-    modalButtonGroupClick () {
+    modalButtonGroupClick() {
       dispatch({
         type: 'customergroup/query',
       })
     },
-    modalButtonTypeClick () {
+    modalButtonTypeClick() {
       dispatch({
         type: 'customertype/query',
       })
     },
-    modalButtonCityClick () {
+    modalButtonCityClick() {
       dispatch({
         type: 'city/query',
       })
     },
-    modalPopoverVisible () {
+    modalPopoverVisible() {
       dispatch({
         type: 'customer/modalPopoverVisible',
       })
     },
-    modalPopoverVisibleCity () {
+    modalPopoverVisibleCity() {
       dispatch({
         type: 'customer/modalPopoverVisibleCity',
       })
     },
-    modalPopoverVisibleType () {
+    modalPopoverVisibleType() {
       dispatch({
         type: 'customer/modalPopoverVisibleType',
       })
     },
-    modalPopoverClose () {
+    modalPopoverClose() {
       dispatch({
         type: 'customer/modalPopoverClose',
       })
     },
-    onChooseItem (data) {
+    onChooseItem(data) {
       dispatch({
         type: 'customer/chooseEmployee',
         payload: {
@@ -613,7 +616,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    onChooseType (data) {
+    onChooseType(data) {
       dispatch({
         type: 'customer/chooseType',
         payload: {
@@ -642,7 +645,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         },
       })
     },
-    onChooseCity (data) {
+    onChooseCity(data) {
       dispatch({
         type: 'customer/chooseCity',
         payload: {
@@ -682,16 +685,16 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalPaymentVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () {
-      dispatch({type: 'pos/hidePaymentModal'})
+    onCancel() {
+      dispatch({ type: 'pos/hidePaymentModal' })
     },
-    DeleteItem (data) {
+    DeleteItem(data) {
       dispatch({ type: 'pos/paymentDelete', payload: data })
     },
-    onChooseItem (data) {
+    onChooseItem(data) {
       dispatch({ type: 'pos/paymentEdit', payload: data })
     },
-    onChangeTotalItem (data) {
+    onChangeTotalItem(data) {
       dispatch({
         type: 'pos/setTotalItem',
         payload: data,
@@ -707,17 +710,17 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalServiceListVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () {
-      dispatch({type: 'pos/hideServiceListModal'})
+    onCancel() {
+      dispatch({ type: 'pos/hideServiceListModal' })
     },
-    onChooseItem (data) {
+    onChooseItem(data) {
       dispatch({ type: 'pos/serviceEdit', payload: data })
       dispatch({ type: 'pos/hideServiceListModal' })
     },
-    DeleteItem (data) {
+    DeleteItem(data) {
       dispatch({ type: 'pos/serviceDelete', payload: data })
     },
-    onChangeTotalItem (data) {
+    onChangeTotalItem(data) {
       dispatch({
         type: 'pos/setTotalItemService',
         payload: data,
@@ -732,8 +735,8 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalMechanicVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
-    onChooseItem (item) {
+    onCancel() { dispatch({ type: 'pos/hideMechanicModal' }) },
+    onChooseItem(item) {
       localStorage.removeItem('mechanic')
       let arrayProd = []
       arrayProd.push({
@@ -742,7 +745,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
       })
       localStorage.setItem('mechanic', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' },})
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' }, })
       dispatch({ type: 'pos/hideMechanicModal' })
     },
   }
@@ -754,55 +757,63 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
-    onChooseItem (item) {
+    onCancel() { dispatch({ type: 'pos/hideProductModal' }) },
+    onChooseItem(item) {
       if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
         let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
         let arrayProd
-        if (listByCode.length === 0) {
-          arrayProd = listByCode.slice()
+        const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
+        if (checkExists.length === 0) {
+          if (listByCode.length === 0) {
+            arrayProd = listByCode.slice()
+          } else {
+            arrayProd = JSON.parse(listByCode.slice())
+          }
+  
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            qty: curQty,
+            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
+          })
+  
+          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          dispatch({
+            type: 'pos/querySuccessByCode',
+            payload: {
+              listByCode: item,
+              curRecord: curRecord + 1,
+            },
+          })
+          dispatch({
+            type: 'pos/setUtil',
+            payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
+          })
+          dispatch({ type: 'pos/hideProductModal' })
         } else {
-          arrayProd = JSON.parse(listByCode.slice())
+          Modal.warning({
+            title: 'Cannot add product',
+            content: 'Already Exists in list'
+          })
         }
-        
-        arrayProd.push({
-          no: arrayProd.length + 1,
-          code: item.productCode,
-          productId: item.id,
-          name: item.productName,
-          qty: curQty,
-          price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
-          discount: 0,
-          disc1: 0,
-          disc2: 0,
-          disc3: 0,
-          total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
-        })
-        
-        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-        dispatch({
-          type: 'pos/querySuccessByCode',
-          payload: {
-            listByCode: item,
-            curRecord: curRecord + 1,
-          },
-        })
-        dispatch({
-        type: 'pos/setUtil',
-        payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
-        })
-        dispatch({ type: 'pos/hideProductModal' })
       } else {
         if (memberInformation.length === 0) {
           Modal.info({
             title: 'Member Information is not found',
             content: 'Insert Member',
-            onOk () {
+            onOk() {
               dispatch({ type: 'pos/hideProductModal' })
               dispatch({
                 type: 'pos/getMembers',
               })
-          
+
               dispatch({
                 type: 'pos/showMemberModal',
                 payload: {
@@ -815,18 +826,18 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
           Modal.info({
             title: 'Mechanic Information is not found',
             content: 'Insert Mechanic',
-            onOk () {
+            onOk() {
               dispatch({ type: 'pos/hideProductModal' })
               dispatch({
                 type: 'pos/getMechanics',
               })
-         
-             dispatch({
-               type: 'pos/showMechanicModal',
-               payload: {
-                 modalType: 'browseMechanic',
-               },
-             })
+
+              dispatch({
+                type: 'pos/showMechanicModal',
+                payload: {
+                  modalType: 'browseMechanic',
+                },
+              })
             }
           })
         }
@@ -841,51 +852,58 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalServiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () {
+    onCancel() {
       dispatch({
         type: 'pos/hideServiceModal',
       })
     },
-    onChooseItem (item) {
+    onChooseItem(item) {
       let listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
-
       let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
+      const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+      if (checkExists.length === 0) {
+        if (JSON.stringify(listByCode) === '[]') {
+          arrayProd = listByCode.slice()
+        } else {
+          arrayProd = JSON.parse(listByCode.slice())
+        }
+  
+  
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: item.serviceCode,
+          productId: item.id,
+          name: item.serviceName,
+          qty: curQty,
+          price: item.serviceCost,
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: item.serviceCost * curQty
+        })
+  
+        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+  
+        dispatch({
+          type: 'pos/queryServiceSuccessByCode',
+          payload: {
+            listByCode: item,
+            curRecord: curRecord + 1,
+          },
+        })
+  
+        dispatch({
+          type: 'pos/hideServiceModal',
+        })
+  
+        setCurBarcode('', 1)
       } else {
-        arrayProd = JSON.parse(listByCode.slice())
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
       }
-
-
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: item.serviceCode,
-        productId: item.id,
-        name: item.serviceName,
-        qty: curQty,
-        price:  item.serviceCost,
-        discount: 0,
-        disc1: 0,
-        disc2: 0,
-        disc3: 0,
-        total:  item.serviceCost * curQty
-      })
-
-      localStorage.setItem('service_detail', JSON.stringify(arrayProd))
-
-      dispatch({
-        type: 'pos/queryServiceSuccessByCode',
-        payload: {
-          listByCode: item,
-          curRecord: curRecord + 1,
-        },
-      })
-
-      dispatch({
-        type: 'pos/hideServiceModal',
-      })
-
-      setCurBarcode('', 1)
     },
   }
 
@@ -896,7 +914,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     visible: modalQueueVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () {
+    onCancel() {
       dispatch({
         type: 'pos/hideQueueModal',
       })
@@ -913,7 +931,8 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         if (value) {
           dispatch({
             type: 'pos/getStock',
-            payload: { productCode: value,
+            payload: {
+              productCode: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
               curQty: curQty,
               memberCode: memberInformation.memberCode,
@@ -959,7 +978,8 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
         if (value) {
           dispatch({
             type: 'pos/getService',
-            payload: { serviceId: value,
+            payload: {
+              serviceId: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
               curQty: curQty,
               memberCode: memberInformation.memberCode,
@@ -1055,7 +1075,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
           Modal.confirm({
             title: 'Are you sure want to close this Cashier?',
             content: 'This Operation cannot be undone...!',
-            onOk () {
+            onOk() {
               dispatch({
                 type: 'pos/setCloseCashier',
                 payload: {
@@ -1072,7 +1092,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
                 type: 'pos/showShiftModal',
               })
             },
-            onCancel () {},
+            onCancel() { },
           })
         }
         else {
@@ -1206,7 +1226,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
             type: 'pos/setCurTotal',
           })
         },
-        onCancel() {},
+        onCancel() { },
       })
     }
     else if (e.keyCode === '115') { // Tombol F4 untuk refund
@@ -1237,14 +1257,22 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
     dispatch({ type: 'pos/modalPopoverShow' })
   }
   const hdlTableRowClick = (record) => {
+    const { id, policeNo, merk, model } = record
     dispatch({
       type: 'pos/chooseMemberUnit',
-      payload: { policeNo: record.policeNo },
+      payload: {
+        policeNo: {
+          id, policeNo, merk, model
+        }
+      },
     })
-    localStorage.setItem('memberUnit',record.policeNo)
     dispatch({
       type: 'payment/setPoliceNo',
-      payload: { policeNo: record.policeNo },
+      payload: {
+        policeNo: {
+          id, policeNo, merk, model
+        }
+      },
     })
     dispatch({
       type: 'payment/setLastMeter',
@@ -1273,7 +1301,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
       <Col span={8}>Choose Member Unit</Col>
       <Col span={1} offset={15}>
         <Button shape="circle" icon="close-circle" size="small"
-          onClick={() => hdlPopoverClose()}/>
+          onClick={() => hdlPopoverClose()} />
       </Col>
     </Row>
   )
@@ -1295,7 +1323,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
   )
   const onChangeLastMeter = (e) => {
     const { value } = e.target
-    let lastMeter = value.replace( /^\D+/g, '')
+    let lastMeter = value.replace(/^\D+/g, '')
     localStorage.setItem('lastMeter', JSON.stringify(parseFloat(lastMeter)))
     dispatch({
       type: 'payment/setLastMeter',
@@ -1314,10 +1342,10 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               {/*<Input placeholder="Name" disabled style={{ marginBottom: 8}}/>*/}
-              {infoUtil && <Tag color="green" style={{ marginBottom: 8}}> {infoUtil} </Tag> }
+              {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
               <Input size="large" autoFocus={true} value={curBarcode} style={{ fontSize: 24, marginBottom: 8 }}
-                     placeholder="Search Code Here" onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)}
-                     onKeyPress={(e) => handleKeyPress(e)} />
+                placeholder="Search Code Here" onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)}
+                onKeyPress={(e) => handleKeyPress(e)} />
             </Form>
 
             <ButtonGroup>
@@ -1330,7 +1358,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
             {modalMemberVisible && <Browse {...modalMemberProps} />}
 
             <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-                    onClick={handleMechanicBrowse}>Mechanic
+              onClick={handleMechanicBrowse}>Mechanic
             </Button>
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
 
@@ -1344,12 +1372,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
             {modalProductVisible && <Browse {...modalProductProps} />}
 
             <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-                    onClick={handleServiceBrowse}>Service
+              onClick={handleServiceBrowse}>Service
             </Button>
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             <Badge count={objectSize()}>
               <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-                      onClick={handleQueue}>Queue
+                onClick={handleQueue}>Queue
               </Button>
             </Badge>
             {modalQueueVisible && <Browse {...modalQueueProps} />}
@@ -1359,12 +1387,12 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
               <Row>
                 <Col lg={{ span: 10 }}>
                   <FormItem label="Qty">
-                    <Input value={totalQty} style={{ fontSize:24, marginBottom: 8}} />
+                    <Input value={totalQty} style={{ fontSize: 24, marginBottom: 8 }} />
                   </FormItem>
                 </Col>
                 <Col xs={{ span: 5, offset: 2 }} lg={{ span: 10, offset: 4 }}>
                   <FormItem label="Total">
-                    <Input value={totalPayment} style={{ fontSize:24, marginBottom: 8}} />
+                    <Input value={totalPayment} style={{ fontSize: 24, marginBottom: 8 }} />
                   </FormItem>
                 </Col>
               </Row>
@@ -1433,7 +1461,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
                   ]}
                   onRowClick={(record) => modalEditPayment(record)}
                   dataSource={dataTrans()}
-                  style={{marginBottom: 16}}
+                  style={{ marginBottom: 16 }}
                 />
                 {modalPaymentVisible && <Browse {...modalPaymentProps} />}
               </TabPane>
@@ -1501,7 +1529,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
                 dataSource={dataService()}
                 style={{ marginBottom: 16 }}
               />
-              {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
+                {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
             </Tabs>
           </Card>
         </Col>
@@ -1524,7 +1552,7 @@ const Pos = ({location, customer, city, customergroup, customertype, loading, di
                       placement="left"
                       trigger="click"
                     >
-                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick}/>
+                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick} />
                     </Popover>
                   </Col>
                 </FormItem>

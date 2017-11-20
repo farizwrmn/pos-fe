@@ -158,7 +158,8 @@ export default {
             rounding: payload.rounding,
             paid: payload.totalPayment,
             paymentVia: payload.paymentVia,
-            policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : payload.policeNo,
+            policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+            policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
             change: payload.totalChange
           }
           const point = parseInt((payload.grandTotal / 10000), 10)
@@ -183,7 +184,7 @@ export default {
                 lastTransNo: transNo,
                 totalChange: payload.totalChange,
                 totalDiscount: payload.totalDiscount,
-                policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
+                policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
                 rounding: payload.rounding,
                 dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
                 dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
@@ -390,8 +391,8 @@ export default {
     },
 
     setPoliceNo (state, action) {
-      localStorage.setItem('memberUnit', action.payload.policeNo)
-      return { state, policeNo: action.payload.policeNo}
+      localStorage.setItem('memberUnit', JSON.stringify(action.payload.policeNo))
+      return { state, policeNo: action.payload.policeNo.policeNo}
     },
 
     hideCreditModal (state) {
@@ -720,6 +721,7 @@ export default {
         localStorage.removeItem('service_detail')
         localStorage.removeItem('member')
         localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')        
         localStorage.removeItem('lastMeter')
       }
       return { 

@@ -70,14 +70,6 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       })
     }
   }
-
-  const getBodyWrapperProps = {
-    page: location.query.page,
-    current: tableProps.pagination.current,
-  }
-
-  const getBodyWrapper = body => { return isMotion ? <AnimTableBody {...getBodyWrapperProps} body={body} /> : body }
-
   return (
     <div>
       <Tabs onChange={handleChange} defaultActiveKey="1" style={{ marginTop: '20px' }}>
@@ -114,7 +106,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
               },
               {
                 title: 'Unit',
-                dataIndex: 'memberUnit'
+                dataIndex: 'policeNo'
               },
               {
                 title: 'Mechanic',

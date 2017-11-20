@@ -26,13 +26,6 @@ const Report = ({ dispatch, fifoReport, app }) => {
     },
     onChange (page) {
       const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
     },
   }
 

@@ -149,22 +149,30 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       })
     },
     onChooseItem (e) {
+      
       const listByCode = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
-      let arrayProd = listByCode
-      console.log('onChooseItem', e)
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: e.productCode,
-        name: e.productName,
-        productId: e.id,
-        productName: e.productName,
-        In: 0,
-        Out: 0,
-        price: e.sellPrice,
-      })
-      localStorage.setItem('adjust', JSON.stringify(arrayProd))
-      const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
-      dispatch({ type: 'adjust/setDataBrowse', payload: data })
+      const checkExists = listByCode.filter(el => el.code === e.productCode)
+      if (checkExists.length === 0) {
+        let arrayProd = listByCode
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: e.productCode,
+          name: e.productName,
+          productId: e.id,
+          productName: e.productName,
+          In: 0,
+          Out: 0,
+          price: e.sellPrice,
+        })
+        localStorage.setItem('adjust', JSON.stringify(arrayProd))
+        const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
+        dispatch({ type: 'adjust/setDataBrowse', payload: data })
+      } else {
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
+      }
     },
   }
 
@@ -186,33 +194,33 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     },
   }
 
-  const modalProductProps = {
-    location: location,
-    loading: loading,
-    adjust: adjust,
-    visible: modalProductVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
-    onChooseItem (e) {
-      const listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
-      let arrayProd
-      if (listByCode.length === 0) {
-        arrayProd = listByCode.slice()
-      }
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: e.productCode,
-        name: e.productName,
-        qty: curQty,
-        price: e.costPrice,
-        total: curQty * e.sellPrice
-      })
-      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-      dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })
-      dispatch({ type: 'adjust/hideProductModal' })
-    },
-  }
+  // const modalProductProps = {
+  //   location: location,
+  //   loading: loading,
+  //   adjust: adjust,
+  //   visible: modalProductVisible,
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
+  //   onChooseItem (e) {
+  //     const listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+  //     let arrayProd
+  //     if (listByCode.length === 0) {
+  //       arrayProd = listByCode.slice()
+  //     }
+  //     arrayProd.push({
+  //       no: arrayProd.length + 1,
+  //       code: e.productCode,
+  //       name: e.productName,
+  //       qty: curQty,
+  //       price: e.costPrice,
+  //       total: curQty * e.sellPrice
+  //     })
+  //     localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+  //     dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })
+  //     dispatch({ type: 'adjust/hideProductModal' })
+  //   },
+  // }
 
   return (
     <div className="content-inner">

@@ -13,7 +13,8 @@ export default modelExtend(pageModel, {
     formInventoryVisible: false,
     formPaymentVisible: false,
     config: {},
-    visibility: 'hidden',
+    visibilitySave: 'visible',
+    visibilityCommit: 'hidden',    
   },
 
   subscriptions: {
@@ -33,14 +34,14 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query({ payload = {} }, { call, put }) {
-      const inventory = yield call(query, { settingCode: payload.formHeader })
-      if (inventory.success) {
-        let json = inventory.data
+      const setting = yield call(query, { settingCode: payload.formHeader })
+      if (setting.success) {
+        let json = setting.data[0]
         let jsondata = JSON.stringify(eval("(" + json.settingValue + ")"));
         const data = JSON.parse(jsondata)
         // JSON.parse(JSON.stringify(eval("(" + getdata + ")")))
         yield put({
-          type: 'querySettingSuccess',
+          type: `query${payload.formHeader}`,
           payload: {
             ...payload,
             config: data
@@ -53,7 +54,7 @@ export default modelExtend(pageModel, {
       if (update.success) {
         const inventory = yield call(query, { settingCode: payload.formHeader })
         if (inventory.success) {
-          let json = inventory.data
+          let json = inventory.data[0]
           let jsondata = JSON.stringify(eval("(" + json.settingValue + ")"));
           const data = JSON.parse(jsondata)
           // JSON.parse(JSON.stringify(eval("(" + getdata + ")")))
@@ -66,13 +67,19 @@ export default modelExtend(pageModel, {
           })
         }
         Modal.info({
-          title: 'Saved',
-          content: 'Setting has been saved'
+          title: 'Setting has been saved',
+          content: 'Reload page to take effect',
+          onOk () {
+            location=location.href
+          },
+          onCancel () {
+            location=location.href
+          }
         })
         yield put({
           type: 'configure/saveVisible',
           payload: {
-            visible: 'hidden',
+            visibilitySave: 'visible',
           }
         })
       } else {
@@ -83,7 +90,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'configure/saveVisible',
           payload: {
-            visible: 'hidden',
+            visibilitySave: 'visible',
           }
         })
       }
@@ -91,11 +98,11 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    querySettingSuccess(state, action) {
+    queryInventory(state, action) {
       console.log('Inventory')
       return { ...state, ...action.payload, formInventoryVisible: true }
     },
-    Payment(state, action) {
+    queryPayment(state, action) {
       console.log('Payment')
       return { ...state, ...action.payload, formPaymentVisible: true }
     },
@@ -103,8 +110,8 @@ export default modelExtend(pageModel, {
       return { ...state, formInventoryVisible: false, formPaymentVisible: false }
     },
     saveVisible(state, action) {
-      console.log('visible', action.payload )
-      return { ...state, visibility: action.payload.visible }
+      console.log('visible', action.payload)
+      return { ...state, visibilityCommit: action.payload.visibilityCommit, visibilitySave: action.payload.visibilitySave }
     }
   },
 })

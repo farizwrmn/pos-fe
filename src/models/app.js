@@ -4,6 +4,7 @@ import config from 'config'
 import moment from 'moment'
 import { EnumRoleType } from 'enums'
 import { query, logout, changePw } from '../services/app'
+import { query as querySetting } from '../services/setting'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
@@ -15,6 +16,7 @@ export default {
   state: {
     user: {},
     storeInfo: {},
+    setting: {},
     permissions: {
       visit: [],
     },
@@ -74,7 +76,6 @@ export default {
         }
 
         const period = yield call(queryLastActive)
-
         // // Opera 8.0+
         // let isOpera = (!!window.opr && !!opr.addons) || window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
         //
@@ -147,7 +148,16 @@ export default {
         } else {
           console.log('unexpected error misc')
         }
-
+        let setting = {}
+        try { setting = yield call(querySetting) }
+        catch (e) { alert(`warning: ${e}`) }
+        let json = setting.data
+        let arrayProd = []
+        let settingdata = json.map((x) => x.settingCode)
+        let settingvalue = setting.data.map((x) => x.settingValue)
+        for (let n in settingdata) {
+          arrayProd[settingdata[n]] = settingvalue[n]
+        }
         yield put({
           type: 'updateState',
           payload: {
@@ -155,6 +165,7 @@ export default {
             storeInfo,
             permissions,
             menu,
+            setting: arrayProd
           },
         })
         if (location.pathname === '/login') {

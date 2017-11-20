@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { Modal } from 'antd'
 import PurchaseForm from './PurchaseForm'
 import PurchaseList from './PurchaseList'
 
@@ -119,28 +120,36 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     onChooseItemItem (e) {
       let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
       let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
+      const checkExists = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')).filter(el => el.productCode === e.productCode) : []
+      if (checkExists.length === 0) {
+        if (JSON.stringify(listByCode) === '[]') {
+          arrayProd = listByCode.slice()
+        } else {
+          arrayProd = JSON.parse(listByCode.slice())
+        }
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: e.id,
+          productCode: e.productCode,
+          name: e.productName,
+          qty: 0,
+          price: e.costPrice,
+          discount: discNML,
+          disc1: discPRC,
+          dpp: 0,
+          ppn: 0,
+          ket: '',
+          total: 0,
+        })
+        localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+        dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
+        dispatch({ type: 'purchase/hideProductModal' })
       } else {
-        arrayProd = JSON.parse(listByCode.slice())
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
       }
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: e.id,
-        productCode: e.productCode,
-        name: e.productName,
-        qty: 0,
-        price: e.costPrice,
-        discount: discNML,
-        disc1: discPRC,
-        dpp: 0,
-        ppn: 0,
-        ket: '',
-        total: 0,
-      })
-      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-      dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
-      dispatch({ type: 'purchase/hideProductModal' })
     },
     modalShow (data) {
       dispatch({

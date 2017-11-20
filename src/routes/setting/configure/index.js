@@ -2,24 +2,31 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Tab, Row, Col, Menu, Dropdown, Button, Icon, Card } from 'antd'
+import { Tab, Row, Col, Menu, Dropdown, Button, Icon, Card, Modal } from 'antd'
 import { DropOption } from 'components'
 import Inventory from './inventory'
-import Payment from './payment'
 
 const Config = ({ location, dispatch, configure, customer, loading }) => {
-  const { formHeader, formInventoryVisible, formPaymentVisible, config, visibility } = configure
+  const { formHeader, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
   const inventoryProps = {
     formHeader,
     visible: formInventoryVisible,
     config,
-    visibility,
+    visibilitySave,
+    visibilityCommit,
+    loading: loading.effects['configure/query'],
     onOk (id, data) {
-      dispatch({
-        type: 'configure/update',
-        payload: {
-          id,
-          data: data
+      Modal.confirm({
+        title: 'Change Preference',
+        content: 'this action cannot be undone',
+        onOk () {
+          dispatch({
+            type: 'configure/update',
+            payload: {
+              id,
+              data: data
+            }
+          })
         }
       })
     },
@@ -27,15 +34,11 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
       dispatch({
         type: 'configure/saveVisible',
         payload: {
-          visible: e,
+          visibilitySave: e,
           formHeader
         }
       })
     }
-  }
-
-  const paymentProps = {
-    visible: formPaymentVisible
   }
 
   const hdlDropOptionClick = (e) => {
@@ -55,8 +58,7 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
       <Row>
         <Col lg={{ span: 19, offset: 1 }} md={{ span: 19, offset: 1 }} sm={{ span: 24 }}>
           <Card title={formHeader}>
-            {formInventoryVisible && <Inventory {...inventoryProps}/>}
-            {formPaymentVisible && <Payment />}
+            {formInventoryVisible && <Inventory {...inventoryProps} />}
           </Card>
         </Col>
         <Col lg={{ span: 3, offset: 1 }} md={{ span: 5, offset: 1 }} sm={{ span: 24 }}>
@@ -64,7 +66,6 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
             menuName="Options"
             menuOptions={[
               { key: 'Inventory', name: 'Inventory' },
-              { key: 'Payment', name: 'Payment' }
             ]}
           />
         </Col>
