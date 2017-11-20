@@ -41,6 +41,16 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
     }
   }
 
+  const clearLocal = () => {
+    Modal.confirm({
+      title: 'All local memory will delete',
+      content: 'Are you sure?',
+      onOk () {
+        localStorage.clear()
+      }
+    })
+  }
+
   const hdlDropOptionClick = (e) => {
     dispatch({
       type: 'configure/close'
@@ -62,6 +72,7 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
           </Card>
         </Col>
         <Col lg={{ span: 3, offset: 1 }} md={{ span: 5, offset: 1 }} sm={{ span: 24 }}>
+          <Button type="primary" onClick={clearLocal} style={{ marginBottom: '10px' }}>Clear Local</Button>
           <DropOption onMenuClick={e => hdlDropOptionClick(e)}
             menuName="Options"
             menuOptions={[

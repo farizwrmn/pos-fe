@@ -72,7 +72,7 @@ export default {
     tmpMechanicList: [],
     tmpProductList: [],
     mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
-    memberUnitInfo: localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' },
+    memberUnitInfo: {},
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
@@ -92,12 +92,20 @@ export default {
     setup({ dispatch, history }) {
       history.listen(location => {
         if (location.pathname === '/transaction/pos') {
-          dispatch({
-            type: 'loadDataPos',
-          })
-          dispatch({
-            type: 'showShiftModal',
-          })
+          let memberUnitInfo = {}
+          try {
+            memberUnitInfo = localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' }
+            dispatch({
+              type: 'showShiftModal',
+              payload: memberUnitInfo
+            })
+            dispatch({
+              type: 'loadDataPos'
+            })
+          } catch (e) {
+            console.log(e)
+            localStorage.removeItem('memberUnit')
+          }
         } else if (location.pathname === '/transaction/pos/history') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
@@ -1399,7 +1407,7 @@ reducers: {
   },
 
   showShiftModal(state, action) {
-    return { ...state, ...action.payload, modalShiftVisible: true }
+    return { ...state, ...action.payload, modalShiftVisible: true, memberUnitInfo: action.payload }
   },
 
   hideShiftModal(state, action) {
