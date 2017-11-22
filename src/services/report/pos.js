@@ -34,3 +34,14 @@ export async function queryAll (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryTransCancel (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posreport}/trans/cancel`
+  return request({
+    url: url,
+    data:params,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}

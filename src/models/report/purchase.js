@@ -1,7 +1,7 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-import { query as queryReport, queryTrans } from '../../services/report/purchase'
+import { query as queryReport, queryTrans, queryReturn } from '../../services/report/purchase'
 import { queryMode as miscQuery} from '../../services/misc'
 
 export default {
@@ -22,6 +22,19 @@ export default {
     },
   },
   subscriptions: {
+    setup({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/report/purchase/return' && location.query.from) {
+          dispatch({
+            type: 'setListNull'
+          })
+          dispatch({
+            type: 'queryReturn',
+            payload: location.query,
+          })
+        }
+      })
+    },   
   },
   effects: {
     * queryTrans ({ payload }, { call, put }) {
@@ -41,6 +54,22 @@ export default {
         },
       })
     },
+    * queryReturn ({ payload }, { call, put }) {
+      let data = new Array()
+      if (payload) {
+        data = yield call(queryReturn, payload)
+        yield put ({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.from,
+            toDate: payload.to
+          },
+        })
+      } else {
+        data = yield call (queryReturn)
+      }
+    }
   },
   reducers: {
     querySuccessTrans (state, action) {
@@ -49,10 +78,7 @@ export default {
       return { ...state,
         listTrans,
         tmpList,
-        pagination: {
-          ...state.pagination,
-          ...pagination,
-        },
+        ...action.payload
       }
     },
     setDate (state, action) {

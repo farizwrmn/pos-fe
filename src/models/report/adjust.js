@@ -25,16 +25,21 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/adjust/in') {
+        if (location.pathname === '/report/adjust/in' && Object.keys(location.query).length > 0) {
           dispatch({
             type: 'queryInAdj',
             payload: location.query,
           })
-        } else if (location.pathname === '/report/adjust/out') {
+        } else if (location.pathname === '/report/adjust/out' && Object.keys(location.query).length > 0) {
+          console.log('query', Object.keys(location.query).length)
           dispatch({
             type: 'queryOutAdj',
             payload: location.query,
           })
+        } else if (location.pathname === '/report/adjust/in') {
+          dispatch({ type: 'setListNull' })
+        } else if (location.pathname === '/report/adjust/out') {
+          dispatch({ type: 'setListNull' })
         }
       })
     },
@@ -73,23 +78,28 @@ export default {
         type: 'setDate',
         payload: date,
       })
-      const data = yield call(queryOut, payload)
-      if (data.data.length > 0) {
-        yield put({
-          type: 'querySuccessTrans',
-          payload: {
-            listTrans: [],
-            listOut: data.data,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
+      let data = {}
+      try{
+        data = yield call(queryOut, payload)
+        if (data.data.length > 0) {
+          yield put({
+            type: 'querySuccessTrans',
+            payload: {
+              listTrans: [],
+              listOut: data.data,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 5,
+                total: data.total,
+              },
+              date: date,
             },
-            date: date,
-          },
-        })
-      } else {
-        yield put({ type: 'setListNull' })
+          })
+        } else {
+          yield put({ type: 'setListNull' })
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
   },

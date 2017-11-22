@@ -9,30 +9,18 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ location, dispatch, loading, adjustReport, app }) => {
-  const { listTrans, pagination, fromDate, toDate, productCode } = adjustReport
+  const { listTrans, fromDate, toDate, productCode } = adjustReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listTrans,
     listTrans,
     storeInfo,
-    pagination,
     loading: loading.effects['adjustReport/query'],
     productCode,
     onListReset () {
       dispatch({
         type: 'adjustReport/setListNull',
       })
-    },
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
     },
   }
   const filterProps = {

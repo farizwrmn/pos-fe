@@ -211,6 +211,14 @@ let database = [
     route: '/report/pos/service',
   },
   {
+    id: '414',
+    bpid: '41',
+    mpid: '41',
+    name: 'Cancel',
+    icon: 'close',
+    route: '/report/pos/cancel',
+  },
+  {
     id: '42',
     bpid: '4',
     mpid: '4',
@@ -233,6 +241,13 @@ let database = [
     route: '/report/purchase/summary/trans',
   },
   {
+    id: '424',
+    bpid: '42',
+    mpid: '42',
+    name: 'Return',
+    route: '/report/purchase/return',    
+  },
+  {
     id: '43',
     bpid: '4',
     mpid: '4',
@@ -240,12 +255,20 @@ let database = [
     icon: 'tool',
   },
   {
+    id: '431',
+    bpid: '43',
+    mpid: '43',
+    name: 'Mechanic',
+    icon: 'tool',
+    route: '/report/service/mechanic'
+  },
+  {
     id: '432',
     bpid: '43',
     mpid: '43',
     name: 'Service Trans',
     icon: 'calendar',
-    route: '/report/service/trans',
+    route: '/report/service/trans'
   },
   {
     id: '44',

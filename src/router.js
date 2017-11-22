@@ -230,6 +230,22 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-service')
           },
         }, {
+          path: 'report/pos/cancel',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/cancel'))
+            }, 'report-pos-cancel')
+          },
+        }, {
+          path: 'report/service/mechanic',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/service'))
+              cb(null, require('./routes/report/service/mechanic/'))
+            }, 'report-service-mechanic')
+          },
+        }, {
           path: 'report/service/trans',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -244,6 +260,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/purchase'))
               cb(null, require('./routes/report/purchase/summary-trans/'))
             }, 'report-purchase-summary-trans')
+          },
+        }, {
+          path: 'report/purchase/return',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/purchase'))
+              cb(null, require('./routes/report/purchase/return'))
+            }, 'report-purchase-return')
           },
         }, {
           path: 'report/adjust/in',

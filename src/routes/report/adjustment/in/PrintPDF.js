@@ -19,9 +19,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
       top: {
         col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
         col_2: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
-        col_5: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
+        col_3: { fontSize: 12, text: 'TANGGALT', style: 'tableHeader', alignment: 'center' },
+        col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
+        col_5: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'right' },
         col_6: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
       },
     }

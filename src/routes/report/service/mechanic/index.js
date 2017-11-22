@@ -1,5 +1,5 @@
 /**
- * Created by Veirry on 19/09/2017.
+ * Created by Veirry on 21/11/2017.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -8,34 +8,32 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, adjustReport, app }) => {
-  const { listOut, fromDate, toDate, productCode } = adjustReport
+const Report = ({ dispatch, serviceReport, app }) => {
+  const { list, fromDate, toDate, productCode } = serviceReport
   const { user, storeInfo } = app
   const browseProps = {
-    dataSource: listOut,
-    listOut,
+    dataSource: list,
+    list,
     storeInfo,
-    loading: loading.effects['adjustReport/query'],
+    user,
+    fromDate,
+    toDate,
     productCode,
-    onListReset () {
-      dispatch({
-        type: 'adjustReport/setListNull',
-      })
-    },
   }
+
   const filterProps = {
-    listTrans: listOut,
+    list: list,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset(){
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'serviceReport/setListNull',
       })
     },
-    onDateChange (from, to) {
+    onDateChange(from, to) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
@@ -43,8 +41,16 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
           to: to,
         },
       }))
+      dispatch({
+        type: 'serviceReport/setDate',
+        payload: {
+          from: from,
+          to: to,
+        },
+      })
     },
   }
+
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
@@ -54,11 +60,9 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
 }
 
 Report.propTyps = {
-  dispatch: PropTypes.func.isRequired,
-  app: PropTypes.object,
-  adjustReport: PropTypes.object,
-  location: PropTypes.object,
-  loading: PropTypes.object,
+  dispatch: PropTypes.func,
+  app: PropTypes.app,
+  serviceReport: PropTypes.object,
 }
 
-export default connect(({ loading, adjustReport, app }) => ({ loading, adjustReport, app }))(Report)
+export default connect(({ serviceReport, app }) => ({ serviceReport, app }))(Report)

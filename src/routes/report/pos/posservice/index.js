@@ -15,24 +15,12 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     dataSource: listTrans,
     listTrans,
     storeInfo,
-    pagination,
     loading: loading.effects['posReport/query'],
     productCode,
     onListReset () {
       dispatch({
         type: 'posReport/setListNull',
       })
-    },
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
     },
   }
   const filterProps = {

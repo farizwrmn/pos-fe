@@ -37,7 +37,7 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
   let nettoTotal = g.reduce((cnt, o) => cnt + parseFloat(o.total) + parseFloat(o.ppn), 0) + parseFloat(rounding)
   let totalPpn = g.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
   let discPercent = g.reduce((cnt, o) => cnt + ((parseFloat(o.disc1) * parseFloat(o.qty) * parseFloat(o.price)) / 100), 0)
-  let discNominal = g.reduce((cnt, o) => cnt + (parseFloat(o.discount) * parseFloat(o.qty)), 0)
+  let discNominal = g.reduce((cnt, o) => cnt + (parseFloat(o.discount)), 0)
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
   let grandTotal = g.reduce((cnt, o) => cnt + (parseFloat(o.price) * parseFloat(o.qty)), 0)
   const hdlBrowseProduct = () => {

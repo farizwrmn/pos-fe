@@ -24,9 +24,6 @@ const Report = ({ dispatch, fifoReport, app }) => {
         type: 'adjustReport/setListNull',
       })
     },
-    onChange (page) {
-      const { pathname } = location
-    },
   }
 
   const filterProps = {
