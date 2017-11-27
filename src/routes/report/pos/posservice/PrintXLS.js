@@ -64,7 +64,6 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         family: 4,
         size: 10,
       }
-      console.log(listTrans)
       for (let n = 0; n <= listTrans.length; n++) {
         for (let m = 65; m < 74; m++) {
           let o = 9 + n
