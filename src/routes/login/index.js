@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input } from 'antd'
+import { Button, Row, Form, Input, Cascader, message } from 'antd'
 import { config } from 'utils'
 import styles from './index.less'
 import './index.less'
 import Footer from 'components/Layout/Footer'
 
-const { authBy } = config
+const { prefix, authBy } = config
 const FormItem = Form.Item
 
 const Login = ({
@@ -18,14 +18,28 @@ const Login = ({
     validateFieldsAndScroll,
   },
 }) => {
-  const { loginLoading } = login
+  const { loginLoading, listUserRole, visibleItem } = login
+  listUserRole.length > 0 && localStorage.setItem(`${prefix}uRole`, JSON.stringify(listUserRole))
 
-  function handleOk () {
+  const handleOk = () => {
+    validateFieldsAndScroll((errors, values) => {
+      if (!values.userrole) {
+        message.error('Choose a valid role');
+        return
+      }
+      if (errors) { return }
+
+      values.userrole = values.userrole.toString()
+      dispatch({ type: 'login/login', payload: values })
+    })
+  }
+  const handleRole = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
-      dispatch({ type: 'login/login', payload: values })
+      dispatch({ type: 'login/totp', payload: values })
+      // dispatch({ type: 'login/role', payload: values })
     })
   }
 
@@ -37,23 +51,32 @@ const Login = ({
         <span>{config.name}</span>
       </div>
       <form>
-        <FormItem hasFeedback>
+        <FormItem className={styles.formItem} hasFeedback>
           {getFieldDecorator('user' + authBy, {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input size="large" onPressEnter={handleOk} placeholder="Username" />)}
+            rules: [{ required: true }]
+          })(<Input size="large" placeholder="Username" />)}
         </FormItem>
-        <FormItem hasFeedback>
+        <FormItem className={styles.formItem} hasFeedback>
           {getFieldDecorator('password', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input size="large" type="password" onPressEnter={handleOk} placeholder="Password" />)}
+            rules: [{ required: true }]
+          })(<Input size="large" type="password" onBlur={handleRole} onPressEnter={handleRole}
+                    placeholder="Password" />)}
+        </FormItem>
+        { visibleItem.verificationCode &&
+          <FormItem className={styles.formItem} hasFeedback>
+            {getFieldDecorator('verification', {
+            })(<Input size="large" type="password" onBlur={handleRole} onPressEnter={handleRole}
+                      placeholder="Verification" />)}
+          </FormItem>
+        }
+        <FormItem hasFeedback>
+          {getFieldDecorator('userrole', {
+          })(<Cascader
+            size='large'
+            style={{ width: '100%' }}
+            options={listUserRole}
+            placeholder='Role'
+          />)}
         </FormItem>
         <Row>
           <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
@@ -63,7 +86,6 @@ const Login = ({
             <Footer otherClass={styles.footerlogin}/>
           </p>
         </Row>
-
       </form>
     </div>
   </div>

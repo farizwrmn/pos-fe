@@ -9,7 +9,6 @@ import Modal from './Modal'
 const CustomerType = ({ sellprice, location, dispatch, customertype, loading, misc }) => {
   const { listType, paginationCustomerType, currentItem, modalVisible, searchVisible, visiblePopover,
     disabledItem, modalType, selectedRowKeys, disableMultiSelectCusType } = customertype
-    console.log(listType)
   const { pageSize } = paginationCustomerType
   const { listMisc } = misc
   const { listSellPrice } = sellprice

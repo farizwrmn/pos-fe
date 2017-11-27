@@ -74,18 +74,27 @@
     &.light {
       background: #fff;
 
-      .switchtheme {
+      .switchrole {
         background: #fff;
         border-top: solid 1px #f8f8f8;
       }
     }
-
+    .switchstore {
+      padding-left: 24px;
+      :global {
+        .anticon {
+          min-width: 14px;
+          margin-right: 8px;
+          font-size: 12px;
+        }
+      }
+    }
     .logo {
       text-align: center;
       height: 40px;
       line-height: 40px;
       cursor: pointer;
-      margin: 28px 0;
+      margin: 24px 0;
       transition: @transition-ease-out;
       overflow: hidden;
 
@@ -107,7 +116,7 @@
       }
     }
 
-    .switchtheme {
+    .switchrole {
       width: 100%;
       position: absolute;
       bottom: 0;

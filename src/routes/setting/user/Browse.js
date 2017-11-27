@@ -10,6 +10,7 @@ const confirm = Modal.confirm
 
 const Browse = ({
   onAddItem, onEditItem, onDeleteItem, onDeleteBatch, onSearchShow,
+  modalTabChange,
   ...tableProps }) => {
 
   const hdlButtonAddClick = () => {
@@ -25,7 +26,6 @@ const Browse = ({
   }
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
-      console.log('hdlDropOptionClick',record)
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({

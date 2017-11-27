@@ -17,9 +17,9 @@ const { prefix, openPages } = config
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
-const App = ({ children, dispatch, app, loading, location }) => {
+const App = ({ children, dispatch, app, loading, location, login }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
-    visibleItem, visiblePw, navOpenKeys, menu, permissions } = app
+    visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { iconFontJS, iconFontCSS, logo } = config
@@ -39,10 +39,13 @@ const App = ({ children, dispatch, app, loading, location }) => {
     menu,
     user,
     siderFold,
+    darkTheme,
     isNavbar,
     menuPopoverVisible,
     visibleItem,
     visiblePw,
+    totp,
+    totpChecked,
     navOpenKeys,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
@@ -52,6 +55,9 @@ const App = ({ children, dispatch, app, loading, location }) => {
     },
     switchSider () {
       dispatch({ type: 'app/switchSider' })
+    },
+    changeTheme () {
+      dispatch({ type: 'app/switchTheme' })
     },
     changeOpenKeys (openKeys) {
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
@@ -71,8 +77,27 @@ const App = ({ children, dispatch, app, loading, location }) => {
     handleTogglePw () {
       dispatch({ type: 'app/togglePw' })
     },
-    handleSave (data) {
-      console.log('handleSave' ,data)
+    handleTotpLoad (userId) {
+      dispatch({
+        type: 'app/totp',
+        payload: { mode: 'load', id: userId },
+      })
+    },
+    handleRegenerateTotp (userId) {
+      console.log('regenerate', userId)
+      dispatch({
+        type: 'app/totp',
+        payload: { mode: 'generate', id: userId },
+      })
+    },
+    handleChangeTotpShow (userId) {
+      dispatch({ type: 'app/changeTotpShow' })
+      dispatch({ type: 'app/totp', payload: { mode: 'load', id: userId } })
+    },
+    handleChangeTotpHide () {
+      dispatch({ type: 'app/changeTotpHide' })
+    },
+    handleSavePw (data) {
       dispatch({
         type: `app/changePw`,
         payload: {
@@ -81,7 +106,29 @@ const App = ({ children, dispatch, app, loading, location }) => {
           currentItem: {}
         },
       })
-    }
+    },
+    handleSaveTotp (userId, data) {
+      dispatch({
+        type: `app/totp`,
+        payload: { mode: 'edit',  id: userId, data: data },
+      })
+    },
+    modalSwitchChange (checked, userId) {
+      if (checked) {
+        dispatch({ type: 'app/totp',
+          payload: { mode: 'generate', id: userId }
+        })
+        dispatch({
+          type: 'app/updateState',
+          payload: { totpChecked: true },
+        })
+      } else {
+        dispatch({
+          type: 'app/updateState',
+          payload: { totpChecked: false },
+        })
+      }
+    },
   }
 
   const siderProps = {
@@ -89,8 +136,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
     siderFold,
     darkTheme,
     navOpenKeys,
-    changeTheme () {
-      dispatch({ type: 'app/switchTheme' })
+    changeRole (roleCode) {
+      dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     },
     switchSider () {
       dispatch({ type: 'app/switchSider' })

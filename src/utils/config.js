@@ -32,6 +32,11 @@ module.exports = {
     v2test: `${APIV2}/test`,
   },
   api: {
+    getIpAddress: `${APIURL}${APIV1}/utils/ipaddr`,
+    userPreLogin: `${APIURL}${APIV1}/users/prelogin`,
+    userRole: `${APIURL}${APIV1}/users/:id/roles`,
+    userTotp: `${APIURL}${APIV1}/users/:id/totp`,
+    userTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
     userLogin: `${APIURL}${APIV1}/users/login`,
     userLogout: `${APIURL}${APIV1}/users/logout`, // services/app.js post
     userInfo: `${APIV1}/userInfo`,
@@ -47,6 +52,7 @@ module.exports = {
     services: `${APIURL}${APIV1}/services`,
     servicestype: `${APIURL}${APIV1}/misc/code/service`,
     misc: `${APIURL}${APIV1}/misc`,
+    ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
     posts: `${APIV1}/posts`,
     dashboard: `${APIV1}/dashboard`,
     menus: `${APIV1}/menus`,

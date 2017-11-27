@@ -3,13 +3,14 @@ import { parse } from 'qs'
 import config from 'config'
 import moment from 'moment'
 import { EnumRoleType } from 'enums'
-import { query, logout, changePw } from '../services/app'
+import { query, logout, changePw, totpapp } from '../services/app'
 import { query as querySetting } from '../services/setting'
+import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
 
-const { prefix, apiHost } = config
+const { prefix } = config
 
 export default {
   namespace: 'app',
@@ -17,9 +18,9 @@ export default {
     user: {},
     storeInfo: {},
     setting: {},
-    permissions: {
-      visit: [],
-    },
+    permissions: { visit: [] },
+    totpChecked: false,
+    totp: { key: '', url: '', isTotp: false },
     menu: [
       {
         id: 1,
@@ -29,7 +30,7 @@ export default {
       },
     ],
     menuPopoverVisible: false,
-    visibleItem: {shortcutKey: false, changePw: false },
+    visibleItem: {shortcutKey: false, changePw: false, changeTotp: false },
     visiblePw: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -75,54 +76,11 @@ export default {
           })
         }
 
-        const period = yield call(queryLastActive)
-        // // Opera 8.0+
-        // let isOpera = (!!window.opr && !!opr.addons) || window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
-        //
-        // // Firefox 1.0+
-        // let isFirefox = typeof InstallTrigger !== 'undefined'
-        //
-        // // Chrome 1+
-        // let isChrome = !!window.chrome && !!window.chrome.webstore
-        //
-        // // Blink engine detection
-        // let isBlink = (isChrome || isOpera) && !!window.CSS
-        //
-        // const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
-        //   let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection //compatibility for firefox and chrome
-        //   const pc = new MyPeerConnection({ iceServers: [] }),
-        //     noop = function () {},
-        //     localIPs = {},
-        //     ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-        //   function ipIterate (ip) {
-        //     if (!localIPs[ip]) onNewIP(ip)
-        //     localIPs[ip] = true
-        //   }
-        //   pc.createDataChannel('') // create a bogus data channel
-        //   pc.createOffer((sdp) => {
-        //     sdp.sdp.split('\n').forEach((line) => {
-        //       if (line.indexOf('candidate') < 0) return
-        //       line.match(ipRegex).forEach(ipIterate)
-        //     })
-        //     pc.setLocalDescription(sdp, noop, noop)
-        //   }, noop) // create offer and set local description
-        //   pc.onicecandidate = (ice) => { // listen for candidate events
-        //     if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return
-        //     ice.candidate.candidate.match(ipRegex).forEach(ipIterate)
-        //   }
-        // }
-        // let ipAddress = apiHost
-        // const addIP = (ip) => {
-        //   console.log(ip)
-        // }
-        // if (isChrome || isFirefox || isBlink) {
-        //   findIP(addIP)
-        // } else {
-        //   alert('Browser cannot find IP address')
-        // }
+        const period = yield call(queryLastActive)        
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
-        const misc = yield call(miscQuery, { code: 'company' })
+        const misc = yield call(miscQuery, { code: 'company'})
+        let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
         storeInfo.stackHeader01 = [
@@ -214,6 +172,43 @@ export default {
       }
     },
 
+    *totp ({ payload = {} }, { call, put }) {
+      //...clone from models/user
+      const mode = payload.mode
+      if (mode === 'edit') {
+        const data = yield call(edit, payload)
+        if (data.success) {
+          // yield put({ type: 'query' })
+          yield put({ type: 'changeTotpHide' })
+          yield put({ type: 'query' })
+        } else {
+          throw (data)
+        }
+      } else {
+        const data = yield call(totp, payload)
+        if (data.success) {
+          yield put({
+            type: 'querySuccessTotp',
+            payload: {
+              mode,
+              totp: {
+                key: data.key,
+                url: data.otpURL,
+                isTotp: data.isTOTP
+              },
+            },
+          })
+        }
+      }
+    },
+
+    *changeTotp ({ payload = {} }, { call, put }) {
+      console.log('changeTotp', payload)
+      yield put({
+        type: 'querySuccessTotp',
+        payload
+      })
+    }
   },
   reducers: {
     updateState (state, { payload }) {
@@ -252,6 +247,12 @@ export default {
     togglePw (state) {
       return { ...state, visiblePw: !state.visiblePw }
     },
+    changeTotpShow (state, { payload }) {
+      return { ...state, ...payload, visibleItem: {changeTotp: true } }
+    },
+    changeTotpHide (state) {
+      return { ...state, visibleItem: {changeTotp: false } }
+    },
     switchTheme (state) {
       localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)
       return {
@@ -278,6 +279,20 @@ export default {
       return {
         ...state,
         ...navOpenKeys,
+      }
+    },
+
+    querySuccessTotp (state, action) {
+      console.log('querySuccessTotpa', action)
+      const { totp, mode, isTotp } = action.payload
+      // if (mode === 'load') state.totpChecked = false
+      console.log('querySuccessmode', mode)
+      console.log('querySuccessTotpv', totp)
+      if (mode === 'load') state.totpChecked = totp.isTotp
+      if (mode === 'edit') state.totpChecked = isTotp
+      console.log('querySuccessTotp', state.totpChecked)
+      return { ...state,
+        totp,
       }
     },
   },
