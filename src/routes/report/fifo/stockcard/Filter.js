@@ -32,10 +32,6 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, dispatch, onL
   }
 
   const handleReset = () => {
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-    }))
     resetFields()
     onListReset()
   }
