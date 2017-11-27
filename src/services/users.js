@@ -1,6 +1,6 @@
 import { request, config, crypt } from 'utils'
 
-const { users } = config.api
+const { users, userTotp, userTotpr } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -43,6 +43,16 @@ export async function remove (params) {
     url,
     method: 'delete',
     data: params,
+    headers: apiHeaderToken,
+  })
+}
+
+export async function totp (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: (params.mode === 'generate') ? userTotpr : userTotp,
+    method: 'get',
+    data: {id: params.id, mode: params.mode},
     headers: apiHeaderToken,
   })
 }

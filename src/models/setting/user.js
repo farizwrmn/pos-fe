@@ -1,6 +1,11 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, edit, remove } from '../services/users'
-import { pageModel } from './common'
+import { query, add, edit, remove, totp } from '../../services/users'
+import { pageModel } from '../common'
+
+// INSERT INTO dmi_pos_local.tbl_user_role
+// (id, userId, userRole, createdAt, createdBy, updatedAt, updatedBy)
+// VALUES(4, 'ownerPOS', 'REP', '2017-10-11 09:04:35.000', 'ownerPOS', '2017-10-11 09:04:35.000', '---');
+
 
 export default modelExtend(pageModel, {
   namespace: 'user',
@@ -8,11 +13,14 @@ export default modelExtend(pageModel, {
   state: {
     list: [],
     currentItem: {},
+    activeTab: '1',
     addItem: {},
     modalVisible: false,
     searchVisible: false,
     modalType: 'add',
     selectedRowKeys: [],
+    totpChecked: false,
+    totp: { key: '', url: '', isTotp: false }
   },
 
   subscriptions: {
@@ -32,7 +40,8 @@ export default modelExtend(pageModel, {
 
     *query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      console.log('modeluser', data)
+      if (data.success) {
         yield put({
           type: 'querySuccess',
           payload: {
@@ -46,6 +55,7 @@ export default modelExtend(pageModel, {
         })
         yield put({ type: 'misc/lov', payload: { code: 'USERROLE' } })
         yield put({ type: 'employee/lovForUser' })
+        // yield put({ type: 'userRole/query' })
       }
     },
 
@@ -81,17 +91,40 @@ export default modelExtend(pageModel, {
     },
 
     *edit ({ payload }, { select, call, put }) {
+      console.log('edit',payload)
       const userId = yield select(({ user }) => user.currentItem.userId)
       const newUser = { ...payload, userId }
       const data = yield call(edit, newUser)
+      yield put({ type: 'activeTab', payload: {activeTab: payload.activeTab} })
       if (data.success) {
+        console.log('edituser', data)
+        console.log('edituser1', data.user.isTOTP)
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
+        yield put({ type: 'app/query' })
       } else {
         throw data
       }
     },
 
+    *totp ({ payload = {} }, { call, put }) {
+      console.log('mode', payload.mode)
+      const mode = payload.mode
+      const data = yield call(totp, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTotp',
+          payload: {
+            mode,
+            totp: {
+              key: data.key,
+              url: data.otpURL,
+              isTotp: data.isTOTP
+            },
+          },
+        })
+      }
+    },
   },
 
   reducers: {
@@ -105,6 +138,16 @@ export default modelExtend(pageModel, {
           ...pagination,
         } }
     },
+    querySuccessTotp (state, action) {
+      const { totp, mode } = action.payload
+      // if (mode === 'load') state.totpChecked = false
+      console.log('querySuccessTotp', state.totpChecked)
+      console.log('querySuccessTotpv', totp)
+      if (mode === 'load') state.totpChecked = totp.isTotp
+      return { ...state,
+        totp,
+      }
+    },
     updateState (state, { payload }) {
       return {
         ...state,
@@ -115,7 +158,7 @@ export default modelExtend(pageModel, {
       return { ...state, ...payload, modalVisible: true, disabledItem: { userId: false } }
     },
     modalHide (state) {
-      return { ...state, modalVisible: false, currentItem: {} }
+      return { ...state, modalVisible: false, currentItem: {}, activeTab: '1' }
     },
     chooseEmployee (state, action) {
       return { ...state, ...action.payload, visiblePopover: false }
@@ -138,6 +181,12 @@ export default modelExtend(pageModel, {
           userId: (state.modalType !== 'add' ? !state.disabledItem.userId : state.disabledItem.userId),
           getEmployee: !state.disabledItem.getEmployee,
         },
+      }
+    },
+    activeTab (state, { payload }) {
+      return {
+        ...state,
+        ...payload,
       }
     },
   },

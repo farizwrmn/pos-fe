@@ -1,22 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar } from 'antd'
+import { Menu, Icon, Popover, Calendar, Switch } from 'antd'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
+import ChangeTotp from './ChangeTotp'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible,
-  visibleItem, visiblePw, handleShortcutKeyShow, handleShortcutKeyHide,
-  handleChangePwShow, handleChangePwHide, handleTogglePw, handleSave,
+const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar, menuPopoverVisible,
+  visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow, handleShortcutKeyHide,
+  handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
+  handleTotpLoad, handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
+  handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
 }) => {
   let handleClickMenu = (e) => {
     e.key === 'logout' && logout()
     e.key === 'password' && handleChangePwShow()
+    e.key === 'totp' && handleChangeTotpShow(user.userid)
   }
 
   const menusProps = {
@@ -49,9 +53,30 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
       handleChangePwHide()
     },
     onSaveButton (data) {
-      handleSave(data)
+      handleSavePw(data)
     },
   }
+  const changeTotpProps = {
+    user,
+    totp,
+    visible: visibleItem.changeTotp,
+    visiblePw: visibleTotp,
+    onCancel () {
+      handleChangeTotpHide()
+    },
+    onCancelButton () {
+      handleChangeTotpHide()
+    },
+    onSaveTotpButton (userId, data) {
+      handleSaveTotp(userId, data)
+    },
+    onRegenerateTotp () {
+      handleRegenerateTotp(user.userid)
+    },
+    modalSwitchChange,
+    totpChecked
+  }
+
   return (
     <div className={styles.header}>
       {isNavbar
@@ -70,7 +95,14 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
         <HeaderMenu prompt="setting" />
         <HeaderMenu prompt="calculator" />
         <HeaderMenu prompt="calendar" popContent={<Calendar fullscreen={false} />} />
-        <HeaderMenu prompt="change theme" icon="bulb" />
+        <HeaderMenu prompt="change theme" icon="bulb"
+                    popContent={
+                      <Switch onChange={changeTheme} defaultChecked={darkTheme}
+                              checkedChildren={<Icon type="bulb" />}
+                              unCheckedChildren={<Icon type="eye" style={{ color: '#000' }} />}
+                              />
+                    }
+        />
         <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
         <HeaderMenu prompt="notification" icon="bell" />
         <HeaderMenu separator={true} />
@@ -81,6 +113,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
 
         {visibleItem.shortcutKey && <ShortcutKey {...shortcutProps} />}
         {visibleItem.changePw && <ChangePw  {...changePwProps} />}
+        {visibleItem.changeTotp && <ChangeTotp  {...changeTotpProps} />}
 
         <Menu mode="horizontal" onClick={handleClickMenu}>
           <SubMenu
@@ -90,12 +123,15 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
             title={<span> <Icon type="user" />
               {user.username} </span>}
           >
-            <Menu.Item key="logout">
-              Sign out
-            </Menu.Item>
-            <Menu.Divider />
             <Menu.Item key="password">
               Change Password
+            </Menu.Item>
+            <Menu.Item key="totp">
+              { (user.totp ? 'Change' : 'Enable') + ' TOTP' }
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="logout">
+              Sign out
             </Menu.Item>
           </SubMenu>
         </Menu>

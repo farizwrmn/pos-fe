@@ -1,4 +1,4 @@
-import { myCity, queryWeather, query } from '../services/dashboard'
+import { query, getIpAddr } from '../services/dashboard'
 import { parse } from 'qs'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
@@ -181,6 +181,7 @@ export default {
     comments: [],
     completed: [],
     browser: [],
+    ipAddress: [],
     cpu: {},
     user: {
       avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
@@ -196,7 +197,8 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(query, parse(payload))
-      yield put({ type: 'querySuccess', payload: { ...data } })
+      const ipAddr = yield call(getIpAddr)
+      yield put({ type: 'querySuccess', payload: { ...data, ...ipAddr } })
       //yield put({ type: 'queryWeather', payload: { ...data } })
     },
     *queryWeather ({

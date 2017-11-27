@@ -6,12 +6,12 @@ import { Link } from 'dva/router'
 
 const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent }) => {
   const content = (
-    <div style={{ width: 290, border: '0px', borderRadius: 4 }}>
+    <div style={{ maxWidth: 290, border: '0px', borderRadius: 4 }}>
       {popContent}
     </div>
   )
   const childComp = (
-    <Tooltip placement='bottomLeft' title={prompt}>
+    <Tooltip placement='leftBottom' title={prompt}>
       <div className={separator ? styles.void : styles.button + ' ' + styles[addClass || prompt]} onClick={onClick}>
         <Link to={clickRoute}>
           <Icon type={icon || prompt} />

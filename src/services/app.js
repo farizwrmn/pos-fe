@@ -32,37 +32,35 @@ export async function changePw (params) {
   })
 }
 
-// export async function query (params) {
-//   return request({
-//     url: user.replace('/:id', ''),
-//     method: 'get',
-//     data: params,
-//   })
-// }
-
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   const localId = localStorage.getItem(`${prefix}uid`)
-  let url
+  let url = []
   if (localId && localId.indexOf("#") > -1) {
     const localIds = localId.split("#")
     const rdmText = crypt.encrypt(localIds[0])
-    url = crypt.decrypt(localIds[1], rdmText) || ''
+    url[0] = crypt.decrypt(localIds[1], rdmText) || ''
+    url[1] = localIds[2]
   } else {
-    url = crypt.decrypt(localStorage.getItem(`${prefix}uid`)) || ''
+    url[0] = crypt.decrypt(localStorage.getItem(`${prefix}uid`)) || ''
+    url[1] = '---'
   }
 
-  if (apiHeaderToken) {
-    return request({
-      url: user.replace('/:id', '/' + url),
-      method: 'get',
-      headers: apiHeaderToken,
-    })
+  if (url[0].length > 0) {
+    if (apiHeaderToken) {
+      return request({
+        url: user.replace('/:id', '/' + url[0] + '/roles/' + url[1]),
+        method: 'get',
+        headers: apiHeaderToken,
+      })
+    } else {
+      return request({
+        url: user.replace('/:id', ''),
+        method: 'get',
+        data: params,
+      })
+    }
   } else {
-    return request({
-      url: user.replace('/:id', ''),
-      method: 'get',
-      data: params,
-    })
+    return { "success": false }
   }
 }

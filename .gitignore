@@ -12,5 +12,3 @@ package-lock.json
 Dockerfile
 .dockerignore
 
-Dockerfile
-.dockerignore

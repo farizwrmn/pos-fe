@@ -6,29 +6,39 @@ import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
 
-const User = ({ location, dispatch, user, loading, misc, employee }) => {
+const User = ({ location, dispatch, user, loading, misc, employee, userRole }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, modalType, selectedRowKeys, disableMultiSelect } = user
+    disabledItem, modalType, selectedRowKeys, disableMultiSelect, activeTab,
+    totpChecked, totp
+  } = user
 
   const { listLovEmployee } = employee
   const { listLov }  = misc
+  const { listUserRole, listUserRoleTarget, listUserRoleChange }  = userRole
   const { pageSize } = pagination
 
-  const listUserRole = listLov &&
+  const listRole = listLov &&
     listLov.hasOwnProperty('userrole') ? listLov.userrole : []
 
+  // const targetUserRole = listUserRole.map(a=>a.key)
   const modalProps = {
     item: currentItem,
     visible: modalVisible,
     visiblePopover: visiblePopover,
     disabledItem: disabledItem,
+    activeTab: activeTab,
+    totpChecked,
+    totp,
     maskClosable: false,
     confirmLoading: loading.effects['user/update'],
     title: `${modalType === 'add' ? 'Add User' : 'Edit User'}`,
     modalType: modalType,
     wrapClassName: 'vertical-center-modal',
     listLovEmployee: listLovEmployee,
-    listUserRole: listUserRole,
+    listRole,
+    listUserRole,
+    listUserRoleTarget,
+    listUserRoleChange,
     onOk (data) {
       dispatch({
         type: `user/${modalType}`,
@@ -73,14 +83,71 @@ const User = ({ location, dispatch, user, loading, misc, employee }) => {
     modalButtonCancelClick () {
       dispatch({ type: 'user/modalHide' })
     },
-    modalButtonSaveClick (id, data) {
+    modalButtonSaveClick (userId, data, activeTab) {
+      if (activeTab === '3') {
+        dispatch({
+          type: `userRole/save`,
+          payload: { userId, data, activeTab
+          },
+        })
+      } else if (activeTab === '5' ) {
+        console.log('modalButtonSaveClick', data)
+        dispatch({
+          type: `user/edit`,
+          payload: { id: userId, data, activeTab
+          },
+        })
+      } else {
+        dispatch({
+          type: `user/${modalType}`,
+          payload: {
+            id: userId,
+            data: data,
+            currentItem: {},
+            activeTab
+          },
+        })
+      }
+    },
+    modalActiveTab (activeTab) {
+      dispatch({ type: 'user/activeTab', payload: {activeTab} })
+    },
+    modalRoleLoad (userId) {
       dispatch({
-        type: `user/${modalType}`,
+        type: 'userRole/query',
+        payload: { userId },
+      })
+    },
+    modalRoleAdd (userRole, userRoleAdd, userRoleDel) {
+      dispatch({
+        type: 'userRole/updateState',
         payload: {
-          id: id,
-          data: data,
-          currentItem: {}
+          listUserRoleTarget: userRole,
+          listUserRoleChange: { in: userRoleAdd, out: userRoleDel },
         },
+      })
+    },
+    modalSwitchChange (checked, userId) {
+      if (checked) {
+        dispatch({ type: 'user/totp',
+          payload: { mode: 'generate', id: userId }
+        })
+        dispatch({
+          type: 'user/updateState',
+          payload: { totpChecked: true },
+        })
+      } else {
+        dispatch({
+          type: 'user/updateState',
+          payload: { totpChecked: false },
+        })
+      }
+    },
+
+    modalTotpLoad (userId) {
+      dispatch({
+        type: 'user/totp',
+        payload: { mode: 'load', id: userId },
       })
     },
   }
@@ -136,6 +203,11 @@ const User = ({ location, dispatch, user, loading, misc, employee }) => {
     modalPopoverClose () {
       dispatch({
         type: 'user/modalPopoverClose',
+      })
+    },
+    modalTabChange () {
+      dispatch({
+        type: 'user/modalTabChange',
       })
     },
     size: 'small',
@@ -196,10 +268,11 @@ User.propTypes = {
   user: PropTypes.object,
   misc: PropTypes.object,
   employee: PropTypes.object,
+  userRole: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
 
-export default connect(({ user, misc, employee, loading }) => ({ user, misc, employee, loading }))(User)
+export default connect(({ user, misc, employee, userRole, loading }) => ({ user, misc, employee, userRole, loading }))(User)
