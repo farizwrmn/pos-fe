@@ -279,7 +279,7 @@ const modal = ({
                     message: 'invalid NPWP',
                   },
                 ],
-              })(<Input maxLength="15" defaultvalue="123456789012345" />)}
+              })(<Input maxLength="15" />)}
             </FormItem>
           </Col>
         </Row>

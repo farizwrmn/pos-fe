@@ -1,6 +1,6 @@
 /**
  * Created by Veirry on 09/09/2017.
-*/
+ */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
@@ -8,9 +8,8 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, app }) => {
-  let { listRekap, period, year, productCode } = fifoReport
-  listRekap = listRekap.filter(el => el.count !== 0)
+const Report = ({ dispatch, fifoReport, loading, app }) => {
+  const { listRekap, period, year, productCode } = fifoReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
@@ -21,7 +20,7 @@ const Report = ({ dispatch, fifoReport, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'fifoReport/setNull',
       })
     },
   }
@@ -29,22 +28,42 @@ const Report = ({ dispatch, fifoReport, app }) => {
   const filterProps = {
     listRekap,
     user,
+    dispatch,
     storeInfo,
     period,
     year,
+    loading: loading.effects['fifoReport/queryProductCode'],
     productCode,
     onListReset () {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'fifoReport/setNull',
+      })
+    },
+    onOk (month, yearPeriod, data) {
+      dispatch({
+        type: 'fifoReport/queryCard',
+        payload: {
+          period: month,
+          year: yearPeriod,
+          productCode: data.productCode.toString()
+        },
       })
     },
     onChangePeriod (month, yearPeriod) {
+      const { period, year, ...query } = location
       dispatch({
         type: 'setPeriod',
         payload: {
           month,
           yearPeriod,
         },
+      })
+      dispatch({
+        type: 'fifoReport/queryProductCode',
+        payload: {
+          period: month,
+          year: yearPeriod,
+        }
       })
       dispatch(routerRedux.push({
         pathname: location.pathname,
@@ -66,8 +85,8 @@ const Report = ({ dispatch, fifoReport, app }) => {
 
 Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  app: PropTypes.isRequired,
-  fifoReport: PropTypes.isRequired,
+  app: PropTypes.object,
+  fifoReport: PropTypes.object,
 }
 
-export default connect(({ fifoReport, app }) => ({ fifoReport, app }))(Report)
+export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)

@@ -1,87 +1,88 @@
+/**
+ * Created by boo on 9/19/17.
+ */
 import React from 'react'
 import { Icon, Button, Modal } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 
-const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) => {
+const PrintPDF = ({ user, list, dataSource, storeInfo, fromDate, toDate, productCode }) => {
 
   const pdfMake = require('pdfmake/build/pdfmake.js')
   const pdfFonts = require('pdfmake/build/vfs_fonts.js')
   const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-  let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
+  let amountTotal = list.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
   const createPdfLineItems = (tabledata) => {
     const headers = {
       top: {
         col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
+        col_2: { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
         col_3: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-        col_5: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'right' },
-        col_6: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
+        col_4: { fontSize: 12, text: 'MECHANIC', style: 'tableHeader', alignment: 'center' },
+        col_5: { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'center' },
+        col_6: { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
+        col_7: { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
       },
     }
 
-    const rows = tabledata
+    const rows = list
     let body = []
     for (let key in headers) {
       if (headers.hasOwnProperty(key)) {
         let header = headers[key]
-        let row = []
+        let row = new Array()
         row.push(header.col_1)
         row.push(header.col_2)
         row.push(header.col_3)
         row.push(header.col_4)
         row.push(header.col_5)
         row.push(header.col_6)
+        row.push(header.col_7)
         body.push(row)
       }
     }
 
+    let ppn = 0
     let count = 1
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        let totalDisc = (data.price * data.qty) - data.total
         let row = new Array()
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qtyOut.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.employeeName, alignment: 'left', fontSize: 11 })
+        row.push({ text: data.serviceName, alignment: 'left', fontSize: 11 })
+        row.push({ text: data.serviceCode, alignment: 'left', fontSize: 11 })
         row.push({ text: data.amount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
-      count += 1
+      count = count + 1
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 })
+    totalRow.push({ text: 'Grand Total', colSpan: 6, alignment: 'center', fontSize: 12 })
     totalRow.push({})
     totalRow.push({})
-    totalRow.push({ text: `${qtyTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${costTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
+    totalRow.push({})
+    totalRow.push({})
+    totalRow.push({})
+    totalRow.push({ text: `${amountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
     return body
   }
-
   const handlePDF = () => {
-    if (fromDate === '' && toDate === '') {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
-      })
-    } else if (listTrans.length === 0) {
+    if (list.length === 0) {
       warning({
         title: 'Parameter cannot be null',
         content: 'your Trans Date paramater probably not set...',
       })
     } else {
-      let body = createPdfLineItems(listTrans)
+      let body = createPdfLineItems(list)
       let docDefinition = {
         pageSize: 'A4',
         pageOrientation: 'landscape',
@@ -94,7 +95,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
                   stack: storeInfo.stackHeader01,
                 },
                 {
-                  text: 'LAPORAN ADJUSTMENT OUT PER FAKTUR',
+                  text: 'LAPORAN MECHANIC',
                   style: 'header',
                   fontSize: 18,
                   alignment: 'center',
@@ -131,7 +132,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
           {
             writable: true,
             table: {
-              widths: ['6%', '22%', '21%', '17%', '17%', '17%'],
+              widths: ['4%', '14%', '13%', '16%', '23%', '15%', '15%'],
               headerRows: 1,
               body: body,
             },
@@ -196,10 +197,9 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
   }
 
   return (
-    <Button type="dashed"
-      size="large"
-      className="button-width02 button-extra-large bgcolor-blue"
-      onClick={() => handlePDF(dataSource)}
+    <Button type="dashed" size="large"
+            className="button-width02 button-extra-large bgcolor-blue"
+            onClick={() => handlePDF(dataSource)}
     >
       <Icon type="file-pdf" className="icon-large" />
     </Button>
@@ -207,13 +207,8 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
 }
 
 PrintPDF.propTypes = {
-  listTrans: PropTypes.array,
+  list: PropTypes.array,
   app: PropTypes.object,
-  user: PropTypes.object.isRequired,
-  dataSource: PropTypes.object.isRequired,
-  storeInfo: PropTypes.object.isRequired,
-  fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string.isRequired,
 }
 
 export default PrintPDF

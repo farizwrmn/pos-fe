@@ -1,7 +1,7 @@
 /**
  * Created by Veirry on 18/09/2017.
  */
-import { query as queryReport } from '../../services/report/service'
+import { query as queryReport, queryMechanic } from '../../services/report/service'
 import { queryMode as miscQuery} from '../../services/misc'
 import { parse } from 'qs'
 import { routerRedux } from 'dva/router'
@@ -24,6 +24,25 @@ export default {
   },
   subscriptions: {
     setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/report/service/mechanic' && location.query.from  && location.query.to) {
+          dispatch({
+            type: 'setListNull'
+          })
+          dispatch({
+            type: 'queryMechanic',
+            payload: location.query
+          })
+        } else if (location.pathname === '/report/service/trans') {
+          dispatch({
+            type: 'setListNull'
+          })
+        } else if (location.pathname === '/report/service/mechanic') {
+          dispatch({
+            type: 'setListNull'
+          })
+        }
+      })
     },
   },
   effects: {
@@ -44,14 +63,33 @@ export default {
         },
       })
     },
+    * queryMechanic ({ payload }, { call, put }) {
+      let data = []
+      if (payload) {
+        data = yield call (queryMechanic, payload)
+        yield put ({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total,
+            },
+          },
+        })
+      }
+    },
   },
   reducers: {
     querySuccess (state, action) {
-      const { list, pagination, tmpList } = action.payload
+      const { list, pagination, tmpList, fromDate, toDate } = action.payload
 
       return { ...state,
         list,
         tmpList,
+        fromDate,
+        toDate,
         pagination: {
           ...state.pagination,
           ...pagination,

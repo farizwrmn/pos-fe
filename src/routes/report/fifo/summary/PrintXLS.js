@@ -181,7 +181,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F3').value = `${storeInfo.name}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(period).format('MMMM').concat('-', year)}`
+      sheet.getCell('F4').value = `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })

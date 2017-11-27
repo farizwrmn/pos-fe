@@ -8,34 +8,32 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, adjustReport, app }) => {
-  const { listOut, fromDate, toDate, productCode } = adjustReport
+const Report = ({ dispatch, purchaseReport, app }) => {
+  const { listTrans, fromDate, toDate, productCode } = purchaseReport
   const { user, storeInfo } = app
   const browseProps = {
-    dataSource: listOut,
-    listOut,
+    dataSource: listTrans,
+    listTrans,
     storeInfo,
-    loading: loading.effects['adjustReport/query'],
+    user,
+    fromDate,
+    toDate,
     productCode,
-    onListReset () {
-      dispatch({
-        type: 'adjustReport/setListNull',
-      })
-    },
   }
+
   const filterProps = {
-    listTrans: listOut,
+    listTrans: listTrans,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset(){
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'purchaseReport/setListNull',
       })
     },
-    onDateChange (from, to) {
+    onDateChange(from, to) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
@@ -45,6 +43,7 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
       }))
     },
   }
+
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
@@ -54,11 +53,9 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
 }
 
 Report.propTyps = {
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   app: PropTypes.object,
-  adjustReport: PropTypes.object,
-  location: PropTypes.object,
-  loading: PropTypes.object,
+  purchaseReport: PropTypes.object,
 }
 
-export default connect(({ loading, adjustReport, app }) => ({ loading, adjustReport, app }))(Report)
+export default connect(({ purchaseReport, app }) => ({ purchaseReport, app }))(Report)

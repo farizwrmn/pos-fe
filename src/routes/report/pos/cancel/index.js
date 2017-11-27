@@ -8,31 +8,32 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, adjustReport, app }) => {
-  const { listOut, fromDate, toDate, productCode } = adjustReport
+const Report = ({ location, dispatch, loading, posReport, app }) => {
+  const { listTrans, fromDate, toDate, productCode } = posReport
   const { user, storeInfo } = app
   const browseProps = {
-    dataSource: listOut,
-    listOut,
+    dataSource: listTrans,
+    listTrans,
     storeInfo,
-    loading: loading.effects['adjustReport/query'],
+    loading: loading.effects['posReport/query'],
     productCode,
     onListReset () {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'posReport/setListNull',
       })
     },
   }
   const filterProps = {
-    listTrans: listOut,
+    listTrans: listTrans,
     user,
     storeInfo,
+    dispatch,
     fromDate,
     toDate,
     productCode,
     onListReset() {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'posReport/setListNull',
       })
     },
     onDateChange (from, to) {
@@ -56,9 +57,9 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
-  adjustReport: PropTypes.object,
+  posReport: PropTypes.object,
   location: PropTypes.object,
   loading: PropTypes.object,
 }
 
-export default connect(({ loading, adjustReport, app }) => ({ loading, adjustReport, app }))(Report)
+export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)

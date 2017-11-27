@@ -245,6 +245,7 @@ export default modelExtend(pageModel, {
       for (let n = 0; n < editData.length; n += 1) {
         arrayProdEdit.push({
           transNo: payload.id.transNo,
+          id: editData[n].id,
           productId: editData[n].code,
           productName: editData[n].name,
           qty: editData[n].qty,
@@ -337,6 +338,7 @@ export default modelExtend(pageModel, {
       for (let n = 0; n < data.data.length; n++) {
         arrayProd.push({
           no: arrayProd.length + 1,
+          id: data.data[n].id,
           code: data.data[n].productId,
           productCode: data.data[n].productCode,
           name: data.data[n].productName,

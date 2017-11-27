@@ -15,11 +15,13 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
       if (errors) {
         return
       }
+      hdlChange()
       const data = {
         ...getFieldsValue(),
       }
       data.code = item.code
       data.ket = item.ket
+      data.id = item.id
       onChooseItem(data)
       resetFields()
     })
@@ -31,6 +33,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
     const data = getFieldsValue()
     data.code = item.code
     data.ket = item.ket
+    data.id = item.id
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
     let TOTAL = H1 - (parseFloat(data.discount))
     let tax = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
@@ -57,8 +60,10 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
       }
       data.code = item.code
       data.ket = 'void'
+      data.id = item.id
       dataVoid.code = item.code
       dataVoid.ket = item.ket
+      dataVoid.id = item.id
       dataVoid.void = 1
       dataVoid.price = 0.00
       dataVoid.qty = 0.00
@@ -71,12 +76,12 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
         Modal.confirm({
           title: `Are you sure Void ${data.name} ?`,
           content: 'Void cannot be undone',
-          onOk () {
+          onOk() {
             onVoid(data)
             onChooseItem(dataVoid)
             resetFields()
           },
-          onCancel () {
+          onCancel() {
             console.log('cancel')
           }
         })
@@ -84,11 +89,11 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onVoid, onDelete, item,
         Modal.confirm({
           title: `Are you sure Delete ${data.name} ?`,
           content: 'Delete cannot be undone',
-          onOk () {
+          onOk() {
             onDelete(data)
             resetFields()
           },
-          onCancel () {
+          onCancel() {
             console.log('cancel')
           }
         })

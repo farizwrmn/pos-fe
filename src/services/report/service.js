@@ -13,3 +13,13 @@ export async function query (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryMechanic (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${servicereport}/mechanic`
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}

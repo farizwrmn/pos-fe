@@ -62,7 +62,7 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
   let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
   let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
   let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
-  let discNominal = g.reduce((cnt, o) => cnt + (o.discount * o.qty), 0)
+  let discNominal = g.reduce((cnt, o) => cnt + (o.discount), 0)
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
   let grandTotal = g.reduce((cnt, o) => cnt + (o.price * o.qty), 0) - totalDisc
   const customPanelStyle = {
