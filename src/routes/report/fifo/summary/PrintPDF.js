@@ -24,7 +24,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   let adjOutPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutPrice), 0)
   let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
   let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-
+  console.log('period', period)
   const createPdfLineItems = (tabledata) => {
     const headersGroup = {
       top: {

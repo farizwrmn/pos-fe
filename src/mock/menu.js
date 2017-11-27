@@ -325,6 +325,14 @@ let database = [
     route: '/report/fifo/value',
   },
   {
+    id: '454',
+    bpid: '45',
+    mpid: '45',
+    name: 'Stock Card',
+    icon: 'folder',
+    route: '/report/fifo/card',
+  },
+  {
     id: '9',
     icon: 'setting',
     name: 'Setting',

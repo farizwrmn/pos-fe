@@ -88,6 +88,7 @@ const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) 
       })
     } else {
       let body = createPdfLineItems(listTrans)
+      console.log('body', body)
       let docDefinition = {
         pageSize: 'A4',
         pageOrientation: 'landscape',

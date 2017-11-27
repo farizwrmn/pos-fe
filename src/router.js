@@ -310,6 +310,14 @@ const Routers = function ({ history, app }) {
             }, 'report-purchase-summary-value')
           },
         }, {
+          path: 'report/fifo/card',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/report/fifo'))
+              cb(null, require('./routes/report/fifo/stockcard/'))
+            }, 'report-purchase-summary-card')
+          },
+        }, {
           path: 'setting/user',
           getComponent (nextState, cb) {
             require.ensure([], require => {

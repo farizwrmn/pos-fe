@@ -11,7 +11,6 @@ import moment from 'moment'
 const warning = Modal.warning
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-  console.log('toDate', toDate)
   let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let amountTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
