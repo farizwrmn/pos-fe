@@ -5,7 +5,7 @@ import ListProduct from './ListProduct'
 import ListInvoice from './ListInvoice'
 import ListVoid from './ListVoid'
 
-const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, ...purchaseProps }) => {
+const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
   const { listProduct, listInvoice, listVoid, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
     ...purchaseProps,
@@ -19,6 +19,9 @@ const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, 
     location,
     item: itemPayment,
     isMotion,
+    onInvoiceHeader (period) {
+      onInvoiceHeader (period)
+    },
     onChooseItem (item) {
       onChooseItemItem(item)
     },
@@ -45,6 +48,7 @@ Browse.propTypes = {
   onChooseItemItem: PropTypes.func.isRequired,
   onRestoreVoid: PropTypes.func.isRequired,
   onChooseInvoice: PropTypes.func.isRequired,
+  onInvoiceHeader: PropTypes.func,
 }
 
 export default Browse

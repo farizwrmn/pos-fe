@@ -5,9 +5,11 @@ import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
+import config from 'config'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const { prefix } = config
 const formItemLayout = {
   labelCol: { span: 11 },
   wrapperCol: { span: 12 },
@@ -41,10 +43,16 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
   let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
   let grandTotal = g.reduce((cnt, o) => cnt + (parseFloat(o.price) * parseFloat(o.qty)), 0)
   const hdlBrowseProduct = () => {
+    const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}          
     if (transNo === null) {
       Modal.warning({
         title: 'Cannot Find Invoice',
         content: 'Choose Invoice first'
+      })
+    } else if (transNo.transDate < storeInfo.startPeriod) {
+      Modal.warning({
+        title: 'Read-only Invoice',
+        content: 'This Invoice cannot be edit',
       })
     } else {
       handleBrowseProduct()
@@ -60,6 +68,11 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
     const { value } = e.target
     onChangeRounding(value)
   }
+  const browseProps = {
+    transNo,
+    ...purchaseProps
+  }
+
   return (
     <Form style={{ padding: 3 }}>
       <Row style={{ padding: '10px' }}>
@@ -123,22 +136,22 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
           <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>
         </Col>
       </Row>
-      <Browse {...purchaseProps} />
+      <Browse {...browseProps} />
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
+            <Input disabled value={grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalPpn.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
+            <Input disabled value={totalPpn.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalDisc.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
+            <Input disabled value={totalDisc.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
@@ -148,17 +161,17 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
               rules: [{
                 required: false,
               }],
-            })((<Input onChange={_value => hdlChangeRounding(_value)} />))}
+            })((<Input disabled={transNo === null ? false : transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
+            <Input disabled value={nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
       </div>
       <div style={{ marginBottom: '150px' }}>
-        <Button type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
+        <Button disabled={transNo === null ? false : transNo.readOnly} type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
       </div>
     </Form>
   )

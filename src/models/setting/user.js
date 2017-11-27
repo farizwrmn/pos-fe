@@ -141,8 +141,8 @@ export default modelExtend(pageModel, {
     querySuccessTotp (state, action) {
       const { totp, mode } = action.payload
       // if (mode === 'load') state.totpChecked = false
-      console.log('querySuccessTotp', state.totpChecked)
-      console.log('querySuccessTotpv', totp)
+      // console.log('querySuccessTotp', state.totpChecked)
+      // console.log('querySuccessTotpv', totp)
       if (mode === 'load') state.totpChecked = totp.isTotp
       return { ...state,
         totp,

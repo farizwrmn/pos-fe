@@ -64,7 +64,6 @@ const ChangeTotp = ({
     }
   }
 
-  console.log('changetotp',totpChecked)
   return (
     <Modal {...modalOpts}
       footer={[

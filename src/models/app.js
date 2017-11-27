@@ -283,11 +283,11 @@ export default {
     },
 
     querySuccessTotp (state, action) {
-      console.log('querySuccessTotpa', action)
+      // console.log('querySuccessTotpa', action)
       const { totp, mode, isTotp } = action.payload
       // if (mode === 'load') state.totpChecked = false
-      console.log('querySuccessmode', mode)
-      console.log('querySuccessTotpv', totp)
+      // console.log('querySuccessmode', mode)
+      // console.log('querySuccessTotpv', totp)
       if (mode === 'load') state.totpChecked = totp.isTotp
       if (mode === 'edit') state.totpChecked = isTotp
       console.log('querySuccessTotp', state.totpChecked)

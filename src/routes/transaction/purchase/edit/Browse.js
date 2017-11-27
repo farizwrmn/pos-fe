@@ -1,18 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Row, Col, Icon, Button, Tag } from 'antd'
-import {DropOption} from 'components'
+import config from 'config'
+import { DropOption } from 'components'
 
+const { prefix } = config
 const gridStyle = {
   width: '60%',
   textAlign: 'center',
 };
 
 const confirm = Modal.confirm
+const Warning = Modal.warning
 
 const Browse = ({
-  modalShow, ...purchaseProps }) => {
-  const dataBrowse = purchaseProps.purchase.dataBrowse ? purchaseProps.purchase.dataBrowse.filter(el => el.void !== 1) :  {}
+  modalShow, transNo, ...purchaseProps }) => {
+  const dataBrowse = purchaseProps.purchase.dataBrowse ? purchaseProps.purchase.dataBrowse.filter(el => el.void !== 1) : {}
   const columns = [
     {
       title: 'No',
@@ -69,16 +72,25 @@ const Browse = ({
       dataIndex: 'ket',
       key: 'ket',
       render: ket =>
-      <span>
-        <Tag color={ ket === 'edit' ? 'blue' : 'green'}>
-          {ket === 'edit' ? 'EDIT' : 'ADD'}
-        </Tag>
-      </span>,
+        <span>
+          <Tag color={ket === 'edit' ? 'blue' : 'green'}>
+            {ket === 'edit' ? 'EDIT' : 'ADD'}
+          </Tag>
+        </span>,
     },
   ]
 
   const hdlModalShow = (record) => {
-    modalShow(record)
+    const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+    console.log(transNo)
+    if (transNo.transDate < storeInfo.startPeriod) {
+      Warning({
+        title: 'Read-only Item',
+        content: 'Cannot edit read-only Item'
+      })
+    } else {
+      modalShow(record)
+    }
   }
 
   return (

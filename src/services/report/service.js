@@ -19,6 +19,7 @@ export async function queryMechanic (params) {
   const url = `${servicereport}/mechanic`
   return request({
     url: url,
+    data: params,
     method: 'get',
     headers: apiHeaderToken,
   })

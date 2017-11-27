@@ -84,6 +84,14 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         })
       }
     },
+    onInvoiceHeader (period) {
+      dispatch({
+        type: 'purchase/getInvoiceHeader',
+        payload: {
+          ...period
+        }
+      })
+    },
     handleBrowseInvoice () {
       dispatch({
         type: 'purchase/getProducts',

@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     date: '',
+    readOnly: false,
     addItem: {},
     curTotal: 0,
     tmpSupplierData: [],
@@ -314,6 +315,28 @@ export default modelExtend(pageModel, {
             },
           },
         })
+        yield put({
+          type: 'queryGetInvoiceSuccess',
+          payload: {
+            dataInvoice: dataInvoice,
+            tmpInvoiceList: dataInvoice,
+            pagination: {
+              total: dataDetail.total,
+            },
+          },
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Content Not Found...!',
+        })
+        setTimeout(() => modal.destroy(), 1000)
+      }
+    },
+    * getInvoiceHeader ({ payload }, { call, put }) {
+      const dataDetail = yield call(query, payload)
+      let dataInvoice = dataDetail.data      
+      if (dataDetail.data.length > 0) {
         yield put({
           type: 'queryGetInvoiceSuccess',
           payload: {
