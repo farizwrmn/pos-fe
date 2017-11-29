@@ -51,6 +51,14 @@ export default {
           dispatch({
             type: 'setListNull'
           })
+        } else if (location.pathname === '/report/pos/service') {
+          dispatch({
+            type: 'setListNull'
+          })
+        } else if (location.pathname === '/report/pos/cancel') {
+          dispatch({
+            type: 'setListNull'
+          })
         }
       })
     },
@@ -115,6 +123,8 @@ export default {
           pagination: {
             total: data.total,
           },
+          fromDate: payload.from,
+          toDate: payload.to,
         },
       })
     },

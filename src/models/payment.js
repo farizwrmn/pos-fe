@@ -200,6 +200,7 @@ export default {
                   point: point,
                   curCashierNo: payload.curCashierNo,
                   cashierId: payload.cashierId,
+                  userName: payload.userName,
                   posMessage: 'Data has been saved',
                   type: 'POS'
                 },
@@ -625,7 +626,7 @@ export default {
                   },
                   {
                     columns: [
-                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.cashierId.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
                       { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
                     ],
                   },
@@ -645,7 +646,7 @@ export default {
                         alignment: 'center',
                       },
                       {
-                        text: `Dicetak Oleh: ${payload.cashierId}`,
+                        text: `Dicetak Oleh: ${payload.userName}`,
                         margin: [0, 10, 0, 10],
                         fontSize: 9,
                         alignment: 'center',

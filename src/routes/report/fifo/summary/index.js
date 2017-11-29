@@ -11,8 +11,10 @@ import Filter from './Filter'
 const Report = ({ dispatch, fifoReport, loading, app }) => {
   const { listRekap, period, year, productCode } = fifoReport
   const { user, storeInfo } = app
+
   const browseProps = {
     dataSource: listRekap,
+    listRekap,
     storeInfo,
     user,
     period,

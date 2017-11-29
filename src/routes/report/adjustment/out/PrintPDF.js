@@ -1,208 +1,178 @@
+/**
+ * Created by veirry on 28/11/17.
+ */
 import React from 'react'
-import { Icon, Button, Modal } from 'antd'
-import moment from 'moment'
 import PropTypes from 'prop-types'
+import moment from 'moment'
+import { BasicReport } from 'components'
 
 const PrintPDF = ({ user, listTrans, dataSource, storeInfo, fromDate, toDate }) => {
-
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  const warning = Modal.warning
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-  let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
-
-  const createPdfLineItems = (tabledata) => {
-    const headers = {
-      top: {
-        col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-        col_5: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'right' },
-        col_6: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
-      },
-    }
-
-    const rows = tabledata
+  // Declare Function
+  const createTableBody = (tabledata) => {
     let body = []
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        let header = headers[key]
-        let row = []
-        row.push(header.col_1)
-        row.push(header.col_2)
-        row.push(header.col_3)
-        row.push(header.col_4)
-        row.push(header.col_5)
-        row.push(header.col_6)
-        body.push(row)
-      }
-    }
-
+    const rows = tabledata
     let count = 1
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        let row = new Array()
+        let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qtyOut.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.amount.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2}), alignment: 'right', fontSize: 11 })
+        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.qtyOut.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
     }
-
-    let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 })
-    totalRow.push({})
-    totalRow.push({})
-    totalRow.push({ text: `${qtyTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${costTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, alignment: 'right', fontSize: 12 })
-    body.push(totalRow)
     return body
   }
 
-  const handlePDF = () => {
-    if (fromDate === '' && toDate === '') {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
-      })
-    } else if (listTrans.length === 0) {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
-      })
-    } else {
-      let body = createPdfLineItems(listTrans)
-      let docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
-        pageMargins: [50, 130, 50, 60],
-        header: {
-          stack: [
-            {
-              stack: [
-                {
-                  stack: storeInfo.stackHeader01,
-                },
-                {
-                  text: 'LAPORAN ADJUSTMENT OUT PER FAKTUR',
-                  style: 'header',
-                  fontSize: 18,
-                  alignment: 'center',
-                },
-                {
-                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - 2 * 40, y2: 5, lineWidth: 0.5 }]
-                },
-                {
-                  columns: [
-                    {
-                      text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
-                      fontSize: 12,
-                      alignment: 'left',
-                      render: text => `${moment(text).format('LL ')}`,
-                    },
-                    {
-                      text: '',
-                      fontSize: 12,
-                      alignment: 'center',
-                    },
-                    {
-                      text: '',
-                      fontSize: 12,
-                      alignment: 'right',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-          margin: [50, 12, 50, 30],
-        },
-        content: [
+  // Declare Variable
+  let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
+  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
+
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+    },
+    subheader: {
+      fontSize: 16,
+      bold: true,
+      margin: [0, 10, 0, 5],
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15],
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+    },
+  }
+  const header = {
+    stack: [
+      {
+        stack: [
           {
-            writable: true,
-            table: {
-              widths: ['6%', '22%', '21%', '17%', '17%', '17%'],
-              headerRows: 1,
-              body: body,
-            },
-            layout: 'noBorder',
+            stack: storeInfo.stackHeader01,
           },
-        ],
-        footer: function (currentPage, pageCount) {
-          return {
-            margin: [50, 30, 50, 0],
-            stack: [
+          {
+            text: 'LAPORAN ADJUSTMENT OUT PER FAKTUR',
+            style: 'header',
+            fontSize: 18,
+            alignment: 'center',
+          },
+          {
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - 2 * 40, y2: 5, lineWidth: 0.5 }]
+          },
+          {
+            columns: [
               {
-                canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - 2 * 40, y2: -8, lineWidth: 0.5 }]
+                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                fontSize: 12,
+                alignment: 'left',
+                render: text => `${moment(text).format('LL ')}`,
               },
               {
-                columns: [
-                  {
-                    text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
-                    margin: [0, 0, 0, 0],
-                    fontSize: 9,
-                    alignment: 'left',
-                  },
-                  {
-                    text: `Dicetak oleh: ${user.username}`,
-                    margin: [0, 0, 0, 0],
-                    fontSize: 9,
-                    alignment: 'center',
-                  },
-                  {
-                    text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
-                    fontSize: 9,
-                    margin: [0, 0, 0, 0],
-                    alignment: 'right',
-                  },
-                ],
+                text: '',
+                fontSize: 12,
+                alignment: 'center',
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'right',
               },
             ],
-          }
+          },
+        ],
+      },
+    ],
+    margin: [50, 12, 50, 30],
+  }
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [50, 30, 50, 0],
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - 2 * 40, y2: -8, lineWidth: 0.5 }]
         },
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 0, 0, 10],
-          },
-          subheader: {
-            fontSize: 16,
-            bold: true,
-            margin: [0, 10, 0, 5],
-          },
-          tableExample: {
-            margin: [0, 5, 0, 15],
-          },
-          tableHeader: {
-            bold: true,
-            fontSize: 13,
-            color: 'black',
-          },
+        {
+          columns: [
+            {
+              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left',
+            },
+            {
+              text: `Dicetak oleh: ${user.username}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'center',
+            },
+            {
+              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right',
+            },
+          ],
         },
-      }
-      pdfMake.createPdf(docDefinition).open()
+      ],
     }
+  }
+  const tableHeader = [
+    [
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUCT', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
+    ]
+  ]
+  let tableBody = []
+  try {
+    tableBody = createTableBody(listTrans)
+  } catch (e) {
+    console.log(e)
+  }
+  const tableFooter = [
+    [
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+      {},
+      {},
+      { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${costTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+    ]
+  ]
+
+  // Declare additional Props
+  const pdfProps = {
+    className: "button-width02 button-extra-large bgcolor-blue",
+    width: ['6%', '22%', '21%', '17%', '17%', '17%'],
+    pageMargins: [50, 130, 50, 60],
+    pageSize: 'A4',
+    pageOrientation: 'landscape',
+    tableStyle: styles,
+    layout: "noBorder",
+    tableHeader: tableHeader,
+    tableBody: tableBody,
+    tableFooter: tableFooter,
+    data: listTrans,
+    header: header,
+    footer: footer
   }
 
   return (
-    <Button type="dashed"
-      size="large"
-      className="button-width02 button-extra-large bgcolor-blue"
-      onClick={() => handlePDF(dataSource)}
-    >
-      <Icon type="file-pdf" className="icon-large" />
-    </Button>
+    <BasicReport  {...pdfProps} />
   )
 }
 

@@ -103,7 +103,9 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      ]
       for (let m = 65; m < (65 + header2.length); m += 1) {
         let o = 7
         let counter = m - 65
@@ -165,7 +167,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`Q${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < (65 + header.length); m += 1) {
+      for (let m = 65; m < (65 + footer.length); m += 1) {
         let n = listRekap.length + 10
         let counter = m - 65
         sheet.getCell(`C${n}`).font = {

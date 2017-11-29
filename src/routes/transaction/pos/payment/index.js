@@ -128,7 +128,6 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
       },
     })
   }
-
   const confirmPayment = () => {
     const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -186,7 +185,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           printNo: 1,
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
           curCashierNo: curCashierNo,
-          cashierId: user.userid
+          cashierId: user.userid,
+          userName: user.username
         }
       })
       // dispatch({

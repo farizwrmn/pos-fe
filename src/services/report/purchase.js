@@ -6,9 +6,10 @@ const { purchasereport, adjustreport } = config.api
 
 export async function queryTrans (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? `${purchasereport}/trans?from=${params.from}&to=${params.to}` : `${purchasereport}/trans`
+  const url = `${purchasereport}/trans`
   return request({
     url: url,
+    data: params,
     method: 'get',
     headers: apiHeaderToken,
   })

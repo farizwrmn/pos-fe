@@ -14,6 +14,7 @@ export default {
     period: moment().format('MM'),
     year: moment().format('YYYY'),
     productCode: [],
+    productName: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -189,11 +190,13 @@ export default {
       })
       const data = yield call(queryFifoValue, payload)
       const productCode = data.data.map((n) => n.productCode)
+      const productName = data.data.map((n) => n.productName)
       if (data.data.length > 0) {
         yield put({
           type: 'queryProductCodeSuccess',
           payload: {
             productCode: productCode,
+            productName: productName,
             ...payload
           },
         })
@@ -222,7 +225,7 @@ export default {
       }
     },
     queryProductCodeSuccess(state, action) {
-      return { ...state, ...action.payload}
+      return { ...state, ...action.payload }
     },
     setPeriod(state, action) {
       return { ...state, period: action.payload.period, year: action.payload.year }

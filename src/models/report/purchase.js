@@ -2,7 +2,7 @@
  * Created by Veirry on 19/09/2017.
  */
 import { query as queryReport, queryTrans, queryReturn } from '../../services/report/purchase'
-import { queryMode as miscQuery} from '../../services/misc'
+import { queryMode as miscQuery } from '../../services/misc'
 
 export default {
   namespace: 'purchaseReport',
@@ -32,33 +32,36 @@ export default {
             type: 'queryReturn',
             payload: location.query,
           })
+        } else if(location.pathname === '/report/purchase/return') {
+          dispatch({
+            type: 'setListNull'
+          })
+        } else if (location.pathname === '/report/purchase/summary/trans') {
+          dispatch({
+            type: 'setListNull'
+          })
         }
       })
-    },   
+    },
   },
   effects: {
-    * queryTrans ({ payload }, { call, put }) {
+    * queryTrans({ payload }, { call, put }) {
       let data = new Array()
-      if (payload) {
-        data = yield call (queryTrans, payload)
-      } else {
-        data = yield call (queryTrans)
-      }
-      yield put ({
+      data = yield call(queryTrans, payload)
+      yield put({
         type: 'querySuccessTrans',
         payload: {
           listTrans: data.data,
-          pagination: {
-            total: data.total,
-          },
+          fromDate: payload.from,
+          toDate: payload.to,
         },
       })
     },
-    * queryReturn ({ payload }, { call, put }) {
+    * queryReturn({ payload }, { call, put }) {
       let data = new Array()
       if (payload) {
         data = yield call(queryReturn, payload)
-        yield put ({
+        yield put({
           type: 'querySuccessTrans',
           payload: {
             listTrans: data.data,
@@ -67,25 +70,23 @@ export default {
           },
         })
       } else {
-        data = yield call (queryReturn)
+        data = yield call(queryReturn)
       }
     }
   },
   reducers: {
-    querySuccessTrans (state, action) {
-      const { listTrans, pagination, tmpList } = action.payload
-
-      return { ...state,
-        listTrans,
-        tmpList,
+    querySuccessTrans(state, action) {
+      const { listTrans} = action.payload
+      return {
+        ...state,
         ...action.payload
       }
     },
-    setDate (state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
+    setDate(state, action) {
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
     },
-    setListNull (state, action) {
-      return { ...state, list: [], listTrans: []}
+    setListNull(state, action) {
+      return { ...state, list: [], listTrans: [] }
     },
   },
 }

@@ -6,7 +6,7 @@ import Editor from './Editor'
 import FilterItem from './FilterItem'
 import Loader from './Loader'
 import * as Layout from './Layout/index.js'
-
+import { BasicReport } from './Pdf/index.js'
 import layer from './layer'
 
 export {
@@ -19,4 +19,5 @@ export {
   FilterItem,
   Loader,
   layer,
+  BasicReport
 }

@@ -7,9 +7,10 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, purchaseReport, app }) => {
+const Report = ({ dispatch, loading, purchaseReport, app }) => {
   const { listTrans, fromDate, toDate, productCode } = purchaseReport
   const { user, storeInfo } = app
+  console.log('listTrans', listTrans[0])
   const browseProps = {
     dataSource: listTrans,
     listTrans,
@@ -18,6 +19,7 @@ const Report = ({ dispatch, purchaseReport, app }) => {
     fromDate,
     toDate,
     productCode,
+    loading: loading.effects['purchaseReport/queryTrans'],
   }
 
   const filterProps = {
@@ -62,6 +64,7 @@ Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
   purchaseReport: PropTypes.object,
+  loading: PropTypes.object
 }
 
-export default connect(({ purchaseReport, app }) => ({ purchaseReport, app }))(Report)
+export default connect(({ loading, purchaseReport, app }) => ({ loading, purchaseReport, app }))(Report)

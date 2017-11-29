@@ -122,7 +122,7 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
     },
     setListNull (state, action) {
-      return { ...state, list: [], listTrans: []}
+      return { ...state, list: [], listTrans: [], listOut: []}
     },
   },
 }

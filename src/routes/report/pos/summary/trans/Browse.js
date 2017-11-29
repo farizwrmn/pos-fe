@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
 
-const Browse = ({ dataSource, ...browseProps }) => {
+const Browse = ({ ...browseProps }) => {
   const columns = [
     {
       title: 'Invoice',
@@ -58,7 +58,6 @@ const Browse = ({ dataSource, ...browseProps }) => {
         simple
         size="small"
         rowKey={record => record.transNo}
-        dataSource={dataSource}
       />
     </div>
   )
