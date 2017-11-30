@@ -10,7 +10,7 @@ import moment from 'moment'
 const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
     pagination, selectedRowKeys, modalPrintVisible, tmpListPayment, posData } = pos
-  const { storeInfo } = app
+  const { storeInfo, user } = app
   const { pageSize } = pagination
 
   const modalProps = {
@@ -106,6 +106,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
           mechanicName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
+          userName: listPaymentDetail.cashierId,
           printNo: 'copy',
         },
       })
