@@ -4,8 +4,15 @@ import styles from './sales.less'
 import classnames from 'classnames'
 import { color } from 'utils'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import moment from 'moment'
+const CustomizedLabel = React.createClass({
+  render() {
+    const { x, y, stroke, value } = this.props
 
-function Sales ({ data }) {
+    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value}</text> 
+  }
+})
+const Sales = ({ data }) => {
   return (
     <div className={styles.sales}>
       <div className={styles.title}>Weekly Sales</div>
@@ -25,13 +32,11 @@ function Sales ({ data }) {
           <Tooltip
             wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
             content={(content) => {
-              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${item.value}`}</li>)
-              return <div className={styles.tooltip}><p className={styles.tiptitle}>{content.label}</p><ul>{list}</ul></div>
+              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${item.value.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}</li>)
+              return <div className={styles.tooltip}><p className={styles.tiptitle}>{moment(content.label, 'DD/MM').format('ll')}</p><ul>{list}</ul></div>
             }}
           />
-          <Line type="monotone" dataKey="Battery" stroke={color.purple} strokeWidth={3} dot={{ fill: color.purple }} activeDot={{ r: 5, strokeWidth: 0 }} />
-          <Line type="monotone" dataKey="Filter" stroke={color.red} strokeWidth={3} dot={{ fill: color.red }} activeDot={{ r: 5, strokeWidth: 0 }} />
-          <Line type="monotone" dataKey="Oil" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} />
+          <Line type="monotone" dataKey="Sales" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
         </LineChart>
       </ResponsiveContainer>
     </div>

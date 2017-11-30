@@ -1,9 +1,11 @@
 import { query, getIpAddr } from '../services/dashboard'
+import { queryTrans } from '../services/report/pos'
+import moment from 'moment'
 import { parse } from 'qs'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
 let zuimei = {
-  parseActualData (actual) {
+  parseActualData(actual) {
     let weather = {
       icon: `http://www.zuimeitianqi.com/res/icon/${zuimei.getIconName(actual.wea, 'big')}`,
       name: zuimei.getWeatherName(actual.wea),
@@ -13,7 +15,7 @@ let zuimei = {
     return weather
   },
 
-  getIconName (wea, flg) {
+  getIconName(wea, flg) {
     let myDate = new Date()
     let hour = myDate.getHours()
     let num = 0
@@ -43,7 +45,7 @@ let zuimei = {
     return num
   },
 
-  replaceIcon (num) {
+  replaceIcon(num) {
     if (num === 21) {
       num = 7
     } else if (num === 22) {
@@ -65,7 +67,7 @@ let zuimei = {
     return num
   },
 
-  getWeatherName (wea) {
+  getWeatherName(wea) {
     let name = ''
     if (wea.indexOf('/') !== -1) {
       let weas = wea.split('/')
@@ -77,7 +79,7 @@ let zuimei = {
     return name
   },
 
-  getWeatherByCode (number) {
+  getWeatherByCode(number) {
     let wea = ''
     let num = Number(number)
     if (num === 0) {
@@ -173,6 +175,7 @@ export default {
       dateTime: new Date().format('MM-dd hh:mm'),
     },
     sales: [],
+    data: [],
     quote: {
       avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
     },
@@ -188,45 +191,105 @@ export default {
     },
   },
   subscriptions: {
-    setup ({ dispatch }) {
+    setup({ dispatch }) {
       dispatch({ type: 'query' })
     },
   },
   effects: {
-    *query ({
-      payload,
-    }, { call, put }) {
+    * query({ payload }, { call, put }) {
+      const last7day = moment().add(-6, 'days').format('YYYY-MM-DD')
+      const today = moment().format('YYYY-MM-DD')
+      const start = moment().add(-6, 'days')
+      const end = moment()
+      const date = moment().add(-6, 'days')
+
+      // dev test
+      // const date = moment('2017-11-21', 'YYYY-MM-DD')      
+      // const start = moment('2017-11-21', 'YYYY-MM-DD')
+      // const end = moment('2017-11-29', 'YYYY-MM-DD')
+      // const last7day = '2017-11-21'
+      // const today = '2017-11-29'
+
+      const params = {
+        from: last7day,
+        to: today
+      }
       const data = yield call(query, parse(payload))
+      const dataSales = yield call(queryTrans, params)
+      let formatWeekSales = []
+      let result = []
+      dataSales.data.reduce((res, value) => {
+        if (!res[value.transDate]) {
+          res[value.transDate] = {
+            total: 0,
+            transDate: value.transDate
+          }
+          result.push(res[value.transDate])
+        }
+        res[value.transDate].total += value.total
+        return res
+      }, {})
+      let currTransDate = ''
+      for (let key in result) {
+        const { transDate, total } = result[key]
+        formatWeekSales.push({
+          name: moment(transDate).format('DD/MM'), // 'DD/MM/YY'
+          title: moment(transDate).format('L'), // 'DD/MM/YY'
+          Sales: total
+        })
+        currTransDate = transDate
+      }
+      for (let key = 0; key <= end.diff(start, 'days'); key += 1) {
+        const dateExists = (username) => {
+          return formatWeekSales.some((el) => {
+            return el.title === date.format('L')
+          })
+        }
+        if (!dateExists(date.format('L'))) {
+          formatWeekSales.push({
+            name: date.format('DD/MM'),
+            title: date.format('L'),
+            Sales: 0
+          })
+        }
+        date.add(1, 'days')
+      }
+      // sort date
+      formatWeekSales.sort((a, b) => {
+        return new Date(a.title).getTime() - new Date(b.title).getTime()
+      })
       const ipAddr = yield call(getIpAddr)
-      yield put({ type: 'querySuccess', payload: { ...data, ...ipAddr } })
+      yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
       //yield put({ type: 'queryWeather', payload: { ...data } })
     },
-    *queryWeather ({
+    * queryWeather({
       payload,
     }, { call, put }) {
       const myCityResult = yield call(myCity, { flg: 0 })
       const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode })
       const weather = zuimei.parseActualData(result.data.actual)
       weather.city = myCityResult.selectCityName
-      yield put({ type: 'queryWeatherSuccess', payload: {
-        weather,
-      } })
+      yield put({
+        type: 'queryWeatherSuccess', payload: {
+          weather,
+        }
+      })
     },
   },
   reducers: {
-    querySuccess (state, action) {
+    querySuccess(state, action) {
       return {
         ...state,
         ...action.payload,
       }
     },
-    queryWeatherSuccess (state, action) {
+    queryWeatherSuccess(state, action) {
       return {
         ...state,
         ...action.payload,
       }
     },
-    queryWeather (state, action) {
+    queryWeather(state, action) {
       return {
         ...state,
         ...action.payload,

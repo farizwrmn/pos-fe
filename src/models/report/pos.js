@@ -31,31 +31,7 @@ export default {
             type: 'queryTransAll',
             payload: location.query,
           })
-        } else if (location.pathname === '/report/pos/summary/trans') {
-          dispatch({
-            type: 'setListNull'
-          })
         } else if (location.pathname === '/report/pos/monthly') {
-          dispatch({
-            type: 'setListNull'
-          })
-        } else if (location.pathname === '/report/pos/cancel' && location.query.from && location.query.to) {
-          dispatch({
-            type: 'setListNull'
-          })
-          dispatch({
-            type: 'queryTransCancel',
-            payload: location.query,
-          })
-        } else if (location.pathname === '/report/pos/service') {
-          dispatch({
-            type: 'setListNull'
-          })
-        } else if (location.pathname === '/report/pos/service') {
-          dispatch({
-            type: 'setListNull'
-          })
-        } else if (location.pathname === '/report/pos/cancel') {
           dispatch({
             type: 'setListNull'
           })

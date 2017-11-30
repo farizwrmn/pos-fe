@@ -25,23 +25,16 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/service/mechanic' && location.query.from  && location.query.to) {
-          dispatch({
-            type: 'setListNull'
-          })
-          dispatch({
-            type: 'queryMechanic',
-            payload: location.query
-          })
-        } else if (location.pathname === '/report/service/trans') {
-          dispatch({
-            type: 'setListNull'
-          })
-        } else if (location.pathname === '/report/service/mechanic') {
+        if (location.pathname === '/report/service/summary') {
           dispatch({
             type: 'setListNull'
           })
         }
+        // else if (location.pathname === '/report/service/mechanic') {
+        //   dispatch({
+        //     type: 'setListNull'
+        //   })
+        // }
       })
     },
   },
