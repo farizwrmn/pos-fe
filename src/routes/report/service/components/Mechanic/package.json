@@ -1,0 +1,6 @@
+{
+    "name": "Mechanc",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./Mechanic.js"
+}
