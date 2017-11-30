@@ -71,6 +71,9 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
       onOk(period, year, data)
     })
   }
+  const resetSelected = (e) => {
+    resetFields()
+  }
   const onChange = (date, dateString) => {
     let period = moment(dateString).format('M')
     let year = moment(dateString).format('Y')
@@ -100,6 +103,7 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
                 style={{ width: '189px' }}
                 placeholder="Select Code"
                 onFocus={selectChildren()}
+                onChange={() => resetSelected('productName')}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 {...printProps}
               >
@@ -113,11 +117,13 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
                 style={{ width: '189px' }}
                 placeholder="Select Code"
                 onFocus={selectChildrenName()}
+                onChange={() => resetSelected('productCode')}                
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 {...printProps}
               >
                 {optionSelectName}
-              </Select>)}
+              </Select>
+            )}
             </FormItem>
           </Col>
           <Col xl={10} lg={10} md={10} sm={24} style={{ textAlign: 'right' }}>
