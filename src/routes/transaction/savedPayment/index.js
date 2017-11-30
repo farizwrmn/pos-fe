@@ -10,7 +10,7 @@ import moment from 'moment'
 const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
     pagination, selectedRowKeys, modalPrintVisible, tmpListPayment, posData } = pos
-  const { storeInfo, user } = app
+  const { storeInfo } = app
   const { pageSize } = pagination
 
   const modalProps = {
