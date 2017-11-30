@@ -30,8 +30,8 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     } else if (record.transDate >= storeInfo.startPeriod) {
       record.readOnly = false
       Warning({
-        title: 'Warning: change record activity',
-        content: 'Do you want to delete all recent activity',
+        title: 'Warning: change recorded activity',
+        content: 'Do you want to replace recent activity',
         onOk () {
           onChooseInvoice(record)
         },

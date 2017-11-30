@@ -20,7 +20,6 @@ const status = {
 }
 
 function Info ({ ipAddress }) {
-  console.log('ipAddress', ipAddress)
   ipAddress = ipAddress || '127.0.0.1'
   const columns = [
     {

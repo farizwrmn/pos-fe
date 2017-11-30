@@ -72,13 +72,13 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
     })
   }
   const resetSelected = (e) => {
-    resetFields()
+    resetFields([e])
   }
   const onChange = (date, dateString) => {
     let period = moment(dateString).format('M')
     let year = moment(dateString).format('Y')
     onChangePeriod(period, year)
-    resetFields(['productCode'])
+    resetFields()
   }
   return (
     <div>

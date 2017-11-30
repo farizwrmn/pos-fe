@@ -390,6 +390,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     curCashierNo: curCashierNo,
     visible: modalShiftVisible,
     cashierId: user.userid,
+    dispatch,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onBack() {

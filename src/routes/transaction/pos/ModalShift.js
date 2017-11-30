@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Button, Form, Input, Cascader } from 'antd'
-import { browserHistory } from 'dva/router'
+import { browserHistory, routerRedux } from 'dva/router'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -53,7 +53,7 @@ const getDate = (mode) => {
   return today
 }
 
-const ModalShift = ({ item, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue,
@@ -78,8 +78,9 @@ const ModalShift = ({ item, listCashier, cashierId, onBack, onOk, form: {
   }
 
   const handleBack = () => {
-    browserHistory.goBack()
-    onBack()
+    dispatch(routerRedux.push({
+      pathname: '/dashboard',
+    }))
   }
 
   const modalOpts = {
@@ -156,6 +157,7 @@ ModalShift.propTypes = {
   listCashier: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
 }
 
 export default Form.create()(ModalShift)
