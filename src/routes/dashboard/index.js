@@ -17,7 +17,7 @@ const bodyStyle = {
 }
 
 function Dashboard({ dashboard }) {
-  const { data, sales, info, quote, numbers, recentSales, comments, completed, browser, ipAddress, cpu, user } = dashboard
+  const { data, service, sales, info, quote, numbers, recentSales, comments, completed, browser, ipAddress, cpu, user } = dashboard
 
   const numberCards = numbers.map((item, key) => <Col key={key} lg={6} md={12}>
     <NumberCard {...item} />

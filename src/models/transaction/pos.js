@@ -92,23 +92,14 @@ export default {
     setup({ dispatch, history }) {
       history.listen(location => {
         if (location.pathname === '/transaction/pos') {
-          let memberUnitInfo = {}
-          try {
-            dispatch({
-              type: 'showShiftModal',
-              payload: memberUnitInfo
-            })
-            dispatch({
-              type: 'loadDataPos'
-            })
-            memberUnitInfo = localStorage.getItem('memberUnit') ? { unitNo: JSON.parse(localStorage.getItem('memberUnit')).policeNo } : { unitNo: '-----' }
-          } catch (e) {
-            Modal.warning({
-              title: 'Member Unit Not found',
-              content: 'Please Insert Member Unit'
-            })
-            localStorage.removeItem('memberUnit')
-          }
+          let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+          dispatch({
+            type: 'showShiftModal',
+            payload: memberUnitInfo
+          })
+          dispatch({
+            type: 'loadDataPos'
+          })
         } else if (location.pathname === '/transaction/pos/history') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
@@ -626,6 +617,112 @@ export default {
       }
     },
 
+    * checkQuantityEditProduct({ payload }, { call, put }) {
+      const { data } = payload
+      function getQueueQuantity(productId) {
+        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        let tempQueue = []
+        let tempTrans = []
+        const listQueue = _.get(queue, `queue1`) ? _.get(queue, `queue1`) : []
+        for (let n = 0; n < 10; n += 1) {
+          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          if (tempQueue.length > 0) {
+            tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
+          }
+        }
+        if (tempTrans.length > 0) {
+          return tempTrans
+        } else {
+          console.log('queue is empty, nothing to check')
+          return []
+        }
+      }
+
+      let tempQueue = getQueueQuantity()
+      let Cashier = []
+      Cashier.push(data)
+      const Queue = tempQueue.filter(el => el.productId === data.productId)
+      const totalCashier = Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      const totalQueue = Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      const Quantity = Cashier.concat(Queue)
+      const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      // Call Products
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      const listProduct = listProductData.data
+      let tempListProduct = []
+      if (listProductData.data.length > 0) {
+        tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
+        if (totalQty > tempListProduct) {
+          Modal.warning({
+            title: 'No available stock',
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
+          })
+        } else {
+          yield put({
+            type: 'paymentEdit',
+            payload: data
+          })
+        }
+      }
+    },
+
+    * checkQuantityNewProduct({ payload }, { call, put }) {
+      const { data, arrayProd } = payload
+      function getQueueQuantity(productId) {
+        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        let tempQueue = []
+        let tempTrans = []
+        const listQueue = _.get(queue, `queue1`) ? _.get(queue, `queue1`) : []
+        for (let n = 0; n < 10; n += 1) {
+          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          if (tempQueue.length > 0) {
+            tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
+          }
+        }
+        if (tempTrans.length > 0) {
+          return tempTrans
+        } else {
+          console.log('queue is empty, nothing to check')
+          return []
+        }
+      }
+
+      let tempQueue = getQueueQuantity()
+      let Cashier = []
+      Cashier.push(data)
+      const Queue = tempQueue.filter(el => el.productId === data.productId)
+      const totalCashier = Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      const totalQueue = Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      const Quantity = Cashier.concat(Queue)
+      const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      // Call Products
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      const listProduct = listProductData.data
+      let tempListProduct = []
+      if (listProductData.data.length > 0) {
+        tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
+        if (totalQty > tempListProduct) {
+          Modal.warning({
+            title: 'No available stock',
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
+          })
+        } else {
+          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          yield put({
+            type: 'pos/setUtil',
+            payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
+          })
+          yield put({ type: 'pos/hideProductModal' })
+        }
+      }
+    },
+
     *getProducts({ payload }, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       let data = {}
@@ -638,7 +735,7 @@ export default {
           },
         })
       } else {
-      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
         data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
         yield put({
           type: 'showProductModal',
@@ -663,633 +760,482 @@ export default {
         })
         setTimeout(() => modal.destroy(), 1000)
         //throw data
-    }
-  },
+      }
+    },
 
-  *setCashierTrans({ payload }, { call, put }) {
-    const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: "O" })
-    const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: "O" })
-    let dataCashierTransByShift = {}
-    if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
-      dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: "C" })
-    }
+    *setCashierTrans({ payload }, { call, put }) {
+      const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: "O" })
+      const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: "O" })
+      let dataCashierTransByShift = {}
+      if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
+        dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: "C" })
+      }
 
 
-    const newDataCashierTransById = dataCashierTransById.data
-    const newDataCashierTransByNo = dataCashierTransByNo.data
-    //const newDataCashierTransByShift = dataCashierTransByShift.data
+      const newDataCashierTransById = dataCashierTransById.data
+      const newDataCashierTransByNo = dataCashierTransByNo.data
+      //const newDataCashierTransByShift = dataCashierTransByShift.data
 
-    if (dataCashierTransByShift.success) {
-      Modal.warning({
-        title: 'Warning',
-        content: 'This Shift has been closed for this Machine...!',
-      })
-    }
-    else if (dataCashierTransById.success) {
-      if (newDataCashierTransById.cashierNo != payload.cashierNo) {
+      if (dataCashierTransByShift.success) {
         Modal.warning({
           title: 'Warning',
-          content: 'Cashier Id ' + payload.cashierId + ' status is Open in Machine ' + newDataCashierTransById.cashierNo + '...!',
+          content: 'This Shift has been closed for this Machine...!',
         })
       }
-      else if (newDataCashierTransById.shift != payload.shift) {
-        Modal.warning({
-          title: 'Warning',
-          content: 'Cashier Id ' + payload.cashierId + ' status is Open in this Machine on Shift ' + newDataCashierTransById.shift + '...!',
+      else if (dataCashierTransById.success) {
+        if (newDataCashierTransById.cashierNo != payload.cashierNo) {
+          Modal.warning({
+            title: 'Warning',
+            content: 'Cashier Id ' + payload.cashierId + ' status is Open in Machine ' + newDataCashierTransById.cashierNo + '...!',
+          })
+        }
+        else if (newDataCashierTransById.shift != payload.shift) {
+          Modal.warning({
+            title: 'Warning',
+            content: 'Cashier Id ' + payload.cashierId + ' status is Open in this Machine on Shift ' + newDataCashierTransById.shift + '...!',
+          })
+        }
+        else {
+          yield put({
+            type: 'hideShiftModal',
+            payload: {
+              curShift: payload.shift,
+              curCashierNo: payload.cashierNo,
+            },
+          })
+        }
+      }
+      else if (dataCashierTransByNo.success) {
+        if (newDataCashierTransByNo.cashierId != payload.cashierId) {
+          Modal.warning({
+            title: 'Warning',
+            content: 'This Machine is logged on by Cashier ' + newDataCashierTransByNo.cashierId + '...!',
+          })
+        }
+        else {
+          yield put({
+            type: 'hideShiftModal',
+            payload: {
+              curShift: payload.shift,
+              curCashierNo: payload.cashierNo,
+            },
+          })
+        }
+      }
+      else {
+        const data = yield call(createCashierTrans, payload)
+
+        if (data.success) {
+          localStorage.setItem('cashierNo', payload.cashierNo)
+
+          yield put({
+            type: 'hideShiftModal',
+            payload: {
+              curShift: payload.shift,
+              curCashierNo: payload.cashierNo,
+            },
+          })
+        } else {
+          throw data
+        }
+      }
+    },
+
+    *setCloseCashier({ payload }, { call, put }) {
+      const data_cashier_trans_update = yield call(updateCashierTrans, payload)
+
+      if (data_cashier_trans_update.success) {
+        yield put({
+          type: 'setAllNull',
+        })
+
+        Modal.info({
+          title: 'Information',
+          content: 'Cashier closed successfull...!',
         })
       }
       else {
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo,
-          },
-        })
-      }
-    }
-    else if (dataCashierTransByNo.success) {
-      if (newDataCashierTransByNo.cashierId != payload.cashierId) {
         Modal.warning({
           title: 'Warning',
-          content: 'This Machine is logged on by Cashier ' + newDataCashierTransByNo.cashierId + '...!',
+          content: 'Cashier cannot be closed, please contact your IT Support...!',
         })
       }
-      else {
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo,
-          },
-        })
+    },
+
+    *editPayment({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let arrayProd = dataPos.slice()
+      let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      let Qty = arrayProd[payload.effectedRecord - 1].qty
+      let price = arrayProd[payload.effectedRecord - 1].price
+      let disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      let disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      let disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      if (payload.kodeUtil === 'discount') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+
+        arrayProd[payload.effectedRecord - 1].discount = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
       }
-    }
-    else {
-      const data = yield call(createCashierTrans, payload)
+      else if (payload.kodeUtil === 'disc1') {
+        let tmpDisc = (total * payload.value) / 100
 
-      if (data.success) {
-        localStorage.setItem('cashierNo', payload.cashierNo)
+        arrayProd[payload.effectedRecord - 1].disc1 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc2 = 0
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
+      }
+      else if (payload.kodeUtil === 'disc2') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
 
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo,
-          },
-        })
+        arrayProd[payload.effectedRecord - 1].disc2 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
+      }
+      else if (payload.kodeUtil === 'disc3') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc3 = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+      }
+      else if (payload.kodeUtil === 'quantity') {
+        let tmpQty = payload.value
+        let tmpDisc = ((tmpQty * price) * disc1) / 100
+        let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        let tmpDiscount = (discount * tmpQty)
+        arrayProd[payload.effectedRecord - 1].qty = tmpQty
+        arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
+      }
+      else if (payload.kodeUtil === 'Delete') {
+        Array.prototype.remove = function () {
+          let what, a = arguments, L = a.length, ax
+          while (L && this.length) {
+            what = a[--L];
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1);
+            }
+          }
+          return this;
+        };
+
+        let ary = arrayProd
+        ary.remove(arrayProd[payload.effectedRecord - 1])
+        arrayProd = []
+        for (let n = 0; n < ary.length; n++) {
+          arrayProd.push({
+            no: n + 1,
+            code: ary[n].code,
+            productId: ary[n].productId,
+            disc1: ary[n].disc1,
+            disc2: ary[n].disc2,
+            disc3: ary[n].disc3,
+            discount: ary[n].discount,
+            name: ary[n].name,
+            price: ary[n].price,
+            qty: ary[n].qty,
+            total: ary[n].total,
+          })
+        }
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('cashier_trans')
       } else {
-        throw data
+        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
       }
-    }
-  },
+    },
 
-  *setCloseCashier({ payload }, { call, put }) {
-    const data_cashier_trans_update = yield call(updateCashierTrans, payload)
+    *editService({ payload }, { put }) {
+      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let arrayProd = dataPos.slice()
+      let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
+      let Qty = arrayProd[payload.effectedRecord - 1].qty
+      let price = arrayProd[payload.effectedRecord - 1].price
+      let disc1 = arrayProd[payload.effectedRecord - 1].disc1
+      let disc2 = arrayProd[payload.effectedRecord - 1].disc2
+      let disc3 = arrayProd[payload.effectedRecord - 1].disc3
+      let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
+      if (payload.kodeUtil == 'discount') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
 
-    if (data_cashier_trans_update.success) {
+        arrayProd[payload.effectedRecord - 1].discount = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
+      }
+      else if (payload.kodeUtil == 'disc1') {
+        let tmpDisc = (total * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc1 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc2 = 0
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
+      }
+      else if (payload.kodeUtil == 'disc2') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc2 = payload.value
+        arrayProd[payload.effectedRecord - 1].disc3 = 0
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
+      }
+      else if (payload.kodeUtil == 'disc3') {
+        let tmpDisc = (total * disc1) / 100
+        let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
+
+        arrayProd[payload.effectedRecord - 1].disc3 = payload.value
+        arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
+      }
+      else if (payload.kodeUtil == 'quantity') {
+        let tmpQty = payload.value
+        let tmpDisc = ((tmpQty * price) * disc1) / 100
+        let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
+        let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
+        let tmpDiscount = (discount * tmpQty)
+        arrayProd[payload.effectedRecord - 1].qty = tmpQty
+        arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
+      }
+      else if (payload.kodeUtil == 'Delete') {
+        Array.prototype.remove = function () {
+          let what, a = arguments, L = a.length, ax;
+          while (L && this.length) {
+            what = a[--L];
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1);
+            }
+          }
+          return this;
+        };
+        let ary = arrayProd;
+        ary.remove(arrayProd[payload.effectedRecord - 1])
+        arrayProd = []
+        for (let n = 0; n < ary.length; n++) {
+          arrayProd.push({
+            no: n + 1,
+            code: ary[n].code,
+            productId: ary[n].productId,
+            disc1: ary[n].disc1,
+            disc2: ary[n].disc2,
+            disc3: ary[n].disc3,
+            discount: ary[n].discount,
+            name: ary[n].name,
+            price: ary[n].price,
+            qty: ary[n].qty,
+            total: ary[n].total,
+          })
+        }
+      }
+
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('service_detail')
+      } else {
+        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal',
+        })
+      }
+    },
+
+    *insertQueueCache({ payload }, { put }) {
+      let arrayProd = []
+
+      const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+      const policeNo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : ''
+      const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
+      const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      let memberInformation
+      if (listByCode.length === 0) {
+        memberInformation = listByCode.slice()
+      }
+      else {
+        memberInformation = listByCode
+      }
+      const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+      //start-mechanicInfo
+      const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+      const mechanic = mechanicInfo[0]
+      //end-mechanicInfo
+      let array = []
+      arrayProd.push({
+        cashier_trans: cashier_trans,
+        service_detail: service_detail,
+        memberCode: memberInfo.memberCode,
+        memberName: memberInfo.memberName,
+        point: memberInfo.point,
+        memberTypeId: memberInfo.memberTypeId,
+        memberUnit: memberUnit,
+        policeNo: policeNo,
+        lastMeter: lastMeter,
+        address01: memberInfo.address01,
+        gender: memberInfo.gender,
+        id: memberInfo.id,
+        phone: memberInfo.phone,
+        mechanicCode: mechanic.mechanicCode,
+        mechanicName: mechanic.mechanicName
+      })
+      const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+      if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
+        localStorage.getItem('mechanic') === null) {
+        Modal.warning({
+          title: 'Warning',
+          content: 'Transaction Not Found...!',
+        })
+      }
+      else {
+        // console.log(JSON.parse(localStorage.getItem('queue')))
+        for (let n = 0; n < 10; n += 1) {
+          let tempQueue = `queue${n + 1}`
+          if (queue.hasOwnProperty(tempQueue)) {
+            console.log(queue.queue2)
+            console.log('this', `${queue.hasOwnProperty(tempQueue)} already exists`)
+          } else if (`${queue.hasOwnProperty(tempQueue)}`) {
+            // set Object by string value
+            const setDeepValue = (obj, value, path) => {
+              if (typeof path === 'string') {
+                path = path.split('.')
+              }
+
+              if (path.length > 1) {
+                let p = path.shift()
+                if (obj[p] === null || typeof obj[p] !== 'object') {
+                  obj[p] = {}
+                }
+                setDeepValue(obj[p], value, path)
+              } else {
+                obj[path[0]] = value
+              }
+            }
+            // Object.assign(queue, tempQueue, arrayProd)
+            setDeepValue(queue, arrayProd, tempQueue)
+            localStorage.setItem('queue', JSON.stringify(queue))
+            yield put({
+              type: 'insertQueue',
+              payload: {
+                queue: n + 1,
+              },
+            })
+            break
+          }
+        }
+      }
+    },
+    * insertQueue({ payload }, { call, put }) {
+      Modal.info({
+        title: 'Payment Suspend',
+        content: `Your Payment has stored in queue ${payload.queue}`,
+      })
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('lastMeter')
+
       yield put({
         type: 'setAllNull',
       })
 
-      Modal.info({
-        title: 'Information',
-        content: 'Cashier closed successfull...!',
-      })
-    }
-    else {
-      Modal.warning({
-        title: 'Warning',
-        content: 'Cashier cannot be closed, please contact your IT Support...!',
-      })
-    }
+      // }
+    },
+
+    * backPrevious({ payload }, { put }) {
+      yield put({ type: 'hideModalShift' })
+    },
   },
 
-  *editPayment({ payload }, { put }) {
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let arrayProd = dataPos.slice()
-    let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
-    let Qty = arrayProd[payload.effectedRecord - 1].qty
-    let price = arrayProd[payload.effectedRecord - 1].price
-    let disc1 = arrayProd[payload.effectedRecord - 1].disc1
-    let disc2 = arrayProd[payload.effectedRecord - 1].disc2
-    let disc3 = arrayProd[payload.effectedRecord - 1].disc3
-    let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
-    if (payload.kodeUtil === 'discount') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
+  reducers: {
+    querySuccess(state, action) {
+      const { list, pagination, tmpList } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
 
-      arrayProd[payload.effectedRecord - 1].discount = payload.value
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
-    }
-    else if (payload.kodeUtil === 'disc1') {
-      let tmpDisc = (total * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc1 = payload.value
-      arrayProd[payload.effectedRecord - 1].disc2 = 0
-      arrayProd[payload.effectedRecord - 1].disc3 = 0
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
-    }
-    else if (payload.kodeUtil === 'disc2') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc2 = payload.value
-      arrayProd[payload.effectedRecord - 1].disc3 = 0
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
-    }
-    else if (payload.kodeUtil === 'disc3') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc3 = payload.value
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
-    }
-    else if (payload.kodeUtil === 'quantity') {
-      let tmpQty = payload.value
-      let tmpDisc = ((tmpQty * price) * disc1) / 100
-      let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-      let tmpDiscount = (discount * tmpQty)
-      arrayProd[payload.effectedRecord - 1].qty = tmpQty
-      arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
-    }
-    else if (payload.kodeUtil === 'Delete') {
-      Array.prototype.remove = function () {
-        let what, a = arguments, L = a.length, ax
-        while (L && this.length) {
-          what = a[--L];
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
-          }
-        }
-        return this;
-      };
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.effectedRecord - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n++) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          qty: ary[n].qty,
-          total: ary[n].total,
-        })
+      return {
+        ...state,
+        list,
+        tmpList,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+        curTotal: grandTotal,
       }
-    }
-    if (arrayProd.length === 0) {
-      localStorage.removeItem('cashier_trans')
-    } else {
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-      yield put({
-        type: 'setCurTotal',
-      })
-    }
-  },
+    },
 
-  *editService({ payload }, { put }) {
-    let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
-    let arrayProd = dataPos.slice()
-    let total = arrayProd[payload.effectedRecord - 1].qty * arrayProd[payload.effectedRecord - 1].price
-    let Qty = arrayProd[payload.effectedRecord - 1].qty
-    let price = arrayProd[payload.effectedRecord - 1].price
-    let disc1 = arrayProd[payload.effectedRecord - 1].disc1
-    let disc2 = arrayProd[payload.effectedRecord - 1].disc2
-    let disc3 = arrayProd[payload.effectedRecord - 1].disc3
-    let discount = (arrayProd[payload.effectedRecord - 1].discount * Qty)
-    if (payload.kodeUtil == 'discount') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * disc3) / 100
-
-      arrayProd[payload.effectedRecord - 1].discount = payload.value
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - (payload.value * Qty)
-    }
-    else if (payload.kodeUtil == 'disc1') {
-      let tmpDisc = (total * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc1 = payload.value
-      arrayProd[payload.effectedRecord - 1].disc2 = 0
-      arrayProd[payload.effectedRecord - 1].disc3 = 0
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - discount
-    }
-    else if (payload.kodeUtil == 'disc2') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc2 = payload.value
-      arrayProd[payload.effectedRecord - 1].disc3 = 0
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - discount
-    }
-    else if (payload.kodeUtil == 'disc3') {
-      let tmpDisc = (total * disc1) / 100
-      let tmpDisc2 = ((total - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((total - tmpDisc - tmpDisc2) * payload.value) / 100
-
-      arrayProd[payload.effectedRecord - 1].disc3 = payload.value
-      arrayProd[payload.effectedRecord - 1].total = total - tmpDisc - tmpDisc2 - tmpDisc3 - discount
-    }
-    else if (payload.kodeUtil == 'quantity') {
-      let tmpQty = payload.value
-      let tmpDisc = ((tmpQty * price) * disc1) / 100
-      let tmpDisc2 = (((tmpQty * price) - tmpDisc) * disc2) / 100
-      let tmpDisc3 = ((tmpQty * price) - tmpDisc - tmpDisc2) * disc3 / 100
-      let tmpDiscount = (discount * tmpQty)
-      arrayProd[payload.effectedRecord - 1].qty = tmpQty
-      arrayProd[payload.effectedRecord - 1].total = (payload.value * price) - tmpDisc - tmpDisc2 - tmpDisc3 - tmpDiscount
-    }
-    else if (payload.kodeUtil == 'Delete') {
-      Array.prototype.remove = function () {
-        let what, a = arguments, L = a.length, ax;
-        while (L && this.length) {
-          what = a[--L];
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
-          }
-        }
-        return this;
-      };
-      let ary = arrayProd;
-      ary.remove(arrayProd[payload.effectedRecord - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n++) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          qty: ary[n].qty,
-          total: ary[n].total,
-        })
-      }
-    }
-
-    if (arrayProd.length === 0) {
-      localStorage.removeItem('service_detail')
-    } else {
-      localStorage.setItem('service_detail', JSON.stringify(arrayProd))
-      yield put({
-        type: 'setCurTotal',
-      })
-    }
-  },
-
-  *insertQueueCache({ payload }, { put }) {
-    let arrayProd = []
-
-    const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
-    const policeNo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : ''
-    const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
-    const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-    const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-
-    let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-    let memberInformation
-    if (listByCode.length === 0) {
-      memberInformation = listByCode.slice()
-    }
-    else {
-      memberInformation = listByCode
-    }
-    const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
-    //start-mechanicInfo
-    const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
-    const mechanic = mechanicInfo[0]
-    //end-mechanicInfo
-    let array = []
-    arrayProd.push({
-      cashier_trans: cashier_trans,
-      service_detail: service_detail,
-      memberCode: memberInfo.memberCode,
-      memberName: memberInfo.memberName,
-      point: memberInfo.point,
-      memberTypeId: memberInfo.memberTypeId,
-      memberUnit: memberUnit,
-      policeNo: policeNo,
-      lastMeter: lastMeter,
-      address01: memberInfo.address01,
-      gender: memberInfo.gender,
-      id: memberInfo.id,
-      phone: memberInfo.phone,
-      mechanicCode: mechanic.mechanicCode,
-      mechanicName: mechanic.mechanicName
-    })
-    const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&
-      localStorage.getItem('mechanic') === null) {
-      Modal.warning({
-        title: 'Warning',
-        content: 'Transaction Not Found...!',
-      })
-    }
-    else {
-      // console.log(JSON.parse(localStorage.getItem('queue')))
-      for (let n = 0; n < 10; n += 1) {
-        let tempQueue = `queue${n + 1}`
-        if (queue.hasOwnProperty(tempQueue)) {
-          console.log(queue.queue2)
-          console.log('this', `${queue.hasOwnProperty(tempQueue)} already exists`)
-        } else if (`${queue.hasOwnProperty(tempQueue)}`) {
-          // set Object by string value
-          const setDeepValue = (obj, value, path) => {
-            if (typeof path === 'string') {
-              path = path.split('.')
-            }
-
-            if (path.length > 1) {
-              let p = path.shift()
-              if (obj[p] === null || typeof obj[p] !== 'object') {
-                obj[p] = {}
-              }
-              setDeepValue(obj[p], value, path)
-            } else {
-              obj[path[0]] = value
-            }
-          }
-          // Object.assign(queue, tempQueue, arrayProd)
-          setDeepValue(queue, arrayProd, tempQueue)
-          localStorage.setItem('queue', JSON.stringify(queue))
-          yield put({
-            type: 'insertQueue',
-            payload: {
-              queue: n + 1,
-            },
-          })
-          break
+    querySuccessPayment(state, action) {
+      const { listPayment, pagination, tmpListPayment } = action.payload
+      return {
+        ...state,
+        listPayment,
+        tmpListPayment,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
         }
       }
-    }
-  },
-  * insertQueue({ payload }, { call, put }) {
-    Modal.info({
-      title: 'Payment Suspend',
-      content: `Your Payment has stored in queue ${payload.queue}`,
-    })
-    localStorage.removeItem('cashier_trans')
-    localStorage.removeItem('service_detail')
-    localStorage.removeItem('member')
-    localStorage.removeItem('memberUnit')
-    localStorage.removeItem('mechanic')
-    localStorage.removeItem('lastMeter')
+    },
 
-    yield put({
-      type: 'setAllNull',
-    })
-
-    // }
-  },
-
-  * backPrevious({ payload }, { put }) {
-    yield put({ type: 'hideModalShift' })
-  },
-},
-
-reducers: {
-  querySuccess(state, action) {
-    const { list, pagination, tmpList } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      list,
-      tmpList,
-      pagination: {
-        ...state.pagination,
-        ...pagination,
-      },
-      curTotal: grandTotal,
-    }
-  },
-
-  querySuccessPayment(state, action) {
-    const { listPayment, pagination, tmpListPayment } = action.payload
-    return {
-      ...state,
-      listPayment,
-      tmpListPayment,
-      pagination: {
-        ...state.pagination,
-        ...pagination,
+    querySuccessPaymentDetail(state, action) {
+      const { posData, listPaymentDetail, memberPrint, mechanicPrint, companyPrint, pagination } = action.payload
+      return {
+        ...state,
+        listPaymentDetail,
+        memberPrint,
+        mechanicPrint,
+        companyPrint,
+        posData,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        }
       }
-    }
-  },
+    },
 
-  querySuccessPaymentDetail(state, action) {
-    const { posData, listPaymentDetail, memberPrint, mechanicPrint, companyPrint, pagination } = action.payload
-    return {
-      ...state,
-      listPaymentDetail,
-      memberPrint,
-      mechanicPrint,
-      companyPrint,
-      posData,
-      pagination: {
-        ...state.pagination,
-        ...pagination,
+    queryMechanicSuccess(state, action) {
+      const { listMechanic, pagination } = action.payload
+
+      return {
+        ...state,
+        listMechanic,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
       }
-    }
-  },
+    },
 
-  queryMechanicSuccess(state, action) {
-    const { listMechanic, pagination } = action.payload
+    queryServiceSuccess(state, action) {
+      const { listService, pagination } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
 
-    return {
-      ...state,
-      listMechanic,
-      pagination: {
-        ...state.pagination,
-        ...pagination,
-      },
-    }
-  },
+      return {
+        ...state,
+        listService,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+        curTotal: grandTotal,
+      }
+    },
 
-  queryServiceSuccess(state, action) {
-    const { listService, pagination } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listService,
-      pagination: {
-        ...state.pagination,
-        ...pagination,
-      },
-      curTotal: grandTotal,
-    }
-  },
-
-  querySuccessByCode(state, action) {
-    const { listByCode, curRecord } = action.payload
-
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listByCode,
-      curTotal: grandTotal,
-      curRecord: curRecord,
-    }
-  },
-
-  queryServiceSuccessByCode(state, action) {
-    const { listByCode, curRecord } = action.payload
-
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listByCode,
-      curTotal: grandTotal,
-      curRecord: curRecord,
-    }
-  },
-
-  queryGetMemberSuccess(state, action) {
-    const { memberInformation } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      memberInformation,
-      memberUnitInfo: { unitNo: '' },
-      curTotal: grandTotal,
-    }
-  },
-
-  queryGetMembersSuccess(state, action) {
-    const { memberInformation, tmpMemberList } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listMember: memberInformation,
-      tmpMemberList: tmpMemberList,
-      curTotal: grandTotal,
-    }
-  },
-
-  queryGetServicesSuccess(state, action) {
-    const { serviceInformation, tmpServiceList } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listService: serviceInformation,
-      tmpServiceList: tmpServiceList,
-      curTotal: grandTotal,
-    }
-  },
-
-  queryGetMechanicSuccess(state, action) {
-    const { mechanicInformation } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      mechanicInformation,
-      curTotal: grandTotal,
-    }
-  },
-
-  queryGetMechanicsSuccess(state, action) {
-    const { mechanicInformation, tmpMechanicList } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-
-    return {
-      ...state,
-      listMechanic: mechanicInformation,
-      tmpMechanicList: tmpMechanicList,
-      curTotal: grandTotal,
-    }
-  },
-
-  queryGetProductsSuccess(state, action) {
-    const { productInformation, tmpProductList } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
-    return {
-      ...state,
-      listProduct: productInformation,
-      tmpProductList: tmpProductList,
-      curTotal: grandTotal,
-    }
-  },
-
-  chooseMemberUnit(state, action) {
-    const { policeNo } = action.payload
-    let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let a = dataPos
-    let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
-    return {
-      ...state,
-      memberUnitInfo: { unitNo: policeNo.policeNo },
-      visiblePopover: false,
-      curTotal: grandTotal,
-    }
-  },
-
-  getMechanicSuccess(state, action) {
-    const { memberInformation } = action.payload
-
-    return {
-      ...state,
-      memberInformation: memberInformation,
-    }
-  },
-
-  getMechanicSuccess(state, action) {
-    const { mechanicInformation } = action.payload
-
-    return {
-      ...state,
-      mechanicInformation: mechanicInformation,
-    }
-  },
-
-  modalPopoverClose(state) {
-    return { ...state, visiblePopover: false }
-  },
-  modalPopoverShow(state, action) {
-    return { ...state, ...action.payload, visiblePopover: true }
-  },
-
-  setStatePosLoaded(state, action) {
-    if (!state.dataPosLoaded) {
-      localStorage.setItem('cashier_trans', action.payload.arrayProd)
+    querySuccessByCode(state, action) {
+      const { listByCode, curRecord } = action.payload
 
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let a = dataPos
@@ -1297,410 +1243,566 @@ reducers: {
 
       return {
         ...state,
-        dataPosLoaded: true,
+        listByCode,
         curTotal: grandTotal,
-        curRecord: action.payload.curRecord
+        curRecord: curRecord,
       }
-    }
-    else {
-      return { ...state }
-    }
-  },
+    },
 
-  setCashierNo(state, action) {
-    const { listCashier, dataCashierTrans } = action.payload
+    queryServiceSuccessByCode(state, action) {
+      const { listByCode, curRecord } = action.payload
 
-    let DICT_FIXED = (function () {
-      let fixed = []
-      for (let id in listCashier) {
-        if ({}.hasOwnProperty.call(listCashier, id)) {
-          fixed.push({
-            value: listCashier[id].cashierNo,
-            label: listCashier[id].cashierDesc,
-          })
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        listByCode,
+        curTotal: grandTotal,
+        curRecord: curRecord,
+      }
+    },
+
+    queryGetMemberSuccess(state, action) {
+      const { memberInformation } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        memberInformation,
+        memberUnitInfo: { policeNo: null },
+        curTotal: grandTotal,
+      }
+    },
+
+    queryGetMembersSuccess(state, action) {
+      const { memberInformation, tmpMemberList } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        listMember: memberInformation,
+        tmpMemberList: tmpMemberList,
+        curTotal: grandTotal,
+      }
+    },
+
+    queryGetServicesSuccess(state, action) {
+      const { serviceInformation, tmpServiceList } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        listService: serviceInformation,
+        tmpServiceList: tmpServiceList,
+        curTotal: grandTotal,
+      }
+    },
+
+    queryGetMechanicSuccess(state, action) {
+      const { mechanicInformation } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        mechanicInformation,
+        curTotal: grandTotal,
+      }
+    },
+
+    queryGetMechanicsSuccess(state, action) {
+      const { mechanicInformation, tmpMechanicList } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+      return {
+        ...state,
+        listMechanic: mechanicInformation,
+        tmpMechanicList: tmpMechanicList,
+        curTotal: grandTotal,
+      }
+    },
+
+    queryGetProductsSuccess(state, action) {
+      const { productInformation, tmpProductList } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
+      return {
+        ...state,
+        listProduct: productInformation,
+        tmpProductList: tmpProductList,
+        curTotal: grandTotal,
+      }
+    },
+
+    chooseMemberUnit(state, action) {
+      const { policeNo } = action.payload
+      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let a = dataPos
+      let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
+      return {
+        ...state,
+        memberUnitInfo: { policeNo: policeNo.policeNo },
+        visiblePopover: false,
+        curTotal: grandTotal,
+      }
+    },
+
+    getMechanicSuccess(state, action) {
+      const { memberInformation } = action.payload
+
+      return {
+        ...state,
+        memberInformation: memberInformation,
+      }
+    },
+
+    getMechanicSuccess(state, action) {
+      const { mechanicInformation } = action.payload
+
+      return {
+        ...state,
+        mechanicInformation: mechanicInformation,
+      }
+    },
+
+    modalPopoverClose(state) {
+      return { ...state, visiblePopover: false }
+    },
+    modalPopoverShow(state, action) {
+      return { ...state, ...action.payload, visiblePopover: true }
+    },
+
+    setStatePosLoaded(state, action) {
+      if (!state.dataPosLoaded) {
+        localStorage.setItem('cashier_trans', action.payload.arrayProd)
+
+        let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+        let a = dataPos
+        let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+
+        return {
+          ...state,
+          dataPosLoaded: true,
+          curTotal: grandTotal,
+          curRecord: action.payload.curRecord
         }
       }
+      else {
+        return { ...state }
+      }
+    },
 
-      return fixed
-    }())
+    setCashierNo(state, action) {
+      const { listCashier, dataCashierTrans } = action.payload
 
-    return { ...state, listCashier: DICT_FIXED, dataCashierTrans: dataCashierTrans, }
-  },
+      let DICT_FIXED = (function () {
+        let fixed = []
+        for (let id in listCashier) {
+          if ({}.hasOwnProperty.call(listCashier, id)) {
+            fixed.push({
+              value: listCashier[id].cashierNo,
+              label: listCashier[id].cashierDesc,
+            })
+          }
+        }
 
-  updateState(state, { payload }) {
-    return {
-      ...state,
-      ...payload,
+        return fixed
+      }())
+
+      return { ...state, listCashier: DICT_FIXED, dataCashierTrans: dataCashierTrans, }
+    },
+
+    updateState(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
+
+    showModal(state, action) {
+      return { ...state, ...action.payload, modalVisible: true }
+    },
+
+    hideModal(state) {
+      return { ...state, modalVisible: false }
+    },
+
+    hideModalShift(state) {
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
+    },
+
+    showMemberModal(state, action) {
+      return { ...state, ...action.payload, modalMemberVisible: true }
+    },
+    hideMemberModal(state) {
+      return { ...state, modalMemberVisible: false }
+    },
+
+    showPrintModal(state, action) {
+      return { ...state, ...action.payload, modalPrintVisible: true }
+    },
+    hidePrintModal(state) {
+      return { ...state, modalPrintVisible: false, modalCancelVisible: false, listPaymentDetail: null, invoiceCancel: '' }
+    },
+    showCancelModal(state, action) {
+      return { ...state, ...action.payload, modalCancelVisible: true, invoiceCancel: action.payload.transNo }
+    },
+
+
+    showPaymentModal(state, action) {
+      return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
+    },
+    hidePaymentModal(state) {
+      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
+    },
+
+    showServiceListModal(state, action) {
+      return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
+    },
+    hideServiceListModal(state) {
+      return { ...state, modalServiceListVisible: false }
+    },
+
+    showMechanicModal(state, action) {
+      return { ...state, ...action.payload, modalMechanicVisible: true }
+    },
+    hideMechanicModal(state) {
+      return { ...state, modalMechanicVisible: false }
+    },
+
+    showProductModal(state, action) {
+      return { ...state, ...action.payload, modalProductVisible: true }
+    },
+    hideProductModal(state) {
+      return { ...state, modalProductVisible: false }
+    },
+
+
+    showServiceModal(state, action) {
+      return { ...state, ...action.payload, modalServiceVisible: true }
+    },
+
+    hideServiceModal(state) {
+      return { ...state, modalServiceVisible: false }
+    },
+
+    showHelpModal(state, action) {
+      return { ...state, ...action.payload, modalHelpVisible: true }
+    },
+
+    hideHelpModal(state) {
+      return { ...state, modalHelpVisible: false }
+    },
+
+    showShiftModal(state, action) {
+      return { ...state, ...action.payload, modalShiftVisible: true, memberUnitInfo: action.payload }
+    },
+
+    hideShiftModal(state, action) {
+      return { ...state, curShift: action.payload.curShift, curCashierNo: action.payload.curCashierNo, modalShiftVisible: false }
+    },
+
+    showQueueModal(state, action) {
+      return { ...state, ...action.payload, modalQueueVisible: true }
+    },
+
+    hideQueueModal(state) {
+      return { ...state, modalQueueVisible: false }
+    },
+
+    setCurBarcode(state, action) {
+      return { ...state, curBarcode: action.payload.curBarcode, curQty: action.payload.curQty }
+    },
+
+    setAllNull(state) {
+      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: { id: null, policeNo: null, merk: null, model: null }, lastMeter: 0 }
+    },
+
+
+    showModalWarning(state, action) {
+      return { ...state, modalWarningVisible: true }
+    },
+
+    setUtil(state, action) {
+      return { ...state, kodeUtil: action.payload.kodeUtil, infoUtil: action.payload.infoUtil }
+    },
+
+    setEffectedRecord(state, action) {
+      return { ...state, effectedRecord: action.payload.effectedRecord }
+    },
+
+    setCurTotal(state, action) {
+      let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let dataPos = product.concat(service)
+      let a = dataPos
+      let curRecord = a.reduce(function (cnt, o) { return cnt + 1; }, 0)
+      let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+      let totalDiscount = a.reduce(function (cnt, o) { return cnt + parseInt(o.discount); }, 0)
+      let totalDisc1 = a.reduce(function (cnt, o) {
+        let tmpTotal = o.qty * o.price
+        return cnt + ((tmpTotal * o.disc1) / 100);
+      }, 0)
+
+      let totalDisc2 = a.reduce(function (cnt, o) {
+        let tmpTotal = o.qty * o.price
+        let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
+        return cnt + (((tmpTotal - tmpDisc1) * o.disc2) / 100);
+      }, 0)
+      let totalDisc3 = a.reduce(function (cnt, o) {
+        let tmpTotal = o.qty * o.price
+        let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
+        let tmpDisc2 = (((tmpTotal - tmpDisc1) * o.disc2) / 100)
+        return cnt + (((tmpTotal - tmpDisc1 - tmpDisc2) * o.disc3) / 100);
+      }, 0)
+
+      let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
+      //Ganti 100 dengan Jumlah Pembulatan yang diinginkan
+      let selisih = 100 - parseInt(ratusan)
+      let curRounding
+
+      if (selisih > 50) {
+        curRounding = parseInt(ratusan) * -1
+      }
+      else {
+        curRounding = parseInt(selisih)
+      }
+
+      return {
+        ...state,
+        curTotal: grandTotal,
+        curTotalDiscount: (parseInt(totalDiscount) + parseInt(totalDisc1) + parseInt(totalDisc2) + parseInt(totalDisc3)),
+        curRounding: curRounding,
+        curRecord: curRecord + 1,
+        memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
+        lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
+        memberUnitInfo: { policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null },
+        mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
+      }
+    },
+
+    //untuk filter
+    onInputChange(state, action) {
+      return { ...state, searchText: action.payload.searchText }
+    },
+
+    onMemberSearch(state, action) {
+      const { searchText, tmpMemberList } = action.payload
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+      newData = tmpMemberList.map((record) => {
+        const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record,
+        }
+      }).filter(record => !!record)
+
+      return { ...state, listMember: newData }
+    },
+    onMechanicSearch(state, action) {
+      const { searchText, tmpMechanicList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+      newData = tmpMechanicList.map((record) => {
+        const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMechanic: newData }
+    },
+    onProductSearch(state, action) {
+      const { searchText, tmpProductList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+      newData = tmpProductList.map((record) => {
+        const match = record.productName.match(reg) || record.productCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listProduct: newData }
+    },
+    onReset(state, action) {
+      const { searchText, tmpList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpList.map((record) => {
+        const match = record.memberName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, list: newData, searchText: searchText }
+    },
+
+    onServiceSearch(state, action) {
+      const { searchText, tmpServiceList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+      newData = tmpServiceList.map((record) => {
+        const match = record.serviceName.match(reg) || record.serviceCode.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+      return { ...state, listService: newData }
+    },
+
+    onSearch(state, action) {
+      const { searchText, tmpList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpList.map((record) => {
+        const match = record.productName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, list: newData }
+    },
+
+    onMemberReset(state, action) {
+      const { searchText, tmpMemberList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpMemberList.map((record) => {
+        const match = record.memberName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMember: newData, searchText: searchText }
+    },
+
+    onMechanicReset(state, action) {
+      const { searchText, tmpMechanicList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpMechanicList.map((record) => {
+        const match = record.employeeName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listMechanic: newData, searchText: searchText }
+    },
+
+    onServiceReset(state, action) {
+      const { searchText, tmpServiceList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpServiceList.map((record) => {
+        const match = record.serviceName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listService: newData, searchText: searchText }
+    },
+
+    onProductReset(state, action) {
+      const { searchText, tmpProductList } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpProductList.map((record) => {
+        const match = record.productName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listProduct: newData, searchText: searchText }
+    },
+
+    //------------------
+
+    setCurTime(state, action) {
+      return { curTime: action.payload.curTime, }
+    },
+
+    setCurRecord(state, action) {
+      return { curRecord: 1, }
+    },
+
+    setTotalItem(state, action) {
+      return { ...state, itemPayment: action.payload }
+    },
+
+    setTotalItemService(state, action) {
+      return { ...state, itemService: action.payload }
+    },
+
+    changeQueue(state, action) {
+      let listQueue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+      listQueue = _.get(listQueue, `queue${action.payload.queue}`) ? _.get(listQueue, `queue${action.payload.queue}`) : []
+      return { ...state, listQueue: listQueue, curQueue: action.payload.queue }
+    },
+    setListPaymentDetail(state, action) {
+      return { ...state, listPaymentDetail: { id: action.payload.transNo } }
+    },
+    searchPOS(state, action) {
+      return { ...state, listPayment: action.payload }
+    },
+    setNullUnit(state, action) {
+      const { memberUnit } = action.payload
+      localStorage.setItem('memberUnit', JSON.stringify(memberUnit))
+      return { ...state, memberUnitInfo: memberUnit }
     }
   },
-
-  showModal(state, action) {
-    return { ...state, ...action.payload, modalVisible: true }
-  },
-
-  hideModal(state) {
-    return { ...state, modalVisible: false }
-  },
-
-  hideModalShift(state) {
-    return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
-  },
-
-  showMemberModal(state, action) {
-    return { ...state, ...action.payload, modalMemberVisible: true }
-  },
-  hideMemberModal(state) {
-    return { ...state, modalMemberVisible: false }
-  },
-
-  showPrintModal(state, action) {
-    return { ...state, ...action.payload, modalPrintVisible: true }
-  },
-  hidePrintModal(state) {
-    return { ...state, modalPrintVisible: false, modalCancelVisible: false, listPaymentDetail: null, invoiceCancel: '' }
-  },
-  showCancelModal(state, action) {
-    return { ...state, ...action.payload, modalCancelVisible: true, invoiceCancel: action.payload.transNo }
-  },
-
-
-  showPaymentModal(state, action) {
-    return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
-  },
-  hidePaymentModal(state) {
-    return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
-  },
-
-  showServiceListModal(state, action) {
-    return { ...state, ...action.payload, itemService: action.payload.item, modalServiceListVisible: true }
-  },
-  hideServiceListModal(state) {
-    return { ...state, modalServiceListVisible: false }
-  },
-
-  showMechanicModal(state, action) {
-    return { ...state, ...action.payload, modalMechanicVisible: true }
-  },
-  hideMechanicModal(state) {
-    return { ...state, modalMechanicVisible: false }
-  },
-
-  showProductModal(state, action) {
-    return { ...state, ...action.payload, modalProductVisible: true }
-  },
-  hideProductModal(state) {
-    return { ...state, modalProductVisible: false }
-  },
-
-
-  showServiceModal(state, action) {
-    return { ...state, ...action.payload, modalServiceVisible: true }
-  },
-
-  hideServiceModal(state) {
-    return { ...state, modalServiceVisible: false }
-  },
-
-  showHelpModal(state, action) {
-    return { ...state, ...action.payload, modalHelpVisible: true }
-  },
-
-  hideHelpModal(state) {
-    return { ...state, modalHelpVisible: false }
-  },
-
-  showShiftModal(state, action) {
-    return { ...state, ...action.payload, modalShiftVisible: true, memberUnitInfo: action.payload }
-  },
-
-  hideShiftModal(state, action) {
-    return { ...state, curShift: action.payload.curShift, curCashierNo: action.payload.curCashierNo, modalShiftVisible: false }
-  },
-
-  showQueueModal(state, action) {
-    return { ...state, ...action.payload, modalQueueVisible: true }
-  },
-
-  hideQueueModal(state) {
-    return { ...state, modalQueueVisible: false }
-  },
-
-  setCurBarcode(state, action) {
-    return { ...state, curBarcode: action.payload.curBarcode, curQty: action.payload.curQty }
-  },
-
-  setAllNull(state) {
-    return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: '', lastMeter: 0 }
-  },
-
-
-  showModalWarning(state, action) {
-    return { ...state, modalWarningVisible: true }
-  },
-
-  setUtil(state, action) {
-    return { ...state, kodeUtil: action.payload.kodeUtil, infoUtil: action.payload.infoUtil }
-  },
-
-  setEffectedRecord(state, action) {
-    return { ...state, effectedRecord: action.payload.effectedRecord }
-  },
-
-  setCurTotal(state, action) {
-    let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-    let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
-    let dataPos = product.concat(service)
-    let a = dataPos
-    let curRecord = a.reduce(function (cnt, o) { return cnt + 1; }, 0)
-    let grandTotal = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
-    let totalDiscount = a.reduce(function (cnt, o) { return cnt + parseInt(o.discount); }, 0)
-    let totalDisc1 = a.reduce(function (cnt, o) {
-      let tmpTotal = o.qty * o.price
-      return cnt + ((tmpTotal * o.disc1) / 100);
-    }, 0)
-
-    let totalDisc2 = a.reduce(function (cnt, o) {
-      let tmpTotal = o.qty * o.price
-      let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
-      return cnt + (((tmpTotal - tmpDisc1) * o.disc2) / 100);
-    }, 0)
-    let totalDisc3 = a.reduce(function (cnt, o) {
-      let tmpTotal = o.qty * o.price
-      let tmpDisc1 = ((tmpTotal * o.disc1) / 100)
-      let tmpDisc2 = (((tmpTotal - tmpDisc1) * o.disc2) / 100)
-      return cnt + (((tmpTotal - tmpDisc1 - tmpDisc2) * o.disc3) / 100);
-    }, 0)
-
-    let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
-    //Ganti 100 dengan Jumlah Pembulatan yang diinginkan
-    let selisih = 100 - parseInt(ratusan)
-    let curRounding
-
-    if (selisih > 50) {
-      curRounding = parseInt(ratusan) * -1
-    }
-    else {
-      curRounding = parseInt(selisih)
-    }
-
-    return {
-      ...state,
-      curTotal: grandTotal,
-      curTotalDiscount: (parseInt(totalDiscount) + parseInt(totalDisc1) + parseInt(totalDisc2) + parseInt(totalDisc3)),
-      curRounding: curRounding,
-      curRecord: curRecord + 1,
-      memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
-      lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
-      memberUnitInfo: { unitNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----' },
-      mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
-    }
-  },
-
-  //untuk filter
-  onInputChange(state, action) {
-    return { ...state, searchText: action.payload.searchText }
-  },
-
-  onMemberSearch(state, action) {
-    const { searchText, tmpMemberList } = action.payload
-    const reg = new RegExp(searchText, 'gi')
-    let newData
-    newData = tmpMemberList.map((record) => {
-      const match = record.memberName.match(reg) || record.memberCode.match(reg) || record.address01.match(reg) || record.mobileNumber.match(reg)
-      if (!match) {
-        return null
-      }
-      return {
-        ...record,
-      }
-    }).filter(record => !!record)
-
-    return { ...state, listMember: newData }
-  },
-  onMechanicSearch(state, action) {
-    const { searchText, tmpMechanicList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-    newData = tmpMechanicList.map((record) => {
-      const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listMechanic: newData }
-  },
-  onProductSearch(state, action) {
-    const { searchText, tmpProductList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-    newData = tmpProductList.map((record) => {
-      const match = record.productName.match(reg) || record.productCode.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listProduct: newData }
-  },
-  onReset(state, action) {
-    const { searchText, tmpList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpList.map((record) => {
-      const match = record.memberName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, list: newData, searchText: searchText }
-  },
-
-  onServiceSearch(state, action) {
-    const { searchText, tmpServiceList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-    newData = tmpServiceList.map((record) => {
-      const match = record.serviceName.match(reg) || record.serviceCode.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-    return { ...state, listService: newData }
-  },
-
-  onSearch(state, action) {
-    const { searchText, tmpList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpList.map((record) => {
-      const match = record.productName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, list: newData }
-  },
-
-  onMemberReset(state, action) {
-    const { searchText, tmpMemberList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpMemberList.map((record) => {
-      const match = record.memberName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listMember: newData, searchText: searchText }
-  },
-
-  onMechanicReset(state, action) {
-    const { searchText, tmpMechanicList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpMechanicList.map((record) => {
-      const match = record.employeeName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listMechanic: newData, searchText: searchText }
-  },
-
-  onServiceReset(state, action) {
-    const { searchText, tmpServiceList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpServiceList.map((record) => {
-      const match = record.serviceName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listService: newData, searchText: searchText }
-  },
-
-  onProductReset(state, action) {
-    const { searchText, tmpProductList } = action.payload;
-    const reg = new RegExp(searchText, 'gi');
-    let newData
-
-    newData = tmpProductList.map((record) => {
-      const match = record.productName.match(reg)
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-      };
-    }).filter(record => !!record)
-
-    return { ...state, listProduct: newData, searchText: searchText }
-  },
-
-  //------------------
-
-  setCurTime(state, action) {
-    return { curTime: action.payload.curTime, }
-  },
-
-  setCurRecord(state, action) {
-    return { curRecord: 1, }
-  },
-
-  setTotalItem(state, action) {
-    return { ...state, itemPayment: action.payload }
-  },
-
-  setTotalItemService(state, action) {
-    return { ...state, itemService: action.payload }
-  },
-
-  changeQueue(state, action) {
-    let listQueue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    listQueue = _.get(listQueue, `queue${action.payload.queue}`) ? _.get(listQueue, `queue${action.payload.queue}`) : []
-    return { ...state, listQueue: listQueue, curQueue: action.payload.queue }
-  },
-  setListPaymentDetail(state, action) {
-    return { ...state, listPaymentDetail: { id: action.payload.transNo } }
-  },
-  searchPOS(state, action) {
-    return { ...state, listPayment: action.payload }
-  },
-},
 }

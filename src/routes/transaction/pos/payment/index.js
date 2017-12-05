@@ -42,7 +42,7 @@ const dataTrans = () => {
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans } = payment
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
-  const { user } = app
+  const { user, setting } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = { 17: false, 16: false, 32: false }
   /*
@@ -174,7 +174,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           paymentVia: typeTrans,
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
-          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
+          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           rounding: curRounding,
           memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
           memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
@@ -186,45 +186,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
           curCashierNo: curCashierNo,
           cashierId: user.userid,
-          userName: user.username
+          userName: user.username,
+          setting: setting
         }
       })
-      // dispatch({
-      //   type: 'payment/printPayment',
-      //   payload: {
-      //     periode: moment().format('MMYY'),
-      //     transDate: getDate(1),
-      //     transDate2: getDate(3),
-      //     transTime: setTime(),
-      //     transDatePrint: moment().format('DD/MM/YYYY'),
-      //     grandTotal: parseInt(curTotal) + parseInt(curTotalDiscount),
-      //     totalPayment: totalPayment,
-      //     company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-      //     gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-      //     phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-      //     address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-      //     lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-      //     lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
-      //     totalChange: totalChange,
-      //     totalDiscount: curTotalDiscount,
-      //     policeNo: localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : '-----',
-      //     rounding: curRounding,
-      //     dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
-      //     dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-      //     memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
-      //     memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-      //     memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-      //     mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
-      //     technicianId: mechanicInformation.mechanicCode,
-      //     curShift: curShift,
-      //     printNo: 1,
-      //     point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
-      //     curCashierNo: curCashierNo,
-      //     cashierId: user.userid
-      //   },
-      // })
       dispatch({ type: 'pos/setAllNull' })
-      dispatch(routerRedux.push('/transaction/pos'))
+      // dispatch(routerRedux.push('/transaction/pos'))
     }
 
   }
@@ -336,7 +303,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
                   options={options}
                   onChange={_value => onChangeCascader(_value)}
                   placeholder="Please select"
-                  defaultValue={['C']}
+                  defaultValue={[typeTrans]}
                 />
               </FormItem>
               {modalCreditVisible && <ModalCredit {...modalCreditProps} />}

@@ -31,7 +31,7 @@ export default {
             payload: location.query,
           })
         } else if (location.pathname === '/report/adjust/out' && Object.keys(location.query).length > 0) {
-          console.log('query', Object.keys(location.query).length)
+          // console.log('query', Object.keys(location.query).length)
           dispatch({
             type: 'queryOutAdj',
             payload: location.query,

@@ -36,7 +36,8 @@ const Sales = ({ data }) => {
               return <div className={styles.tooltip}><p className={styles.tiptitle}>{moment(content.label, 'DD/MM').format('ll')}</p><ul>{list}</ul></div>
             }}
           />
-          <Line type="monotone" dataKey="Sales" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
+          <Line type="linear" dataKey="Sales" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
+          <Line type="linear" dataKey="Service" stroke={color.red} strokeWidth={3} dot={{ fill: color.red }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
         </LineChart>
       </ResponsiveContainer>
     </div>

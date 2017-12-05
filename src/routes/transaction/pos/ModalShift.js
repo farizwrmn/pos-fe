@@ -91,7 +91,7 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
     <Modal title="Cashier Information"
       {...modalOpts}
       footer={[
-        <Button key="back" size="large" onClick={handleBack}>Back</Button>,
+        <Button key="back" size="large" onClick={handleBack}>Home</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
         Confirm
         </Button>,

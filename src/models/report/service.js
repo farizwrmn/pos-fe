@@ -30,11 +30,6 @@ export default {
             type: 'setListNull'
           })
         }
-        // else if (location.pathname === '/report/service/mechanic') {
-        //   dispatch({
-        //     type: 'setListNull'
-        //   })
-        // }
       })
     },
   },

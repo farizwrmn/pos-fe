@@ -37,6 +37,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   const { listType } = customertype
   const { setting } = app
   const {
+    listProduct,
     modalServiceVisible,
     modalMemberVisible,
     modalMechanicVisible,
@@ -94,7 +95,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
   let dataPos = product.concat(service)
   let a = dataPos
-  let totalPayment = a.reduce(function (cnt, o) { return cnt + o.total; }, 0)
+  let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
   let totalQty = a.reduce(function (cnt, o) { return cnt + parseInt(o.qty); }, 0)
   const getDate = (mode) => {
     let today = new Date()
@@ -139,6 +140,26 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     return i
   }
 
+  // const getQueueQuantity = (productId) => {
+  //   const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+  //   // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+  //   let tempQueue = []
+  //   let tempTrans = []
+  //   const listQueue = _.get(queue, `queue1`) ? _.get(queue, `queue1`) : []
+  //   for (let n = 0; n < 10; n += 1) {
+  //     tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+  //     if (tempQueue.length > 0) {
+  //       tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
+  //     }
+  //   }
+  //   if (tempTrans.length > 0) {
+  //     return tempTrans
+  //   } else {
+  //     console.log('queue is empty, nothing to check')
+  //     return []
+  //   }
+  // }
+
   const handleQueue = () => {
     if (localStorage.getItem('cashier_trans') === null) {
       dispatch({
@@ -147,8 +168,6 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           queue: '1',
         },
       })
-
-
       dispatch({
         type: 'pos/showQueueModal',
         payload: {
@@ -276,6 +295,20 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
 
   const hdlUnitClick = () => {
     dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
+  }
+  const hdlNoUnit = () => {
+    let memberUnit = {
+      id: null,
+      policeNo: null,
+      merk: null,
+      model: null
+    }
+    dispatch({
+      type: 'pos/setNullUnit',
+      payload: {
+        memberUnit
+      }
+    })
   }
 
   const handleDiscount = (tipe, value) => {
@@ -468,7 +501,6 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       })
     },
     modalButtonSaveClick(id, data) {
-      console.log('modalButtonSaveClick data:', data);
       dispatch({
         type: `customer/${modalType}`,
         payload: {
@@ -693,7 +725,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       dispatch({ type: 'pos/paymentDelete', payload: data })
     },
     onChooseItem(data) {
-      dispatch({ type: 'pos/paymentEdit', payload: data })
+      dispatch({
+        type: 'pos/checkQuantityEditProduct',
+        payload: {
+          data
+        }
+      })
+      // dispatch({ type: 'pos/paymentEdit', payload: data })
     },
     onChangeTotalItem(data) {
       dispatch({
@@ -770,13 +808,27 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           } else {
             arrayProd = JSON.parse(listByCode.slice())
           }
-  
+
+          const data = {
+            no: arrayProd.length + 1,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            qty: 1,
+            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
+          }
+
           arrayProd.push({
             no: arrayProd.length + 1,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
-            qty: curQty,
+            qty: 1,
             price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
             discount: 0,
             disc1: 0,
@@ -784,20 +836,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             disc3: 0,
             total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
           })
-  
-          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
           dispatch({
-            type: 'pos/querySuccessByCode',
+            type: 'pos/checkQuantityNewProduct',
             payload: {
-              listByCode: item,
-              curRecord: curRecord + 1,
-            },
+              data,
+              arrayProd
+            }
           })
-          dispatch({
-            type: 'pos/setUtil',
-            payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
-          })
-          dispatch({ type: 'pos/hideProductModal' })
         } else {
           Modal.warning({
             title: 'Cannot add product',
@@ -868,8 +913,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         } else {
           arrayProd = JSON.parse(listByCode.slice())
         }
-  
-  
+
+
         arrayProd.push({
           no: arrayProd.length + 1,
           code: item.serviceCode,
@@ -883,9 +928,9 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           disc3: 0,
           total: item.serviceCost * curQty
         })
-  
+
         localStorage.setItem('service_detail', JSON.stringify(arrayProd))
-  
+
         dispatch({
           type: 'pos/queryServiceSuccessByCode',
           payload: {
@@ -893,11 +938,11 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             curRecord: curRecord + 1,
           },
         })
-  
+
         dispatch({
           type: 'pos/hideServiceModal',
         })
-  
+
         setCurBarcode('', 1)
       } else {
         Modal.warning({
@@ -1542,8 +1587,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                   <Input value={memberInformation.memberName} disabled />
                 </FormItem>
                 <FormItem label="Unit" hasFeedback {...formItemLayout}>
-                  <Col span={20}>
-                    <Input value={memberUnitInfo.unitNo} />
+                  <Col span={16}>
+                    <Input value={memberUnitInfo.policeNo} />
                   </Col>
                   <Col span={4}>
                     <Popover title={titlePopover}
@@ -1553,8 +1598,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                       placement="left"
                       trigger="click"
                     >
-                      <Button type="primary" icon="down-square-o" onClick={hdlUnitClick} />
+                      <ButtonGroup size="medium">
+                        <Button type="primary" icon="down-square-o" onClick={hdlUnitClick} />
+                      </ButtonGroup>
                     </Popover>
+                  </Col>
+                  <Col span={4}>
+                    <Button type="danger" icon="close" onClick={hdlNoUnit} />                  
                   </Col>
                 </FormItem>
                 <FormItem label="KM" hasFeedback {...formItemLayout}>

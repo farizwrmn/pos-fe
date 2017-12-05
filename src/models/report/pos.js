@@ -23,13 +23,17 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/pos/service' && location.query.from) {
+        if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
           dispatch({
             type: 'setListNull'
           })
           dispatch({
             type: 'queryTransAll',
             payload: location.query,
+          })
+        } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit') {
+          dispatch({
+            type: 'setListNull'
           })
         } else if (location.pathname === '/report/pos/monthly') {
           dispatch({

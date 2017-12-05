@@ -10,7 +10,6 @@ import Filter from './Filter'
 const Report = ({ dispatch, loading, purchaseReport, app }) => {
   const { listTrans, fromDate, toDate, productCode } = purchaseReport
   const { user, storeInfo } = app
-  console.log('listTrans', listTrans[0])
   const browseProps = {
     dataSource: listTrans,
     listTrans,

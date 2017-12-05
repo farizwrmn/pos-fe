@@ -196,6 +196,14 @@ let database = [
     route: '/report/pos/service',
   },
   {
+    id: '413',
+    bpid: '41',
+    mpid: '41',
+    name: 'By Date + Unit',
+    icon: 'calendar',
+    route: '/report/pos/unit',
+  },
+  {
     id: '42',
     bpid: '4',
     mpid: '4',

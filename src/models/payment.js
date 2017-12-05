@@ -2,11 +2,12 @@ import { Modal } from 'antd'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import config from 'config'
+import { queryPOSstock as queryProductsInStock } from '../services/stock'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
-import { editPoint as updateMemberPoint} from '../services/customers'
-import { queryMode as miscQuery} from '../services/misc'
+import { editPoint as updateMemberPoint } from '../services/customers'
+import { queryMode as miscQuery } from '../services/misc'
 const { prefix } = config
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
@@ -35,7 +36,7 @@ export default {
     grandTotal: 0,
     creditCardNo: '',
     creditCardTotal: 0,
-    typeTrans: '',
+    typeTrans: 'C',
     creditCharge: 0,
     creditChargeAmount: 0,
     netto: 0,
@@ -58,7 +59,7 @@ export default {
   // confirm payment
 
   effects: {
-    * create ({ payload }, { call, put }) {
+    * create({ payload }, { call, put }) {
       if (payload.address === undefined) {
         const modal = Modal.error({
           title: 'Payment Fail',
@@ -74,7 +75,7 @@ export default {
           title: 'Payment Fail',
           content: 'Phone is Undefined',
         })
-      } else if (payload.policeNo === undefined || payload.policeNo === null) {
+      } else if (payload.policeNo === undefined) {
         Modal.error({
           title: 'Payment Fail',
           content: 'Unit is Undefined',
@@ -89,29 +90,29 @@ export default {
           n = n + '';
           return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
         }
-        datatrans= [`FJ${moment().format('MMYY')}0000`]
+        datatrans = [`FJ${moment().format('MMYY')}0000`]
 
         let newData = datatrans
-        if (data.data.length > 0){
+        if (data.data.length > 0) {
           dataLast = data.data
         }
         else {
           dataLast = datatrans
         }
 
-        let parseTransNo = dataLast.reduce(function(prev, current) {
+        let parseTransNo = dataLast.reduce(function (prev, current) {
           return (prev.transNo > current.transNo) ? prev : current
         })
 
         let lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
-        lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
-        let newMonth = lastNo.substr(2,4)
+        lastNo = lastNo.replace(/[^a-z0-9]/gi, '')
+        let newMonth = lastNo.substr(2, 4)
         let lastTransNo = lastNo.substr(lastNo.length - 4)
         let sendTransNo = parseInt(lastTransNo) + 1
-        let padding = pad(sendTransNo,4)
+        let padding = pad(sendTransNo, 4)
 
-        if ( data.success ) {
-          if (newMonth==`${moment().format('MMYY')}`){
+        if (data.success) {
+          if (newMonth == `${moment().format('MMYY')}`) {
             var transNo = `FJ${moment().format('MMYY')}${padding}`
           } else {
             var transNo = `FJ${moment().format('MMYY')}0001`
@@ -121,7 +122,7 @@ export default {
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
           if (transNo.indexOf('FJ') > -1) {
-            transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
+            transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 6) + '/' + transNo.substring(6, 10)
           }
           const trans = transNo.replace(/[^a-z0-9]/gi, '');
           for (let key = 0; key < dataPos.length; key++) {
@@ -139,7 +140,8 @@ export default {
             })
           }
 
-          const detailPOS = {dataPos: arrayProd,
+          const detailPOS = {
+            dataPos: arrayProd,
             transNo: trans,
             memberCode: payload.memberCode,
             technicianId: payload.technicianId,
@@ -163,7 +165,27 @@ export default {
             change: payload.totalChange
           }
           const point = parseInt((payload.grandTotal / 10000), 10)
-
+          
+          // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+          // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+          // const dataStock = listProductData.data
+          // let warningStock = []
+          // for (let key in product) {
+          //   let productId = product[key].productId
+          //   let filterDataStock = dataStock.filter(el => el.productId === productId)
+          //   let qtySell = product[key].qty
+          //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+          //   const { setting } = payload
+          //   let json = setting["Inventory"]
+          //   let jsondata = JSON.stringify(eval("(" + json + ")"));
+          //   const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+          //   if (outOfStock === 0) {
+          //     if (qtySell > qtyStock) {
+          // warningStock = warningStock.concat(filterDataStock)
+          // }
+          // }
+          // }
+          // console.log('warningStock', warningStock)
           const data_create = yield call(create, detailPOS)
           if (data_create.success) {
             const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
@@ -205,19 +227,22 @@ export default {
                   type: 'POS'
                 },
               })
-              const data_cashier_trans_update = yield call(updateCashierTrans, {total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
+              const data_cashier_trans_update = yield call(updateCashierTrans, {
+                total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
                 totalCreditCard: payload.totalCreditCard,
                 status: 'O',
                 cashierNo: payload.curCashierNo,
                 shift: payload.curShift,
-                transDate: payload.transDate2})
-                if (data_cashier_trans_update.success) {
-                  yield call(updateMemberPoint, { point: point, memberCode: payload.memberId })
-                  const modal = Modal.info({
-                    title: 'Information',
-                    content: 'Transaction has been saved...!',
-                  })
-                }
+                transDate: payload.transDate2
+              })
+              if (data_cashier_trans_update.success) {
+                yield call(updateMemberPoint, { point: point, memberCode: payload.memberId })
+                yield put(routerRedux.push('/transaction/pos'))                                                                                        
+                Modal.info({
+                  title: 'Information',
+                  content: 'Transaction has been saved...!',
+                })
+              }
             }
           } else {
             Modal.error({
@@ -229,7 +254,7 @@ export default {
       }
     },
 
-    * setLastTrans ({ payload }, { call, put }) {
+    * setLastTrans({ payload }, { call, put }) {
       let datatrans
       let dataLast
       function pad(n, width, z) {
@@ -238,33 +263,33 @@ export default {
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
       }
       let data = yield call(queryLastTransNo)
-      datatrans= [`FJ${moment().format('MMYY')}0000`]
+      datatrans = [`FJ${moment().format('MMYY')}0000`]
 
       let newData = datatrans
-      if (data.data.length > 0){
+      if (data.data.length > 0) {
         dataLast = data.data
       }
       else {
         dataLast = datatrans
       }
-      let parseTransNo = dataLast.reduce(function(prev, current) {
+      let parseTransNo = dataLast.reduce(function (prev, current) {
         return (prev.transNo > current.transNo) ? prev : current
       })
 
       var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
-      lastNo = lastNo.replace(/[^a-z0-9]/gi,'')
-      var newMonth = lastNo.substr(2,4)
+      lastNo = lastNo.replace(/[^a-z0-9]/gi, '')
+      var newMonth = lastNo.substr(2, 4)
       var lastTransNo = lastNo.substr(lastNo.length - 4)
       var sendTransNo = parseInt(lastTransNo) + 1
-      var padding = pad(sendTransNo,4)
+      var padding = pad(sendTransNo, 4)
 
-      if (newMonth==`${moment().format('MMYY')}`){
+      if (newMonth == `${moment().format('MMYY')}`) {
         var transNo = `FJ${moment().format('MMYY')}${padding}`
       } else {
         var transNo = `FJ${moment().format('MMYY')}0001`
       }
       if (transNo.indexOf('FJ') > -1) {
-        transNo = transNo.substring(0, 2) + '/' + transNo.substring(2,6) + '/' + transNo.substring(6,10)
+        transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 6) + '/' + transNo.substring(6, 10)
       }
       localStorage.setItem('transNo', transNo)
       const trans = transNo.replace(/[^a-z0-9]/gi, '');
@@ -273,7 +298,7 @@ export default {
         payload: transNo,
       })
     },
-    * listCreditCharge ({ payload }, {put, call}) {
+    * listCreditCharge({ payload }, { put, call }) {
       const data = yield call(listCreditCharge, payload)
       let newData = data.creditCharges
 
@@ -301,11 +326,11 @@ export default {
       }
     },
 
-    *getCreditCharge ({ payload }, { call, put }) {
+    *getCreditCharge({ payload }, { call, put }) {
       const data = yield call(getCreditCharge, payload.creditCode)
       let newData = data.creditCharges
 
-      if ( data.success ) {
+      if (data.success) {
         yield put({
           type: 'getCreditChargeSuccess',
           payload: {
@@ -322,14 +347,15 @@ export default {
   },
 
   reducers: {
-    successPost (state, action) {
+    successPost(state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
       localStorage.removeItem('member')
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('lastMeter')
-      return { ...state,
+      return {
+        ...state,
         posMessage: posMessage,
         totalPayment: 0,
         totalChange: 0,
@@ -340,10 +366,11 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false, }
+        modalCreditVisible: false,
+      }
     },
 
-    listSuccess (state, action) {
+    listSuccess(state, action) {
       const { listCreditCharge } = action.payload
       return {
         ...state,
@@ -351,7 +378,7 @@ export default {
       }
     },
 
-    getCreditChargeSuccess (state, action) {
+    getCreditChargeSuccess(state, action) {
       const { creditCharge, netto, creditCardType } = action.payload
       return {
         ...state,
@@ -362,61 +389,65 @@ export default {
       }
     },
 
-    updateState (state, { payload }) {
+    updateState(state, { payload }) {
       return {
         ...state,
         ...payload,
       }
     },
 
-    showModal (state, action) {
+    showModal(state, action) {
       return { ...state, ...action.payload, modalVisible: true }
     },
 
-    hideModal (state) {
+    hideModal(state) {
       return { ...state, modalVisible: false }
     },
 
-    showCreditModal (state, action) {
+    showCreditModal(state, action) {
       return { ...state, ...action.payload, modalCreditVisible: true }
     },
 
-    setLastMeter (state, action) {
-      return { state, lastMeter: action.payload.lastMeter}
+    setLastMeter(state, action) {
+      return { state, lastMeter: action.payload.lastMeter }
     },
 
-    setPoliceNo (state, action) {
+    setPoliceNo(state, action) {
       localStorage.setItem('memberUnit', JSON.stringify(action.payload.policeNo))
-      return { state, policeNo: action.payload.policeNo.policeNo}
+      return { state, policeNo: action.payload.policeNo.policeNo }
     },
 
-    hideCreditModal (state) {
+    hideCreditModal(state) {
       return { ...state, modalCreditVisible: false }
     },
 
-    lastTransNo (state, action) {
+    lastTransNo(state, action) {
       return { ...state, lastTransNo: action.payload }
     },
 
-    setCurTotal (state, action) {
-      return { ...state,
-              inputPayment: 0,
-              totalPayment: 0,
-              totalChange: 0 }
+    setCurTotal(state, action) {
+      return {
+        ...state,
+        inputPayment: 0,
+        totalPayment: 0,
+        totalChange: 0
+      }
     },
 
-    changePayment (state, action) {
-      return { ...state,
-               inputPayment: action.payload.totalPayment,
-               totalPayment: action.payload.totalPayment,
-               totalChange: (action.payload.totalPayment - action.payload.netto) }
+    changePayment(state, action) {
+      return {
+        ...state,
+        inputPayment: action.payload.totalPayment,
+        totalPayment: action.payload.totalPayment,
+        totalChange: (action.payload.totalPayment - action.payload.netto)
+      }
     },
 
-    setCashPaymentNull (state, action) {
-      return { ...state, inputPayment: 0, totalPayment: 0, totalChange: 0}
+    setCashPaymentNull(state, action) {
+      return { ...state, inputPayment: 0, totalPayment: 0, totalChange: 0 }
     },
 
-    printPayment (state, action) {
+    printPayment(state, action) {
       const payload = action.payload
       const dataPos = payload.dataPos
       const dataService = payload.dataService
@@ -473,7 +504,7 @@ export default {
             }
           }
           if (rows === null) {
-            body.push([{ text: ' ', fontSize: 11}, {}, {}, {}, {}, {}, {}])
+            body.push([{ text: ' ', fontSize: 11 }, {}, {}, {}, {}, {}, {}])
           }
           return body
         }
@@ -491,7 +522,7 @@ export default {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
           pageMargins: [40, 160, 40, 150],
-          header : {
+          header: {
             stack: [
               {
                 columns: [
@@ -541,7 +572,7 @@ export default {
                 table: {
                   widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
                   body: [
-                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: payload.lastTransNo.toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: payload.policeNo.toString().toUpperCase(), fontSize: 12 }],
+                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: payload.lastTransNo.toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
                     [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: payload.transDatePrint.toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: payload.lastMeter.toString().toUpperCase(), fontSize: 12 }],
                     [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${payload.memberName.toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: payload.mechanicName.toString().toUpperCase(), fontSize: 12 }],
                     [{ text: 'Contact', fontSize: 12 }, ':', { text: payload.phone.toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: payload.address.toString().toUpperCase().substring(0, 22), fontSize: 12 }],
@@ -550,7 +581,7 @@ export default {
                 layout: 'noBorders',
               },
               {
-                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }]
+                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }]
               },
             ],
             margin: [30, 12, 12, 30],
@@ -616,7 +647,7 @@ export default {
                 height: 160,
                 stack: [
                   {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }],
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
                   },
                   {
                     columns: [
@@ -668,7 +699,7 @@ export default {
                 height: 160,
                 stack: [
                   {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813-2*40, y2: 5, lineWidth: 0.5 }],
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
                   },
                   {
                     columns: [
@@ -716,11 +747,17 @@ export default {
         localStorage.removeItem('service_detail')
         localStorage.removeItem('member')
         localStorage.removeItem('memberUnit')
-        localStorage.removeItem('mechanic')        
+        localStorage.removeItem('mechanic')
         localStorage.removeItem('lastMeter')
       }
-      return { 
+      return {
         ...state,
+        memberUnitInfo: {
+          id: null,
+          policeNo: null,
+          merk: null,
+          model: null
+        },
         posMessage: posMessage,
         totalPayment: 0,
         totalChange: 0,
@@ -731,19 +768,19 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false, 
+        modalCreditVisible: false,
       }
     },
 
-    setCreditCardPaymentNull (state, action) {
+    setCreditCardPaymentNull(state, action) {
       return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '', }
     },
 
-    setCreditCardNo (state, action) {
+    setCreditCardNo(state, action) {
       return { ...state, creditCardNo: action.payload.creditCardNo }
     },
 
-    changeCascader (state, action) {
+    changeCascader(state, action) {
       return { ...state, typeTrans: action.payload.value[0] }
     },
   }

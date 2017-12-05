@@ -1,5 +1,6 @@
 import { query, getIpAddr } from '../services/dashboard'
-import { queryTrans } from '../services/report/pos'
+import { queryTrans, queryAll } from '../services/report/pos'
+import { query as queryService } from '../services/report/service'
 import moment from 'moment'
 import { parse } from 'qs'
 
@@ -191,8 +192,12 @@ export default {
     },
   },
   subscriptions: {
-    setup({ dispatch }) {
-      dispatch({ type: 'query' })
+    setup({ dispatch, history }) {
+      history.listen(location => {
+        if (location.pathname === '/dashboard' || location.pathname === '/') {
+          dispatch({ type: 'query' })
+        }
+      })
     },
   },
   effects: {
@@ -202,6 +207,52 @@ export default {
       const start = moment().add(-6, 'days')
       const end = moment()
       const date = moment().add(-6, 'days')
+      function construct(dataSales) {
+        let result = []
+        let currTransDate = ''
+        let formatSales = []
+        dataSales.data.reduce((res, value) => {
+          if (!res[value.transDate]) {
+            res[value.transDate] = {
+              product: 0,
+              service: 0,
+              transDate: value.transDate
+            }
+            result.push(res[value.transDate])
+          }
+          res[value.transDate].product += value.product
+          res[value.transDate].service += value.service
+          return res
+        }, {})
+        for (let key in result) {
+          const { transDate, product, service } = result[key]
+          formatSales.push({
+            name: moment(transDate).format('DD/MM'), // 'DD/MM/YY'
+            title: moment(transDate).format('L'), // 'DD/MM/YY'
+            Sales: product,
+            Service: service
+          })
+          currTransDate = transDate
+        }
+        for (let key = 0; key <= end.diff(start, 'days'); key += 1) {
+          const dateExists = (username) => {
+            return formatSales.some((el) => {
+              return el.title === date.format('L')
+            })
+          }
+          if (!dateExists(date.format('L'))) {
+            formatSales.push({
+              name: date.format('DD/MM'),
+              title: date.format('L'),
+              Sales: 0,
+              Service: 0,
+            })
+          }
+          date.add(1, 'days')
+        }
+        currTransDate = ''
+        return formatSales
+      }
 
       // dev test
       // const date = moment('2017-11-21', 'YYYY-MM-DD')      
@@ -215,45 +266,9 @@ export default {
         to: today
       }
       const data = yield call(query, parse(payload))
-      const dataSales = yield call(queryTrans, params)
-      let formatWeekSales = []
-      let result = []
-      dataSales.data.reduce((res, value) => {
-        if (!res[value.transDate]) {
-          res[value.transDate] = {
-            total: 0,
-            transDate: value.transDate
-          }
-          result.push(res[value.transDate])
-        }
-        res[value.transDate].total += value.total
-        return res
-      }, {})
-      let currTransDate = ''
-      for (let key in result) {
-        const { transDate, total } = result[key]
-        formatWeekSales.push({
-          name: moment(transDate).format('DD/MM'), // 'DD/MM/YY'
-          title: moment(transDate).format('L'), // 'DD/MM/YY'
-          Sales: total
-        })
-        currTransDate = transDate
-      }
-      for (let key = 0; key <= end.diff(start, 'days'); key += 1) {
-        const dateExists = (username) => {
-          return formatWeekSales.some((el) => {
-            return el.title === date.format('L')
-          })
-        }
-        if (!dateExists(date.format('L'))) {
-          formatWeekSales.push({
-            name: date.format('DD/MM'),
-            title: date.format('L'),
-            Sales: 0
-          })
-        }
-        date.add(1, 'days')
-      }
+      const dataSales = yield call(queryAll, params)
+      const dataService = yield call(queryService, params)
+      let formatWeekSales = construct(dataSales)
       // sort date
       formatWeekSales.sort((a, b) => {
         return new Date(a.title).getTime() - new Date(b.title).getTime()
@@ -263,8 +278,8 @@ export default {
       //yield put({ type: 'queryWeather', payload: { ...data } })
     },
     * queryWeather({
-      payload,
-    }, { call, put }) {
+    payload,
+  }, { call, put }) {
       const myCityResult = yield call(myCity, { flg: 0 })
       const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode })
       const weather = zuimei.parseActualData(result.data.actual)
