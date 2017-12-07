@@ -165,7 +165,7 @@ export default {
             change: payload.totalChange
           }
           const point = parseInt((payload.grandTotal / 10000), 10)
-          
+
           // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
           // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
           // const dataStock = listProductData.data
@@ -175,17 +175,22 @@ export default {
           //   let filterDataStock = dataStock.filter(el => el.productId === productId)
           //   let qtySell = product[key].qty
           //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-          //   const { setting } = payload
-          //   let json = setting["Inventory"]
-          //   let jsondata = JSON.stringify(eval("(" + json + ")"));
-          //   const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-          //   if (outOfStock === 0) {
-          //     if (qtySell > qtyStock) {
-          // warningStock = warningStock.concat(filterDataStock)
+          //   if (qtySell > qtyStock) {
+          //     product[key].qty = product[key].qty - qtyStock
+          //     warningStock = warningStock.concat(product[key])
+          //   }
+            
           // }
+          // const { setting } = payload
+          // let json = setting["Inventory"]
+          // let jsondata = JSON.stringify(eval("(" + json + ")"));
+          // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+          // if (outOfStock === 0) {
+          //   Modal.info({
+          //     title: 'No available stock',
+          //     content: JSON.stringify(warningStock)
+          //   })
           // }
-          // }
-          // console.log('warningStock', warningStock)
           const data_create = yield call(create, detailPOS)
           if (data_create.success) {
             const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
@@ -237,7 +242,7 @@ export default {
               })
               if (data_cashier_trans_update.success) {
                 yield call(updateMemberPoint, { point: point, memberCode: payload.memberId })
-                yield put(routerRedux.push('/transaction/pos'))                                                                                        
+                //yield put(routerRedux.push('/transaction/pos'))
                 Modal.info({
                   title: 'Information',
                   content: 'Transaction has been saved...!',

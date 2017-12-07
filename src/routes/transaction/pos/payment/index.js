@@ -191,7 +191,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         }
       })
       dispatch({ type: 'pos/setAllNull' })
-      // dispatch(routerRedux.push('/transaction/pos'))
+      dispatch(routerRedux.push('/transaction/pos'))
     }
 
   }

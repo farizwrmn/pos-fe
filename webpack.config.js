@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 module.exports = (webpackConfig) => {
   // FilenameHash
   webpackConfig.output.chunkFilename = '[name].[hash].js' // http://webpack.github.io/docs/configuration.html#output-chunkfilename
@@ -27,7 +28,17 @@ module.exports = (webpackConfig) => {
   //   loader: 'eslint',
   // }]
 
-
+  plugins: [
+    new webpack.DefinePlugin({
+      // A common mistake is not stringifying the "production" string.
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    })
+  ]
   // Alias
   webpackConfig.resolve.alias = {
     components: `${__dirname}/src/components`,

@@ -15,7 +15,6 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
 
   const handleChange = (e) => {
     const {value} = e.target
-
     dispatch({
       type: 'pos/onInputChange',
       payload: {
@@ -25,7 +24,6 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
   }
 
   const handleSearch = () => {
-    console.log('tmpMemberList', tmpMemberList)
     dispatch({
       type: 'pos/onMemberSearch',
       payload: {

@@ -22,7 +22,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: (parseFloat(data.counter) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.product || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.service || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.product) + parseFloat(data.service)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: (parseFloat(data.product) + parseFloat(data.service) + parseFloat(data.counter)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -74,7 +74,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `PERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left',
                 render: text => `${moment(text).format('LL ')}`,
@@ -149,10 +149,12 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     ]
   ]
   let tableBody = []
-  try {
-    tableBody = createTableBody(listTrans)
-  } catch (e) {
-    console.log(e)
+  if (listTrans.length > 0) {
+    try {
+      tableBody = createTableBody(listTrans)
+    } catch (e) {
+      console.log(e)
+    }
   }
   const tableFooter = [
     [

@@ -79,3 +79,15 @@ export async function updatePos (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function updatePosHeader (params) {
+  const url = pos
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
