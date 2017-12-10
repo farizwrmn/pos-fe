@@ -296,6 +296,12 @@ let database = [
     route: '/report/fifo/card',
   },
   {
+    id: '5',
+    name: 'Maintenance',
+    icon: 'database',
+    route: '/maintenance',
+  },
+  {
     id: '9',
     icon: 'setting',
     name: 'Setting',

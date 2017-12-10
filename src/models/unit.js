@@ -29,7 +29,7 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/master/customer') {
           dispatch({
@@ -43,13 +43,13 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
+    *query({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
           payload: {
-		          pagination: {
+            pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
               total: data.total,
@@ -62,7 +62,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
+    *'delete'({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.customer)
       if (data.success) {
@@ -73,7 +73,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch' ({ payload }, { call, put }) {
+    *'deleteBatch'({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -83,7 +83,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add ({ payload }, { call, put }) {
+    *add({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
         const modal = Modal.info({
@@ -98,7 +98,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
+    *edit({ payload }, { select, call, put }) {
       const unit = yield select(({ customer }) => customer.currentItem.policeNo)
       const newUser = { ...payload, unit }
       const data = yield call(edit, newUser)
@@ -110,14 +110,21 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *lov ({ payload }, { call, put }) {
+    *lov({ payload }, { call, put }) {
       const data = yield call(queryField, { code: payload.id }, { fields: 'id,policeNo,merk,model', for: 'pos' })
-      if (data.data[0].length === 0) {
-        data.data[0] = {
-          policeNo: '-----',
+      try {
+        if (data.success ? data.data.length === 0 : false) {
+          data.data[0] = {
+            id: null,
+            policeNo: null,
+            merk: null,
+            model: null,
+          }
         }
+      } catch (e) {
+        alert(e.toString())
       }
-      if ( data.success ) {
+      if (data.success) {
         const dataLov = data.data
         const totalData = data.data.length
         yield put({
@@ -147,54 +154,59 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    querySuccess (state, action) {
+    querySuccess(state, action) {
       const { listUnit, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listUnit,
         pagination: {
           ...state.pagination,
           ...pagination,
-        } }
+        }
+      }
     },
-    querySuccessLov (state, action) {
+    querySuccessLov(state, action) {
       const { listLovMemberUnit, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listLovMemberUnit,
         pagination: {
           ...state.pagination,
           ...pagination,
-        } }
+        }
+      }
     },
-    updateState (state, { payload }) {
+    updateState(state, { payload }) {
       return {
         ...state,
         ...payload,
       }
     },
-    modalShow (state, { payload }) {
+    modalShow(state, { payload }) {
       return { ...state, ...payload, modalVisible: true, disabledItem: { memberCode: true } }
     },
-    modalHide (state) {
+    modalHide(state) {
       return { ...state, modalVisible: false }
     },
-    chooseEmployee (state, action) {
+    chooseEmployee(state, action) {
       return { ...state, ...action.payload }
     },
-    modalPopoverVisible (state, action) {
+    modalPopoverVisible(state, action) {
       return { ...state, ...action.payload, visiblePopover: true }
     },
-    modalPopoverClose (state) {
+    modalPopoverClose(state) {
       return { ...state, visiblePopover: false }
     },
-    searchShow (state) {
+    searchShow(state) {
       return { ...state, searchVisible: true }
     },
-    searchHide (state) {
+    searchHide(state) {
       return { ...state, searchVisible: false }
     },
-    modalIsEmployeeChange (state, action) {
-      return { ...state, ...action.payload,
-        disabledItem:{
+    modalIsEmployeeChange(state, action) {
+      return {
+        ...state, ...action.payload,
+        disabledItem: {
           customerId: (state.modalType !== 'add' ? !state.disabledItem.customerId : state.disabledItem.customerId),
           getEmployee: !state.disabledItem.getEmployee,
         },

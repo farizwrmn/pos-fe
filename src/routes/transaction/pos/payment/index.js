@@ -6,6 +6,7 @@ import { routerRedux } from 'dva/router'
 import { Form, Input, Table, Row, Col, Card, Cascader, Button, Modal } from 'antd'
 import moment from 'moment'
 import ModalCredit from './ModalCreditCard'
+import FormWo from '../FormWo'
 
 const { prefix } = config
 const FormItem = Form.Item
@@ -40,8 +41,8 @@ const dataTrans = () => {
 }
 
 const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter} = pos
+  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans, usingWo, woNumber } = payment
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter } = pos
   const { user, setting } = app
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = { 17: false, 16: false, 32: false }
@@ -56,7 +57,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     visible: modalCreditVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () {
+    onCancel() {
       dispatch({
         type: 'payment/hideCreditModal',
       })
@@ -66,24 +67,24 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
-    let mm = today.getMonth()+1 //January is 0!
+    let mm = today.getMonth() + 1 //January is 0!
     let yyyy = today.getFullYear()
 
-    if(dd<10) {
-      dd='0'+dd
+    if (dd < 10) {
+      dd = '0' + dd
     }
 
-    if(mm<10) {
-      mm='0'+mm
+    if (mm < 10) {
+      mm = '0' + mm
     }
 
-    if ( mode == 1 ) {
-      today = dd+mm+yyyy
+    if (mode === 1) {
+      today = dd + mm + yyyy
     }
-    else if ( mode == 2 ) {
-      today = mm+yyyy
+    else if (mode === 2) {
+      today = mm + yyyy
     }
-    else if ( mode == 3 ) {
+    else if (mode === 3) {
       today = yyyy + '-' + mm + '-' + dd
     }
 
@@ -101,12 +102,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const checkTime = (i) => {
-    if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
+    if (i < 10) { i = "0" + i }  // add zero in front of numbers < 10
     return i
   }
 
   const onChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
       dispatch({
@@ -120,7 +121,6 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
   }
 
   const onChangeCascader = (e) => {
-    console.log(e)
     dispatch({
       type: 'payment/changeCascader',
       payload: {
@@ -133,13 +133,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
     const dataPos = product.concat(service)
     let checkProductId = false
-    for (let n = 0; n < dataPos.length; n ++) {
-      if(dataPos[n].productId === 0) {
+    for (let n = 0; n < dataPos.length; n++) {
+      if (dataPos[n].productId === 0) {
         checkProductId = true
         break
       }
     }
-    if ( (parseInt(totalPayment) < parseInt(curTotal) + parseInt(curRounding)) ) {
+    if ((parseInt(totalPayment) < parseInt(curTotal) + parseInt(curRounding))) {
       Modal.error({
         title: 'Payment',
         content: 'Total Payment must be greater than Netto...!',
@@ -150,11 +150,21 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         title: 'Payment',
         content: 'Something Wrong with Product',
       })
-    }
-    else {
+    } else if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Service Validation',
+        content: 'You are giving service without WorkOrder',
+      })
+    } else if (typeTrans.toString().length === 0) {
+      Modal.warning({
+        title: 'Payment method',
+        content: 'Your Payment method is empty',
+      })
+    } else {
       dispatch({
         type: 'payment/create',
-        payload: { periode: moment().format('MMYY'),
+        payload: {
+          periode: moment().format('MMYY'),
           transDate: getDate(1),
           transDate2: getDate(3),
           transTime: setTime(),
@@ -171,7 +181,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
           lastTransNo: lastTransNo,
           lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-          paymentVia: typeTrans,
+          paymentVia: typeTrans.toString(),
           totalChange: totalChange,
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
@@ -187,7 +197,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           curCashierNo: curCashierNo,
           cashierId: user.userid,
           userName: user.username,
-          setting: setting
+          setting: setting,
+          usingWo: usingWo,
+          woNumber: woNumber === '' ? null : woNumber
         }
       })
       dispatch({ type: 'pos/setAllNull' })
@@ -226,9 +238,11 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         technicianId: mechanicInformation.mechanicCode,
         curShift: curShift,
         printNo: 1,
-        point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount))/10000),
+        point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
         curCashierNo: curCashierNo,
-        cashierId: user.userid
+        cashierId: user.userid,
+        usingWo: usingWo,
+        woNumber: woNumber
       }
     })
   }
@@ -284,6 +298,40 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     }
   }
 
+  const formWoProps = {
+    usingWo,
+    woNumber,
+    formItemLayout: {
+      labelCol: {
+        span: 6,
+      },
+      wrapperCol: {
+        span: 18,
+      },
+      style: {
+        marginTop: '5px',
+        marginBottom: '5px'
+      }
+    },
+    generateSequence(params) {
+      dispatch({
+        type: 'payment/sequenceQuery',
+        payload: {
+          seqCode: 'WO'
+        }
+      })
+    },
+    notUsingWo(check, value) {
+      dispatch({
+        type: 'payment/querySequenceSuccess',
+        payload: {
+          usingWo: check,
+          woNumber: value
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Row style={{ marginBottom: 16 }}>
@@ -315,7 +363,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
       <Row style={{ marginBottom: 16 }} gutter={16}>
         <Col span={16}>
           <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
-            <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null}/>
+            <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null} />
+            {/* <FormWo {...formWoProps} /> */}
             <Table
               rowKey={(record, key) => key}
               bordered
@@ -371,28 +420,28 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         <Col span={8}>
           <Form layout="horizontal">
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Grand Total" {...formItemLayout}>
-              <Input value={parseInt(curTotal)} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={parseInt(curTotal)} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
-              <Input value={curTotalDiscount} defaultValue="0" style={{height: '40px', fontSize: '20pt'}}  size="large" disabled />
+              <Input value={curTotalDiscount} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-              <Input value={curRounding} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={curRounding} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card" {...formItemLayout}>
-              <Input value={creditCardTotal} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={creditCardTotal} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card Charge" {...formItemLayout}>
-              <Input value={creditCharge} defaultValue="0" style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={creditCharge} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-              <Input value={parseInt(curTotal) + parseInt(curRounding)} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={parseInt(curTotal) + parseInt(curRounding)} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
-              <Input value={totalPayment} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={totalPayment} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-              <Input value={totalChange} style={{height: '40px', fontSize: '20pt'}} size="large" disabled />
+              <Input value={totalChange} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
           </Form>
         </Col>
@@ -402,13 +451,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
         <Col span={24}>
           <Form layout="vertical">
             {/*<FormItem>*/}
-              {/*<Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>*/}
+            {/*<Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>*/}
             {/*</FormItem>*/}
             <FormItem>
-                <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
+              <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
             </FormItem>
             <FormItem>
-                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
+              <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
             </FormItem>
           </Form>
         </Col>

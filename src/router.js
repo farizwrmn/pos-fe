@@ -157,6 +157,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/city'))
+              registerModel(app, require('./models/sequence'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           },
@@ -178,6 +179,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               cb(null, require('./routes/transaction/savedPayment/'))
             }, 'transaction-pos-history')
+          },
+        }, {
+          path: 'maintenance',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/maintenance'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              cb(null, require('./routes/maintenance/'))
+            }, 'maintenance')
           },
         }, {
           path: 'transaction/purchase/add',

@@ -9,6 +9,7 @@ import { query as queryMembers, queryByCode as queryMemberCode } from '../../ser
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/employees'
 import { query as queryProductsOutStock, queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/stock'
 import { query as queryService, queryServiceByCode } from '../../services/service'
+import { query as queryUnit } from '../../services/units'
 
 const { prefix } = config
 
@@ -25,8 +26,10 @@ export default {
     listPayment: [],
     listPaymentDetail: [],
     listMember: [],
+    listUnit: [],
     listMechanic: [],
     listProduct: [],
+    listSequence: {},
     posData: [],
     listByCode: [],
     listQueue: localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')),
@@ -69,6 +72,7 @@ export default {
     dataPosLoaded: false,
     memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
     tmpMemberList: [],
+    tmpMemberUnit: [],
     tmpMechanicList: [],
     tmpProductList: [],
     mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
@@ -109,7 +113,13 @@ export default {
               endPeriod: infoStore.endPeriod,
             }
           })
-        }
+        } 
+        // else if (location.pathname === '/transaction/pos/payment') {
+        //   dispatch({
+        //     type: 'sequenceQuery',
+        //     payload: 'WO'
+        //   })
+        // }
       })
     },
   },
@@ -530,7 +540,7 @@ export default {
       }
     },
 
-    *getMembers({ payload }, { call, put }) {
+    * getMembers({ payload }, { call, put }) {
       const data = yield call(queryMembers, payload)
       let newData = payload ? data.member : data.data
       if (data.success) {
@@ -548,6 +558,27 @@ export default {
           content: 'Member Not Found...!',
         })
         setTimeout(() => modal.destroy(), 1000)
+        //throw data
+      }
+    },
+
+    * getUnit({ payload }, { call, put }) {
+      const data = yield call(queryUnit, payload)
+      let newData = data.data
+      if (data.success) {
+        yield put({
+          type: 'queryGetUnitSuccess',
+          payload: {
+            listUnit: newData,
+            tmpMemberUnit: newData,
+          },
+        })
+      }
+      else {
+        Modal.warning({
+          title: 'Warning',
+          content: 'Member Unit Not Found...!',
+        })
         //throw data
       }
     },
@@ -1292,6 +1323,13 @@ export default {
       }
     },
 
+    queryGetUnitSuccess(state, action) {
+      return {
+        ...state,
+        ...action.payload
+      }
+    },
+
     queryGetServicesSuccess(state, action) {
       const { serviceInformation, tmpServiceList } = action.payload
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
@@ -1569,7 +1607,7 @@ export default {
       }, 0)
 
       let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
-      //Ganti 100 dengan Jumlah Pembulatan yang diinginkan
+      // Ganti 100 dengan Jumlah Pembulatan yang diinginkan
       let selisih = 100 - parseInt(ratusan)
       let curRounding
 
@@ -1629,6 +1667,22 @@ export default {
       }).filter(record => !!record)
 
       return { ...state, listMechanic: newData }
+    },
+    onUnitSearch(state, action) {
+      const { searchText, tmpMemberUnit } = action.payload
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+      newData = tmpMemberUnit.map((record) => {
+        const match = record.policeNo.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record,
+        }
+      }).filter(record => !!record)
+
+      return { ...state, listUnit: newData }
     },
     onProductSearch(state, action) {
       const { searchText, tmpProductList } = action.payload;
@@ -1714,6 +1768,24 @@ export default {
       }).filter(record => !!record)
 
       return { ...state, listMember: newData, searchText: searchText }
+    },
+
+    onUnitReset(state, action) {
+      const { searchText, tmpMemberUnit } = action.payload;
+      const reg = new RegExp(searchText, 'gi');
+      let newData
+
+      newData = tmpMemberUnit.map((record) => {
+        const match = record.memberName.match(reg)
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+
+      return { ...state, listUnit: newData, searchText: searchText }
     },
 
     onMechanicReset(state, action) {

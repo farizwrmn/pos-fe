@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import config from 'config'
 import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
@@ -9,7 +10,9 @@ import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import { read } from 'fs';
+import FormWo from './FormWo'
 
+const { prefix } = config
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
@@ -21,9 +24,12 @@ const formItemLayout = {
   wrapperCol: {
     span: 18,
   },
+  style: {
+    marginBottom: '5px'
+  }
 }
 
-const Pos = ({ location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app }) => {
+const Pos = ({ location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app, payment }) => {
   const {
     modalVisible,
     visiblePopoverCity,
@@ -38,6 +44,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   const { setting } = app
   const {
     listProduct,
+    listSequence,
     modalServiceVisible,
     modalMemberVisible,
     modalMechanicVisible,
@@ -66,10 +73,11 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     curCashierNo,
     curShift,
     lastMeter,
-    modalQueueVisible
+    modalQueueVisible,
   } = pos
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
+  const { usingWo, woNumber } = payment
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
@@ -123,7 +131,39 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
 
     return today
   }
-
+  const formWoProps = {
+    usingWo,
+    woNumber,
+    formItemLayout: {
+      labelCol: {
+        span: 24,
+      },
+      wrapperCol: {
+        span: 24,
+      },
+      style: {
+        marginTop: '5px',
+        marginBottom: '5px'
+      }
+    },
+    generateSequence(params) {
+      dispatch({
+        type: 'payment/sequenceQuery',
+        payload: {
+          seqCode: 'WO'
+        }
+      })
+    },
+    notUsingWo(check, value) {
+      dispatch({
+        type: 'payment/querySequenceSuccess',
+        payload: {
+          usingWo: check,
+          woNumber: value
+        }
+      })
+    }
+  }
   const setTime = () => {
     let today = new Date()
     let h = today.getHours()
@@ -284,6 +324,37 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   }
 
   const handlePayment = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}uid`)
+    if (localId && localId.indexOf("#") > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: 53, policeNo: null, merk: null, model: null }
+    if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Service Validation',
+        content: 'You are giving service without WorkOrder',
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined ',
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order',
+      })
+    }
     dispatch({ type: 'pos/setCurTotal' })
 
     dispatch({ type: 'payment/setLastTrans' })
@@ -1382,7 +1453,6 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
-
       <Row gutter={24} style={{ marginBottom: 16 }}>
         <Col lg={18} md={20}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
@@ -1580,7 +1650,10 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           </Card>
         </Col>
         <Col lg={6} md={4}>
-          <Collapse defaultActiveKey={['1', '2']}>
+          <Collapse defaultActiveKey={['1', '2', '3']}>
+            <Panel header="WorkOrder" key="3">
+              <FormWo {...formWoProps} />
+            </Panel>
             <Panel header="Member Info" key="1">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
@@ -1604,7 +1677,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                     </Popover>
                   </Col>
                   <Col span={4}>
-                    <Button type="danger" icon="close" onClick={hdlNoUnit} />                  
+                    <Button type="danger" icon="close" onClick={hdlNoUnit} />
                   </Col>
                 </FormItem>
                 <FormItem label="KM" hasFeedback {...formItemLayout}>
@@ -1668,6 +1741,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
 
 Pos.propTypes = {
   pos: PropTypes.object,
+  payment: PropTypes.object,
   customer: PropTypes.object,
   unit: PropTypes.object,
   app: PropTypes.object,
@@ -1679,4 +1753,4 @@ Pos.propTypes = {
   customergroup: PropTypes.object
 }
 
-export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading }))(Pos)
+export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }))(Pos)

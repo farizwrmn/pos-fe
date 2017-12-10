@@ -7,7 +7,7 @@ import { NumberCard, Quote, Sales, Info, /*Weather,*/ RecentSales, Comments, Com
 import styles from './index.less'
 import { color } from 'utils'
 import { format } from 'url';
-import { weekdays } from 'antd/node_modules/moment';
+// import { weekdays } from 'antd/node_modules/moment';
 
 const bodyStyle = {
   bodyStyle: {

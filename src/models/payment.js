@@ -8,6 +8,7 @@ import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
 import { editPoint as updateMemberPoint } from '../services/customers'
 import { queryMode as miscQuery } from '../services/misc'
+import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 const { prefix } = config
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
@@ -18,7 +19,6 @@ const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 export default {
-
   namespace: 'payment',
   state: {
     currentItem: {},
@@ -36,7 +36,7 @@ export default {
     grandTotal: 0,
     creditCardNo: '',
     creditCardTotal: 0,
-    typeTrans: 'C',
+    typeTrans: ['C'],
     creditCharge: 0,
     creditChargeAmount: 0,
     netto: 0,
@@ -51,10 +51,26 @@ export default {
     listCreditCharge: [],
     creditCardType: '',
     policeNo: '',
+    usingWo: false,
+    woNumber: null,
   },
 
   subscriptions: {
-
+    setup({ dispatch, history }) {
+      history.listen(location => {
+        // if (location.pathname === '/transaction/pos/payment') {
+        //   const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        //   if (service.length > 0) {
+        //     dispatch({
+        //       type: 'sequenceQuery',
+        //       payload: {
+        //         seqCode: 'WO'
+        //       }
+        //     })
+        //   }
+        // }
+      })
+    },
   },
   // confirm payment
 
@@ -162,7 +178,9 @@ export default {
             paymentVia: payload.paymentVia,
             policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
             policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
-            change: payload.totalChange
+            change: payload.totalChange,
+            woReference: payload.woNumber,
+            usingWo: payload.usingWo
           }
           const point = parseInt((payload.grandTotal / 10000), 10)
 
@@ -179,7 +197,7 @@ export default {
           //     product[key].qty = product[key].qty - qtyStock
           //     warningStock = warningStock.concat(product[key])
           //   }
-            
+
           // }
           // const { setting } = payload
           // let json = setting["Inventory"]
@@ -195,6 +213,9 @@ export default {
           if (data_create.success) {
             const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
             if (data_detail.success) {
+              if (payload.usingWo) {
+                yield call(increaseSequence, 'WO')
+              }
               yield put({
                 type: 'printPayment',
                 payload: {
@@ -252,7 +273,7 @@ export default {
           } else {
             Modal.error({
               title: 'Error Saving Payment',
-              content: 'Your Data not saved',
+              content: `${JSON.stringify(data_create.message)}`,
             })
           }
         }
@@ -349,6 +370,35 @@ export default {
         throw data
       }
     },
+    * sequenceQuery({ payload }, { call, put }) {
+      const data = yield call(querySequence, payload)
+      let sequenceData = {}
+      const getSequence = (data) => {
+        const pad = (n, width, z) => {
+          z = z || '0'
+          n = n + ''
+          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+        }
+        let maxNumber = pad(parseFloat(data.seqValue), data.maxNumber)
+        let concatSequence = data.seqCode + moment(data.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
+        return concatSequence
+      }
+      if (data.success) {
+        if (payload.seqCode) {
+          sequenceData = {
+            usingWo: true,
+            woNumber: getSequence(data.data)
+          }
+        }
+        yield put({
+          type: 'querySequenceSuccess',
+          payload: {
+            listSequence: data.data,
+            ...sequenceData
+          }
+        })
+      }
+    }
   },
 
   reducers: {
@@ -748,12 +798,19 @@ export default {
       }
       const { posMessage } = action.payload
       if (payload.type === 'POS') {
-        localStorage.removeItem('cashier_trans')
-        localStorage.removeItem('service_detail')
-        localStorage.removeItem('member')
-        localStorage.removeItem('memberUnit')
-        localStorage.removeItem('mechanic')
-        localStorage.removeItem('lastMeter')
+        try {
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+        } catch (e) {
+          Modal.error({
+            title: 'Error, Something Went Wrong!',
+            content: `Cache is not cleared correctly :${e}`
+          })
+        }
       }
       return {
         ...state,
@@ -763,6 +820,8 @@ export default {
           merk: null,
           model: null
         },
+        usingWo: false,
+        woNumber: null,
         posMessage: posMessage,
         totalPayment: 0,
         totalChange: 0,
@@ -788,5 +847,8 @@ export default {
     changeCascader(state, action) {
       return { ...state, typeTrans: action.payload.value[0] }
     },
+    querySequenceSuccess(state, action) {
+      return { ...state, ...action.payload }
+    }
   }
 }

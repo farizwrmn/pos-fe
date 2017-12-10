@@ -41,6 +41,7 @@ module.exports = {
     userLogout: `${APIURL}${APIV1}/users/logout`, // services/app.js post
     userInfo: `${APIV1}/userInfo`,
     users: `${APIURL}${APIV1}/users`,
+    sequence: `${APIURL}${APIV1}/sequence`,
     user: `${APIURL}${APIV1}/users/:id`,
     employees: `${APIURL}${APIV1}/employees`,
     jobposition: `${APIURL}${APIV1}/employees/positions`,

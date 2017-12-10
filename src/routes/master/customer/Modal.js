@@ -396,7 +396,7 @@ const modal = ({
                     rules: [{
                       required: true,
                       message: "Required",
-                      pattern: /^[a-z0-9\_-]{3,15}$/i,
+                      pattern: /^[a-z0-9\_]{3,15}$/i,
                       message: "a-Z & 0-9",
                     }],
                   })(
@@ -441,7 +441,7 @@ const modal = ({
                       pattern: /^[a-z0-9\_.,\- ]{3,50}$/i,
                       message: "a-Z & 0-9"
                     }],
-                  })(<Input maxLength={15} />)}
+                  })(<Input maxLength={50} />)}
                 </FormItem>
                 <FormItem label="Birthdate" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('birthDate', {
@@ -468,7 +468,7 @@ const modal = ({
                         message: 'invalid NPWP',
                       },
                     ],
-                  })(<Input maxLength="15" />)}
+                  })(<Input maxLength={15} />)}
                 </FormItem>
               </Col>
               <Col span={24}>
