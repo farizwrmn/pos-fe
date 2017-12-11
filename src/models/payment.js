@@ -52,7 +52,7 @@ export default {
     creditCardType: '',
     policeNo: '',
     usingWo: false,
-    woNumber: null,
+    woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null,
   },
 
   subscriptions: {
@@ -464,12 +464,12 @@ export default {
     },
 
     setLastMeter(state, action) {
-      return { state, lastMeter: action.payload.lastMeter }
+      return { ...state, lastMeter: action.payload.lastMeter }
     },
 
     setPoliceNo(state, action) {
       localStorage.setItem('memberUnit', JSON.stringify(action.payload.policeNo))
-      return { state, policeNo: action.payload.policeNo.policeNo }
+      return { ...state, policeNo: action.payload.policeNo.policeNo }
     },
 
     hideCreditModal(state) {
@@ -805,6 +805,7 @@ export default {
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
           localStorage.removeItem('lastMeter')
+          localStorage.removeItem('woNumber')
         } catch (e) {
           Modal.error({
             title: 'Error, Something Went Wrong!',
@@ -848,6 +849,11 @@ export default {
       return { ...state, typeTrans: action.payload.value[0] }
     },
     querySequenceSuccess(state, action) {
+      if (action.payload.woNumber) {
+        localStorage.setItem('woNumber', action.payload.woNumber)
+      } else if (action.payload.woNumber === null) {
+        localStorage.removeItem('woNumber')
+      }
       return { ...state, ...action.payload }
     }
   }
