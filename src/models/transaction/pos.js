@@ -113,7 +113,7 @@ export default {
               endPeriod: infoStore.endPeriod,
             }
           })
-        } 
+        }
         // else if (location.pathname === '/transaction/pos/payment') {
         //   dispatch({
         //     type: 'sequenceQuery',
@@ -1133,7 +1133,7 @@ export default {
           let tempQueue = `queue${n + 1}`
           if (queue.hasOwnProperty(tempQueue)) {
             console.log(queue.queue2)
-            console.log('this', `${queue.hasOwnProperty(tempQueue)} already exists`)
+            console.log('this', `${tempQueue} already exists`)
           } else if (`${queue.hasOwnProperty(tempQueue)}`) {
             // set Object by string value
             const setDeepValue = (obj, value, path) => {
@@ -1177,8 +1177,16 @@ export default {
       localStorage.removeItem('mechanic')
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('woNumber')
+      let woNumber = localStorage.getItem('woNumber')
       yield put({
         type: 'setAllNull',
+      })
+      yield put({
+        type: 'payment/returnState',
+        payload: {
+          woNumber: woNumber,
+          usingWo: (woNumber === '' || woNumber === null) ? false : true
+        }
       })
 
       // }

@@ -77,7 +77,13 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       dispatch({
         type: 'pos/setCurTotal',
       })
-
+      dispatch({
+        type: 'payment/querySequenceSuccess',
+        payload: {
+          woNumber: trans.woNumber,
+          usingWo: (trans.woNumber === '' || trans.woNumber === null) ? false : true
+        }
+      })
       dispatch({
         type: 'pos/hideQueueModal',
       })
@@ -97,12 +103,12 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         <TabPane tab="Queue 9" key="9" />
         <TabPane tab="Queue 10" key="10" />
       </Tabs>
-        <Card bodyStyle={{ padding : 0, fontSize: '150%' }} bordered={false} style={{ width: '100%', marginBottom:5 }}>
-          <div style={{textAlign: 'center'}}>
-            General Information
+      <Card bodyStyle={{ padding: 0, fontSize: '150%' }} bordered={false} style={{ width: '100%', marginBottom: 5 }}>
+        <div style={{ textAlign: 'center' }}>
+          General Information
           </div>
-          <div>
-            <Table
+        <div>
+          <Table
             bordered
             columns={[
               {
@@ -136,17 +142,17 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
             ]}
             dataSource={listQueue}
             pagination={false}
-            locale = {{
+            locale={{
               emptyText: 'No General Information',
             }}
-            />
+          />
+        </div>
+      </Card>
+      <Card bodyStyle={{ padding: 0, fontSize: '200%' }} bordered={false} style={{ width: '100%' }}>
+        <div style={{ textAlign: 'center' }}>
+          Payment List
           </div>
-        </Card>
-        <Card bodyStyle={{ padding : 0, fontSize: '200%' }} bordered={false} style={{ width: '100%' }}>
-          <div style={{textAlign: 'center'}}>
-            Payment List
-          </div>
-          <div>
+        <div>
           <Table
             rowKey={(record, key) => key}
             pagination={false}
@@ -200,63 +206,63 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
               emptyText: 'No Payment Information',
             }}
           />
-          </div>
-          <div>
-            <Table
-              rowKey={(record, key) => key}
-              pagination={false}
-              bordered
-              scroll={{x: 800}}
-              columns={[
-                {
-                  title: 'No',
-                  dataIndex: 'no',
-                },
-                {
-                  title: 'Barcode',
-                  dataIndex: 'code',
-                },
-                {
-                  title: 'Product Name',
-                  dataIndex: 'name',
-                },
-                {
-                  title: 'Qty',
-                  dataIndex: 'qty',
-                },
-                {
-                  title: 'Price',
-                  dataIndex: 'price',
-                },
-                {
-                  title: 'Disc 1(%)',
-                  dataIndex: 'disc1',
-                },
-                {
-                  title: 'Disc 2(%)',
-                  dataIndex: 'disc2',
-                },
-                {
-                  title: 'Disc 3(%)',
-                  dataIndex: 'disc3',
-                },
-                {
-                  title: 'Discount',
-                  dataIndex: 'discount',
-                },
-                {
-                  title: 'Total',
-                  dataIndex: 'total',
-                },
-              ]}
-              dataSource={listQueue[0] ? listQueue[0].service_detail : []}
-              style={{ marginBottom: 16 }}
-              locale={{
-                emptyText: 'No Payment Information',
-              }}
-            />
-          </div>
-        </Card>
+        </div>
+        <div>
+          <Table
+            rowKey={(record, key) => key}
+            pagination={false}
+            bordered
+            scroll={{ x: 800 }}
+            columns={[
+              {
+                title: 'No',
+                dataIndex: 'no',
+              },
+              {
+                title: 'Barcode',
+                dataIndex: 'code',
+              },
+              {
+                title: 'Product Name',
+                dataIndex: 'name',
+              },
+              {
+                title: 'Qty',
+                dataIndex: 'qty',
+              },
+              {
+                title: 'Price',
+                dataIndex: 'price',
+              },
+              {
+                title: 'Disc 1(%)',
+                dataIndex: 'disc1',
+              },
+              {
+                title: 'Disc 2(%)',
+                dataIndex: 'disc2',
+              },
+              {
+                title: 'Disc 3(%)',
+                dataIndex: 'disc3',
+              },
+              {
+                title: 'Discount',
+                dataIndex: 'discount',
+              },
+              {
+                title: 'Total',
+                dataIndex: 'total',
+              },
+            ]}
+            dataSource={listQueue[0] ? listQueue[0].service_detail : []}
+            style={{ marginBottom: 16 }}
+            locale={{
+              emptyText: 'No Payment Information',
+            }}
+          />
+        </div>
+      </Card>
       <Button onClick={handleClick}> RESTORE </Button>
     </div>
   )

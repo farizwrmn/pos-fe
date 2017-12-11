@@ -855,6 +855,9 @@ export default {
         localStorage.removeItem('woNumber')
       }
       return { ...state, ...action.payload }
+    },
+    returnState(state, action) {
+      return { ...state, ...action.payload }
     }
   }
 }
