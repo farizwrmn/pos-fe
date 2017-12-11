@@ -354,6 +354,14 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         title: 'Unit Validation',
         content: 'You are inserting Member Unit without Work Order',
       })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit',
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
     }
     dispatch({ type: 'pos/setCurTotal' })
 

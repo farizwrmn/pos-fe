@@ -1085,6 +1085,7 @@ export default {
       const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const woNumber = localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
 
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
       let memberInformation
@@ -1107,6 +1108,7 @@ export default {
         memberName: memberInfo.memberName,
         point: memberInfo.point,
         memberTypeId: memberInfo.memberTypeId,
+        woNumber: woNumber,
         memberUnit: memberUnit,
         policeNo: policeNo,
         lastMeter: lastMeter,
@@ -1174,7 +1176,7 @@ export default {
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('mechanic')
       localStorage.removeItem('lastMeter')
-
+      localStorage.removeItem('woNumber')
       yield put({
         type: 'setAllNull',
       })

@@ -198,7 +198,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
           cashierId: user.userid,
           userName: user.username,
           setting: setting,
-          usingWo: usingWo,
+          usingWo: (woNumber === '' || woNumber === null) ? false : true,
           woNumber: woNumber === '' ? null : woNumber
         }
       })
