@@ -2,9 +2,9 @@
  * Created by Veirry on 10/09/2017.
  */
 import { request, config, crypt } from '../../utils'
-const { posreport } = config.api
+const { posReport, posreport } = config.api
 
-export async function query (params) {
+export async function query(params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params ? `${posreport}?from=${params.from}&to=${params.to}` : `${posreport}`
   return request({
@@ -14,7 +14,7 @@ export async function query (params) {
   })
 }
 
-export async function queryTrans (params) {
+export async function queryTrans(params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params ? `${posreport}/trans?from=${params.from}&to=${params.to}` : `${posreport}/trans`
   return request({
@@ -24,7 +24,7 @@ export async function queryTrans (params) {
   })
 }
 
-export async function queryAll (params) {
+export async function queryAll(params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${posreport}/all`
   return request({
@@ -35,12 +35,23 @@ export async function queryAll (params) {
   })
 }
 
-export async function queryTransCancel (params) {
+export async function queryTransCancel(params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${posreport}/trans/cancel`
   return request({
     url: url,
-    data:params,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}
+
+export async function queryPosDaily(params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posReport}/daily`
+  return request({
+    url: url,
+    data: params,
     method: 'get',
     headers: apiHeaderToken,
   })

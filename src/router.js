@@ -223,7 +223,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               registerModel(app, require('./models/report/pos'))
               cb(null, require('./routes/report/pos/summary/'))
-            }, 'report-pos/summary')
+            }, 'report-pos-summary')
           },
         }, {
           path: 'report/pos/service',

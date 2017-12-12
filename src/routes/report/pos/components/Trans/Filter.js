@@ -37,14 +37,14 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
   return (
     <div>
       <Row style={{ display: 'flex' }}>
-        <Col span={10} >
+        <Col lg={10} md={24} >
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
               <RangePicker size="large" onChange={(value) => handleChange(value)} format="DD-MMM-YYYY" />
             )}
           </FilterItem>
         </Col>
-        <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
+        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
           <Button type="dashed" size="large"
                   className="button-width02 button-extra-large bgcolor-grey"
                   onClick={() => handleReset()}

@@ -1,7 +1,7 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-import { query as queryReport, queryTrans, queryReturn } from '../../services/report/purchase'
+import { query as queryReport, queryTrans, queryReturn, queryPurchaseDaily } from '../../services/report/purchase'
 import { queryMode as miscQuery } from '../../services/misc'
 
 export default {
@@ -10,6 +10,9 @@ export default {
   state: {
     list: [],
     listTrans: [],
+    listDaily: [],
+    category: 'ALL CATEGORY',
+    brand: 'ALL BRAND',
     fromDate: '',
     toDate: '',
     productCode: 'ALL TYPE',
@@ -72,7 +75,19 @@ export default {
       } else {
         data = yield call(queryReturn)
       }
-    }
+    },
+    * queryDaily({ payload }, { call, put }) {
+      let data = yield call(queryPurchaseDaily, payload)
+      yield put({
+        type: 'querySuccessTrans',
+        payload: {
+          listDaily: data.data,
+          fromDate: payload.from,
+          toDate: payload.to,
+          ...payload
+        },
+      })
+    },
   },
   reducers: {
     querySuccessTrans(state, action) {
@@ -83,10 +98,10 @@ export default {
       }
     },
     setDate(state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
     setListNull(state, action) {
-      return { ...state, list: [], listTrans: [] }
+      return { ...state, list: [], listTrans: [], listDaily: [], ...action.payload }
     },
   },
 }

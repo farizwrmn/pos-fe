@@ -1,7 +1,7 @@
 /**
  * Created by Veirry on 04/10/2017.
  */
-import { query as queryReport, queryTrans, queryAll, queryTransCancel } from '../../services/report/pos'
+import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
 
 export default {
   namespace: 'posReport',
@@ -9,8 +9,11 @@ export default {
   state: {
     list: [],
     listTrans: [],
+    listDaily: [],
     fromDate: '',
     toDate: '',
+    category: 'ALL CATEGORY',
+    brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
     pagination: {
       showSizeChanger: true,
@@ -108,19 +111,33 @@ export default {
         },
       })
     },
+    * queryDaily({ payload }, { call, put }) {
+      let data = yield call(queryPosDaily, payload)
+      yield put({
+        type: 'querySuccessDaily',
+        payload: {
+          listDaily: data.data,
+          fromDate: payload.from,
+          toDate: payload.to,
+          ...payload
+        },
+      })
+    },
   },
   reducers: {
     querySuccessPart(state, action) {
-      const { list, pagination, tmpList } = action.payload
+      const { list, tmpList } = action.payload
 
       return {
         ...state,
         list,
         tmpList,
-        pagination: {
-          ...state.pagination,
-          ...pagination,
-        },
+      }
+    },
+    querySuccessDaily(state, action) {
+      return {
+        ...state,
+        ...action.payload
       }
     },
     querySuccessTrans(state, action) {
@@ -139,13 +156,14 @@ export default {
       }
     },
     setDate(state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
     setListNull(state) {
       return {
         ...state,
         list: [],
         listTrans: [],
+        listDaily: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

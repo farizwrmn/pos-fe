@@ -25,3 +25,14 @@ export async function queryReturn (params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryPurchaseDaily (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${purchasereport}/daily`
+  return request({
+    url: url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}
