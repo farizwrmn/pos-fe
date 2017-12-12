@@ -66,6 +66,8 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       }
       if (trans.woNumber !== null) {
         localStorage.setItem('woNumber', trans.woNumber)
+      } else if (trans.woNumber === null) {
+        localStorage.removeItem('woNumber')
       }
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))

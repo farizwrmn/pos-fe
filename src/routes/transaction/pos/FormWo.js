@@ -57,14 +57,14 @@ const PurchaseList = ({
     <Form layout="horizontal">
       <FormItem label="Ref" help={woNumber === '' || woNumber === null ? 'you are not using Work Order' : 'you are using Work Order'} {...formItemLayout}>
         <Row>
-          <Col span={13}>
+          <Col span={20}>
             {getFieldDecorator('woReference', {
               initialValue: woNumber            
             })(<Input disabled={usingWo} onChange={(value) => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
           </Col>
-          <Col span={7}>
+          {/* <Col span={7}>
             <Button onClick={() => onGenerate()} type="primary" style={{ width: '100%', height: '32px' }}>Auto</Button>
-          </Col>
+          </Col> */}
           <Col span={4}>
             <Button icon="close" onClick={() => disableUsingWo()} type="dashed" style={{ width: '100%', height: '32px' }} className="bgcolor-red"/>
           </Col>
