@@ -19,7 +19,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: `${(parseFloat(data.total) - parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         body.push(row)
@@ -38,9 +38,9 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   let nettoTotal = 0
   if (listDaily.length > 0) {
     qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-    grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
+    grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
     discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-    dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
+    dppTotal = grandTotal - discountTotal
     ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
     nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
   }
