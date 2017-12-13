@@ -148,6 +148,7 @@ export default {
               productCode: dataPos[key].code,
               productName: dataPos[key].name,
               qty: dataPos[key].qty,
+              typeCode: dataPos[key].typeCode,
               sellingPrice: dataPos[key].price,
               discount: dataPos[key].discount,
               disc1: dataPos[key].disc1,
@@ -213,9 +214,9 @@ export default {
           if (data_create.success) {
             const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
             if (data_detail.success) {
-              if (payload.usingWo) {
-                yield call(increaseSequence, 'WO')
-              }
+              // if (payload.usingWo) {
+              //   yield call(increaseSequence, 'WO')
+              // }
               yield put({
                 type: 'printPayment',
                 payload: {
