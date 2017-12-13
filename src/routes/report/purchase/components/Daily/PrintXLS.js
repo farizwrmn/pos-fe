@@ -17,6 +17,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
   let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total) - parseFloat(o.totalDiscount), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
+  let roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
   let nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const workbook = new Excel.Workbook()
@@ -74,7 +75,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
           }
         }
       }
-      const header = ['NO.', '', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
+      const header = ['NO.', '', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'ROUNDING', 'NETTO']
       const footer = [
         '',
         '',
@@ -84,6 +85,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       ]
       for (let m = 65; m < (65 + header.length); m++) {
@@ -116,8 +118,10 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`H${m}`).value = `${(parseFloat(listDaily[n].PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`J${m}`).value = `${(parseFloat(listDaily[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
       for (let m = 65; m < (65 + footer.length); m++) {
