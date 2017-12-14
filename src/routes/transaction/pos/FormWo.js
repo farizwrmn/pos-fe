@@ -31,16 +31,16 @@ const PurchaseList = ({
     resetFields
   }
 }) => {
-  const getSequence = () => {
-    const pad = (n, width, z) => {
-      z = z || '0'
-      n = n + ''
-      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-    }
-    let maxNumber = pad(parseFloat(listSequence.seqValue), listSequence.maxNumber)
-    let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
-    return concatSequence
-  }
+  // const getSequence = () => {
+  //   const pad = (n, width, z) => {
+  //     z = z || '0'
+  //     n = n + ''
+  //     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+  //   }
+  //   let maxNumber = pad(parseFloat(listSequence.seqValue), listSequence.maxNumber)
+  //   let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
+  //   return concatSequence
+  // }
   const onGenerate = () => {
     resetFields()
     generateSequence('WO')
