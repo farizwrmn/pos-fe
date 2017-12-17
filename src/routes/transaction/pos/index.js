@@ -150,7 +150,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       dispatch({
         type: 'payment/sequenceQuery',
         payload: {
-          seqCode: 'WO'
+          seqCode: 'WO',
+          type: '1'
         }
       })
     },
@@ -893,6 +894,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            typeCode: 'P',
             qty: 1,
             price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
             discount: 0,
@@ -907,6 +909,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            typeCode: 'P',
             qty: 1,
             price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
             discount: 0,
@@ -1000,6 +1003,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           productId: item.id,
           name: item.serviceName,
           qty: curQty,
+          typeCode: 'S',
           price: item.serviceCost,
           discount: 0,
           disc1: 0,

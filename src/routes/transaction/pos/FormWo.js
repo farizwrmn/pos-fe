@@ -31,16 +31,16 @@ const PurchaseList = ({
     resetFields
   }
 }) => {
-  const getSequence = () => {
-    const pad = (n, width, z) => {
-      z = z || '0'
-      n = n + ''
-      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-    }
-    let maxNumber = pad(parseFloat(listSequence.seqValue), listSequence.maxNumber)
-    let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
-    return concatSequence
-  }
+  // const getSequence = () => {
+  //   const pad = (n, width, z) => {
+  //     z = z || '0'
+  //     n = n + ''
+  //     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+  //   }
+  //   let maxNumber = pad(parseFloat(listSequence.seqValue), listSequence.maxNumber)
+  //   let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
+  //   return concatSequence
+  // }
   const onGenerate = () => {
     resetFields()
     generateSequence('WO')
@@ -60,7 +60,7 @@ const PurchaseList = ({
           <Col span={20}>
             {getFieldDecorator('woReference', {
               initialValue: woNumber            
-            })(<Input disabled={usingWo} onChange={(value) => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
+            })(<Input disabled={usingWo} maxLength={30} onChange={(value) => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
           </Col>
           {/* <Col span={7}>
             <Button onClick={() => onGenerate()} type="primary" style={{ width: '100%', height: '32px' }}>Auto</Button>

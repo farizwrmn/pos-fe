@@ -10,10 +10,10 @@ import moment from 'moment'
 
 const warning = Modal.warning
 
-const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productCode }) => {
+const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productCode, category, brand }) => {
 
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
+  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
   let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
@@ -108,7 +108,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${parseInt(listDaily[n].qty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listDaily[n].grandTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = `${(parseFloat(listDaily[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = `${(parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
@@ -144,7 +144,9 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J5').value = `KODE PRODUK : ${productCode}`
+      sheet.getCell('J5').value = `KATEGORI PRODUK : ${category ? category : 'ALL CATEGORY'}`
+      sheet.getCell('J6').alignment = { vertical: 'middle', horizontal: 'right' }
+      sheet.getCell('J6').value = `MERK : ${brand ? brand : 'ALL BRAND'}`
       workbook.xlsx.writeBuffer().then(function (data) {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `POS-Monthly${moment().format('YYYYMMDD')}.xlsx`)

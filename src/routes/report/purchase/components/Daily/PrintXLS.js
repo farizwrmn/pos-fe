@@ -10,13 +10,14 @@ import moment from 'moment'
 
 const warning = Modal.warning
 
-const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productCode }) => {
+const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productCode, category, brand }) => {
 
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-  let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
+  let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total) - parseFloat(o.totalDiscount), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
+  let roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
   let nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const workbook = new Excel.Workbook()
@@ -64,8 +65,9 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         family: 4,
         size: 10,
       }
+      const header = ['NO.', '', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'ROUNDING', 'NETTO']
       for (let n = 0; n <= listDaily.length; n++) {
-        for (let m = 65; m < 74; m++) {
+        for (let m = 65; m < (65 + header.length); m++) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
@@ -74,7 +76,6 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
           }
         }
       }
-      const header = ['NO.', '', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
       const footer = [
         '',
         '',
@@ -84,6 +85,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       ]
       for (let m = 65; m < (65 + header.length); m++) {
@@ -112,12 +114,14 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = `${(parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listDaily[n].DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listDaily[n].total) - parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`H${m}`).value = `${(parseFloat(listDaily[n].PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`J${m}`).value = `${(parseFloat(listDaily[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
       for (let m = 65; m < (65 + footer.length); m++) {
@@ -144,7 +148,9 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J5').value = `KODE PRODUK : ${productCode}`
+      sheet.getCell('J5').value = `KATEGORI PRODUK : ${category ? category : 'ALL CATEGORY'}`
+      sheet.getCell('J6').alignment = { vertical: 'middle', horizontal: 'right' }
+      sheet.getCell('J6').value = `MERK : ${brand ? brand : 'ALL BRAND'}`
       workbook.xlsx.writeBuffer().then(function (data) {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `POS-Monthly${moment().format('YYYYMMDD')}.xlsx`)

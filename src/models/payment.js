@@ -148,6 +148,7 @@ export default {
               productCode: dataPos[key].code,
               productName: dataPos[key].name,
               qty: dataPos[key].qty,
+              typeCode: dataPos[key].typeCode,
               sellingPrice: dataPos[key].price,
               discount: dataPos[key].discount,
               disc1: dataPos[key].disc1,
@@ -213,9 +214,9 @@ export default {
           if (data_create.success) {
             const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
             if (data_detail.success) {
-              if (payload.usingWo) {
-                yield call(increaseSequence, 'WO')
-              }
+              // if (payload.usingWo) {
+              //   yield call(increaseSequence, 'WO')
+              // }
               yield put({
                 type: 'printPayment',
                 payload: {
@@ -373,21 +374,21 @@ export default {
     * sequenceQuery({ payload }, { call, put }) {
       const data = yield call(querySequence, payload)
       let sequenceData = {}
-      const getSequence = (data) => {
-        const pad = (n, width, z) => {
-          z = z || '0'
-          n = n + ''
-          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-        }
-        let maxNumber = pad(parseFloat(data.seqValue), data.maxNumber)
-        let concatSequence = data.seqCode + moment(data.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
-        return concatSequence
-      }
+      // const getSequence = (data) => {
+      //   const pad = (n, width, z) => {
+      //     z = z || '0'
+      //     n = n + ''
+      //     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+      //   }
+      //   let maxNumber = pad(parseFloat(data.seqValue), data.maxNumber)
+      //   let concatSequence = data.seqCode + moment(data.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
+      //   return concatSequence
+      // }
       if (data.success) {
         if (payload.seqCode) {
           sequenceData = {
             usingWo: true,
-            woNumber: getSequence(data.data)
+            woNumber: data.data
           }
         }
         yield put({

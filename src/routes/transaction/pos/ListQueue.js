@@ -53,6 +53,13 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         mechanicName: trans.mechanicName
       })
       Reflect.deleteProperty(queue, useQueue)
+      localStorage.removeItem('lastMeter')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('member')
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('woNumber')
       try {
         if (JSON.parse(trans.memberUnit).policeNo) {
           localStorage.setItem('memberUnit', trans.memberUnit)
@@ -62,6 +69,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
           title: 'Member Unit Not found',
           content: 'Please Insert Member Unit'
         })
+        localStorage.removeItem('memberUnit')
         console.log(e)
       }
       if (trans.woNumber !== null) {
@@ -83,7 +91,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         type: 'payment/querySequenceSuccess',
         payload: {
           woNumber: trans.woNumber,
-          usingWo: (trans.woNumber === '' || trans.woNumber === null) ? false : true
+          usingWo: false
         }
       })
       dispatch({

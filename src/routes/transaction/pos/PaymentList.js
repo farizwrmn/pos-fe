@@ -19,6 +19,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
       const data = {
         ...getFieldsValue(),
       }
+      data.typeCode = item.typeCode
       data.productId = item.productId
       onChooseItem(data)
     })
@@ -31,6 +32,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
     let TOTAL = H3 - data.discount
     data.total = TOTAL
     data.productId = item.productId
+    data.typeCode = item.typeCode
     onChangeTotalItem(data)
   }
   const handleDelete = () => {
@@ -49,7 +51,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
         console.log('Ok')
         DeleteItem(data)
       },
-      onCancel () {
+      onCancel() {
         console.log('Cancel')
       },
     })
@@ -66,7 +68,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
           }],
         })(
           <Input disabled />
-        )
+          )
         }
       </FormItem>
       <FormItem {...formItemLayout} label="Product Code">
@@ -78,7 +80,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
           }],
         })(
           <Input disabled />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Product Name">
         {getFieldDecorator('name', {
@@ -89,7 +91,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
           }],
         })(
           <Input disabled />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Price">
         {getFieldDecorator('price', {
@@ -104,7 +106,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             min={0}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Qty">
         {getFieldDecorator('qty', {
@@ -120,7 +122,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             min={0}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Disc1(%)">
         {getFieldDecorator('disc1', {
@@ -137,7 +139,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             max={100}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Disc2(%)">
         {getFieldDecorator('disc2', {
@@ -154,7 +156,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             max={100}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Disc3(%)">
         {getFieldDecorator('disc3', {
@@ -171,7 +173,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             max={100}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Discount Nominal" help="Total - Diskon Nominal">
         {getFieldDecorator('discount', {
@@ -188,7 +190,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
             max={item.price * item.qty}
             onBlur={value => handleTotalChange(value)}
           />
-        )}
+          )}
       </FormItem>
       <FormItem {...formItemLayout} label="Total">
         {getFieldDecorator('total', {
@@ -199,7 +201,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
           }],
         })(
           <Input disabled />
-        )}
+          )}
       </FormItem>
       <Row>
         <Col span={6}>

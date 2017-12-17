@@ -34,6 +34,7 @@ const dataTrans = () => {
       name: cashier_trans[n].name,
       price: cashier_trans[n].price,
       qty: cashier_trans[n].qty,
+      typeCode: cashier_trans[n].typeCode,
       total: cashier_trans[n].total,
     })
   }
