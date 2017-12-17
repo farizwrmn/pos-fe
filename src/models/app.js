@@ -58,15 +58,16 @@ export default {
     }, { call, put }) {
       const { success, user } = yield call(query, payload)
       if (success && user) {
-        const { list } = yield call(menusService.query)
+        const { data } = yield call(menusService.query)
+        // console.log('data', data)
         const { permissions } = user
 
-        let menu = list
+        let menu = data
         if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)
         ) {
-          permissions.visit = list.map(item => item.id)
+          permissions.visit = data.map(item => item.id)
         } else {
-          menu = list.filter((item) => {
+          menu = data.filter((item) => {
             const cases = [
               permissions.visit.includes(item.id),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
