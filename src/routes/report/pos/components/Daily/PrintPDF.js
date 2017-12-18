@@ -15,6 +15,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
+        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -79,7 +80,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
             alignment: 'center',
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - 2 * 40, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -115,7 +116,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - 2 * 40, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -145,6 +146,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
@@ -162,7 +164,8 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 2, alignment: 'center', fontSize: 12 },
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+      {},
       {},
       { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
@@ -176,9 +179,9 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   // Declare additional Props
   const pdfProps = {
     className: "button-width02 button-extra-large bgcolor-blue",
-    width: ['5%', '22%', '*', '15%', '13%', '13%', '13%', '13%'],
+    width: ['4%', '14%', '23%', '4%', '11%', '11%', '11%', '11%', '11%'],
     pageMargins: [50, 145, 50, 60],
-    pageSize: 'A4',
+    pageSize: 'A3',
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: "noBorder",
