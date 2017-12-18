@@ -7,7 +7,7 @@ import pathToRegexp from 'path-to-regexp'
 
 const Menus = ({ siderFold, darkTheme, navOpenKeys, changeOpenKeys, menu }) => {
   // 生成树状 - Generate a tree
-  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'id', 'mpid')
+  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
   const levelMap = {}
 
   // 递归生成菜单 - Generate a tree
@@ -15,11 +15,11 @@ const Menus = ({ siderFold, darkTheme, navOpenKeys, changeOpenKeys, menu }) => {
     return menuTreeN.map((item) => {
       if (item.children) {
         if (item.mpid) {
-          levelMap[item.id] = item.mpid
+          levelMap[item.menuId] = item.mpid
         }
         return (
           <Menu.SubMenu
-            key={item.id}
+            key={item.menuId}
             title={<span>
               {item.icon && <Icon type={item.icon} />}
               {(!siderFoldN || !menuTree.includes(item)) && item.name}
@@ -30,7 +30,7 @@ const Menus = ({ siderFold, darkTheme, navOpenKeys, changeOpenKeys, menu }) => {
         )
       }
       return (
-        <Menu.Item key={item.id}>
+        <Menu.Item key={item.menuId}>
           <Link to={item.route}>
             {item.icon && <Icon type={item.icon} />}
             {(!siderFoldN || !menuTree.includes(item)) && item.name}
@@ -87,19 +87,19 @@ const Menus = ({ siderFold, darkTheme, navOpenKeys, changeOpenKeys, menu }) => {
       break
     }
   }
-  const getPathArray = (array, current, pid, id) => {
-    let result = [String(current[id])]
+  const getPathArray = (array, current, pid, menuId) => {
+    let result = [String(current[menuId])]
     const getPath = (item) => {
       if (item && item[pid]) {
         result.unshift(String(item[pid]))
-        getPath(queryArray(array, item[pid], id))
+        getPath(queryArray(array, item[pid], menuId))
       }
     }
     getPath(current)
     return result
   }
   if (currentMenu) {
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id')
+    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
   }
 
   return (

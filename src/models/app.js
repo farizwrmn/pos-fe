@@ -65,11 +65,11 @@ export default {
         let menu = data
         if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)
         ) {
-          permissions.visit = data.map(item => item.id)
+          permissions.visit = data.map(item => item.menuId)
         } else {
           menu = data.filter((item) => {
             const cases = [
-              permissions.visit.includes(item.id),
+              permissions.visit.includes(item.menuId),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
               item.bpid ? permissions.visit.includes(item.bpid) : true,
             ]
