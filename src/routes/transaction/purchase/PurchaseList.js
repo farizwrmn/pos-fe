@@ -43,10 +43,18 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
     onChangeTotalItem(data)
   }
   const handleDelete = () => {
-    const data = {
-      ...getFieldsValue(),
-    }
-    onDelete(data)
+    const data = getFieldsValue()
+    Modal.confirm({
+      title: `Are you sure Delete ${data.name} ?`,
+      content: 'Delete cannot be undone',
+      onOk() {
+        onDelete(data)
+        resetFields()
+      },
+      onCancel() {
+        console.log('cancel')
+      }
+    })
   }
   return (
     <Modal visible={modalPurchaseVisible} onCancel={() => hdlCancel()} footer={[]}>
@@ -158,7 +166,7 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
           })(<Input disabled />)}
         </FormItem>
         <Button type="primary" onClick={handleClick}> Change </Button>
-        {/*<Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>*/}
+        <Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>
       </Form>
     </Modal>
   )

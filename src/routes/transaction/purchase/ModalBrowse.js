@@ -16,7 +16,6 @@ const Browse = ({location, purchase, loading, onChooseItemItem, ...purchaseProps
     loading: loading.effects[(
       'purchase/getProducts'
     )],
-    pagination,
     location,
     item: itemPayment,
     isMotion,
