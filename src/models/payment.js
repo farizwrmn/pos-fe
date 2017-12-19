@@ -628,10 +628,10 @@ export default {
                 table: {
                   widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
                   body: [
-                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: payload.lastTransNo.toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: payload.transDatePrint.toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: payload.lastMeter.toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${payload.memberName.toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: payload.mechanicName.toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Contact', fontSize: 12 }, ':', { text: payload.phone.toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: payload.address.toString().toUpperCase().substring(0, 22), fontSize: 12 }],
+                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
+                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: (payload.lastMeter || 0).toString().toUpperCase(), fontSize: 12 }],
+                    [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${(payload.memberName || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }],
+                    [{ text: 'Contact', fontSize: 12 }, ':', { text: (payload.phone || '').toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }],
                   ],
                 },
                 layout: 'noBorders',
