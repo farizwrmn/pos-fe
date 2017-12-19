@@ -331,7 +331,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       defaultRole = localId.split(/[# ]+/).pop()
     }
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: 53, policeNo: null, merk: null, model: null }
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
     if (service.length > 0 && (woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Service Validation',
