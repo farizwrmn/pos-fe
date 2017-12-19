@@ -10,10 +10,10 @@ import { editPoint as updateMemberPoint } from '../services/customers'
 import { queryMode as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 const { prefix } = config
-const pdfMake = require('pdfmake/build/pdfmake.js')
-const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 const terbilang = require('terbilang-spelling')
 
+const pdfMake = require('pdfmake/build/pdfmake.js')
+const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 const { queryLastTransNo, create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
@@ -56,27 +56,23 @@ export default {
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(location => {
-        // if (location.pathname === '/transaction/pos/payment') {
-        //   const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-        //   if (service.length > 0) {
-        //     dispatch({
-        //       type: 'sequenceQuery',
-        //       payload: {
-        //         seqCode: 'WO'
-        //       }
-        //     })
-        //   }
-        // }
-      })
-    },
+
   },
   // confirm payment
 
   effects: {
     * create({ payload }, { call, put }) {
-      if (payload.address === undefined) {
+      const invoice = {
+        seqCode: 'INV',
+        type: 2
+      }
+      const transNo = yield call(querySequence, invoice)
+      if ((transNo.data === null)) {
+        Modal.error({
+          title: 'Something went wrong',
+          content: `Cannot read transaction number, message: ${transNo.data}`,
+        })
+      } else if (payload.address === undefined) {
         const modal = Modal.error({
           title: 'Payment Fail',
           content: 'Address is Undefined',
@@ -96,233 +92,165 @@ export default {
           title: 'Payment Fail',
           content: 'Unit is Undefined',
         })
-      }
-      else {
-        let datatrans
-        let dataLast
+      } else {
         let data = yield call(queryLastTransNo, payload.periode)
-        function pad(n, width, z) {
-          z = z || '0';
-          n = n + '';
-          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-        }
-        datatrans = [`FJ${moment().format('MMYY')}0000`]
-
-        let newData = datatrans
-        if (data.data.length > 0) {
-          dataLast = data.data
-        }
-        else {
-          dataLast = datatrans
-        }
-
-        let parseTransNo = dataLast.reduce(function (prev, current) {
-          return (prev.transNo > current.transNo) ? prev : current
-        })
-
-        let lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
-        lastNo = lastNo.replace(/[^a-z0-9]/gi, '')
-        let newMonth = lastNo.substr(2, 4)
-        let lastTransNo = lastNo.substr(lastNo.length - 4)
-        let sendTransNo = parseInt(lastTransNo) + 1
-        let padding = pad(sendTransNo, 4)
-
-        if (data.success) {
-          if (newMonth == `${moment().format('MMYY')}`) {
-            var transNo = `FJ${moment().format('MMYY')}${padding}`
-          } else {
-            var transNo = `FJ${moment().format('MMYY')}0001`
-          }
-          let arrayProd = []
-          const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-          const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-          const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
-          if (transNo.indexOf('FJ') > -1) {
-            transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 6) + '/' + transNo.substring(6, 10)
-          }
-          const trans = transNo.replace(/[^a-z0-9]/gi, '');
-          for (let key = 0; key < dataPos.length; key++) {
-            arrayProd.push({
-              transNo: trans,
-              productId: dataPos[key].productId,
-              productCode: dataPos[key].code,
-              productName: dataPos[key].name,
-              qty: dataPos[key].qty,
-              typeCode: dataPos[key].typeCode,
-              sellingPrice: dataPos[key].price,
-              discount: dataPos[key].discount,
-              disc1: dataPos[key].disc1,
-              disc2: dataPos[key].disc2,
-              disc3: dataPos[key].disc3
-            })
-          }
-
-          const detailPOS = {
-            dataPos: arrayProd,
+        let arrayProd = []
+        const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
+        const trans = transNo.data
+        for (let key = 0; key < dataPos.length; key += 1) {
+          arrayProd.push({
             transNo: trans,
-            memberCode: payload.memberCode,
-            technicianId: payload.technicianId,
-            cashierNo: payload.curCashierNo,
-            cashierId: payload.cashierId,
-            shift: payload.curShift,
-            transDate: `${moment().format('YYYYMMDD')}`,
-            transTime: payload.transTime,
-            total: payload.grandTotal,
-            lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : payload.lastMeter ? payload.lastMeter : 0,
-            creditCardNo: payload.creditCardNo,
-            creditCardType: payload.creditCardType,
-            creditCardCharge: payload.creditCardCharge,
-            totalCreditCard: payload.totalCreditCard,
-            discount: payload.totalDiscount,
-            rounding: payload.rounding,
-            paid: payload.totalPayment,
-            paymentVia: payload.paymentVia,
-            policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-            policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
-            change: payload.totalChange,
-            woReference: payload.woNumber,
-            usingWo: payload.usingWo
-          }
-          const point = parseInt((payload.grandTotal / 10000), 10)
+            productId: dataPos[key].productId,
+            productCode: dataPos[key].code,
+            productName: dataPos[key].name,
+            qty: dataPos[key].qty,
+            typeCode: dataPos[key].typeCode,
+            sellingPrice: dataPos[key].price,
+            discount: dataPos[key].discount,
+            disc1: dataPos[key].disc1,
+            disc2: dataPos[key].disc2,
+            disc3: dataPos[key].disc3,
+          })
+        }
 
-          // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-          // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-          // const dataStock = listProductData.data
-          // let warningStock = []
-          // for (let key in product) {
-          //   let productId = product[key].productId
-          //   let filterDataStock = dataStock.filter(el => el.productId === productId)
-          //   let qtySell = product[key].qty
-          //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-          //   if (qtySell > qtyStock) {
-          //     product[key].qty = product[key].qty - qtyStock
-          //     warningStock = warningStock.concat(product[key])
-          //   }
+        const detailPOS = {
+          dataPos: arrayProd,
+          transNo: trans,
+          memberCode: payload.memberCode,
+          technicianId: payload.technicianId,
+          cashierNo: payload.curCashierNo,
+          cashierId: payload.cashierId,
+          shift: payload.curShift,
+          transDate: `${moment().format('YYYYMMDD')}`,
+          transTime: payload.transTime,
+          total: payload.grandTotal,
+          lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
+          creditCardNo: payload.creditCardNo,
+          creditCardType: payload.creditCardType,
+          creditCardCharge: payload.creditCardCharge,
+          totalCreditCard: payload.totalCreditCard,
+          discount: payload.totalDiscount,
+          rounding: payload.rounding,
+          paid: payload.totalPayment,
+          paymentVia: payload.paymentVia,
+          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+          policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
+          change: payload.totalChange,
+          woReference: payload.woNumber,
+        }
+        const point = parseInt((payload.grandTotal / 10000), 10)
 
-          // }
-          // const { setting } = payload
-          // let json = setting["Inventory"]
-          // let jsondata = JSON.stringify(eval("(" + json + ")"));
-          // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-          // if (outOfStock === 0) {
-          //   Modal.info({
-          //     title: 'No available stock',
-          //     content: JSON.stringify(warningStock)
-          //   })
-          // }
-          const data_create = yield call(create, detailPOS)
-          if (data_create.success) {
-            const data_detail = yield call(createDetail, { data: arrayProd, transNo: trans })
-            if (data_detail.success) {
-              // if (payload.usingWo) {
-              //   yield call(increaseSequence, 'WO')
-              // }
-              yield put({
-                type: 'printPayment',
-                payload: {
-                  periode: payload.periode,
-                  transDate: payload.transDate,
-                  transDate2: payload.transDate2,
-                  transTime: payload.transTime,
-                  grandTotal: payload.grandTotal,
-                  totalPayment: payload.totalPayment,
-                  transDatePrint: payload.transDatePrint,
-                  company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
-                  gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-                  phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-                  address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-                  lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-                  lastTransNo: transNo,
-                  totalChange: payload.totalChange,
-                  totalDiscount: payload.totalDiscount,
-                  policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
-                  rounding: payload.rounding,
-                  dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
-                  dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-                  memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
-                  memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-                  memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-                  mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
-                  technicianId: payload.technicianId,
-                  curShift: payload.curShift,
-                  printNo: 1,
-                  point: point,
-                  curCashierNo: payload.curCashierNo,
-                  cashierId: payload.cashierId,
-                  userName: payload.userName,
-                  posMessage: 'Data has been saved',
-                  type: 'POS'
-                },
+        // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+        // const dataStock = listProductData.data
+        // let warningStock = []
+        // for (let key in product) {
+        //   let productId = product[key].productId
+        //   let filterDataStock = dataStock.filter(el => el.productId === productId)
+        //   let qtySell = product[key].qty
+        //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+        //   if (qtySell > qtyStock) {
+        //     product[key].qty = product[key].qty - qtyStock
+        //     warningStock = warningStock.concat(product[key])
+        //   }
+
+        // }
+        // const { setting } = payload
+        // let json = setting["Inventory"]
+        // let jsondata = JSON.stringify(eval("(" + json + ")"));
+        // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+        // if (outOfStock === 0) {
+        //   Modal.info({
+        //     title: 'No available stock',
+        //     content: JSON.stringify(warningStock)
+        //   })
+        // }
+        const data_create = yield call(create, detailPOS)
+        if (data_create.success) {
+          const data_detail = yield call(createDetail, {
+            data: arrayProd,
+            transNo: trans
+          })
+          if (data_detail.success) {
+            try {
+              const transNoIncrease = yield call(increaseSequence, 'INV')
+              console.log('transNoincrease', transNoIncrease)
+            } catch (e) {
+              Modal.warning({
+                title: 'Something went wrong',
+                content: `Call your IT support, message: ${e}`
               })
-              const data_cashier_trans_update = yield call(updateCashierTrans, {
-                total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
-                totalCreditCard: payload.totalCreditCard,
-                status: 'O',
-                cashierNo: payload.curCashierNo,
-                shift: payload.curShift,
-                transDate: payload.transDate2
-              })
-              if (data_cashier_trans_update.success) {
-                yield call(updateMemberPoint, { point: point, memberCode: payload.memberId })
-                //yield put(routerRedux.push('/transaction/pos'))
-                Modal.info({
-                  title: 'Information',
-                  content: 'Transaction has been saved...!',
-                })
-              }
             }
-          } else {
-            Modal.error({
-              title: 'Error Saving Payment',
-              content: `${JSON.stringify(data_create.message)}`,
+            yield put({
+              type: 'printPayment',
+              payload: {
+                periode: payload.periode,
+                transDate: payload.transDate,
+                transDate2: payload.transDate2,
+                transTime: payload.transTime,
+                grandTotal: payload.grandTotal,
+                totalPayment: payload.totalPayment,
+                transDatePrint: payload.transDatePrint,
+                company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
+                gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+                phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+                address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+                lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+                lastTransNo: trans,
+                totalChange: payload.totalChange,
+                totalDiscount: payload.totalDiscount,
+                policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
+                rounding: payload.rounding,
+                dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+                dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
+                memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+                memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+                memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+                mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+                technicianId: payload.technicianId,
+                curShift: payload.curShift,
+                printNo: 1,
+                point: point,
+                curCashierNo: payload.curCashierNo,
+                cashierId: payload.cashierId,
+                userName: payload.userName,
+                posMessage: 'Data has been saved',
+                type: 'POS',
+              },
             })
+            const data_cashier_trans_update = yield call(updateCashierTrans, {
+              total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
+              totalCreditCard: payload.totalCreditCard,
+              status: 'O',
+              cashierNo: payload.curCashierNo,
+              shift: payload.curShift,
+              transDate: payload.transDate2
+            })
+            if (data_cashier_trans_update.success) {
+              // yield call(updateMemberPoint, { point, memberCode: payload.memberId })
+              Modal.info({
+                title: 'Information',
+                content: 'Transaction has been saved...!',
+              })
+            }
           }
+        } else {
+          Modal.error({
+            title: 'Error Saving Payment',
+            content: `${JSON.stringify(data_create.message)}`,
+          })
         }
       }
     },
 
     * setLastTrans({ payload }, { call, put }) {
-      let datatrans
-      let dataLast
-      function pad(n, width, z) {
-        z = z || '0';
-        n = n + '';
-        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-      }
-      let data = yield call(queryLastTransNo)
-      datatrans = [`FJ${moment().format('MMYY')}0000`]
-
-      let newData = datatrans
-      if (data.data.length > 0) {
-        dataLast = data.data
-      }
-      else {
-        dataLast = datatrans
-      }
-      let parseTransNo = dataLast.reduce(function (prev, current) {
-        return (prev.transNo > current.transNo) ? prev : current
-      })
-
-      var lastNo = parseTransNo.transNo ? parseTransNo.transNo : parseTransNo
-      lastNo = lastNo.replace(/[^a-z0-9]/gi, '')
-      var newMonth = lastNo.substr(2, 4)
-      var lastTransNo = lastNo.substr(lastNo.length - 4)
-      var sendTransNo = parseInt(lastTransNo) + 1
-      var padding = pad(sendTransNo, 4)
-
-      if (newMonth == `${moment().format('MMYY')}`) {
-        var transNo = `FJ${moment().format('MMYY')}${padding}`
-      } else {
-        var transNo = `FJ${moment().format('MMYY')}0001`
-      }
-      if (transNo.indexOf('FJ') > -1) {
-        transNo = transNo.substring(0, 2) + '/' + transNo.substring(2, 6) + '/' + transNo.substring(6, 10)
-      }
-      localStorage.setItem('transNo', transNo)
-      const trans = transNo.replace(/[^a-z0-9]/gi, '');
+      const transNo = yield call(querySequence, payload)
+      localStorage.setItem('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
-        payload: transNo,
+        payload: transNo.data,
       })
     },
     * listCreditCharge({ payload }, { put, call }) {
@@ -366,24 +294,13 @@ export default {
             creditCardType: payload.creditCode,
           },
         })
-      }
-      else {
+      } else {
         throw data
       }
     },
     * sequenceQuery({ payload }, { call, put }) {
       const data = yield call(querySequence, payload)
       let sequenceData = {}
-      // const getSequence = (data) => {
-      //   const pad = (n, width, z) => {
-      //     z = z || '0'
-      //     n = n + ''
-      //     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-      //   }
-      //   let maxNumber = pad(parseFloat(data.seqValue), data.maxNumber)
-      //   let concatSequence = data.seqCode + moment(data.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
-      //   return concatSequence
-      // }
       if (data.success) {
         if (payload.seqCode) {
           sequenceData = {

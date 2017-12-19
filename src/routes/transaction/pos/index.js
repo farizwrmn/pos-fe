@@ -366,7 +366,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     }
     dispatch({ type: 'pos/setCurTotal' })
 
-    dispatch({ type: 'payment/setLastTrans' })
+    dispatch({ type: 'payment/setLastTrans', payload: { seqCode: 'INV', type: 2} })
 
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 

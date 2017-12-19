@@ -8,6 +8,7 @@ import { query as queryProducts } from '../services/stock'
 import { query as queryTransType } from '../services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/employees'
 import { queryModeName as miscQuery } from '../services/misc'
+import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -115,37 +116,12 @@ export default modelExtend(pageModel, {
     },
 
     * queryLastAdjust ({ payload }, { call, put }) {
-      let data = []
-      try {
-        data = yield call(query, payload)
-      } catch (e) {
-        console.log('error', e)
+      const invoice = {
+        seqCode: 'ADJ',
+        type: 2
       }
-      const format = yield call(miscQuery, { code: 'FORMAT', name: 'ADJTRANS' })
-      let datatrans = `${format.data.miscVariable}/${moment().format('MMYY')}/00000`
-      let dataLast
-      let length = data.data.length - 1
-      function pad(n, width, z) {
-        z = z || '0'
-        n = n + ''
-        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-      }
-      if (length > -1) {
-        dataLast = data.data[length].transNo
-      } else {
-        dataLast = datatrans
-      }
-      let lastNo = dataLast.replace(/[^a-z0-9]/gi, '')
-      let newMonth = lastNo.substr(format.data.miscVariable.length, 4)
-      let lastTransNo = lastNo.substr(lastNo.length - 5)
-      let sendTransNo = parseInt(lastTransNo) + 1
-      let padding = pad(sendTransNo, 5)
-      let transNo = ''
-      if (newMonth === `${moment().format('MMYY')}`) {
-        transNo = `${format.data.miscVariable}/${moment().format('MMYY')}/${padding}`
-      } else {
-        transNo = `${format.data.miscVariable}/${moment().format('MMYY')}/00001`
-      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
       yield put({ type: 'SuccessTransNo', payload: transNo })
     },
 
@@ -171,12 +147,18 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      const invoice = {
+        seqCode: 'ADJ',
+        type: 2
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
       const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
-      if (dataAdj.length > 0) {
+      if (dataAdj.length > 0 && transNo !== null) {
         let arrayProd = []
         for (let n = 0; n < dataAdj.length; n += 1) {
           arrayProd.push({
-            transNo: payload.transNo,
+            transNo: transNo,
             transType: payload.transType,
             productId: dataAdj[n].productId,
             productCode: dataAdj[n].code,
@@ -188,14 +170,26 @@ export default modelExtend(pageModel, {
         }
         const data = yield call(create, {id: payload.transNo, data: payload, detail: arrayProd})
         if (data.success) {
-          const modal = Modal.info({
-            title: 'Success',
-            content: 'Data has been saved...!',
-          })
-          yield put(routerRedux.push('/transaction/adjust'))
-          yield put({ type: 'SuccessData' })
-          yield put({ type: 'hidePopover' })
-          yield put({ type: 'modalHide' })
+          let transNoIncrease
+          try {
+            transNoIncrease = yield call(increaseSequence, 'ADJ')
+            console.log('transNoincrease', transNoIncrease)
+          } catch (e) {
+            Modal.warning({
+              title: 'Something went wrong',
+              content: `Call your IT support, message: ${e}`
+            })
+          }
+          if (transNoIncrease.success) {
+            const modal = Modal.info({
+              title: 'Success',
+              content: 'Data has been saved...!',
+            })
+            yield put(routerRedux.push('/transaction/adjust'))
+            yield put({ type: 'SuccessData' })
+            yield put({ type: 'hidePopover' })
+            yield put({ type: 'modalHide' })
+          }
         }
       } else {
         const modal = Modal.warning({
