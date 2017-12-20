@@ -27,6 +27,7 @@ const modal = ({
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
+  let serviceType = listServiceType.length > 0 ? listServiceType.map(service => <Option value={service.miscName} key={service.miscName}>{service.miscName}</Option>) : []
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -166,11 +167,7 @@ const modal = ({
               required: false,
             }],
           })(<Select defaultValue="PS" style={{ width: 120 }}>
-            <Option value="PS">PS</Option>
-            <Option value="GT">GT</Option>
-            <Option value="SCRAP">SCRAP</Option>
-            <Option value="SR">SR</Option>
-            <Option value="TDF">TDF</Option>
+            {serviceType}
           </Select>)}
         </FormItem>
       </Form>

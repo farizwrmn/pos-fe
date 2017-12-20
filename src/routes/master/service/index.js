@@ -7,17 +7,16 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const Service = ({ location, dispatch, loading, service, servicetype, misc }) => {
-  const { listService, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
+  const { listService, listServiceType,pagination, currentItem, modalVisible, searchVisible, visiblePopover,
     disabledItem, modalType, selectedRowKeys, disableMultiSelect } = service
 
   const { pageSize } = pagination
-  const { listServType } = servicetype
   const modalProps = {
     item: currentItem,
     visible: modalVisible,
     visiblePopover: visiblePopover,
     disabledItem: disabledItem,
-    listServType,
+    listServiceType,
     pagination,
     maskClosable: false,
     confirmLoading: loading.effects['service/update'],

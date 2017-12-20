@@ -1,11 +1,21 @@
 import { request, config, crypt } from 'utils'
 
-const { services } = config.api
+const { services, misc } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: services,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken,
+  })
+}
+
+export async function queryDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: misc + '/code/SERVICE',
     method: 'get',
     data: params,
     headers: apiHeaderToken,

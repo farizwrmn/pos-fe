@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, edit, remove } from '../services/service'
+import { query, queryDetail, add, edit, remove } from '../services/service'
 import { pageModel } from './common'
 import { config } from 'utils'
 
@@ -10,6 +10,7 @@ export default modelExtend(pageModel, {
 
   state: {
     listService: [],
+    listServiceType: [],
     currentItem: {},
     addItem: {},
     modalVisible: false,
@@ -43,11 +44,13 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
+      const detail = yield call(queryDetail)
       if (data) {
         yield put({
           type: 'querySuccess',
           payload: {
             listService: data.data,
+            listServiceType: detail.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -106,9 +109,10 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const { listService, pagination } = action.payload
+      const { listService, listServiceType, pagination } = action.payload
       return { ...state,
         listService,
+        listServiceType,
         pagination: {
           ...state.pagination,
           ...pagination,

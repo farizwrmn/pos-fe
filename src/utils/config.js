@@ -51,7 +51,6 @@ module.exports = {
     suppliers: `${APIURL}${APIV1}/suppliers`,
     city: `${APIURL}${APIV1}/cities`,
     services: `${APIURL}${APIV1}/services`,
-    servicestype: `${APIURL}${APIV1}/misc/code/service`,
     misc: `${APIURL}${APIV1}/misc`,
     ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
     posts: `${APIV1}/posts`,// mock js ===========
