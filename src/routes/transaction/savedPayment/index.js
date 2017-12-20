@@ -173,7 +173,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
       })
     },
     onGetDetail (e) {
-      const transNo = e.transNo.replace(/[^a-z0-9]/gi,'')
+      const transNo = e.transNo
       dispatch({
         type: 'pos/queryPosDetail',
         payload: {
