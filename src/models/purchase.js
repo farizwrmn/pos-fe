@@ -16,6 +16,10 @@ export default modelExtend(pageModel, {
     date: '',
     readOnly: false,
     addItem: {},
+    curHead: {
+      discInvoiceNominal: 0,
+      discInvoicePercent: 0,
+    },
     curTotal: 0,
     tmpSupplierData: [],
     item: {},
@@ -127,10 +131,24 @@ export default modelExtend(pageModel, {
     },
 
     * editPurchaseList({ payload }, { put }) {
+      function hdlChangePercent(payload) {
+        const data = payload.head
+        let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
+        let ppnType = data.taxType
+        const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+        const x = dataProduct
+        for (let key in x) {
+          x[key].dpp = ((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / totalPrice) * (data.discInvoiceNominal))
+          x[key].ppn = (ppnType === 'I' ? (x[key].dpp * 0.1) : 0)
+          x[key].total = x[key].dpp + x[key].ppn
+        }
+        localStorage.setItem('product_detail', JSON.stringify(x))
+      }
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-      dataPos[payload.no - 1] = payload
+      dataPos[payload.data.no - 1] = payload.data
       localStorage.setItem('product_detail', JSON.stringify(dataPos))
-      yield put({ type: 'modalEditHide' })
+      hdlChangePercent(payload)
+      yield put({ type: 'modalEditHide' })      
     },
 
     * voidPurchaseList({ payload }, { put }) {
@@ -179,7 +197,7 @@ export default modelExtend(pageModel, {
         } else {
           const modal = Modal.warning({
             title: 'Something went wrong',
-            content: `${data.message}`,
+            content: `${JSON.stringify(data.message)}`,
           })
         }
       } else {
@@ -812,5 +830,8 @@ export default modelExtend(pageModel, {
     getVoid(state, action) {
       return { ...state, ...action.payload, dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [] }
     },
+    returnState(state, action) {
+      return { ...state, ...action.payload}
+    }
   },
 })

@@ -9,23 +9,24 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.code = item.code
-      onChooseItem(data)
+      onChooseItem(data, curHead)      
       resetFields()
     })
   }
   const hdlCancel = (e) => {
     onCancel()
   }
+  
   const hdlChange = () => {
     const data = getFieldsValue()
     data.code = item.code
@@ -160,7 +161,6 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
             initialValue: item.total,
             rules: [{
               required: true,
-              pattern: /^([0-9.]{0,13})$/i,
               message: 'Total is not define',
             }],
           })(<Input disabled />)}

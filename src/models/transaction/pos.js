@@ -683,13 +683,29 @@ export default {
       const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
       const listProduct = listProductData.data
       let tempListProduct = []
+      function getSetting(setting) {
+        let json = setting["Inventory"]
+        let jsondata = JSON.stringify(eval("(" + json + ")"));
+        const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+        return outOfStock
+      }
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
         tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        if (totalQty > tempListProduct) {
+        let outOfStock = getSetting(payload.setting)
+        if (totalQty > tempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
+          })
+        } else if (totalQty > tempListProduct && outOfStock === 1) {
+          Modal.warning({
+            title: 'Waning Out of stock option',
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
+          })
+          yield put({
+            type: 'paymentEdit',
+            payload: data
           })
         } else {
           yield put({
@@ -735,14 +751,32 @@ export default {
       const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
       const listProduct = listProductData.data
       let tempListProduct = []
+      function getSetting(setting) {
+        let json = setting["Inventory"]
+        let jsondata = JSON.stringify(eval("(" + json + ")"));
+        const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+        return outOfStock
+      }
+      const outOfStock = getSetting(payload.setting)
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
         tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        if (totalQty > tempListProduct) {
+        if (totalQty > tempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
           })
+        } else if (totalQty > tempListProduct && outOfStock === 1) {
+          Modal.warning({
+            title: 'Waning Out of stock option',
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`,
+          })
+          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          yield put({
+            type: 'pos/setUtil',
+            payload: { kodeUtil: 'barcode', infoUtil: 'Product' },
+          })
+          yield put({ type: 'pos/hideProductModal' })
         } else {
           localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
           yield put({

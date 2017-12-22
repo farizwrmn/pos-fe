@@ -8,13 +8,14 @@ import PurchaseList from './PurchaseList'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, tmpSupplierData, date, datePicker, modalProductVisible,
-    modalPurchaseVisible, discPRC, discNML, curDiscPercent, curDiscNominal,
+    modalPurchaseVisible, discPRC, discNML, curDiscPercent, curDiscNominal, curHead
   } = purchase
 
   const purchaseProps = {
     date: date,
     datePicker: datePicker,
     item: item ? item : '',
+    curHead,
     tempo: 0,
     rounding,
     dataBrowse: dataBrowse,
@@ -89,20 +90,15 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         payload: data,
       })
     },
-    onDiscPercent (data) {
-      dispatch({ type: 'purchase/onDiscPercent', payload: data })
-      dispatch({ type: 'purchase/editPurchase', payload: { value: data, kodeUtil: 'discountPercent', effectedRecord: 0 } })
-    },
-    onDiscNominal (data) {
-      dispatch({ type: 'purchase/onDiscNominal', payload: data })
-      dispatch({ type: 'purchase/editPurchase', payload: { value: data, kodeUtil: 'discountNominal', effectedRecord: 0 } })
+    onDiscPercent (x,data) {
+      dispatch({ type: 'purchase/returnState', payload: {dataBrowse: x, curHead: data} })
     },
     onChangePPN (data) {
       localStorage.setItem('taxType', data)
       dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
     },
-    onChooseItem (data) {
-      dispatch({ type: 'purchase/editPurchaseList', payload: data })
+    onChooseItem (data, head) {
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data:data, head: head} })
     },
     onResetBrowse () {
       dispatch({ type: 'purchase/resetBrowse' })

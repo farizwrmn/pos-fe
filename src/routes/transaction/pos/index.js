@@ -808,7 +808,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       dispatch({
         type: 'pos/checkQuantityEditProduct',
         payload: {
-          data
+          data,
+          setting
         }
       })
       // dispatch({ type: 'pos/paymentEdit', payload: data })
@@ -922,7 +923,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             type: 'pos/checkQuantityNewProduct',
             payload: {
               data,
-              arrayProd
+              arrayProd,
+              setting
             }
           })
         } else {

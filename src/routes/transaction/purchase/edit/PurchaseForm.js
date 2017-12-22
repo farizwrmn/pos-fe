@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Col, Row, Button, Modal, Collapse, Select, DatePicker } from 'antd'
+import { Form, Input, InputNumber, Col, Row, Button, Modal, Collapse, Select, DatePicker } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
@@ -21,7 +21,30 @@ const formItemLayout1 = {
 }
 
 const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
-  let dataPurchase = localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail'))
+  const getDiscTotal = (g) => {
+    const data = transNo ? transNo : {}
+    let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+    let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
+    let discNominal = g.reduce((cnt, o) => cnt + (o.discount), 0)
+    let invoicePercent = (total - discPercent - discNominal) * ((data.discInvoicePercent || 0) / 100)
+    let discTotal = (data.discInvoiceNominal || 0) + invoicePercent + discNominal + discPercent
+    return discTotal
+  }
+  const getGrandTotal = (g, totalDisc) => {
+    const grandTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+    return grandTotal
+  }
+  const getNettoTotal = (g,totalDisc,rounding, totalPpn) => {
+    const nettoTotal = g -  totalDisc + (parseFloat(rounding) || 0) + totalPpn
+    return nettoTotal
+  }
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))  
+  let g = dataPurchase
+  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)    
+  let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
+  let totalDisc = getDiscTotal(g)
+  let grandTotal = getGrandTotal(g, totalDisc)
+  let nettoTotal = getNettoTotal(grandTotal,totalDisc, rounding, totalPpn)
   let dataVoid = localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void'))
   const confirmPurchase = () => {
     validateFields((errors) => {
@@ -35,13 +58,6 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
       resetFields()
     })
   }
-  let g = dataPurchase
-  let nettoTotal = g.reduce((cnt, o) => cnt + parseFloat(o.total) + parseFloat(o.ppn), 0) + parseFloat(rounding)
-  let totalPpn = g.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
-  let discPercent = g.reduce((cnt, o) => cnt + ((parseFloat(o.disc1) * parseFloat(o.qty) * parseFloat(o.price)) / 100), 0)
-  let discNominal = g.reduce((cnt, o) => cnt + (parseFloat(o.discount)), 0)
-  let totalDisc = parseFloat(discNominal) + parseFloat(discPercent)
-  let grandTotal = g.reduce((cnt, o) => cnt + (parseFloat(o.price) * parseFloat(o.qty)), 0)
   const hdlBrowseProduct = () => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}          
     if (transNo === null) {
@@ -89,6 +105,15 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
                   }],
                 })(<Input maxLength={25} disabled />)}
               </FormItem>
+              <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transDate', {
+                  initialValue: transNo === null ? '' : moment.utc(transNo.transDate, 'YYYY-MM-DD'),
+                  rules: [{
+                    required: true,
+                    message: 'Required',
+                  }],
+                })(<DatePicker disabled />)}
+              </FormItem>
               <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxType', {
                   initialValue: transNo === null ? '' : transNo.taxType,
@@ -103,15 +128,6 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
               </FormItem>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={14}>
-              <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('transDate', {
-                  initialValue: transNo === null ? '' : moment.utc(transNo.transDate, 'YYYY-MM-DD'),
-                  rules: [{
-                    required: true,
-                    message: 'Required',
-                  }],
-                })(<DatePicker disabled />)}
-              </FormItem>
               <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('invoiceType', {
                   initialValue: transNo === null ? '' : transNo.invoiceType,
@@ -123,6 +139,30 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
                   <Option value="C">CASH</Option>
                   <Option value="K">KREDIT</Option>
                 </Select>))}
+              </FormItem>
+              <FormItem label="Disc Inv(%)" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transDate', {
+                  initialValue: transNo === null ? '' : transNo.discInvoicePercent,
+                  rules: [{
+                    required: true,
+                    message: 'Required',
+                  }],
+                })(<InputNumber 
+                  // onBlur={hdlChangePercent} 
+                  disabled
+                defaultValue={0} step={500} min={0}  />)}
+              </FormItem>
+              <FormItem label="Disc NML(N)" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transDate', {
+                  initialValue: transNo === null ? '' : transNo.discInvoiceNominal,
+                  rules: [{
+                    required: true,
+                    message: 'Required',
+                  }],
+                })(<InputNumber 
+                  // onBlur={hdlChangePercent} 
+                  disabled                  
+                defaultValue={0} step={500} min={0}  />)}
               </FormItem>
             </Col>
           </Row>
@@ -159,7 +199,9 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
             {getFieldDecorator('rounding', {
               initialValue: rounding,
               rules: [{
-                required: false,
+                pattern: /^([0-9.-]{0,5})$/i,
+                message: 'Rounding is not defined',
+                required: true,
               }],
             })((<Input disabled={transNo === null ? false : transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>

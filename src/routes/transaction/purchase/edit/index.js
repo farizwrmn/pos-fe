@@ -107,10 +107,10 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         },
       })
     },
-    onChooseItem (data) {
+    onChooseItem (data, head) {
       // console.log('confirm', data)
       // dispatch({ type: 'purchase/checkQuantityEditProduct', payload: {data} })
-      dispatch({ type: 'purchase/editPurchaseList', payload: data })
+      dispatch({ type: 'purchase/editPurchaseList', payload: {data, head} })
     },
     onVoid (data) {
       console.log('void')
