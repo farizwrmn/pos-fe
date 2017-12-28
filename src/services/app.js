@@ -1,6 +1,6 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
-const { api, prefix } = config
+const { api } = config
 const { user, users, userLogout, userLogin } = api
 
 export async function login (params) {
@@ -34,33 +34,28 @@ export async function changePw (params) {
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  const localId = localStorage.getItem(`${prefix}uid`)
-  let url = []
-  if (localId && localId.indexOf("#") > -1) {
-    const localIds = localId.split("#")
-    const rdmText = crypt.encrypt(localIds[0])
-    url[0] = crypt.decrypt(localIds[1], rdmText) || ''
-    url[1] = localIds[2]
-  } else {
-    url[0] = crypt.decrypt(localStorage.getItem(`${prefix}uid`)) || ''
-    url[1] = '---'
-  }
-
-  if (url[0].length > 0) {
-    if (apiHeaderToken) {
-      return request({
-        url: user.replace('/:id', '/' + url[0] + '/roles/' + url[1]),
-        method: 'get',
-        headers: apiHeaderToken,
-      })
+  const url = lstorage.getStorageKey('udi')
+  if (url[1].length > 0) {
+    const ascii = /^[a-z0-9]+$/i
+    if (!ascii.test(url[1])) {
+      lstorage.removeItemKey()
+      return { "success": false, "message": "URL Mismatch" }
     } else {
-      return request({
-        url: user.replace('/:id', ''),
-        method: 'get',
-        data: params,
-      })
+      if (apiHeaderToken) {
+        return request({
+          url: user.replace('/:id', '/' + url[1] + '/roles/' + url[2]),
+          method: 'get',
+          headers: apiHeaderToken,
+        })
+      } else {
+        return request({
+          url: user.replace('/:id', ''),
+          method: 'get',
+          data: params,
+        })
+      }
     }
   } else {
-    return { "success": false }
+    return { "success": false, "message": "No URL" }
   }
 }

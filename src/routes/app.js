@@ -192,7 +192,8 @@ App.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   app: PropTypes.object,
+  login: PropTypes.object,
   loading: PropTypes.object,
 }
 
-export default connect(({ app, loading }) => ({ app, loading }))(App)
+export default connect(({ app, login, loading }) => ({ app, login, loading }))(App)

@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
-  Tabs, Transfer, Switch, Icon, Card } from 'antd'
+  Tabs, Transfer, Tree, Switch, Icon, Card } from 'antd'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const confirm = Modal.confirm
+const TreeNode = Tree.TreeNode
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -15,6 +16,9 @@ const formItemLayout = {
 
 const modal = ({
   item = {},
+  storeItem = {},
+  listAllStores = [],
+  listUserStores = [],
   listLovEmployee = [],
   listRole = [],
   listUserRole = [],
@@ -38,6 +42,8 @@ const modal = ({
   modalRoleAdd,
   modalSwitchChange,
   modalTotpLoad,
+  modalChangeDefaultStore,
+  modalAllStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
@@ -89,6 +95,8 @@ const modal = ({
     modalActiveTab(activeTab)
     if (activeTab === '3') {
       modalRoleLoad(item.userId)
+    } else if (activeTab === '4') {
+      modalAllStoresLoad(item.userId)
     } else if (activeTab === '5') {
       modalTotpLoad(item.userId)
     }
@@ -139,7 +147,6 @@ const modal = ({
       } else if (activeTab === '3') {
         modalButtonSaveClick(data.userId, listUserRoleChange, activeTab)
       } else if (activeTab === '5') {
-        console.log('beforesave', totpChecked)
         modalButtonSaveClick(data.userId, {totp: totpChecked? totp.key : null}, activeTab)
       }
     })
@@ -166,7 +173,6 @@ const modal = ({
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log('OK');
         modalSwitchChange(false, item.userId)
       },
       onCancel() {
@@ -213,6 +219,52 @@ const modal = ({
       currentUserRole.filter(x => listUserRole.indexOf(x) < 0 ),
       listUserRole.filter(x => currentUserRole.indexOf(x) < 0 )
     )
+  }
+
+  /*const treeData = [
+    {
+      "title":"TYRE REG MDN",
+      "key":"000",
+      "children":[
+        {
+          "title":"TYRE SPARMAN",
+          "key":"000-001"
+        },
+        {
+          "title":"TYRE SMRAJA",
+          "key":"000-002"
+        }
+      ]
+    }
+  ]*/
+  const renderTreeNodes = (data) => {
+    return data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        )
+      }
+      return <TreeNode {...item} />
+    })
+  }
+
+  const hdlOnCheckStore = (checkedKeys) => {
+    console.log('onCheck', checkedKeys);
+  }
+  const hdlOnSelectStore = (selectedKeys, info) => {
+    console.log('onSelect', info);
+    console.log('selected', selectedKeys)
+  }
+  const hdlSetDefaultStore = (info) => {
+    info.node.props.checked && (info.node.props.title !== storeItem.default ) &&
+    confirm({
+      title: `Are you sure change default store to [ ${info.node.props.eventKey + ' - ' + info.node.props.title} ] ?`,
+      onOk () {
+        modalChangeDefaultStore(item.userId, info.node.props.eventKey)
+      },
+    })
   }
 
   return (
@@ -340,13 +392,20 @@ const modal = ({
           />
         </TabPane>
         <TabPane tab="Store" key="4">
-          <Transfer
-            dataSource={[]}
-            onChange={hdlTransferAdd}
-            targetKeys={[]}
-            titles={['Source', 'Target']}
-            render={item => item.title}
-          />
+          <Tree
+            checkable
+            autoExpandParent={true}
+            defaultExpandAll={true}
+            defaultCheckedKeys={listUserStores}
+            onRightClick={hdlSetDefaultStore}
+          >
+            {renderTreeNodes(listAllStores)}
+          </Tree>
+          <span style={{paddingTop: '10px'}}></span>
+          <Input
+            value={storeItem.default}
+            addonBefore="Default (right-click tree-node to change): "
+            size="small" placeholder="-"  disabled={true} />
         </TabPane>
         <TabPane tab="Security" key="5">
           <Switch checked={totpChecked}

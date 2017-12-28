@@ -5,10 +5,10 @@ import { apiHeader, prefix } from './config'
 
 const crypto = require('crypto'),
   algorithm = 'aes-256-ctr',
-  password = 'd6F3Efeq'
+  password = new Date().toISOString().slice(0,10).replace(/-/g,"")
 
 const encrypt = (text, rdmtxt) => {
-  const cipher = crypto.createCipher(algorithm, rdmtxt || password)
+  const cipher = crypto.createCipher(algorithm, (rdmtxt || '') + password)
   let crypted = cipher.update(text, 'utf8', 'hex')
   crypted += cipher.final('hex')
   return crypted
@@ -16,7 +16,7 @@ const encrypt = (text, rdmtxt) => {
 
 const decrypt = (text, rdmtxt) => {
   try {
-    const decipher = crypto.createDecipher(algorithm, rdmtxt || password)
+    const decipher = crypto.createDecipher(algorithm, (rdmtxt || '') + password)
     let dec = decipher.update(text, 'hex', 'utf8')
     dec += decipher.final('utf8')
     return dec
@@ -27,7 +27,7 @@ const decrypt = (text, rdmtxt) => {
 
 const apiheader = () => {
   try {
-    const idToken = localStorage.getItem(`${prefix}idToken`)
+    const idToken = localStorage.getItem(`${prefix}iKen`)
     apiHeader.Authorization = 'JWT ' + idToken
     return apiHeader
   } catch (err) {

@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar, Switch } from 'antd'
+import { Menu, Icon, Popover, Calendar, Switch, Cascader } from 'antd'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
 import ChangeTotp from './ChangeTotp'
+import { lstorage } from 'utils'
 
 const SubMenu = Menu.SubMenu
 
@@ -23,6 +24,10 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     e.key === 'totp' && handleChangeTotpShow(user.userid)
   }
 
+  // user store
+  const defaultStoreName = lstorage.getCurrentUserStoreName()
+
+  // menu prop
   const menusProps = {
     menu,
     siderFold: false,
@@ -87,6 +92,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
         </Popover>
         : <div className={styles.leftWrapper}>
           <HeaderMenu prompt="toggle menu" icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
+          {siderFold ? <span>{defaultStoreName}</span> : ''}
         </div>
       }
 

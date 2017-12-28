@@ -9,6 +9,7 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
+import { lstorage } from 'utils'
 
 const { prefix } = config
 
@@ -139,8 +140,7 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
-      localStorage.removeItem(`${prefix}idToken`)
-      localStorage.removeItem(`${prefix}uid`)
+      lstorage.removeItemKey()
 
       if (data.success) {
         yield put({ type: 'query' })

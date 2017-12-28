@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
-import { save, getUserStore } from '../../services/setting/userStore'
+import { getAllStores, getUserStores, saveUserDefaultStore }
+  from '../../services/setting/userStores'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
   namespace: 'userStore',
 
   state: {
-    list: [],
-    listUserStore: [],
-    listUserStoreTarget: [],
-    listUserStoreChange: { in: [], out: [] },
+    storeItem: {},
+    listAllStores: [],
+    listUserStores: [],
   },
 
   subscriptions: {
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const userStore = yield call(getUserStore, { as: 'key,title', userId: payload.userId })
+      const userStore = yield call(getAllStores)
       if (userStore.success) {
         yield put({
           type: 'querySuccessStore',
@@ -43,18 +43,45 @@ export default modelExtend(pageModel, {
         console.log('error')
       }
     },
-
-    *save ({ payload }, { call, put }) {
-      const data = yield call(save, payload)
+    *getAllStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getAllStores)
+      if (stores.success) {
+        // yield put({ type: 'getUserStores', payload })
+        yield put({
+          type: 'successAllStore',
+          payload: { listAllStores: stores.data },
+        })
+      } else {
+        console.log('error')
+      }
+    },
+    *getUserStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getUserStores, payload)
+      // if (stores.success) {
+        yield put({
+          type: 'successUserStore',
+          payload: {
+            listUserStores: stores.success ? stores.userStore : '',
+            defaultStore: stores.success ? stores.defaultStore : ''
+          },
+        })
+      // } else {
+      //   console.log('error')
+      // }
+    },
+    *updateDefaultStore ({ payload }, { select, call, put }) {
+      // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
+      // const newUser = { ...payload, customer }
+      const data = yield call(saveUserDefaultStore, payload)
       if (data.success) {
-        yield put({ type: 'modalHide' })
-        yield put({ type: 'query' })
-        yield put({ type: 'user/modalHide'})
+        yield put({
+          type: 'updateState',
+          payload: data.defaultStore,
+        })
       } else {
         throw data
       }
     },
-
   },
 
   reducers: {
@@ -68,18 +95,22 @@ export default modelExtend(pageModel, {
           ...pagination,
         } }
     },
-    querySuccessStore (state, action) {
-      const { listUserStore } = action.payload
+    successAllStore (state, action) {
       return { ...state,
-        listUserStore,
-        listUserStoreTarget: listUserStore
+        listAllStores: action.payload.listAllStores
       }
     },
-    updateState (state, { payload }) {
-      console.log('updateState',payload)
+    successUserStore (state, action) {
+      return { ...state,
+        listUserStores: action.payload.listUserStores.split(','),
+        storeItem: { default : action.payload.defaultStore }
+      }
+    },
+    updateState (state, action ) {
       return {
         ...state,
-        ...payload,
+        ...action,
+        storeItem: { default : action.payload }
       }
     },
   },

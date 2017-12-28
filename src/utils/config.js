@@ -6,6 +6,7 @@ const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'TyreMaster App',
+  version: '2017.12.001',
   prefix: 'dmiPos',
   footerText: 'Pos © 2017 Darkotech Mandiri Indonesia',
   logo: '/logo.png',
@@ -19,24 +20,13 @@ module.exports = {
   apiPrefix: `${APIV1}`,
   apiHeader: { Accept: 'application/json', 'Content-Type': 'application/json' },
   disableMultiSelect: true,
-  apiold: {
-    userLogin: `${APIV1}/user/login`,
-    userLogout: `${APIV1}/user/logout`, // services/app.js get
-    userInfo: `${APIV1}/userInfo`,
-    users: `${APIV1}/users`,
-    posts: `${APIV1}/posts`,
-    user: `${APIV1}/user/:id`,
-    dashboard: `${APIV1}/dashboard`,
-    menus: `${APIV1}/menus`,
-    v1test: `${APIV1}/test`,
-    v2test: `${APIV2}/test`,
-  },
   api: {
     getIpAddress: `${APIURL}${APIV1}/utils/ipaddr`,
     userPreLogin: `${APIURL}${APIV1}/users/prelogin`,
     userRole: `${APIURL}${APIV1}/users/:id/roles`,
     userTotp: `${APIURL}${APIV1}/users/:id/totp`,
     userTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
+    userStore: `${APIURL}${APIV1}/users/:id/stores`,
     userLogin: `${APIURL}${APIV1}/users/login`,
     userLogout: `${APIURL}${APIV1}/users/logout`, // services/app.js post
     userInfo: `${APIV1}/userInfo`,
@@ -82,5 +72,6 @@ module.exports = {
     period: `${APIURL}${APIV1}/period`,
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
     setting: `${APIURL}${APIV1}/setting`,
+    stores: `${APIURL}${APIV1}/stores`,
   },
 }
