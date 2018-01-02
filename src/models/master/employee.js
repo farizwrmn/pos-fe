@@ -1,0 +1,125 @@
+import modelExtend from 'dva-model-extend'
+import { query, add, edit, remove } from '../../services/master/employee'
+import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
+import { pageModel } from './../common'
+import { message } from 'antd'
+
+const success = (id) => {
+  message.success(`Employee ${id} has been saved`)
+}
+
+export default modelExtend(pageModel, {
+  namespace: 'employee',
+
+  state: {
+    currentItem: {},
+    modalType: 'add',
+    display: 'none',
+    isChecked: false,
+    selectedRowKeys: [],
+    activeKey: '0',
+    disable: '',
+  },
+
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/master/employee') {
+        //   const payload = location.query
+        }
+      })
+    },
+  },
+
+  effects: {
+
+    * query ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      console.log(data.success)
+      if (data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total,
+            },
+          },
+        })
+      }
+    },
+
+    * delete ({ payload }, { call, put, select }) {
+      const data = yield call(remove, { id: payload })
+      const { selectedRowKeys } = yield select(_ => _.employee)
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
+    * add ({ payload }, { call, put }) {
+      const seqDetail = {
+        seqCode: 'EMP',
+        type: 1
+      }
+      const sequence = yield call(querySequence, seqDetail)
+      const employeeData = {
+        employeeId: sequence.data,
+        ...payload.data
+      }
+      let data = {}
+      if (sequence.data !== null) {
+        data = yield call(add, { id: sequence.data, data: employeeData })
+        if (data.success) {
+          yield put({ type: 'query' })
+          const employeeIncrease = yield call(increaseSequence, 'EMP')
+          if (employeeIncrease.success) {
+            success(sequence.data)
+          } else {
+            console.log('employeeIncrease :', employeeIncrease.message)
+            throw data
+          }
+        } else {
+          throw data
+          console.log('data :', data.message)
+        }
+      } else {
+        console.log('employeeId = ', sequence.data)
+        throw data
+      }
+    },
+
+    * edit ({ payload }, { select, call, put }) {
+      const id = yield select(({ employee }) => employee.currentItem.employeeId)
+      const newEmployee = { ...payload, id }
+      const data = yield call(edit, newEmployee)
+      if (data.success) {
+        yield put({ type: 'query' })
+        success(id)
+      } else {
+        throw data
+      }
+    },
+  },
+
+  reducers: {
+
+    switchIsChecked (state, { payload }) {
+      return { ...state, isChecked: !state.isChecked, display: payload }
+    },
+
+    changeTab (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+    resetItem (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+  },
+})

@@ -1,6 +1,6 @@
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIHOST = 'localhost'
+const APIHOST = '192.168.88.191'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
@@ -51,6 +51,7 @@ module.exports = {
     suppliers: `${APIURL}${APIV1}/suppliers`,
     city: `${APIURL}${APIV1}/cities`,
     services: `${APIURL}${APIV1}/services`,
+    servicestype: `${APIURL}${APIV1}/misc/code/service`,
     misc: `${APIURL}${APIV1}/misc`,
     ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
     posts: `${APIV1}/posts`,// mock js ===========
@@ -74,6 +75,7 @@ module.exports = {
     purchaseDetail: `${APIURL}${APIV1}/purchasedetail`,
     adjust: `${APIURL}${APIV1}/adjust`,
     adjustDetail: `${APIURL}${APIV1}/adjustdetail`,
+    transfer: `${APIURL}${APIV1}/transfer`,
     member: `${APIURL}${APIV1}/member`,
     service: `${APIURL}${APIV1}/service`,
     cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,

@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({ onChooseItem, transNo, onChangeTotalItem, onVoid, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoid, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -22,7 +22,7 @@ const PurchaseList = ({ onChooseItem, transNo, onChangeTotalItem, onVoid, onDele
       data.code = item.code
       data.ket = item.ket
       data.id = item.id
-      onChooseItem(data, transNo)
+      onChooseItem(data, curHead)
       resetFields()
     })
   }

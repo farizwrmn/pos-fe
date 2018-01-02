@@ -207,6 +207,7 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       initialValue: 0,
                       rules: [{
                         required: false,
+                        pattern: /^([0-9.-]{0,5})$/i,
                         message: 'Required',
                       }],
                     })(<InputNumber 
@@ -218,6 +219,7 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       initialValue: 0,
                       rules: [{
                         required: false,
+                        pattern: /^([0-9.-]{0,19})$/i,
                         message: 'Required',
                       }],
                     })(<InputNumber 

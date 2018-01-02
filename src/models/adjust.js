@@ -118,7 +118,7 @@ export default modelExtend(pageModel, {
     * queryLastAdjust ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'ADJ',
-        type: 2
+        type: 1
       }
       const data = yield call(querySequence, invoice)
       const transNo = data.data
@@ -149,7 +149,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'ADJ',
-        type: 2
+        type: 1
       }
       const data = yield call(querySequence, invoice)
       const transNo = data.data

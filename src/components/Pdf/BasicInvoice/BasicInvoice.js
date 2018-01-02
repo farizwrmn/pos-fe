@@ -1,0 +1,85 @@
+import React from 'react'
+import { Button, Icon, Modal } from 'antd'
+import pdfMake from 'pdfmake/build/pdfmake.js'
+import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+const BasicInvoice = ({
+  name,
+  className,
+  width = 'auto',
+  pageMargins = [0, 0, 0, 0],
+  pageSize = 'A4',
+  pageOrientation = 'portrait',
+  tableStyle,
+  style,
+  layout = "",
+  tableHeader = [],
+  tableBody = [],
+  tableFooter = [],
+  data,
+  headerMargin = [0, 0, 0, 0],
+  header = {},
+  footer = {}
+}) => {
+  const createPdfLineItems = (tabledata) => {
+    let body = []
+    if (tableHeader.length > 0) {
+      for (let c in tableHeader) {
+        body.push(tableHeader[c])
+      }
+    }
+    if (tableBody.length > 0) {
+      for (let c in tableBody) {
+        body.push(tableBody[c])
+      }
+    }
+    if (tableFooter.length > 0) {
+      for (let c in tableFooter) {
+        body.push(tableFooter[c])
+      }
+    }
+    return body
+  }
+  const printPdf = (data) => {
+    if (tableHeader.length === 0 && tableFooter.length === 0) {
+      Modal.warning({
+        title: 'Empty Data',
+        content: 'No Data in Storage',
+      })
+    } else if (tableBody.length === 0) {
+      Modal.warning({
+        title: 'Empty Data',
+        content: 'No Data in Storage',
+      })
+    } else {
+      const content = createPdfLineItems(data)
+      let docDefinition = {
+        pageSize: pageSize,
+        pageOrientation: pageOrientation,
+        pageMargins: pageMargins,
+        header: header,
+        content: [
+          {
+            writable: true,
+            table: {
+              widths: width,
+              headerRows: tableHeader.length,
+              body: content,
+            },
+            layout: layout,
+          },
+        ],
+        footer: footer,
+        styles: tableStyle
+      }
+      try {
+        pdfMake.createPdf(docDefinition).open()
+      } catch (e) {
+        pdfMake.createPdf(docDefinition).download()
+      }
+    }
+  }
+  return
+}
+
+export default BasicInvoice;

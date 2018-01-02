@@ -828,6 +828,46 @@ export default {
       }
     },
 
+    * queryProducts({ payload }, { call, put }) {
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      let data = {}
+      if (payload.outOfStock) {
+        data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+        // yield put({
+        //   type: 'showProductModal',
+        //   payload: {
+        //     modalType: 'browseProductFree',
+        //   },
+        // })
+      } else {
+        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+        // yield put({
+        //   type: 'showProductModal',
+        //   payload: {
+        //     modalType: 'browseProductLock',
+        //   },
+        // })
+      }
+      let newData = data.data
+      if (data.success) {
+        yield put({
+          type: 'queryGetProductsSuccess',
+          payload: {
+            productInformation: newData,
+            tmpProductList: newData,
+          },
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!',
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        //throw data
+      }
+    },
+
     *setCashierTrans({ payload }, { call, put }) {
       const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: "O" })
       const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: "O" })

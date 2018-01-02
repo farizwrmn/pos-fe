@@ -165,18 +165,13 @@ export default modelExtend(pageModel, {
         if (data.success) {
           let arrayProd = []
           for (let n = 0; n < purchase_detail.length; n++) {
-            if (payload.taxType === 'I') {
-              purchase_detail[n].ppn = 0.1 * purchase_detail[n].price
-            } else if (payload.taxType === 'E') {
-              purchase_detail[n].ppn = 0
-            }
             arrayProd.push({
               transNo: payload.transNo,
               productId: purchase_detail[n].code,
               productName: purchase_detail[n].name,
               qty: purchase_detail[n].qty,
               purchasePrice: purchase_detail[n].price,
-              DPP: ((purchase_detail[n].price) - (((purchase_detail[n].disc1 / 100) * purchase_detail[n].price)) - (purchase_detail[n].discount)),
+              DPP: purchase_detail[n].dpp,
               PPN: purchase_detail[n].ppn,
               discPercent: purchase_detail[n].disc1,
               discNominal: purchase_detail[n].discount,

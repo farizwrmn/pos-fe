@@ -5,13 +5,15 @@ import classnames from 'classnames'
 import { color } from 'utils'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import moment from 'moment'
-const CustomizedLabel = React.createClass({
+
+class CustomizedLabel extends React.Component {
   render() {
     const { x, y, stroke, value } = this.props
 
     return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value}</text> 
   }
-})
+}
+
 const Sales = ({ data }) => {
   return (
     <div className={styles.sales}>

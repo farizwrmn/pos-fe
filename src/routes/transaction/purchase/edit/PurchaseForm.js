@@ -20,9 +20,9 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 },
 }
 
-const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
-    const data = transNo ? transNo : {}
+    const data = {...getFieldsValue()}
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
     let discNominal = g.reduce((cnt, o) => cnt + (o.discount), 0)
@@ -38,7 +38,7 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
     const nettoTotal = g -  totalDisc + (parseFloat(rounding) || 0) + totalPpn
     return nettoTotal
   }
-  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))  
+  let dataPurchase = dataBrowse
   let g = dataPurchase
   let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)    
   let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
@@ -46,6 +46,22 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
   let grandTotal = getGrandTotal(g, totalDisc)
   let nettoTotal = getNettoTotal(grandTotal,totalDisc, rounding, totalPpn)
   let dataVoid = localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void'))
+  const hdlChangePercent = () => {
+    console.log('change')
+    const data = {...getFieldsValue()}
+    let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
+    let ppnType = data.taxType
+    localStorage.setItem('taxType', ppnType)
+    const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+    const x = dataProduct
+    for (let key in x) {
+      x[key].dpp = parseFloat(((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+      x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
+      x[key].total = parseFloat(x[key].dpp + x[key].ppn)
+    }
+    localStorage.setItem('product_detail', JSON.stringify(x))
+    onDiscPercent(x,data)
+  }
   const confirmPurchase = () => {
     validateFields((errors) => {
       if (errors) {
@@ -121,7 +137,7 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
                     required: true,
                     message: 'Required',
                   }],
-                })(<Select disabled>
+                })(<Select onBlur={hdlChangePercent} disabled>
                   <Option value="I">Include</Option>
                   <Option value="E">Exclude</Option>
                 </Select>)}
@@ -141,26 +157,28 @@ const PurchaseForm = ({ rounding, onOk, onChangeRounding, transNo, handleBrowseI
                 </Select>))}
               </FormItem>
               <FormItem label="Disc Inv(%)" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('transDate', {
+                {getFieldDecorator('discInvoicePercent', {
                   initialValue: transNo === null ? '' : transNo.discInvoicePercent,
                   rules: [{
                     required: true,
+                    pattern: /^([0-9.-]{0,5})$/i,
                     message: 'Required',
                   }],
                 })(<InputNumber 
-                  // onBlur={hdlChangePercent} 
+                  onBlur={hdlChangePercent} 
                   disabled
                 defaultValue={0} step={500} min={0}  />)}
               </FormItem>
               <FormItem label="Disc NML(N)" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('transDate', {
+                {getFieldDecorator('discInvoiceNominal', {
                   initialValue: transNo === null ? '' : transNo.discInvoiceNominal,
                   rules: [{
                     required: true,
+                    pattern: /^([0-9.-]{0,19})$/i,
                     message: 'Required',
                   }],
                 })(<InputNumber 
-                  // onBlur={hdlChangePercent} 
+                  onBlur={hdlChangePercent} 
                   disabled                  
                 defaultValue={0} step={500} min={0}  />)}
               </FormItem>

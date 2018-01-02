@@ -22,6 +22,7 @@ const Customer = ({ location, customergroup, customertype, dispatch, customer, l
   const modalProps = {
     closable: false,
     item: currentItem,
+    modalType,
     loading: loading.effects['customer/query'],
     listUnit,
     listCity,

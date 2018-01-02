@@ -7,13 +7,14 @@ import PurchaseList from './PurchaseList'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, supplierInformation, listProduct, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
+    item, supplierInformation, listProduct, curHead, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
 
   const purchaseProps = {
     date: date,
     datePicker: datePicker,
     item: item ? item : '',
+    curHead,
     tempo: 0,
     rounding,
     transNo,
@@ -111,6 +112,9 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       // console.log('confirm', data)
       // dispatch({ type: 'purchase/checkQuantityEditProduct', payload: {data} })
       dispatch({ type: 'purchase/editPurchaseList', payload: {data, head} })
+    },
+    onDiscPercent (x,data) {
+      dispatch({ type: 'purchase/returnState', payload: {dataBrowse: x, curHead: data} })
     },
     onVoid (data) {
       console.log('void')

@@ -56,7 +56,13 @@ export default {
   },
 
   subscriptions: {
-
+    setup({ dispatch, history }) {
+      history.listen(location => {
+        if (location.pathname === '/transaction/pos/payment') {
+          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: 1} }) // type diganti storeId
+        }
+      })
+    },
   },
   // confirm payment
 
@@ -64,7 +70,7 @@ export default {
     * create({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'INV',
-        type: 2
+        type: 1
       }
       const transNo = yield call(querySequence, invoice)
       if ((transNo.data === null)) {
@@ -97,7 +103,7 @@ export default {
         let arrayProd = []
         const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-        const dataPos = service === [] ? product : product === [] ? service : product.concat(service)
+        const dataPos = product.concat(service)
         const trans = transNo.data
         for (let key = 0; key < dataPos.length; key += 1) {
           arrayProd.push({
@@ -248,6 +254,7 @@ export default {
     * setLastTrans({ payload }, { call, put }) {
       const transNo = yield call(querySequence, payload)
       localStorage.setItem('transNo', transNo.data)
+      console.log('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
         payload: transNo.data,

@@ -6,7 +6,8 @@ import Editor from './Editor'
 import FilterItem from './FilterItem'
 import Loader from './Loader'
 import * as Layout from './Layout/index.js'
-import { BasicReport } from './Pdf/index.js'
+import { BasicReport, RepeatReport } from './Pdf/index.js'
+import { BasicReport as BasicExcelReport, RepeatReport as RepeatExcelReport } from './Excel/index.js'
 import layer from './layer'
 
 export {
@@ -19,5 +20,8 @@ export {
   FilterItem,
   Loader,
   layer,
-  BasicReport
+  BasicReport,
+  RepeatReport,
+  BasicExcelReport,
+  RepeatExcelReport,
 }
