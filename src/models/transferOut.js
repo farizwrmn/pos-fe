@@ -75,7 +75,7 @@ export default modelExtend(pageModel, {
       payload = {}
     }, {
       call,
-      put
+        put
     }) {
       const data = yield call(query, payload)
       if (data) {
@@ -96,11 +96,11 @@ export default modelExtend(pageModel, {
       payload
     }, {
       call,
-      put
+        put
     }) {
-        yield put({
-          type: 'resetState'
-        })
+      yield put({
+        type: 'resetState'
+      })
       const data = yield call(querySequence, payload)
       if (data.success) {
         yield put({
@@ -119,7 +119,7 @@ export default modelExtend(pageModel, {
       payload
     }, {
       call,
-      put
+        put
     }) {
       const sequenceData = {
         seqCode: 'MUOUT',
@@ -143,7 +143,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'modalHide'
         })
-        setInterval(function(){ location.reload() }, 1000);
+        setInterval(function () { location.reload() }, 1000);
         // yield put({
         //   type: 'querySequence',
         //   payload: sequenceData
@@ -215,6 +215,7 @@ export default modelExtend(pageModel, {
       const defaultState = {
         listTrans: [],
         listItem: [],
+        listStore: [],
         currentItem: {},
         currentItemList: {},
         modalVisible: false,
@@ -230,9 +231,10 @@ export default modelExtend(pageModel, {
           current: 1,
           total: null,
           pageSize: 5
-        },
+        }
       }
-      return { ...state,
+      return {
+        ...state,
         ...defaultState
       }
     }

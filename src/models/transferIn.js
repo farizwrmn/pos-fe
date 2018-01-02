@@ -4,9 +4,15 @@ import { query as queryOut, queryDetail as queryOutDetail, queryByTrans as query
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { pageModel } from './common'
 import moment from 'moment'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { config } from 'utils'
+const success = () => {
+  message.success('Transfer process has been saved, waiting for confirmation.')
+}
 
+const error = (err) => {
+  message.error(err.message)
+}
 const { prefix } = config
 
 const localDate = JSON.parse(localStorage.getItem(`${prefix}store`))
@@ -85,10 +91,12 @@ export default modelExtend(pageModel, {
     * queryCode ({ payload = {} }, { call, put }) {
       const { period, ...other } = payload
       const data = yield call(queryOut, other)
-      const transNo = data.data.map(n => n.transNo)
-      const storeId = data.data.map(n => n)
-      yield put({ type: 'resetAll', payload: payload })      
+      let transNo = []
+      let storeId = []
+      // yield put({ type: 'resetAll', payload: payload })      
       if (data.data.length > 0) {
+        transNo = data.data.map(n => n.transNo)
+        storeId = data.data.map(n => n)
         yield put({
           type: 'updateState',
           payload: {
@@ -152,7 +160,6 @@ export default modelExtend(pageModel, {
         type: 1,
       }
       const sequence = yield call(querySequence, sequenceParam)
-      console.log('sequence', sequence.data)
       const data = yield call(queryByTransOut, payload)
       const dataDetail = yield call(queryOutDetail, other)
       if (data.success && dataDetail.success && sequence.success) {
@@ -168,13 +175,34 @@ export default modelExtend(pageModel, {
       }
     },
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const sequenceData = {
+        seqCode: 'MUIN',
+        type: 1 // diganti dengan StoreId
+      }
+      const sequence = yield call(querySequence, sequenceData)
+      payload.transNo = sequence.data
+      let data = yield call(add, payload)
       if (data.success) {
-        yield put({ type: 'modalHide' })
-        yield put({ type: 'query' })
+        success()
+        let increase = yield call(increaseSequence, sequenceData.seqCode)
+        if (!increase.success) {
+          error(increaseSequence)
+        }
+        yield put({
+          type: 'resetAll'
+        })
+        setInterval(function () { location.reload() }, 1000);
       } else {
+        error(data)
         throw data
       }
+      // const data = yield call(add, payload)
+      // if (data.success) {
+      //   yield put({ type: 'modalHide' })
+      //   yield put({ type: 'query' })
+      // } else {
+      //   throw data
+      // }
     },
   },
 
@@ -226,15 +254,17 @@ export default modelExtend(pageModel, {
     },
 
     resetAll (state) {
-      const defautlState = {
+      const defaultState = {
         period: moment(localDate.startPeriod).format('YYYY-MM'),
         transNo: [],
         storeId: [],
         listTrans: [],
+        transHeader: {},
         listTransDetail: [],
         listItem: [],
         currentItem: {},
         addItem: {},
+        sequenceNumber: "",
         modalVisible: false,
         searchVisible: false,
         formType: 'add',

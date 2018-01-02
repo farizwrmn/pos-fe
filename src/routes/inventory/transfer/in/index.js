@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, Button, Tooltip } from 'antd'
+import { Row, Col, Button } from 'antd'
 import moment from 'moment'
 import CardIn from './CardIn'
 import Filter from './Filter'
@@ -13,6 +13,12 @@ moment.locale('id')
 const Transfer = ({ transferIn, dispatch }) => {
   const { listTrans, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber } = transferIn
   const filterProps = {
+    listTrans,
+    resetModal () {
+      dispatch({
+        type: 'transferIn/resetAll',
+      })
+    },
     openModal () {
       dispatch({
         type: 'transferIn/queryModal',
@@ -40,6 +46,8 @@ const Transfer = ({ transferIn, dispatch }) => {
           period: dateString,
           start: moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss'),
           end: moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss'),
+          active: 1,
+          status: 0
         },
       })
     },
@@ -117,6 +125,16 @@ const Transfer = ({ transferIn, dispatch }) => {
     width: '700px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
+    onOk(data, list, storeId) {
+      dispatch({
+        type: 'transferIn/add',
+        payload: {
+          storeId: storeId,
+          data: data,
+          detail: list
+        },
+      })
+    },
     onCancel() {
       dispatch({
         type: 'transferIn/updateState',
@@ -132,9 +150,7 @@ const Transfer = ({ transferIn, dispatch }) => {
   return (
     <div className="content-inner">
       <Row>
-        <Tooltip visible={listTrans.length <= 0} placement="bottomRight" title="Search transfer list card">
-          <Filter {...filterProps} />
-        </Tooltip>
+      <Filter {...filterProps} />
       </Row>
       {modalVisible && <Modal {...modalProps} />}
       {modalAcceptVisible && <ModalAccept {...modalAcceptProps} />}

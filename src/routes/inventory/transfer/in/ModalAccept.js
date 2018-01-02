@@ -61,10 +61,7 @@ const modal = ({
       }
       const storeId = item.storeIdReceiver
       const detail = listTransDetail
-      console.log('data', data)
-      console.log('storeId', storeId)
-      console.log('detail', detail)
-      // onOk(startDate, endDate, other)
+      onOk(dataHeader, detail, storeId)
     })
   }
 
@@ -115,7 +112,7 @@ const modal = ({
             </FormItem>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transType', {
-                initialValue: item.transType,
+                initialValue: 'MUIN',
                 rules: [
                   {
                     required: true,
