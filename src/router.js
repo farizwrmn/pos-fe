@@ -297,6 +297,24 @@ const Routers = function ({ history, app }) {
             }, 'setting-user-detail')
           },
         }, {
+          path: 'inventory/transfer/in',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transferIn'))
+              cb(null, require('./routes/inventory/transfer/in'))
+            }, 'setting-misc')
+          },
+        }, {
+          path: 'inventory/transfer/out',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/employee'))
+              cb(null, require('./routes/inventory/transfer/out'))
+            }, 'setting-misc')
+          },
+        }, {
           path: 'setting/misc',
           getComponent(nextState, cb) {
             require.ensure([], require => {

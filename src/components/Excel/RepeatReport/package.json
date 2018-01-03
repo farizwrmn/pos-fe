@@ -1,0 +1,6 @@
+{
+    "name": "RepeatReport",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./RepeatReport.js"
+}

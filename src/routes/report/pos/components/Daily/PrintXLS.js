@@ -74,7 +74,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
           }
         }
       }
-      const header = ['NO.', '', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
+      const header = ['NO.', 'KODE', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'NETTO']
       const footer = [
         '',
         '',
@@ -102,9 +102,9 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n + 1)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`B${m}`).value = '.'
+        sheet.getCell(`B${m}`).value = listDaily[n].productCode
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = `${listDaily[n].productName}`
+        sheet.getCell(`C${m}`).value = listDaily[n].productName
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${parseInt(listDaily[n].qty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }

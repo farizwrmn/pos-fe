@@ -9,23 +9,24 @@ const formItemLayout = {
   wrapperCol: { span: 10 },
 }
 
-const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.code = item.code
-      onChooseItem(data)
+      onChooseItem(data, curHead)      
       resetFields()
     })
   }
   const hdlCancel = (e) => {
     onCancel()
   }
+  
   const hdlChange = () => {
     const data = getFieldsValue()
     data.code = item.code
@@ -43,10 +44,18 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
     onChangeTotalItem(data)
   }
   const handleDelete = () => {
-    const data = {
-      ...getFieldsValue(),
-    }
-    onDelete(data)
+    const data = getFieldsValue()
+    Modal.confirm({
+      title: `Are you sure Delete ${data.name} ?`,
+      content: 'Delete cannot be undone',
+      onOk() {
+        onDelete(data)
+        resetFields()
+      },
+      onCancel() {
+        console.log('cancel')
+      }
+    })
   }
   return (
     <Modal visible={modalPurchaseVisible} onCancel={() => hdlCancel()} footer={[]}>
@@ -152,13 +161,12 @@ const PurchaseList = ({ onChooseItem, onChangeTotalItem, onDelete, item, onCance
             initialValue: item.total,
             rules: [{
               required: true,
-              pattern: /^([0-9.]{0,13})$/i,
               message: 'Total is not define',
             }],
           })(<Input disabled />)}
         </FormItem>
         <Button type="primary" onClick={handleClick}> Change </Button>
-        {/*<Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>*/}
+        <Button type="danger" onClick={handleDelete} style={{ marginLeft: '5px' }}> Delete </Button>
       </Form>
     </Modal>
   )

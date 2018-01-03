@@ -17,7 +17,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...handleTotalChange(),
       }
       data.typeCode = item.typeCode
       data.productId = item.productId
@@ -31,9 +31,11 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
     let H3 = H2 * (1 - (data.disc3 / 100))
     let TOTAL = H3 - data.discount
     data.total = TOTAL
+    console.log('data', data)
     data.productId = item.productId
     data.typeCode = item.typeCode
     onChangeTotalItem(data)
+    return data
   }
   const handleDelete = () => {
     const Record = {

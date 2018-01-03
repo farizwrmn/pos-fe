@@ -17,7 +17,7 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...handleTotalChange(),
       }
       data.typeCode = itemService.typeCode
       data.productId = itemService.productId
@@ -31,7 +31,6 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
     let H3 = H2 * (1 - (data.disc3 / 100))
     let TOTAL = H3 - data.discount
     data.total = TOTAL
-    console.log('item edit: ', itemService)
     data.typeCode = itemService.typeCode
     data.productId = itemService.productId
     onChangeTotalItem(data)

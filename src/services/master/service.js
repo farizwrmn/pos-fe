@@ -1,6 +1,6 @@
 import { request, config, crypt } from '../../utils'
 
-const { services, servicestype } = config.api
+const { services, misc } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -12,21 +12,21 @@ export async function query (params) {
   })
 }
 
-export async function queryServiceByCode (params) {
-  const url = params.serviceCode? services + '/' + encodeURIComponent(params.serviceCode) : services + '/' + encodeURIComponent(params)
+export async function queryServiceType (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url: misc + '/code/SERVICE',
     method: 'get',
     data: params,
     headers: apiHeaderToken,
   })
 }
 
-export async function queryServiceType (params) {
+export async function queryServiceByCode (params) {
+  const url = params.serviceCode? services + '/' + encodeURIComponent(params.serviceCode) : services + '/' + encodeURIComponent(params)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: servicestype,
+    url: url,
     method: 'get',
     data: params,
     headers: apiHeaderToken,

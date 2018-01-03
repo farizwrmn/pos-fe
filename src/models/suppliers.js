@@ -29,7 +29,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/master/suppliers') {
+        if (location.pathname === '/master/supplier') {
           dispatch({
             type: 'query',
             payload: location.query,

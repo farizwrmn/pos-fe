@@ -59,6 +59,7 @@ const modal = ({
   listGroup,
   listData = [],
   listUnit,
+  modalType,
   listCity,
   listType,
   onClickRowunit,
@@ -396,11 +397,11 @@ const modal = ({
                     rules: [{
                       required: true,
                       message: "Required",
-                      pattern: /^[a-z0-9\_]{3,15}$/i,
+                      pattern: /^[a-z0-9\_-]{3,15}$/i,
                       message: "a-Z & 0-9",
                     }],
                   })(
-                    <Input maxLength={15}/>
+                    <Input disabled={modalType === 'edit'} maxLength={15}/>
                   )}
                 </FormItem>
                 <FormItem label="Identity Type" hasFeedback {...formItemLayout}>
