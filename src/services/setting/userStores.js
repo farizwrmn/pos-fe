@@ -27,7 +27,17 @@ export async function saveUserDefaultStore (params) {
   return request({
     url: url,
     method: 'put',
-    body: params.data,
+    data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
+export async function saveUserStore (params) {
+  const url = userStore.replace('/:id', '/' + params.userId)
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'put',
     data: params.data,
     headers: apiHeaderToken
   })

@@ -15,7 +15,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   const { listLovEmployee } = employee
   const { listLov }  = misc
   const { listUserRole, listUserRoleTarget, listUserRoleChange }  = userRole
-  const { storeItem, listAllStores, listUserStores }  = userStore
+  const { storeItem, listAllStores, listUserStores, listCheckedStores }  = userStore
   const { pageSize } = pagination
 
   const listRole = listLov &&
@@ -26,6 +26,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     storeItem,
     listAllStores,
     listUserStores,
+    listCheckedStores,
     visible: modalVisible,
     visiblePopover: visiblePopover,
     disabledItem: disabledItem,
@@ -87,13 +88,18 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
       dispatch({ type: 'user/modalHide' })
     },
     modalButtonSaveClick (userId, data, activeTab) {
-      if (activeTab === '3') {
+      if (activeTab === '3') {                  // tab Role
         dispatch({
           type: `userRole/save`,
           payload: { userId, data, activeTab
           },
         })
-      } else if (activeTab === '5' ) {
+      } else if (activeTab === '4' ) {          // tab Store
+        dispatch({
+          type: 'userStore/saveCheckedStore',
+          payload: { userId, data: { store: data } }
+        })
+      } else if (activeTab === '5' ) {          // tab Security
         dispatch({
           type: `user/edit`,
           payload: { id: userId, data, activeTab
@@ -153,14 +159,16 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     },
     modalChangeDefaultStore (userId, defaultStore) {
       dispatch({
-        type: 'userStore/updateDefaultStore',
+        type: 'userStore/saveDefaultStore',
         payload: { userId, data: { defaultStore } }
       })
-      // dispatch({ type: 'userStore/getUserStores', payload: { userId } })
-      /*dispatch({
-        type: 'userStore/updateState',
-        payload: { defaultStore }
-      })*/
+    },
+    modalNodeCheckedStore (userId, listCheckedStore) {
+      console.log('modalNodeCheckedStore', listCheckedStore)
+      dispatch({
+        type: 'userStore/updateCheckedStores',
+        payload: { userId, data: { store: listCheckedStore } }
+      })
     },
     modalAllStoresLoad (userId) {
       dispatch({ type: 'userStore/getAllStores', payload: { userId } })
@@ -272,8 +280,6 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     onSearchHide () { dispatch({ type: 'user/searchHide' }) },
   }
 
-  console.log('listallsto', listAllStores)
-  console.log('listusersto', listUserStores)
   return (
     <div className="content-inner">
       <Filter {...filterProps} />

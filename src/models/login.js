@@ -61,7 +61,8 @@ export default {
                 visibleItem: { userRole: true},
               },
             })
-            yield put({ type: 'getRole', payload })
+            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
           }
 
         } else {
@@ -87,7 +88,8 @@ export default {
           })
 
           if (!data.profile.istotp) {
-            yield put({type: 'getRole', payload})
+            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
           }
         } else if (data.success && data.id_token) {
           const from = queryURL('from')

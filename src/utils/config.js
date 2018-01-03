@@ -10,9 +10,6 @@ module.exports = {
   prefix: 'dmiPos',
   footerText: 'Pos © 2017 Darkotech Mandiri Indonesia',
   logo: '/logo.png',
-  iconFontCSS: '/iconfont.css',
-  iconFontJS: '/iconfont.js',
-  YQL: ['http://www.zuimeitianqi.com'],
   CORS: `${APIURL}`,
   apiHost: `${APIHOST}`,
   openPages: ['/login'],
@@ -44,10 +41,11 @@ module.exports = {
     servicestype: `${APIURL}${APIV1}/misc/code/service`,
     misc: `${APIURL}${APIV1}/misc`,
     ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
-    posts: `${APIV1}/posts`,
-    dashboard: `${APIV1}/dashboard`,
-    menus: `${APIV1}/menus`,
-    position: `${APIV1}/position`,
+    posts: `${APIV1}/posts`,// mock js ===========
+    dashboard: `${APIV1}/dashboard`,// mock js ===========
+    // menus: `${APIV1}/menus`,
+    menus: `${APIURL}${APIV1}/menus`,
+    position: `${APIV1}/position`,// mock js ===========
     sellprice: `${APIURL}${APIV1}/misc/code/SELLPRICE`,
     brand: `${APIURL}${APIV1}/stocks/brands`,
     stockcategory: `${APIURL}${APIV1}/stocks/categories`,
@@ -64,6 +62,7 @@ module.exports = {
     purchaseDetail: `${APIURL}${APIV1}/purchasedetail`,
     adjust: `${APIURL}${APIV1}/adjust`,
     adjustDetail: `${APIURL}${APIV1}/adjustdetail`,
+    transfer: `${APIURL}${APIV1}/transfer`,
     member: `${APIURL}${APIV1}/member`,
     service: `${APIURL}${APIV1}/service`,
     cashierList: `${APIURL}${APIV1}/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc`,

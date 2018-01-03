@@ -1,6 +1,8 @@
 import React from 'react'
+import { Button, Icon, Modal } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 const RepeatReport = ({
@@ -8,41 +10,78 @@ const RepeatReport = ({
   className,
   width = [],
   pageMargins = [0, 0, 0, 0],
+  pageOrientation = 'portrait',
   tableStyle,
   style,
   layout = '',
-  groupByParams1 = '',
-  groupByDesc = '',
   pageSize = 'A4',
-  groupByParams2 = '',
-  tableHeader = [],
   tableBody = [],
-  tableFooter = [],
-  data,
-  contentPdf = [],
   header = [],
-  footer = []
+  footer = [],
+  data = [],
+  tableTitle = [],
 }) => {
-  const printPdf = (data) => {
-    let docDefinition = {
-      pageSize: 'A4',
-      pageOrientation: 'landscape',
-      pageMargins: pageMargins,
-      content: contentPdf,
-      styles: tableStyle
+  const createPdfLineItems = (listData) => {
+    let body = []
+    if (listData.length > 0) {
+      for (let c in listData) {
+        body.push(listData[c])
+      }
     }
-    try {
-      pdfMake.createPdf(docDefinition).open()
-    } catch (e) {
-      pdfMake.createPdf(docDefinition).download()
+    return body
+  }
+  const printPdf = () => {
+    if (data.length === 0) {
+      Modal.warning({
+        title: 'Empty Data',
+        content: 'No Data in Storage',
+      })
+    } else {
+      let contentPdf = []
+      let content = []
+      for (let i = 0; i < tableBody.length; i += 1) {
+        content.push(createPdfLineItems(tableBody[i]))
+      }
+      for (let i = 0; i < content.length; i += 1) {
+        contentPdf.push(
+          tableTitle[i],
+          {
+            writable: true,
+            table: {
+              widths: width,
+              headerRows: 1,
+              body: content[i],
+            },
+            layout: 'noBorder',
+          })
+      }
+
+      let docDefinition = {
+        pageSize,
+        pageOrientation,
+        pageMargins,
+        header,
+        content: contentPdf,
+        footer,
+        styles: tableStyle,
+      }
+      try {
+        pdfMake.createPdf(docDefinition).open()
+      } catch (e) {
+        pdfMake.createPdf(docDefinition).download()
+      }
     }
   }
-
   return (
-    <div>
-      <button onClick={() => printPdf(tableBody)} style={style} className={className}>{name}</button>
-    </div>
+    <Button type="dashed"
+      size="large"
+      className={className}
+      onClick={() => printPdf()}
+    >
+      <Icon type="file-pdf" className="icon-large" />
+      {name}
+    </Button>
   )
 }
 
-export default RepeatReport;
+export default RepeatReport

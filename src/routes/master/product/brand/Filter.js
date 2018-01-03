@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Collapse } from 'antd'
+import { FilterItem } from '../../../../components'
+import { Form, Button, Row, Col, DatePicker, Input, Switch } from 'antd'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
-const Panel = Collapse.Panel
 
 const ColProps = {
   xs: 24,
@@ -22,40 +21,31 @@ const TwoColProps = {
 }
 
 const Filter = ({
+  isChecked,
+  display,
+  switchIsChecked,
   onFilterChange,
-  onSearchHide,
-  visiblePanel = false,
   filter,
   form: {
     getFieldDecorator,
     getFieldsValue,
     setFieldsValue,
-    resetFields
   },
 }) => {
+  const switchFilter = () => {
+    switchIsChecked()
+  }
   const handleFields = (fields) => {
-    const { createdAt, customSearch } = fields
-    let finalObj = {}
-    let tempText = []
-    if (customSearch) {
-      // samadengan="page=1&pageSize=5"
-      tempText[0]=customSearch.split('&')
-      for (let i in tempText[0]) {
-        tempText[1]=tempText[0][i].split('=')
-        tempText[2]='{"'+tempText[1][0]+'":"'+tempText[1][1]+'"}'
-        finalObj = Object.assign(finalObj,JSON.parse(tempText[2]))
-      }
-      fields = finalObj
-    } else {
-      if (createdAt.length) {
-        fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
-      }
+    const { createTime } = fields
+    if (createTime.length) {
+      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
     }
     return fields
   }
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
+    fields.brandName = fields.searchName
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -75,71 +65,54 @@ const Filter = ({
     handleSubmit()
   }
 
-  const handleClose = () => {
-    onSearchHide()
-  }
-
   const handleChange = (key, values) => {
     let fields = getFieldsValue()
     fields[key] = values
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { name, customSearch } = filter
+  const { brandName } = filter
 
   let initialCreateTime = []
-  if (filter.createdAt && filter.createdAt[0]) {
-    initialCreateTime[0] = moment(filter.createdAt[0])
+  if (filter.createTime && filter.createTime[0]) {
+    initialCreateTime[0] = moment(filter.createTime[0])
   }
-  if (filter.createdAt && filter.createdAt[1]) {
-    initialCreateTime[1] = moment(filter.createdAt[1])
-  }
-  let initialCustomSearch = ''
-  const collapseStyle={
-    show: {display: 'block'},
-    hide: {display: 'none'}
+  if (filter.createTime && filter.createTime[1]) {
+    initialCreateTime[1] = moment(filter.createTime[1])
   }
 
   return (
-    <Collapse defaultActiveKey={['1']} style={ visiblePanel ? collapseStyle.show : collapseStyle.hide}>
-      <Panel header="Search" key="1">
-        <Row gutter={24}>
-          <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-            {getFieldDecorator('brandName', { initialValue: name })(
-              <Search placeholder="Search Brand Name" size="large" onSearch={handleSubmit} />
-            )}
-          </Col>
-          <Col {...ColProps} xl={{ span: 8 }} md={{ span: 10 }} sm={{ span: 14 }}>
-            <FilterItem label="CreatedAt">
-              {getFieldDecorator('createdAt', { initialValue: initialCreateTime })(
-                <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createdAt')} />
-              )}
-            </FilterItem>
-          </Col>
-          <Col {...ColProps} xl={{ span: 16 }} md={{ span: 18 }} sm={{ span: 22 }}>
-            {getFieldDecorator('customSearch', { initialValue: customSearch })(
-              <Input placeholder="Custom search query url" type="textarea" rows={2} />
-            )}
-          </Col>
-
-          <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div >
-                <Button type="primary" size="small" className="margin-right" onClick={handleSubmit}>Go</Button>
-                <Button size="small" className="margin-right" onClick={handleReset}>Reset</Button>
-                <Button size="small" onClick={handleClose}>Close</Button>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </Panel>
-    </Collapse>
+    <Row gutter={24}>
+      <div>
+        <Switch style={{ marginRight: 16, marginBottom: 16 }} size="large" defaultChecked={isChecked} onChange={switchFilter} checkedChildren={'Open'} unCheckedChildren={'Hide'} />
+      </div>
+      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+        {getFieldDecorator('searchName', { initialValue: brandName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} style={{ display }} />)}
+      </Col>
+      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} style={{ display }}>
+        <FilterItem label="Createtime" >
+          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
+            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
+        <div style={{ display, justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <div >
+            <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
+            <Button size="large" onClick={handleReset}>Reset</Button>
+          </div>
+        </div>
+      </Col>
+    </Row>
   )
 }
 
 Filter.propTypes = {
+  isChecked: PropTypes.bool,
+  switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  visiblePanel: PropTypes.bool,
+  display:PropTypes.string,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
 }

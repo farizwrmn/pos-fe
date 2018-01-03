@@ -76,7 +76,6 @@ export default modelExtend(pageModel, {
       }
     },
     updateState (state, { payload }) {
-      console.log('updateState',payload)
       return {
         ...state,
         ...payload,

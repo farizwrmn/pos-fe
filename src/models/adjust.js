@@ -4,9 +4,9 @@ import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { query, createDetail, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
-import { query as queryProducts } from '../services/stock'
+import { query as queryProducts } from '../services/master/productstock'
 import { query as queryTransType } from '../services/transType'
-import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/employees'
+import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
 import { queryModeName as miscQuery } from '../services/misc'
 
 export default modelExtend(pageModel, {

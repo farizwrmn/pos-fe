@@ -1,7 +1,12 @@
 import modelExtend from 'dva-model-extend'
-import { getAllStores, getUserStores, saveUserDefaultStore }
+import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
+import { message } from 'antd'
+
+const successInfo = (info) => {
+  message.success(info)
+}
 
 export default modelExtend(pageModel, {
   namespace: 'userStore',
@@ -10,6 +15,7 @@ export default modelExtend(pageModel, {
     storeItem: {},
     listAllStores: [],
     listUserStores: [],
+    listCheckedStores: [],
   },
 
   subscriptions: {
@@ -69,11 +75,24 @@ export default modelExtend(pageModel, {
       //   console.log('error')
       // }
     },
-    *updateDefaultStore ({ payload }, { select, call, put }) {
+    *saveDefaultStore ({ payload }, { select, call, put }) {
       // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultStore, payload)
       if (data.success) {
+        successInfo(data.message)
+        yield put({
+          type: 'updateState',
+          payload: data.defaultStore,
+        })
+      } else {
+        throw data
+      }
+    },
+    *saveCheckedStore ({ payload }, { select, call, put }) {
+      const data = yield call(saveUserStore, payload)
+      if (data.success) {
+        successInfo(data.message)
         yield put({
           type: 'updateState',
           payload: data.defaultStore,
@@ -113,5 +132,13 @@ export default modelExtend(pageModel, {
         storeItem: { default : action.payload }
       }
     },
+    updateCheckedStores (state, action) {
+      console.log('updateCheckedStores', action)
+      return {
+        ...state,
+        ...action,
+        listCheckedStores : action.payload.data.store
+      }
+    }
   },
 })

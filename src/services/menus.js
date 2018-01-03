@@ -1,12 +1,14 @@
-import { request, config } from 'utils'
+import { request, config, crypt } from 'utils'
 
-const { api } = config
-const { menus } = api
+
+const { menus } = config.api
 
 export async function query (params) {
+  const apiHeaderToken = crypt.apiheader()
   return request({
     url: menus,
     method: 'get',
     data: params,
+    headers: apiHeaderToken,
   })
 }

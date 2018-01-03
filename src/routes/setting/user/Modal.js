@@ -14,6 +14,11 @@ const formItemLayout = {
   wrapperCol: { span: 16 },
 }
 
+const paddingTop10 = {
+  paddingTop: '10px',
+  display: 'block'
+}
+
 const modal = ({
   item = {},
   storeItem = {},
@@ -25,6 +30,7 @@ const modal = ({
   listUserRoleTarget = [],
   currentUserRole = [],
   listUserRoleChange = {},
+  listCheckedStores = [],
   onOk,
   onChooseItem,
   visiblePopover = false,
@@ -43,6 +49,7 @@ const modal = ({
   modalSwitchChange,
   modalTotpLoad,
   modalChangeDefaultStore,
+  modalNodeCheckedStore,
   modalAllStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
@@ -144,9 +151,11 @@ const modal = ({
           password: data.password,
           confirm: data.confirm
         }, activeTab)
-      } else if (activeTab === '3') {
+      } else if (activeTab === '3') {               // tab Role
         modalButtonSaveClick(data.userId, listUserRoleChange, activeTab)
-      } else if (activeTab === '5') {
+      } else if (activeTab === '4') {               // tab Store
+        modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
+      } else if (activeTab === '5') {               // tab Security
         modalButtonSaveClick(data.userId, {totp: totpChecked? totp.key : null}, activeTab)
       }
     })
@@ -251,7 +260,8 @@ const modal = ({
   }
 
   const hdlOnCheckStore = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
+    console.log('onCheck', checkedKeys)
+    modalNodeCheckedStore(item.userId, checkedKeys)
   }
   const hdlOnSelectStore = (selectedKeys, info) => {
     console.log('onSelect', info);
@@ -390,6 +400,11 @@ const modal = ({
             titles={['Source', 'Target']}
             render={item => item.title}
           />
+          <span style={paddingTop10}></span>
+          <Input
+            value={storeItem.default}
+            addonBefore="Default (right-click tree-node to change): "
+            size="small" placeholder="no default role"  disabled={true} />
         </TabPane>
         <TabPane tab="Store" key="4">
           <Tree
@@ -398,14 +413,15 @@ const modal = ({
             defaultExpandAll={true}
             defaultCheckedKeys={listUserStores}
             onRightClick={hdlSetDefaultStore}
+            onCheck={hdlOnCheckStore}
           >
             {renderTreeNodes(listAllStores)}
           </Tree>
-          <span style={{paddingTop: '10px'}}></span>
+          <span style={paddingTop10}></span>
           <Input
             value={storeItem.default}
             addonBefore="Default (right-click tree-node to change): "
-            size="small" placeholder="-"  disabled={true} />
+            size="small" placeholder="no default store"  disabled={true} />
         </TabPane>
         <TabPane tab="Security" key="5">
           <Switch checked={totpChecked}

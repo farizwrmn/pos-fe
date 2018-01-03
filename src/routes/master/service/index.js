@@ -2,213 +2,129 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import BrowseGroup from './Browse'
-import Filter from './Filter'
-import Modal from './Modal'
+import Form from './Form'
 
-const Service = ({ location, dispatch, loading, service, servicetype, misc }) => {
-  const { listService, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
-    disabledItem, modalType, selectedRowKeys, disableMultiSelect } = service
-
-  const { pageSize } = pagination
-  const { listServType } = servicetype
-  const modalProps = {
-    item: currentItem,
-    visible: modalVisible,
-    visiblePopover: visiblePopover,
-    disabledItem: disabledItem,
-    listServType,
-    pagination,
-    maskClosable: false,
-    confirmLoading: loading.effects['service/update'],
-    title: `${modalType === 'add' ? 'Add service' : 'Edit service'}`,
-    wrapClassName: 'vertical-center-modal',
-    onOk (data) {
-      dispatch({
-        type: `service/${modalType}`,
-        payload: data,
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'service/modalHide',
-      })
-    },
-    modalDropdownClick() {
-      console.log('modalDropdownClick');
-      dispatch({
-        type: `sellprice/query`,
-      })
-    },
-    modalPopoverVisible () {
-      console.log('modalPopoverVisible');
-      dispatch({
-        type: `service/modalPopoverVisible`,
-      })
-    },
-    modalPopoverClose () {
-      dispatch({
-        type: `service/modalPopoverClose`,
-      })
-    },
-    modalIsEmployeeChange (data) {
-      dispatch({
-        type: `service/modalIsEmployeeChange`,
-        // payload: { disabledserviceId: data.disabledserviceId }
-      })
-    },
-    modalButtonCancelClick () {
-      dispatch({ type: `service/modalHide` })
-    },
-
-    modalButtonCategoryClick () {
-      dispatch({ type: `sellprice/query` })
-    },
-    modalButtonSaveClick (data) {
-      console.log('modalButtonSaveClick',data);
-      dispatch({
-        type: `service/${modalType}`,
-        payload: data,
-      })
-    },
-    onChooseItem (data) {
-      dispatch({
-        type: 'service/choosePrice',
-        payload: {
-          modalType,
-          currentItem: {
-              serviceCode: currentItem.serviceCode,
-              serviceName: currentItem.serviceName,
-              cost: currentItem.cost,
-              serviceCost: currentItem.serviceCost,
-              serviceTypeId: data.miscName
-          },
-        },
-      })
-    }
-  }
-
-
-  const browseProps = {
-    dataSource: listService,
-    width: 90,
-    loading: loading.effects['service/query'],
-    pagination,
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
-    },
-    onAddItem () {
-      dispatch({
-        type: 'service/modalShow',
-        payload: {
-          modalType: 'add',
-        },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: 'service/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: item,
-        },
-      })
-    },
-    onDeleteItem (id) {
-      dispatch({
-        type: 'service/delete',
-        payload: {groupCode: id}
-      })
-    },
-    onDeleteBatch (selectedRowKeys) {
-      dispatch({
-        type: 'service/deleteBatch',
-        payload: {
-          id: selectedRowKeys,
-        },
-      })
-    },
-
-    onSearchShow () { dispatch({ type: 'service/searchShow' }) },
-
-    modalPopoverClose () {
-      dispatch({
-        type: `service/modalPopoverClose`,
-      })
-    },
-    size:'small',
-  }
-
-  Object.assign(browseProps, disableMultiSelect ? null :
-    {rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'service/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    }}
-  )
-
+const Service = ({ service, loading, dispatch, location }) => {
+  const { list, listServiceType, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = service
   const filterProps = {
-    visiblePanel: searchVisible,
+    display,
+    isChecked,
     filter: {
       ...location.query,
     },
     onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'service/query',
+        payload: {
+          service: value.serviceName,
           ...value,
-          page: 1,
-          pageSize,
         },
-      }))
+      })
     },
-    onSearch (fieldsValue) {
+    switchIsChecked () {
+      dispatch({
+        type: 'service/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`,
+      })
+    },
+  }
 
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/master/service',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/master/service',
-        }))
+  const listProps = {
+    dataSource: list,
+    loading: loading.effects['service/query'],
+    pagination,
+    location,
+    onChange (page) {
+      dispatch({
+        type: 'service/query',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      })
     },
-    onSearchHide () { dispatch({ type: 'service/searchHide'}) },
+    editItem (item) {
+      dispatch({
+        type: 'service/changeTab',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled',
+        },
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'service/delete',
+        payload: id,
+      })
+    },
+  }
+
+  const tabProps = {
+    activeKey,
+    changeTab (key) {
+      dispatch({
+        type: 'service/changeTab',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          currentItem: {},
+          disable: '',
+        },
+      })
+      if (key === '1') {
+        dispatch({
+          type: 'service/query',
+        })
+      }
+    },
+  }
+
+  const formProps = {
+    ...tabProps,
+    ...filterProps,
+    ...listProps,
+    listServiceType,
+    item: modalType === 'add' ? {} : currentItem,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
+      dispatch({
+        type: `service/${modalType}`,
+        payload: {
+          id,
+          data,
+        },
+      })
+    },
+    resetItem () {
+      dispatch({
+        type: 'service/resetItem',
+        payload: {
+          modalType: 'add',
+          activeKey: '0',
+          currentItem: {},
+          disable: '',
+        },
+      })
+    },
   }
 
   return (
     <div className="content-inner">
-      <Filter {...filterProps} />
-      <BrowseGroup {...browseProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      <Form {...formProps} />
     </div>
   )
 }
 
 Service.propTypes = {
-  servicetype: PropTypes.object,
-  misc: PropTypes.object,
-  employee: PropTypes.object,
+  service: PropTypes.object,
+  city: PropTypes.object,
+  loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
 }
 
-
-export default connect(({ servicetype, service, misc, employee, loading }) => ({ servicetype, service, misc, employee, loading }))(Service)
+export default connect(({ service, city, loading }) => ({ service, city, loading }))(Service)

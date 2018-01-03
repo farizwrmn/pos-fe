@@ -34,6 +34,7 @@ export async function verifyTOTP (data) {
 
 export async function getUserRole (params) {
   const userId = (!params.userId) ? lsUserId : params.userId
+  console.log('a1', userId)
   const url = userRole.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
   const apiHeaderToken = crypt.apiheader()
   return request({

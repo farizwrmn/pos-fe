@@ -2,157 +2,130 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Browse from './Browse'
-import Filter from './Filter'
-import Modal from './Modal'
+import Form from './Form'
 
-const ProductCategory = ({ location, dispatch, productCategory, loading }) => {
-  const { list, pagination, currentItem, modalVisible, searchVisible, modalType,
-    selectedRowKeys, disableItem, disableMultiSelect } = productCategory
-  const { pageSize } = pagination
-
-  const modalProps = {
-    item: modalType === 'add' ? {} : currentItem,
-    visible: modalVisible,
-    confirmLoading: loading.effects['productCategory/update'],
-    title: `${modalType === 'add' ? 'Add Category' : 'Edit Category'}`,
-    disableItem: disableItem,
-    wrapClassName: 'vertical-center-modal',
-    onOk (data) {
-      dispatch({
-        type: `productCategory/${modalType}`,
-        payload: data,
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'productCategory/modalHide',
-      })
-    },
-    modalButtonCancelClick () {
-      dispatch({ type: `productCategory/modalHide` })
-    },
-    modalButtonSaveClick (id, data) {
-      dispatch({
-        type: `productCategory/${modalType}`,
-        payload: {
-          id: id,
-          data: data
-        },
-      })
-    }
-  }
-
-  const browseProps = {
-    dataSource: list,
-    loading: loading.effects['productCategory/query'],
-    pagination,
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
-    },
-    onAddItem () {
-      dispatch({
-        type: 'productCategory/modalShow',
-        payload: {
-          modalType: 'add',
-        },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: 'productCategory/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: item,
-        },
-      })
-    },
-    onDeleteItem (id) {
-      dispatch({
-        type: 'productCategory/delete',
-        payload: {
-          id : id
-        }
-      })
-    },
-    onDeleteBatch (selectedRowKeys) {
-      dispatch({
-        type: 'productCategory/deleteBatch',
-        payload: {
-          categoryCode: selectedRowKeys,
-        },
-      })
-    },
-    onSearchShow () { dispatch({ type: 'productCategory/searchShow' }) },
-    size:'small',
-  }
-  Object.assign(browseProps, disableMultiSelect ? null :
-    {rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'productCategory/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    }}
-  )
-
+const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
+  const { listCategory, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = productcategory
   const filterProps = {
-    visiblePanel: searchVisible,
+    display,
+    isChecked,
     filter: {
       ...location.query,
     },
     onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'productcategory/query',
+        payload: {
+          userName: value.categoryName,
           ...value,
-          page: 1,
-          pageSize,
         },
-      }))
+      })
     },
-    onSearch (fieldsValue) {
+    switchIsChecked () {
+      dispatch({
+        type: 'productcategory/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`,
+      })
+    },
+  }
 
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/master/product/category',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/master/product/category',
-        }))
+  const listProps = {
+    dataSource: listCategory,
+    loading: loading.effects['productcategory/query'],
+    pagination,
+    location,
+    onChange (page) {
+      dispatch({
+        type: 'productcategory/query',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      })
     },
-    onSearchHide () { dispatch({ type: 'productCategory/searchHide'}) },
+    editItem (item) {
+      dispatch({
+        type: 'productcategory/changeTab',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled',
+        },
+      })
+      dispatch({
+        type: 'productcategory/query',
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'productcategory/delete',
+        payload: id,
+      })
+    },
+  }
+
+  const tabProps = {
+    activeKey,
+    changeTab (key) {
+      dispatch({
+        type: 'productcategory/changeTab',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          currentItem: {},
+          disable: '',
+        },
+      })
+      if (key === '1') {
+        dispatch({
+          type: 'productcategory/query',
+        })
+      }
+    },
+  }
+
+  const formProps = {
+    ...tabProps,
+    ...filterProps,
+    ...listProps,
+    item: modalType === 'add' ? {} : currentItem,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
+      dispatch({
+        type: `productcategory/${modalType}`,
+        payload: {
+          id,
+          data,
+        },
+      })
+    },
+    resetItem () {
+      dispatch({
+        type: 'productcategory/resetItem',
+        payload: {
+          modalType: 'add',
+          activeKey: '0',
+          currentItem: {},
+          disable: '',
+        },
+      })
+    },
   }
 
   return (
     <div className="content-inner">
-      <Filter {...filterProps} />
-      <Browse {...browseProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      <Form {...formProps} />
     </div>
   )
 }
 
 ProductCategory.propTypes = {
-  productCategory: PropTypes.object,
+  productcategory: PropTypes.object,
+  loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
 }
 
-export default connect(({ productCategory, loading }) => ({ productCategory, loading }))(ProductCategory)
+export default connect(({ productcategory, loading }) => ({ productcategory, loading }))(ProductCategory)
