@@ -179,6 +179,15 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-add')
           },
         }, {
+          path: 'transaction/purchase/edit',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/purchase/edit/'))
+            }, 'transaction-purchase-add')
+          },
+        }, {
           path: 'transaction/adjust',
           getComponent(nextState, cb) {
             require.ensure([], require => {
