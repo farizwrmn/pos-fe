@@ -118,7 +118,7 @@ export default {
     *getRole ({ payload }, { put, call }) {
       const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userId })
       if (userRole) {
-        lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data)])
+        lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data.mapped)])
       }
       const roleLov = userRole ? userRole.data : []
       yield put({

@@ -1,12 +1,18 @@
 import modelExtend from 'dva-model-extend'
-import { save } from '../../services/setting/userRoles'
+import { save, saveUserDefaultRole } from '../../services/setting/userRoles'
 import { getUserRole } from '../../services/login'
 import { pageModel } from '../common'
+import { message } from 'antd'
+
+const successInfo = (info) => {
+  message.success(info)
+}
 
 export default modelExtend(pageModel, {
   namespace: 'userRole',
 
   state: {
+    roleItem: {},
     list: [],
     listUserRole: [],
     listUserRoleTarget: [],
@@ -29,19 +35,20 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const userRole = yield call(getUserRole, { as: 'key,title', userId: payload.userId })
-      if (userRole.success) {
-        yield put({
-          type: 'querySuccessRole',
-          payload: {
-            listUserRole: userRole.data.map(a=>a.key),
-            pagination: {
-              total: userRole.data.length,
+      if (payload.userId) {
+        const userRole = yield call(getUserRole, { as: 'key,title', userId: payload.userId })
+        if (userRole.success) {
+          console.log('a1', userRole.data.defaultRole)
+          yield put({
+            type: 'querySuccessRole',
+            payload: {
+              listUserRole: userRole.data.mapped.map(a=>a.key),
+              defaultRole : userRole.data.defaultRole
             },
-          },
-        })
-      } else {
-        console.log('error')
+          })
+        } else {
+          console.log('error')
+        }
       }
     },
     *save ({ payload }, { call, put }) {
@@ -50,6 +57,20 @@ export default modelExtend(pageModel, {
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
         yield put({ type: 'user/modalHide'})
+      } else {
+        throw data
+      }
+    },
+    *saveDefaultRole ({ payload }, { select, call, put }) {
+      // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
+      // const newUser = { ...payload, customer }
+      const data = yield call(saveUserDefaultRole, payload)
+      if (data.success) {
+        successInfo(data.message)
+        yield put({
+          type: 'updateState',
+          payload: { roleItem: { default : data.defaultRole } },
+        })
       } else {
         throw data
       }
@@ -69,16 +90,26 @@ export default modelExtend(pageModel, {
         } }
     },
     querySuccessRole (state, action) {
-      const { listUserRole } = action.payload
+      const { listUserRole, defaultRole } = action.payload
       return { ...state,
         listUserRole,
-        listUserRoleTarget: listUserRole
+        listUserRoleTarget: listUserRole,
+        roleItem: { default : defaultRole }
       }
     },
     updateState (state, { payload }) {
+      console.log('updateState1', state)
+      console.log('updateState2', payload.roleItem.default)
       return {
         ...state,
         ...payload,
+        roleItem: { default : payload.roleItem.default }
+      }
+    },
+    successUserRole (state, action) {
+      return { ...state,
+        listUserStores: action.payload.listUserStores.split(','),
+        roleItem: { default : action.payload.defaultRole }
       }
     },
   },
