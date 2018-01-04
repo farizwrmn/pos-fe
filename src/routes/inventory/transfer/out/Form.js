@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Select } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Row, Col, Select } from 'antd'
 import Filter from './Filter'
 import ListItem from './ListItem'
 import Browse from './Browse'
+import ModalConfirm from './ModalConfirm'
 
+const { Option, OptGroup } = Select
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
-const Option = Select.Option
 const { TextArea } = Input
 
 const formItemLayout = {
@@ -42,6 +43,8 @@ const FormAdd = ({
   ...listProps,
   ...filterProps,
   ...formProps,
+  ...formConfirmProps,
+  modalConfirmVisible,
   modalProductProps,
   form: {
     getFieldDecorator,
@@ -58,7 +61,7 @@ const FormAdd = ({
   // const change = (key) => {
   //   changeTab(key)
   // }
-
+  let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -68,12 +71,51 @@ const FormAdd = ({
         ...getFieldsValue(),
       }
       data.employeeId = data.employeeId.key
+      data.storeId = data.storeId.key
+      data.storeIdReceiver = data.storeIdReceiver.key
       onSubmit(data, listItem)
       // handleReset()
     })
   }
+  const formConfirmOpts = {
+    listItem,
+    itemHeader: {
+      ...getFieldsValue()
+    },
+    ...formConfirmProps
+  }
   const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
-  const childrenStore = listStore.length > 0 ? listStore.map(list => <Option value={list.id}>{list.storeName}</Option>) : []
+
+  let childrenStore = []
+  let childrenStoreReceived = []
+  if (listStore.length > 0) {
+    for (let id in listStore) {
+      let groupStore = []
+      groupStore.push(
+        <OptGroup label={listStore[id].title}>
+          {listStore[id].children.map(list => <Option value={list.id}>{list.title}</Option>)}
+        </OptGroup>
+      )
+      childrenStore.push(groupStore)
+    }
+  }
+  if (listStore.length > 0) {
+    const data = getFieldsValue()
+    if (data.storeId && data.storeId.key) {
+      for (let id in listStore) {
+        let groupStore = []
+        groupStore.push(
+          <OptGroup label={listStore[id].title}>
+            {listStore[id].children.map(list => <Option disabled={data.storeId.key === list.id} value={list.id}>{list.title}</Option>)}
+          </OptGroup>
+        )
+        childrenStoreReceived.push(groupStore)
+      }
+    }    
+  }
+  const resetFieldsOnly = (value) => {
+    resetFields([value])
+  }
   return (
     <div>
       <Form layout="horizontal">
@@ -107,12 +149,12 @@ const FormAdd = ({
                     required: true,
                   },
                 ],
-              })(<Input disabled/>)}
+              })(<Input disabled />)}
             </FormItem>
             <FormItem label="PIC" hasFeedback {...formItemLayout}>
               {getFieldDecorator('employeeId', {
                 initialValue: item.employeeId,
-                valuePropName: 'value',                
+                valuePropName: 'value',
                 rules: [
                   {
                     required: true,
@@ -121,7 +163,7 @@ const FormAdd = ({
               })(<Select labelInValue={true} onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
             </FormItem>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
-            {modalProductVisible && <Browse {...modalProductProps} />}   
+            {modalProductVisible && <Browse {...modalProductProps} />}
           </Col>
           <Col {...col}>
             <FormItem label="From Store" hasFeedback {...formItemLayout}>
@@ -133,12 +175,11 @@ const FormAdd = ({
                   },
                 ],
               })(<Select
-                  labelInValue={true}
-                  // onFocus={getEmployee}
-                  // onBlur={hideEmployee}
-                 >
-                 {childrenStore}
-                 </Select>)}
+                labelInValue={true}
+                onChange={() => resetFieldsOnly('storeIdReceiver')}
+              >
+                {childrenStore}
+              </Select>)}
             </FormItem>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
@@ -150,11 +191,9 @@ const FormAdd = ({
                 ],
               })(<Select
                 labelInValue={true}
-                // onFocus={getEmployee}
-                // onBlur={hideEmployee}
-               >
-               {childrenStore}
-               </Select>)}
+              >
+                {childrenStoreReceived}
+              </Select>)}
             </FormItem>
             <FormItem label="Car Number" hasFeedback {...formItemLayout}>
               {getFieldDecorator('carNumber', {
@@ -174,7 +213,7 @@ const FormAdd = ({
                     required: true,
                   },
                 ],
-              })(<Input />)}
+              })(<InputNumber min={0} max={qtyTotal} />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description', {
@@ -187,11 +226,12 @@ const FormAdd = ({
               })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} />)}
             </FormItem>
           </Col>
-        </Row>     
-        <ListItem {...listProps} style={{ marginTop: '10px' }}/>
+        </Row>
+        <ListItem {...listProps} style={{ marginTop: '10px' }} />
         <FormItem>
-          <Button size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>        
+          <Button size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
+        {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>
     </div>
   )

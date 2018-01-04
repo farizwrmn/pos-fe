@@ -42,11 +42,14 @@ const BasicInvoice = ({
   }
   const printPdf = (data) => {
     if (tableHeader.length === 0 && tableFooter.length === 0) {
+      console.log('header', tableHeader.length)
+      console.log('footer', tableFooter.length)
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage',
       })
     } else if (tableBody.length === 0) {
+      console.log('body', tableBody.length)
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage',
@@ -79,7 +82,15 @@ const BasicInvoice = ({
       }
     }
   }
-  return
+  return (
+    <Button type="dashed" size="large"
+      className={className}
+      onClick={() => printPdf(data)}
+    >
+      <Icon type="printer" className="icon-large" />
+      {name}
+    </Button>
+  )
 }
 
 export default BasicInvoice;

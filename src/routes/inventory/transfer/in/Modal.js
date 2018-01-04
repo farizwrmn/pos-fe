@@ -52,10 +52,10 @@ const modal = ({
         ...getFieldsValue(),
       }
 
-      data.transNo === undefined ? data.transNo = [] : data.transNo
-      data.storeId === undefined ? data.storeId = [] : data.storeId
+      data.transNo = data.transNo ? data.transNo : []
+      data.storeIdReceiver = data.storeIdReceiver ? data.storeIdReceiver : []
 
-      if (data.transNo.length === 0 && data.storeId.length === 0) {
+      if (data.transNo.length === 0 && data.storeIdReceiver.length === 0) {
         Modal.warning({
           title: 'No Data',
           content: 'No data inside storage',
@@ -96,7 +96,7 @@ const modal = ({
 
   let childrenStoreId = []
   const selectStoreId = () => {
-    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={store.storeId.toString(36)}>{store.storeName.toString(36)}</Option>)) : []
+    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={store.storeIdReceiver.toString(36)}>{store.storeNameReceiver.toString(36)}</Option>)) : []
   }
 
   const resetSelectedField = (value) => {
@@ -133,8 +133,8 @@ const modal = ({
         </Select>)}
       </FormItem>
       <FormItem label="Store Name" hasFeedback {...formItemLayout}>
-        {getFieldDecorator('storeId', {
-          initialValue: item.storeId,
+        {getFieldDecorator('storeIdReceiver', {
+          initialValue: item.storeIdReceiver,
         })(<Select
           mode="multiple"
           style={{ width: 245 }}
