@@ -6,7 +6,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
 
-const User = ({ location, dispatch, user, loading, misc, employee, userRole }) => {
+const User = ({ location, dispatch, user, loading, misc, employee, userRole, userStore }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
     disabledItem, modalType, selectedRowKeys, disableMultiSelect, activeTab,
     totpChecked, totp
@@ -15,14 +15,18 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole }) =
   const { listLovEmployee } = employee
   const { listLov }  = misc
   const { listUserRole, listUserRoleTarget, listUserRoleChange }  = userRole
+  const { storeItem, listAllStores, listUserStores, listCheckedStores }  = userStore
   const { pageSize } = pagination
 
   const listRole = listLov &&
     listLov.hasOwnProperty('userrole') ? listLov.userrole : []
 
-  // const targetUserRole = listUserRole.map(a=>a.key)
   const modalProps = {
     item: currentItem,
+    storeItem,
+    listAllStores,
+    listUserStores,
+    listCheckedStores,
     visible: modalVisible,
     visiblePopover: visiblePopover,
     disabledItem: disabledItem,
@@ -30,7 +34,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole }) =
     totpChecked,
     totp,
     maskClosable: false,
-    confirmLoading: loading.effects['user/update'],
+    confirmLoading: loading.effects['user/query'],
     title: `${modalType === 'add' ? 'Add User' : 'Edit User'}`,
     modalType: modalType,
     wrapClassName: 'vertical-center-modal',
@@ -84,14 +88,18 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole }) =
       dispatch({ type: 'user/modalHide' })
     },
     modalButtonSaveClick (userId, data, activeTab) {
-      if (activeTab === '3') {
+      if (activeTab === '3') {                  // tab Role
         dispatch({
           type: `userRole/save`,
           payload: { userId, data, activeTab
           },
         })
-      } else if (activeTab === '5' ) {
-        console.log('modalButtonSaveClick', data)
+      } else if (activeTab === '4' ) {          // tab Store
+        dispatch({
+          type: 'userStore/saveCheckedStore',
+          payload: { userId, data: { store: data } }
+        })
+      } else if (activeTab === '5' ) {          // tab Security
         dispatch({
           type: `user/edit`,
           payload: { id: userId, data, activeTab
@@ -143,12 +151,27 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole }) =
         })
       }
     },
-
     modalTotpLoad (userId) {
       dispatch({
         type: 'user/totp',
         payload: { mode: 'load', id: userId },
       })
+    },
+    modalChangeDefaultStore (userId, defaultStore) {
+      dispatch({
+        type: 'userStore/saveDefaultStore',
+        payload: { userId, data: { defaultStore } }
+      })
+    },
+    modalNodeCheckedStore (userId, listCheckedStore) {
+      console.log('modalNodeCheckedStore', listCheckedStore)
+      dispatch({
+        type: 'userStore/updateCheckedStores',
+        payload: { userId, data: { store: listCheckedStore } }
+      })
+    },
+    modalAllStoresLoad (userId) {
+      dispatch({ type: 'userStore/getAllStores', payload: { userId } })
     },
   }
 
@@ -177,6 +200,8 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole }) =
       })
     },
     onEditItem (item) {
+      dispatch({ type: 'userStore/getAllStores', payload: { userId: item.userId } })
+      dispatch({ type: 'userStore/getUserStores', payload: { userId: item.userId } })
       dispatch({
         type: 'user/modalShow',
         payload: {
@@ -269,10 +294,11 @@ User.propTypes = {
   misc: PropTypes.object,
   employee: PropTypes.object,
   userRole: PropTypes.object,
+  userStore: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
 
-export default connect(({ user, misc, employee, userRole, loading }) => ({ user, misc, employee, userRole, loading }))(User)
+export default connect(({ user, misc, employee, userRole, userStore, loading }) => ({ user, misc, employee, userRole, userStore, loading }))(User)

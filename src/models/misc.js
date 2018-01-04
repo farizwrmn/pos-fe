@@ -7,6 +7,8 @@ export default modelExtend(pageModel, {
 
   state: {
     list: [],
+    listLov: {},
+    code: '',
     currentItem: {},
     addItem: {},
     modalVisible: false,
@@ -56,6 +58,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessLov',
           payload: {
+            code: miscCode.toLowerCase('miscCode'),
             listLov: { [ miscCode.toLowerCase('miscCode') ] : dataLov },
             pagination: {
               total: totalData,
@@ -124,8 +127,9 @@ export default modelExtend(pageModel, {
         } }
     },
     querySuccessLov (state, action) {
-      const { listLov, pagination } = action.payload
+      const { listLov, pagination, code } = action.payload
       return { ...state,
+        code,
         listLov,
         pagination: {
           ...state.pagination,

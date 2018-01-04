@@ -79,36 +79,32 @@
         border-top: solid 1px #f8f8f8;
       }
     }
-    .switchstore {
-      padding-left: 24px;
-      :global {
-        .anticon {
-          min-width: 14px;
-          margin-right: 8px;
-          font-size: 12px;
-        }
-      }
-    }
+
     .logo {
-      text-align: center;
-      height: 40px;
-      line-height: 40px;
+      text-align: left;
+      height: 47px;
+      line-height: 47px;
       cursor: pointer;
-      margin: 24px 0;
       transition: @transition-ease-out;
       overflow: hidden;
 
       img {
         width: 40px;
-        margin-right: 8px;
+        margin: 0 8px;
         transition: @transition-ease-out;
+        vertical-align: middle;
       }
 
       span {
-        vertical-align: text-bottom;
         font-size: 16px;
         text-transform: uppercase;
         display: inline-block;
+        &:focus {
+          outline: 0;
+        }
+        a {
+          text-decoration: none;
+        }
       }
 
       .anticon {

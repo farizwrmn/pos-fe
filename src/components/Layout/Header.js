@@ -1,18 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar, Switch } from 'antd'
+import { Menu, Icon, Popover, Calendar, Switch, Cascader } from 'antd'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
 import ChangeTotp from './ChangeTotp'
+import { lstorage } from 'utils'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar, menuPopoverVisible,
-  visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow, handleShortcutKeyHide,
-  handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
+const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar,
+  menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
+  handleShortcutKeyHide, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
   handleTotpLoad, handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
   handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
@@ -23,6 +24,10 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     e.key === 'totp' && handleChangeTotpShow(user.userid)
   }
 
+  // user store
+  const defaultStoreName = lstorage.getCurrentUserStoreName()
+
+  // menu prop
   const menusProps = {
     menu,
     siderFold: false,
@@ -80,13 +85,16 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   return (
     <div className={styles.header}>
       {isNavbar
-        ? <Popover placement="bottomLeft" onVisibleChange={switchMenuPopover} visible={menuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
+        ? <Popover placement="bottomLeft" onVisibleChange={switchMenuPopover}
+                   visible={menuPopoverVisible} overlayClassName={styles.popovermenu}
+                   trigger="click" content={<Menus {...menusProps} />}>
           <div className={styles.button}>
             <Icon type="bars" />
           </div>
         </Popover>
         : <div className={styles.leftWrapper}>
           <HeaderMenu prompt="toggle menu" icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
+          {siderFold ? <span>{defaultStoreName}</span> : ''}
         </div>
       }
 

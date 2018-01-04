@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Cascader, Collapse } from 'antd'
-import city from 'utils/city'
+import { Form, Button, Row, Col, DatePicker, Input, Collapse } from 'antd'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker

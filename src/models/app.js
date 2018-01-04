@@ -9,6 +9,7 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
+import { lstorage } from 'utils'
 
 const { prefix } = config
 
@@ -59,12 +60,10 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const { data } = yield call(menusService.query)
-        // console.log('data', data)
         const { permissions } = user
 
         let menu = data
-        if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)
-        ) {
+        if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)) {
           permissions.visit = data.map(item => item.menuId)
         } else {
           menu = data.filter((item) => {
@@ -140,8 +139,7 @@ export default {
       payload,
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
-      localStorage.removeItem(`${prefix}idToken`)
-      localStorage.removeItem(`${prefix}uid`)
+      lstorage.removeItemKey()
 
       if (data.success) {
         yield put({ type: 'query' })
@@ -204,7 +202,6 @@ export default {
     },
 
     *changeTotp ({ payload = {} }, { call, put }) {
-      console.log('changeTotp', payload)
       yield put({
         type: 'querySuccessTotp',
         payload
@@ -284,14 +281,9 @@ export default {
     },
 
     querySuccessTotp (state, action) {
-      // console.log('querySuccessTotpa', action)
       const { totp, mode, isTotp } = action.payload
-      // if (mode === 'load') state.totpChecked = false
-      // console.log('querySuccessmode', mode)
-      // console.log('querySuccessTotpv', totp)
       if (mode === 'load') state.totpChecked = totp.isTotp
       if (mode === 'edit') state.totpChecked = isTotp
-      console.log('querySuccessTotp', state.totpChecked)
       return { ...state,
         totp,
       }

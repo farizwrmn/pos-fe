@@ -3,8 +3,8 @@ import { Modal } from 'antd'
 import config from 'config'
 import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail } from '../services/purchase'
 import { pageModel } from './common'
-import { query as queryProducts } from '../services/stock'
-import { query as querySupplier } from '../services/suppliers'
+import { query as queryProducts } from '../services/master/productstock'
+import { query as querySupplier } from '../services/master/supplier'
 
 const { prefix } = config
 

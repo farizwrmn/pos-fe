@@ -6,8 +6,9 @@ import { config } from 'utils'
 import styles from './index.less'
 import './index.less'
 import Footer from 'components/Layout/Footer'
+import { crypt } from 'utils'
 
-const { prefix, authBy } = config
+const { authBy } = config
 const FormItem = Form.Item
 
 const Login = ({
@@ -19,7 +20,6 @@ const Login = ({
   },
 }) => {
   const { loginLoading, listUserRole, visibleItem } = login
-  listUserRole.length > 0 && localStorage.setItem(`${prefix}uRole`, JSON.stringify(listUserRole))
 
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -69,15 +69,16 @@ const Login = ({
                       placeholder="Verification" />)}
           </FormItem>
         }
-        <FormItem hasFeedback>
-          {getFieldDecorator('userrole', {
-          })(<Cascader
-            size='large'
-            style={{ width: '100%' }}
-            options={listUserRole}
-            placeholder='Role'
-          />)}
-        </FormItem>
+        {visibleItem.userRole &&
+          <FormItem hasFeedback>
+            {getFieldDecorator('userrole', {})(<Cascader
+              size='large'
+              style={{width: '100%'}}
+              options={listUserRole}
+              placeholder={listUserRole.length > 0 ? 'Choose' : 'No Role'}
+            />)}
+          </FormItem>
+        }
         <Row>
           <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
             Sign in

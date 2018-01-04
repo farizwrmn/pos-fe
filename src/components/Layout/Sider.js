@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Switch, Cascader } from 'antd'
+import { Icon, Cascader, Tooltip } from 'antd'
 import styles from './Layout.less'
 import { config } from 'utils'
 import Menus from './Menu'
-
-const { prefix } = config
+import { crypt, lstorage } from 'utils'
 
 const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switchSider, changeOpenKeys, menu }) => {
   const menusProps = {
@@ -17,21 +16,24 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     changeOpenKeys,
   }
 
-  let defaultRole =''
-  const localId = localStorage.getItem(`${prefix}uid`)
-  if (localId && localId.indexOf("#") > -1) {
-    defaultRole = localId.split(/[# ]+/).pop()
+  // user role
+  const listUserRoles = lstorage.getListUserRoles()
+  const defaultRole = lstorage.getCurrentUserRole()
+
+  // user store
+  const listUserStores = lstorage.getListUserStores()
+  const defaultStore = lstorage.getCurrentUserStore()
+  const defaultStoreName = lstorage.getCurrentUserStoreName()
+
+  const handleChangeRole = (value) => {
+    const localId = lstorage.getStorageKey('udi')
+    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3]], localId[0])
+    changeRole(value.toString())
   }
 
-  const handleChange = (value) => {
-    console.log(value)
-    const a=localStorage.getItem(`${prefix}uid`)
-    console.log(a)
-    const b=a.split('#')
-    console.log(b)
-    const c=b[0]+'#'+b[1]+'#'+value
-    console.log(c)
-    localStorage.setItem(`${prefix}uid`,c)
+  const handleChangeStore = (value) => {
+    const localId = lstorage.getStorageKey('udi')
+    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString()], localId[0])
     changeRole(value.toString())
   }
 
@@ -39,16 +41,30 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     <div>
       <div className={styles.logo}>
         <img alt={'logo'} src={config.logo} />
-        {siderFold ? '' : <span>{config.name}</span>}
-      </div>
-      <div className={styles.switchstore}>
+        {/*<span>{config.name}</span>*/}
+        {siderFold ?
+          ''
+          :
+          <Tooltip placement="right" title="click to switch store">
+            <Cascader style={{width: '180px'}}
+                      options={listUserStores}
+                      onChange={handleChangeStore}
+                      changeOnSelect allowClear={false}
+                      defaultValue={[defaultStore]}
+                      placeholder="Switch Store">
+              <span><a href="#">{defaultStoreName}</a></span>
+            </Cascader>
+          </Tooltip>
+        }
       </div>
       <Menus {...menusProps} />
       {!siderFold ?
         <div className={styles.switchrole}>
-          <Cascader options={JSON.parse(localStorage.getItem(`${prefix}uRole`))}
-                    onChange={handleChange} changeOnSelect
+          <Tooltip placement="top" title="click to switch role">
+            <Cascader options={listUserRoles}
+                    onChange={handleChangeRole} changeOnSelect allowClear={false}
                     defaultValue={[defaultRole]} placeholder="Switch Role"/>
+          </Tooltip>
         </div> : ''}
       <div className={styles.siderCollapse} onClick={switchSider}>
         <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'} />

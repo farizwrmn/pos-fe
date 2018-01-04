@@ -2,261 +2,148 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Browse from './Browse'
-import Filter from './Filter'
-import Modal from './Modal'
+import Form from './Form'
 
-const Stock = ({ productBrand, productCategory, location, dispatch, stock, loading }) => {
-  const { listStock, pagination, currentItem, modalVisible, searchVisible, modalType,
-    selectedRowKeys, visiblePopover, visiblePopoverBrand, disableItem, disableMultiSelect } = stock
-
-  const { list } = productCategory
-  const { pageSize } = pagination
-  const { listBrand } = productBrand
-
-  const modalProps = {
-    width: 1000,
-    item: currentItem,
-    visible: modalVisible,
-    list,
-    listBrand,
-    visiblePopover,
-    visiblePopoverBrand,
-    confirmLoading: loading.effects['stock/update'],
-    title: `${modalType === 'add' ? 'Add Product' : 'Edit Product'}`,
-    disableItem: disableItem,
-    wrapClassName: 'vertical-center-modal',
-    onOk (data) {
-      dispatch({
-        type: `stock/${modalType}`,
-        payload: data,
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'stock/modalHide',
-      })
-    },
-    modalButtonCancelClick () {
-      dispatch({ type: `stock/modalHide` })
-    },
-    modalButtonSaveClick (id, data) {
-      dispatch({
-        type: `stock/${modalType}`,
-        payload: {
-          id: id,
-          data: data
-        },
-      })
-    },
-    modalPopoverVisible () {
-      dispatch({
-        type: 'stock/modalPopoverVisible',
-      })
-    },
-    modalPopoverVisibleBrand () {
-      dispatch({
-        type: 'stock/modalPopoverVisibleBrand',
-      })
-    },
-    modalButtonCategoryClick () {
-      dispatch({
-        type: 'productCategory/query',
-      })
-    },
-    modalButtonBrandClick () {
-      dispatch({
-        type: 'productBrand/query',
-      })
-    },
-    modalPopoverClose () {
-      dispatch({
-        type: 'stock/modalPopoverClose',
-      })
-    },
-    onChooseItem (data) {
-      console.log('data:',data, 'currentItem', currentItem);
-      dispatch({
-        type: 'stock/chooseEmployee',
-        payload: {
-          modalType,
-          currentItem: {
-            active: currentItem.active,
-            barCode01: currentItem.barCode01,
-            barCode02: currentItem.barCode02,
-            productCode: currentItem.productCode,
-            productName: currentItem.productName,
-            categoryId: data.id,
-            categoryName: data.categoryName,
-            brandCode: currentItem.brandCode,
-            brandName: currentItem.brandName,
-            otherName01: currentItem.otherName01,
-            otherName02: currentItem.otherName02,
-            costPrice: currentItem.costPrice,
-            sellPrice: currentItem.sellPrice,
-            sellPricePre: currentItem.sellPricePre,
-            distPrice01: currentItem.distPrice01,
-            distPrice02: currentItem.distPrice02,
-            trackQty: currentItem.trackQty,
-            alertQty: currentItem.alertQty,
-            productImage: currentItem.productImage,
-            dummyCode: currentItem.dummyCode,
-            dummyName: currentItem.dummyName,
-            location01: currentItem.location01,
-            location02: currentItem.location02,
-            exception01: currentItem.exception01,
-          },
-        },
-      })
-    },
-    onChooseBrand (data) {
-      dispatch({
-        type: 'stock/chooseEmployee',
-        payload: {
-          modalType,
-          currentItem: {
-            active: currentItem.active,
-            barCode01: currentItem.barCode01,
-            barCode02: currentItem.barCode02,
-            productCode: currentItem.productCode,
-            productName: currentItem.productName,
-            categoryId: currentItem.categoryId,
-            categoryName: currentItem.categoryName,
-            brandName: data.brandName,
-            brandCode: data.id,
-            otherName01: currentItem.otherName01,
-            otherName02: currentItem.otherName02,
-            costPrice: currentItem.costPrice,
-            sellPrice: currentItem.sellPrice,
-            sellPricePre: currentItem.sellPricePre,
-            distPrice01: currentItem.distPrice01,
-            distPrice02: currentItem.distPrice02,
-            trackQty: currentItem.trackQty,
-            alertQty: currentItem.alertQty,
-            productImage: currentItem.productImage,
-            dummyCode: currentItem.dummyCode,
-            dummyName: currentItem.dummyName,
-            location01: currentItem.location01,
-            location02: currentItem.location02,
-            exception01: currentItem.exception01,
-          },
-        },
-      })
-    },
-  }
-
-  const browseProps = {
-    dataSource: listStock,
-    loading: loading.effects['stock/query'],
-    pagination,
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
-    },
-    onAddItem () {
-      dispatch({
-        type: 'stock/modalShow',
-        payload: {
-          modalType: 'add',
-        },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: 'stock/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: item,
-        },
-      })
-    },
-    onDeleteItem (id) {
-      dispatch({
-        type: 'stock/delete',
-        payload: {
-          id : id
-        }
-      })
-    },
-    onDeleteBatch (selectedRowKeys) {
-      dispatch({
-        type: 'stock/deleteBatch',
-        payload: {
-          categoryCode: selectedRowKeys,
-        },
-      })
-    },
-    onSearchShow () { dispatch({ type: 'stock/searchShow' }) },
-    size:'small',
-  }
-  Object.assign(browseProps, disableMultiSelect ? null :
-    {rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'stock/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    }}
-  )
-
+const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location }) => {
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = productstock
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
   const filterProps = {
-    visiblePanel: searchVisible,
+    display,
+    isChecked,
     filter: {
       ...location.query,
     },
     onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          ...value,
-          page: 1,
-          pageSize,
+      dispatch({
+        type: 'productstock/query',
+        payload: {
+          productCode: value.productName,
         },
-      }))
+      })
     },
-    onSearch (fieldsValue) {
+    switchIsChecked () {
+      dispatch({
+        type: 'productstock/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`,
+      })
+    },
+  }
 
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/master/product/stock',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/master/product/stock',
-        }))
+  const listProps = {
+    dataSource: list,
+    loading: loading.effects['productstock/query'],
+    pagination,
+    location,
+    onChange (page) {
+      dispatch({
+        type: 'productstock/query',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      })
     },
-    onSearchHide () { dispatch({ type: 'stock/searchHide'}) },
+    editItem (item) {
+      dispatch({
+        type: 'productstock/changeTab',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled',
+        },
+      })
+      dispatch({
+        type: 'productcategory/query',
+      })
+      dispatch({
+        type: 'productbrand/query',
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'productstock/delete',
+        payload: id,
+      })
+    },
+  }
+
+  const tabProps = {
+    activeKey,
+    changeTab (key) {
+      dispatch({
+        type: 'productstock/changeTab',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          currentItem: {},
+          disable: '',
+        },
+      })
+      if (key === '1') {
+        dispatch({
+          type: 'productstock/query',
+        })
+      }
+    },
+  }
+
+  const formProps = {
+    ...tabProps,
+    ...filterProps,
+    ...listProps,
+    listCategory,
+    listBrand,
+    item: modalType === 'add' ? {} : currentItem,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
+      dispatch({
+        type: `productstock/${modalType}`,
+        payload: {
+          id,
+          data,
+        },
+      })
+    },
+    resetItem () {
+      dispatch({
+        type: 'productstock/resetItem',
+        payload: {
+          modalType: 'add',
+          activeKey: '0',
+          currentItem: {},
+          disable: '',
+        },
+      })
+    },
+    showBrands () {
+      dispatch({
+        type: 'productbrand/query',
+      })
+    },
+    showCategories () {
+      dispatch({
+        type: 'productcategory/query',
+      })
+    },
   }
 
   return (
     <div className="content-inner">
-      <Filter {...filterProps} />
-      <Browse {...browseProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      <Form {...formProps} />
     </div>
   )
 }
 
-Stock.propTypes = {
-  stock: PropTypes.object,
+ProductStock.propTypes = {
+  productstock: PropTypes.object,
+  productcategory: PropTypes.object,
+  productbrand: PropTypes.object,
+  loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
-  productCategory: PropTypes.object,
-  productBrand: PropTypes.object,
 }
 
-export default connect(({ productBrand, productCategory, stock, loading }) => ({ productBrand, productCategory, stock, loading }))(Stock)
+export default connect(({ productstock, productcategory, productbrand, loading }) => ({ productstock, productcategory, productbrand, loading }))(ProductStock)

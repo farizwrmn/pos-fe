@@ -44,9 +44,7 @@ export default modelExtend(pageModel, {
         console.log('error')
       }
     },
-
     *save ({ payload }, { call, put }) {
-      console.log('save', payload)
       const data = yield call(save, payload)
       if (data.success) {
         yield put({ type: 'modalHide' })
@@ -78,7 +76,6 @@ export default modelExtend(pageModel, {
       }
     },
     updateState (state, { payload }) {
-      console.log('updateState',payload)
       return {
         ...state,
         ...payload,

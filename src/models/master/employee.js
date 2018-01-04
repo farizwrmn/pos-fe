@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
   namespace: 'employee',
 
   state: {
+    list: [],
     currentItem: {},
     modalType: 'add',
     display: 'none',
@@ -25,7 +26,9 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/master/employee') {
-        //   const payload = location.query
+          dispatch({
+            type: 'querySequenceEmployee',
+          })
         }
       })
     },
@@ -36,7 +39,7 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       console.log(data.success)
-      if (data) {
+      if (data) {        
         yield put({
           type: 'querySuccess',
           payload: {
@@ -48,6 +51,18 @@ export default modelExtend(pageModel, {
             },
           },
         })
+      }
+    },
+
+    * querySequenceEmployee({ payload = {} }, { call, put }) {
+      const seqDetail = {
+        seqCode: 'EMP',
+        type: 1
+      }
+      const sequence = yield call(querySequence, seqDetail)
+      if (sequence.success) {
+        const item = {employeeId: sequence.data}
+        yield put({ type: 'updateState', payload: { currentItem: item } })
       }
     },
 
@@ -84,6 +99,9 @@ export default modelExtend(pageModel, {
             console.log('employeeIncrease :', employeeIncrease.message)
             throw data
           }
+          yield put({
+            type: 'querySequenceEmployee'
+          })
         } else {
           throw data
           console.log('data :', data.message)

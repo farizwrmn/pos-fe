@@ -1,6 +1,6 @@
-import { login, prelogin, getUserRole, verifyTOTP } from '../services/login'
 import { routerRedux } from 'dva/router'
-import { queryURL, config, crypt } from 'utils'
+import { queryURL, config, crypt, lstorage } from 'utils'
+import { login, prelogin, getUserRole, getUserStore, verifyTOTP } from '../services/login'
 
 const { prefix } = config
 
@@ -9,6 +9,7 @@ export default {
   state: {
     loginLoading: false,
     listUserRole: [],
+    listUserStore: [],
     requiredRole: false,
     visibleItem: { verificationCode: false}
   },
@@ -23,14 +24,11 @@ export default {
       if (data.success) {
         const from = queryURL('from')
         if ( data.id_token ) {
-          localStorage.setItem(`${prefix}idToken`, data.id_token)
-          const rdmText = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8)
-          const rdmTextcryp = crypt.encrypt(rdmText)
-          const truecrypt = crypt.encrypt(data.profile.userid, rdmTextcryp)
-          localStorage.setItem(`${prefix}uid`, rdmText + '#' + truecrypt + '#' + data.profile.role)
+          localStorage.setItem(`${prefix}iKen`, data.id_token)
+          lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store])
         } else {
-          localStorage.removeItem(`${prefix}idToken`)
-          localStorage.removeItem(`${prefix}uid`)
+          localStorage.removeItem(`${prefix}iKen`)
+          localStorage.removeItem(`${prefix}udi`)
         }
         yield put({ type: 'app/query', payload: data.profile })
         if (from) {
@@ -46,7 +44,27 @@ export default {
       if (payload.verification) {
         const data = yield call(verifyTOTP, payload)
         if (data.success) {
-          yield put({ type: 'getRole', payload })
+          if (data.profile.role) {
+            const from = queryURL('from')
+            localStorage.setItem(`${prefix}iKen`, data.id_token)
+            lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store])
+            yield put({ type: 'app/query', payload: data.profile })
+            if (from) {
+              yield put(routerRedux.push(from))
+            } else {
+              yield put(routerRedux.push('/dashboard'))
+            }
+          } else {
+            yield put({
+              type: 'queryStateTotp',
+              payload: {
+                visibleItem: { userRole: true},
+              },
+            })
+            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
+          }
+
         } else {
           yield put({
             type: 'queryStateTotp',
@@ -58,16 +76,32 @@ export default {
       } else {
         const data = yield call(prelogin, payload)
         if (data.success && data.pre_token) {
-          localStorage.setItem(`${prefix}idToken`, data.pre_token)
+          localStorage.setItem(`${prefix}iKen`, data.pre_token)
           yield put({
             type: 'queryStateTotp',
             payload: {
-              visibleItem: { verificationCode: data.profile.istotp},
+              visibleItem: {
+                userRole: data.profile.role ? false : data.profile.istotp ? false : true,
+                verificationCode: data.profile.istotp,
+              },
             },
           })
 
           if (!data.profile.istotp) {
-            yield put({ type: 'getRole', payload })
+            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
+          }
+        } else if (data.success && data.id_token) {
+          const from = queryURL('from')
+          localStorage.setItem(`${prefix}iKen`, data.id_token)
+          yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+          yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
+          lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store])
+          yield put({ type: 'app/query', payload: data.profile })
+          if (from) {
+            yield put(routerRedux.push(from))
+          } else {
+            yield put(routerRedux.push('/dashboard'))
           }
         } else {
           yield put({
@@ -82,15 +116,30 @@ export default {
 
     },
     *getRole ({ payload }, { put, call }) {
-      const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userid })
-      const dataLov = userRole ? userRole.data : []
+      const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userId })
+      if (userRole) {
+        lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data)])
+      }
+      const roleLov = userRole ? userRole.data : []
       yield put({
         type: 'queryStateRole',
         payload: {
-          listUserRole: dataLov,
-          pagination: userRole ? { total: userRole.data.length } : {},
+          listUserRole: roleLov,
         },
-      })      
+      })
+    },
+    *getStore ({ payload }, { put, call }) {
+      const userStore = yield call(getUserStore, { userId: payload.userId, mode: 'lov' })
+      if (userStore) {
+        lstorage.putStorageKey('utores', [JSON.stringify(userStore.data)])
+      }
+      const storeLov = userStore ? userStore.data : []
+      yield put({
+        type: 'queryStateStore',
+        payload: {
+          listUserStore: storeLov,
+        },
+      })
     },
   },
   reducers: {
@@ -107,13 +156,16 @@ export default {
       }
     },
     queryStateRole (state, action) {
-      const { listUserRole, pagination } = action.payload
+      const { listUserRole } = action.payload
       return { ...state,
         listUserRole,
-        pagination: {
-          ...state.pagination,
-          ...pagination,
-        } }
+      }
+    },
+    queryStateStore (state, action) {
+      const { listUserStore } = action.payload
+      return { ...state,
+        listUserStore,
+      }
     },
     queryStateTotp (state, action) {
       const { visibleItem } = action.payload

@@ -9,7 +9,8 @@ import ModalItem from './Modal'
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading, misc }) => {
   const { listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, searchVisible, pagination, disable } = transferOut
   const { modalProductVisible, listProduct } = pos
-  const { listEmployee } = employee
+  const { list } = employee
+  let listEmployee = list
   const { user, storeInfo } = app
   const filterProps = {
     display,

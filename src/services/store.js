@@ -1,9 +1,9 @@
 import { request, config, crypt } from 'utils'
 
-const { store } = config.api
+const { stores } = config.api
 
 export async function query (params) {
-  const url = store
+  const url = stores
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

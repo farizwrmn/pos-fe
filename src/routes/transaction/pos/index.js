@@ -326,7 +326,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
 
   const handlePayment = () => {
     let defaultRole = ''
-    const localId = localStorage.getItem(`${prefix}uid`)
+    const localId = localStorage.getItem(`${prefix}udi`)
     if (localId && localId.indexOf("#") > -1) {
       defaultRole = localId.split(/[# ]+/).pop()
     }

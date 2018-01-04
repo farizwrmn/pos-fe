@@ -17,12 +17,12 @@ const { prefix, openPages } = config
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
-const App = ({ children, dispatch, app, loading, location, login }) => {
+const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
-  const { iconFontJS, iconFontCSS, logo } = config
+  const { logo } = config
   const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
   const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
@@ -84,7 +84,6 @@ const App = ({ children, dispatch, app, loading, location, login }) => {
       })
     },
     handleRegenerateTotp (userId) {
-      console.log('regenerate', userId)
       dispatch({
         type: 'app/totp',
         payload: { mode: 'generate', id: userId },
@@ -157,14 +156,13 @@ const App = ({ children, dispatch, app, loading, location, login }) => {
       {children}
     </div>)
   }
+
   return (
     <div>
       <Helmet>
         <title>{config.name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
-        {iconFontJS && <script src={iconFontJS} />}
-        {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />}
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
         {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>

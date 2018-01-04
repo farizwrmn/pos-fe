@@ -7,7 +7,7 @@ export async function query (params) {
     url: jobposition,
     method: 'get',
     data: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
@@ -18,7 +18,7 @@ export async function queryField (params) {
     url: jobposition,
     method: 'get',
     data: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
@@ -27,7 +27,7 @@ export async function queryMechanics (params) {
   return request({
     url: jobposition + '/mechanics/' + params,
     method: 'get',
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
@@ -38,8 +38,7 @@ export async function add (params) {
     url: url,
     method: 'post',
     data: params.data,
-    body: params.data,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
@@ -50,8 +49,7 @@ export async function edit (params) {
     url: url,
     method: 'put',
     data: params.data,
-    body: params.data,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }
 
@@ -62,6 +60,6 @@ export async function remove (params) {
     url: url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken
+    headers: apiHeaderToken,
   })
 }

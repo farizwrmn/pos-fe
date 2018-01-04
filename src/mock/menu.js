@@ -1,5 +1,5 @@
 // const { config } = require('./common')
-
+//
 // const { apiPrefix } = config
 // let database = [
 //   {
@@ -216,7 +216,7 @@
 //     mpid: '42',
 //     name: 'Summary',
 //     icon: 'calendar',
-//     route: '/report/purchase/summary',    
+//     route: '/report/purchase/summary',
 //   },
 //   {
 //     id: '43',
@@ -356,6 +356,7 @@
 //     id: '94',
 //     bpid: '9',
 //     mpid: '9',
+//     icon: 'setting',
 //     name: 'Configure',
 //     icon: 'setting',
 //     route: '/setting/configure'
@@ -374,9 +375,9 @@
 //     route: '/transaction/pos/payment',
 //   },
 // ]
-
+//
 // module.exports = {
-
+//
 //   [`GET ${apiPrefix}/menus`] (req, res) {
 //     res.status(200).json(database)
 //   },

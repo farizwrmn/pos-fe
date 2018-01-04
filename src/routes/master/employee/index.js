@@ -2,200 +2,148 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Browse from './Browse'
-import Filter from './Filter'
-import Modal from './Modal'
+import Form from './Form'
 
-const Employee = ({ location, dispatch, employee, jobposition, city, loading  }) => {
-  const { listEmployee, pagination, currentItem, modalVisible, searchVisible, modalType,
-    selectedRowKeys, disableItem, visiblePopoverCity, disableMultiSelect } = employee
-
+const Employee = ({ employee, jobposition, city, loading, dispatch, location }) => {
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
-  const { pageSize } = pagination
-
-  const modalProps = {
-    item: currentItem,
-    visible: modalVisible,
-    visiblePopoverCity,
-    listCity,
-    confirmLoading: loading.effects['employee/update'],
-    title: `${modalType === 'add' ? 'Add Employee' : 'Edit Employee'}`,
-    disableItem: disableItem,
-    wrapClassName: 'vertical-center-modal',
-    listJobPosition: listLovJobPosition,
-    onOk (data) {
-      dispatch({
-        type: `employee/${modalType}`,
-        payload: data,
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'employee/modalHide',
-      })
-    },
-    modalButtonCancelClick () {
-      dispatch({ type: `employee/modalHide` })
-    },
-    modalButtonSaveClick (id, data) {
-      dispatch({
-        type: `employee/${modalType}`,
-        payload: {
-          id: id,
-          data: data
-        },
-      })
-    },
-    modalPopoverVisibleCity () {
-      console.log('modalPopoverVisibleCity');
-      dispatch({
-        type: 'employee/modalPopoverVisibleCity',
-      })
-    },
-    modalButtonCityClick () {
-      dispatch({
-        type: 'city/query',
-      })
-    },
-    modalPopoverClose () {
-      dispatch({
-        type: 'employee/modalPopoverClose',
-      })
-    },
-    onChooseCity (data) {
-      dispatch({
-        type: 'employee/chooseCity',
-        payload: {
-          modalType,
-          currentItem: {
-            cityId: data.id,
-            cityName: data.cityName,
-            employeeId: currentItem.employeeId,
-            address01: currentItem.address01,
-            address02: currentItem.address02,
-            email: currentItem.email,
-            employeeName: currentItem.employeeName,
-            mobileNumber: currentItem.mobileNumber,
-            phoneNumber: currentItem.phoneNumber,
-            positionId: currentItem.positionId,
-            positionName: currentItem.positionName
-          },
-        },
-      })
-    },
-  }
-
-  const browseProps = {
-    dataSource: listEmployee,
-    loading: loading.effects['employee/query'],
-    pagination,
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
-    },
-    onAddItem () {
-      dispatch({
-        type: 'employee/modalShow',
-        payload: {
-          modalType: 'add',
-        },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: 'employee/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: item,
-        },
-      })
-    },
-    onDeleteItem (id) {
-      dispatch({
-        type: 'employee/delete',
-        payload: id
-      })
-    },
-    onDeleteBatch (selectedRowKeys) {
-      dispatch({
-        type: 'employee/deleteBatch',
-        payload: {
-          employeeId: selectedRowKeys,
-        },
-      })
-    },
-    onSearchShow () { dispatch({ type: 'employee/searchShow' }) },
-    size:'small',
-  }
-  Object.assign(browseProps, disableMultiSelect ? null :
-    {rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'employee/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    }}
-  )
-
   const filterProps = {
-    visiblePanel: searchVisible,
+    display,
+    isChecked,
     filter: {
       ...location.query,
     },
     onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'employee/query',
+        payload: {
           ...value,
-          page: 1,
-          pageSize,
         },
-      }))
+      })
     },
-    onSearch (fieldsValue) {
+    switchIsChecked () {
+      dispatch({
+        type: 'employee/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`,
+      })
+    },
+  }
 
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/master/employee',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/master/employee',
-        }))
+  const listProps = {
+    dataSource: list,
+    loading: loading.effects['employee/query'],
+    pagination,
+    location,
+    onChange (page) {
+      dispatch({
+        type: 'employee/query',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize,
+        },
+      })
     },
-    onSearchHide () { dispatch({ type: 'employee/searchHide'}) },
+    editItem (item) {
+      dispatch({
+        type: 'employee/changeTab',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled',
+        },
+      })
+      dispatch({
+        type: 'jobposition/lov',
+      })
+      dispatch({
+        type: 'city/query',
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'employee/delete',
+        payload: id,
+      })
+    },
+  }
+
+  const tabProps = {
+    activeKey,
+    changeTab (key) {
+      dispatch({
+        type: 'employee/changeTab',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          currentItem: {},
+          disable: '',
+        },
+      })
+      if (key === '1') {
+        dispatch({
+          type: 'employee/query',
+        })
+      }
+    },
+  }
+
+  const formProps = {
+    ...tabProps,
+    ...filterProps,
+    ...listProps,
+    listLovJobPosition,
+    listCity,
+    item: currentItem,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
+      dispatch({
+        type: `employee/${modalType}`,
+        payload: {
+          id,
+          data,
+        },
+      })
+    },
+    resetItem () {
+      dispatch({
+        type: 'employee/resetItem',
+        payload: {
+          modalType: 'add',
+          activeKey: '0',
+          currentItem: {},
+          disable: '',
+        },
+      })
+    },
+    showPosition () {
+      dispatch({
+        type: 'jobposition/lov',
+      })
+    },
+    showCities () {
+      dispatch({
+        type: 'city/query',
+      })
+    },
   }
 
   return (
     <div className="content-inner">
-      <Filter {...filterProps} />
-      <Browse {...browseProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      <Form {...formProps} />
     </div>
   )
 }
 
 Employee.propTypes = {
   employee: PropTypes.object,
+  jobposition: PropTypes.object,
+  city: PropTypes.object,
+  loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
-  city: PropTypes.object
 }
-
 
 export default connect(({ employee, jobposition, city, loading }) => ({ employee, jobposition, city, loading }))(Employee)

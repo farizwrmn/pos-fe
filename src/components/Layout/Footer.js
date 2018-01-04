@@ -9,7 +9,7 @@ import { config } from 'utils'
 
 const Footer = ({ otherClass }) => {
   return (<div className={`${styles.footer} ${otherClass}`}>
-    {config.footerText}
+    {config.footerText + '\n' + config.version}
   </div>)
 }
 

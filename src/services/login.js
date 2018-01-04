@@ -1,7 +1,9 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
-const { api, prefix } = config
-const { userLogin, userPreLogin, userRole, userTotp } = api
+const { api } = config
+const { userLogin, userPreLogin, userRole, userStore, userTotp } = api
+
+const lsUserId = lstorage.getStorageKey('udi')[1]
 
 export async function login (data) {
   return request({
@@ -31,22 +33,20 @@ export async function verifyTOTP (data) {
 }
 
 export async function getUserRole (params) {
-  let userId
-  if (!params.userId) {
-    const localId = localStorage.getItem(`${prefix}uid`)
-    let url = []
-    if (localId && localId.indexOf("#") > -1) {
-      const localIds = localId.split("#")
-      const rdmText = crypt.encrypt(localIds[0])
-      url[0] = crypt.decrypt(localIds[1], rdmText) || ''
-    } else {
-      url[0] = crypt.decrypt(localStorage.getItem(`${prefix}uid`)) || ''
-    }
-    userId = url[0]
-  } else {
-    userId = params.userId
-  }
+  const userId = (!params.userId) ? lsUserId : params.userId
+  console.log('a1', userId)
   const url = userRole.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: url,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}
+
+export async function getUserStore (params) {
+  const userId = (!params.userId) ? lsUserId : params.userId
+  const url = userStore.replace('/:id', '/' + userId) + ('?mode=lov')
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

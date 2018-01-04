@@ -129,7 +129,7 @@ const FormEdit = ({
         resetFields()
     }
     let defaultRole = ''
-    const localId = localStorage.getItem(`${prefix}uid`)
+    const localId = localStorage.getItem(`${prefix}udi`)
     if (localId && localId.indexOf("#") > -1) {
         defaultRole = localId.split(/[# ]+/).pop()
     }
