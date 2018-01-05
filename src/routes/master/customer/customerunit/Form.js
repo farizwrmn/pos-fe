@@ -106,8 +106,7 @@ const formCustomerType = ({
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} />
-              </FormItem>
+              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} /></FormItem>
             </Col>
             <Col {...col} />
           </Row>

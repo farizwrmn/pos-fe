@@ -35,11 +35,17 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Cost',
       dataIndex: 'cost',
       key: 'cost',
+      render: (text) => {
+        return text.toLocaleString()
+      },
     },
     {
       title: 'Service Cost',
       dataIndex: 'serviceCost',
       key: 'serviceCost',
+      render: (text) => {
+        return text.toLocaleString()
+      },
     },
     {
       title: 'Type',

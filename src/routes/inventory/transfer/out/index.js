@@ -6,10 +6,12 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 import ModalItem from './Modal'
 
-const Transfer = ({ location, transferOut, pos, employee, dispatch, loading, misc }) => {
-  const { listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, formType, display, activeKey, searchVisible, pagination, disable } = transferOut
+const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading, misc }) => {
+  const { listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, searchVisible, pagination, disable } = transferOut
   const { modalProductVisible, listProduct } = pos
-  const { listEmployee } = employee
+  const { list } = employee
+  let listEmployee = list
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     filter: {
@@ -181,13 +183,13 @@ const Transfer = ({ location, transferOut, pos, employee, dispatch, loading, mis
           dispatch({
             type: 'transferOut/updateState',
             payload: {
-              listItem: arrayProd
+              listItem: arrayProd,
             }
           })
           dispatch({
             type: 'pos/updateState',
             payload: {
-              modalProductVisible: false
+              modalProductVisible: false,
             }
           })
         } else {
@@ -237,6 +239,15 @@ const Transfer = ({ location, transferOut, pos, employee, dispatch, loading, mis
         }
       })
     },
+    onDeleteItem (no) {
+      dispatch({
+        type: 'transferOut/deleteListState',
+        payload: {
+          no: no,
+          listItem: listItem
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'transferOut/updateState',
@@ -247,12 +258,68 @@ const Transfer = ({ location, transferOut, pos, employee, dispatch, loading, mis
       })
     }
   }
+  const formConfirmProps = {
+    visible: modalConfirmVisible,
+    modalConfirmVisible,
+    itemPrint: currentItem,
+    user,
+    storeInfo,
+    onShowModal(item) {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalConfirmVisible: true
+        }
+      })
+    },
+    onOkPrint(item) {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+      // const check = {
+      //   data: item
+      // }
+      // // checkQuantityBeforeEdit
+      // dispatch({
+      //   type: 'pos/queryProducts',
+      //   payload: {
+      //     outOfStock: 0
+      //   }
+      // })
+      // const checkQuantity = checkQuantityNewProduct(check)
+      // if (!checkQuantity) {
+      //   return
+      // } else {
+      //   listItem[item.no - 1] = item        
+      // }
+      // dispatch({
+      //   type: 'transferOut/updateState',
+      //   payload: {
+      //     currentItemList: {},
+      //     modalVisible: false,
+      //     listItem: listItem
+      //   }
+      // })
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    }
+  }
 
   const formProps = {
     ...tabProps,
     ...filterProps,
     ...listProps,
     ...formEditProps,
+    ...formConfirmProps,
     listTrans,
     listItem,
     listStore,
@@ -325,10 +392,11 @@ const Transfer = ({ location, transferOut, pos, employee, dispatch, loading, mis
 Transfer.propTypes = {
   transferOut: PropTypes.object,
   pos: PropTypes.object,
+  app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
 
-export default connect(({ transferOut, pos, employee, loading }) => ({ transferOut, pos, employee, loading }))(Transfer)
+export default connect(({ transferOut, pos, employee, app, loading }) => ({ transferOut, pos, employee, app, loading }))(Transfer)

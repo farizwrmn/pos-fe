@@ -30,7 +30,7 @@ export async function queryUnits (params) {
   return request({
     url: url,
     method: 'get',
-    data: params,
+    // data: params,
     headers: apiHeaderToken,
   })
 }

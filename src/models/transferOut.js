@@ -1,19 +1,13 @@
 import modelExtend from 'dva-model-extend'
-import {
-  query,
-  add
-} from '../services/transferStockOut'
+import { query, add } from '../services/transferStockOut'
+import { query as queryStore } from '../services/store'
 import {
   query as querySequence,
   increase as increaseSequence,
   increase
 } from '../services/sequence'
-import {
-  pageModel
-} from './common'
-import {
-  message
-} from 'antd'
+import { pageModel } from './common'
+import { message } from 'antd'
 
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
@@ -31,6 +25,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     currentItemList: {},
     modalVisible: false,
+    modalConfirmVisible: false,
     searchVisible: false,
     formType: 'add',
     display: 'none',
@@ -47,10 +42,7 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup({
-      dispatch,
-      history
-    }) {
+    setup({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/inventory/transfer/out') {
           dispatch({
@@ -92,35 +84,25 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * querySequence({
-      payload
-    }, {
-      call,
-        put
-    }) {
-      yield put({
-        type: 'resetState'
-      })
+    * querySequence({ payload }, { call, put }) {
+      yield put({ type: 'resetState' })
+      const store = yield call(queryStore)
       const data = yield call(querySequence, payload)
       if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
             currentItem: {
-              transNo: data.data
-            }
+              transNo: data.data,
+            },
+            listStore: store.data
           }
         })
       } else {
-        throw data
+        throw (data)
       }
     },
-    * add({
-      payload
-    }, {
-      call,
-        put
-    }) {
+    * add({ payload }, { call, put }) {
       const sequenceData = {
         seqCode: 'MUOUT',
         type: 1 // diganti dengan StoreId
@@ -141,9 +123,13 @@ export default modelExtend(pageModel, {
           error(increaseSequence)
         }
         yield put({
-          type: 'modalHide'
+          type: 'updateState',
+          payload: {
+            modalConfirmVisible: true
+          }
         })
-        setInterval(function () { location.reload() }, 1000);
+        
+        // setInterval(function () { location.reload() }, 1000);
         // yield put({
         //   type: 'querySequence',
         //   payload: sequenceData
@@ -154,6 +140,24 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+    * deleteListState({ payload }, { put }) {
+      let effectedRecord = payload.no
+      let arrayProd = payload.listItem
+      arrayProd.splice(effectedRecord,1)
+      let ary = []
+      for (let n = 0; n < arrayProd.length; n += 1) {
+        ary.push({
+          no: n + 1,
+          productId: arrayProd[n].productId,
+          productCode: arrayProd[n].productCode,
+          productName: arrayProd[n].productName,
+          qty: arrayProd[n].qty,
+          dscription: arrayProd[n].dscription,
+        })
+      }
+      yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
+    },
+
     // * delete({ payload }, { call, put, select }) {
     //     const data = yield call(remove, { id: payload })
     //     const { selectedRowKeys } = yield select(_ => _.suppliers)
@@ -203,9 +207,7 @@ export default modelExtend(pageModel, {
         }
       }
     },
-    updateState(state, {
-      payload
-    }) {
+    updateState(state, { payload }) {
       return {
         ...state,
         ...payload,

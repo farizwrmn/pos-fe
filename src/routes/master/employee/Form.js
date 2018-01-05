@@ -59,7 +59,7 @@ const col = {
 }
 
 const formEmployee = ({
-  item = {},
+  item,
   onSubmit,
   disabled,
   resetItem,
@@ -128,7 +128,7 @@ const formEmployee = ({
                       message: 'a-z & 0-9, min: 6 characters',
                     },
                   ],
-                })(<Input disabled={disabled} maxLength={15} />)}
+                })(<Input disabled maxLength={15} />)}
               </FormItem>
             </Col>
             <Col {...col} />

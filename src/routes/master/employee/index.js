@@ -95,7 +95,7 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
     ...listProps,
     listLovJobPosition,
     listCity,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {

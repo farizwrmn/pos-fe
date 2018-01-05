@@ -76,7 +76,16 @@ const Routers = function ({ history, app }) {
             }, 'master-customertype')
           },
         }, {
-          path: 'master/supplier',
+          path: 'master/customerunit',
+          getComponent(nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/master/customer'))
+              cb(null, require('./routes/master/customer/customerunit/'))
+            }, 'customerunit')
+          },
+        }, {
+          path: 'master/suppliers',
           getComponent(nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/supplier'))
@@ -167,6 +176,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/transaction/purchase/'))
+            }, 'transaction-purchase-add')
+          },
+        }, {
+          path: 'transaction/purchase/edit',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/purchase/edit/'))
             }, 'transaction-purchase-add')
           },
         }, {

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Button} from 'antd'
+import { Form, Input, InputNumber, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -14,7 +14,8 @@ const modal = ({
   currentItemList,
   onOkList,
   onCancelList,
-  form: { getFieldDecorator, validateFields, getFieldsValue },
+  onDeleteItem,
+  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...formEditProps
 }) => {
   const handleOk = () => {
@@ -30,11 +31,24 @@ const modal = ({
       data.productId = currentItemList.productId
       data.productCode = currentItemList.productCode
       data.productName = currentItemList.productName
-      onOkList(data)    
+      onOkList(data)
     })
   }
   const handleCancel = () => {
     onCancelList()
+  }
+  const handleDelete = () => {
+    const data = {
+      ...getFieldsValue(),
+    }
+    Modal.confirm({
+      title: `Delete ${currentItemList.productName}`,
+      content: 'Are you sure ?',
+      onOk () {
+        onDeleteItem(data.no - 1)
+        resetFields()
+      }
+    })
   }
   const modalOpts = {
     ...formEditProps,
@@ -42,12 +56,13 @@ const modal = ({
   }
   return (
     <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`} {...modalOpts}
-    footer={[
-      <Button size="large" key="back" onClick={handleCancel}>Cancel</Button>,
-      <Button size="large" key="submit" type="primary" onClick={handleOk}>
-        Ok
+      footer={[
+        <Button size="large" key="delete" type="danger" onClick={handleDelete}>Delete</Button>,
+        <Button size="large" key="back" onClick={handleCancel}>Cancel</Button>,
+        <Button size="large" key="submit" type="primary" onClick={handleOk}>
+          Ok
       </Button>,
-    ]}
+      ]}
     >
       <Form layout="horizontal">
         <FormItem label="No" hasFeedback {...formItemLayout}>

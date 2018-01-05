@@ -54,7 +54,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       render: (text) => {
-        return text.toLocaleString('en-IN', { minimumFractionDigits: 2 })
+        return text.toLocaleString()
       },
     },
     {
@@ -62,7 +62,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'costPrice',
       key: 'costPrice',
       render: (text) => {
-        return text.toLocaleString('en-IN', { minimumFractionDigits: 2 })
+        return text.toLocaleString()
       },
     },
     {
