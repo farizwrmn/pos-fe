@@ -24,6 +24,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
   const listUserStores = lstorage.getListUserStores()
   const defaultStore = lstorage.getCurrentUserStore()
   const defaultStoreName = lstorage.getCurrentUserStoreName()
+  const defaultStoreColor = (defaultStoreName === '>> No Store <<') ? {color: '#ff0000'} : {}
 
   const handleChangeRole = (value) => {
     const localId = lstorage.getStorageKey('udi')
@@ -52,7 +53,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
                       changeOnSelect allowClear={false}
                       defaultValue={[defaultStore]}
                       placeholder="Switch Store">
-              <span><a href="#">{defaultStoreName}</a></span>
+              <span><a href="#" style={defaultStoreColor}>{defaultStoreName}</a></span>
             </Cascader>
           </Tooltip>
         }

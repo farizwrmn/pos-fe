@@ -1,11 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu, Icon, message } from 'antd'
 import { Link } from 'dva/router'
 import { arrayToTree, queryArray } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
 const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
+  const noStoreInfo = () => {
+    message.warning('There is no store selected')
+  }
+
   // 生成树状 - Generate a tree
   const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
   const levelMap = {}
@@ -60,6 +64,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
   }
 
   const onOpenChange = (openKeys) => {
+    if (openKeys[0] === '3') { noStoreInfo(); break; }
     const latestOpenKey = openKeys.find(key => !navOpenKeys.includes(key))
     const latestCloseKey = navOpenKeys.find(key => !openKeys.includes(key))
     let nextOpenKeys = []
@@ -99,6 +104,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
     return result
   }
   if (currentMenu) {
+    console.log('mpid', currentMenu.mpid)
     defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
   }
 
