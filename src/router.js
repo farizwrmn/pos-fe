@@ -85,7 +85,7 @@ const Routers = function ({ history, app }) {
             }, 'customerunit')
           },
         }, {
-          path: 'master/suppliers',
+          path: 'master/supplier',
           getComponent(nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/supplier'))
