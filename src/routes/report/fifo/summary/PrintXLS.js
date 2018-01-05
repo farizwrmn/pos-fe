@@ -74,8 +74,8 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         family: 4,
         size: 10,
       }
-      const header = ['', '', '', '', 'SALDO AWAL', '', 'PEMBELIAN', '', 'ADJ IN + RTR JUAL', '', 'PENJUALAN', '', 'ADJ OUT + RTR BELI', '', 'SALDO AKHIR']
-      const header2 = ['NO.', '', 'PRODUCT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT']
+      const header = ['', '', '', '', '', 'SALDO AWAL', '', 'PEMBELIAN', '', 'ADJ IN + RTR JUAL', '', 'PENJUALAN', '', 'ADJ OUT + RTR BELI', '', 'SALDO AKHIR']
+      const header2 = ['NO.', '', 'PRODUCT CODE', 'PRODUCT NAME', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT']
       for (let n = 0; n <= listRekap.length; n += 1) {
         for (let m = 65; m < (65 + header2.length); m += 1) {
           let o = 9 + n
@@ -88,6 +88,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       }
       const footer = [
         'GRAND TOTAL',
+        '',
         '',
         '',
         `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
@@ -133,30 +134,32 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${listRekap[n].productCode}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${parseFloat(listRekap[n].beginQty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listRekap[n].beginPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).value = `${listRekap[n].productName}`
+        sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
+        sheet.getCell(`E${m}`).value = `${parseFloat(listRekap[n].beginQty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listRekap[n].purchaseQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).value = `${(parseFloat(listRekap[n].beginPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listRekap[n].purchasePrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listRekap[n].purchaseQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listRekap[n].adjInQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).value = `${(parseFloat(listRekap[n].purchasePrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listRekap[n].adjInPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).value = `${(parseFloat(listRekap[n].adjInQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).value = `${(parseFloat(listRekap[n].posQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`J${m}`).value = `${(parseFloat(listRekap[n].adjInPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).value = `${(parseFloat(listRekap[n].posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`K${m}`).value = `${(parseFloat(listRekap[n].posQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`L${m}`).value = `${(parseFloat(listRekap[n].adjOutQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`L${m}`).value = `${(parseFloat(listRekap[n].posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`L${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`M${m}`).value = `${(parseFloat(listRekap[n].adjOutPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`M${m}`).value = `${(parseFloat(listRekap[n].adjOutQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`M${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`N${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`N${m}`).value = `${(parseFloat(listRekap[n].adjOutPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`N${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`O${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`O${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`O${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`P${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`P${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
       for (let m = 65; m < (65 + header.length); m += 1) {

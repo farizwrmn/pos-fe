@@ -16,8 +16,9 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = []
-        row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: count, alignment: 'center', fontSize: 12 })
+        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 12 })
+        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 12 })
         row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -87,7 +88,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
             alignment: 'center',
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }],
           },
           {
             columns: [
@@ -118,7 +119,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }],
         },
         {
           columns: [
@@ -147,8 +148,9 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', rowSpan: 1, alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT', rowSpan: 1, alignment: 'center' },
+      { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'SALDO AWAL', colSpan: 2, alignment: 'center' },
       {},
       { fontSize: 12, text: 'PEMBELIAN', colSpan: 2, alignment: 'center' },
@@ -165,6 +167,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       {},
     ],
     [
+      {},
       {},
       {},
       { fontSize: 12, text: 'QTY', alignment: 'center' },
@@ -191,31 +194,32 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   }
   const tableFooter = [
     [
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },      
       {},
-      { text: 'Grand Total', colSpan: 1, alignment: 'center', fontSize: 12 },
-      { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      {},
+      { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
+      { text: `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
     ],
   ]
 
   // Declare additional Props
   const pdfProps = {
     className: "button-width02 button-extra-large bgcolor-blue",
-    width: ['4%', '12%', '5%', '7%', '5%', '6%', '5%', '6%', '5%', '7%', '7%', '5%', '7%', '5%', '7%', '7%'],
+    width: ['4%', '8%', '11%', '4%', '7%', '4%', '6%', '4%', '6%', '4%', '7%', '7%', '4%', '7%', '4%', '7%', '6%'],
     pageMargins: [50, 130, 50, 60],
-    pageSize: 'A3',
+    pageSize: { width: 842, height: 1430 },
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: "noBorder",
