@@ -14,7 +14,7 @@ const putStorageKey = (key, value, norandom) => {
   const rdmTextcryp = encrypt(rdmText)
   let cryptedValue = ''
   for (let index of value) {
-    cryptedValue += encrypt(index.toString(), rdmTextcryp) + '#'
+    cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
   }
   localStorage.setItem(`${prefix}` + key, rdmText + '#' + cryptedValue.slice(0,-1))
 }
@@ -78,7 +78,10 @@ const getCurrentUserStoreName = () => {
   const listUserStores = getListUserStores()
   const currentStore = getCurrentUserStore()
   let currentStoreName = ''
-  if (listUserStores) { currentStoreName = listUserStores.find(valueStoreName, [currentStore]).label }
+  if (listUserStores) {
+    currentStoreName = listUserStores.find(valueStoreName, [currentStore])
+    currentStoreName = currentStoreName ? currentStoreName.label : '>> No Store <<'
+  }
   return currentStoreName
 }
 

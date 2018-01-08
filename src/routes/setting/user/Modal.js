@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
-  Tabs, Transfer, Tree, Switch, Icon, Card } from 'antd'
+  Tabs, Transfer, Tree, Switch, Icon, Card, Select } from 'antd'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -22,6 +23,7 @@ const paddingTop10 = {
 const modal = ({
   item = {},
   storeItem = {},
+  roleItem = {},
   listAllStores = [],
   listUserStores = [],
   listLovEmployee = [],
@@ -40,7 +42,6 @@ const modal = ({
   totp = { key: '', url: '' },
   modalPopoverVisible,
   modalPopoverClose,
-  modalIsEmployeeChange,
   modalButtonCancelClick,
   modalButtonSaveClick,
   modalActiveTab,
@@ -49,6 +50,7 @@ const modal = ({
   modalSwitchChange,
   modalTotpLoad,
   modalChangeDefaultStore,
+  modalChangeDefaultRole,
   modalNodeCheckedStore,
   modalAllStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
@@ -68,6 +70,9 @@ const modal = ({
       onOk(data)
     })
   }
+  console.log('a5', roleItem.default)
+  const defaultValueRole = {key: roleItem.default}
+  console.log('a6', defaultValueRole)
 
   const modalOpts = {
     ...modalProps,
@@ -220,6 +225,9 @@ const modal = ({
   )
 
   const targetKeys = listUserRoleTarget
+  const optionRole = listRole.length > 0
+    ? listRole.map(c => <Option value={c.key} disabled={!(listUserRole.includes(c.key))}>{c.title}</Option>)
+    : []
   const hdlTransferAdd = (nextTargetKeys, direction, moveKeys) => {
     currentUserRole=nextTargetKeys
     // console.log('in',currentUserRole.filter(x => listUserRole.indexOf(x) < 0 ))
@@ -257,6 +265,15 @@ const modal = ({
       title: `Are you sure change default store to [ ${info.node.props.eventKey + ' - ' + info.node.props.title} ] ?`,
       onOk () {
         modalChangeDefaultStore(item.userId, info.node.props.eventKey)
+      },
+    })
+  }
+  const hdlSetDefaultRole = (value) => {
+    value &&
+    confirm({
+      title: `Are you sure change default role to [ ${value.label} ] ?`,
+      onOk () {
+        modalChangeDefaultRole(item.userId, value.key)
       },
     })
   }
@@ -385,10 +402,16 @@ const modal = ({
             render={item => item.title}
           />
           <span style={paddingTop10}></span>
-          <Input
-            value={storeItem.default}
-            addonBefore="Default (right-click tree-node to change): "
-            size="small" placeholder="no default role"  disabled={true} />
+          <Row>
+            <Col span={6} style={{lineHeight: '26px'}}>Set Default Role</Col>
+            <Col span={18}>
+              <Select style={{width: '100%'}}
+                      labelInValue
+                      value={{key: roleItem.default}}
+                      onChange={hdlSetDefaultRole}>{optionRole}</Select>
+            </Col>
+          </Row>
+
         </TabPane>
         <TabPane tab="Store" key="4">
           <Tree

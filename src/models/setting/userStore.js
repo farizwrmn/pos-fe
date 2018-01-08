@@ -37,7 +37,7 @@ export default modelExtend(pageModel, {
       const userStore = yield call(getAllStores)
       if (userStore.success) {
         yield put({
-          type: 'querySuccessStore',
+          type: 'successAllStore',
           payload: {
             listUserStore: userStore.data.map(a=>a.key),
             pagination: {
@@ -133,7 +133,6 @@ export default modelExtend(pageModel, {
       }
     },
     updateCheckedStores (state, action) {
-      console.log('updateCheckedStores', action)
       return {
         ...state,
         ...action,

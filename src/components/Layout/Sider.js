@@ -24,6 +24,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
   const listUserStores = lstorage.getListUserStores()
   const defaultStore = lstorage.getCurrentUserStore()
   const defaultStoreName = lstorage.getCurrentUserStoreName()
+  const defaultStoreColor = (defaultStoreName === '>> No Store <<') ? {color: '#ff0000', backgroundColor: '#ff0ff'} : {backgroundColor: '#ff0ff'}
 
   const handleChangeRole = (value) => {
     const localId = lstorage.getStorageKey('udi')
@@ -39,22 +40,29 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
 
   return (
     <div>
-      <div className={styles.logo}>
+      <div className={styles.company}>
         <img alt={'logo'} src={config.logo} />
+        <span>
+          master ban
+        </span>
+      </div>
+      <div className={styles.logo}>
         {/*<span>{config.name}</span>*/}
         {siderFold ?
           ''
           :
-          <Tooltip placement="right" title="click to switch store">
-            <Cascader style={{width: '180px'}}
-                      options={listUserStores}
-                      onChange={handleChangeStore}
-                      changeOnSelect allowClear={false}
-                      defaultValue={[defaultStore]}
-                      placeholder="Switch Store">
-              <span><a href="#">{defaultStoreName}</a></span>
-            </Cascader>
-          </Tooltip>
+          <span style={{ textAlign: 'center', width: '100%' }}>
+            <Tooltip placement="right" title="click to switch store">
+              <Cascader style={{width: '180px'}}
+                        options={listUserStores}
+                        onChange={handleChangeStore}
+                        changeOnSelect allowClear={false}
+                        defaultValue={[defaultStore]}
+                        placeholder="Switch Store">
+                <a href="#" style={defaultStoreColor}>{defaultStoreName}</a>
+              </Cascader>
+            </Tooltip>
+          </span>
         }
       </div>
       <Menus {...menusProps} />

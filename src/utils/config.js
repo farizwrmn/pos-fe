@@ -5,7 +5,7 @@ const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
-  name: 'TyreMaster App',
+  name: 'PoS App.',
   version: '2017.12.001',
   prefix: 'dmiPos',
   footerText: 'Pos © 2017 Darkotech Mandiri Indonesia',

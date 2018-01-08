@@ -25,6 +25,7 @@ export default {
         const from = queryURL('from')
         if ( data.id_token ) {
           localStorage.setItem(`${prefix}iKen`, data.id_token)
+          console.log('a1', data.profile)
           lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store])
         } else {
           localStorage.removeItem(`${prefix}iKen`)
@@ -118,9 +119,9 @@ export default {
     *getRole ({ payload }, { put, call }) {
       const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userId })
       if (userRole) {
-        lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data)])
+        lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data.mapped)])
       }
-      const roleLov = userRole ? userRole.data : []
+      const roleLov = userRole ? userRole.data.mapped : []
       yield put({
         type: 'queryStateRole',
         payload: {
