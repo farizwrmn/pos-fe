@@ -230,22 +230,6 @@ const modal = ({
     )
   }
 
-  /*const treeData = [
-    {
-      "title":"TYRE REG MDN",
-      "key":"000",
-      "children":[
-        {
-          "title":"TYRE SPARMAN",
-          "key":"000-001"
-        },
-        {
-          "title":"TYRE SMRAJA",
-          "key":"000-002"
-        }
-      ]
-    }
-  ]*/
   const renderTreeNodes = (data) => {
     return data.map((item) => {
       if (item.children) {

@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import InputSearch from './InputSearch'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -61,7 +63,9 @@ const col = {
 const formCustomerType = ({
   item = {},
   onSubmit,
+  listItem,
   disabled,
+  clickBrowse,
   resetItem,
   activeKey,
   button,
@@ -69,6 +73,7 @@ const formCustomerType = ({
   ...listProps,
   ...filterProps,
   ...inputSearchProps,
+  ...printProps,
   changeTab,
   form: {
     getFieldDecorator,
@@ -100,13 +105,31 @@ const formCustomerType = ({
     })
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown>) : '')
+
   return (
-    <Tabs activeKey={activeKey} {...tabProps} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} /></FormItem>
+              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} />
+              </FormItem>
             </Col>
             <Col {...col} />
           </Row>

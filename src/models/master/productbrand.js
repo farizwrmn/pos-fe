@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listBrand: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -96,6 +97,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetProductBrandList (state) {
+      return { ...state, listBrand: [], pagination: { total: 0 || '' } }
     },
 
     querySuccessBrand (state, action) {

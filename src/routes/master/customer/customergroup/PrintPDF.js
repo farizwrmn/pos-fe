@@ -1,3 +1,6 @@
+/**
+ * Created by boo on 9/19/17.
+ */
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
@@ -6,15 +9,8 @@ import { BasicReport } from 'components'
 const PrintPDF = ({ dataSource, user, storeInfo }) => {
   let tableHeaders = {
     top: {
-      col_1: { text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_2: { text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_3: { text: 'MERK', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_4: { text: 'CATEGORY', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_5: { text: 'SELL PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_6: { text: 'COST PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_7: { text: 'DIST PRICE-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_8: { text: 'DIST PRICE-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      col_9: { text: 'OTHER PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+      col_1: { text: 'GROUP CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+      col_2: { text: 'GROUP NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
     },
   }
 
@@ -25,13 +21,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         let row = []
         row.push(tableHeader[key].col_1)
         row.push(tableHeader[key].col_2)
-        row.push(tableHeader[key].col_3)
-        row.push(tableHeader[key].col_4)
-        row.push(tableHeader[key].col_5)
-        row.push(tableHeader[key].col_6)
-        row.push(tableHeader[key].col_7)
-        row.push(tableHeader[key].col_8)
-        row.push(tableHeader[key].col_9)
         head.push(row)
       }
     }
@@ -43,15 +32,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
-        row.push({ text: (tableBody[key].productCode || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].productName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].brandName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].categoryName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].sellPrice || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].costPrice || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].distPrice01 || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].distPrice02 || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].otherName01 || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].groupCode || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].groupName || '').toString(), alignment: 'left' })
         body.push(row)
       }
     }
@@ -75,7 +57,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
   const header = [
     { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' },
+    { text: 'LAPORAN DAFTAR GRUP CUSTOMER', style: 'headerTitle' },
   ]
 
   const footer = (currentPage, pageCount) => {
@@ -127,10 +109,10 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     buttonSize: '',
     name: 'PDF',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['10%', '20%', '8%', '12%', '8%', '8%', '8%', '8%', '18%'],
-    pageSize: { width: 1000, height: 530 },
+    width: ['50%', '50%'],
+    pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
-    pageMargins: [15, 80, 15, 60],
+    pageMargins: [40, 80, 40, 60],
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,

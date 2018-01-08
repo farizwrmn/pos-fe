@@ -48,7 +48,6 @@ export async function add (params) {
 
 export async function addUnit (params) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('paramsadd', params)
   const url = params ? customers + '/' + params.memberCode + '/units/' + params.policeNo : customers
   return request({
     url: url,

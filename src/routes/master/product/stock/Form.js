@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Checkbox, Upload, Icon, Select } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Checkbox, Upload, Icon, Select, Menu, Dropdown } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -76,6 +78,7 @@ const formProductCategory = ({
   onSubmit,
   disabled,
   resetItem,
+  clickBrowse,
   activeKey,
   button,
   listCategory,
@@ -85,6 +88,8 @@ const formProductCategory = ({
   changeTab,
   ...listProps,
   ...filterProps,
+  ...printProps,
+  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -92,6 +97,8 @@ const formProductCategory = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
@@ -109,6 +116,9 @@ const formProductCategory = ({
       const data = {
         ...getFieldsValue(),
       }
+      data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
+      data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
+      data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
       onSubmit(data.productCode, data)
       handleReset()
     })
@@ -122,11 +132,28 @@ const formProductCategory = ({
     showCategories()
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = listBrand.length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} >
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -423,6 +450,7 @@ formProductCategory.propTypes = {
   showBrands: PropTypes.func,
   showCategories: PropTypes.func,
   changeTab: PropTypes.func,
+  clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,
 }

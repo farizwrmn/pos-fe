@@ -4,11 +4,11 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const City = ({ city, loading, dispatch, location }) => {
-  const { listCity, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = city
+const City = ({ city, loading, dispatch, location, app }) => {
+  const { listCity, pagination, modalType, currentItem, activeKey, disable, show } = city
+  const { user, storeInfo } = app
   const filterProps = {
-    display,
-    isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -16,7 +16,7 @@ const City = ({ city, loading, dispatch, location }) => {
       dispatch({
         type: 'city/query',
         payload: {
-          userName: value.cityName,
+	// userName: value.cityName,
           ...value,
         },
       })
@@ -27,10 +27,15 @@ const City = ({ city, loading, dispatch, location }) => {
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'city/resetCityList' })
+    },
   }
 
   const listProps = {
     dataSource: listCity,
+    user,
+    storeInfo,
     loading: loading.effects['city/query'],
     pagination,
     location,
@@ -45,7 +50,7 @@ const City = ({ city, loading, dispatch, location }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'city/changeTab',
+        type: 'city/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -69,7 +74,7 @@ const City = ({ city, loading, dispatch, location }) => {
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'city/changeTab',
+        type: 'city/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -77,11 +82,23 @@ const City = ({ city, loading, dispatch, location }) => {
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'city/query',
-        })
-      }
+      dispatch({ type: 'city/resetCityList' })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'city/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'city/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -101,7 +118,7 @@ const City = ({ city, loading, dispatch, location }) => {
     },
     resetItem () {
       dispatch({
-        type: 'city/resetItem',
+        type: 'city/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -128,7 +145,8 @@ City.propTypes = {
   city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ city, loading }) => ({ city, loading }))(City)
+export default connect(({ city, loading, app }) => ({ city, loading, app }))(City)

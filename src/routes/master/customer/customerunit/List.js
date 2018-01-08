@@ -63,6 +63,37 @@ const List = ({ ...tableProps, editItem, deleteItem, ...inputSearchProps }) => {
       key: 'machineNo',
     },
     {
+      title: 'Created',
+      children: [
+        {
+          title: 'By',
+          width: 70,
+          dataIndex: 'createdBy',
+          key: 'createdBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+        },
+      ],
+    },
+    {
+      title: 'Updated',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'updatedBy',
+          key: 'updatedBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'updatedAt',
+          key: 'updatedAt',
+        },
+      ],
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,
@@ -80,7 +111,7 @@ const List = ({ ...tableProps, editItem, deleteItem, ...inputSearchProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 800 }}
+        scroll={{ x: 1400 }}
         rowKey={record => record.id}
       />
     </div>

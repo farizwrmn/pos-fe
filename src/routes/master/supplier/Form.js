@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Menu, Icon } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -71,9 +73,12 @@ const formSupplier = ({
   button,
   changeTab,
   showCities,
+  clickBrowse,
   listCity,
   ...listProps,
   ...filterProps,
+  ...printProps,
+  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -81,6 +86,8 @@ const formSupplier = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
@@ -107,10 +114,27 @@ const formSupplier = ({
     })
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -300,6 +324,7 @@ formSupplier.propTypes = {
   listCity: PropTypes.object,
   showCities: PropTypes.func,
   disabled: PropTypes.string,
+  clickBrowse: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   resetItem: PropTypes.func,

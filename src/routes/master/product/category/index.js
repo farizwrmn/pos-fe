@@ -4,11 +4,13 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
-  const { listCategory, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = productcategory
+const ProductCategory = ({ productcategory, loading, dispatch, location, app }) => {
+  const { listCategory, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
+  const { storeInfo, user } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -16,7 +18,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
       dispatch({
         type: 'productcategory/query',
         payload: {
-          userName: value.categoryName,
+          // userName: value.categoryName,
           ...value,
         },
       })
@@ -27,12 +29,17 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'productcategory/resetProductCategoryList' })
+    },
   }
 
   const listProps = {
     dataSource: listCategory,
     loading: loading.effects['productcategory/query'],
     pagination,
+    user,
+    storeInfo,
     location,
     onChange (page) {
       dispatch({
@@ -45,7 +52,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'productcategory/changeTab',
+        type: 'productcategory/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -69,7 +76,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'productcategory/changeTab',
+        type: 'productcategory/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -77,11 +84,28 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'productcategory/query',
-        })
-      }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'productcategory/query',
+      //   })
+      // }
+      dispatch({ type: 'productcategory/resetProductCategoryList' })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'productcategory/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'productcategory/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -103,7 +127,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location }) => {
     },
     resetItem () {
       dispatch({
-        type: 'productcategory/resetItem',
+        type: 'productcategory/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -125,7 +149,8 @@ ProductCategory.propTypes = {
   productcategory: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ productcategory, loading }) => ({ productcategory, loading }))(ProductCategory)
+export default connect(({ productcategory, loading, app }) => ({ productcategory, loading, app }))(ProductCategory)

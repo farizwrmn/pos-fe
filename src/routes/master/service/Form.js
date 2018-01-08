@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Menu, Icon, Dropdown } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -63,12 +65,15 @@ const formService = ({
   onSubmit,
   disabled,
   resetItem,
+  clickBrowse,
   activeKey,
   button,
   changeTab,
   listServiceType,
   ...listProps,
   ...filterProps,
+  ...printProps,
+  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -76,6 +81,8 @@ const formService = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
@@ -98,10 +105,27 @@ const formService = ({
     })
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   const serviceType = listServiceType.length > 0 ? listServiceType.map(service => <Option value={service.miscName} key={service.miscName}>{service.miscName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -215,6 +239,7 @@ formService.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
+  clickBrowse: PropTypes.func,
   resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,

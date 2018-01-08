@@ -26,10 +26,13 @@ const Filter = ({
   switchIsChecked,
   onFilterChange,
   filter,
+  show,
+  onResetClick,
   form: {
     getFieldDecorator,
     getFieldsValue,
     setFieldsValue,
+    resetFields,
   },
 }) => {
   const switchFilter = () => {
@@ -46,6 +49,8 @@ const Filter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields.employeeName = fields.searchName
+    delete fields.searchName
+    delete fields.employeeId
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -61,8 +66,11 @@ const Filter = ({
         }
       }
     }
-    setFieldsValue(fields)
-    handleSubmit()
+    const { employeeId, ...other } = fields
+    setFieldsValue(other)
+    resetFields()
+    // handleSubmit()
+    onResetClick()
   }
 
   const handleChange = (key, values) => {
@@ -82,14 +90,11 @@ const Filter = ({
   }
 
   return (
-    <Row gutter={24}>
-      <div>
-        <Switch style={{ marginRight: 16, marginBottom: 16 }} size="large" defaultChecked={isChecked} onChange={switchFilter} checkedChildren={'Open'} unCheckedChildren={'Hide'} />
-      </div>
+    <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: employeeName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} style={{ display }} />)}
+        {getFieldDecorator('searchName', { initialValue: employeeName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} style={{ display }}>
+      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Createtime" >
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
             <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
@@ -97,10 +102,10 @@ const Filter = ({
         </FilterItem>
       </Col>
       <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
-        <div style={{ display, justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <div style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div >
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
-            <Button size="large" onClick={handleReset}>Reset</Button>
+            <Button size="large" className="margin-right" onClick={handleReset}>Reset</Button>
           </div>
         </div>
       </Col>
@@ -113,8 +118,10 @@ Filter.propTypes = {
   switchIsChecked: PropTypes.func,
   form: PropTypes.object,
   display:PropTypes.string,
+  show: PropTypes.bool,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
+  onResetClick: PropTypes.func,
 }
 
 export default Form.create()(Filter)

@@ -67,6 +67,36 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'state',
     },
     {
+      title: 'Created',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'createdBy',
+          key: 'createdBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+        },
+      ],
+    },
+    {
+      title: 'Updated',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'updatedBy',
+          key: 'updatedBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'updatedAt',
+          key: 'updatedAt',
+        },
+      ],
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,
@@ -81,7 +111,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     <div>
       <Table {...tableProps}
         bordered
-        scroll={{ x: 1400 }}
+        scroll={{ x: 1800 }}
         columns={columns}
         simple
         rowKey={record => record.id}

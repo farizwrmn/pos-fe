@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Icon, Menu } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -60,18 +62,22 @@ const col = {
 
 const formEmployee = ({
   item,
+  sequence,
   onSubmit,
   disabled,
   resetItem,
   activeKey,
   button,
   changeTab,
+  clickBrowse,
   showPosition,
   showCities,
   listLovJobPosition,
   listCity,
   ...listProps,
   ...filterProps,
+  ...printProps,
+  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -79,12 +85,15 @@ const formEmployee = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
   }
 
   const change = (key) => {
+    handleReset()
     changeTab(key)
   }
 
@@ -94,6 +103,10 @@ const formEmployee = ({
 
   const city = () => {
     showCities()
+  }
+
+  const browse = () => {
+    clickBrowse()
   }
 
   const handleSubmit = () => {
@@ -109,18 +122,31 @@ const formEmployee = ({
     })
   }
 
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
   const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
               <FormItem label="Employee ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeId', {
-                  initialValue: item.employeeId,
+                  initialValue: sequence,
                   rules: [
                     {
                       required: true,
@@ -128,7 +154,7 @@ const formEmployee = ({
                       message: 'a-z & 0-9, min: 6 characters',
                     },
                   ],
-                })(<Input disabled maxLength={15} />)}
+                })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
             </Col>
             <Col {...col} />
@@ -260,7 +286,7 @@ const formEmployee = ({
           </Row>
         </Form>
       </TabPane>
-      <TabPane tab="Browse" key="1" >
+      <TabPane tab="Browse" key="1">
         <Filter {...filterProps} />
         <List {...listProps} />
       </TabPane>
@@ -273,8 +299,9 @@ formEmployee.propTypes = {
   listLovJobPosition: PropTypes.object,
   listCity: PropTypes.object,
   showCities: PropTypes.func,
+  clickBrowse: PropTypes.func,
   showPosition: PropTypes.func,
-  disabled: PropTypes.string,
+  disabled: PropTypes.bool,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   resetItem: PropTypes.func,

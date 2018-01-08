@@ -4,11 +4,13 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
-  const { listBrand, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = productbrand
+const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
+  const { listBrand, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productbrand
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -27,10 +29,15 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'productbrand/resetProductBrandList' })
+    },
   }
 
   const listProps = {
     dataSource: listBrand,
+    user,
+    storeInfo,
     loading: loading.effects['productbrand/query'],
     pagination,
     location,
@@ -45,7 +52,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'productbrand/changeTab',
+        type: 'productbrand/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -69,7 +76,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'productbrand/changeTab',
+        type: 'productbrand/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -77,11 +84,28 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'productbrand/query',
-        })
-      }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'productbrand/query',
+      //   })
+      // }
+      dispatch({ type: 'productbrand/resetProductBrandList' })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'productbrand/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'productbrand/updateState',
+        payload: {
+          show: !show,
+        }
+      })
     },
   }
 
@@ -103,7 +127,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
     },
     resetItem () {
       dispatch({
-        type: 'productbrand/resetItem',
+        type: 'productbrand/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -123,9 +147,10 @@ const ProductBrand = ({ productbrand, loading, dispatch, location }) => {
 
 ProductBrand.propTypes = {
   productbrand: PropTypes.object,
+  app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ productbrand, loading }) => ({ productbrand, loading }))(ProductBrand)
+export default connect(({ productbrand, loading, app }) => ({ productbrand, loading, app }))(ProductBrand)

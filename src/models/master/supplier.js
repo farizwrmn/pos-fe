@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     activeKey: '0',
     disable: '',
+    show: 1,
   },
 
   subscriptions: {
@@ -95,6 +96,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetSupplierList (state) {
+      return { ...state, list: [], pagination: { total: 0 } }
     },
 
   },

@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listCategory: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -96,6 +97,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },    
+
+    resetProductCategoryList (state) {
+      return { ...state, listCategory: [], pagination: { total: 0 } }
     },
 
     querySuccessCategory (state, action) {

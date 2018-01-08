@@ -1,130 +1,133 @@
-/**
- * Created by boo on 9/19/17.
- */
 import React from 'react'
-import { Icon } from 'antd'
-import moment from 'moment'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
+import moment from 'moment'
+import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, app }) => {
-  const { user, storeInfo } = app
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
+const PrintPDF = ({ dataSource, user, storeInfo }) => {
+  let tableHeaders = {
+    top: {
+      col_1: { text: 'CITY CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+      col_2: { text: 'CITY NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
+    },
+  }
 
-  const createPdfLineItems = (tabledata) => {
-    let headers = {
-      top:{
-        col_1: { text: 'KODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-        col_2: { text: 'NAMA KOTA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      },
-    }
-    let rows = tabledata
-    let body = []
-    for (var key in headers){
-      if (headers.hasOwnProperty(key)){
-        var header = headers[key]
-        var row = new Array()
-        row.push( header.col_1 )
-        row.push( header.col_2 )
-        body.push(row)
+  const createTableHeader = (tableHeader) => {
+    let head = []
+    for (let key in tableHeader) {
+      if (tableHeader.hasOwnProperty(key)) {
+        let row = []
+        row.push(tableHeader[key].col_1)
+        row.push(tableHeader[key].col_2)
+        head.push(row)
       }
     }
-    for (var key in rows)
-    {
-      if (rows.hasOwnProperty(key))
-      {
-        var data = rows[key]
-        var row = new Array()
-        row.push({ text: (data.cityCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'left' })
+    return head
+  }
+
+  const createTableBody = (tableBody) => {
+    let body = []
+    for (let key in tableBody) {
+      if (tableBody.hasOwnProperty(key)) {
+        let row = []
+        row.push({ text: (tableBody[key].cityCode || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].cityName || '').toString(), alignment: 'left' })
         body.push(row)
       }
     }
     return body
   }
+  const styles = {
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+    },
+    headerStoreName: {
+      fontSize: 18,
+      margin: [45, 10, 0, 0],
+    },
+    headerTitle: {
+      fontSize: 16,
+      margin: [45, 2, 0, 0],
+    },
+  }
 
+  const header = [
+    { text: `${storeInfo.name}`, style: 'headerStoreName' },
+    { text: 'LAPORAN DAFTAR KOTA', style: 'headerTitle' },
+  ]
 
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [40, 30, 40, 0],
 
-  const handlePDF = (dataSource) => {
-    let body = createPdfLineItems(dataSource)
-    let currentDate = new Date()
-    let datetime = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-    let docDefinition = {
-
-      footer: function (currentPage, pageCount) {
-        return {
-          margin: [40, 30, 40, 0],
-
-          stack: [
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }],
+        },
+        {
+          columns: [
             {
-              canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }],
+              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left',
             },
             {
-              columns: [
-                {
-                  text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                  margin: [0, 0, 0, 0],
-                  fontSize: 9,
-                  alignment: 'left',
-                },
-                {
-                  text: `Dicetak Oleh: ${user.userid}`,
-                  fontSize: 9,
-                  margin: [0, 0, 0, 0],
-                  alignment: 'center',
-                },
-                {
-                  text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
-                  fontSize: 9,
-                  margin: [0, 0, 0, 0],
-                  alignment: 'right',
-                },
-              ],
+              text: `Dicetak Oleh: ${user.userid}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'center',
+            },
+            {
+              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right',
             },
           ],
-        }
-      },
-
-      header: [
-        {text: `${storeInfo.name}`, fontSize: 18, margin: [45, 10, 0, 0]},
-        {text: 'LAPORAN DAFTAR KOTA', fontSize: 16, margin: [45, 2, 0, 0]},
-
-      ],
-
-      pageSize: { width: 813, height: 530 },
-      pageOrientation: 'landscape',
-      pageMargins: [ 40, 80, 40, 60 ],
-      content: [
-        {
-          style: 'tableExample',
-          writable: true,
-          table: {
-            widths: ['50%', '50%'],
-            body,
-          },
         },
-        { text: ' ', margin: [0, 0, 0, 15] },
       ],
-      styles: {
-        header: {
-          fontSize: 28,
-          bold: true,
-        },
-      },
     }
-    pdfMake.createPdf(docDefinition).open()
+  }
+
+  let tableHeader = []
+  let tableBody = []
+  try {
+    tableBody = createTableBody(dataSource)
+    tableHeader = createTableHeader(tableHeaders)
+  } catch (e) {
+    console.log(e)
+  }
+
+  const pdfProps = {
+    buttonType: '',
+    iconSize: '',
+    buttonSize: '',
+    name: 'PDF',
+    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    width: ['50%', '50%'],
+    pageSize: { width: 813, height: 530 },
+    pageOrientation: 'landscape',
+    pageMargins: [40, 80, 40, 60],
+    tableStyle: styles,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    data: dataSource,
+    header,
+    footer,
   }
 
   return (
-    <div onClick={() => handlePDF(dataSource)}><Icon type="file-pdf" /> PDF</div>
+    <BasicReport {...pdfProps} />
   )
 }
 
 PrintPDF.propTypes = {
-  app: PropTypes.object,
-  city: PropTypes.object,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object,
+  dataSource: PropTypes.object,
 }
 
-export default connect(({ app, city }) => ({ app, city }))(PrintPDF)
+export default PrintPDF

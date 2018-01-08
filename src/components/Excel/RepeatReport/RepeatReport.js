@@ -7,6 +7,7 @@ import moment from 'moment'
 
 const RepeatReport = ({
   className,
+  fileName,
   paperSize = 9,
   orientation = 'portrait',
   title = [],
@@ -107,7 +108,7 @@ const RepeatReport = ({
       createXLSLineItems()
       workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `Purchase-Summary${moment().format('YYYYMMDD')}.xlsx`)
+        saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
@@ -124,6 +125,7 @@ const RepeatReport = ({
 
 RepeatReport.propTypes = {
   className: PropTypes.string,
+  fileName: PropTypes.string,
   paperSize: PropTypes.string,
   orientation: PropTypes.string,
   title: PropTypes.array,

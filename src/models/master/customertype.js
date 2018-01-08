@@ -22,6 +22,7 @@ export default modelExtend(pageModel, {
     disable: '',
     listType: [],
     listSellprice: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -46,7 +47,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, { typeName: payload.typeName })
+      const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccessType',
@@ -120,6 +121,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetCustomerTypeList (state) {
+      return { ...state, listType: [], pagination: { total: 0 } }
     },
 
     querySuccessType (state, action) {

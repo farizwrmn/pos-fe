@@ -80,13 +80,10 @@ const Filter = ({
 
   return (
     <Row gutter={24}>
-      <div>
-        <Switch style={{ marginRight: 16, marginBottom: 16 }} size="large" defaultChecked={isChecked} onChange={switchIsChecked} checkedChildren={'Open'} unCheckedChildren={'Hide'} />
-      </div>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchBK', { initialValue: policeNo })(<Search placeholder="Search Police Number" size="large" onSearch={handleSubmit} style={{ display }} />)}
+        {getFieldDecorator('searchBK', { initialValue: policeNo })(<Search placeholder="Search Police Number" size="large" onSearch={handleSubmit} />)}
       </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} style={{ display }}>
+      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Createtime" >
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
             <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
@@ -94,7 +91,7 @@ const Filter = ({
         </FilterItem>
       </Col>
       <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
-        <div style={{ display, justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <div style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div >
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
             <Button size="large" onClick={handleReset}>Reset</Button>

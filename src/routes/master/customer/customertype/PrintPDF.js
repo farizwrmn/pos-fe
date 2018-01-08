@@ -21,18 +21,18 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   }
   const header = [
     { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR CUSTOMER', style: 'headerTitle' },
+    { text: 'LAPORAN DAFTAR TIPE CUSTOMER', style: 'headerTitle' },
   ]
 
   let tableHeaders = {
     top: {
-      col_1: { text: 'ID', style: 'tableHeader', alignment: 'center' },
-      col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
-      col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
-      col_4: { text: 'KOTA', style: 'tableHeader', alignment: 'center' },
-      col_5: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center' },
-      col_6: { text: 'NO.HP', style: 'tableHeader', alignment: 'center' },
-      col_7: { text: 'TIPE', style: 'tableHeader', alignment: 'center' },
+      col_1: { text: 'KODE', style: 'tableHeader', alignment: 'center' },
+      col_2: { text: 'TIPE CUSTOMER', style: 'tableHeader', alignment: 'center' },
+      col_3: { text: 'DISC-1', style: 'tableHeader', alignment: 'center' },
+      col_4: { text: 'DISC-2', style: 'tableHeader', alignment: 'center' },
+      col_5: { text: 'DISC-3', style: 'tableHeader', alignment: 'center' },
+      col_6: { text: 'DISC(NOMINAL)', style: 'tableHeader', alignment: 'center' },
+      col_7: { text: 'KATEGORI', style: 'tableHeader', alignment: 'center' },
     },
   }
 
@@ -61,13 +61,13 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       if (tableData.hasOwnProperty(key)) {
         let data = tableData[key]
         let row = []
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.typeCode || '').toString(), alignment: 'center' })
+        row.push({ text: (data.typeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct01 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct02 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discPct03 || '').toString(), alignment: 'center' })
+        row.push({ text: (data.discNominal || '').toString(), alignment: 'center' })
+        row.push({ text: (data.sellPrice || '').toString(), alignment: 'center' })
         body.push(row)
       }
     }
@@ -122,7 +122,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     buttonSize: '',
     name: 'PDF',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['10%', '20%', '22%', '10%', '13%', '13%', '12%'],
+    width: ['14%', '24%', '10%', '10%', '10%', '16%', '16%'],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [40, 80, 40, 60],

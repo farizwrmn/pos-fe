@@ -4,13 +4,15 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = productstock
+const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -18,7 +20,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       dispatch({
         type: 'productstock/query',
         payload: {
-          productCode: value.productName,
+          ...value,
         },
       })
     },
@@ -28,10 +30,15 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'productstock/resetProductStockList' })
+    },
   }
 
   const listProps = {
     dataSource: list,
+    user,
+    storeInfo,
     loading: loading.effects['productstock/query'],
     pagination,
     location,
@@ -46,7 +53,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     editItem (item) {
       dispatch({
-        type: 'productstock/changeTab',
+        type: 'productstock/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -73,7 +80,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'productstock/changeTab',
+        type: 'productstock/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -81,11 +88,28 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'productstock/query',
-        })
-      }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'productstock/query',
+      //   })
+      // }
+      dispatch({ type: 'productstock/resetProductStockList' })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -109,7 +133,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     resetItem () {
       dispatch({
-        type: 'productstock/resetItem',
+        type: 'productstock/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -143,7 +167,8 @@ ProductStock.propTypes = {
   productbrand: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ productstock, productcategory, productbrand, loading }) => ({ productstock, productcategory, productbrand, loading }))(ProductStock)
+export default connect(({ productstock, productcategory, productbrand, loading, app }) => ({ productstock, productcategory, productbrand, loading, app }))(ProductStock)

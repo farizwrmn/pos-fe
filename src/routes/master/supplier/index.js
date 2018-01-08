@@ -4,12 +4,14 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const Supplier = ({ supplier, city, loading, dispatch, location }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = supplier
+const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
   const { listCity } = city
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -27,10 +29,15 @@ const Supplier = ({ supplier, city, loading, dispatch, location }) => {
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'supplier/resetSupplierList' })
+    },
   }
 
   const listProps = {
     dataSource: list,
+    user,
+    storeInfo,
     loading: loading.effects['supplier/query'],
     pagination,
     location,
@@ -77,11 +84,28 @@ const Supplier = ({ supplier, city, loading, dispatch, location }) => {
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'supplier/query',
-        })
-      }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'supplier/query',
+      //   })
+      // }
+      dispatch({ type: 'supplier/resetSupplierList' })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'supplier/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'supplier/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -132,7 +156,8 @@ Supplier.propTypes = {
   city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ supplier, city, loading }) => ({ supplier, city, loading }))(Supplier)
+export default connect(({ supplier, city, loading, app }) => ({ supplier, city, loading, app }))(Supplier)

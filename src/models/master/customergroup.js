@@ -21,6 +21,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listGroup: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -102,6 +103,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetCustomerGroupList (state) {
+      return { ...state, listGroup: [], pagination: { total: 0 } }
     },
 
     querySuccessGroup (state, action) {

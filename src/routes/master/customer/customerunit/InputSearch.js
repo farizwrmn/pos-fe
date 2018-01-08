@@ -24,7 +24,7 @@ const InputSearch = ({
       memberName: d.memberName,
     })
   })
-  member = data.map(customer => <Option value={customer.memberCode} key={customer.memberCode}>{customer.memberName}</Option>)
+  member = data.map(customer => <Option value={customer.memberName} title={customer.memberCode} key={customer.memberCode}>{customer.memberName}</Option>)
   const handleChage = (name) => {
     findItem(name)
     if (name === '') {
@@ -32,8 +32,8 @@ const InputSearch = ({
     }
   }
 
-  const handleSelect = (value) => {
-    showItem(value)
+  const handleSelect = (value, context) => {
+    showItem(context.props.title)
   }
 
   return (

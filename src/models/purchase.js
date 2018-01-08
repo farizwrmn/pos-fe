@@ -370,7 +370,7 @@ export default modelExtend(pageModel, {
       }
     },
     * getInvoiceDetail({ payload }, { call, put }) {
-      const data = yield call(queryDetail, { transNo: encodeURIComponent(payload.transNo) })
+      const data = yield call(queryDetail, { transNo: payload.transNo })
       let arrayProd = []
       for (let n = 0; n < data.data.length; n++) {
         arrayProd.push({

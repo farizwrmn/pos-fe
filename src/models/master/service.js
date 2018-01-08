@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listServiceType: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -37,7 +38,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, { serviceCode: payload.service })
+      const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -101,16 +102,8 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
-    switchIsChecked (state, { payload }) {
-      return { ...state, isChecked: !state.isChecked, display: payload }
-    },
-
-    changeTab (state, { payload }) {
-      return { ...state, ...payload }
-    },
-
-    resetItem (state, { payload }) {
-      return { ...state, ...payload }
+    resetServiceList (state) {
+      return { ...state, list: [], pagination: { total: 0 } }
     },
 
     querySuccessServiceType (state, action) {
