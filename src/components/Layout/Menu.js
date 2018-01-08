@@ -4,10 +4,16 @@ import { Menu, Icon, message } from 'antd'
 import { Link } from 'dva/router'
 import { arrayToTree, queryArray } from 'utils'
 import pathToRegexp from 'path-to-regexp'
+import { lstorage } from 'utils'
 
 const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
-  const noStoreInfo = () => {
-    message.warning('There is no store selected')
+  const noStoreMessage = (type) => {
+    if (type==='info') {
+      message.info('There is no store selected.\nPlease contact your IT.')
+    } else {
+      message.warning('There is no store selected.\nPlease contact your IT.')
+    }
+
   }
 
   // 生成树状 - Generate a tree
@@ -64,7 +70,14 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
   }
 
   const onOpenChange = (openKeys) => {
-    if (openKeys[0] === '3') { noStoreInfo(); break; }
+    // if (isNaN(lstorage.getCurrentUserStore())) {
+    //   if (openKeys[1] === '3') {
+    //     noStoreMessage('warning')
+    //     return
+    //   } else {
+    //     noStoreMessage('info')
+    //   }
+    // }
     const latestOpenKey = openKeys.find(key => !navOpenKeys.includes(key))
     const latestCloseKey = navOpenKeys.find(key => !openKeys.includes(key))
     let nextOpenKeys = []
@@ -104,8 +117,19 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
     return result
   }
   if (currentMenu) {
-    console.log('mpid', currentMenu.mpid)
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
+    console.log('mpid', currentMenu.mpid, typeof currentMenu.mpid)
+    if (isNaN(lstorage.getCurrentUserStore())) {
+      if (currentMenu.mpid === '3') {
+        noStoreMessage('warning')
+        defaultSelectedKeys = ['1']
+        // return
+      } else {
+        noStoreMessage('info')
+        defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
+      }
+    }
+    // defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
+    console.log('defaultSelectedKeys',defaultSelectedKeys)
   }
 
   return (
