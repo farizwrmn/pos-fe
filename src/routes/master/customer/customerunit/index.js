@@ -40,7 +40,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
 
 
   const inputSearchProps = {
-    listCustomer,
+    list,
     disableInputSearch: `${modalType === 'edit' ? disable : ''}`,
     findItem (value) {
       dispatch({

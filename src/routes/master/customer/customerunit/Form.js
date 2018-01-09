@@ -99,7 +99,8 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue(),
       }
-      console.log('Submit')
+      data.memberCode = data.memberCode.title
+      console.log('Submit', data)
       onSubmit(data)
       handleReset()
     })
@@ -157,7 +158,7 @@ const formCustomerType = ({
                   initialValue: item.merk,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -172,7 +173,7 @@ const formCustomerType = ({
                   initialValue: item.model,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -187,7 +188,7 @@ const formCustomerType = ({
                   initialValue: item.type,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -202,7 +203,7 @@ const formCustomerType = ({
                   initialValue: item.year,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[12][0-9]{3}$/,
                       message: 'year is not valid',
                     },
@@ -219,7 +220,7 @@ const formCustomerType = ({
                   initialValue: item.chassisNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -234,7 +235,7 @@ const formCustomerType = ({
                   initialValue: item.machineNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
