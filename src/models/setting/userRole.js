@@ -98,12 +98,11 @@ export default modelExtend(pageModel, {
       }
     },
     updateState (state, { payload }) {
-      console.log('updateState1', state)
-      console.log('updateState2', payload.roleItem.default)
+      const { roleItem } = payload
       return {
         ...state,
         ...payload,
-        roleItem: { default : payload.roleItem.default }
+        roleItem
       }
     },
     successUserRole (state, action) {

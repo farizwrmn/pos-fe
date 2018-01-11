@@ -117,7 +117,6 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
     return result
   }
   if (currentMenu) {
-    console.log('mpid', currentMenu.mpid, typeof currentMenu.mpid)
     if (isNaN(lstorage.getCurrentUserStore())) {
       if (currentMenu.mpid === '3') {
         noStoreMessage('warning')
@@ -129,7 +128,6 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
       }
     }
     // defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'menuId')
-    console.log('defaultSelectedKeys',defaultSelectedKeys)
   }
 
   return (

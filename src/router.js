@@ -196,6 +196,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-adjust')
           },
         }, {
+          path: 'transaction/booking',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/booking'))
+              cb(null, require('./routes/transaction/booking/'))
+            }, 'transaction-booking')
+          },
+        }, {
           path: 'report/pos/summary',
           getComponent(nextState, cb) {
             require.ensure([], require => {

@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Cascader, Tooltip } from 'antd'
 import styles from './Layout.less'
-import { config } from 'utils'
+import { config, classnames, crypt, lstorage } from 'utils'
 import Menus from './Menu'
-import { crypt, lstorage } from 'utils'
+import DateTime from './DateTime'
 
 const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switchSider, changeOpenKeys, menu }) => {
   const menusProps = {
@@ -16,54 +16,59 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     changeOpenKeys,
   }
 
+
   // user role
   const listUserRoles = lstorage.getListUserRoles()
   const defaultRole = lstorage.getCurrentUserRole()
 
+  // user company
+  const companyName = lstorage.getCompanyName()
+  // login time
+  const loginTime = lstorage.getLoginTime()
+  const loginTimeDiff = lstorage.getLoginTimeDiff()
+  // const todayDateTime = new Date(moment.utc(loginTime).format('DD-MMM-YYYY hh:mm:ss'))
+  const todayDateTime = new Date(loginTime).toLocaleString() //moment().format('DD-MMM-YYYY hh:mm:ss')
   // user store
   const listUserStores = lstorage.getListUserStores()
   const defaultStore = lstorage.getCurrentUserStore()
   const defaultStoreName = lstorage.getCurrentUserStoreName()
-  const defaultStoreColor = (defaultStoreName === '>> No Store <<') ? {color: '#ff0000', backgroundColor: '#ff0ff'} : {backgroundColor: '#ff0ff'}
+  const defaultStoreColor = (defaultStoreName === '>> No Store <<') ? {color: styles.colorred, backgroundColor: styles.colorgrey} : {backgroundColor: styles.colorgrey}
 
   const handleChangeRole = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3]], localId[0])
+    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3], localId[4], localId[5]], localId[0])
     changeRole(value.toString())
   }
 
   const handleChangeStore = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString()], localId[0])
+    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], localId[5]], localId[0])
     changeRole(value.toString())
   }
 
   return (
     <div>
-      <div className={styles.company}>
-        <img alt={'logo'} src={config.logo} />
-        <span>
-          master ban
-        </span>
-      </div>
       <div className={styles.logo}>
-        {/*<span>{config.name}</span>*/}
-        {siderFold ?
-          ''
-          :
-          <span style={{ textAlign: 'center', width: '100%' }}>
-            <Tooltip placement="right" title="click to switch store">
-              <Cascader style={{width: '180px'}}
-                        options={listUserStores}
-                        onChange={handleChangeStore}
-                        changeOnSelect allowClear={false}
-                        defaultValue={[defaultStore]}
-                        placeholder="Switch Store">
-                <a href="#" style={defaultStoreColor}>{defaultStoreName}</a>
-              </Cascader>
-            </Tooltip>
+        <div className={styles.verticalFlip}>
+          {/*<span>{todayDateTime}</span>*/}
+          <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff}/></span>
+          <span><img alt={'logo'} src={config.logo} style={{float: 'center'}}/></span>
+          <span>{companyName}</span>
+          <span>
+            {siderFold ? '' :
+              <Tooltip placement="right" title="click to switch store">
+                <Cascader style={{ width: '100%' }}
+                          options={listUserStores}
+                          onChange={handleChangeStore}
+                          changeOnSelect allowClear={false}
+                          defaultValue={[defaultStore]}
+                          placeholder="Switch Store">
+                  <a href="#" style={defaultStoreColor}>{defaultStoreName}</a>
+                </Cascader>
+              </Tooltip>
+            }
           </span>
-        }
+        </div>
       </div>
       <Menus {...menusProps} />
       {!siderFold ?
