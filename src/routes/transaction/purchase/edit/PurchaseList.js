@@ -78,7 +78,7 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
           content: 'Void cannot be undone',
           onOk() {
             onVoid(data)
-            onChooseItem(dataVoid)
+            onChooseItem(dataVoid, transNo)
             resetFields()
           },
           onCancel() {
