@@ -47,6 +47,7 @@ const formCustomer = ({
   onSubmit,
   disabled,
   resetItem,
+  clickBrowse,
   activeKey,
   listGroup,
   listType,
@@ -60,6 +61,8 @@ const formCustomer = ({
   changeTab,
   ...listProps,
   ...filterProps,
+  ...printProps,
+  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -67,6 +70,8 @@ const formCustomer = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
@@ -92,6 +97,10 @@ const formCustomer = ({
     showCity()
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -104,6 +113,19 @@ const formCustomer = ({
       handleReset()
     })
   }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
 
   const childrenGroup = listGroup.length > 0 ? listGroup.map(group => <Option value={group.id} key={group.id}>{group.groupName}</Option>) : []
   const childrenType = listType.length > 0 ? listType.map(type => <Option value={type.id} key={type.id}>{type.typeName}</Option>) : []
@@ -122,8 +144,7 @@ const formCustomer = ({
   </div>
 
   return (
-    <Tabs activeKey={activeKey} tabBarExtraContent={tabOperations}
-          onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -399,6 +420,7 @@ formCustomer.propTypes = {
   listCity: PropTypes.object,
   listIdType: PropTypes.object,
   onSubmit: PropTypes.func,
+  clickBrowse: PropTypes.func,
   resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,

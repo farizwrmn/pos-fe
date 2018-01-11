@@ -173,7 +173,7 @@ export default {
         } else {
           Modal.warning({
             title: 'No Data',
-            content: 'No data inside storage',
+            content: `No data inside storage, ${data.message}`,
           })
         }
       }

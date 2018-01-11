@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listCity: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -96,6 +97,9 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+    resetCityList (state) {
+      return { ...state, listCity: [], pagination: { total: 0} }
     },
 
     querySuccessCity (state, action) {

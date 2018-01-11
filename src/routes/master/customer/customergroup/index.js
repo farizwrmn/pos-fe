@@ -4,12 +4,14 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
-  const { listGroup, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = customergroup
+const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
+  const { listGroup, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customergroup
   const { pageSize } = pagination
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -27,10 +29,17 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({
+        type: 'customergroup/resetCustomerGroupList',
+      })
+    },
   }
 
   const listProps = {
     dataSource: listGroup,
+    user,
+    storeInfo,
     loading: loading.effects['customergroup/query'],
     pagination,
     location,
@@ -45,7 +54,7 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'customergroup/changeTab',
+        type: 'customergroup/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -60,13 +69,21 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
         payload: id,
       })
     },
+    clickBrowse () {
+      dispatch({
+        type: 'customergroup/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
   }
 
   const tabProps = {
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'customergroup/changeTab',
+        type: 'customergroup/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -74,11 +91,22 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'customergroup/query',
-        })
-      }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'customergroup/query',
+      //   })
+      // }
+      dispatch({
+        type: 'customergroup/resetCustomerGroupList',
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'customergroup/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -97,7 +125,7 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
     },
     resetItem () {
       dispatch({
-        type: 'customergroup/resetItem',
+        type: 'customergroup/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -118,8 +146,9 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location }) => {
 CustomerGroup.propTypes = {
   customergroup: PropTypes.object,
   loading: PropTypes.object,
+  app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ customergroup, loading }) => ({ customergroup, loading }))(CustomerGroup)
+export default connect(({ customergroup, loading, app }) => ({ customergroup, loading, app }))(CustomerGroup)

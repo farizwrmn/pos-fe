@@ -4,9 +4,10 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) => {
+const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
   const { listUnit, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = customerunit
   const { pageSize } = pagination
+  const { user, storeInfo } = app
   const { list, listCustomer } = customer
   const filterProps = {
     display,
@@ -39,7 +40,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) =
 
 
   const inputSearchProps = {
-    listCustomer,
+    list,
     disableInputSearch: `${modalType === 'edit' ? disable : ''}`,
     findItem (value) {
       dispatch({
@@ -58,13 +59,17 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) =
     showItem (value) {
       dispatch({
         type: 'customerunit/query',
-        payload: value,
+        payload: {
+          code: value,
+        },
       })
     },
   }
 
   const listProps = {
     dataSource: listUnit,
+    user,
+    storeInfo,
     loading: loading.effects['customerunit/query'],
     pagination,
     location,
@@ -73,6 +78,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) =
       dispatch({
         type: 'customerunit/query',
         payload: {
+          code: listUnit[0].memberCode,
           page: page.current,
           pageSize: page.pageSize,
         },
@@ -104,6 +110,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) =
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    listItem: listUnit,
     onSubmit (data) {
       dispatch({
         type: `customerunit/${modalType}`,
@@ -112,12 +119,20 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location }) =
     },
     resetItem () {
       dispatch({
-        type: 'customerunit/resetItem',
+        type: 'customerunit/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
           currentItem: {},
           disable: '',
+        },
+      })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          activeKey: '1',
         },
       })
     },
@@ -164,4 +179,4 @@ CustomerUnit.propTypes = {
   dispatch: PropTypes.func,
 }
 
-export default connect(({ customerunit, customer, loading }) => ({ customerunit, customer, loading }))(CustomerUnit)
+export default connect(({ customerunit, customer, loading, app }) => ({ customerunit, customer, loading, app }))(CustomerUnit)

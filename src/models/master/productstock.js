@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     activeKey: '0',
     disable: '',
+    show: 1,
   },
 
   subscriptions: {
@@ -33,7 +34,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, { productCode: payload.productCode })
+      const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -95,6 +96,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetProductStockList (state) {
+      return { ...state, list: [], pagination: { total: 0 } }
     },
 
   },

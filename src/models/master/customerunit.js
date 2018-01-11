@@ -37,12 +37,12 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(queryUnits, { memberCode: payload })
+      const data = yield call(queryUnits, { memberCode: payload.code })
       if (data) {
         yield put({
           type: 'querySuccessUnit',
           payload: {
-            listUnit: payload === '' ? [] : data.data,
+            listUnit: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -68,7 +68,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.customer)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'query' })
+        yield put({ type: 'query', payload: { code: payload.memberCode } })
       } else {
         throw data
       }

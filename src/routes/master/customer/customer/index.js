@@ -4,16 +4,18 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = customer
+const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
   const { listLov, code } = misc
   const listIdType = listLov && listLov[code] ? listLov[code] : []
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -31,10 +33,15 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({ type: 'customer/resetCustomerList' })
+    },
   }
 
   const listProps = {
     dataSource: list,
+    user,
+    storeInfo,
     loading: loading.effects['customer/query'],
     pagination,
     location,
@@ -49,7 +56,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     editItem (item) {
       dispatch({
-        type: 'customer/changeTab',
+        type: 'customer/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -79,7 +86,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'customer/changeTab',
+        type: 'customer/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -87,11 +94,15 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           disable: '',
         },
       })
-      if (key === '1') {
-        dispatch({
-          type: 'customer/query',
-        })
-      }
+      dispatch({ type: 'customer/resetCustomerList' })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -117,7 +128,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     resetItem () {
       dispatch({
-        type: 'customer/resetItem',
+        type: 'customer/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -149,6 +160,14 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         type: 'city/query',
       })
     },
+    clickBrowse () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
   }
 
   return (
@@ -160,6 +179,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
 
 Customer.propTypes = {
   customer: PropTypes.object,
+  app: PropTypes.object,
   customergroup: PropTypes.object,
   customertype: PropTypes.object,
   misc: PropTypes.object,
@@ -169,4 +189,4 @@ Customer.propTypes = {
   dispatch: PropTypes.func,
 }
 
-export default connect(({ customer, customergroup, customertype, city, misc, loading }) => ({ customer, customergroup, customertype, city, misc, loading }))(Customer)
+export default connect(({ customer, customergroup, customertype, city, misc, loading, app }) => ({ customer, customergroup, customertype, city, misc, loading, app }))(Customer)

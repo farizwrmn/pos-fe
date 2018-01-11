@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listCustomer: [],
+    show: 1,
   },
 
   subscriptions: {
@@ -43,8 +44,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, { memberName: payload.memberName })
-      console.log(data)
+      const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -119,6 +119,10 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetCustomerList (state) {
+      return { ...state, list: [], pagination: { total: 0 } }
     },
 
     onSearch (state, action) {

@@ -6,7 +6,13 @@ import { saveAs } from 'file-saver'
 import moment from 'moment'
 
 const BasicReport = ({
+  name = 'Excel',
   className,
+  fileName,
+  buttonType = 'dashed',
+  buttonSize = 'large',
+  iconSize = 'icon-large',
+  buttonStyle = {},
   paperSize = 9,
   orientation = 'portrait',
   title = [],
@@ -112,28 +118,36 @@ const BasicReport = ({
       createXLSLineItems()
       workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `Purchase-Summary${moment().format('YYYYMMDD')}.xlsx`)
+        saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
   return (
-    <Button type="dashed"
-      size="large"
+    <Button type={buttonType}
+      size={buttonSize}
       className={className}
       onClick={() => printXLS()}
+      style={buttonStyle}
     >
-      <Icon type="file-excel" className="icon-large" />
+      <Icon type="file-excel" className={iconSize} />
+      {name}
     </Button>
   )
 }
 
 BasicReport.propTypes = {
+  name: PropTypes.string,
+  buttonType: PropTypes.string,
+  buttonSize: PropTypes.string,
+  iconSize: PropTypes.string,
+  buttonStyle: PropTypes.object,
   title: PropTypes.array,
   header: PropTypes.array,
   body: PropTypes.array,
   footer: PropTypes.array,
   data: PropTypes.array,
   className: PropTypes.string,
+  fileName: PropTypes.string,
   paperSize: PropTypes.string,
   orientation: PropTypes.string,
 }

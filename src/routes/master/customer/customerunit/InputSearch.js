@@ -5,7 +5,7 @@ import { Form, Row, Col, Select } from 'antd'
 const Option = Select.Option
 
 const InputSearch = ({
-  listCustomer,
+  list,
   findItem,
   showItem,
   resetUnit,
@@ -18,13 +18,13 @@ const InputSearch = ({
   const { memberCode } = filter
   let member
   const data = []
-  listCustomer.forEach((d) => {
+  list.forEach((d) => {
     data.push({
       memberCode: d.memberCode,
       memberName: d.memberName,
     })
   })
-  member = data.map(customer => <Option value={customer.memberCode} key={customer.memberCode}>{customer.memberName}</Option>)
+  member = data.map(customer => <Option value={customer.memberName} title={customer.memberCode} key={customer.memberCode}>{customer.memberName}</Option>)
   const handleChage = (name) => {
     findItem(name)
     if (name === '') {
@@ -32,8 +32,8 @@ const InputSearch = ({
     }
   }
 
-  const handleSelect = (value) => {
-    showItem(value)
+  const handleSelect = (value, context) => {
+    showItem(context.props.title)
   }
 
   return (
@@ -45,8 +45,8 @@ const InputSearch = ({
             disabled={disableInputSearch}
             defaultActiveFirstOption={false}
             showArrow={false}
-            filterOption={false}
-            onChange={handleChage}
+            labelInValue={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             placeholder="Find member name"
             onSelect={handleSelect}
           >

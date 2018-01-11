@@ -4,13 +4,16 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const Employee = ({ employee, jobposition, city, loading, dispatch, location }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = employee
+const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
+  const { list, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, disable, show } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
+  const { user, storeInfo } = app
+
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -28,10 +31,17 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
         payload: `${isChecked ? 'none' : 'block'}`,
       })
     },
+    onResetClick () {
+      dispatch({
+        type: 'employee/resetEmployeeList',
+      })
+    },
   }
 
   const listProps = {
     dataSource: list,
+    user,
+    storeInfo,
     loading: loading.effects['employee/query'],
     pagination,
     location,
@@ -46,11 +56,12 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
     },
     editItem (item) {
       dispatch({
-        type: 'employee/changeTab',
+        type: 'employee/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
+          sequence: item.employeeId,
           disable: 'disabled',
         },
       })
@@ -71,21 +82,66 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
 
   const tabProps = {
     activeKey,
+    loading: loading.effects['employee/querySequenceEmployee'],
     changeTab (key) {
-      dispatch({
-        type: 'employee/changeTab',
-        payload: {
-          activeKey: key,
-          modalType: 'add',
-          currentItem: {},
-          disable: '',
-        },
-      })
-      if (key === '1') {
+      const { employeeId } = currentItem
+      if (key === '0') {
         dispatch({
-          type: 'employee/query',
+          type: 'employee/querySequenceEmployee',
+        })
+        dispatch({
+          type: 'employee/updateState',
+          payload: {
+            activeKey: key,
+            modalType: 'add',
+            disable: '',
+          },
+        })
+      } else {
+        dispatch({
+          type: 'employee/updateState',
+          payload: {
+            activeKey: key,
+            modalType: 'add',
+            disable: '',
+            currentItem: {}
+          },
         })
       }
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'employee/query',
+      //   })
+      // }
+      dispatch({
+        type: 'employee/querySequence',
+        payload: {
+          seqCode: 'EMP',
+          type: 1, // storeId
+        },
+      })
+      dispatch({
+        type: 'employee/resetEmployeeList',
+      })
+    },
+    clickBrowse () {
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+      dispatch({
+        type: 'employee/resetEmployeeList',
+      })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          show: !show,
+        },
+      })
     },
   }
 
@@ -96,7 +152,9 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
     listLovJobPosition,
     listCity,
     item: currentItem,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
+    sequence,
+    disabled: true,
+    loading: loading.effects['employee/querySequenceEmployee'],    
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
       dispatch({
@@ -109,11 +167,11 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location }) 
     },
     resetItem () {
       dispatch({
-        type: 'employee/resetItem',
+        type: 'employee/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
-          currentItem: {},
+          // currentItem: {},
           disable: '',
         },
       })
@@ -143,7 +201,8 @@ Employee.propTypes = {
   city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ employee, jobposition, city, loading }) => ({ employee, jobposition, city, loading }))(Employee)
+export default connect(({ employee, jobposition, city, loading, app }) => ({ employee, jobposition, city, loading, app }))(Employee)

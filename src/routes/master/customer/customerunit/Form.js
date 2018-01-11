@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import InputSearch from './InputSearch'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -61,7 +63,9 @@ const col = {
 const formCustomerType = ({
   item = {},
   onSubmit,
+  listItem,
   disabled,
+  clickBrowse,
   resetItem,
   activeKey,
   button,
@@ -69,6 +73,7 @@ const formCustomerType = ({
   ...listProps,
   ...filterProps,
   ...inputSearchProps,
+  ...printProps,
   changeTab,
   form: {
     getFieldDecorator,
@@ -94,19 +99,38 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue(),
       }
-      console.log('Submit')
+      data.memberCode = data.memberCode.title
+      console.log('Submit', data)
       onSubmit(data)
       handleReset()
     })
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown>) : '')
+
   return (
-    <Tabs activeKey={activeKey} {...tabProps} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} /></FormItem>
+              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} />
+              </FormItem>
             </Col>
             <Col {...col} />
           </Row>
@@ -134,7 +158,7 @@ const formCustomerType = ({
                   initialValue: item.merk,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -149,7 +173,7 @@ const formCustomerType = ({
                   initialValue: item.model,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -164,7 +188,7 @@ const formCustomerType = ({
                   initialValue: item.type,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -179,7 +203,7 @@ const formCustomerType = ({
                   initialValue: item.year,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[12][0-9]{3}$/,
                       message: 'year is not valid',
                     },
@@ -196,7 +220,7 @@ const formCustomerType = ({
                   initialValue: item.chassisNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -211,7 +235,7 @@ const formCustomerType = ({
                   initialValue: item.machineNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, InputNumber, Row, Col } from 'antd'
+import { Form, Input, Button, Tabs, Select, InputNumber, Row, Col, Dropdown, Menu, Icon } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -63,12 +65,14 @@ const formCustomerType = ({
   onSubmit,
   disabled,
   resetItem,
+  clickBrowse,
   activeKey,
   button,
   listSellprice,
   ...tabProps,
   ...listProps,
   ...filterProps,
+  ...printProps,
   changeTab,
   form: {
     getFieldDecorator,
@@ -77,6 +81,8 @@ const formCustomerType = ({
     resetFields,
   },
 }) => {
+  const { show } = filterProps
+  const { onShowHideSearch } = tabProps
   const handleReset = () => {
     resetItem()
     resetFields()
@@ -100,10 +106,27 @@ const formCustomerType = ({
     })
   }
 
+  const browse = () => {
+    clickBrowse()
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   const children = listSellprice.length > 0 ? listSellprice.map(misc => <Option value={misc.miscName} key={misc.miscName}>{misc.miscName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} {...tabProps} onTabClick={handleReset} onChange={key => change(key)}>
+    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -252,6 +275,7 @@ formCustomerType.propTypes = {
   showSellPrice: PropTypes.func,
   resetItem: PropTypes.func,
   changeTab: PropTypes.func,
+  clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,
   listSellprice: PropTypes.object,

@@ -32,13 +32,43 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'groupName',
     },
     {
+      title: 'Created',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'createdBy',
+          key: 'createdBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+        },
+      ],
+    },
+    {
+      title: 'Updated',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'updatedBy',
+          key: 'updatedBy',
+        },
+        {
+          title: 'Time',
+          dataIndex: 'updatedAt',
+          key: 'updatedAt',
+        },
+      ],
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
       },
-    }
+    },
   ]
 
   return (

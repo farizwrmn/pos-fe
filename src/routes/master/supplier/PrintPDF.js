@@ -1,141 +1,146 @@
-/**
- * Created by boo on 9/19/17.
- */
 import React from 'react'
-import { Icon } from 'antd'
-import moment from 'moment'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
+import moment from 'moment'
+import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, app }) => {
-  const { user, storeInfo } = app
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
+const PrintPDF = ({ dataSource, user, storeInfo }) => {
+  const styles = {
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+    },
+    headerStoreName: {
+      fontSize: 18,
+      margin: [45, 10, 0, 0],
+    },
+    headerTitle: {
+      fontSize: 16,
+      margin: [45, 2, 0, 0],
+    },
+  }
+  const header = [
+    { text: `${storeInfo.name}`, style: 'headerStoreName' },
+    { text: 'LAPORAN DAFTAR SUPPLIER', style: 'headerTitle' },
+  ]
 
-  const createPdfLineItems = (tabledata) => {
-    let headers = {
-      top:{
-        col_1: { text: 'ID', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-        col_2: { text: 'NAMA', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-        col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-        col_4: { text: 'No.Telp', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-        col_5: { text: 'No.HP', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-        col_6: { text: 'Tax ID', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13, style: 'headers' },
-      },
-    }
-    let rows = tabledata
-    let body = []
-    for (var key in headers){
-      if (headers.hasOwnProperty(key)){
-        var header = headers[key]
-        var row = new Array()
-        row.push( header.col_1 )
-        row.push( header.col_2 )
-        row.push( header.col_3 )
-        row.push( header.col_4 )
-        row.push( header.col_5 )
-        row.push(header.col_6)
-        body.push(row)
+  let tableHeaders = {
+    top: {
+      col_1: { text: 'ID', style: 'tableHeader', alignment: 'center' },
+      col_2: { text: 'NAMA', style: 'tableHeader', alignment: 'center' },
+      col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
+      col_4: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center' },
+      col_5: { text: 'NO.HP', style: 'tableHeader', alignment: 'center' },
+      col_6: { text: 'TAX ID', style: 'tableHeader', alignment: 'center' },
+    },
+  }
+
+  const createTableHeader = (tableHeader) => {
+    let head = []
+    for (let key in tableHeader) {
+      if (tableHeader.hasOwnProperty(key)) {
+        let data = tableHeader[key]
+        let row = []
+        row.push(data.col_1)
+        row.push(data.col_2)
+        row.push(data.col_3)
+        row.push(data.col_4)
+        row.push(data.col_5)
+        row.push(data.col_6)
+        head.push(row)
       }
     }
-    for (var key in rows)
-    {
-      if (rows.hasOwnProperty(key))
-      {
-        var data = rows[key]
-        var row = new Array()
+    return head
+  }
+
+  const createTableBody = (tableData) => {
+    let body = []
+    for (let key in tableData) {
+      if (tableData.hasOwnProperty(key)) {
+        let data = tableData[key]
+        let row = []
         row.push({ text: (data.supplierCode || '').toString(), alignment: 'left' })
         row.push({ text: (data.supplierName || '').toString(), alignment: 'left' })
         row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'center' })
-        row.push({ text: (data.taxId || '').toString(), alignment: 'left' })
+        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
+        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
+        row.push({ text: (data.taxId || '').toString(), alignment: 'center' })
         body.push(row)
       }
     }
     return body
   }
 
+  let tableBody = []
+  let tableHeader = []
+  try {
+    tableBody = createTableBody(dataSource)
+    tableHeader = createTableHeader(tableHeaders)
+  } catch (e) {
+    console.log(e)
+  }
 
-
-  const handlePDF = (dataSource) => {
-    let body = createPdfLineItems(dataSource)
-    let currentDate = new Date()
-    let datetime = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
-    let docDefinition = {
-
-      footer: function (currentPage, pageCount) {
-        return {
-          margin: [40, 30, 40, 0],
-
-          stack: [
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [40, 30, 40, 0],
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }],
+        },
+        {
+          columns: [
             {
-              canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }],
+              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left',
             },
             {
-              columns: [
-                {
-                  text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                  margin: [0, 0, 0, 0],
-                  fontSize: 9,
-                  alignment: 'left',
-                },
-                {
-                  text: `Dicetak Oleh: ${user.userid}`,
-                  fontSize: 9,
-                  margin: [0, 0, 0, 0],
-                  alignment: 'center',
-                },
-                {
-                  text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
-                  fontSize: 9,
-                  margin: [0, 0, 0, 0],
-                  alignment: 'right',
-                },
-              ],
+              text: `Dicetak Oleh: ${user.userid}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'center',
+            },
+            {
+              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right',
             },
           ],
-        }
-      },
-
-      header: [
-        {text: `${storeInfo.name}`, fontSize: 18, margin: [45, 10, 0, 0]},
-        {text: 'LAPORAN DAFTAR SUPPLIER', fontSize: 16, margin: [45, 2, 0, 0]},
-      ],
-
-      pageSize: { width: 813, height: 530 },
-      pageOrientation: 'landscape',
-      pageMargins: [ 40, 80, 40, 60 ],
-      content: [
-        {
-          style: 'tableExample',
-          writable: true,
-          table: {
-            widths: ['10%', '20%', '24%', '20%', '16%', '10%'],
-            body,
-          },
         },
-        { text: ' ', margin: [0, 0, 0, 15] },
       ],
-      styles: {
-        header: {
-          fontSize: 28,
-          bold: true,
-        },
-      },
     }
-    pdfMake.createPdf(docDefinition).open()
+  }
+
+  const pdfProps = {
+    buttonType: '',
+    iconSize: '',
+    buttonSize: '',
+    name: 'PDF',
+    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    width: ['10%', '20%', '24%', '20%', '16%', '10%'],
+    pageSize: { width: 813, height: 530 },
+    pageOrientation: 'landscape',
+    pageMargins: [40, 80, 40, 60],
+    tableStyle: styles,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    data: dataSource,
+    header,
+    footer,
   }
 
   return (
-    <div onClick={() => handlePDF(dataSource)}><Icon type="file-pdf" /> PDF</div>
+    <BasicReport {...pdfProps} />
   )
 }
 
 PrintPDF.propTypes = {
-  app: PropTypes.object,
-  suppliers: PropTypes.object,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object,
+  dataSource: PropTypes.object,
 }
 
-export default connect(({ app, suppliers }) => ({ app, suppliers }))(PrintPDF)
+export default PrintPDF

@@ -19,7 +19,9 @@ export default modelExtend(pageModel, {
     isChecked: false,
     selectedRowKeys: [],
     activeKey: '0',
+    sequence: '',
     disable: '',
+    show: 1,
   },
 
   subscriptions: {
@@ -38,7 +40,6 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      console.log(data.success)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -62,7 +63,7 @@ export default modelExtend(pageModel, {
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
         const item = {employeeId: sequence.data}
-        yield put({ type: 'updateState', payload: { currentItem: item } })
+        yield put({ type: 'updateState', payload: { sequence: sequence.data } })
       }
     },
 
@@ -80,12 +81,12 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: 1
+        type: 1, // storeId
       }
       const sequence = yield call(querySequence, seqDetail)
       const employeeData = {
         employeeId: sequence.data,
-        ...payload.data
+        ...payload.data,
       }
       let data = {}
       if (sequence.data !== null) {
@@ -137,6 +138,22 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    resetEmployeeList (state) {
+      const defaultState = {
+        list: [],
+        currentItem: {},
+        modalType: 'add',
+        display: 'none',
+        isChecked: false,
+        selectedRowKeys: [],
+        // activeKey: '0',
+        sequence: '',
+        disable: '',
+        show: 1,
+      }
+      return { ...state, ...defaultState}
     },
 
   },

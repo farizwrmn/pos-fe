@@ -4,11 +4,13 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const CustomerType = ({ customertype, loading, dispatch, location }) => {
-  const { listType, listSellprice, pagination, display, isChecked, modalType, currentItem, activeKey, disable } = customertype
+const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
+  const { listType, listSellprice, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
+  const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
+    show,
     filter: {
       ...location.query,
     },
@@ -33,10 +35,15 @@ const CustomerType = ({ customertype, loading, dispatch, location }) => {
     switchIsChecked () {
       dispatch({ type: 'customertype/switchIsChecked' })
     },
+    onResetClick () {
+      dispatch({ type: 'customertype/resetCustomerTypeList' })
+    },
   }
 
   const listProps = {
     dataSource: listType,
+    user,
+    storeInfo,
     loading: loading.effects['customertype/query'],
     pagination,
     location,
@@ -51,7 +58,7 @@ const CustomerType = ({ customertype, loading, dispatch, location }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'customertype/changeTab',
+        type: 'customertype/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -66,9 +73,45 @@ const CustomerType = ({ customertype, loading, dispatch, location }) => {
         payload: id,
       })
     },
+    clickBrowse () {
+      dispatch({
+        type: 'customertype/updateState',
+        payload: {
+          activeKey: '1',
+        },
+      })
+    },
+  }
+
+  const tabProps = {
+    activeKey,
+    changeTab (key) {
+      dispatch({
+        type: 'customertype/updateState',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          currentItem: {},
+          disable: '',
+        },
+      })
+      dispatch({ type: 'customertype/resetCustomerTypeList' })
+    },
+    onShowHideSearch () {
+      dispatch({
+        type: 'customertype/updateState',
+        payload: {
+          show: !show,
+        },
+      })
+    },
   }
 
   const formProps = {
+    ...listProps,
+    ...tabProps,
+    ...filterProps,
+    listSellprice,
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -80,7 +123,7 @@ const CustomerType = ({ customertype, loading, dispatch, location }) => {
     },
     resetItem () {
       dispatch({
-        type: 'customertype/resetItem',
+        type: 'customertype/updateState',
         payload: {
           modalType: 'add',
           activeKey: '0',
@@ -88,48 +131,27 @@ const CustomerType = ({ customertype, loading, dispatch, location }) => {
           disable: '',
         },
       })
+      // if (key === '1') {
+      //   dispatch({
+      //     type: 'customertype/query',
+      //   })
+      // }
     },
   }
-
-  const tabProps = {
-    ...listProps,
-    ...formProps,
-    ...filterProps,
-    listSellprice,
-    activeKey,
-    changeTab (key) {
-      dispatch({
-        type: 'customertype/changeTab',
-        payload: {
-          activeKey: key,
-          modalType: 'add',
-          currentItem: {},
-          disable: '',
-        },
-      })
-      if (key === '1') {
-        dispatch({
-          type: 'customertype/query',
-        })
-      }
-    },
-  }
-
-  // const tabBodies = [<Form {...formProps} />, <div><Filter {...filterProps} /> <List {...listProps} /></div>]
-  // const tabPanes = header.map((item, key) => <TabPane tab={item} key={key} >{tabBodies[key]}</TabPane>)
 
   return (
     <div className="content-inner">
-      <Form {...tabProps} />
+      <Form {...formProps} />
     </div>
   )
 }
 
 CustomerType.propTypes = {
   customertype: PropTypes.object,
+  app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ customertype, loading }) => ({ customertype, loading }))(CustomerType)
+export default connect(({ customertype, loading, app }) => ({ customertype, loading, app }))(CustomerType)
