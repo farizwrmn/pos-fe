@@ -18,8 +18,9 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.amount) / parseFloat(data.count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
@@ -66,7 +67,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
             alignment: 'center',
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - (2 * 40), y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }],
           },
           {
             columns: [
@@ -97,7 +98,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - (2 * 40), y2: 5, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }],
         },
         {
           columns: [
@@ -127,7 +128,8 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT', alignment: 'center' },
+      { fontSize: 12, text: 'PRODUCT CODE', alignment: 'center' },
+      { fontSize: 12, text: 'PRODUCT NAME', alignment: 'center' },
       { fontSize: 12, text: 'HARGA POKOK', alignment: 'center' },
       { fontSize: 12, text: 'SALDO', alignment: 'center' },
       { fontSize: 12, text: 'JUMLAH', alignment: 'center' },
@@ -141,9 +143,10 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   }
   const tableFooter = [
     [
+      { text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: 'Grand Total', colSpan: 1, alignment: 'center', fontSize: 12 },
+      {},
       { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
@@ -152,7 +155,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   // Declare additional Props
   const pdfProps = {
     className: "button-width02 button-extra-large bgcolor-blue",
-    width: ['5%', '40%', '*', '10%', '25%'],
+    width: ['5%', '20%', '35%', '15%', '10%', '15%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',

@@ -34,6 +34,7 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
     data.typeCode = itemService.typeCode
     data.productId = itemService.productId
     onChangeTotalItem(data)
+    return data
   }
 
   const handleDelete = () => {
