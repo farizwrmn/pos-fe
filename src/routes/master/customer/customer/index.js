@@ -125,15 +125,11 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'customer/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

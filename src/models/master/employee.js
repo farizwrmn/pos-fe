@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, edit, remove } from '../../services/master/employee'
+import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 import { message } from 'antd'
@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
 
   state: {
     list: [],
+    listLovEmployee: [],
     currentItem: {},
     modalType: 'add',
     display: 'none',
@@ -124,10 +125,39 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+    *lovForUser ({ payload }, { call, put }) {
+      const data = yield call(queryField, { fields: 'employeeId,employeeName,email,positionName', for: 'user' })
+
+      if ( data.success ) {
+        const employees = data.data
+        const totalData = data.data.length
+        yield put({
+          type: 'querySuccessEmployee',
+          payload: {
+            listLovEmployee: employees,
+            pagination: {
+              total: totalData,
+            },
+          },
+        })
+      } else {
+        console.log('not success')
+      }
+    },
   },
 
   reducers: {
 
+    querySuccessEmployee (state, action) {
+      const { list, listLovEmployee, pagination } = action.payload
+      return { ...state,
+        listEmployee: list,
+        listLovEmployee,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        } }
+    },
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
     },

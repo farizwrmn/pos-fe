@@ -12,14 +12,17 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    dataCustomer: {},
     modalType: 'add',
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
     activeKey: '0',
     disable: '',
+    searchText: '',
     listCustomer: [],
     show: 1,
+    modalVisible: false,
   },
 
   subscriptions: {
@@ -87,7 +90,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
       } else {
         throw data
@@ -99,7 +102,7 @@ export default modelExtend(pageModel, {
       const newCustomer = { ...payload, id }
       const data = yield call(edit, newCustomer)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
       } else {
         throw data
@@ -108,6 +111,24 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+
+    querySuccess (state, action) {
+      const { list, pagination } = action.payload
+      return {
+        ...state,
+        list,
+        listCustomer: list,
+        dataCustomer: {},
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
+    },
+
+    showModal (state, action) {
+      return { ...state, ...action.payload, modalVisible: true }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }

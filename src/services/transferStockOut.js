@@ -43,6 +43,16 @@ export async function add (params) {
   })
 }
 
+export async function queryTransferOut (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: params ? `${transfer}/out` : transfer,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken,
+  })
+}
+
 // export async function edit (params) {
 //   let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
 //   const apiHeaderToken = crypt.apiheader()

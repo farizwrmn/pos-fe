@@ -108,15 +108,11 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'service/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

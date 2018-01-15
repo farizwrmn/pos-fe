@@ -64,7 +64,6 @@ const formService = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   clickBrowse,
   activeKey,
   button,
@@ -84,12 +83,12 @@ const formService = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const handleSubmit = () => {
@@ -240,7 +239,6 @@ formService.propTypes = {
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   clickBrowse: PropTypes.func,
-  resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,

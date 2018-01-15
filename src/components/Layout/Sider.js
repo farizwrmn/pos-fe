@@ -46,28 +46,40 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     changeRole(value.toString())
   }
 
+  const loopLogo = () => {
+    let i,logo4=[]
+    for (i=0; i<5; i++) {
+      logo4.push(<span key={i}><img alt={'logo'} src={config.logo} style={{float: 'center'}}/></span>)
+    }
+    return (logo4)
+  }
+
   return (
     <div>
       <div className={styles.logo}>
         <div className={styles.verticalFlip}>
-          {/*<span>{todayDateTime}</span>*/}
-          <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff}/></span>
-          <span><img alt={'logo'} src={config.logo} style={{float: 'center'}}/></span>
-          <span>{companyName}</span>
-          <span>
-            {siderFold ? '' :
-              <Tooltip placement="right" title="click to switch store">
-                <Cascader style={{ width: '100%' }}
-                          options={listUserStores}
-                          onChange={handleChangeStore}
-                          changeOnSelect allowClear={false}
-                          defaultValue={[defaultStore]}
-                          placeholder="Switch Store">
-                  <a href="#" style={defaultStoreColor}>{defaultStoreName}</a>
-                </Cascader>
-              </Tooltip>
-            }
-          </span>
+          {siderFold
+            ?
+            <div>{loopLogo()}</div>
+            :
+            <div>
+              <span><img alt={'logo'} src={config.logo} style={{float: 'center'}}/></span>
+              <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff}/></span>
+              <span>{companyName}</span>
+              <span>
+                <Tooltip placement="right" title="click to switch store">
+                  <Cascader style={{ width: '100%' }}
+                            options={listUserStores}
+                            onChange={handleChangeStore}
+                            changeOnSelect allowClear={false}
+                            defaultValue={[defaultStore]}
+                            placeholder="Switch Store">
+                    <a href="#" style={defaultStoreColor}>{defaultStoreName}</a>
+                  </Cascader>
+                </Tooltip>
+              </span>
+            </div>
+          }
         </div>
       </div>
       <Menus {...menusProps} />
@@ -75,8 +87,8 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
         <div className={styles.switchrole}>
           <Tooltip placement="top" title="click to switch role">
             <Cascader options={listUserRoles}
-                    onChange={handleChangeRole} changeOnSelect allowClear={false}
-                    defaultValue={[defaultRole]} placeholder="Switch Role"/>
+                      onChange={handleChangeRole} changeOnSelect allowClear={false}
+                      defaultValue={[defaultRole]} placeholder="Switch Role"/>
           </Tooltip>
         </div> : ''}
       <div className={styles.siderCollapse} onClick={switchSider}>

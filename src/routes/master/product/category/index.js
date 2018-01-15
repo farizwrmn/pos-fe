@@ -124,15 +124,11 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'productcategory/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

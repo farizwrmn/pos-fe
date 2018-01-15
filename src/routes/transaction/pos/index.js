@@ -5,7 +5,7 @@ import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
-import ModalCustomer from '../../master/customer/Modal'
+// import ModalCustomer from '../../master/customer/customer/Modal'
 import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
@@ -1480,7 +1480,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
               <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
               <Tooltip title="add Member">
                 <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-                {modalVisible && <ModalCustomer {...modalCustomerProps} />}
+                {/*{modalVisible && <ModalCustomer {...modalCustomerProps} />}*/}
               </Tooltip>
             </ButtonGroup>
             {modalMemberVisible && <Browse {...modalMemberProps} />}

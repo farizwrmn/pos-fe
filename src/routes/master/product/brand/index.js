@@ -124,15 +124,11 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'productbrand/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

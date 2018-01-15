@@ -164,8 +164,6 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'employee/updateState',
         payload: {

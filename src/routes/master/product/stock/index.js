@@ -130,15 +130,11 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
         type: 'productstock/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

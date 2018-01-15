@@ -68,7 +68,6 @@ const formSupplier = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   activeKey,
   button,
   changeTab,
@@ -89,12 +88,12 @@ const formSupplier = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const city = () => {
@@ -327,7 +326,6 @@ formSupplier.propTypes = {
   clickBrowse: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,

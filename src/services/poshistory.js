@@ -1,12 +1,11 @@
 import { request, config, crypt } from 'utils'
 
+const { transfer } = config.api
 
-const { menus } = config.api
-
-export async function query (params) {
+export async function queryOut (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: menus,
+    url: params ? `${transfer}/out` : transfer,
     method: 'get',
     data: params,
     headers: apiHeaderToken,

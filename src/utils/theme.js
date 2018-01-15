@@ -11,5 +11,8 @@ module.exports = {
     borderBase: '#e5e5e5',
     // borderSplit: '#f4f4f4',
     borderSplit: '#e9e9e9',
+    warning: '#fac450',
+    normal: '#108ee9',
+    error: '#f50'
   },
 }

@@ -120,15 +120,11 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
         type: `customertype/${modalType}`,
         payload: data,
       })
-    },
-    resetItem () {
       dispatch({
         type: 'customertype/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
       // if (key === '1') {

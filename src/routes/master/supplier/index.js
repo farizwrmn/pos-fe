@@ -52,7 +52,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
     },
     editItem (item) {
       dispatch({
-        type: 'supplier/changeTab',
+        type: 'supplier/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -76,7 +76,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
     activeKey,
     changeTab (key) {
       dispatch({
-        type: 'supplier/changeTab',
+        type: 'supplier/updateState',
         payload: {
           activeKey: key,
           modalType: 'add',
@@ -125,15 +125,11 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
           data,
         },
       })
-    },
-    resetItem () {
       dispatch({
-        type: 'supplier/resetItem',
+        type: 'supplier/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

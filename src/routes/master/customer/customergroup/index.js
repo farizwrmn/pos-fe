@@ -91,14 +91,7 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
           disable: '',
         },
       })
-      // if (key === '1') {
-      //   dispatch({
-      //     type: 'customergroup/query',
-      //   })
-      // }
-      dispatch({
-        type: 'customergroup/resetCustomerGroupList',
-      })
+      dispatch({ type: 'customergroup/resetCustomerGroupList' })
     },
     onShowHideSearch () {
       dispatch({
@@ -122,15 +115,11 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
         type: `customergroup/${modalType}`,
         payload: data,
       })
-    },
-    resetItem () {
       dispatch({
         type: 'customergroup/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon } from 'antd'
+import moment from 'moment'
+import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse } from 'antd'
 import List from './List'
-import Filter from './Filter'
-import InputSearch from './InputSearch'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
+import BrowseButtom from './BrowseButton'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
+const Panel = Collapse.Panel
 
 const formItemLayout = {
   labelCol: {
@@ -66,14 +67,13 @@ const formCustomerType = ({
   listItem,
   disabled,
   clickBrowse,
-  resetItem,
   activeKey,
+  dataCustomer,
   button,
   ...tabProps,
   ...listProps,
-  ...filterProps,
-  ...inputSearchProps,
   ...printProps,
+  ...modalProps,
   changeTab,
   form: {
     getFieldDecorator,
@@ -83,12 +83,12 @@ const formCustomerType = ({
   },
 }) => {
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const handleSubmit = () => {
@@ -97,10 +97,16 @@ const formCustomerType = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        memberCode: getFieldsValue().memberCode,
+        policeNo: getFieldsValue().policeNo,
+        merk: getFieldsValue().merk,
+        model: getFieldsValue().model,
+        type: getFieldsValue().type,
+        year: getFieldsValue().year,
+        chassisNo: getFieldsValue().chassisNo,
+        machineNo: getFieldsValue().machineNo,
       }
-      data.memberCode = data.memberCode.title
-      console.log('Submit', data)
+      console.log('Submit')
       onSubmit(data)
       handleReset()
     })
@@ -116,6 +122,43 @@ const formCustomerType = ({
       <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
     </Menu>
   )
+  const info = (
+    <div>
+      <FormItem label="Member Code" {...formItemLayout} >
+        {getFieldDecorator('memberCode', {
+          initialValue: dataCustomer.memberCode,
+        })(<Input disabled />)}
+      </FormItem>
+      <FormItem label="Member Name" {...formItemLayout}>
+        {getFieldDecorator('memberName', {
+          initialValue: dataCustomer.memberName,
+        })(<Input disabled />)}
+      </FormItem>
+      <FormItem label="BirthDate" {...formItemLayout}>
+        {getFieldDecorator('birthDate', {
+          initialValue: moment(dataCustomer.birthDate).format('MMMM Do YYYY'),
+        })(<Input disabled />)}
+      </FormItem>
+      <FormItem label="City" {...formItemLayout}>
+        {getFieldDecorator('cityName', {
+          initialValue: dataCustomer.cityName,
+        })(<Input disabled />)}
+      </FormItem>
+      <FormItem label="Address" {...formItemLayout}>
+        {getFieldDecorator('address01', {
+          initialValue: dataCustomer.address01,
+        })(<Input disabled />)}
+      </FormItem>
+      <FormItem label="Member Type" {...formItemLayout}>
+        {getFieldDecorator('memberTypeName', {
+          initialValue: dataCustomer.memberTypeName,
+        })(<Input disabled />)}
+      </FormItem>
+    </div>
+  )
+
+  const collapseActiveKey = '1'
+  const collapseTitle = `Customer Info(${dataCustomer.memberCode})`
 
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
@@ -129,13 +172,8 @@ const formCustomerType = ({
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><InputSearch {...inputSearchProps} />
+              <FormItem label="Member Code" hasFeedback {...formItemLayout}><BrowseButtom {...modalProps} />
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Police No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('policeNo', {
                   initialValue: item.policeNo,
@@ -148,113 +186,84 @@ const formCustomerType = ({
                   ],
                 })(<Input disabled={disabled} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Merk" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('merk', {
                   initialValue: item.merk,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Model" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('model', {
                   initialValue: item.model,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('type', {
                   initialValue: item.type,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Tahun" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('year', {
                   initialValue: item.year,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                       pattern: /^[12][0-9]{3}$/,
                       message: 'year is not valid',
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('chassisNo', {
                   initialValue: item.chassisNo,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('machineNo', {
                   initialValue: item.machineNo,
                   rules: [
                     {
-                      required: false,
+                      required: true,
                     },
                   ],
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
+            <Col {...col}>
+              <Collapse defaultActiveKey={collapseActiveKey} style={{ display: Object.keys(dataCustomer).length > 0 ? 'block' : 'none' }}>
+                <Panel header={collapseTitle} key="1">
+                  {info}
+                </Panel>
+              </Collapse>
+            </Col>
           </Row>
         </Form>
       </TabPane>
       <TabPane tab="Browse" key="1" >
-        {/* <Filter {...filterProps} /> */}
+        <BrowseButtom {...modalProps} />
         <List {...listProps} />
       </TabPane>
     </Tabs>
@@ -265,10 +274,13 @@ formCustomerType.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
+  listItem: PropTypes.object,
+  dataCustomer: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
+  clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
+  modalVisible: PropTypes.bool,
   button: PropTypes.string,
 }
 
