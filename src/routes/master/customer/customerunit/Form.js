@@ -100,7 +100,7 @@ const formCustomerType = ({
         ...getFieldsValue(),
       }
       data.memberCode = data.memberCode.title
-      console.log('Submit', data)
+      
       onSubmit(data)
       handleReset()
     })

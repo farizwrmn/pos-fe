@@ -114,11 +114,11 @@ export default {
         let ipAddress = apiHost
         let ipAdd2 = ''
         const addIP = (ip) => {
-          console.log(ip)          
+          console.log(ip)
         }
-        if (isChrome || isFirefox || isBlink) {
+        try {
           findIP(addIP)
-        } else {
+        } catch (e) {
           alert('Browser cannot find IP address')
         }
 

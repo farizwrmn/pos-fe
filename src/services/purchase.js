@@ -1,4 +1,4 @@
-import { request, config, crypt } from '../utils'
+import { request, config, crypt, lstorage } from '../utils'
 const { purchase, purchaseDetail } = config.api
 
 export async function query (params) {
@@ -22,6 +22,8 @@ export async function queryDetail (params) {
 }
 
 export async function create (params) {
+  const storeId = lstorage.getCurrentUserStore()  
+  params.data.storeId = storeId
   let url = params.id ? purchase : null
   const apiHeaderToken = crypt.apiheader()
   return request({

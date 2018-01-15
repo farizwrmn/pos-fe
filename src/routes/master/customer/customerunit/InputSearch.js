@@ -24,7 +24,7 @@ const InputSearch = ({
       memberName: d.memberName,
     })
   })
-  member = data.map(customer => <Option value={customer.memberName} title={customer.memberCode} key={customer.memberCode}>{customer.memberName}</Option>)
+  member = data.map(customer => <Option value={customer.memberCode} title={customer.memberCode}>{customer.memberName}</Option>)
   const handleChage = (name) => {
     findItem(name)
     if (name === '') {
@@ -43,8 +43,8 @@ const InputSearch = ({
           <Select style={{ width: 200 }}
             mode="combobox"
             disabled={disableInputSearch}
-            defaultActiveFirstOption={false}
-            showArrow={false}
+            // defaultActiveFirstOption={false}
+            // showArrow={false}
             labelInValue={true}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             placeholder="Find member name"

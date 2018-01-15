@@ -1217,11 +1217,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                 },
               })
 
-              dispatch({
-                type: 'pos/showShiftModal',
-              })
+              // dispatch({
+              //   type: 'pos/showShiftModal',
+              // })
             },
-            onCancel() { },
+            onCancel() {
+              console.log('cancel')
+            },
           })
         }
         else {

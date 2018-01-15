@@ -5,7 +5,7 @@ import { query as querySequence, increase as increaseSequence } from '../service
 import { pageModel } from './common'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { config } from 'utils'
+import { config, lstorage } from 'utils'
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
@@ -157,7 +157,7 @@ export default modelExtend(pageModel, {
       const { start, end, ...other } = payload
       const sequenceParam = {
         seqCode: 'MUIN',
-        type: 1,
+        type: lstorage.getCurrentUserStore(),
       }
       const sequence = yield call(querySequence, sequenceParam)
       const data = yield call(queryByTransOut, payload)
@@ -177,21 +177,21 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const sequenceData = {
         seqCode: 'MUIN',
-        type: 1 // diganti dengan StoreId
+        type: lstorage.getCurrentUserStore() // diganti dengan StoreId
       }
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
       let data = yield call(add, payload)
       if (data.success) {
         success()
-        let increase = yield call(increaseSequence, sequenceData.seqCode)
+        let increase = yield call(increaseSequence, sequenceData)
         if (!increase.success) {
           error(increaseSequence)
         }
         yield put({
           type: 'resetAll'
         })
-        setInterval(function () { location.reload() }, 1000);
+        setInterval(function () { location.reload() }, 1000)
       } else {
         error(data)
         throw data

@@ -9,13 +9,14 @@ import * as creditChargeService from '../services/creditCharge'
 import { editPoint as updateMemberPoint } from '../services/master/customer'
 import { queryMode as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { lstorage } from 'utils'
 const { prefix } = config
 const terbilang = require('terbilang-spelling')
 
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
-const { queryLastTransNo, create, createDetail } = cashierService
+const { create, createDetail } = cashierService
 const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 export default {
@@ -70,7 +71,7 @@ export default {
     * create({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'INV',
-        type: 1
+        type: lstorage.getCurrentUserStore()
       }
       const transNo = yield call(querySequence, invoice)
       if ((transNo.data === null)) {
@@ -99,14 +100,16 @@ export default {
           content: 'Unit is Undefined',
         })
       } else {
-        let data = yield call(queryLastTransNo, payload.periode)
+        // let data = yield call(queryLastTransNo, payload.periode)
         let arrayProd = []
         const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         const dataPos = product.concat(service)
         const trans = transNo.data
+        const storeId = lstorage.getCurrentUserStore()        
         for (let key = 0; key < dataPos.length; key += 1) {
           arrayProd.push({
+            storeId: storeId,
             transNo: trans,
             productId: dataPos[key].productId,
             productCode: dataPos[key].code,
@@ -181,7 +184,7 @@ export default {
           })
           if (data_detail.success) {
             try {
-              const transNoIncrease = yield call(increaseSequence, 'INV')
+              const transNoIncrease = yield call(increaseSequence, invoice)
               console.log('transNoincrease', transNoIncrease)
             } catch (e) {
               Modal.warning({

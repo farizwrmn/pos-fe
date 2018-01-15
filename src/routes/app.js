@@ -132,6 +132,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
 
   const siderProps = {
     menu,
+    location,
     siderFold,
     darkTheme,
     navOpenKeys,

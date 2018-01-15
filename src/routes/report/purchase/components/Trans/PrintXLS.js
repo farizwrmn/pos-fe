@@ -4,159 +4,143 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
-import { saveAs } from 'file-saver'
-import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
+import { BasicExcelReport } from 'components'
 
-const warning = Modal.warning
-
-const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-
+const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
   let discountTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.discount), 0)
   let roundingTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.rounding), 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
-  const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
-  workbook.created = new Date()
-  //workbook.lastPrinted = new Date(2016, 9, 27)
-  workbook.views = [
-    {
-      x: 0, y: 0, width: 10000, height: 20000,
-      firstSheet: 0, activeTab: 1, visibility: 'visible'
-    }
-  ]
-  const sheet = workbook.addWorksheet('POS 1',
-    { pageSetup: { paperSize: 9, orientation: 'portrait' } })
-  const handleXLS = () => {
-    if (fromDate === '' && toDate === '') {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
-      })
-    } else if (listTrans.length === 0) {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
-      })
-    } else {
-      sheet.getCell('F2').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12,
-        underline: true,
-      }
-      sheet.getCell('F3').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12,
-      }
-      sheet.getCell('F4').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12,
-      }
-      sheet.getCell('J5').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 10,
-      }
-      for (let n = 0; n <= listTrans.length; n++) {
-        for (let m = 65; m < 73; m++) {
-          let o = 9 + n
-          sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-            name: 'Times New Roman',
-            family: 4,
-            size: 10,
-          }
-        }
-      }
-      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'DISKON', 'ROUNDING', 'NETTO']
-      const footer = [
-        '',
-        '',
-        '',
-        'GRAND TOTAL',
-        `${grandTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${discountTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${roundingTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${nettoTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]
-      for (let m = 65; m < 73; m++) {
-        let o = 7
-        let count = m - 65
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11,
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
-      }
 
-      for (let n = 0; n < listTrans.length; n++) {
-        let m = 9 + n
-        sheet.getCell(`A${m}`).value = `${parseInt(n+1)}`
-        sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`B${m}`).value = '.'
-        sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = `${listTrans[n].transNo}`
-        sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
-        sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].total)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-        sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].rounding)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-        sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-        sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-      }
-
-      for (let m = 65; m < 73; m++) {
-        let n = listTrans.length + 10
-        let count = m - 65
-        sheet.getCell(`C${n}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11,
-        }
-        sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
-          name: 'Times New Roman',
-          family: 4,
-          size: 10,
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
-      }
-
-      sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F2').value = 'LAPORAN PEMBELIAN PER FAKTUR'
-      sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F3').value = `${storeInfo.name}`
-      sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
-      sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      workbook.xlsx.writeBuffer().then(function (data) {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `Purchase-Summary${moment().format('YYYYMMDD')}.xlsx`)
-      })
-    }
+  const styles = {
+    header: {
+      fontSize: 11,
+      margin: [0, 0, 0, 10],
+    },
+    body: {
+      fontSize: 10,
+    },
+    footer: {
+      fontSize: 10,
+    },
+    title: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+      underline: true,
+    },
+    merchant: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+    },
+    date: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+    },
+    tableHeader: {
+      name: 'Courier New',
+      family: 4,
+      size: 11,
+    },
+    tableBody: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10,
+    },
+    tableBorder: {
+      top: { style: 'thin', color: { argb: '000000' } },
+      left: { style: 'thin', color: { argb: '000000' } },
+      bottom: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } },
+    },
+    tableFooter: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10,
+    },
   }
+  const tableBody = (list) => {
+    let body = []
+    const rows = list
+    let start = 1
+    for (let key in rows) {
+      if (rows.hasOwnProperty(key)) {
+        let data = rows[key]
+        let row = []
+        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.transNo.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.total).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.discount).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.rounding).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.netto).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        body.push(row)
+      }
+      start += 1
+    }
+    return body
+  }
+  const title = [
+    { value: 'LAPORAN PEMBELIAN PER FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date },
+  ]
+  const header = [
+    [
+      { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NO_FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ROUNDING', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    ],
+  ]
+  const contentBody = listTrans.length > 0 ? tableBody(listTrans) : []
+  const footer = [
+    [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+    ],
+  ]
+
+  // Declare additional Props
+  const XLSProps = {
+    className: 'button-width02 button-extra-large bgcolor-green',
+    width: ['6%', '17%', '16%', '16%', '15%', '15%', '15%'],
+    paperSize: 9,
+    orientation: 'portrait',
+    formatStyle: styles,
+    data: listTrans,
+    title,
+    header,
+    body: contentBody,
+    footer,
+    fileName: 'Purchase-Summary',
+  }
+
   return (
-    <Button type="dashed" size="large"
-            className="button-width02 button-extra-large bgcolor-green"
-            onClick={() => handleXLS(dataSource)}
-    >
-      <Icon type="file-excel" className="icon-large" />
-    </Button>
+    <BasicExcelReport {...XLSProps} />
   )
 }
 
 PrintXLS.propTypes = {
   location: PropTypes.object,
   listTrans: PropTypes.array,
-  app: PropTypes.object,
+  fromDate: PropTypes.string,
+  toDate: PropTypes.string,
+  storeInfo: PropTypes.object,
 }
 
 export default PrintXLS

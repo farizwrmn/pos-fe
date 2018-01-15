@@ -9,6 +9,7 @@ import { query as queryTransType } from '../services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
 import { queryModeName as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { lstorage } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -46,9 +47,9 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'loadDataAdjust',
           })
-          dispatch({
-            type: 'queryAdjust',
-          })
+          // dispatch({
+          //   type: 'queryAdjust',
+          // })
           dispatch({
             type: 'queryLastAdjust',
           })
@@ -118,7 +119,7 @@ export default modelExtend(pageModel, {
     * queryLastAdjust ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'ADJ',
-        type: 1
+        type: lstorage.getCurrentUserStore()
       }
       const data = yield call(querySequence, invoice)
       const transNo = data.data
@@ -147,17 +148,19 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()
       const invoice = {
         seqCode: 'ADJ',
-        type: 1
+        type: lstorage.getCurrentUserStore()
       }
-      const data = yield call(querySequence, invoice)
-      const transNo = data.data
+      const trans = yield call(querySequence, invoice)
+      const transNo = trans.data
       const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       if (dataAdj.length > 0 && transNo !== null) {
         let arrayProd = []
         for (let n = 0; n < dataAdj.length; n += 1) {
           arrayProd.push({
+            storeId: storeId,
             transNo: transNo,
             transType: payload.transType,
             productId: dataAdj[n].productId,
@@ -168,12 +171,12 @@ export default modelExtend(pageModel, {
             sellingPrice: dataAdj[n].price,
           })
         }
-        const data = yield call(create, {id: payload.transNo, data: payload, detail: arrayProd})
+        payload.storeId = lstorage.getCurrentUserStore()
+        const data = yield call(create, {id: transNo, data: payload, detail: arrayProd})
         if (data.success) {
-          let transNoIncrease
+          let transNoIncrease = {}
           try {
-            transNoIncrease = yield call(increaseSequence, 'ADJ')
-            console.log('transNoincrease', transNoIncrease)
+            transNoIncrease = yield call(increaseSequence, invoice)
           } catch (e) {
             Modal.warning({
               title: 'Something went wrong',
@@ -181,7 +184,7 @@ export default modelExtend(pageModel, {
             })
           }
           if (transNoIncrease.success) {
-            const modal = Modal.info({
+            Modal.info({
               title: 'Success',
               content: 'Data has been saved...!',
             })
@@ -192,7 +195,7 @@ export default modelExtend(pageModel, {
           }
         }
       } else {
-        const modal = Modal.warning({
+        Modal.warning({
           title: 'Warning',
           content: 'You cannot let the product Null...!',
         })

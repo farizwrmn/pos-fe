@@ -1,20 +1,22 @@
-import { request, config, crypt } from '../utils'
+import { request, config, crypt, lstorage } from '../utils'
 // const { apiURL, apiPrefix, api } = config
 const { pos, posdetail } = config.api
 
 
-export async function queryLastTransNo (params) {
-  const apiHeaderToken = crypt.apiheader()
-  const url = pos + '/last'
-  return request({
-    url: url,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
+// export async function queryLastTransNo (params) {
+//   const apiHeaderToken = crypt.apiheader()
+//   const url = pos + '/last'
+//   return request({
+//     url: url,
+//     method: 'get',
+//     headers: apiHeaderToken
+//   })
+// }
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  const storeId = lstorage.getCurrentUserStore()  
+  params.storeId = storeId
   const url = pos
   return request({
     url: url,
@@ -45,8 +47,10 @@ export async function queryDetail (params) {
 }
 
 export async function create (params) {
+  const apiHeaderToken = crypt.apiheader()  
+  const storeId = lstorage.getCurrentUserStore()  
+  params.storeId = storeId
   const url = pos + '/code/' + encodeURIComponent(params.transNo)
-  const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,
     method: 'post',

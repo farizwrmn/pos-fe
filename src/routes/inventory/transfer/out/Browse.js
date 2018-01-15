@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Modal, Button } from 'antd'
-import ListProduct from '../../../transaction/pos/ListProductLock'
+import ListProduct from './ListProductLock'
 
 const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { listProduct, pagination, itemPayment, itemService, modalType, isMotion } = pos

@@ -5,6 +5,7 @@ import { query, queryDetail, createDetail, create, edit, editPurchase, remove, c
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
+import { lstorage } from 'utils'
 
 const { prefix } = config
 
@@ -159,6 +160,7 @@ export default modelExtend(pageModel, {
     },
 
     * add({ payload }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()      
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       if (purchase_detail.length !== 0) {
         const data = yield call(create, { id: payload.transNo, data: payload })
@@ -166,6 +168,7 @@ export default modelExtend(pageModel, {
           let arrayProd = []
           for (let n = 0; n < purchase_detail.length; n++) {
             arrayProd.push({
+              storeId: storeId,
               transNo: payload.transNo,
               productId: purchase_detail[n].code,
               productName: purchase_detail[n].name,
@@ -204,6 +207,7 @@ export default modelExtend(pageModel, {
     },
 
     * update({ payload }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()      
       let addData = []
       let editData = []
       let voidData = []
@@ -217,6 +221,7 @@ export default modelExtend(pageModel, {
       if (payload.dataVoid.length > 0) {
         for (let n = 0; n < payload.dataVoid.length; n += 1) {
           voidData.push({
+            storeId: storeId,
             transNo: payload.id.transNo,
             productId: payload.dataVoid[n].code,
             productName: payload.dataVoid[n].name,
@@ -243,6 +248,7 @@ export default modelExtend(pageModel, {
             addData[n].ppn = 0
           }
           arrayProdAdd.push({
+            storeId: storeId,
             transNo: payload.id.transNo,
             productId: addData[n].code,
             productName: addData[n].name,
@@ -259,6 +265,7 @@ export default modelExtend(pageModel, {
 
       for (let n = 0; n < editData.length; n += 1) {
         arrayProdEdit.push({
+          storeId: storeId,          
           transNo: payload.id.transNo,
           id: editData[n].id,
           productId: editData[n].code,
@@ -401,7 +408,7 @@ export default modelExtend(pageModel, {
     },
     * editPurchase({ payload }, { put }) {
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-      let taxType = localStorage.getItem('taxType')
+      let taxType = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
       let ppnTempValue = taxType === 'I' ? 0.1 : 0
       if (taxType === 'E') {
         ppnTempValue = 0

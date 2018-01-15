@@ -97,9 +97,9 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
       columns={columns}
       simple
       dataSource={dataSource}
-      locale={{
-        emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
-      }}
+      // locale={{
+      //   emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
+      // }}
       size="small"
       rowKey={record => record.productCode}
       onRowClick={(record) => handleMenuClick(record)}

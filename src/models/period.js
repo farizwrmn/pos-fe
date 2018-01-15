@@ -104,7 +104,6 @@ export default {
     },
     * end ({ payload }, { call, put }) {
       const period = moment(payload.endPeriod).format('M')
-      const periodClose = moment(payload.endPeriod).format('MM-YYYY')
       const year = moment(payload.endPeriod).format('YYYY')
       const check = yield call(queryFifo, { period: period, year: year })
       const dataCheck = check.data.filter(el => el.count < 0)

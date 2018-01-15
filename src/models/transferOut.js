@@ -4,10 +4,10 @@ import { query as queryStore } from '../services/store'
 import {
   query as querySequence,
   increase as increaseSequence,
-  increase
 } from '../services/sequence'
 import { pageModel } from './common'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
@@ -49,7 +49,7 @@ export default modelExtend(pageModel, {
             type: 'querySequence',
             payload: {
               seqCode: 'MUOUT',
-              type: 1 // diganti dengan StoreId
+              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
             },
           })
         }
@@ -63,12 +63,7 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query({
-      payload = {}
-    }, {
-      call,
-        put
-    }) {
+    * query({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -105,7 +100,7 @@ export default modelExtend(pageModel, {
     * add({ payload }, { call, put }) {
       const sequenceData = {
         seqCode: 'MUOUT',
-        type: 1 // diganti dengan StoreId
+        type: lstorage.getCurrentUserStore() // diganti dengan StoreId
       }
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
@@ -118,7 +113,7 @@ export default modelExtend(pageModel, {
       }
       if (data.success) {
         success()
-        let increase = yield call(increaseSequence, sequenceData.seqCode)
+        let increase = yield call(increaseSequence, sequenceData)
         if (!increase.success) {
           error(increaseSequence)
         }
@@ -128,13 +123,6 @@ export default modelExtend(pageModel, {
             modalConfirmVisible: true
           }
         })
-        
-        // setInterval(function () { location.reload() }, 1000);
-        // yield put({
-        //   type: 'querySequence',
-        //   payload: sequenceData
-        // })
-        // yield put({ type: 'query' })
       } else {
         error(data)
         throw data
@@ -157,38 +145,6 @@ export default modelExtend(pageModel, {
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
     },
-
-    // * delete({ payload }, { call, put, select }) {
-    //     const data = yield call(remove, { id: payload })
-    //     const { selectedRowKeys } = yield select(_ => _.suppliers)
-    //     if (data.success) {
-    //         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-    //         yield put({ type: 'query' })
-    //     } else {
-    //         throw data
-    //     }
-    // },
-    // * deleteBatch({ payload }, { call, put }) {
-    //     const data = yield call(remove, payload)
-    //     if (data.success) {
-    //         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-    //         yield put({ type: 'query' })
-    //     } else {
-    //         throw data
-    //     }
-    // },
-    // * edit({ payload }, { select, call, put }) {
-    //     const supplierCode = yield select(({ suppliers }) => suppliers.currentItem.supplierCode)
-    //     const newSupplier = { ...payload, supplierCode }
-    //     const data = yield call(edit, newSupplier)
-    //     if (data.success) {
-    //         yield put({ type: 'modalHide' })
-    //         yield put({ type: 'query' })
-    //     } else {
-    //         throw data
-    //     }
-    // },
-
   },
 
   reducers: {

@@ -17,11 +17,11 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   const { roleItem, listUserRole, listUserRoleTarget, listUserRoleChange }  = userRole
   const { storeItem, listAllStores, listUserStores, listCheckedStores }  = userStore
   const { pageSize } = pagination
-
+  
   const listRole = listLov &&
     listLov.hasOwnProperty('userrole') ? listLov.userrole : []
 
-  console.log('a2',roleItem)
+  // console.log('a2',roleItem)
   const modalProps = {
     item: currentItem,
     storeItem,

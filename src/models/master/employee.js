@@ -3,6 +3,7 @@ import { query, queryField, add, edit, remove } from '../../services/master/empl
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 
 const success = (id) => {
   message.success(`Employee ${id} has been saved`)
@@ -82,7 +83,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: 1, // storeId
+        type: lstorage.getCurrentUserStore(), // storeId
       }
       const sequence = yield call(querySequence, seqDetail)
       const employeeData = {
@@ -94,7 +95,7 @@ export default modelExtend(pageModel, {
         data = yield call(add, { id: sequence.data, data: employeeData })
         if (data.success) {
           yield put({ type: 'query' })
-          const employeeIncrease = yield call(increaseSequence, 'EMP')
+          const employeeIncrease = yield call(increaseSequence, seqDetail)
           if (employeeIncrease.success) {
             success(sequence.data)
           } else {

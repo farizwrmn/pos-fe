@@ -1,4 +1,4 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 const { cashierList, cashierTrans } = config.api
 
 export async function getCashierNo () {
@@ -11,9 +11,11 @@ export async function getCashierNo () {
 }
 
 export async function getCashierTrans (params) {
+  const defaultStore = lstorage.getCurrentUserStore()
+  const url = cashierTrans + '/' + params.cashierId + '/' + params.cashierNo + '/' + params.shift + '/' + params.status + '/' + defaultStore
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: cashierTrans + '/' + params.cashierId + '/' + params.cashierNo + '/' + params.shift + '/' + params.status,
+    url: url,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -21,6 +23,7 @@ export async function getCashierTrans (params) {
 
 export async function createCashierTrans (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: cashierTrans,
     method: 'post',
@@ -32,6 +35,7 @@ export async function createCashierTrans (params) {
 
 export async function updateCashierTrans (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: cashierTrans,
     method: 'put',

@@ -123,7 +123,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({ type: 'purchase/voidPurchaseList', payload: data })
     },
     onRestoreVoid (item) {
-      dispatch({ type: 'purchase/editPurchaseList', payload: {data:item,head:transNo} })
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data: item,head: transNo } })
       dispatch({ type: 'purchase/deleteVoidList', payload: item })
       dispatch({ type: 'purchase/hideProductModal' })
     },

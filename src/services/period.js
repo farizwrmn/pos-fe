@@ -1,7 +1,8 @@
 /**
  * Created by Veirry on 22/09/2017.
  */
-import { request, config, crypt } from '../utils'
+import { request, config, crypt, lstorage } from '../utils'
+
 const { period } = config.api
 
 export async function query (params) {
@@ -10,6 +11,7 @@ export async function query (params) {
   return request({
     url: url,
     method: 'get',
+    data: params,
     headers: apiHeaderToken,
   })
 }
@@ -57,8 +59,9 @@ export async function create (params) {
 }
 
 export async function update (params) {
-  const url = `${period}/${encodeURIComponent(params.id)}`
   const apiHeaderToken = crypt.apiheader()
+  params.data.storeId = lstorage.getCurrentUserStore()
+  const url = `${period}/${encodeURIComponent(params.id)}`
   return request({
     url: url,
     method: 'put',

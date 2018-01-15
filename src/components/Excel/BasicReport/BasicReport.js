@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver'
 import moment from 'moment'
 
 const BasicReport = ({
-  name = 'Excel',
+  name = '',
   className,
   fileName,
   buttonType = 'dashed',

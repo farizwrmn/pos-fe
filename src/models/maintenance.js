@@ -29,13 +29,13 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/maintenance') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
-          dispatch({
-            type: 'queryPos',
-            payload: {
-              startPeriod: infoStore.startPeriod,
-              endPeriod: infoStore.endPeriod
-            },
-          })
+          // dispatch({
+          //   type: 'queryPos',
+          //   payload: {
+          //     startPeriod: infoStore.startPeriod,
+          //     endPeriod: infoStore.endPeriod
+          //   },
+          // })
         }
       })
     },
