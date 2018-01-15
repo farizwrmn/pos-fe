@@ -38,11 +38,6 @@ function Dashboard({ dashboard }) {
           <Info ipAddress={ipAddress} />
         </Card>
       </Col>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `www.detik.com`,
-        }}
-      />
     </Row>
   )
 }
