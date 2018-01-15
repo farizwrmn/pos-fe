@@ -2,12 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
-import InputSearch from './InputSearch'
-
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem, ...inputSearchProps }) => {
+const List = ({ ...tableProps, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -106,7 +104,6 @@ const List = ({ ...tableProps, editItem, deleteItem, ...inputSearchProps }) => {
 
   return (
     <div>
-      <InputSearch {...inputSearchProps} />
       <Table {...tableProps}
         bordered
         columns={columns}

@@ -46,7 +46,6 @@ const formCustomer = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   clickBrowse,
   activeKey,
   listGroup,
@@ -73,12 +72,12 @@ const formCustomer = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const customerGroup = () => {
@@ -421,7 +420,6 @@ formCustomer.propTypes = {
   listIdType: PropTypes.object,
   onSubmit: PropTypes.func,
   clickBrowse: PropTypes.func,
-  resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,

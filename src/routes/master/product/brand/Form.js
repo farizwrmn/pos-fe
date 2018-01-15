@@ -63,7 +63,6 @@ const formProductBrand = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   activeKey,
   clickBrowse,
   button,
@@ -82,12 +81,12 @@ const formProductBrand = ({
   const { onShowHideSearch } = tabProps
   const { show } = filterProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const handleSubmit = () => {
@@ -181,7 +180,6 @@ formProductBrand.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
   clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,

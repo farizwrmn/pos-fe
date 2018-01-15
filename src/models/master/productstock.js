@@ -64,7 +64,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
       } else {
         throw data
@@ -76,7 +76,7 @@ export default modelExtend(pageModel, {
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
       } else {
         throw data

@@ -5,10 +5,10 @@ const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
-  name: 'PoS App.',
-  version: '2017.12.001',
+  name: 'DMI-PoS',
+  version: '2018.01.001',
   prefix: 'dmiPos',
-  footerText: 'Pos © 2017 Darkotech Mandiri Indonesia',
+  footerText: 'Pos © 2017-2018 Darkotech Mandiri Indonesia',
   logo: '/logo.png',
   CORS: `${APIURL}`,
   apiHost: `${APIHOST}`,
@@ -72,5 +72,6 @@ module.exports = {
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
     setting: `${APIURL}${APIV1}/setting`,
     stores: `${APIURL}${APIV1}/stores`,
+    mobileBooking: `${APIURL}${APIV1}/mobile/booking`,
   },
 }

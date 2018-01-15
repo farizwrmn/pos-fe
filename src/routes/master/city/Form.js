@@ -63,7 +63,6 @@ const formCity = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   clickBrowse,
   activeKey,
   button,
@@ -82,12 +81,12 @@ const formCity = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const handleSubmit = () => {
@@ -179,7 +178,6 @@ formCity.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,

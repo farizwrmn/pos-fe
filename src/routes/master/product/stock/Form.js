@@ -77,7 +77,6 @@ const formProductCategory = ({
   item = {},
   onSubmit,
   disabled,
-  resetItem,
   clickBrowse,
   activeKey,
   button,
@@ -100,12 +99,12 @@ const formProductCategory = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     changeTab(key)
+    handleReset()
   }
 
   const handleSubmit = () => {
@@ -446,7 +445,6 @@ formProductCategory.propTypes = {
   listCategory: PropTypes.object,
   listBrand: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
   showBrands: PropTypes.func,
   showCategories: PropTypes.func,
   changeTab: PropTypes.func,

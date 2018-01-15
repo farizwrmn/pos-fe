@@ -115,15 +115,11 @@ const City = ({ city, loading, dispatch, location, app }) => {
         type: `city/${modalType}`,
         payload: data,
       })
-    },
-    resetItem () {
       dispatch({
         type: 'city/updateState',
         payload: {
           modalType: 'add',
-          activeKey: '0',
           currentItem: {},
-          disable: '',
         },
       })
     },

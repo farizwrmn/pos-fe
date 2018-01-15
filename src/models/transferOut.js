@@ -1,10 +1,12 @@
 import modelExtend from 'dva-model-extend'
-import { query, add } from '../services/transferStockOut'
+import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { query as queryStore } from '../services/store'
 import {
   query as querySequence,
   increase as increaseSequence,
 } from '../services/sequence'
+import moment from 'moment'
+import config from 'config'
 import { pageModel } from './common'
 import { message } from 'antd'
 import { lstorage } from 'utils'
@@ -12,6 +14,8 @@ import { lstorage } from 'utils'
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
+const { prefix } = config
+const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 const error = (err) => {
   message.error(err.message)
@@ -31,6 +35,12 @@ export default modelExtend(pageModel, {
     display: 'none',
     activeKey: '0',
     disable: '',
+    period: moment(infoStore.startPeriod).format('YYYY-MM'),
+    filter: null,
+    sort: null,
+    listProducts: [],
+    listTransOut: [],
+    showPrintModal: false,
     pagination: {
       // showSizeChanger: true,
       // showQuickJumper: true,
@@ -145,14 +155,51 @@ export default modelExtend(pageModel, {
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
     },
+
+    * queryTransferOut ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTransferOut, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessListTransferOut',
+          payload: {
+            listTransferOut: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total,
+            },
+          },
+        })
+      }
+    },
+
+    * queryProducts ({ payload = {} }, { call, put }) {
+      const data = yield call(queryDetail, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessProducts',
+          payload: data.mutasi,
+        })
+      }
+    },
+
+    * queryByTrans ({ payload = {} }, { call, put }) {
+      const data = yield call(queryByTrans, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: data.mutasi,
+        })
+      }
+    },
   },
 
   reducers: {
 
-    querySuccessTransferOut(state, action) {
+    querySuccessTransferOut (state, action) {
       const {
         listSuppliers,
-        pagination
+        pagination,
       } = action.payload
       return {
         ...state,
@@ -163,13 +210,33 @@ export default modelExtend(pageModel, {
         }
       }
     },
-    updateState(state, { payload }) {
+    querySuccessListTransferOut (state, action) {
+      const {
+        listTransferOut,
+        pagination,
+      } = action.payload
+      return {
+        ...state,
+        listTransferOut,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
+    },
+    querySuccessProducts (state, action) {
+      return { ...state, listProducts: action.payload }
+    },
+    querySuccessTrans (state, action) {
+      return { ...state, listTransOut: action.payload }
+    },
+    updateState (state, { payload }) {
       return {
         ...state,
         ...payload,
       }
     },
-    resetState(state) {
+    resetState (state) {
       const defaultState = {
         listTrans: [],
         listItem: [],
@@ -195,6 +262,21 @@ export default modelExtend(pageModel, {
         ...state,
         ...defaultState
       }
-    }
+    },
+    onSearch (state, action) {
+      const { data, search } = action.payload
+      const reg = new RegExp(search, 'gi')
+      let transNo
+      transNo = data.map((record) => {
+        const match = record.transNo.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record,
+        }
+      }).filter(record => !!record)
+      return { ...state, listTransferOut: transNo }
+    },
   },
 })

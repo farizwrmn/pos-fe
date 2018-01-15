@@ -1,13 +1,18 @@
 import React from 'react'
 import PropTypes, { array } from 'prop-types'
-import { Modal } from 'antd'
+import { Modal, Tabs } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import moment from 'moment'
 import Form from './Form'
 import ModalItem from './Modal'
+import ListTransfer from './ListTransferOut'
+import FilterTransfer from './FilterTransferOut'
+
+const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading, misc }) => {
-  const { listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, searchVisible, pagination, disable } = transferOut
+  const { listTransferOut, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, searchVisible, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { modalProductVisible, listProduct } = pos
   const { list } = employee
   let listEmployee = list
@@ -293,7 +298,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       // if (!checkQuantity) {
       //   return
       // } else {
-      //   listItem[item.no - 1] = item        
+      //   listItem[item.no - 1] = item
       // }
       // dispatch({
       //   type: 'transferOut/updateState',
@@ -381,10 +386,119 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     },
   }
 
+  const listTransferProps = {
+    dataSource: listTransferOut,
+    listTransferOut,
+    listProducts,
+    listTransOut,
+    loading: loading.effects['transferOut/queryTransferOut'],
+    location,
+    filter,
+    sort,
+    storeInfo,
+    showPrintModal,
+    user,
+    updateFilter (filters, sorts) {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          filter: filters,
+          sort: sorts,
+        },
+      })
+    },
+    getProducts (transNo) {
+      dispatch({
+        type: 'transferOut/queryProducts',
+        payload: {
+          transNo,
+        },
+      })
+    },
+    getTrans (transNo) {
+      dispatch({
+        type: 'transferOut/queryByTrans',
+        payload: {
+          transNo,
+        },
+      })
+    },
+    onShowPrint () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          showPrintModal: true,
+        },
+      })
+    },
+    onClosePrint () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          showPrintModal: false,
+        },
+      })
+    },
+  }
+
+  const filterTransferProps = {
+    period,
+    filter: {
+      ...location.query,
+    },
+    filterChange (date) {
+      dispatch({
+        type: 'transferOut/queryTransferOut',
+        payload: {
+          start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+        },
+      })
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          period: date,
+        },
+      })
+    },
+    filterTransNo (date, no) {
+      dispatch({
+        type: 'transferOut/queryTransferOut',
+        payload: {
+          start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+          transNo: no,
+        },
+      })
+    },
+  }
+
+  let activeTabKey = '0'
+  const changeTab = (key) => {
+    activeTabKey = key
+    if (activeTabKey === '1') {
+      dispatch({
+        type: 'transferOut/queryTransferOut',
+        payload: {
+          start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+        },
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
-      <Form {...formProps} />
-      {modalVisible && <ModalItem {...formEditProps}/>}
+      <Tabs defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
+        <TabPane tab="Add" key="0">
+          <Form {...formProps} />
+          {modalVisible && <ModalItem {...formEditProps} />}
+        </TabPane>
+        <TabPane tab="Archieve" key="1">
+          <FilterTransfer {...filterTransferProps} />
+          <ListTransfer {...listTransferProps} />
+        </TabPane>
+      </Tabs>
     </div>
   )
 }

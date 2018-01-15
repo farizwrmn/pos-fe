@@ -33,7 +33,6 @@ const ChangeTotp = ({
         ...getFieldsValue(),
       }
       data =  {totp: totp.key}
-      console.log('zzaas' ,user)
       onSaveTotpButton(user.userid, {totp: totpChecked? totp.key : null})
     })
   }

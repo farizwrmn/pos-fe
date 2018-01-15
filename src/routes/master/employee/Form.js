@@ -65,7 +65,6 @@ const formEmployee = ({
   sequence,
   onSubmit,
   disabled,
-  resetItem,
   activeKey,
   button,
   changeTab,
@@ -88,13 +87,13 @@ const formEmployee = ({
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
-    resetItem()
     resetFields()
   }
 
   const change = (key) => {
     handleReset()
     changeTab(key)
+    handleReset()
   }
 
   const jobPosition = () => {
@@ -304,7 +303,6 @@ formEmployee.propTypes = {
   disabled: PropTypes.bool,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
-  resetItem: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,

@@ -126,14 +126,14 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-
     * lovForUser ({ payload }, { call, put }) {
       const data = yield call(queryField, { fields: 'employeeId,employeeName,email,positionName', for: 'user' })
+
       if ( data.success ) {
         const employees = data.data
         const totalData = data.data.length
         yield put({
-          type: 'changeTab',
+          type: 'querySuccessEmployee',
           payload: {
             listLovEmployee: employees,
             pagination: {
@@ -149,6 +149,16 @@ export default modelExtend(pageModel, {
 
   reducers: {
 
+    querySuccessEmployee (state, action) {
+      const { list, listLovEmployee, pagination } = action.payload
+      return { ...state,
+        listEmployee: list,
+        listLovEmployee,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        } }
+    },
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
     },
