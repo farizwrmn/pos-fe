@@ -28,10 +28,12 @@ export async function queryLastCode () {
 
 export async function queryLastActive () {
   const apiHeaderToken = crypt.apiheader()
+  const params = { storeId: lstorage.getCurrentUserStore() }
   const url = `${period}/code/last/active`
   return request({
     url: url,
     method: 'get',
+    data: params,
     headers: apiHeaderToken,
   })
 }

@@ -369,7 +369,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
             <Table
               rowKey={(record, key) => key}
               bordered
-              scroll={{ x: 1500 }}
+              scroll={{ x: 1000 }}
               columns={[
                 {
                   title: 'No',

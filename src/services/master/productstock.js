@@ -1,4 +1,4 @@
-import { request, config, crypt } from '../../utils'
+import { request, config, crypt, lstorage } from '../../utils'
 
 const { stock, fiforeport } = config.api
 
@@ -14,6 +14,7 @@ export async function query (params) {
 
 export async function queryPOSstock (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${fiforeport}/balance`,
     method: 'get',

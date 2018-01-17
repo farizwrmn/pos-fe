@@ -60,7 +60,7 @@ export default {
     setup({ dispatch, history }) {
       history.listen(location => {
         if (location.pathname === '/transaction/pos/payment') {
-          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: 1} }) // type diganti storeId
+          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore()} }) // type diganti storeId
         }
       })
     },
@@ -127,6 +127,7 @@ export default {
         const detailPOS = {
           dataPos: arrayProd,
           transNo: trans,
+          storeId: lstorage.getCurrentUserStore(),
           memberCode: payload.memberCode,
           technicianId: payload.technicianId,
           cashierNo: payload.curCashierNo,

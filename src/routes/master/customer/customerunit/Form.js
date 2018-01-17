@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse } from 'antd'
 import List from './List'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
-import BrowseButtom from './BrowseButton'
+import BrowseButton from './BrowseButton'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -172,7 +172,7 @@ const formCustomerType = ({
         <Form layout="horizontal">
           <Row>
             <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><BrowseButtom {...modalProps} />
+              <FormItem label="Member Code" hasFeedback {...formItemLayout}><BrowseButton {...modalProps} />
               </FormItem>
               <FormItem label="Police No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('policeNo', {
@@ -180,11 +180,11 @@ const formCustomerType = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_\-]{3,50}$/i,
-                      message: 'a-z & 0-9',
+                      pattern: /^[A-Z0-9]{1,10}\S+$/,
+                      message: 'A-Z & 0-9',
                     },
                   ],
-                })(<Input disabled={disabled} />)}
+                })(<Input disabled={disabled} maxLength={10} />)}
               </FormItem>
               <FormItem label="Merk" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('merk', {
@@ -211,7 +211,7 @@ const formCustomerType = ({
                   initialValue: item.type,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -221,19 +221,19 @@ const formCustomerType = ({
                   initialValue: item.year,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[12][0-9]{3}$/,
                       message: 'year is not valid',
                     },
                   ],
-                })(<Input />)}
+                })(<InputNumber maxLength={4} max={moment().format('YYYY')} />)}
               </FormItem>
               <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('chassisNo', {
                   initialValue: item.chassisNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -243,7 +243,7 @@ const formCustomerType = ({
                   initialValue: item.machineNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                     },
                   ],
                 })(<Input />)}
@@ -263,7 +263,7 @@ const formCustomerType = ({
         </Form>
       </TabPane>
       <TabPane tab="Browse" key="1" >
-        <BrowseButtom {...modalProps} />
+        <BrowseButton {...modalProps} />
         <List {...listProps} />
       </TabPane>
     </Tabs>

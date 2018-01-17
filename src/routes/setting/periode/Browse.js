@@ -10,25 +10,22 @@ import moment from 'moment'
 const confirm = Modal.confirm
 
 const Browse = ({
-  onEndPeriod, onStartPeriod,
+  onEndPeriod, onStartPeriod, accountActive,
   ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
+      console.log('record', record)
       onEndPeriod(record)
-    } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete this record [ ${record.miscCode} - ${record.miscName} ] ?`,
-        onOk () {
-          // onDeleteItem(record.miscCode, record.miscName)
-        },
-      })
     }
   }
   const handleStartPeriod = () => {
     onStartPeriod()
   }
   const handleEndPeriod = () => {
-    onEndPeriod()
+    const data = {
+      transNo: accountActive.accountActive
+    }
+    onEndPeriod(data)
   }
   const columns = [
     {
@@ -102,7 +99,7 @@ const Browse = ({
       render: (text, record) => {
         return <DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[
-            { key: '1', name: 'Edit', icon: 'edit' },
+            { key: '1', name: 'End Period', icon: 'edit' },
           ]}
         />
       },
@@ -116,11 +113,11 @@ const Browse = ({
             {/*Start Period*/}
           {/*</Button>*/}
         {/*</Col>*/}
-        <Col span={4}>
+        {/* <Col span={4}>
           <Button onClick={() => handleEndPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
             End Period
           </Button>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
         <Col>

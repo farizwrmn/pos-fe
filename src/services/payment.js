@@ -48,8 +48,6 @@ export async function queryDetail (params) {
 
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()  
-  const storeId = lstorage.getCurrentUserStore()  
-  params.storeId = storeId
   const url = pos + '/code/' + encodeURIComponent(params.transNo)
   return request({
     url: url,

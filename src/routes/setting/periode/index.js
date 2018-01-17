@@ -69,6 +69,7 @@ const Period = ({ location, dispatch, period, loading, app }) => {
     size: 'small',
     loading: loading.effects['period/queryPeriod'],
     pagination,
+    accountActive,
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -92,11 +93,14 @@ const Period = ({ location, dispatch, period, loading, app }) => {
         },
       })
     },
-    onEndPeriod () {
+    onEndPeriod (data) {
       dispatch({
         type: 'period/modalCloseShow',
         payload: {
           modalType: 'end',
+          accountActive : {
+            accountActive: data.transNo
+          }
         },
       })
     },
