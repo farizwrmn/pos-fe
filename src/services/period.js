@@ -62,7 +62,6 @@ export async function create (params) {
 
 export async function update (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.data.storeId = lstorage.getCurrentUserStore()
   const url = `${period}/${encodeURIComponent(params.id)}`
   return request({
     url: url,

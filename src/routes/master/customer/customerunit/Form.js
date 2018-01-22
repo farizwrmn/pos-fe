@@ -106,7 +106,7 @@ const formCustomerType = ({
         chassisNo: getFieldsValue().chassisNo,
         machineNo: getFieldsValue().machineNo,
       }
-      console.log('Submit')
+      console.log('Submit', data)
       onSubmit(data)
       handleReset()
     })

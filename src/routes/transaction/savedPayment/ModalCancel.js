@@ -45,7 +45,9 @@ const modal = ({
           {getFieldDecorator('memo', {
             rules: [
               {
-                required: false,
+                required: true,
+                pattern: /^[a-z0-9\/ _-]{20,100}$/i,
+                message: 'At least 20 character'
               },
             ],
           })(<Input />)}

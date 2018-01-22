@@ -55,7 +55,7 @@ const Browse = ({ ...browseProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
+        // rowKey={record => record.productCode}
       />
     </div>
   )

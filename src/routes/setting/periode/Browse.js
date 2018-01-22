@@ -14,7 +14,6 @@ const Browse = ({
   ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
-      console.log('record', record)
       onEndPeriod(record)
     }
   }

@@ -38,6 +38,7 @@ const modal = ({
       }
       if (now >= endPeriod) {
         data.endPeriod = endPeriod
+        data.storeId = accountActive.storeId
         onOk(data)
       } else {
         data.endPeriod = endPeriod

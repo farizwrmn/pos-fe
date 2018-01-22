@@ -291,8 +291,8 @@ export default {
 
     * queryPosDetail({ payload }, { call, put }) {
       const data = yield call(queryDetail, payload)
-      const PosData = yield call(queryaPos, payload.id)
-      const member = yield call(queryMemberCode, payload)
+      const PosData = yield call(queryaPos, payload)
+      const member = yield call(queryMemberCode, { memberCode: payload.data.memberCode })
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const mechanic = yield call(queryMechanicCode, payload.data.technicianId)
       if (data) {
