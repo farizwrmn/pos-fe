@@ -2,6 +2,7 @@ import { request, config, crypt, lstorage } from '../utils'
 const { purchase, purchaseDetail } = config.api
 
 export async function query (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: purchase,

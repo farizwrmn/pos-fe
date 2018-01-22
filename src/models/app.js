@@ -134,36 +134,36 @@ export default {
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
         storeInfo.stackHeader01 = [
           {
-            text: name,
+            text: (name || ''),
             fontSize: 11,
             alignment: 'left',
           },
           {
-            text: storeInfoData.data[0].address01,
+            text: (storeInfoData.data[0].address01 || ''),
             fontSize: 11,
             alignment: 'left',
           },
           {
-            text: storeInfoData.data[0].mobileNumber + '/' + storeInfoData.data[0].address02,
+            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
             fontSize: 11,
             alignment: 'left',
           },
         ]
         storeInfo.stackHeader02 = [
           {
-            text: name,
+            text: (name || ''),
             style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
-            text: storeInfoData.data[0].address01,
+            text: (storeInfoData.data[0].address01 || ''),
             style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
-            text: storeInfoData.data[0].mobileNumber + '/' + storeInfoData.data[0].address02,
+            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
             style: 'header',
             fontSize: 11,
             alignment: 'left'
