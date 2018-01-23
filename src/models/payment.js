@@ -12,7 +12,7 @@ import { query as querySequence, increase as increaseSequence } from '../service
 import { lstorage } from 'utils'
 const { prefix } = config
 const terbilang = require('terbilang-spelling')
-
+const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
@@ -511,32 +511,7 @@ export default {
               {
                 columns: [
                   {
-                    stack: [
-                      {
-                        text: payload.company.name,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: payload.company.address01,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: payload.company.address02,
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                      {
-                        text: ' ',
-                        style: 'header',
-                        fontSize: 11,
-                        alignment: 'left'
-                      },
-                    ],
+                    stack: storeInfo
                   },
                   {
                     text: 'NOTA PENJUALAN',

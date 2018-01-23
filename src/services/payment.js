@@ -28,10 +28,11 @@ export async function query (params) {
 
 export async function queryPos (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = pos + '/' + 'code' + '/' + encodeURIComponent(params)
+  const url = pos + '/' + 'code' + '/' + encodeURIComponent(params.id)
   return request({
     url: url,
     method: 'get',
+    data: params.data,
     headers: apiHeaderToken
   })
 }

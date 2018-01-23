@@ -8,6 +8,7 @@ import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
+import { query1store as queryStore } from '../services/store'
 import { queryLastActive } from '../services/period'
 import { lstorage } from 'utils'
 
@@ -125,28 +126,55 @@ export default {
         const period = yield call(queryLastActive)
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
+        const storeCode = lstorage.getCurrentUserStoreCode()
+        const storeInfoData = yield call(queryStore, { code: storeCode })
         const misc = yield call(miscQuery, { code: 'company'})
         let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
         storeInfo.stackHeader01 = [
           {
-            text: name,
+            text: (name || ''),
             fontSize: 11,
             alignment: 'left',
           },
           {
-            text: address01,
+            text: (storeInfoData.data[0].address01 || ''),
             fontSize: 11,
             alignment: 'left',
           },
           {
-            text: address02,
+            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
             fontSize: 11,
             alignment: 'left',
           },
         ]
-
+        storeInfo.stackHeader02 = [
+          {
+            text: (name || ''),
+            style: 'header',
+            fontSize: 11,
+            alignment: 'left'
+          },
+          {
+            text: (storeInfoData.data[0].address01 || ''),
+            style: 'header',
+            fontSize: 11,
+            alignment: 'left'
+          },
+          {
+            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
+            style: 'header',
+            fontSize: 11,
+            alignment: 'left'
+          },
+          {
+            text: ' ',
+            style: 'header',
+            fontSize: 11,
+            alignment: 'left'
+          },
+        ]
         if (storeInfo !== []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {

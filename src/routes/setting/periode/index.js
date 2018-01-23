@@ -40,7 +40,7 @@ const Period = ({ location, dispatch, period, loading, app }) => {
       })
     },
   }
-
+  
   const modalEndProps = {
     visible: modalEndVisible,
     user,
@@ -98,9 +98,11 @@ const Period = ({ location, dispatch, period, loading, app }) => {
         type: 'period/modalCloseShow',
         payload: {
           modalType: 'end',
-          accountActive : {
-            accountActive: data.transNo
-          }
+          accountActive: {
+            accountActive: data.transNo,
+            startPeriod: data.startPeriod,
+            storeId: data.storeId,
+          },
         },
       })
     },

@@ -99,6 +99,22 @@ const getCurrentUserStoreName = () => {
   }
   return currentStoreName
 }
+// current StoreCode 22/01/2017
+const getCurrentUserStoreCode = () => {
+  function valueStoreName(store) {
+    if (store.value === this[0]) {
+      return store;
+    }
+  }
+  const listUserStores = getListUserStores()
+  const currentStore = getCurrentUserStore()
+  let currentStoreName = ''
+  if (listUserStores) {
+    currentStoreName = listUserStores.find(valueStoreName, [currentStore])
+    currentStoreName = currentStoreName ? currentStoreName.code : '>> No Store <<'
+  }
+  return currentStoreName
+}
 
 module.exports = {
   putStorageKey,
@@ -113,4 +129,5 @@ module.exports = {
   getListUserStores,
   getCurrentUserStore,
   getCurrentUserStoreName,
+  getCurrentUserStoreCode,
 }

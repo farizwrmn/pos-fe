@@ -60,7 +60,7 @@ export default modelExtend(pageModel, {
     * querySequenceEmployee({ payload = {} }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: 1
+        type: lstorage.getCurrentUserStore()
       }
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
