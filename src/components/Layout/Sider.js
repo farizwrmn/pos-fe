@@ -68,7 +68,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
               <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff}/></span>
               <span>{companyName}</span>
               <span>
-                <Tooltip placement="right" title="click to switch store">
+                <Tooltip placement="right" title={`click to switch current store: \n ${defaultStoreName}`}  >
                   <Cascader style={{ width: '100%' }}
                             options={listUserStores}
                             onChange={handleChangeStore}

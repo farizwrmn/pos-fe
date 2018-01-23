@@ -7,7 +7,7 @@ import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
 import ChangeTotp from './ChangeTotp'
-import { lstorage } from 'utils'
+import { classnames } from 'utils'
 
 const SubMenu = Menu.SubMenu
 
@@ -23,9 +23,6 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     e.key === 'password' && handleChangePwShow()
     e.key === 'totp' && handleChangeTotpShow(user.userid)
   }
-
-  // user store
-  const defaultStoreName = lstorage.getCurrentUserStoreName()
 
   // menu prop
   const menusProps = {
@@ -83,7 +80,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   }
 
   return (
-    <div className={styles.header}>
+    <div className={classnames(styles.header,styles.store1)}>
       {isNavbar
         ? <Popover placement="bottomLeft" onVisibleChange={switchMenuPopover}
                    visible={menuPopoverVisible} overlayClassName={styles.popovermenu}
@@ -94,31 +91,33 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
         </Popover>
         : <div className={styles.leftWrapper}>
           <HeaderMenu prompt="toggle menu" icon={siderFold ? 'menu-unfold' : 'menu-fold'} onClick={switchSider} />
-          {siderFold ? <span>{defaultStoreName}</span> : ''}
         </div>
       }
 
       <div className={styles.rightWarpper}>
-        <HeaderMenu prompt="home" clickRoute="/dashboard" />
-        <HeaderMenu prompt="setting" />
-        <HeaderMenu prompt="calculator" />
-        <HeaderMenu prompt="calendar" popContent={<Calendar fullscreen={false} />} />
-        <HeaderMenu prompt="change theme" icon="bulb"
-                    popContent={
-                      <Switch onChange={changeTheme} defaultChecked={darkTheme}
-                              checkedChildren={<Icon type="bulb" />}
-                              unCheckedChildren={<Icon type="eye" style={{ color: '#000' }} />}
-                              />
-                    }
-        />
-        <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
-        <HeaderMenu prompt="notification" icon="bell" />
-        <HeaderMenu separator={true} />
-        <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
-        <HeaderMenu prompt="profit" icon="like-o" />
-        <HeaderMenu prompt="alert quantity" icon="exclamation-circle-o" addClass="alert" />
-        <HeaderMenu separator={true} />
-
+        { !isNavbar &&
+          <div style={{ display: 'inherit'}}>
+            <HeaderMenu prompt="home" clickRoute="/dashboard" />
+            <HeaderMenu prompt="setting" />
+            <HeaderMenu prompt="calculator" />
+            <HeaderMenu prompt="calendar" popContent={<Calendar fullscreen={false} />} />
+            <HeaderMenu prompt="change theme" icon="bulb"
+                        popContent={
+                          <Switch onChange={changeTheme} defaultChecked={darkTheme}
+                                  checkedChildren={<Icon type="bulb" />}
+                                  unCheckedChildren={<Icon type="eye" style={{ color: '#000' }} />}
+                                  />
+                        }
+            />
+            <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
+            <HeaderMenu prompt="notification" icon="bell" />
+            <HeaderMenu separator={true} />
+            <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
+            <HeaderMenu prompt="profit" icon="like-o" />
+            <HeaderMenu prompt="alert quantity" icon="exclamation-circle-o" addClass="alert" />
+            <HeaderMenu separator={true} />
+          </div>
+        }
         {visibleItem.shortcutKey && <ShortcutKey {...shortcutProps} />}
         {visibleItem.changePw && <ChangePw  {...changePwProps} />}
         {visibleItem.changeTotp && <ChangeTotp  {...changeTotpProps} />}

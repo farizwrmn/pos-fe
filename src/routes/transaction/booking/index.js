@@ -84,7 +84,7 @@ const Booking = ({ booking, dispatch }) => {
           { (list[key].bookingId === focusBookingId) && <span style={{paddingRight: '2px'}}><Icon type="check" /></span>}
           <Select placeholder="Update Status" style={{ width: 120 }} onChange={handleChange} >
             <Option value={`OP#`+list[key].bookingId}><Badge dot text="Open"
-                                      style={{backgroundColor: color.purple,
+                                      style={{backgroundColor: color.wisteria,
                                         position: 'relative', display: 'inline-block',
                                         top: 0, transform: 'none'
                                       }}/>

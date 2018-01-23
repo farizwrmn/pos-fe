@@ -8,7 +8,7 @@ import { queryModeName as miscQuery } from '../services/misc'
 import { queryFifo } from '../services/report/fifo'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { lstorage } from 'utils'
-import { invalid } from 'antd/node_modules/moment';
+
 
 export default {
   namespace: 'period',

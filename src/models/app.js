@@ -122,7 +122,7 @@ export default {
           alert('Browser cannot find IP address')
         }
 
-        const period = yield call(queryLastActive)        
+        const period = yield call(queryLastActive)
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
         const misc = yield call(miscQuery, { code: 'company'})
