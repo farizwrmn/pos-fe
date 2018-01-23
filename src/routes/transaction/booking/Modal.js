@@ -106,7 +106,7 @@ const modal = ({
               initialValue: 'OP',
             })(<Select placeholder="Choose Status" defaultValue="OP" style={{ width: 120 }} >
               <Option value="OP"><Badge dot text="Open"
-                                        style={{backgroundColor: color.purple,
+                                        style={{backgroundColor: color.wisteria,
                                           position: 'relative', display: 'inline-block',
                                           top: 0, transform: 'none'
                                         }}/>
@@ -129,7 +129,7 @@ const modal = ({
                     onPanelChange={onPanelChange} />
           <span style={{float: 'right'}}>
             <span style={{paddingRight: '8px'}}><Badge dot
-                   style={{backgroundColor: color.purple,
+                   style={{backgroundColor: color.wisteria,
                      position: 'relative', display: 'inline-block',
                      top: '-1px', transform: 'none'
                    }}/></span>
@@ -144,7 +144,7 @@ const modal = ({
             <Badge status="error"/>
             <br />
             <Badge dot text="Open"
-                   style={{backgroundColor: color.purple,
+                   style={{backgroundColor: color.wisteria,
                      position: 'relative', display: 'inline-block',
                      top: 0, transform: 'none'
                    }}/>

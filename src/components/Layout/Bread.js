@@ -4,9 +4,12 @@ import { Breadcrumb, Icon } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 import pathToRegexp from 'path-to-regexp'
-import { queryArray } from 'utils'
+import { queryArray, lstorage } from 'utils'
 
 const Bread = ({ menu }) => {
+  // user store
+  const currentStoreName = lstorage.getCurrentUserStoreName()
+
   // 匹配当前路由
   let pathArray = []
   let current
@@ -59,6 +62,7 @@ const Bread = ({ menu }) => {
   return (
     <div className={styles.bread}>
       <Breadcrumb>
+        <div className={styles.currentStore}>{currentStoreName}</div>
         {breads}
       </Breadcrumb>
     </div>

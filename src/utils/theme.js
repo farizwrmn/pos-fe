@@ -2,7 +2,7 @@ module.exports = {
   color: {
     green: '#64ea91',
     blue: '#8fc9fb',
-    purple: '#d897eb',
+    wisteria: '#d897eb',
     red: '#f69899',
     yellow: '#f8c82e',
     peach: '#f797d6',

@@ -6,7 +6,7 @@ import { Link } from 'dva/router'
 
 const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent }) => {
   const content = (
-    <div style={{ maxWidth: 290, border: '0px', borderRadius: 4 }}>
+    <div classNames={styles.menuContent}>
       {popContent}
     </div>
   )

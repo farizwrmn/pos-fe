@@ -6,7 +6,7 @@ const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.01.001',
+  version: '2018.01.003',
   prefix: 'dmiPos',
   footerText: 'Pos © 2017-2018 Darkotech Mandiri Indonesia',
   logo: '/logo.png',
