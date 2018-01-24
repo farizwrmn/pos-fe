@@ -1,12 +1,12 @@
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIHOST = 'localhost'
+const APIHOST = '192.168.88.191'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.01.003',
+  version: '2018.01.005',
   prefix: 'dmiPos',
   footerText: 'Pos © 2017-2018 Darkotech Mandiri Indonesia',
   logo: '/logo.png',

@@ -8,7 +8,7 @@ const confirm = Modal.confirm
 
 const ListItem = ({ ...tableProps, onModalVisible, editItem, deleteItem }) => {
   const handleMenuClick = (record) => {
-    onModalVisible(record)
+    // onModalVisible(record)
   }
 
   const columns = [

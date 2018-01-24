@@ -1,8 +1,9 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 const { transfer } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeIdReceiver = lstorage.getCurrentUserStore()
   return request({
     url: transfer + '/out',
     method: 'get',
@@ -45,6 +46,7 @@ export async function add (params) {
 
 export async function queryTransferOut (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()  
   return request({
     url: params ? `${transfer}/out` : transfer,
     method: 'get',
