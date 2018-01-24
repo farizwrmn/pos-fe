@@ -489,7 +489,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
 
   return (
     <div className="content-inner">
-      <Tabs defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
+      <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
         <TabPane tab="Add" key="0">
           <Form {...formProps} />
           {modalVisible && <ModalItem {...formEditProps} />}
