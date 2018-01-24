@@ -39,10 +39,12 @@ export async function queryPos (params) {
 
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   const url = `${posdetail}/${encodeURIComponent(params.id)}`
   return request({
     url: url,
     method: 'get',
+    data: params,
     headers: apiHeaderToken,
   })
 }
