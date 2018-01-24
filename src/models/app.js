@@ -127,7 +127,8 @@ export default {
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
         const storeCode = lstorage.getCurrentUserStoreCode()
-        const storeInfoData = yield call(queryStore, { code: storeCode })
+        // const storeInfoData = yield call(queryStore, { code: storeCode })
+        const storeInfoData = lstorage.getCurrentUserStoreDetail()
         const misc = yield call(miscQuery, { code: 'company'})
         let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
@@ -139,12 +140,12 @@ export default {
             alignment: 'left',
           },
           {
-            text: (storeInfoData.data[0].address01 || ''),
+            text: (storeInfoData.address01 || ''),
             fontSize: 11,
             alignment: 'left',
           },
           {
-            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
+            text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || ''),
             fontSize: 11,
             alignment: 'left',
           },
@@ -157,13 +158,13 @@ export default {
             alignment: 'left'
           },
           {
-            text: (storeInfoData.data[0].address01 || ''),
+            text: (storeInfoData.address01 || ''),
             style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
-            text: (storeInfoData.data[0].mobileNumber || '') + '/' + (storeInfoData.data[0].address02 || ''),
+            text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || ''),
             style: 'header',
             fontSize: 11,
             alignment: 'left'
