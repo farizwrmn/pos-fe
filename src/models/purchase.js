@@ -139,7 +139,7 @@ export default modelExtend(pageModel, {
         const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
         const x = dataProduct
         for (let key in x) {
-          x[key].dpp = ((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice !== 0 ? totalPrice : 1)) * (data.discInvoiceNominal))
+          x[key].dpp = ((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice !== 0 ? totalPrice : 1)) * (data.discInvoiceNominal))
           x[key].ppn = (ppnType === 'I' ? (x[key].dpp * 0.1) : 0)
           x[key].total = x[key].dpp + x[key].ppn
         }
