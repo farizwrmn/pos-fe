@@ -327,6 +327,7 @@ const Routers = function ({ history, app }) {
           getComponent(nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/transferIn'))
+              registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/in'))
             }, 'setting-misc')
           },

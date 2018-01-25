@@ -27,6 +27,9 @@ const modal = ({
   item,
   sequenceNumber,
   listTransDetail,
+  listEmployee,
+  getEmployee,
+  hideEmployee,
   onOk,
   form: {
     getFieldDecorator,
@@ -36,6 +39,8 @@ const modal = ({
   },
   ...modalAcceptProps,
 }) => {
+  const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
+
   const handleReset = () => {
     resetFields()
     resetItem()
@@ -120,16 +125,15 @@ const modal = ({
                 ],
               })(<Input disabled />)}
             </FormItem>
-            <FormItem label="PIC" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('employeeName', {
-                initialValue: item.employeeName,
-                valuePropName: 'value',                
+            <FormItem label="Received By" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('employeeId', {
+                valuePropName: 'value',
                 rules: [
                   {
                     required: true,
                   },
                 ],
-              })(<Input disabled />)}
+              })(<Select labelInValue={true} onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
             </FormItem>
           </Col>
           <Col lg={12} md={24}>

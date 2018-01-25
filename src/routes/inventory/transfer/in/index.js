@@ -10,8 +10,10 @@ import Modal from './Modal'
 import ModalAccept from './ModalAccept'
 moment.locale('id')
 
-const Transfer = ({ transferIn, dispatch }) => {
+const Transfer = ({ transferIn, employee, dispatch }) => {
   const { listTrans, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber } = transferIn
+  const { list } = employee
+  let listEmployee = list
   const filterProps = {
     listTrans,
     resetModal () {
@@ -72,6 +74,10 @@ const Transfer = ({ transferIn, dispatch }) => {
   
   const clickedItem = (e) => {
     const { value } = e.target
+    // dispatch({
+    //   type: 'employee/query',
+    //   payload: {}
+    // })
     dispatch({
       type: 'transferIn/queryOutDetail',
       payload: {
@@ -121,6 +127,7 @@ const Transfer = ({ transferIn, dispatch }) => {
   const modalAcceptProps = {
     item: transHeader,
     listTransDetail,
+    listEmployee,
     sequenceNumber,
     width: '700px',
     visible: modalAcceptVisible,
@@ -144,13 +151,26 @@ const Transfer = ({ transferIn, dispatch }) => {
           transHeader: {}
         }
       })
-    }
+    },
+    getEmployee() {
+      dispatch({
+        type: 'employee/query',
+        payload: {}
+      })
+    },
+    hideEmployee() {
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          listEmployee: {}
+        }
+      })
+    },
   }
-
   return (
     <div className="content-inner">
       <Row>
-      <Filter {...filterProps} />
+        <Filter {...filterProps} />
       </Row>
       {modalVisible && <Modal {...modalProps} />}
       {modalAcceptVisible && <ModalAccept {...modalAcceptProps} />}
@@ -162,7 +182,8 @@ const Transfer = ({ transferIn, dispatch }) => {
 Transfer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   transferIn: PropTypes.object,
+  employee: PropTypes.object,
 }
 
-export default connect(({ transferIn }) => ({ transferIn }))(Transfer)
+export default connect(({ transferIn, employee }) => ({ transferIn, employee }))(Transfer)
 
