@@ -23,6 +23,7 @@ export default modelExtend(pageModel, {
     listCustomer: [],
     show: 1,
     modalVisible: false,
+    newItem: false,
   },
 
   subscriptions: {
@@ -88,6 +89,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -100,6 +102,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -120,10 +123,6 @@ export default modelExtend(pageModel, {
           ...pagination,
         },
       }
-    },
-
-    showModal (state, action) {
-      return { ...state, ...action.payload, modalVisible: true }
     },
 
     switchIsChecked (state, { payload }) {

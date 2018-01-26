@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     disable: '',
     listServiceType: [],
     show: 1,
+    newItem: false,
   },
 
   subscriptions: {
@@ -29,6 +30,13 @@ export default modelExtend(pageModel, {
         //   const payload = location.query
           dispatch({
             type: 'queryServiceType',
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
           })
         }
       })
@@ -82,6 +90,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -94,6 +103,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Menu, Icon, Dropdown } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Menu, Icon, Dropdown, message, Modal } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -97,8 +97,17 @@ const formProductBrand = ({
       const data = {
         ...getFieldsValue(),
       }
-      onSubmit(data.brandCode, data)
-      handleReset()
+      if (data.brandCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.brandCode, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Product Brand Code can't be null")
+      }
     })
   }
 
@@ -120,7 +129,7 @@ const formProductBrand = ({
   </Dropdown> </div>)
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

@@ -107,7 +107,7 @@ const formCustomerType = ({
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(other)
+            onSubmit(data)
           },
           onCancel () {},
         })

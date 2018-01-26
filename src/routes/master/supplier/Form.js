@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Menu, Icon } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Menu, Icon, message, Modal } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -108,8 +108,17 @@ const formSupplier = ({
       const data = {
         ...getFieldsValue(),
       }
-      onSubmit(data.supplierCode, data)
-      handleReset()
+      if (data.supplierCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.supplierCode, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Supplier Code can't be null")
+      }
     })
   }
 
@@ -133,7 +142,7 @@ const formSupplier = ({
   const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

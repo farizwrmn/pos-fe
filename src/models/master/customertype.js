@@ -23,6 +23,7 @@ export default modelExtend(pageModel, {
     listType: [],
     listSellprice: [],
     show: 1,
+    newItem: false,
   },
 
   subscriptions: {
@@ -32,13 +33,13 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'querySellprice',
           })
-          // const payload = location.query
-          // dispatch({
-          //   type: 'query',
-          //   payload: {
-          //     code: 'SELLPRICE',
-          //   },
-          // })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
+          })
         }
       })
     },
@@ -91,6 +92,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -103,6 +105,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }

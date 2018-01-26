@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Checkbox, Upload, Icon, Select, Menu, Dropdown } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Checkbox, Upload, Icon, Select, Menu, Dropdown, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -118,8 +118,17 @@ const formProductCategory = ({
       data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
       data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      onSubmit(data.productCode, data)
-      handleReset()
+      if (data.productCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.productCode, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Product Code can't be null")
+      }
     })
   }
 
@@ -152,7 +161,7 @@ const formProductCategory = ({
   const productBrand = listBrand.length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} >
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

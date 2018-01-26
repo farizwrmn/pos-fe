@@ -55,7 +55,7 @@ const Filter = ({ onChangePeriod, onListReset, form: { getFieldsValue, setFields
         <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
           <Button type="dashed"
             size="large"
-            className="button-width02 button-extra-large bgcolor-grey"
+            className="button-width02 button-extra-large bgcolor-lightgrey"
             onClick={() => handleReset()}
           >
             <Icon type="rollback" className="icon-large" />

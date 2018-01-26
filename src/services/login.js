@@ -1,7 +1,7 @@
 import { request, config, crypt, lstorage } from 'utils'
 
 const { api } = config
-const { userLogin, userPreLogin, userRole, userStore, userTotp } = api
+const { userLogin, userPreLogin, userRoles, userStore, userTotp } = api
 
 const lsUserId = lstorage.getStorageKey('udi')[1]
 
@@ -35,7 +35,7 @@ export async function verifyTOTP (data) {
 export async function getUserRole (params) {
   console.log('getUserRole',params,'ls',lsUserId)
   const userId = (!params.userId) ? lsUserId : params.userId
-  const url = userRole.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
+  const url = userRoles.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: url,

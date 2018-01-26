@@ -137,6 +137,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     darkTheme,
     navOpenKeys,
     changeRole (roleCode) {
+      console.log('yy4')
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     },
     switchSider () {

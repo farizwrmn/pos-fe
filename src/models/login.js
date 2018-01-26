@@ -11,7 +11,8 @@ export default {
     listUserRole: [],
     listUserStore: [],
     requiredRole: false,
-    visibleItem: { verificationCode: false}
+    visibleItem: { verificationCode: false},
+    ipAddress: ''
   },
 
   effects: {
@@ -25,12 +26,12 @@ export default {
         const from = queryURL('from')
         if ( data.id_token ) {
           localStorage.setItem(`${prefix}iKen`, data.id_token)
-          console.log('logtime',data.profile.userlogintime)
           lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
         } else {
           localStorage.removeItem(`${prefix}iKen`)
           localStorage.removeItem(`${prefix}udi`)
         }
+        console.log('yy1')
         yield put({ type: 'app/query', payload: data.profile })
         if (from) {
           yield put(routerRedux.push(from))
@@ -48,8 +49,8 @@ export default {
           if (data.profile.role) {
             const from = queryURL('from')
             localStorage.setItem(`${prefix}iKen`, data.id_token)
-            console.log('logtime',data.profile.userlogintime)
             lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
+            console.log('yy2')
             yield put({ type: 'app/query', payload: data.profile })
             if (from) {
               yield put(routerRedux.push(from))
@@ -98,8 +99,8 @@ export default {
           localStorage.setItem(`${prefix}iKen`, data.id_token)
           yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
           yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
-          console.log('logtime',data.profile.userlogintime)
           lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
+          console.log('yy3')
           yield put({ type: 'app/query', payload: data.profile })
           if (from) {
             yield put(routerRedux.push(from))

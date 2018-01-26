@@ -27,7 +27,7 @@ const Filter = ({
       </Tooltip>
       <Button type="dashed"
         size="large"
-        className="button-width02 button-extra-large bgcolor-grey"
+        className="button-width02 button-extra-large bgcolor-lightgrey"
         style={{ float: 'right' }}
         onClick={resetFilter}
       >

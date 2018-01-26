@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col, Menu, Icon, Dropdown } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Menu, Icon, Dropdown, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -99,8 +99,17 @@ const formService = ({
       const data = {
         ...getFieldsValue(),
       }
-      onSubmit(data.serviceCode, data)
-      handleReset()
+      if (data.serviceCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.serviceCode, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Service Code can't be null")
+      }
     })
   }
 
@@ -124,7 +133,7 @@ const formService = ({
   const serviceType = listServiceType.length > 0 ? listServiceType.map(service => <Option value={service.miscName} key={service.miscName}>{service.miscName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

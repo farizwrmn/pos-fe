@@ -139,7 +139,7 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
               </Button>
               <Button type="dashed"
                 size="large"
-                className="button-width02 button-extra-large bgcolor-grey"
+                className="button-width02 button-extra-large bgcolor-lightgrey"
                 onClick={() => handleReset()}
               >
                 <Icon type="rollback" className="icon-large" />

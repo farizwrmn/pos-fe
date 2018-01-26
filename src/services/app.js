@@ -1,7 +1,7 @@
 import { request, config, crypt, lstorage } from 'utils'
 
 const { api } = config
-const { user, users, userLogout, userLogin } = api
+const { user, users, userLogout, userLogin, userRole } = api
 
 export async function login (params) {
   return request({
@@ -42,12 +42,15 @@ export async function query (params) {
       return { "success": false, "message": "URL Mismatch" }
     } else {
       if (apiHeaderToken) {
+        console.log('zz1',userRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]))
+
         return request({
-          url: user.replace('/:id', '/' + url[1] + '/roles/' + url[2]),
+          url: userRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]),
           method: 'get',
           headers: apiHeaderToken,
         })
       } else {
+        console.log('zz6')
         return request({
           url: user.replace('/:id', ''),
           method: 'get',

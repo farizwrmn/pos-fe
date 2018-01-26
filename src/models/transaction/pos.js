@@ -960,7 +960,6 @@ export default {
           title: 'Information',
           content: 'Cashier closed successfull...!',
         })
-        setInterval(function () { location.reload() }, 1000)
       }
       else {
         Modal.warning({

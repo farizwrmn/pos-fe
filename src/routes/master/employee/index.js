@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
+import { NewForm } from '../../components'
 
 const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
-  const { list, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, disable, show } = employee
+  const { list, newItem, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, disable, show } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
   const { user, storeInfo } = app
-
   const filterProps = {
     display,
     isChecked,
@@ -169,10 +169,11 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
         payload: {
           modalType: 'add',
           activeKey: '0',
-          // currentItem: {},
+          currentItem: {},
           disable: '',
         },
       })
+      dispatch({ type: 'employee/querySequenceEmployee' })
     },
     showPosition () {
       dispatch({
@@ -186,9 +187,29 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     },
   }
 
+  const page = (boolean) => {
+    let currentPage
+    if (boolean) {
+      const newFormProps = {
+        onClickNew () {
+          dispatch({
+            type: 'employee/updateState',
+            payload: {
+              newItem: false,
+            },
+          })
+        },
+      }
+      currentPage = <NewForm {...newFormProps} />
+    } else {
+      currentPage = <Form {...formProps} />
+    }
+    return currentPage
+  }
+
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      {page(newItem)}
     </div>
   )
 }

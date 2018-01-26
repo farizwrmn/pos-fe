@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input, Cascader, message } from 'antd'
+import { Button, Row, Form, Input, Cascader, Icon, message, Popover } from 'antd'
 import { config } from 'utils'
 import styles from './index.less'
 import './index.less'
 import Footer from 'components/Layout/Footer'
+import Info from 'components/Layout/Info'
 import { crypt } from 'utils'
 
 const { authBy } = config
@@ -19,7 +20,7 @@ const Login = ({
     validateFieldsAndScroll,
   },
 }) => {
-  const { loginLoading, listUserRole, visibleItem } = login
+  const { loginLoading, listUserRole, visibleItem, ipAddress } = login
 
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -89,6 +90,9 @@ const Login = ({
         </Row>
       </form>
     </div>
+    <Popover placement='rightBottom' content={<div><Info/></div>} >
+      <Button className={styles.info} type='dashed' shape='circle' icon='info'/>
+    </Popover>
   </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, InputNumber, Row, Col, Dropdown, Menu, Icon } from 'antd'
+import { Form, Input, Button, Tabs, Select, InputNumber, Row, Col, Dropdown, Menu, Icon, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -100,8 +100,17 @@ const formCustomerType = ({
         ...getFieldsValue(),
       }
       console.log('Submit')
-      onSubmit(data)
-      handleReset()
+      if (data.typeCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Type Code can't be null")
+      }
     })
   }
 
@@ -125,7 +134,7 @@ const formCustomerType = ({
   const children = listSellprice.length > 0 ? listSellprice.map(misc => <Option value={misc.miscName} key={misc.miscName}>{misc.miscName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

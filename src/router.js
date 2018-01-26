@@ -82,7 +82,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customer'))
               cb(null, require('./routes/master/customer/customerunit/'))
-            }, 'customerunit')
+            }, 'master-customerunit')
           },
         }, {
           path: 'master/supplier',
@@ -99,7 +99,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               registerModel(app, require('./models/master/productbrand'))
               cb(null, require('./routes/master/product/brand/'))
-            }, 'brand')
+            }, 'master-product-brand')
           },
         }, {
           path: 'master/product/category',
@@ -125,7 +125,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/service'))
               cb(null, require('./routes/master/service/'))
-            }, 'service')
+            }, 'master-service')
           },
         }, {
           path: 'master/city',
@@ -133,7 +133,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/city'))
               cb(null, require('./routes/master/city/'))
-            }, 'city')
+            }, 'master-city')
           },
         }, {
           path: 'transaction/pos',
@@ -202,6 +202,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/booking'))
               cb(null, require('./routes/transaction/booking/'))
             }, 'transaction-booking')
+          },
+        }, {
+          path: 'transaction/booking/:id/history',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/transaction/bookinghistory'))
+              cb(null, require('./routes/transaction/booking/history/'))
+            }, 'transaction-booking-history-detail')
           },
         }, {
           path: 'report/pos/summary',

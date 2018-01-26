@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Icon, Menu } from 'antd'
+import { Form, Input, Button, Tabs, Select, Row, Col, Dropdown, Icon, Menu, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -93,7 +93,6 @@ const formEmployee = ({
   const change = (key) => {
     handleReset()
     changeTab(key)
-    handleReset()
   }
 
   const jobPosition = () => {
@@ -116,8 +115,17 @@ const formEmployee = ({
       const data = {
         ...getFieldsValue(),
       }
-      onSubmit(item.employeeId, data)
-      handleReset()
+      if (data.employeeId) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.employeeId, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Employee Id can't be null")
+      }
     })
   }
 
@@ -138,7 +146,7 @@ const formEmployee = ({
   const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>

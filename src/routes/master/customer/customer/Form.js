@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, DatePicker, Radio, Row, Col, Icon, Dropdown, Menu } from 'antd'
+import { Form, Input, Modal, Button, Tabs, Select, message, DatePicker, Radio, Row, Col, Icon, Dropdown, Menu } from 'antd'
 import moment from 'moment'
 import List from './List'
 import Filter from './Filter'
@@ -108,8 +108,18 @@ const formCustomer = ({
       const data = {
         ...getFieldsValue(),
       }
-      onSubmit(data.memberCode, data)
-      handleReset()
+
+      if (data.memberCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data.memberCode, data)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Member Code can't be null")
+      }
     })
   }
 
@@ -143,7 +153,7 @@ const formCustomer = ({
   </div>
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
+    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
@@ -154,11 +164,11 @@ const formCustomer = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_-]{3,16}$/i,
+                      pattern: /^[a-z0-9\_-]{3,15}$/i,
                       message: 'a-Z & 0-9',
                     },
                   ],
-                })(<Input disabled={disabled} maxLength={16} />)}
+                })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
             </Col>
             <Col {...col}>
