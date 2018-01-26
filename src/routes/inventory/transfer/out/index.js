@@ -415,11 +415,12 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         },
       })
     },
-    getTrans (transNo) {
+    getTrans (transNo, storeId) {
       dispatch({
         type: 'transferOut/queryByTrans',
         payload: {
           transNo,
+          storeId,
         },
       })
     },

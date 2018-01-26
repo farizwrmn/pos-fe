@@ -29,11 +29,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         type: 'customer/updateState',
         payload: {
           modalVisible: true,
-        },
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
           searchText: '',
           listCustomer: list,
         },

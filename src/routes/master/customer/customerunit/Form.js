@@ -54,11 +54,11 @@ const tailFormItemLayout = {
   },
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0,
-  },
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 },
 }
 
 const formCustomerType = ({
@@ -99,16 +99,10 @@ const formCustomerType = ({
         return
       }
       const data = {
-        memberCode: getFieldsValue().memberCode,
-        policeNo: getFieldsValue().policeNo,
-        merk: getFieldsValue().merk,
-        model: getFieldsValue().model,
-        type: getFieldsValue().type,
-        year: getFieldsValue().year,
-        chassisNo: getFieldsValue().chassisNo,
-        machineNo: getFieldsValue().machineNo,
+        ...getFieldsValue(),
       }
-      console.log('Submit')
+
+      const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
@@ -184,7 +178,7 @@ const formCustomerType = ({
         <TabPane tab="Form" key="0" >
           <Form layout="horizontal">
             <Row>
-              <Col {...col}>
+              <Col {...column}>
                 <FormItem label="Member Code" hasFeedback {...formItemLayout}>
                   <Button disabled={disabled} type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
                 </FormItem>
@@ -194,11 +188,11 @@ const formCustomerType = ({
                     rules: [
                       {
                         required: true,
-                        pattern: /^[a-z0-9\_\-]{3,50}$/i,
-                        message: 'a-z & 0-9',
+                        pattern: /^[A-Z0-9]{1,10}\S+$/,
+                        message: 'A-Z & 0-9',
                       },
                     ],
-                  })(<Input disabled={disabled} />)}
+                  })(<Input disabled={disabled} maxLength={10} />)}
                 </FormItem>
                 <FormItem label="Merk" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('merk', {
@@ -250,7 +244,7 @@ const formCustomerType = ({
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>
                 </FormItem>
               </Col>
-              <Col {...col}>
+              <Col {...column}>
                 <Collapse defaultActiveKey={collapseActiveKey} >
                   <Panel header={collapseTitle} key="1">
                     {info}

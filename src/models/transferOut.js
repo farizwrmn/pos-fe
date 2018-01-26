@@ -186,7 +186,7 @@ export default modelExtend(pageModel, {
 
     * queryByTrans ({ payload = {} }, { call, put }) {
       const data = yield call(queryByTrans, payload)
-      if (data) {
+      if (data.mutasi) {
         yield put({
           type: 'querySuccessTrans',
           payload: data.mutasi,

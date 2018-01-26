@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import moment from 'moment'
 
 const confirm = Modal.confirm
 
@@ -73,6 +74,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
+          render: _text => `${moment(_text).format('LLL')}`,
         },
       ],
     },
@@ -88,6 +90,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
+          render: _text => `${moment(_text).format('LLL')}`,
         },
       ],
     },

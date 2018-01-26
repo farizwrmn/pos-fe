@@ -6,7 +6,7 @@ import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
 const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, listTransferOut, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
-  const transHeader = { employeeId: {
+  const transHeader = listTransOut ? { employeeId: {
     key: listTransOut.employeeId || '',
     label: listTransOut.employeeName || '',
   },
@@ -23,11 +23,12 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   transType: listTransOut.transType || '',
   carNumber: listTransOut.carNumber || '',
   description: listTransOut.description || '',
-  reference: listTransOut.reference || '' }
+  reference: listTransOut.reference || '' } : {}
 
-  const clickPrint = (transNo) => {
+  const clickPrint = (record) => {
+    const { transNo, storeIdReceiver } = record
     getProducts(transNo)
-    getTrans(transNo)
+    getTrans(transNo, storeIdReceiver)
     onShowPrint()
   }
 
@@ -122,7 +123,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       width: 100,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record.transNo)}>Print</Button>
+        return <Button onClick={() => clickPrint(record)}>Print</Button>
         // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
       },
     },
