@@ -107,24 +107,19 @@ export default function request (options) {
     }
   }).catch((error) => {
     const { response } = error
-    console.log('zz2', error)
     let msg
     let statusCode
     if (response && response instanceof Object) {
-      console.log('zz4')
       const { data, statusText } = response
       statusCode = response.status
       msg = data.message || statusText
     } else {
       statusCode = 600
       if (error.hasOwnProperty('message')) {
-        console.log('zz6', error)
         msg = error.message || 'Network Error'
       } else {
-        console.log('zz7')
         msg = error
       }
-      console.log('zz5', msg)
     }
     return { success: false, statusCode, message: msg }
   })
