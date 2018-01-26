@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse } from 'antd'
+import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
 import List from './List'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
-import BrowseButton from './BrowseButton'
+import ModalBrowse from './Modal'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -54,11 +54,11 @@ const tailFormItemLayout = {
   },
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0,
-  },
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 },
 }
 
 const formCustomerType = ({
@@ -70,6 +70,7 @@ const formCustomerType = ({
   activeKey,
   dataCustomer,
   button,
+  modalVisible,
   ...tabProps,
   ...listProps,
   ...printProps,
@@ -82,6 +83,7 @@ const formCustomerType = ({
     resetFields,
   },
 }) => {
+  const { openModal } = modalProps
   const handleReset = () => {
     resetFields()
   }
@@ -97,18 +99,21 @@ const formCustomerType = ({
         return
       }
       const data = {
-        memberCode: getFieldsValue().memberCode,
-        policeNo: getFieldsValue().policeNo,
-        merk: getFieldsValue().merk,
-        model: getFieldsValue().model,
-        type: getFieldsValue().type,
-        year: getFieldsValue().year,
-        chassisNo: getFieldsValue().chassisNo,
-        machineNo: getFieldsValue().machineNo,
+        ...getFieldsValue(),
       }
-      console.log('Submit', data)
-      onSubmit(data)
-      handleReset()
+
+      const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
+      if (data.memberCode) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(other)
+          },
+          onCancel () {},
+        })
+      } else {
+        message.warning("Member Code can't be null")
+      }
     })
   }
 
@@ -136,7 +141,7 @@ const formCustomerType = ({
       </FormItem>
       <FormItem label="BirthDate" {...formItemLayout}>
         {getFieldDecorator('birthDate', {
-          initialValue: moment(dataCustomer.birthDate).format('MMMM Do YYYY'),
+          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : '',
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="City" {...formItemLayout}>
@@ -158,7 +163,7 @@ const formCustomerType = ({
   )
 
   const collapseActiveKey = '1'
-  const collapseTitle = `Customer Info(${dataCustomer.memberCode})`
+  const collapseTitle = dataCustomer.memberCode ? `Customer Info(${dataCustomer.memberCode})` : 'Customer Info'
 
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
@@ -167,106 +172,94 @@ const formCustomerType = ({
   </Dropdown>) : '')
 
   return (
-    <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab}>
-      <TabPane tab="Form" key="0" >
-        <Form layout="horizontal">
-          <Row>
-            <Col {...col}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}><BrowseButton {...modalProps} />
-              </FormItem>
-              <FormItem label="Police No" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('policeNo', {
-                  initialValue: item.policeNo,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[A-Z0-9]{1,10}\S+$/,
-                      message: 'A-Z & 0-9',
-                    },
-                  ],
-                })(<Input disabled={disabled} maxLength={10} />)}
-              </FormItem>
-              <FormItem label="Merk" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('merk', {
-                  initialValue: item.merk,
-                  rules: [
-                    {
-                      required: true,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Model" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('model', {
-                  initialValue: item.model,
-                  rules: [
-                    {
-                      required: true,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Tipe" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('type', {
-                  initialValue: item.type,
-                  rules: [
-                    {
-                      required: false,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Tahun" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('year', {
-                  initialValue: item.year,
-                  rules: [
-                    {
-                      required: false,
-                      pattern: /^[12][0-9]{3}$/,
-                      message: 'year is not valid',
-                    },
-                  ],
-                })(<InputNumber maxLength={4} max={moment().format('YYYY')} />)}
-              </FormItem>
-              <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('chassisNo', {
-                  initialValue: item.chassisNo,
-                  rules: [
-                    {
-                      required: false,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('machineNo', {
-                  initialValue: item.machineNo,
-                  rules: [
-                    {
-                      required: false,
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                <Button type="primary" onClick={handleSubmit}>{button}</Button>
-              </FormItem>
-            </Col>
-            <Col {...col}>
-              <Collapse defaultActiveKey={collapseActiveKey} style={{ display: Object.keys(dataCustomer).length > 0 ? 'block' : 'none' }}>
-                <Panel header={collapseTitle} key="1">
-                  {info}
-                </Panel>
-              </Collapse>
-            </Col>
-          </Row>
-        </Form>
-      </TabPane>
-      <TabPane tab="Browse" key="1" >
-        <BrowseButton {...modalProps} />
-        <List {...listProps} />
-      </TabPane>
-    </Tabs>
+    <div>
+      {modalVisible && <ModalBrowse {...modalProps} />}
+      <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          <Form layout="horizontal">
+            <Row>
+              <Col {...column}>
+                <FormItem label="Member Code" hasFeedback {...formItemLayout}>
+                  <Button disabled={disabled} type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
+                </FormItem>
+                <FormItem label="Police No" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('policeNo', {
+                    initialValue: item.policeNo,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[A-Z0-9]{1,10}\S+$/,
+                        message: 'A-Z & 0-9',
+                      },
+                    ],
+                  })(<Input disabled={disabled} maxLength={10} />)}
+                </FormItem>
+                <FormItem label="Merk" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('merk', {
+                    initialValue: item.merk,
+                    rules: [
+                      {
+                        required: true,
+                      },
+                    ],
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Model" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('model', {
+                    initialValue: item.model,
+                    rules: [
+                      {
+                        required: true,
+                      },
+                    ],
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Tipe" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('type', {
+                    initialValue: item.type,
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Tahun" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('year', {
+                    initialValue: item.year,
+                    rules: [
+                      {
+                        pattern: /^[12][0-9]{3}$/,
+                        message: 'year is not valid',
+                      },
+                    ],
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('chassisNo', {
+                    initialValue: item.chassisNo,
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('machineNo', {
+                    initialValue: item.machineNo,
+                  })(<Input />)}
+                </FormItem>
+                <FormItem {...tailFormItemLayout}>
+                  <Button type="primary" onClick={handleSubmit}>{button}</Button>
+                </FormItem>
+              </Col>
+              <Col {...column}>
+                <Collapse defaultActiveKey={collapseActiveKey} >
+                  <Panel header={collapseTitle} key="1">
+                    {info}
+                  </Panel>
+                </Collapse>
+              </Col>
+            </Row>
+          </Form>
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
+    </div>
   )
 }
 

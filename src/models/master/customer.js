@@ -28,17 +28,13 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/master/customerunit') {
-          dispatch({
-            type: 'query',
-          })
-          // const payload = location.query
-          // dispatch({
-          //   type: 'query',
-          //   payload: {
-          //     code: 'IDTYPE',
-          //   },
-          // })
+        switch (location.pathname) {
+          case '/master/customerunit':
+            dispatch({
+              type: 'query',
+            })
+            break
+          default:
         }
       })
     },

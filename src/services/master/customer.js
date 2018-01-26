@@ -48,7 +48,7 @@ export async function add (params) {
 
 export async function addUnit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? customers + '/' + params.memberCode + '/units/' + params.policeNo : customers
+  const url = customers + '/' + params.memberCode + '/units/' + params.policeNo
   return request({
     url: url,
     method: 'post',

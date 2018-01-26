@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listUnit: [],
+    newItem: false,
   },
 
   subscriptions: {
@@ -58,6 +59,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -82,6 +84,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
