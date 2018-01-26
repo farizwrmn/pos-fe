@@ -99,8 +99,9 @@ export default modelExtend(pageModel, {
           payload: {
             currentItem: {
               transNo: data.data,
+              storeId: lstorage.getCurrentUserStore()
             },
-            listStore: store.data
+            listStore: lstorage.getListUserStores()
           }
         })
       } else {

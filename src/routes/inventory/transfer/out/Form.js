@@ -71,7 +71,7 @@ const FormAdd = ({
         ...getFieldsValue(),
       }
       data.employeeId = data.employeeId.key
-      data.storeId = data.storeId.key
+      data.storeId = item.storeId
       data.storeIdReceiver = data.storeIdReceiver.key
       onSubmit(data, listItem)
       // handleReset()
@@ -86,31 +86,19 @@ const FormAdd = ({
   }
   const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
 
-  let childrenStore = []
   let childrenStoreReceived = []
   if (listStore.length > 0) {
-    for (let id in listStore) {
-      let groupStore = []
-      groupStore.push(
-        <OptGroup label={listStore[id].title}>
-          {listStore[id].children.map(list => <Option value={list.id}>{list.title}</Option>)}
-        </OptGroup>
-      )
-      childrenStore.push(groupStore)
-    }
-  }
-  if (listStore.length > 0) {
     const data = getFieldsValue()
-    if (data.storeId && data.storeId.key) {
+    if (item.storeId) {
+      let groupStore = []
       for (let id in listStore) {
-        let groupStore = []
         groupStore.push(
-          <OptGroup label={listStore[id].title}>
-            {listStore[id].children.map(list => <Option disabled={data.storeId.key === list.id} value={list.id}>{list.title}</Option>)}
-          </OptGroup>
+            <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+              {listStore[id].label}
+            </Option>
         )
-        childrenStoreReceived.push(groupStore)
       }
+      childrenStoreReceived.push(groupStore)      
     }    
   }
   const resetFieldsOnly = (value) => {
@@ -166,21 +154,6 @@ const FormAdd = ({
             {modalProductVisible && <Browse {...modalProductProps} />}
           </Col>
           <Col {...col}>
-            <FormItem label="From Store" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('storeId', {
-                initialValue: item.storeId,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Select
-                labelInValue={true}
-                onChange={() => resetFieldsOnly('storeIdReceiver')}
-              >
-                {childrenStore}
-              </Select>)}
-            </FormItem>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
                 initialValue: item.storeIdReceiver,

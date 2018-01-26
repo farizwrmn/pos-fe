@@ -55,23 +55,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
       {
         columns: [
           {
-            stack: [
-              {
-                text: storeInfo.name,
-                fontSize: 11,
-                alignment: 'left'
-              },
-              {
-                text: storeInfo.address01,
-                fontSize: 11,
-                alignment: 'left'
-              },
-              {
-                text: storeInfo.address02,
-                fontSize: 11,
-                alignment: 'left'
-              },
-            ],
+            stack: storeInfo.stackHeader02
           },
           {
             text: 'SURAT PENGANTAR',
@@ -123,6 +107,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
           {
             columns: [
               { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeId ? itemHeader.employeeId.label : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },              
               { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
             ],
           },

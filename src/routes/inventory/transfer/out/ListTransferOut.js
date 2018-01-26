@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Table, Button, Modal } from 'antd'
+import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
 const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, listTransferOut, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
@@ -43,7 +43,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   const modalProps = {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    footer: [],
+    footer: null,
+    width: 200,
     visible: showPrintModal,
     onCancel () {
       onClosePrint()
@@ -96,6 +97,17 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       render: (text) => {
         return moment(text).format('DD MMMM YYYY')
       },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: text =>
+        <span>
+          <Tag color={text === 0 ? 'blue' : 'green'}>
+           {text === 0 ? 'In progress' : 'Accepted'}
+          </Tag>
+        </span>,
     },
     {
       title: 'Transaction No',

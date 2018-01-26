@@ -161,7 +161,14 @@ export default modelExtend(pageModel, {
       }
       const sequence = yield call(querySequence, sequenceParam)
       const data = yield call(queryByTransOut, payload)
-      const dataDetail = yield call(queryOutDetail, other)
+      let detailParams = {}
+      if (data.success) {
+        detailParams = {
+          ...other,
+          storeId: data.mutasi.storeId
+        }
+      }
+      const dataDetail = yield call(queryOutDetail, detailParams)
       if (data.success && dataDetail.success && sequence.success) {
         yield put({
           type: 'updateState',

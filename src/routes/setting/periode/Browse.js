@@ -28,6 +28,12 @@ const Browse = ({
   }
   const columns = [
     {
+      title: 'store',
+      dataIndex: 'storeId',
+      key: 'storeId',
+      width: 200,
+    },
+    {
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',

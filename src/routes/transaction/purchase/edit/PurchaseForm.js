@@ -6,6 +6,7 @@ import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
 import config from 'config'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -68,6 +69,7 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
         return
       }
       const data = {
+        storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue(),
       }
       onOk(transNo, dataPurchase, dataVoid, data)

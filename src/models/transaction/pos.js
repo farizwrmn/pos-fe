@@ -10,6 +10,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { query as queryProductsOutStock, queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit } from '../../services/units'
+import { lstorage } from 'utils'
 
 const { prefix } = config
 
@@ -262,6 +263,7 @@ export default {
 
     * cancelInvoice({ payload }, { call, put }) {
       payload.status = 'C'
+      payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
       if (cancel) {
         const data = yield call(queryPos, payload)

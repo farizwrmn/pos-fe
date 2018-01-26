@@ -6,6 +6,7 @@ import { DropOption } from 'components'
 import moment from 'moment'
 import ModalBrowse from './ModalBrowse'
 import FormWo from '../transaction/pos/FormWo'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const { prefix } = config
@@ -77,6 +78,7 @@ const FormEdit = ({
                 title: 'Warning',
                 content: 'Action cannot be undone',
                 onOk() {
+                    data.storeId = lstorage.getCurrentUserStore()
                     data.transNo = item.transNo
                     data.memberCode = data.memberId
                     data.woReference = data.woReference === null || data.woReference === '' ? null : data.woReference
@@ -251,10 +253,6 @@ const FormEdit = ({
                     <FormItem label="Last Meter" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('lastMeter', {
                             initialValue: item.lastMeter,
-                            rules: [{
-                                required: true,
-                                message: "Required",
-                            }],
                         })(<Input style={{ backgroundColor: '#ffffff' }} />)}
                     </FormItem>
                     <FormItem label="Payment Via" hasFeedback {...formItemLayout}>
