@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import Form from './Form'
+import { NewForm } from '../../../components'
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, pagination, modalType, currentItem, activeKey, disable } = customerunit
+  const { listUnit, newItem, pagination, modalType, currentItem, activeKey, disable } = customerunit
   const { pageSize } = pagination
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer } = customer
@@ -25,7 +26,10 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     },
     openModal () {
       dispatch({
-        type: 'customer/showModal',
+        type: 'customer/updateState',
+        payload: {
+          modalVisible: true,
+        },
       })
       dispatch({
         type: 'customer/updateState',
@@ -172,9 +176,29 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     },
   }
 
+  const page = (boolean) => {
+    let currentPage
+    if (boolean) {
+      const newFormProps = {
+        onClickNew () {
+          dispatch({
+            type: 'customerunit/updateState',
+            payload: {
+              newItem: false,
+            },
+          })
+        },
+      }
+      currentPage = <NewForm {...newFormProps} />
+    } else {
+      currentPage = <Form {...tabProps} />
+    }
+    return currentPage
+  }
+
   return (
     <div className="content-inner">
-      <Form {...tabProps} />
+      {page(newItem)}
     </div>
   )
 }

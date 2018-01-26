@@ -38,6 +38,7 @@ export default {
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
+    ipAddr: '',
   },
   subscriptions: {
 
@@ -75,52 +76,6 @@ export default {
             ]
             return cases.every(_ => _)
           })
-        }
-
-        // Opera 8.0+
-        let isOpera = (!!window.opr && !!opr.addons) || window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
-
-        // Firefox 1.0+
-        let isFirefox = typeof InstallTrigger !== 'undefined'
-
-        // Chrome 1+
-        let isChrome = !!window.chrome && !!window.chrome.webstore
-
-        // Blink engine detection
-        let isBlink = (isChrome || isOpera) && !!window.CSS
-
-        const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
-          let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection //compatibility for firefox and chrome
-          const pc = new MyPeerConnection({ iceServers: [] }),
-            noop = function () {},
-            localIPs = {},
-            ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-          function ipIterate (ip) {
-            if (!localIPs[ip]) onNewIP(ip)
-            localIPs[ip] = true
-          }
-          pc.createDataChannel('') // create a bogus data channel
-          pc.createOffer((sdp) => {
-            sdp.sdp.split('\n').forEach((line) => {
-              if (line.indexOf('candidate') < 0) return
-              line.match(ipRegex).forEach(ipIterate)
-            })
-            pc.setLocalDescription(sdp, noop, noop)
-          }, noop) // create offer and set local description
-          pc.onicecandidate = (ice) => { // listen for candidate events
-            if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return
-            ice.candidate.candidate.match(ipRegex).forEach(ipIterate)
-          }
-        }
-        let ipAddress = apiHost
-        let ipAdd2 = ''
-        const addIP = (ip) => {
-          console.log(ip)
-        }
-        try {
-          findIP(addIP)
-        } catch (e) {
-          alert('Browser cannot find IP address')
         }
 
         const period = yield call(queryLastActive)
@@ -197,7 +152,7 @@ export default {
             storeInfo,
             permissions,
             menu,
-            setting: arrayProd
+            setting: arrayProd,
           },
         })
         if (location.pathname === '/login') {
@@ -295,6 +250,13 @@ export default {
       return {
         ...state,
         siderFold: true,
+      }
+    },
+    saveIPClient (state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+        ipAddr: payload.ipAddr,
       }
     },
     switchSider (state) {

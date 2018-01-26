@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
-import { query } from '../../services/transaction/booking'
+import { query, queryHistory, update } from '../../services/transaction/booking'
 import { pageModel } from '../common'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
+import moment from 'moment'
 import { config } from 'utils'
+import { route } from 'react-router/lib/PropTypes'
 
 export default modelExtend(pageModel, {
   namespace: 'booking',
@@ -11,18 +13,30 @@ export default modelExtend(pageModel, {
     listItem: [],
     currentItem: {},
     addItem: {},
+    oldBookingStatus: '',
     newBookingStatus: 'OP',
     focusBookingId: '',
     modalVisible: false,
     modalAcceptVisible: false,
     searchVisible: false,
+    activeKey: '1',
+    listBooking: [],
+    period: moment().format('YYYY-MM'),
+    date: moment().format('YYYY-MM-DD'),
+    newScheduleDate: '',
+    newScheduleTime: '',
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/transaction/booking') {
-
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listTrans: [],
+            },
+          })
         }
       })
     },
@@ -68,6 +82,42 @@ export default modelExtend(pageModel, {
     },
     * focusBookingId ({ payload = {} }, { call, put }) {
       yield put({ type: 'setfocusBooking', payload })
+    },
+    * queryBooking ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBooking: data.data,
+          },
+        })
+      }
+    },
+    * queryHistory ({ payload = {} }, { call, put }) {
+      const data = yield call(queryHistory, payload)
+      if (data.success) {
+        if (data.data.length > 0) {
+          window.open(`booking/${payload}/history`)
+        } else {
+          message.warning('No History detected!')
+        }
+      }
+    },
+    * edit ({ payload }, { call, put }) {
+      const dataBooking = yield call(update, { id: payload.id, status: payload.status })
+      const leftOvers = payload.leftOvers
+      if (leftOvers.length > 0) {
+        yield put({ type: 'updateState', payload: { listTrans: [] } })
+      }
+      if (dataBooking.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: leftOvers || [],
+          },
+        })
+      }
     },
   },
 
@@ -124,12 +174,19 @@ export default modelExtend(pageModel, {
         listItem: [],
         currentItem: {},
         addItem: {},
+        oldBookingStatus: '',
         newBookingStatus: 'OP',
         focusBookingId: '',
         modalVisible: false,
+        modalAcceptVisible: false,
         searchVisible: false,
+        activeKey: '1',
+        listBooking: [],
+        listHistory: [],
+        period: moment().format('YYYY-MM'),
+        date: moment().format('YYYY-MM-DD'),
       }
-      return { ...state, ...defaultState}
+      return { ...state, ...defaultState }
     },
 
     setfocusBooking (state, { payload }) {

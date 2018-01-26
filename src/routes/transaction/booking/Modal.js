@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Modal, DatePicker, Select, Badge, Calendar, Tabs } from 'antd'
+import { Form, Modal, DatePicker, Select, Badge, Tabs, Calendar } from 'antd'
 import moment from 'moment'
 import { color } from 'utils'
 
@@ -25,6 +25,12 @@ const formItemLayout = {
 const modal = ({
   ...modalProps,
   onSearch,
+  activeKey,
+  changeTab,
+  date,
+  onFilterCalendar,
+  onSelectDate,
+  listBooking,
   form: {
     getFieldDecorator,
     resetFields,
@@ -50,48 +56,220 @@ const modal = ({
     })
   }
 
+  const getFieldCalendar = (value) => {
+    const period = moment(value).format('YYYY-MM')
+    onFilterCalendar(period)
+  }
+
+  const selectDate = (value) => {
+    const selectedDate = moment(value).format('YYYY-MM-DD')
+    onSelectDate(selectedDate)
+  }
+
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
   }
 
-  const onPanelChange = (value, mode) => {
-    console.log(value, mode)
-  }
-
-  function getListData(value) {
-    let listData;
-    console.log('zz1', value)
-    switch (value.format('YYYY-MM-DD')) {
-      case '2018-01-13':
-        listData= [{ content: ' 2' }]
+  const getListData = (value) => {
+    let listData = []
+    for (let key in listBooking) {
+      switch (value.format('YYYY-MM-DD')) {
+        case listBooking[key].scheduleDate:
+          listData.push({ type: listBooking[key].status, content: listBooking[key].counter })
+          break
+      }
     }
-    return listData || [];
+    return listData || []
   }
 
-  function dateCellRender(value) {
-    const listData = getListData(value);
+  const dateCellRender = (value) => {
+    const listData = getListData(value)
     return (
       <ul className="events">
         {
-          listData.map(item => (
-            <li key={item.content}>
-              <span >●</span>
-              {item.content}
-            </li>
-          ))
+          listData.map((item) => {
+            let badge
+            switch (item.type) {
+              case 'Open':
+                badge = (<Badge dot
+                  style={{ backgroundColor: color.purple,
+                    position: 'relative',
+                    display: 'inline-block',
+                    top: 0,
+                    transform: 'none' }}
+                  text={item.content}
+                />)
+                break
+              case 'Confirmed':
+                badge = (<Badge status="default"
+                  text={item.content}
+                />)
+                break
+              case 'Check-In':
+                badge = (<Badge status="processing"
+                  text={item.content}
+                />)
+                break
+              case 'Check-Out':
+                badge = (<Badge status="success"
+                  text={item.content}
+                />)
+                break
+              case 'Reschedule':
+                badge = (<Badge dot
+                  style={{ backgroundColor: color.peach,
+                    position: 'relative',
+                    display: 'inline-block',
+                    top: 0,
+                    transform: 'none' }}
+                  text={item.content}
+                />)
+                break
+              case 'Cancel':
+                badge = (<Badge status="warning"
+                  text={item.content}
+                />)
+                break
+              case 'Reject':
+                badge = (<Badge status="error"
+                  text={item.content}
+                />)
+                break
+              default:
+            }
+            return (
+              <li>
+                {badge}
+              </li>
+            )
+          })
         }
       </ul>
-    );
+    )
+  }
+
+  let groupByMonth = (xs, key) => {
+    return xs.reduce((rv, x) => {
+      (rv[moment(x[key]).format('YYYY-MM')] = rv[moment(x[key]).format('YYYY-MM')] || []).push(x)
+      return rv
+    }, {})
+  }
+
+  let groupByStatus = (xs, key) => {
+    return xs.reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x)
+      return rv
+    }, {})
+  }
+
+  let month = groupByMonth(listBooking, 'scheduleDate')
+  let full = {}
+  for (let key in month) {
+    full[key] = groupByStatus(month[key], 'status')
+  }
+
+  const getMonthData = (value) => {
+    let monthlyData = []
+    for (let key in full) {
+      switch (value.format('YYYY-MM')) {
+        case key:
+          for (let status in full[key]) {
+            switch (status) {
+              case status:
+                let total = 0
+                for (let i = 0; i < full[key][status].length; i += 1) {
+                  total += full[key][status][i].counter
+                }
+                monthlyData.push({ type: status, content: total })
+                break
+            }
+          }
+          break
+        default:
+      }
+    }
+    return monthlyData || []
+  }
+
+  const monthCellRender = (value) => {
+    const listData = getMonthData(value)
+    return listData ? (<ul className="events">
+      {
+        listData.map((item) => {
+          let badge
+          switch (item.type) {
+            case 'Open':
+              badge = (<Badge dot
+                style={{ backgroundColor: color.purple,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none' }}
+                text={item.content}
+              />)
+              break
+            case 'Confirmed':
+              badge = (<Badge status="default"
+                text={item.content}
+              />)
+              break
+            case 'Check-In':
+              badge = (<Badge status="processing"
+                text={item.content}
+              />)
+              break
+            case 'Check-Out':
+              badge = (<Badge status="success"
+                text={item.content}
+              />)
+              break
+            case 'Reschedule':
+              badge = (<Badge dot
+                style={{ backgroundColor: color.peach,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none' }}
+                text={item.content}
+              />)
+              break
+            case 'Cancel':
+              badge = (<Badge status="warning"
+                text={item.content}
+              />)
+              break
+            case 'Reject':
+              badge = (<Badge status="error"
+                text={item.content}
+              />)
+              break
+            default:
+          }
+          return (
+            <li>
+              {badge}
+            </li>
+          )
+        })
+      }
+    </ul>
+    ) : []
+  }
+
+  const calendarProps = {
+    dateCellRender,
+    monthCellRender,
+    style: { width: '730px', float: 'right' },
   }
 
   return (
     <Modal {...modalOpts}>
-      <Tabs defaultActiveKey="1">
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)}>
         <TabPane tab="Filter" key="1">
           <FormItem label="Period" hasFeedback {...formItemLayout}>
             {getFieldDecorator('period', {
-              initialValue: moment.utc(moment(), 'YYYY-MM-DD'),
+              initialValue: moment.utc(date, 'YYYY-MM-DD'),
               rules: [
                 {
                   required: true,
@@ -105,69 +283,99 @@ const modal = ({
             {getFieldDecorator('status', {
               initialValue: 'OP',
             })(<Select placeholder="Choose Status" defaultValue="OP" style={{ width: 120 }} >
-              <Option value="OP"><Badge dot text="Open"
-                                        style={{backgroundColor: color.wisteria,
-                                          position: 'relative', display: 'inline-block',
-                                          top: 0, transform: 'none'
-                                        }}/>
+              <Option value="OP"><Badge dot
+                text="Open"
+                style={{ backgroundColor: color.purple,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none',
+                }}
+              />
               </Option>
               <Option value="CF"><Badge status="default" text="Confirmed" /></Option>
               <Option value="CI"><Badge status="processing" text="Check-In" /></Option>
               <Option value="CO"><Badge status="success" text="Check-Out" /></Option>
-              <Option value="RS"><Badge dot text="Reschedule" style={{backgroundColor: color.peach,
-                position: 'relative', display: 'inline-block',
-                top: 0, transform: 'none'
-              }} /></Option>
+              <Option value="RS"><Badge dot
+                text="Reschedule"
+                style={{ backgroundColor: color.peach,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none',
+                }}
+              /></Option>
               <Option value="CC"><Badge status="warning" text="Cancel" /></Option>
               <Option value="RJ"><Badge status="error" text="Reject" /></Option>
             </Select>)}
           </FormItem>
         </TabPane>
         <TabPane tab="Browse" key="2">
-          <div>
-          <Calendar dateCellRender={dateCellRender}
-                    onPanelChange={onPanelChange} />
-          <span style={{float: 'right'}}>
-            <span style={{paddingRight: '8px'}}><Badge dot
-                   style={{backgroundColor: color.wisteria,
-                     position: 'relative', display: 'inline-block',
-                     top: '-1px', transform: 'none'
-                   }}/></span>
-            <Badge status="default"/>
-            <Badge status="processing"/>
-            <Badge status="success"/>
-            <span style={{paddingRight: '8px'}}><Badge dot style={{backgroundColor: color.peach,
-              position: 'relative', display: 'inline-block',
-              top: '-1px', transform: 'none'
-            }} /></span>
-            <Badge status="warning"/>
-            <Badge status="error"/>
-            <br />
-            <Badge dot text="Open"
-                   style={{backgroundColor: color.wisteria,
-                     position: 'relative', display: 'inline-block',
-                     top: 0, transform: 'none'
-                   }}/>
-            <br />
-            <Badge status="default" text="Confirmed" />
-            <br />
-            <Badge status="processing" text="Check-In" />
-            <br />
-            <Badge status="success" text="Check-Out" />
-            <br />
-            <Badge dot text="Reschedule" style={{backgroundColor: color.peach,
-              position: 'relative', display: 'inline-block',
-              top: 0, transform: 'none'
-            }} />
-            <br />
-            <Badge status="warning" text="Cancel" />
-            <br />
-            <Badge status="error" text="Reject" />
-          </span>
+          <div style={{ width: '230px', float: 'left' }} >
+            <Badge dot
+              style={{ backgroundColor: color.purple,
+                position: 'relative',
+                display: 'inline-block',
+                top: '-0.2vh',
+                transform: 'none',
+                marginRight: '8px',
+              }}
+            />
+            <Badge status="default" />
+            <Badge status="processing" />
+            <Badge status="success" />
+            <Badge dot
+              style={{ backgroundColor: color.peach,
+                position: 'relative',
+                display: 'inline-block',
+                top: '-0.2vh',
+                transform: 'none',
+                marginRight: '8px',
+              }}
+            />
+            <Badge status="warning" />
+            <Badge status="error" />
+            <div>
+              <Badge dot
+                text="Open"
+                style={{ backgroundColor: color.purple,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none',
+                }}
+              />
+            </div>
+            <div>
+              <Badge status="default" text="Confirmed" />
+            </div>
+            <div>
+              <Badge status="processing" text="Check-In" />
+            </div>
+            <div>
+              <Badge status="success" text="Check-Out" />
+            </div>
+            <div>
+              <Badge dot
+                text="Reschedule"
+                style={{ backgroundColor: color.peach,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none',
+                }}
+              />
+            </div>
+            <div>
+              <Badge status="warning" text="Cancel" />
+            </div>
+            <div>
+              <Badge status="error" text="Reject" />
+            </div>
           </div>
+          <Calendar {...calendarProps} onSelect={date => selectDate(date)} onPanelChange={date => getFieldCalendar(date)} />
         </TabPane>
       </Tabs>
-
     </Modal>
   )
 }

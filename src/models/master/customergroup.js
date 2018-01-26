@@ -22,17 +22,20 @@ export default modelExtend(pageModel, {
     disable: '',
     listGroup: [],
     show: 1,
+    newItem: false,
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/master/customergroup') {
-          // const payload = location.query
-          // dispatch({
-          //   type: 'query',
-          //   payload,
-          // })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
+          })
         }
       })
     },
@@ -73,6 +76,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -85,6 +89,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }

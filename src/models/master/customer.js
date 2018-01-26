@@ -23,6 +23,7 @@ export default modelExtend(pageModel, {
     listCustomer: [],
     show: 1,
     modalVisible: false,
+    newItem: false,
   },
 
   subscriptions: {
@@ -32,13 +33,14 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
           })
-          // const payload = location.query
-          // dispatch({
-          //   type: 'query',
-          //   payload: {
-          //     code: 'IDTYPE',
-          //   },
-          // })
+        } else if (location.pathname === '/master/customer') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
+          })
         }
       })
     },
@@ -92,6 +94,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -104,6 +107,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -124,10 +128,6 @@ export default modelExtend(pageModel, {
           ...pagination,
         },
       }
-    },
-
-    showModal (state, action) {
-      return { ...state, ...action.payload, modalVisible: true }
     },
 
     switchIsChecked (state, { payload }) {

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Tag } from 'antd'
-import styles from './info.less'
+import styles from './Info.less'
 import { color, config } from 'utils'
 
 const status = {

@@ -24,6 +24,7 @@ export default modelExtend(pageModel, {
     sequence: '',
     disable: '',
     show: 1,
+    newItem: false,
   },
 
   subscriptions: {
@@ -32,6 +33,13 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/master/employee') {
           dispatch({
             type: 'querySequenceEmployee',
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
           })
         }
       })
@@ -95,7 +103,7 @@ export default modelExtend(pageModel, {
         data = yield call(add, { id: sequence.data, data: employeeData })
         if (data.success) {
           yield put({ type: 'query' })
-          const employeeIncrease = yield call(increaseSequence, seqDetail)
+          const employeeIncrease = yield call(increaseSequence, 'EMP')
           if (employeeIncrease.success) {
             success(sequence.data)
           } else {
@@ -105,6 +113,7 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'querySequenceEmployee'
           })
+          yield put({ type: 'updateState', payload: { newItem: true } })
         } else {
           throw data
           console.log('data :', data.message)
@@ -122,11 +131,12 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success(id)
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
     },
-    * lovForUser ({ payload }, { call, put }) {
+    *lovForUser ({ payload }, { call, put }) {
       const data = yield call(queryField, { fields: 'employeeId,employeeName,email,positionName', for: 'user' })
 
       if ( data.success ) {

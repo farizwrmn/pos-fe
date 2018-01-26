@@ -15,7 +15,7 @@ const { pos, posdetail } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  const storeId = lstorage.getCurrentUserStore()  
+  const storeId = lstorage.getCurrentUserStore()
   params.storeId = storeId
   const url = pos
   return request({
@@ -39,16 +39,18 @@ export async function queryPos (params) {
 
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   const url = `${posdetail}/${encodeURIComponent(params.id)}`
   return request({
     url: url,
     method: 'get',
+    data: params,
     headers: apiHeaderToken,
   })
 }
 
 export async function create (params) {
-  const apiHeaderToken = crypt.apiheader()  
+  const apiHeaderToken = crypt.apiheader()
   const url = pos + '/code/' + encodeURIComponent(params.transNo)
   return request({
     url: url,

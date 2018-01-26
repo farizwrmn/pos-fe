@@ -19,12 +19,20 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listUnit: [],
+    newItem: false,
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/master/customerunit') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0',
+            },
+          })
           // const payload = location.query
           // dispatch({
           //   type: 'query',
@@ -56,8 +64,9 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(addUnit, payload)
       if (data.success) {
-        // yield put({ type: 'query' })
+        yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }
@@ -82,6 +91,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
+        yield put({ type: 'updateState', payload: { newItem: true } })
       } else {
         throw data
       }

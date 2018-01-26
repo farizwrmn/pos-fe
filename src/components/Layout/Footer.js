@@ -8,9 +8,12 @@ import { config } from 'utils'
 // </div>
 
 const Footer = ({ otherClass }) => {
-  return (<div className={`${styles.footer} ${otherClass}`}>
-    {config.footerText + '\n' + config.version}
-  </div>)
+  return (
+    <div className={`${styles.footer} ${otherClass}`}>
+      <span>{config.footerText + ' - ' + config.footerSubText}</span>
+      {/*<span>{config.footerSubText}</span>*/}
+    </div>
+  )
 }
 
 Footer.propTypes = {

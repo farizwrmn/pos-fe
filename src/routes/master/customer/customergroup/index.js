@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
+import { NewForm } from '../../../components'
 
 const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
-  const { listGroup, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customergroup
+  const { listGroup, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customergroup
   const { pageSize } = pagination
   const { user, storeInfo } = app
   const filterProps = {
@@ -125,9 +126,29 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
     },
   }
 
+  const page = (boolean) => {
+    let currentPage
+    if (boolean) {
+      const newFormProps = {
+        onClickNew () {
+          dispatch({
+            type: 'customergroup/updateState',
+            payload: {
+              newItem: false,
+            },
+          })
+        },
+      }
+      currentPage = <NewForm {...newFormProps} />
+    } else {
+      currentPage = <Form {...formProps} />
+    }
+    return currentPage
+  }
+
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      {page(newItem)}
     </div>
   )
 }
