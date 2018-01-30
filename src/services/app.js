@@ -42,15 +42,12 @@ export async function query (params) {
       return { "success": false, "message": "URL Mismatch" }
     } else {
       if (apiHeaderToken) {
-        console.log('zz1',userRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]))
-
         return request({
           url: userRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]),
           method: 'get',
           headers: apiHeaderToken,
         })
       } else {
-        console.log('zz6')
         return request({
           url: user.replace('/:id', ''),
           method: 'get',

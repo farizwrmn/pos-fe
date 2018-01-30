@@ -252,8 +252,7 @@ const modal = ({
   }
 
   const hdlOnCheckStore = (checkedKeys) => {
-    console.log('onCheck', checkedKeys)
-    modalNodeCheckedStore(item.userId, checkedKeys)
+    modalNodeCheckedStore(item.userId, checkedKeys.checked.filter(function(e){return e}))
   }
   const hdlOnSelectStore = (selectedKeys, info) => {
     console.log('onSelect', info);
@@ -416,6 +415,7 @@ const modal = ({
         <TabPane tab="Store" key="4">
           <Tree
             checkable
+            checkStrictly={true}
             autoExpandParent={true}
             defaultExpandAll={true}
             defaultCheckedKeys={listUserStores}
