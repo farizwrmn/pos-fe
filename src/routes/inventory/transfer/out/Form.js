@@ -5,6 +5,7 @@ import Filter from './Filter'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
+import { lstorage } from 'utils'
 
 const { Option, OptGroup } = Select
 const FormItem = Form.Item
@@ -80,6 +81,9 @@ const FormAdd = ({
   const formConfirmOpts = {
     listItem,
     itemHeader: {
+      storeId: {
+        label: lstorage.getCurrentUserStoreName(),
+      },
       ...getFieldsValue()
     },
     ...formConfirmProps

@@ -78,6 +78,7 @@ const formProductCategory = ({
   onSubmit,
   disabled,
   clickBrowse,
+  modalType,
   activeKey,
   button,
   listCategory,
@@ -172,7 +173,7 @@ const formProductCategory = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[A-Za-z0-9-._/]{3,30}$/i,
+                      pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i ,
                       message: 'a-Z & 0-9',
                     },
                   ],
@@ -199,7 +200,7 @@ const formProductCategory = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[A-Za-z0-9-._/]{3,30}$/i,
+                      pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i,
                       message: 'a-Z & 0-9',
                     },
                   ],

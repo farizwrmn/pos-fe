@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { query, add } from '../services/transferStockIn'
-import { query as queryOut, queryDetail as queryOutDetail, queryByTrans as queryByTransOut } from '../services/transferStockOut'
+import { query as queryOut, queryDetail as queryOutDetail, queryByTrans as queryByTransOut, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { pageModel } from './common'
 import moment from 'moment'
@@ -160,7 +160,7 @@ export default modelExtend(pageModel, {
         type: lstorage.getCurrentUserStore(),
       }
       const sequence = yield call(querySequence, sequenceParam)
-      const data = yield call(queryByTransOut, payload)
+      const data = yield call(queryByTransReceive, payload)
       let detailParams = {}
       if (data.success) {
         detailParams = {

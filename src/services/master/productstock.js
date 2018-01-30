@@ -57,11 +57,11 @@ export async function remove (params) {
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
+  const url = stock + '/code'
   return request({
     url: url,
     method: 'put',
-    data: params.data,
+    data: params,
     headers: apiHeaderToken,
   })
 }

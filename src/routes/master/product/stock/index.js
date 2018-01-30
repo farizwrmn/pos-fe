@@ -120,6 +120,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     ...listProps,
     listCategory,
     listBrand,
+    modalType,
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,

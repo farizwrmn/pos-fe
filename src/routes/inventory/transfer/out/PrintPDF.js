@@ -75,16 +75,16 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 12 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 12 }, {}, { text: 'PIC', fontSize: 12 }, ':', { text: (itemHeader.employeeId ? itemHeader.employeeId.label : '').toString(), fontSize: 12 }],
-            [{ text: 'TANGGAL', fontSize: 12 }, ':', { text: moment().format('YYYY/MM/DD'), fontSize: 12 }, {}, { text: 'NO POLISI', fontSize: 12 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 12 }],
-            [{ text: 'DARI', fontSize: 12 }, ':', { text: (itemHeader.storeId ? itemHeader.storeId.label : '').toString(), fontSize: 12 }, {}, { text: 'TOTAL COLLY', fontSize: 12 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 12 }],
-            [{ text: 'KEPADA', fontSize: 12 }, ':', { text: (itemHeader.storeIdReceiver ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 12 }, {}, { text: 'DESKRIPSI', fontSize: 12 }, ':', { text: (itemHeader.description || '').toString(), fontSize: 12 }],
+            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeId ? itemHeader.employeeId.label : '').toString(), fontSize: 11 }],
+            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('YYYY/MM/DD'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
+            [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeId ? itemHeader.storeId.label : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL COLLY', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
+            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeIdReceiver ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: (itemHeader.description || '').toString(), fontSize: 11 }],
           ],
         },
         layout: 'noBorders',
       },
       {
-        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 753, y2: 5, lineWidth: 0.5 }]
+        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
       },
     ],
     margin: [30, 12, 12, 30],
@@ -96,7 +96,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
         height: 160,
         stack: [
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
           },
           {
             // columns: [
@@ -225,7 +225,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
   const pdfProps = {
     className: "button-width02 button-extra-large bgcolor-blue",
     width: ['6%', '20%', '34%', '6%', '34%'],
-    pageMargins: [40, 150, 40, 150],
+    pageMargins: [40, 180, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
     tableStyle: styles,
