@@ -35,6 +35,20 @@ export default modelExtend(pageModel, {
               type: 'query',
             })
             break
+          case '/report/customer/history':
+            dispatch({
+              type: 'query',
+            })
+            break
+          case '/master/customer':
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: '0',
+              },
+            })
+            break
           default:
         }
       })

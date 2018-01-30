@@ -2,7 +2,7 @@
  * Created by Veirry on 18/09/2017.
  */
 import { query as queryReport, queryMechanic } from '../../services/report/service'
-import { queryMode as miscQuery} from '../../services/misc'
+import { queryMode as miscQuery } from '../../services/misc'
 import { parse } from 'qs'
 import { routerRedux } from 'dva/router'
 
@@ -11,6 +11,8 @@ export default {
 
   state: {
     list: [],
+    listMechanic: [],
+    listService: [],
     fromDate: '',
     toDate: '',
     productCode: 'ALL TYPE',
@@ -25,10 +27,24 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/service/summary') {
-          dispatch({
-            type: 'setListNull'
-          })
+        switch (location.pathname) {
+          case '/report/service/summary':
+            dispatch({
+              type: 'setListNull',
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'updateState',
+              payload: {
+                listService: [],
+                listMechanic: [],
+                fromDate: '',
+                toDate: '',
+              },
+            })
+            break
+          default:
         }
       })
     },
@@ -37,11 +53,11 @@ export default {
     * query ({ payload }, { call, put }) {
       let data = []
       if (payload) {
-        data = yield call (queryReport, payload)
+        data = yield call(queryReport, payload)
       } else {
-        data = yield call (queryReport)
+        data = yield call(queryReport)
       }
-      yield put ({
+      yield put({
         type: 'querySuccess',
         payload: {
           list: data.data,
@@ -51,14 +67,26 @@ export default {
         },
       })
     },
+    * queryService ({ payload }, { call, put }) {
+      let data = []
+      if (payload) {
+        data = yield call(queryMechanic, payload)
+        yield put({
+          type: 'updateState',
+          payload: {
+            listService: data.data,
+          },
+        })
+      }
+    },
     * queryMechanic ({ payload }, { call, put }) {
       let data = []
       if (payload) {
-        data = yield call (queryMechanic, payload)
-        yield put ({
-          type: 'querySuccess',
+        data = yield call(queryMechanic, payload)
+        yield put({
+          type: 'querySuccessMechanic',
           payload: {
-            list: data.data,
+            listMechanic: data.data,
             fromDate: payload.from,
             toDate: payload.to,
             pagination: {
@@ -84,11 +112,27 @@ export default {
         },
       }
     },
-    setDate (state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
+    querySuccessMechanic (state, action) {
+      const { listMechanic, pagination, fromDate, toDate } = action.payload
+
+      return { ...state,
+        listMechanic,
+        fromDate,
+        toDate,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
     },
-    setListNull (state, action) {
-      return { ...state, list: []}
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    },
+    setDate (state, action) {
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
+    },
+    setListNull (state) {
+      return { ...state, list: [] }
     },
   },
 }

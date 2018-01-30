@@ -30,17 +30,25 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/master/employee') {
-          dispatch({
-            type: 'querySequenceEmployee',
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: '0',
-            },
-          })
+        switch (location.pathname) {
+          case '/master/employee':
+            dispatch({
+              type: 'querySequenceEmployee',
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: '0',
+              },
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'query',
+            })
+            break
+          default:
         }
       })
     },
@@ -136,10 +144,10 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-    *lovForUser ({ payload }, { call, put }) {
+    * lovForUser ({ payload }, { call, put }) {
       const data = yield call(queryField, { fields: 'employeeId,employeeName,email,positionName', for: 'user' })
 
-      if ( data.success ) {
+      if (data.success) {
         const employees = data.data
         const totalData = data.data.length
         yield put({
@@ -194,7 +202,7 @@ export default modelExtend(pageModel, {
         disable: '',
         show: 1,
       }
-      return { ...state, ...defaultState}
+      return { ...state, ...defaultState }
     },
 
   },

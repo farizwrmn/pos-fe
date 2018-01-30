@@ -252,6 +252,16 @@ const Routers = function ({ history, app }) {
             }, 'report-service-summary')
           },
         }, {
+          path: 'report/service/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/service'))
+              registerModel(app, require('./models/master/service'))
+              registerModel(app, require('./models/master/employee'))
+              cb(null, require('./routes/report/service/history/'))
+            }, 'report-service-history')
+          },
+        }, {
           path: 'report/adjust/in',
           getComponent(nextState, cb) {
             require.ensure([], require => {
@@ -309,6 +319,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               cb(null, require('./routes/maintenance/'))
             }, 'maintenance')
+          },
+        }, {
+          path: 'report/customer/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/customer'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/service'))
+              cb(null, require('./routes/report/customer/'))
+            }, 'report-customer-history')
           },
         }, {
           path: 'setting/user',

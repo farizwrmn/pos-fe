@@ -63,3 +63,14 @@ export async function queryPosDaily(params) {
     headers: apiHeaderToken,
   })
 }
+
+export async function queryCustomerHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posReport}/unit`
+  return request({
+    url: url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken,
+  })
+}
