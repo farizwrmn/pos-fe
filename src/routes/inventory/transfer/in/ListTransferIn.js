@@ -24,6 +24,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   transType: listTransOut.transType,
   carNumber: listTransOut.carNumber,
   description: listTransOut.description,
+  referenceTrans: listTransOut.referenceTrans,
   reference: listTransOut.reference } : {}
 
   const clickPrint = (record) => {

@@ -68,6 +68,12 @@ const modal = ({
         label: getFieldsValue().storeNameReceiver
       },
       transDate: moment(getFieldsValue().transDate).format('DD-MM-YYYY'),
+      employeeId: {
+        key: item.employeeId,
+        label: item.employeeName
+      },
+      employeeReceiver: getFieldsValue().employeeId ? getFieldsValue().employeeId.label : '',
+      referenceTrans: item.transNo,
       ...getFieldsValue()
     },
     listItem,
@@ -160,7 +166,6 @@ const modal = ({
             </FormItem>
             <FormItem label="Received By" hasFeedback {...formItemLayout}>
               {getFieldDecorator('employeeId', {
-                valuePropName: 'value',
                 rules: [
                   {
                     required: true,

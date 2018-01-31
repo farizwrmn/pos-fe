@@ -22,15 +22,6 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
   const { user, storeInfo } = app
   let listEmployee = list
   const changeTab = (key) => {
-    // if (activeTabKey === '1') {
-    //   dispatch({
-    //     type: 'transferIn/updateState',
-    //     payload: {
-    //       start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-    //       end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-    //     },
-    //   })
-    // }
     dispatch({
       type: 'transferIn/updateState',
       payload: {

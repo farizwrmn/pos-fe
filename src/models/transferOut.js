@@ -150,6 +150,7 @@ export default modelExtend(pageModel, {
           productId: arrayProd[n].productId,
           productCode: arrayProd[n].productCode,
           productName: arrayProd[n].productName,
+          transType: arrayProd[n].transType,
           qty: arrayProd[n].qty,
           dscription: arrayProd[n].dscription,
         })

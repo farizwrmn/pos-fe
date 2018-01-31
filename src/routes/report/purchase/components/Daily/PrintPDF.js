@@ -15,6 +15,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
+        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -148,6 +149,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
@@ -166,7 +168,8 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 2, alignment: 'center', fontSize: 12 },
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+      {},
       {},
       { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
@@ -181,7 +184,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
   // Declare additional Props
   const pdfProps = {
     className: "button-width02 button-extra-large bgcolor-blue",
-    width: ['5%', '22%', '5%', '12%', '11%', '11%', '11%', '11%', '12%'],
+    width: ['4%', '10%', '16%', '4%', '11%', '11%', '11%', '11%', '11%', '11%'],
     pageMargins: [40, 145, 40, 60],
     pageSize: 'A3',
     pageOrientation: 'landscape',

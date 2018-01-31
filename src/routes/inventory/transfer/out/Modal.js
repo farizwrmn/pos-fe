@@ -39,6 +39,7 @@ const modal = ({
   }
   const handleDelete = () => {
     const data = {
+      transType: currentItemList.transType,
       ...getFieldsValue(),
     }
     Modal.confirm({
