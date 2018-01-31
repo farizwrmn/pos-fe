@@ -8,7 +8,7 @@ import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
-import { query1store as queryStore } from '../services/store'
+// import { query1store as queryStore } from '../services/store'
 import { queryLastActive } from '../services/period'
 import { lstorage } from 'utils'
 
@@ -81,11 +81,11 @@ export default {
         const period = yield call(queryLastActive)
         const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
         const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
-        const storeCode = lstorage.getCurrentUserStoreCode()
+        // const storeCode = lstorage.getCurrentUserStoreCode()
         // const storeInfoData = yield call(queryStore, { code: storeCode })
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
         const misc = yield call(miscQuery, { code: 'company'})
-        let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
+        // let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
         storeInfo.stackHeader01 = [
