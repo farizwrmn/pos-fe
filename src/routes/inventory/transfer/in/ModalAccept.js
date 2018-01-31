@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { Form, Modal, DatePicker, Select, Input, Row, Col } from 'antd'
 import moment from 'moment'
 import List from './ListItem'
+import ModalConfirm from './ModalConfirm'
+import { lstorage } from 'utils'
+import { formatPattern } from 'dva/router';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -31,16 +34,45 @@ const modal = ({
   getEmployee,
   hideEmployee,
   onOk,
+  onOkPrint,
+  user,
+  storeInfo,
+  listItem,
+  modalConfirmVisible,
   form: {
     getFieldDecorator,
     resetFields,
     validateFields,
     getFieldsValue,
   },
+  ...formConfirmProps,
   ...modalAcceptProps,
 }) => {
   const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
-
+  const formConfirmOpts = {
+    user,
+    storeInfo,
+    onOkPrint,
+    itemPrint: {
+      transNo: getFieldsValue().transNo
+    },
+    itemHeader: {
+      storeId: {
+        label: getFieldsValue().storeName,
+      },
+      transNo: getFieldsValue().transNo,
+      storeName: {
+        label: getFieldsValue().storeNameReceiver
+      },
+      storeNameSender: {
+        label: getFieldsValue().storeNameReceiver
+      },
+      transDate: moment(getFieldsValue().transDate).format('DD-MM-YYYY'),
+      ...getFieldsValue()
+    },
+    listItem,
+    ...formConfirmProps
+  }
   const handleReset = () => {
     resetFields()
     resetItem()
@@ -59,7 +91,7 @@ const modal = ({
         storeIdSender: item.storeId,
         reference: item.id,
         transType: data.transType,
-        employeeId: item.employeeId,
+        employeeId: data.employeeId.key,
         carNumber: item.carNumber,
         totalColly: item.totalColly,
         description: item.description
@@ -81,6 +113,7 @@ const modal = ({
   }
 
   return (
+    <div>
     <Modal {...modalOpts}>
       <Form layout="horizontal">
         <Row>
@@ -191,7 +224,9 @@ const modal = ({
         </Row>
       </Form>
       <List dataSource={listTransDetail} />
+      {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}          
     </Modal>
+    </div>
   )
 }
 

@@ -2,19 +2,44 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Tabs } from 'antd'
 import moment from 'moment'
 import CardIn from './CardIn'
 import Filter from './Filter'
 import Modal from './Modal'
 import ModalAccept from './ModalAccept'
+import ModalConfirm from './ModalConfirm'
+import ListTransfer from './ListTransferIn'
+import FilterTransfer from './FilterTransferIn'
+
+const TabPane = Tabs.TabPane
+
 moment.locale('id')
 
-const Transfer = ({ transferIn, employee, dispatch }) => {
-  const { listTrans, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber } = transferIn
+const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
+  const { listTrans, listTransIn, listProducts, listTransferIn, activeTabKey, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber, filter, sort, showPrintModal, modalConfirmVisible } = transferIn
   const { list } = employee
+  const { user, storeInfo } = app
   let listEmployee = list
+  const changeTab = (key) => {
+    // if (activeTabKey === '1') {
+    //   dispatch({
+    //     type: 'transferIn/updateState',
+    //     payload: {
+    //       start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+    //       end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+    //     },
+    //   })
+    // }
+    dispatch({
+      type: 'transferIn/updateState',
+      payload: {
+        activeTabKey: key.toString(),
+      }
+    })
+  }
   const filterProps = {
+    activeTabKey: activeTabKey,
     listTrans,
     resetModal () {
       dispatch({
@@ -27,8 +52,8 @@ const Transfer = ({ transferIn, employee, dispatch }) => {
         payload: {
           active: 1,
           status: 0,
-          start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss'),
-          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss'),
+          start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
         },
       })
     },
@@ -46,8 +71,8 @@ const Transfer = ({ transferIn, employee, dispatch }) => {
         type: 'transferIn/queryCode',
         payload: {
           period: dateString,
-          start: moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss'),
-          end: moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss'),
+          start: moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
           active: 1,
           status: 0
         },
@@ -123,10 +148,47 @@ const Transfer = ({ transferIn, employee, dispatch }) => {
       </Row>
     )
   }
-
+  const formConfirmProps = {
+    visible: modalConfirmVisible,
+    modalConfirmVisible,
+    itemPrint: currentItem,
+    listItem: listTransDetail,
+    user,
+    storeInfo,
+    wrapClassName: 'vertical-center-modal',
+    onShowModal(item) {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          modalConfirmVisible: true
+        }
+      })
+    },
+    onOkPrint(item) {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    }
+  }
   const modalAcceptProps = {
+    ...formConfirmProps,
+    modalConfirmVisible,
     item: transHeader,
     listTransDetail,
+    user,
+    storeInfo,
+    listItem: listTransDetail,
     listEmployee,
     sequenceNumber,
     width: '700px',
@@ -167,14 +229,108 @@ const Transfer = ({ transferIn, employee, dispatch }) => {
       })
     },
   }
+  const filterTransferProps = {
+    period,
+    filter: {
+      ...location.query,
+    },
+    filterChange (date) {
+      dispatch({
+        type: 'transferIn/queryTransferIn',
+        payload: {
+          start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+        },
+      })
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          period: date,
+        },
+      })
+    },
+    filterTransNo (date, no) {
+      dispatch({
+        type: 'transferIn/queryTransferIn',
+        payload: {
+          start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+          transNo: no,
+        },
+      })
+    },
+  }
+  const listTransferProps = {
+    dataSource: listTransferIn,
+    listTransferIn,
+    listProducts,
+    listTransOut: listTransIn,
+    loading: loading.effects['transferOut/queryTransferOut'],
+    location,
+    filter,
+    sort,
+    storeInfo,
+    showPrintModal,
+    user,
+    updateFilter (filters, sorts) {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          filter: filters,
+          sort: sorts,
+        },
+      })
+    },
+    getProducts (transNo) {
+      dispatch({
+        type: 'transferIn/queryProducts',
+        payload: {
+          transNo,
+        },
+      })
+    },
+    getTrans (transNo, storeId) {
+      dispatch({
+        type: 'transferIn/queryByTrans',
+        payload: {
+          transNo,
+          storeId,
+        },
+      })
+    },
+    onShowPrint () {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          showPrintModal: true,
+        },
+      })
+    },
+    onClosePrint () {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          showPrintModal: false,
+        },
+      })
+    },
+  }
   return (
     <div className="content-inner">
-      <Row>
-        <Filter {...filterProps} />
-      </Row>
-      {modalVisible && <Modal {...modalProps} />}
-      {modalAcceptVisible && <ModalAccept {...modalAcceptProps} />}
-      {getComponentCard(listTrans)}
+      <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
+        <TabPane tab="List" key="0">
+          <Row>
+            <Filter {...filterProps} />
+          </Row>
+          {modalVisible && <Modal {...modalProps} />}
+          {modalAcceptVisible && <ModalAccept {...modalAcceptProps} />}
+          {getComponentCard(listTrans)}
+        </TabPane>
+        <TabPane tab="Archieve" key="1">
+          <FilterTransfer {...filterTransferProps} />
+          <ListTransfer {...listTransferProps} />
+        </TabPane>
+      </Tabs>
     </div>
   )
 }
@@ -183,7 +339,9 @@ Transfer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   transferIn: PropTypes.object,
   employee: PropTypes.object,
+  loading: PropTypes.object,
+  app: PropTypes.object
 }
 
-export default connect(({ transferIn, employee }) => ({ transferIn, employee }))(Transfer)
+export default connect(({ transferIn, employee, loading, app }) => ({ transferIn, employee, loading, app }))(Transfer)
 

@@ -4,6 +4,7 @@ import { Button, Icon, Tooltip } from 'antd'
 
 const Filter = ({
   openModal,
+  activeTabKey,
   resetModal,
   listTrans
 }) => {
@@ -15,7 +16,7 @@ const Filter = ({
   }
   return (
     <div>
-      <Tooltip visible={listTrans.length <= 0} placement="bottomLeft" title="Search transfer list card">
+      <Tooltip visible={listTrans.length <= 0 && activeTabKey === "0"} placement="bottomLeft" title="Search transfer list card">
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-blue"

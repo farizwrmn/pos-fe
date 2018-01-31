@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, add } from '../services/transferStockIn'
+import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
 import { query as queryOut, queryDetail as queryOutDetail, queryByTrans as queryByTransOut, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { pageModel } from './common'
@@ -15,7 +15,7 @@ const error = (err) => {
 }
 const { prefix } = config
 
-const localDate = JSON.parse(localStorage.getItem(`${prefix}store`))
+const localDate = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 export default modelExtend(pageModel, {
   namespace: 'transferIn',
   state: {
@@ -23,16 +23,28 @@ export default modelExtend(pageModel, {
     transNo: [],
     storeId: [],
     listTrans: [],
+    listTransIn: [],
     transHeader: {},
     listTransDetail: [],
+    listTransferIn: [],
+    listProducts: [],
     listItem: [],
     currentItem: {},
     addItem: {},
+    activeTabKey: "0",
     sequenceNumber: "",
     modalVisible: false,
     modalAcceptVisible: false,
+    modalConfirmVisible: false,
     searchVisible: false,
     formType: 'add',
+    display: 'none',
+    activeKey: '0',
+    disable: '',
+    period: moment(localDate.startPeriod).format('YYYY-MM'),
+    filter: null,
+    sort: null,
+    showPrintModal: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -153,6 +165,22 @@ export default modelExtend(pageModel, {
         }
       }
     },
+    * queryTransferIn ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferIn: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total,
+            },
+          },
+        })
+      }
+    },
     * queryOutDetail({ payload= {} }, { call, put }) {
       const { start, end, ...other } = payload
       const sequenceParam = {
@@ -196,9 +224,14 @@ export default modelExtend(pageModel, {
           error(increaseSequence)
         }
         yield put({
-          type: 'resetAll'
+          type: 'updateState',
+          payload: {
+            // modalAcceptVisible: false,
+            modalConfirmVisible: true,
+            showPrintModal: true
+          }
         })
-        setInterval(function () { location.reload() }, 1000)
+        // setInterval(function () { location.reload() }, 1000)
       } else {
         error(data)
         throw data
@@ -210,6 +243,26 @@ export default modelExtend(pageModel, {
       // } else {
       //   throw data
       // }
+    },
+    * queryProducts ({ payload = {} }, { call, put }) {
+      const data = yield call(queryInDetail, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessProducts',
+          payload: data.mutasi,
+        })
+      }
+    },
+    * queryByTrans ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTransIn, payload)
+      if (data.mutasi) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransIn: data.mutasi
+          },
+        })
+      }
     },
   },
 
@@ -246,6 +299,10 @@ export default modelExtend(pageModel, {
           ...pagination,
         },
       }
+    },
+
+    querySuccessProducts (state, action) {
+      return { ...state, listProducts: action.payload }
     },
 
     showModal (state, { payload }) {

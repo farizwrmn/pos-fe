@@ -108,25 +108,21 @@ export default {
         storeInfo.stackHeader02 = [
           {
             text: (name || ''),
-            style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
             text: (storeInfoData.address01 || ''),
-            style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
             text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || ''),
-            style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
           {
             text: ' ',
-            style: 'header',
             fontSize: 11,
             alignment: 'left'
           },
