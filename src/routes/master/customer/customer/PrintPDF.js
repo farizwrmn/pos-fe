@@ -7,15 +7,15 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const styles = {
     tableHeader: {
       bold: true,
-      fontSize: 13,
+      fontSize: 12,
       color: 'black',
     },
     headerStoreName: {
-      fontSize: 18,
+      fontSize: 16,
       margin: [45, 10, 0, 0],
     },
     headerTitle: {
-      fontSize: 16,
+      fontSize: 13,
       margin: [45, 2, 0, 0],
     },
   }
@@ -28,11 +28,12 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     top: {
       col_1: { text: 'ID', style: 'tableHeader', alignment: 'center' },
       col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
-      col_3: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
-      col_4: { text: 'KOTA', style: 'tableHeader', alignment: 'center' },
-      col_5: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center' },
-      col_6: { text: 'NO.HP', style: 'tableHeader', alignment: 'center' },
-      col_7: { text: 'TIPE', style: 'tableHeader', alignment: 'center' },
+      col_3: { text: 'TGL LAHIR', style: 'tableHeader', alignment: 'center' },
+      col_4: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
+      col_5: { text: 'KOTA', style: 'tableHeader', alignment: 'center' },
+      col_6: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center' },
+      col_7: { text: 'NO.HP', style: 'tableHeader', alignment: 'center' },
+      col_8: { text: 'TIPE', style: 'tableHeader', alignment: 'center' },
     },
   }
 
@@ -49,6 +50,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push(data.col_5)
         row.push(data.col_6)
         row.push(data.col_7)
+        row.push(data.col_8)
         head.push(row)
       }
     }
@@ -61,13 +63,14 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       if (tableData.hasOwnProperty(key)) {
         let data = tableData[key]
         let row = []
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'center' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'center' })
+        row.push({ text: (data.memberCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.memberName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.birthDate || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.address01 || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.cityName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
     }
@@ -122,8 +125,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     buttonSize: '',
     name: 'PDF',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['10%', '20%', '22%', '10%', '13%', '13%', '12%'],
-    pageSize: { width: 813, height: 530 },
+    width: ['12%', '17%', '9%', '21%', '8%', '11%', '11%', '11%'],
+    pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 80, 40, 60],
     tableStyle: styles,
