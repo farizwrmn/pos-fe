@@ -169,6 +169,7 @@ export default {
           name: ary[n].name,
           price: ary[n].price,
           qty: ary[n].qty,
+          typeCode: ary[n].typeCode,
           total: ary[n].total,
         })
       }
@@ -220,6 +221,7 @@ export default {
           name: ary[n].name,
           price: ary[n].price,
           qty: ary[n].qty,
+          typeCode: ary[n].typeCode,
           total: ary[n].total,
         })
       }
@@ -1047,6 +1049,7 @@ export default {
             name: ary[n].name,
             price: ary[n].price,
             qty: ary[n].qty,
+            typeCode: ary[n].typeCode,
             total: ary[n].total,
           })
         }
