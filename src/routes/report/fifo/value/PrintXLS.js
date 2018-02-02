@@ -188,7 +188,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       }
 
       sheet.getCell('J2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('J2').value = 'LAPORAN REKAP FIFO + NILAI PERSEDIAAN'
+      sheet.getCell('J2').value = 'LAPORAN NILAI PERSEDIAAN'
       sheet.getCell('J3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('J3').value = `${storeInfo.name}`
       sheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' }

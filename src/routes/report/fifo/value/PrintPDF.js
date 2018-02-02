@@ -82,7 +82,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
             stack: storeInfo.stackHeader01,
           },
           {
-            text: 'LAPORAN REKAP FIFO',
+            text: 'LAPORAN NILAI PERSEDIAAN',
             style: 'header',
             fontSize: 18,
             alignment: 'center',

@@ -41,10 +41,11 @@ const dataTrans = () => {
   return (arrayProd)
 }
 
-const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
+const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
   const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans, usingWo, woNumber } = payment
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter } = pos
   const { user, setting } = app
+  const { listLov } = misc
   //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = { 17: false, 16: false, 32: false }
   /*
@@ -252,23 +253,34 @@ const Payment = ({ location, loading, dispatch, pos, payment, app }) => {
     dispatch(routerRedux.push('/transaction/pos'))
   }
 
-  const options = [
-    {
-      value: 'C',
-      label: 'Cash',
-    },
-    {
-      value: 'K',
-      label: 'Credit Card',
-    },
-    {
-      value: 'D',
-      label: 'Debit Card',
-    },
-    {
-      value: 'P',
-      label: 'Pending',
-    }]
+  let options = []
+  if (listLov.payment ? listLov.payment.length > 0 : false ) {
+    for (let key in listLov.payment) {
+      options.push({
+        value: listLov.payment[key].miscVariable,
+        label: listLov.payment[key].miscDesc
+      })
+    }
+  } else {
+    options = [
+      {
+        value: 'C',
+        label: 'Cash',
+      },
+      {
+        value: 'K',
+        label: 'Credit Card',
+      },
+      {
+        value: 'D',
+        label: 'Debit Card',
+      },
+      {
+        value: 'P',
+        label: 'Pending',
+      }
+    ]
+  }
 
   const handleCreditCard = () => {
     console.log('input credit card')
@@ -475,6 +487,7 @@ Payment.propTypes = {
   dispatch: PropTypes.func,
   loading: PropTypes.object,
   payment: PropTypes.object,
+  misc: PropTypes.object,
 }
 
-export default connect(({ pos, payment, position, app, loading }) => ({ pos, payment, position, app, loading }))(Payment)
+export default connect(({ pos, payment, position, app, misc, loading }) => ({ pos, payment, position, app, misc, loading }))(Payment)

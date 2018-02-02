@@ -25,6 +25,8 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: location.query,
           })
+        } else if (location.pathname === '/transaction/pos/payment') {
+          dispatch({ type: 'misc/lovFullCode', payload: { code: 'PAYMENT' } })
         }
       })
     },
@@ -52,6 +54,27 @@ export default modelExtend(pageModel, {
     *lov ({ payload }, { call, put }) {
       const miscCode = payload.code
       const data = yield call(queryMode, { code: miscCode, fields: 'miscName,miscDesc', for: 'user' })
+      if ( data.success ) {
+        const dataLov = data.data
+        const totalData = data.data.length
+        yield put({
+          type: 'querySuccessLov',
+          payload: {
+            code: miscCode.toLowerCase('miscCode'),
+            listLov: { [ miscCode.toLowerCase('miscCode') ] : dataLov },
+            pagination: {
+              total: totalData,
+            },
+          },
+        })
+      } else {
+        console.log('not success')
+      }
+    },
+
+    * lovFullCode ({ payload }, { call, put }) {
+      const miscCode = payload.code
+      const data = yield call(queryMode, { code: miscCode, fields: 'miscName,miscDesc,miscVariable' })
       if ( data.success ) {
         const dataLov = data.data
         const totalData = data.data.length
