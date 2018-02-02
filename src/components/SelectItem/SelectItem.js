@@ -25,7 +25,7 @@ class SelectItem extends React.Component {
       if (option.includes('-1')) {
         option = allValue
       }
-      this.setState({ option })      
+      this.setState({ option })
     }
     this.triggerChange({ option })
   }

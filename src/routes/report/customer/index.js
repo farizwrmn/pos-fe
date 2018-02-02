@@ -78,7 +78,7 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
     onSearchClick (memberCode, data) {
       let fromDate = null
       let toDate = null
-      if (data.period.length === 2) {
+      if (data.period) {
         fromDate = moment(data.period[0]).format('YYYY-MM-DD')
         toDate = moment(data.period[1]).format('YYYY-MM-DD')
       }

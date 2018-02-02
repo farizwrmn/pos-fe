@@ -104,12 +104,23 @@ body {
 
   .ant-form-item-control {
     vertical-align: middle;
+    height:auto;
+    min-height:32px;
+    height:auto !important;        /* for IE as it does not support min-height */
+    height:32px;
   }
 
   .ant-form-item-margin-bottom {
     margin-bottom: 5px;
   }
   
+  .ant-select-selection--multiple {
+     white-space: nowrap;
+     min-height: 32px;
+     max-height: 80px;
+     overflow: scroll;
+  }
+
   .ant-form-item-label-float-left label{
     float: left
   }
