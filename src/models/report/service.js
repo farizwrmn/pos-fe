@@ -33,17 +33,6 @@ export default {
               type: 'setListNull',
             })
             break
-          case '/report/service/history':
-            dispatch({
-              type: 'updateState',
-              payload: {
-                listService: [],
-                listMechanic: [],
-                fromDate: '',
-                toDate: '',
-              },
-            })
-            break
           default:
         }
       })

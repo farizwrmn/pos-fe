@@ -8,7 +8,7 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
   const { listMechanic, listService, fromDate, toDate } = serviceReport
   const { user, storeInfo } = app
   const { list, listServiceType } = service
-  const listEmployee = employee.list
+  const { list: listEmployee } = employee
   const groupServiceCode = (listData, key) => {
     return listData.map(data => data[key]).filter((e, index, array) => index === array.indexOf(e))
   }
