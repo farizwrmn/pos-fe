@@ -204,8 +204,6 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.total,
             rules: [{
               required: true,
-              pattern: /^([0-9.]{0,13})$/i,
-              message: 'Total is not define',
             }],
           })(<Input disabled />)}
         </FormItem>
