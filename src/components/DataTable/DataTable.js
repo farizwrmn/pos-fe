@@ -13,13 +13,13 @@ class DataTable extends React.Component {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: 100 },
+      total: 100 }
     } = props
     this.state = {
       loading: false,
       dataSource,
       fetchData: {},
-      pagination,
+      pagination
     }
   }
 
@@ -50,8 +50,8 @@ class DataTable extends React.Component {
         page: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order,
-        ...filters,
-      },
+        ...filters
+      }
     }, () => {
       this.fetch()
     })
@@ -65,10 +65,10 @@ class DataTable extends React.Component {
       url,
       data: {
         ...data,
-        ...fetchData,
-      },
+        ...fetchData
+      }
     }).then((result) => {
-      if (!this.refs.DataTable) {
+      if (!this.DataTable) {
         return
       }
       const { pagination } = this.state
@@ -76,7 +76,7 @@ class DataTable extends React.Component {
       this.setState({
         loading: false,
         dataSource: dataKey ? result[dataKey] : result.data,
-        pagination,
+        pagination
       })
     })
   }
@@ -86,7 +86,7 @@ class DataTable extends React.Component {
     const { loading, dataSource, pagination } = this.state
 
     return (<Table
-      ref="DataTable"
+      href="DataTable"
       bordered
       loading={loading}
       onChange={this.handleTableChange}
@@ -99,14 +99,14 @@ class DataTable extends React.Component {
 
 
 DataTable.propTypes = {
-  fetch: PropTypes.object,
-  rowKey: PropTypes.string,
+  fetch: PropTypes.object.isRequired,
+  rowKey: PropTypes.string.isRequired,
   pagination: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object,
+    PropTypes.bool.isRequired,
+    PropTypes.object
   ]),
-  columns: PropTypes.array,
-  dataSource: PropTypes.array,
+  columns: PropTypes.array.isRequired,
+  dataSource: PropTypes.array
 }
 
 export default DataTable

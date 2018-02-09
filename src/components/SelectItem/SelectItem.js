@@ -1,17 +1,17 @@
-// import React from 'react'
-import { Select, Input } from 'antd'
+import React from 'react'
+import { Select } from 'antd'
 
 const Option = Select.Option
 
 class SelectItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     const value = this.props.value || {}
     this.state = {
-      option: value.option || [],
+      option: value.option || []
     }
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     // Should be a controlled component.
     if ('value' in nextProps) {
       const value = nextProps.value
@@ -36,22 +36,22 @@ class SelectItem extends React.Component {
       onChange(Object.assign({}, this.state, changedValue))
     }
   }
-  render() {
-    const { list, mode, size, style, componentKey, allowClear, componentValue, placeholder, onChange, ...rest } = this.props
+  render () {
+    const { list, mode, size, style, componentKey, allowClear, componentValue, placeholder } = this.props
     const state = this.state
     let options = []
     options.push(<Option value="-1">Select All</Option>)
-    for (let key in list) {
+    for (let key = 0; key < list.length; key += 1) {
       options.push(<Option value={list[key][componentKey]}>{list[key][componentValue]}</Option>)
     }
     return (
       <span>
         <Select
-          mode={mode || "combobox"}
+          mode={mode || 'combobox'}
           value={state.option}
-          style={style ? style : { width: "100%" }}
+          style={style || { width: '100%' }}
           onChange={this.handleChange}
-          placeholder={placeholder || ""}
+          placeholder={placeholder || ''}
           allowClear={allowClear || true}
           size={size}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Icon, Modal } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 const BasicInvoice = ({
   name,
@@ -11,30 +12,28 @@ const BasicInvoice = ({
   pageSize = 'A4',
   pageOrientation = 'portrait',
   tableStyle,
-  style,
-  layout = "",
+  layout = '',
   tableHeader = [],
   tableBody = [],
   tableFooter = [],
   data,
-  headerMargin = [0, 0, 0, 0],
   header = {},
   footer = {}
 }) => {
-  const createPdfLineItems = (tabledata) => {
+  const createPdfLineItems = () => {
     let body = []
     if (tableHeader.length > 0) {
-      for (let c in tableHeader) {
+      for (let c = 0; c < tableFooter.length; c += 1) {
         body.push(tableHeader[c])
       }
     }
     if (tableBody.length > 0) {
-      for (let c in tableBody) {
+      for (let c = 0; c < tableFooter.length; c += 1) {
         body.push(tableBody[c])
       }
     }
     if (tableFooter.length > 0) {
-      for (let c in tableFooter) {
+      for (let c = 0; c < tableFooter.length; c += 1) {
         body.push(tableFooter[c])
       }
     }
@@ -46,33 +45,33 @@ const BasicInvoice = ({
       console.log('footer', tableFooter.length)
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else if (tableBody.length === 0) {
       console.log('body', tableBody.length)
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else {
       const content = createPdfLineItems(data)
       let docDefinition = {
-        pageSize: pageSize,
-        pageOrientation: pageOrientation,
-        pageMargins: pageMargins,
-        header: header,
+        pageSize,
+        pageOrientation,
+        pageMargins,
+        header,
         content: [
           {
             writable: true,
             table: {
               widths: width,
               headerRows: tableHeader.length,
-              body: content,
+              body: content
             },
-            layout: layout,
-          },
+            layout
+          }
         ],
-        footer: footer,
+        footer,
         styles: tableStyle
       }
       try {
@@ -83,7 +82,8 @@ const BasicInvoice = ({
     }
   }
   return (
-    <Button type="dashed" size="large"
+    <Button type="dashed"
+      size="large"
       className={className}
       onClick={() => printPdf(data)}
     >
@@ -93,4 +93,4 @@ const BasicInvoice = ({
   )
 }
 
-export default BasicInvoice;
+export default BasicInvoice

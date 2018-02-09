@@ -1,33 +1,32 @@
-import './index.html'
 import 'babel-polyfill'
 import dva from 'dva'
 import createLoading from 'dva-loading'
 import { browserHistory } from 'dva/router'
 import { message, notification } from 'antd'
+import './index.html'
 
 // 1. Initialize
 const app = dva({
   ...createLoading({
-    effects: true,
+    effects: true
   }),
   history: browserHistory,
   onError (error) {
     if (error) {
       if (error.message instanceof Object) {
         notification.config({ placement: 'bottomRight', duration: 3 })
-        for (let i = 0; i < error.message.errors.length; i++) {
+        for (let i = 0; i < error.message.errors.length; i += 1) {
           notification.open({
             type: 'error',
             message: error.message.message,
-            description: error.message.errors[i].message,
+            description: error.message.errors[i].message
           })
         }
       } else {
         message.error(error.message)
       }
     }
-
-  },
+  }
 })
 
 // 2. Model

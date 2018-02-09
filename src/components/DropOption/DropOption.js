@@ -43,11 +43,11 @@ const DropOption = ({ menuName, onMenuClick, menuOptions = [], buttonStyle, drop
 }
 
 DropOption.propTypes = {
-  onMenuClick: PropTypes.func,
+  onMenuClick: PropTypes.func.isRequired,
   menuOptions: PropTypes.array.isRequired,
-  buttonStyle: PropTypes.object,
-  dropdownProps: PropTypes.object,
-  menuName: PropTypes.string,
+  buttonStyle: PropTypes.object.isRequired,
+  dropdownProps: PropTypes.object.isRequired,
+  menuName: PropTypes.string.isRequired
 }
 
 export default DropOption

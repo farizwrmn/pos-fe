@@ -15,7 +15,7 @@ const RepeatReport = ({
   tableHeader = [],
   tableBody = [],
   tableFooter = [],
-  data = [],
+  data = []
 }) => {
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -28,8 +28,8 @@ const RepeatReport = ({
       height: 20000,
       firstSheet: 0,
       activeTab: 1,
-      visibility: 'visible',
-    },
+      visibility: 'visible'
+    }
   ]
 
   const sheet = workbook.addWorksheet('POS 1',
@@ -44,7 +44,7 @@ const RepeatReport = ({
         content.push({
           value: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).value = title[i].value,
           alignment: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).alignment = title[i].alignment,
-          font: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).font = title[i].font,
+          font: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).font = title[i].font
         })
       }
     }
@@ -55,7 +55,7 @@ const RepeatReport = ({
         content.push({
           value: sheet.getCell(`${String.fromCharCode(char)}${position}`).value = tableTitle[i][tableTitleValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableTitle[i][tableTitleValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${position}`).font = tableTitle[i][tableTitleValue].font,
+          font: sheet.getCell(`${String.fromCharCode(char)}${position}`).font = tableTitle[i][tableTitleValue].font
         })
       }
 
@@ -66,7 +66,7 @@ const RepeatReport = ({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).value = tableHeader[tableHeaderValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).alignment = tableHeader[tableHeaderValue].alignment,
           font: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).font = tableHeader[tableHeaderValue].font,
-          border: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).border = tableHeader[tableHeaderValue].border,
+          border: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).border = tableHeader[tableHeaderValue].border
         })
       }
 
@@ -78,7 +78,7 @@ const RepeatReport = ({
             value: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).value = tableBody[i][n][tableBodyValue].value,
             alignment: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).alignment = tableBody[i][n][tableBodyValue].alignment,
             font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font,
-            border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border,
+            border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
           })
         }
         tableBodyPosition += 1
@@ -91,7 +91,7 @@ const RepeatReport = ({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).alignment = tableFooter[i][tableFooterValue].alignment,
           font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font,
-          border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border,
+          border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
         })
       }
       position = position + 4 + tableBody[i].length
@@ -102,12 +102,12 @@ const RepeatReport = ({
     if (tableBody.length === 0) {
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else {
       createXLSLineItems()
-      workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      workbook.xlsx.writeBuffer().then((e) => {
+        let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
@@ -133,7 +133,7 @@ RepeatReport.propTypes = {
   tableHeader: PropTypes.array,
   tableBody: PropTypes.array,
   tableFooter: PropTypes.array,
-  data: PropTypes.array,
+  data: PropTypes.array
 }
 
 export default RepeatReport

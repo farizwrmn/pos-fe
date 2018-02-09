@@ -19,7 +19,7 @@ const BasicReport = ({
   header = [],
   body = [],
   footer = [],
-  data = [],
+  data = []
 }) => {
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -32,8 +32,8 @@ const BasicReport = ({
       height: 20000,
       firstSheet: 0,
       activeTab: 1,
-      visibility: 'visible',
-    },
+      visibility: 'visible'
+    }
   ]
 
   const sheet = workbook.addWorksheet('POS 1',
@@ -48,7 +48,7 @@ const BasicReport = ({
         content.push({
           value: sheet.getCell(`${String.fromCharCode(code)}${position}`).value = title[i].value,
           alignment: sheet.getCell(`${String.fromCharCode(code)}${position}`).alignment = title[i].alignment,
-          font: sheet.getCell(`${String.fromCharCode(code)}${position}`).font = title[i].font,
+          font: sheet.getCell(`${String.fromCharCode(code)}${position}`).font = title[i].font
         })
       }
     }
@@ -62,7 +62,7 @@ const BasicReport = ({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = header[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = header[i][a].alignment,
             font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = header[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = header[i][a].border,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = header[i][a].border
           })
         }
         content.push(get[i])
@@ -79,7 +79,7 @@ const BasicReport = ({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = body[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = body[i][a].alignment,
             font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = body[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = body[i][a].border,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = body[i][a].border
           })
         }
         content.push(get[i])
@@ -95,7 +95,7 @@ const BasicReport = ({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = footer[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = footer[i][a].alignment,
             font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = footer[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = footer[i][a].border,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = footer[i][a].border
           })
         }
         content.push(get[i])
@@ -107,17 +107,17 @@ const BasicReport = ({
     if (header.length === 0 && footer.length === 0) {
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else if (body.length === 0) {
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else {
       createXLSLineItems()
-      workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      workbook.xlsx.writeBuffer().then((e) => {
+        let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
@@ -149,7 +149,7 @@ BasicReport.propTypes = {
   className: PropTypes.string,
   fileName: PropTypes.string,
   paperSize: PropTypes.string,
-  orientation: PropTypes.string,
+  orientation: PropTypes.string
 }
 
 export default BasicReport

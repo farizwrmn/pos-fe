@@ -12,11 +12,11 @@ const ChangePw = ({
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue,
-  },
+    getFieldsValue
+  }
 }) => {
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
 
   const togglePw = () => {
@@ -31,19 +31,18 @@ const ChangePw = ({
         return
       }
       let data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data = { confirm: data.newPassword, password: data.newPassword, oldpassword: data.oldPassword }
       onSaveButton(data)
     })
-
   }
 
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key='back' onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
-        <Button key='submit' type='primary' onClick={() => hdlButtonSaveClick()} >Save</Button>,
+        <Button key="back" onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
+        <Button key="submit" type="primary" onClick={() => hdlButtonSaveClick()} >Save</Button>
       ]}
     >
       <Card bordered={false} title="Change Password" >
@@ -53,10 +52,11 @@ const ChangePw = ({
             hasFeedback
           >
             {getFieldDecorator('oldPassword', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
+              rules: [{ required: true, message: 'Please input your Password!' }]
             })(
-              <Input type="password" placeholder="Password"
-                     prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
+              <Input type="password"
+                placeholder="Password"
+                prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
               />
             )}
           </FormItem>
@@ -67,12 +67,14 @@ const ChangePw = ({
 
             {getFieldDecorator('newPassword', {
               rules: [{
-                required: true, min: 8,
-                message: 'Please input your Password!' }],
+                required: true,
+                min: 8,
+                message: 'Please input your Password!' }]
             })(
-              <Input type={visiblePw ? 'text' : 'password'} placeholder="Password"
-                     prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
-                     suffix={<Icon type={visiblePw ? 'eye-o' : 'eye'} onClick={togglePw} style={{ marginRight: '20px' }} />}
+              <Input type={visiblePw ? 'text' : 'password'}
+                placeholder="Password"
+                prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
+                suffix={<Icon type={visiblePw ? 'eye-o' : 'eye'} onClick={togglePw} style={{ marginRight: '20px' }} />}
               />
             )}
           </FormItem>

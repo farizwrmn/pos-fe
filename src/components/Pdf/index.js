@@ -5,5 +5,5 @@ import BasicInvoice from './BasicInvoice'
 export default {
   BasicReport,
   RepeatReport,
-  BasicInvoice,
+  BasicInvoice
 }

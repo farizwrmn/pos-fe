@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './HeaderMenu.less'
 import { Icon, Tooltip, Popover } from 'antd'
 import { Link } from 'dva/router'
+import styles from './HeaderMenu.less'
 
 const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent }) => {
   const content = (
@@ -11,16 +11,16 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
     </div>
   )
   const childComp = (
-    <Tooltip placement='leftBottom' title={prompt}>
-      <div className={separator ? styles.void : styles.button + ' ' + styles[addClass || prompt]} onClick={onClick}>
-        <Link to={clickRoute}>
+    <Tooltip placement="leftBottom" title={prompt}>
+      <div className={separator ? styles.void : `${styles.button} ${styles[addClass || prompt]}`}>
+        <Link to={clickRoute} onClick={onClick}>
           <Icon type={icon || prompt} />
         </Link>
       </div>
     </Tooltip>
   )
   const parentComp = (
-    <Popover content={content} trigger='click'>
+    <Popover content={content} trigger="click">
       {childComp}
     </Popover>
   )
@@ -38,7 +38,7 @@ HeaderMenu.propTypes = {
   separator: PropTypes.bool,
   onClick: PropTypes.func,
   clickRoute: PropTypes.string,
-  popContent: PropTypes.array,
+  popContent: PropTypes.array
 }
 
 export default HeaderMenu

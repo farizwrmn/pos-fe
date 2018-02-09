@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './Footer.less'
 import { config } from 'utils'
+import styles from './Footer.less'
 
 // const Footer = () => <div className={styles.footer}>
 //   {config.footerText}
@@ -10,14 +10,14 @@ import { config } from 'utils'
 const Footer = ({ otherClass }) => {
   return (
     <div className={`${styles.footer} ${otherClass}`}>
-      <span>{config.footerText + ' - ' + config.footerSubText}</span>
-      {/*<span>{config.footerSubText}</span>*/}
+      <span>{`${config.footerText} - ${config.footerSubText}`}</span>
+      {/* <span>{config.footerSubText}</span> */}
     </div>
   )
 }
 
 Footer.propTypes = {
-  otherClass: PropTypes.string,
+  otherClass: PropTypes.string
 }
 
 export default Footer

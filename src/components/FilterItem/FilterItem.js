@@ -4,9 +4,8 @@ import styles from './FilterItem.less'
 
 const FilterItem = ({
   label = '',
-  children,
+  children
 }) => {
-  const labelArray = label.split('')
   return (
     <div className={styles.filterItem}>
       <div className={styles.labelWrap}>
@@ -21,7 +20,7 @@ const FilterItem = ({
 
 FilterItem.propTypes = {
   label: PropTypes.string,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.element
 }
 
 export default FilterItem

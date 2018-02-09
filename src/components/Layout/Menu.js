@@ -2,18 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon, message } from 'antd'
 import { Link } from 'dva/router'
-import { arrayToTree, queryArray } from 'utils'
+import { arrayToTree, queryArray, lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
-import { lstorage } from 'utils'
 
 const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
   const noStoreMessage = (type) => {
-    if (type==='info') {
+    if (type === 'info') {
       message.info('There is no store selected.\nPlease contact your IT.')
     } else {
       message.warning('There is no store selected.\nPlease contact your IT.')
     }
-
   }
 
   // 生成树状 - Generate a tree
@@ -92,7 +90,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
 
   let menuProps = !siderFold ? {
     onOpenChange,
-    openKeys: navOpenKeys,
+    openKeys: navOpenKeys
   } : {}
 
 
@@ -152,7 +150,7 @@ Menus.propTypes = {
   isNavbar: PropTypes.bool,
   handleClickNavMenu: PropTypes.func,
   navOpenKeys: PropTypes.array,
-  changeOpenKeys: PropTypes.func,
+  changeOpenKeys: PropTypes.func
 }
 
 export default Menus

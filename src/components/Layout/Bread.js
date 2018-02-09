@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import pathToRegexp from 'path-to-regexp'
+import { queryArray, lstorage } from 'utils'
 import { Breadcrumb, Icon } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
-import pathToRegexp from 'path-to-regexp'
-import { queryArray, lstorage } from 'utils'
 
 const Bread = ({ menu }) => {
   // user store
@@ -31,11 +31,11 @@ const Bread = ({ menu }) => {
     pathArray.push(menu[0] || {
       id: 1,
       icon: 'laptop',
-      name: 'Dashboard',
+      name: 'Dashboard'
     })
     pathArray.push({
       id: 404,
-      name: 'Not Found',
+      name: 'Not Found'
     })
   } else {
     getPathArray(current)
@@ -70,7 +70,7 @@ const Bread = ({ menu }) => {
 }
 
 Bread.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.array
 }
 
 export default Bread
