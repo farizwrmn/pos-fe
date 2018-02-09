@@ -71,10 +71,10 @@ const Filter = ({
       const data = { ...getFieldsValue() }      
       let from = moment(data.period).startOf('month').format('YYYY-MM-DD')
       let to = moment(data.period).endOf('month').format('YYYY-MM-DD')
-      if (data.serviceCode.option.length === 0) {
-        onSearchClick(from, to, data.serviceTypeId.option, data.employeeId.option)
+      if (data.serviceCode) {
+        onSearchClickWithService(from, to, data.serviceTypeId.option, data.employeeId.option, data.serviceCode.option)        
       } else {
-        onSearchClickWithService(from, to, data.serviceTypeId.option, data.employeeId.option, data.serviceCode.option)
+        onSearchClick(from, to, data.serviceTypeId.option, data.employeeId.option)        
       }
     })
   }

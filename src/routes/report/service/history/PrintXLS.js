@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
+const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
   let groupBy = (xs, key) => {
     return xs.reduce((rv, x) => {
       (rv[x[key]] = rv[x[key]] || []).push(x)
@@ -145,11 +145,9 @@ const PrintXLS = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
 PrintXLS.propTypes = {
   location: PropTypes.object,
   listRekap: PropTypes.array,
-//  dataSource: PropTypes.array,
   storeInfo: PropTypes.string,
   period: PropTypes.string,
   year: PropTypes.string,
-  //app: PropTypes.object,
 }
 
 export default PrintXLS

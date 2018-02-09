@@ -75,5 +75,6 @@ module.exports = {
     setting: `${APIURL}${APIV1}/setting`,
     stores: `${APIURL}${APIV1}/stores`,
     mobileBooking: `${APIURL}${APIV1}/mobile/booking`,
+    paymentOpts: `${APIURL}${APIV1}/payment`,
   },
 }

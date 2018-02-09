@@ -6,7 +6,7 @@ import { routerRedux } from 'dva/router'
 import { Form, Input, Table, Row, Col, Card, Cascader, Button, Modal } from 'antd'
 import moment from 'moment'
 import ModalCredit from './ModalCreditCard'
-import FormWo from '../FormWo'
+import PaymentMethod from './PaymentMethod'
 
 const { prefix } = config
 const FormItem = Form.Item
@@ -23,7 +23,7 @@ const dataTrans = () => {
   let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
   const cashier_trans = product.concat(service)
   let arrayProd = []
-  for (let n = 0; n < cashier_trans.length; n++) {
+  for (let n = 0; n < cashier_trans.length; n += 1) {
     arrayProd.push({
       no: n + 1,
       code: cashier_trans[n].code,
@@ -41,12 +41,12 @@ const dataTrans = () => {
   return (arrayProd)
 }
 
-const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
-  const { grandTotal, netto, totalPayment, totalChange, inputPayment, lastTransNo, creditCardNo, creditCardBank, creditCardType, creditCardTotal, creditCharge, modalCreditVisible, policeNo, typeTrans, usingWo, woNumber } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, lastMeter } = pos
+const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
+  const { totalPayment, totalChange, inputPayment, lastTransNo, creditCardTotal, creditCharge, modalCreditVisible, typeTrans, usingWo, woNumber } = payment
+  const { mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
   const { user, setting } = app
-  const { listLov } = misc
-  //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
+  const { listOpts } = paymentOpts
+  // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = { 17: false, 16: false, 32: false }
   /*
    Ascii => Desc
@@ -59,7 +59,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
     visible: modalCreditVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() {
+    onCancel () {
       dispatch({
         type: 'payment/hideCreditModal',
       })
@@ -69,28 +69,27 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
-    let mm = today.getMonth() + 1 //January is 0!
+    let mm = today.getMonth() + 1 // January is 0!
     let yyyy = today.getFullYear()
-
     if (dd < 10) {
-      dd = '0' + dd
+      dd = `0${dd}`
     }
-
     if (mm < 10) {
-      mm = '0' + mm
+      mm = `0${mm}`
     }
-
     if (mode === 1) {
       today = dd + mm + yyyy
-    }
-    else if (mode === 2) {
+    } else if (mode === 2) {
       today = mm + yyyy
-    }
-    else if (mode === 3) {
-      today = yyyy + '-' + mm + '-' + dd
+    } else if (mode === 3) {
+      today = `${yyyy}-${mm}-${dd}`
     }
 
     return today
+  }
+  const checkTime = (i) => {
+    if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
+    return i
   }
   const setTime = () => {
     let today = new Date()
@@ -100,22 +99,17 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
     m = checkTime(m)
     s = checkTime(s)
 
-    return h + ":" + m + ":" + s
-  }
-
-  const checkTime = (i) => {
-    if (i < 10) { i = "0" + i }  // add zero in front of numbers < 10
-    return i
+    return `${h}:${m}:${s}`
   }
 
   const onChange = (e) => {
     const { value } = e.target
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
       dispatch({
         type: 'payment/changePayment',
         payload: {
-          netto: parseInt(curTotal) + parseInt(curRounding),
+          netto: parseInt(curTotal, 10) + parseInt(curRounding, 10),
           totalPayment: value,
         },
       })
@@ -135,13 +129,13 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
     const dataPos = product.concat(service)
     let checkProductId = false
-    for (let n = 0; n < dataPos.length; n++) {
+    for (let n = 0; n < dataPos.length; n += 1) {
       if (dataPos[n].productId === 0) {
         checkProductId = true
         break
       }
     }
-    if ((parseInt(totalPayment) < parseInt(curTotal) + parseInt(curRounding))) {
+    if ((parseInt(totalPayment, 10) < parseInt(curTotal, 10) + parseInt(curRounding, 10))) {
       Modal.error({
         title: 'Payment',
         content: 'Total Payment must be greater than Netto...!',
@@ -170,8 +164,8 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
           transDate: getDate(1),
           transDate2: getDate(3),
           transTime: setTime(),
-          grandTotal: parseInt(curTotal) + parseInt(curTotalDiscount),
-          totalPayment: totalPayment,
+          grandTotal: parseInt(curTotal, 10) + parseInt(curTotalDiscount, 10),
+          totalPayment,
           creditCardNo: '',
           creditCardType: '',
           creditCardCharge: 0,
@@ -181,10 +175,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
           gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
           phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-          lastTransNo: lastTransNo,
+          lastTransNo,
           lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
           paymentVia: typeTrans.toString(),
-          totalChange: totalChange,
+          totalChange,
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           rounding: curRounding,
@@ -193,21 +187,20 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
           mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
           memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
           technicianId: mechanicInformation.mechanicCode,
-          curShift: curShift,
+          curShift,
           printNo: 1,
-          point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
-          curCashierNo: curCashierNo,
+          point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
+          curCashierNo,
           cashierId: user.userid,
           userName: user.username,
-          setting: setting,
+          setting,
           usingWo: (woNumber === '' || woNumber === null) ? false : true,
-          woNumber: woNumber === '' ? null : woNumber
-        }
+          woNumber: woNumber === '' ? null : woNumber,
+        },
       })
       dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
-
   }
 
   const printPreview = () => {
@@ -219,15 +212,15 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
         transDate2: getDate(3),
         transTime: setTime(),
         transDatePrint: moment().format('DD/MM/YYYY'),
-        grandTotal: parseInt(curTotal),
-        totalPayment: totalPayment,
+        grandTotal: parseInt(curTotal, 10),
+        totalPayment,
         company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
         gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
         phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
         address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
         lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
         lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
-        totalChange: totalChange,
+        totalChange,
         totalDiscount: curTotalDiscount,
         policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
         rounding: curRounding,
@@ -238,14 +231,14 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
         memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
         mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
         technicianId: mechanicInformation.mechanicCode,
-        curShift: curShift,
+        curShift,
         printNo: 1,
-        point: parseInt((parseInt(curTotal) - parseInt(curTotalDiscount)) / 10000),
-        curCashierNo: curCashierNo,
+        point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
+        curCashierNo,
         cashierId: user.userid,
-        usingWo: usingWo,
-        woNumber: woNumber
-      }
+        usingWo,
+        woNumber,
+      },
     })
   }
 
@@ -254,12 +247,14 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
   }
 
   let options = []
-  if (listLov.payment ? listLov.payment.length > 0 : false ) {
-    for (let key in listLov.payment) {
-      options.push({
-        value: listLov.payment[key].miscVariable,
-        label: listLov.payment[key].miscDesc
-      })
+  if (listOpts ? listOpts.length > 0 : false) {
+    for (let key in listOpts) {
+      if (Object.prototype.hasOwnProperty.call(listOpts, key)) {
+        options.push({
+          value: listOpts[key].typeCode,
+          label: listOpts[key].typeName,
+        })
+      }
     }
   } else {
     options = [
@@ -278,7 +273,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
       {
         value: 'P',
         label: 'Pending',
-      }
+      },
     ]
   }
 
@@ -311,40 +306,6 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
     }
   }
 
-  const formWoProps = {
-    usingWo,
-    woNumber,
-    formItemLayout: {
-      labelCol: {
-        span: 6,
-      },
-      wrapperCol: {
-        span: 18,
-      },
-      style: {
-        marginTop: '5px',
-        marginBottom: '5px'
-      }
-    },
-    generateSequence(params) {
-      dispatch({
-        type: 'payment/sequenceQuery',
-        payload: {
-          seqCode: 'WO'
-        }
-      })
-    },
-    notUsingWo(check, value) {
-      dispatch({
-        type: 'payment/querySequenceSuccess',
-        payload: {
-          usingWo: check,
-          woNumber: value
-        }
-      })
-    }
-  }
-
   return (
     <div className="content-inner">
       <Row style={{ marginBottom: 16 }}>
@@ -352,12 +313,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
           <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}>
             <Form layout="horizontal">
               <FormItem>
-                <Input size="large"
-                  autoFocus={true}
+                <Input
+                  size="large"
                   style={{ fontSize: 24 }}
                   value={inputPayment}
-                  onKeyDown={(e) => handleKeyDown(e)}
-                  onChange={(e) => onChange(e)}
+                  onKeyDown={e => handleKeyDown(e)}
+                  onChange={e => onChange(e)}
                   placeholder="Input Payment Amount Here"
                 />
                 <Cascader showSearch
@@ -372,12 +333,11 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
           </Card>
         </Col>
       </Row>
-
       <Row style={{ marginBottom: 16 }} gutter={16}>
-        <Col span={16}>
+        <Col xl={16} lg={16}>
+          <PaymentMethod autoFocus options={listOpts} />
           <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
             <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null} />
-            {/* <FormWo {...formWoProps} /> */}
             <Table
               rowKey={(record, key) => key}
               bordered
@@ -430,10 +390,10 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
             />
           </Card>
         </Col>
-        <Col span={8}>
+        <Col xl={8} lg={8}>
           <Form layout="horizontal">
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Grand Total" {...formItemLayout}>
-              <Input value={parseInt(curTotal)} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
+              <Input value={parseInt(curTotal, 10)} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
               <Input value={curTotalDiscount} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
@@ -448,7 +408,7 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
               <Input value={creditCharge} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-              <Input value={parseInt(curTotal) + parseInt(curRounding)} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
+              <Input value={parseInt(curTotal, 10) + parseInt(curRounding, 10)} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
               <Input value={totalPayment} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
@@ -463,9 +423,9 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
       <Row>
         <Col span={24}>
           <Form layout="vertical">
-            {/*<FormItem>*/}
-            {/*<Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>*/}
-            {/*</FormItem>*/}
+            {/* <FormItem>
+              <Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>
+            </FormItem> */}
             <FormItem>
               <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
             </FormItem>
@@ -480,14 +440,12 @@ const Payment = ({ location, loading, dispatch, pos, payment, app, misc }) => {
 }
 
 Payment.propTypes = {
-  pos: PropTypes.object,
-  app: PropTypes.object,
-  position: PropTypes.object,
-  location: PropTypes.object,
-  dispatch: PropTypes.func,
-  loading: PropTypes.object,
-  payment: PropTypes.object,
-  misc: PropTypes.object,
+  pos: PropTypes.object.isRequired,
+  position: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  payment: PropTypes.object.isRequired,
+  paymentOpts: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired,
 }
 
-export default connect(({ pos, payment, position, app, misc, loading }) => ({ pos, payment, position, app, misc, loading }))(Payment)
+export default connect(({ paymentOpts, pos, payment, position, app }) => ({ paymentOpts, pos, payment, position, app }))(Payment)

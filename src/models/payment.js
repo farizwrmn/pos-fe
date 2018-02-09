@@ -1,24 +1,25 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import config from 'config'
-import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
+import { lstorage } from 'utils'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
-import { editPoint as updateMemberPoint } from '../services/master/customer'
-import { queryMode as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
-import { lstorage } from 'utils'
-const { prefix } = config
+
 const terbilang = require('terbilang-spelling')
-const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+
+const { prefix } = config
+const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
+
 const { create, createDetail } = cashierService
-const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
+const { updateCashierTrans } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
+
 export default {
   namespace: 'payment',
   state: {
@@ -57,10 +58,10 @@ export default {
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(location => {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
         if (location.pathname === '/transaction/pos/payment') {
-          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore()} }) // type diganti storeId
+          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
         }
       })
     },
@@ -68,10 +69,10 @@ export default {
   // confirm payment
 
   effects: {
-    * create({ payload }, { call, put }) {
+    * create ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'INV',
-        type: lstorage.getCurrentUserStore()
+        type: lstorage.getCurrentUserStore(),
       }
       const transNo = yield call(querySequence, invoice)
       if ((transNo.data === null)) {
@@ -80,7 +81,7 @@ export default {
           content: `Cannot read transaction number, message: ${transNo.data}`,
         })
       } else if (payload.address === undefined) {
-        const modal = Modal.error({
+        Modal.error({
           title: 'Payment Fail',
           content: 'Address is Undefined',
         })
@@ -106,10 +107,10 @@ export default {
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         const dataPos = product.concat(service)
         const trans = transNo.data
-        const storeId = lstorage.getCurrentUserStore()        
+        const storeId = lstorage.getCurrentUserStore()
         for (let key = 0; key < dataPos.length; key += 1) {
           arrayProd.push({
-            storeId: storeId,
+            storeId,
             transNo: trans,
             productId: dataPos[key].productId,
             productCode: dataPos[key].code,
@@ -151,37 +152,11 @@ export default {
           woReference: payload.woNumber,
         }
         const point = parseInt((payload.grandTotal / 10000), 10)
-
-        // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-        // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        // const dataStock = listProductData.data
-        // let warningStock = []
-        // for (let key in product) {
-        //   let productId = product[key].productId
-        //   let filterDataStock = dataStock.filter(el => el.productId === productId)
-        //   let qtySell = product[key].qty
-        //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-        //   if (qtySell > qtyStock) {
-        //     product[key].qty = product[key].qty - qtyStock
-        //     warningStock = warningStock.concat(product[key])
-        //   }
-
-        // }
-        // const { setting } = payload
-        // let json = setting["Inventory"]
-        // let jsondata = JSON.stringify(eval("(" + json + ")"));
-        // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-        // if (outOfStock === 0) {
-        //   Modal.info({
-        //     title: 'No available stock',
-        //     content: JSON.stringify(warningStock)
-        //   })
-        // }
         const data_create = yield call(create, detailPOS)
         if (data_create.success) {
           const data_detail = yield call(createDetail, {
             data: arrayProd,
-            transNo: trans
+            transNo: trans,
           })
           if (data_detail.success) {
             try {
@@ -190,7 +165,7 @@ export default {
             } catch (e) {
               Modal.warning({
                 title: 'Something went wrong',
-                content: `Call your IT support, message: ${e}`
+                content: `Call your IT support, message: ${e}`,
               })
             }
             yield put({
@@ -222,7 +197,7 @@ export default {
                 technicianId: payload.technicianId,
                 curShift: payload.curShift,
                 printNo: 1,
-                point: point,
+                point,
                 curCashierNo: payload.curCashierNo,
                 cashierId: payload.cashierId,
                 userName: payload.userName,
@@ -231,15 +206,14 @@ export default {
               },
             })
             const data_cashier_trans_update = yield call(updateCashierTrans, {
-              total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
+              total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
               totalCreditCard: payload.totalCreditCard,
               status: 'O',
               cashierNo: payload.curCashierNo,
               shift: payload.curShift,
-              transDate: payload.transDate2
+              transDate: payload.transDate2,
             })
             if (data_cashier_trans_update.success) {
-              // yield call(updateMemberPoint, { point, memberCode: payload.memberId })
               Modal.info({
                 title: 'Information',
                 content: 'Transaction has been saved...!',
@@ -255,7 +229,7 @@ export default {
       }
     },
 
-    * setLastTrans({ payload }, { call, put }) {
+    * setLastTrans ({ payload }, { call, put }) {
       const transNo = yield call(querySequence, payload)
       localStorage.setItem('transNo', transNo.data)
       console.log('transNo', transNo.data)
@@ -264,7 +238,7 @@ export default {
         payload: transNo.data,
       })
     },
-    * listCreditCharge({ payload }, { put, call }) {
+    * listCreditCharge ({ payload }, { put, call }) {
       const data = yield call(listCreditCharge, payload)
       let newData = data.creditCharges
 
@@ -292,7 +266,7 @@ export default {
       }
     },
 
-    *getCreditCharge({ payload }, { call, put }) {
+    * getCreditCharge ({ payload }, { call, put }) {
       const data = yield call(getCreditCharge, payload.creditCode)
       let newData = data.creditCharges
 
@@ -309,29 +283,29 @@ export default {
         throw data
       }
     },
-    * sequenceQuery({ payload }, { call, put }) {
+    * sequenceQuery ({ payload }, { call, put }) {
       const data = yield call(querySequence, payload)
       let sequenceData = {}
       if (data.success) {
         if (payload.seqCode) {
           sequenceData = {
             usingWo: true,
-            woNumber: data.data
+            woNumber: data.data,
           }
         }
         yield put({
           type: 'querySequenceSuccess',
           payload: {
             listSequence: data.data,
-            ...sequenceData
-          }
+            ...sequenceData,
+          },
         })
       }
-    }
+    },
   },
 
   reducers: {
-    successPost(state, action) {
+    successPost (state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
@@ -354,84 +328,84 @@ export default {
       }
     },
 
-    listSuccess(state, action) {
+    listSuccess (state, action) {
       const { listCreditCharge } = action.payload
       return {
         ...state,
-        listCreditCharge: listCreditCharge,
+        listCreditCharge,
       }
     },
 
-    getCreditChargeSuccess(state, action) {
+    getCreditChargeSuccess (state, action) {
       const { creditCharge, netto, creditCardType } = action.payload
       return {
         ...state,
-        creditCharge: creditCharge,
-        creditChargeAmount: (parseInt(netto) * parseInt(creditCharge)) / 100,
-        creditCardTotal: (parseInt(netto) + ((parseInt(netto) * parseInt(creditCharge)) / 100)),
-        creditCardType: creditCardType,
+        creditCharge,
+        creditChargeAmount: (parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100,
+        creditCardTotal: (parseInt(netto, 10) + ((parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100)),
+        creditCardType,
       }
     },
 
-    updateState(state, { payload }) {
+    updateState (state, { payload }) {
       return {
         ...state,
         ...payload,
       }
     },
 
-    showModal(state, action) {
+    showModal (state, action) {
       return { ...state, ...action.payload, modalVisible: true }
     },
 
-    hideModal(state) {
+    hideModal (state) {
       return { ...state, modalVisible: false }
     },
 
-    showCreditModal(state, action) {
+    showCreditModal (state, action) {
       return { ...state, ...action.payload, modalCreditVisible: true }
     },
 
-    setLastMeter(state, action) {
+    setLastMeter (state, action) {
       return { ...state, lastMeter: action.payload.lastMeter }
     },
 
-    setPoliceNo(state, action) {
+    setPoliceNo (state, action) {
       localStorage.setItem('memberUnit', JSON.stringify(action.payload.policeNo))
       return { ...state, policeNo: action.payload.policeNo.policeNo }
     },
 
-    hideCreditModal(state) {
+    hideCreditModal (state) {
       return { ...state, modalCreditVisible: false }
     },
 
-    lastTransNo(state, action) {
+    lastTransNo (state, action) {
       return { ...state, lastTransNo: action.payload }
     },
 
-    setCurTotal(state, action) {
+    setCurTotal (state) {
       return {
         ...state,
         inputPayment: 0,
         totalPayment: 0,
-        totalChange: 0
+        totalChange: 0,
       }
     },
 
-    changePayment(state, action) {
+    changePayment (state, action) {
       return {
         ...state,
         inputPayment: action.payload.totalPayment,
         totalPayment: action.payload.totalPayment,
-        totalChange: (action.payload.totalPayment - action.payload.netto)
+        totalChange: (action.payload.totalPayment - action.payload.netto),
       }
     },
 
-    setCashPaymentNull(state, action) {
+    setCashPaymentNull (state) {
       return { ...state, inputPayment: 0, totalPayment: 0, totalChange: 0 }
     },
 
-    printPayment(state, action) {
+    printPayment (state, action) {
       const payload = action.payload
       const dataPos = payload.dataPos
       const dataService = payload.dataService
@@ -461,7 +435,7 @@ export default {
           for (let key in headers) {
             if (headers.hasOwnProperty(key)) {
               let header = headers[key]
-              let row = new Array()
+              let row = []
               row.push(header.col_1)
               row.push(header.col_2)
               row.push(header.col_3)
@@ -476,7 +450,7 @@ export default {
             if (rows.hasOwnProperty(key)) {
               let data = rows[key]
               let totalDisc = (data.price * data.qty) - data.total
-              let row = new Array()
+              let row = []
               row.push({ text: data.no.toString(), alignment: 'center', fontSize: 11 })
               row.push({ text: data.code.toString(), alignment: 'left', fontSize: 11 })
               row.push({ text: data.name.toString(), alignment: 'left', fontSize: 11 })
@@ -511,19 +485,19 @@ export default {
               {
                 columns: [
                   {
-                    stack: storeInfo
+                    stack: storeInfo,
                   },
                   {
                     text: 'NOTA PENJUALAN',
                     style: 'header',
                     fontSize: 18,
-                    alignment: 'center'
+                    alignment: 'center',
                   },
                   {
                     text: ' ',
                     style: 'header',
                     fontSize: 18,
-                    alignment: 'right'
+                    alignment: 'right',
                   },
                 ],
               },
@@ -540,7 +514,7 @@ export default {
                 layout: 'noBorders',
               },
               {
-                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }]
+                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
               },
             ],
             margin: [30, 12, 12, 30],
@@ -580,7 +554,7 @@ export default {
               table: {
                 headerRows: 1,
                 widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                body: body,
+                body,
               },
               layout: {
                 hLineWidth: (i, node) => {
@@ -606,7 +580,7 @@ export default {
                 height: 160,
                 stack: [
                   {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
                   },
                   {
                     columns: [
@@ -642,7 +616,7 @@ export default {
                         alignment: 'center',
                       },
                       {
-                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
+                        text: `page: ${currentPage.toString()} of ${pageCount}\n`,
                         fontSize: 9,
                         margin: [0, 10, 0, 10],
                         alignment: 'right',
@@ -652,44 +626,43 @@ export default {
                   },
                 ],
               }
-            } else {
-              return {
-                margin: [40, 100, 40, 10],
-                height: 160,
-                stack: [
-                  {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
-                  },
-                  {
-                    columns: [
-                      {
-                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
-                        alignment: 'left',
-                      },
-                      {
-                        text: `Cetakan ke: ${payload.printNo}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
-                        alignment: 'center',
-                      },
-                      {
-                        text: `Dicetak Oleh: ${payload.cashierId}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
-                        alignment: 'center'
-                      },
-                      {
-                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
-                        fontSize: 9,
-                        margin: [0, 20, 0, 40],
-                        alignment: 'right',
-                      },
-                    ],
-                  },
-                ],
-              }
+            }
+            return {
+              margin: [40, 100, 40, 10],
+              height: 160,
+              stack: [
+                {
+                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
+                },
+                {
+                  columns: [
+                    {
+                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                      margin: [0, 20, 0, 40],
+                      fontSize: 9,
+                      alignment: 'left',
+                    },
+                    {
+                      text: `Cetakan ke: ${payload.printNo}`,
+                      margin: [0, 20, 0, 40],
+                      fontSize: 9,
+                      alignment: 'center',
+                    },
+                    {
+                      text: `Dicetak Oleh: ${payload.cashierId}`,
+                      margin: [0, 20, 0, 40],
+                      fontSize: 9,
+                      alignment: 'center',
+                    },
+                    {
+                      text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                      fontSize: 9,
+                      margin: [0, 20, 0, 40],
+                      alignment: 'right',
+                    },
+                  ],
+                },
+              ],
             }
           },
         }
@@ -713,7 +686,7 @@ export default {
         } catch (e) {
           Modal.error({
             title: 'Error, Something Went Wrong!',
-            content: `Cache is not cleared correctly :${e}`
+            content: `Cache is not cleared correctly :${e}`,
           })
         }
       }
@@ -723,11 +696,11 @@ export default {
           id: null,
           policeNo: null,
           merk: null,
-          model: null
+          model: null,
         },
         usingWo: false,
         woNumber: null,
-        posMessage: posMessage,
+        posMessage,
         totalPayment: 0,
         totalChange: 0,
         lastTransNo: '',
@@ -741,18 +714,18 @@ export default {
       }
     },
 
-    setCreditCardPaymentNull(state, action) {
-      return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '', }
+    setCreditCardPaymentNull (state) {
+      return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '' }
     },
 
-    setCreditCardNo(state, action) {
+    setCreditCardNo (state, action) {
       return { ...state, creditCardNo: action.payload.creditCardNo }
     },
 
-    changeCascader(state, action) {
+    changeCascader (state, action) {
       return { ...state, typeTrans: action.payload.value[0] }
     },
-    querySequenceSuccess(state, action) {
+    querySequenceSuccess (state, action) {
       if (action.payload.woNumber) {
         localStorage.setItem('woNumber', action.payload.woNumber)
       } else if (action.payload.woNumber === null) {
@@ -760,8 +733,8 @@ export default {
       }
       return { ...state, ...action.payload }
     },
-    returnState(state, action) {
+    returnState (state, action) {
       return { ...state, ...action.payload }
-    }
-  }
+    },
+  },
 }

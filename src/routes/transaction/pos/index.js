@@ -94,6 +94,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   52 => 4
   77 => M
   72 => H
+  66 => B
   67 => C
   69 => E
   73 => I
@@ -1054,8 +1055,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     const { value } = e.target
     if (e.key === '+') {
       setCurBarcode('', value)
-    }
-    else if (e.key === 'Enter') {
+    } else if (e.key === 'Enter') {
       if (kodeUtil === 'barcode') {
         if (value) {
           dispatch({
@@ -1063,14 +1063,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             payload: {
               productCode: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty: curQty,
+              curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,
+              curRecord,
             },
           })
         }
-      }
-      else if (kodeUtil === 'member') {
+      } else if (kodeUtil === 'member') {
         if (value) {
           dispatch({ type: 'pos/getMember', payload: { memberCode: value, } })
 
@@ -1084,14 +1083,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             infoUtil: 'Mechanic',
           },
         })
-      }
-      else if (kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'mechanic') {
         if (value) {
           dispatch({
             type: 'pos/getMechanic',
             payload: {
               employeeId: value,
-            }
+            },
           })
         }
 
@@ -1102,17 +1100,16 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             infoUtil: 'Product',
           },
         })
-      }
-      else if (kodeUtil === 'service') {
+      } else if (kodeUtil === 'service') {
         if (value) {
           dispatch({
             type: 'pos/getService',
             payload: {
               serviceId: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty: curQty,
+              curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,
+              curRecord,
             },
           })
         }
@@ -1121,9 +1118,9 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           dispatch({
             type: 'pos/editPayment',
             payload: {
-              value: value,
-              effectedRecord: effectedRecord,
-              kodeUtil: kodeUtil,
+              value,
+              effectedRecord,
+              kodeUtil,
             },
           })
         }

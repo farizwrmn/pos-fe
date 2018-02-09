@@ -75,6 +75,7 @@ export default {
         yield put({
           type: 'querySuccessMechanic',
           payload: {
+            list: data.data,
             listMechanic: data.data,
             fromDate: payload.from,
             toDate: payload.to,
@@ -102,9 +103,10 @@ export default {
       }
     },
     querySuccessMechanic (state, action) {
-      const { listMechanic, pagination, fromDate, toDate } = action.payload
+      const { list, listMechanic, pagination, fromDate, toDate } = action.payload
 
       return { ...state,
+        list,
         listMechanic,
         fromDate,
         toDate,

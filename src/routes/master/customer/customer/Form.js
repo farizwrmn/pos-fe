@@ -164,11 +164,11 @@ const formCustomer = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_-]{3,15}$/i,
+                      pattern: /^[a-z0-9\_-]{3,16}$/i,
                       message: 'a-Z & 0-9',
                     },
                   ],
-                })(<Input disabled={disabled} maxLength={15} />)}
+                })(<Input disabled={disabled} maxLength={16} />)}
               </FormItem>
             </Col>
             <Col {...col}>
