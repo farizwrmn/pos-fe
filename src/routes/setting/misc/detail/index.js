@@ -4,11 +4,11 @@ import { connect } from 'dva'
 import styles from './index.less'
 
 const Detail = ({ userDetail }) => {
-  const data  = userDetail.data.data[0]
+  const data = userDetail.data.data[0]
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
-      console.log('key',key[0])
+      console.log('key', key[0])
       content.push(<div key={key} className={styles.item}>
         <div>{key}</div>
         <div>{String(data[key])}</div>
@@ -23,8 +23,7 @@ const Detail = ({ userDetail }) => {
 }
 
 Detail.propTypes = {
-  userDetail: PropTypes.object,
-  loading: PropTypes.bool,
+  userDetail: PropTypes.object
 }
 
 export default connect(({ userDetail, loading }) => ({ userDetail, loading: loading.models.userDetail }))(Detail)

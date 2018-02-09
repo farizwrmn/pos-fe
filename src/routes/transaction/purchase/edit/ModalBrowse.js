@@ -8,7 +8,7 @@ import ListVoid from './ListVoid'
 const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
   const { listProduct, listInvoice, listVoid, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
-    ...purchaseProps,
+    ...purchaseProps
   }
   let listProductFilter = listProduct ? listProduct.filter(el => el.active === true) : []
   const listProps = {
@@ -20,7 +20,7 @@ const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, 
     item: itemPayment,
     isMotion,
     onInvoiceHeader (period) {
-      onInvoiceHeader (period)
+      onInvoiceHeader(period)
     },
     onChooseItem (item) {
       onChooseItemItem(item)
@@ -30,7 +30,7 @@ const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, 
     },
     onChooseInvoice (item) {
       onChooseInvoice(item)
-    },
+    }
   }
   return (
     <Modal {...modalOpts} width={'80%'} height="80%" footer={[]}>
@@ -48,7 +48,7 @@ Browse.propTypes = {
   onChooseItemItem: PropTypes.func.isRequired,
   onRestoreVoid: PropTypes.func.isRequired,
   onChooseInvoice: PropTypes.func.isRequired,
-  onInvoiceHeader: PropTypes.func,
+  onInvoiceHeader: PropTypes.func
 }
 
 export default Browse

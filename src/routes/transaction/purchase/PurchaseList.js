@@ -6,10 +6,10 @@ const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 10 },
+  wrapperCol: { span: 10 }
 }
 
-const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
+const PurchaseList = ({ onChooseItem, curHead, onChangeTotalItem, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -19,14 +19,14 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
         ...getFieldsValue()
       }
       data.code = item.code
-      onChooseItem(data, curHead)      
+      onChooseItem(data, curHead)
       resetFields()
     })
   }
-  const hdlCancel = (e) => {
+  const hdlCancel = () => {
     onCancel()
   }
-  
+
   const hdlChange = () => {
     const data = getFieldsValue()
     data.code = item.code
@@ -48,11 +48,11 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
     Modal.confirm({
       title: `Are you sure Delete ${data.name} ?`,
       content: 'Delete cannot be undone',
-      onOk() {
+      onOk () {
         onDelete(data)
         resetFields()
       },
-      onCancel() {
+      onCancel () {
         console.log('cancel')
       }
     })
@@ -65,8 +65,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.no,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Product Code">
@@ -74,8 +74,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.productCode,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Product Name">
@@ -83,8 +83,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.name,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Quantity">
@@ -93,8 +93,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Quantity is not define',
-            }],
+              message: 'Quantity is not define'
+            }]
           })(<InputNumber
             min={0}
             onBlur={value => hdlChange(value)}
@@ -106,8 +106,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Price is not define',
-            }],
+              message: 'Price is not define'
+            }]
           })(<Input
             maxLength={13}
             onBlur={value => hdlChange(value)}
@@ -119,8 +119,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,4})$/i,
-              message: 'Discount is not define',
-            }],
+              message: 'Discount is not define'
+            }]
           })(<InputNumber min={0} max={100} onBlur={value => hdlChange(value)} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Disc(N)">
@@ -129,8 +129,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Discount is not define',
-            }],
+              message: 'Discount is not define'
+            }]
           })(<InputNumber
             maxLength={13}
             min={0}
@@ -143,8 +143,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.dpp,
             rules: [{
               required: true,
-              message: 'DPP is not define',
-            }],
+              message: 'DPP is not define'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="PPN">
@@ -152,8 +152,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.ppn,
             rules: [{
               required: true,
-              message: 'PPN is not define',
-            }],
+              message: 'PPN is not define'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Total">
@@ -161,8 +161,8 @@ const PurchaseList = ({ onDiscPercent, onChooseItem, curHead, onChangeTotalItem,
             initialValue: item.total,
             rules: [{
               required: true,
-              message: 'Total is not define',
-            }],
+              message: 'Total is not define'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <Button type="primary" onClick={handleClick}> Change </Button>
@@ -180,6 +180,6 @@ PurchaseList.propTypes = {
   onChangeTotalItem: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  modalPurchaseVisible: PropTypes.isRequired,
+  modalPurchaseVisible: PropTypes.isRequired
 }
 export default Form.create()(PurchaseList)

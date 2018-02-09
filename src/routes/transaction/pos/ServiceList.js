@@ -7,23 +7,10 @@ const confirm = Modal.confirm
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 12 },
+  wrapperCol: { span: 12 }
 }
 
-const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService, form: { getFieldDecorator, validateFields, getFieldsValue }, ...modalPaymentProps }) => {
-  const handleClick = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...handleTotalChange(),
-      }
-      data.typeCode = itemService.typeCode
-      data.productId = itemService.productId
-      onChooseItem(data)
-    })
-  }
+const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService, form: { getFieldDecorator, validateFields, getFieldsValue } }) => {
   const handleTotalChange = () => {
     const data = getFieldsValue()
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
@@ -36,25 +23,35 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
     onChangeTotalItem(data)
     return data
   }
+  const handleClick = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...handleTotalChange()
+      }
+      data.typeCode = itemService.typeCode
+      data.productId = itemService.productId
+      onChooseItem(data)
+    })
+  }
 
   const handleDelete = () => {
-    const Record = {
-      ...getFieldsValue(),
-    }
     const data = {
       Record: itemService.no,
       Payment: 'Delete',
-      VALUE: 0,
+      VALUE: 0
     }
     confirm({
       title: `Remove Record ${data.Record} ?`,
       content: `Record ${data.Record} will remove from list !`,
-      onOk() {
+      onOk () {
         DeleteItem(data)
       },
-      onCancel() {
+      onCancel () {
         console.log('Cancel')
-      },
+      }
     })
   }
 
@@ -65,8 +62,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           initialValue: itemService.no,
           rules: [{
             required: true,
-            message: 'Required',
-          }],
+            message: 'Required'
+          }]
         })(
           <Input disabled />
         )
@@ -77,8 +74,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           initialValue: itemService.code,
           rules: [{
             required: true,
-            message: 'Required',
-          }],
+            message: 'Required'
+          }]
         })(
           <Input disabled />
         )}
@@ -88,8 +85,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           initialValue: itemService.name,
           rules: [{
             required: true,
-            message: 'Required',
-          }],
+            message: 'Required'
+          }]
         })(
           <Input disabled />
         )}
@@ -100,8 +97,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Required',
-            pattern: /^([0-9.]{0,13})$/i,
-          }],
+            pattern: /^([0-9.]{0,13})$/i
+          }]
         })(
           <InputNumber
             min={0}
@@ -115,8 +112,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Required',
-            pattern: /^([0-9]{0,13})$/i,
-          }],
+            pattern: /^([0-9]{0,13})$/i
+          }]
         })(
           <InputNumber
             defaultValue={0}
@@ -131,8 +128,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i,
-          }],
+            pattern: /^([0-9.]{0,5})$/i
+          }]
         })(
           <InputNumber
             defaultValue={0}
@@ -148,8 +145,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i,
-          }],
+            pattern: /^([0-9.]{0,5})$/i
+          }]
         })(
           <InputNumber
             defaultValue={0}
@@ -165,8 +162,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i,
-          }],
+            pattern: /^([0-9.]{0,5})$/i
+          }]
         })(
           <InputNumber
             defaultValue={0}
@@ -182,8 +179,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           rules: [{
             required: true,
             message: 'Invalid',
-            pattern: /^([0-9.]{0,13})$/i,
-          }],
+            pattern: /^([0-9.]{0,13})$/i
+          }]
         })(
           <InputNumber
             defaultValue={0}
@@ -198,8 +195,8 @@ const PaymentList = ({ DeleteItem, onChooseItem, onChangeTotalItem, itemService,
           initialValue: itemService.total,
           rules: [{
             required: true,
-            message: 'Required',
-          }],
+            message: 'Required'
+          }]
         })(
           <Input disabled />
         )}
@@ -223,6 +220,6 @@ PaymentList.propTypes = {
   totalItem: PropTypes.string,
   onChooseItem: PropTypes.func,
   DeleteItem: PropTypes.func,
-  onChangeTotalItem: PropTypes.func.isRequired,
+  onChangeTotalItem: PropTypes.func
 }
 export default Form.create()(PaymentList)

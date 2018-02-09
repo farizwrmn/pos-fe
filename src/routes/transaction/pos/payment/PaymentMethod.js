@@ -16,7 +16,7 @@ class DynamicFieldSet extends React.Component {
     }
     // can use data-binding to set
     form.setFieldsValue({
-      keys: keys.filter(key => key !== k),
+      keys: keys.filter(key => key !== k)
     })
   }
 
@@ -33,7 +33,7 @@ class DynamicFieldSet extends React.Component {
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({
-      keys: nextKeys,
+      keys: nextKeys
     })
   }
 
@@ -54,17 +54,17 @@ class DynamicFieldSet extends React.Component {
     })
   }
 
-  render() {
+  render () {
     const { getFieldDecorator, getFieldValue } = this.props.form
-    const { options, autoFocus } = this.props
+    const { options } = this.props
     const formItemLayoutWithOutLabel = {
-      wrapperCol: { span: 24 },
+      wrapperCol: { span: 24 }
     }
     getFieldDecorator('keys', { initialValue: [0] })
     let Opts = options.map(list => <Option value={list.typeCode}>{list.typeName}</Option>)
     const prefixSelector = (key) => {
       return getFieldDecorator(`method[${key}]`, {
-        initialValue: Opts.length > 0 ? Opts[0].props.value : null,
+        initialValue: Opts.length > 0 ? Opts[0].props.value : null
       })(
         <Select style={{ width: 100 }}>
           {Opts}
@@ -86,8 +86,8 @@ class DynamicFieldSet extends React.Component {
               required: true,
               whitespace: true,
               pattern: /^([0-9]{0,19})$/i,
-              message: 'Please input amount or delete this field.',
-            }],
+              message: 'Please input amount or delete this field.'
+            }]
           })(<Input maxLength={19} autoFocus addonBefore={prefixSelector(k)} placeholder="Payment Amount" style={{ width: '60%', marginRight: 8 }} />)}
           {keys.length > 1 ? (
             <Icon

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import Filter from './Filter'
 import List from './List'
@@ -12,7 +11,7 @@ const PosHistory = ({ poshistory, loading, dispatch, location }) => {
     period,
     status,
     filter: {
-      ...location.query,
+      ...location.query
     },
     filterChange (date, stats) {
       dispatch({
@@ -20,8 +19,8 @@ const PosHistory = ({ poshistory, loading, dispatch, location }) => {
         payload: {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
           end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-          status: stats,
-        },
+          status: stats
+        }
       })
     },
     filterTransNo (date, stats, no) {
@@ -31,16 +30,16 @@ const PosHistory = ({ poshistory, loading, dispatch, location }) => {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
           end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
           status: stats,
-          transNo: no,
-        },
+          transNo: no
+        }
       })
-    },
+    }
   }
 
   const listProps = {
     dataSource: list,
     loading: loading.effects['poshistory/query'],
-    location,
+    location
   }
 
   return (
@@ -55,7 +54,7 @@ PosHistory.propTypes = {
   poshistory: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ poshistory, loading }) => ({ poshistory, loading }))(PosHistory)

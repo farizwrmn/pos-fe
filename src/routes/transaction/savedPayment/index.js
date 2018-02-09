@@ -2,16 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import moment from 'moment'
 import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
-import moment from 'moment'
 
 const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, selectedRowKeys, modalPrintVisible, tmpListPayment, posData } = pos
+    pagination, modalPrintVisible, tmpListPayment, posData } = pos
   const { storeInfo } = app
-  const { pageSize } = pagination
 
   const modalProps = {
     visible: modalPrintVisible,
@@ -29,7 +28,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     onOk (data) {
       let dataPos = []
       let dataService = []
-      for (let n = 0; n < data.data.length; n++) {
+      for (let n = 0; n < data.data.length; n += 1) {
         if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
           let productId = data.data[n].productCode
           let productName = data.data[n].productName
@@ -44,8 +43,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
           let productId = data.data[n].serviceCode
@@ -61,8 +60,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
           let productId = '-'
@@ -78,22 +77,22 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) - (((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * data.data[n].disc1 / 100 ) * data.data[n].disc2 / 100) * data.data[n].disc2 / 100)
+            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         }
       }
-      for (let j = 0; j < dataService.length; j++) {
+      for (let j = 0; j < dataService.length; j += 1) {
         dataService[j].no = j + 1
       }
-      for (let k = 0; k < dataPos.length; k++) {
+      for (let k = 0; k < dataPos.length; k += 1) {
         dataPos[k].no = k + 1
       }
       dispatch({
-        type: `payment/printPayment`,
+        type: 'payment/printPayment',
         payload: {
-          dataPos: dataPos,
-          dataService: dataService,
+          dataPos,
+          dataService,
           transDatePrint: moment(posData.transDate).format('DD/MM/YYYY'),
           memberId: data.memberPrint.memberCode,
           gender: data.memberPrint.gender,
@@ -107,18 +106,18 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
           userName: listPaymentDetail.cashierId,
-          printNo: 'copy',
-        },
+          printNo: 'copy'
+        }
       })
       dispatch({
-        type: 'pos/hidePrintModal',
+        type: 'pos/hidePrintModal'
       })
     },
     onCancel () {
       dispatch({
-        type: 'pos/hidePrintModal',
+        type: 'pos/hidePrintModal'
       })
-    },
+    }
   }
 
   const modalCancelProps = {
@@ -126,20 +125,20 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     loading: loading.effects['pos/queryPosDetail'],
     maskClosable: false,
     invoiceCancel,
-    title: `Cancel the Transaction Duplicate?`,
+    title: 'Cancel the Transaction Duplicate?',
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
         type: 'pos/cancelInvoice',
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'pos/hidePrintModal',
+        type: 'pos/hidePrintModal'
       })
-    },
+    }
   }
 
   const browseProps = {
@@ -152,7 +151,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     onSearchChange (data) {
       dispatch({
         type: 'pos/searchPOS',
-        payload: data,
+        payload: data
       })
     },
     onChange (page) {
@@ -162,14 +161,14 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       }))
     },
     onShowCancelModal (e) {
       dispatch({
         type: 'pos/showCancelModal',
-        payload: e,
+        payload: e
       })
     },
     onGetDetail (e) {
@@ -178,15 +177,15 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         type: 'pos/queryPosDetail',
         payload: {
           id: transNo,
-          data: e,
-        },
+          data: e
+        }
       })
       dispatch({
         type: 'pos/setListPaymentDetail',
-        payload: e,
+        payload: e
       })
       dispatch({
-        type: 'pos/showPrintModal',
+        type: 'pos/showPrintModal'
       })
     },
     onChangePeriod (start, end) {
@@ -194,11 +193,11 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         type: 'pos/queryHistory',
         payload: {
           startPeriod: start,
-          endPeriod: end,
+          endPeriod: end
         }
       })
     },
-    size: 'small',
+    size: 'small'
   }
 
   return (
@@ -219,4 +218,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, loading, app }) => ({  pos, loading, app }))(Pos)
+export default connect(({ pos, loading, app }) => ({ pos, loading, app }))(Pos)

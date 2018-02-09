@@ -1,26 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Input, Icon, Form } from 'antd'
+import { Table, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
-import { DropOption } from 'components'
 
 const FormItem = Form.Item
 
 const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   const { searchText, tmpMechanicList } = pos
 
-  const handleMenuClick = (record, e) => {
+  const handleMenuClick = (record) => {
     onChooseItem(record)
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
 
     dispatch({
       type: 'pos/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -28,9 +27,9 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     dispatch({
       type: 'pos/onMechanicSearch',
       payload: {
-        searchText: searchText,
-        tmpMechanicList: tmpMechanicList,
-      },
+        searchText,
+        tmpMechanicList
+      }
     })
   }
 
@@ -39,8 +38,8 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       type: 'pos/onMechanicReset',
       payload: {
         searchText: '',
-        tmpMechanicList: tmpMechanicList,
-      },
+        tmpMechanicList
+      }
     })
   }
 
@@ -48,15 +47,15 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     {
       title: 'Code',
       dataIndex: 'employeeId',
-      key: 'employeeId',
+      key: 'employeeId'
     }, {
       title: 'Name',
       dataIndex: 'employeeName',
-      key: 'employeeName',
+      key: 'employeeName'
     }, {
       title: 'Position',
       dataIndex: 'positionName',
-      key: 'positionName',
+      key: 'positionName'
     }
   ]
 
@@ -65,11 +64,12 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       <Form layout="inline">
         <FormItem>
           <Input placeholder="Search Mechanic Name"
-                 value={searchText}
-                 size="small"
-                 onChange={(e) => handleChange(e)}
-                 onPressEnter={handleSearch}
-                 style={{ marginBottom: 16 }} />
+            value={searchText}
+            size="small"
+            onChange={e => handleChange(e)}
+            onPressEnter={handleSearch}
+            style={{ marginBottom: 16 }}
+          />
         </FormItem>
         <FormItem>
           <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
@@ -86,7 +86,7 @@ const ListMechanic = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
         simple
         size="small"
         rowKey={record => record.employeeId}
-        onRowClick={(record) => handleMenuClick(record)}
+        onRowClick={record => handleMenuClick(record)}
       />
     </div>
   )
@@ -96,7 +96,7 @@ ListMechanic.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   pos: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ pos }) => ({ pos }))(ListMechanic)

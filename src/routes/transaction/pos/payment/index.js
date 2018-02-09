@@ -12,11 +12,11 @@ const { prefix } = config
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: {
-    span: 10,
+    span: 10
   },
   wrapperCol: {
-    span: 14,
-  },
+    span: 14
+  }
 }
 const dataTrans = () => {
   let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
@@ -35,14 +35,14 @@ const dataTrans = () => {
       price: cashier_trans[n].price,
       qty: cashier_trans[n].qty,
       typeCode: cashier_trans[n].typeCode,
-      total: cashier_trans[n].total,
+      total: cashier_trans[n].total
     })
   }
   return (arrayProd)
 }
 
 const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
-  const { totalPayment, totalChange, inputPayment, lastTransNo, creditCardTotal, creditCharge, modalCreditVisible, typeTrans, usingWo, woNumber } = payment
+  const { totalPayment, totalChange, inputPayment, lastTransNo, creditCardTotal, creditCharge, modalCreditVisible, typeTrans, woNumber } = payment
   const { mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -61,9 +61,9 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     wrapClassName: 'vertical-center-modal',
     onCancel () {
       dispatch({
-        type: 'payment/hideCreditModal',
+        type: 'payment/hideCreditModal'
       })
-    },
+    }
   }
 
   const getDate = (mode) => {
@@ -110,8 +110,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
         type: 'payment/changePayment',
         payload: {
           netto: parseInt(curTotal, 10) + parseInt(curRounding, 10),
-          totalPayment: value,
-        },
+          totalPayment: value
+        }
       })
     }
   }
@@ -120,8 +120,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     dispatch({
       type: 'payment/changeCascader',
       payload: {
-        value: e,
-      },
+        value: e
+      }
     })
   }
   const confirmPayment = () => {
@@ -138,23 +138,23 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     if ((parseInt(totalPayment, 10) < parseInt(curTotal, 10) + parseInt(curRounding, 10))) {
       Modal.error({
         title: 'Payment',
-        content: 'Total Payment must be greater than Netto...!',
+        content: 'Total Payment must be greater than Netto...!'
       })
     } else if (checkProductId) {
       console.log(checkProductId)
       Modal.error({
         title: 'Payment',
-        content: 'Something Wrong with Product',
+        content: 'Something Wrong with Product'
       })
     } else if (service.length > 0 && (woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Service Validation',
-        content: 'You are giving service without WorkOrder',
+        content: 'You are giving service without WorkOrder'
       })
     } else if (typeTrans.toString().length === 0) {
       Modal.warning({
         title: 'Payment method',
-        content: 'Your Payment method is empty',
+        content: 'Your Payment method is empty'
       })
     } else {
       dispatch({
@@ -194,53 +194,53 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           cashierId: user.userid,
           userName: user.username,
           setting,
-          usingWo: (woNumber === '' || woNumber === null) ? false : true,
-          woNumber: woNumber === '' ? null : woNumber,
-        },
+          usingWo: !((woNumber === '' || woNumber === null)),
+          woNumber: woNumber === '' ? null : woNumber
+        }
       })
       dispatch({ type: 'pos/setAllNull' })
       dispatch(routerRedux.push('/transaction/pos'))
     }
   }
 
-  const printPreview = () => {
-    dispatch({
-      type: 'payment/printPayment',
-      payload: {
-        periode: moment().format('MMYY'),
-        transDate: getDate(1),
-        transDate2: getDate(3),
-        transTime: setTime(),
-        transDatePrint: moment().format('DD/MM/YYYY'),
-        grandTotal: parseInt(curTotal, 10),
-        totalPayment,
-        company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-        gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-        phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-        address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-        lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-        lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
-        totalChange,
-        totalDiscount: curTotalDiscount,
-        policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
-        rounding: curRounding,
-        dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
-        dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-        memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
-        memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-        memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-        mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
-        technicianId: mechanicInformation.mechanicCode,
-        curShift,
-        printNo: 1,
-        point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
-        curCashierNo,
-        cashierId: user.userid,
-        usingWo,
-        woNumber,
-      },
-    })
-  }
+  // const printPreview = () => {
+  //   dispatch({
+  //     type: 'payment/printPayment',
+  //     payload: {
+  //       periode: moment().format('MMYY'),
+  //       transDate: getDate(1),
+  //       transDate2: getDate(3),
+  //       transTime: setTime(),
+  //       transDatePrint: moment().format('DD/MM/YYYY'),
+  //       grandTotal: parseInt(curTotal, 10),
+  //       totalPayment,
+  //       company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+  //       gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+  //       phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+  //       address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+  //       lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+  //       lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
+  //       totalChange,
+  //       totalDiscount: curTotalDiscount,
+  //       policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
+  //       rounding: curRounding,
+  //       dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+  //       dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
+  //       memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+  //       memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+  //       memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+  //       mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+  //       technicianId: mechanicInformation.mechanicCode,
+  //       curShift,
+  //       printNo: 1,
+  //       point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
+  //       curCashierNo,
+  //       cashierId: user.userid,
+  //       usingWo,
+  //       woNumber
+  //     }
+  //   })
+  // }
 
   const cancelPayment = () => {
     dispatch(routerRedux.push('/transaction/pos'))
@@ -252,7 +252,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
       if (Object.prototype.hasOwnProperty.call(listOpts, key)) {
         options.push({
           value: listOpts[key].typeCode,
-          label: listOpts[key].typeName,
+          label: listOpts[key].typeName
         })
       }
     }
@@ -260,41 +260,39 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     options = [
       {
         value: 'C',
-        label: 'Cash',
+        label: 'Cash'
       },
       {
         value: 'K',
-        label: 'Credit Card',
+        label: 'Credit Card'
       },
       {
         value: 'D',
-        label: 'Debit Card',
+        label: 'Debit Card'
       },
       {
         value: 'P',
-        label: 'Pending',
-      },
+        label: 'Pending'
+      }
     ]
   }
 
   const handleCreditCard = () => {
     console.log('input credit card')
     dispatch({
-      type: 'payment/setCashPaymentNull',
+      type: 'payment/setCashPaymentNull'
     })
 
     dispatch({
-      type: 'payment/listCreditCharge',
+      type: 'payment/listCreditCharge'
     })
 
     dispatch({
-      type: 'payment/showCreditModal',
+      type: 'payment/showCreditModal'
     })
   }
 
   const handleKeyDown = (e) => {
-    const { value } = e.target
-
     if (e.keyCode in keyShortcut) {
       keyShortcut[e.keyCode] = true
 
@@ -345,44 +343,44 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               columns={[
                 {
                   title: 'No',
-                  dataIndex: 'no',
+                  dataIndex: 'no'
                 },
                 {
                   title: 'Code',
-                  dataIndex: 'code',
+                  dataIndex: 'code'
                 },
                 {
                   title: 'Product Name',
-                  dataIndex: 'name',
+                  dataIndex: 'name'
                 },
                 {
                   title: 'Qty',
-                  dataIndex: 'qty',
+                  dataIndex: 'qty'
                 },
                 {
                   title: 'Price',
-                  dataIndex: 'price',
+                  dataIndex: 'price'
                 },
                 {
                   title: 'Disc 1(%)',
-                  dataIndex: 'disc1',
+                  dataIndex: 'disc1'
                 },
                 {
                   title: 'Disc 2(%)',
-                  dataIndex: 'disc2',
+                  dataIndex: 'disc2'
                 },
                 {
                   title: 'Disc 3(%)',
-                  dataIndex: 'disc3',
+                  dataIndex: 'disc3'
                 },
                 {
                   title: 'Discount',
-                  dataIndex: 'discount',
+                  dataIndex: 'discount'
                 },
                 {
                   title: 'Total',
-                  dataIndex: 'total',
-                },
+                  dataIndex: 'total'
+                }
               ]}
               dataSource={dataTrans()}
               pagination={false}
@@ -445,7 +443,7 @@ Payment.propTypes = {
   dispatch: PropTypes.func.isRequired,
   payment: PropTypes.object.isRequired,
   paymentOpts: PropTypes.object.isRequired,
-  app: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired
 }
 
 export default connect(({ paymentOpts, pos, payment, position, app }) => ({ paymentOpts, pos, payment, position, app }))(Payment)

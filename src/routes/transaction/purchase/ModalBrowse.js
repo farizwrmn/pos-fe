@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Table, Modal, Button} from 'antd'
+import { Modal } from 'antd'
 import ListProduct from './ListProduct'
-import PurchaseList from './PurchaseList'
 
-const Browse = ({location, purchase, loading, onChooseItemItem, ...purchaseProps}) => {
-  const {listProduct, pagination, itemPayment, modalType, isMotion} = purchase
-  const {pageSize} = pagination
+const Browse = ({ location, purchase, loading, onChooseItemItem, ...purchaseProps }) => {
+  const { listProduct, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
-    ...purchaseProps,
+    ...purchaseProps
   }
   let listProductFilter = listProduct.filter(el => el.active === true)
   const listProps = {
@@ -21,7 +19,7 @@ const Browse = ({location, purchase, loading, onChooseItemItem, ...purchaseProps
     isMotion,
     onChooseItem (item) {
       onChooseItemItem(item)
-    },
+    }
   }
 
   return (
@@ -34,7 +32,7 @@ const Browse = ({location, purchase, loading, onChooseItemItem, ...purchaseProps
 Browse.propTypes = {
   purchase: PropTypes.object,
   location: PropTypes.object,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default Browse

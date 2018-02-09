@@ -18,8 +18,8 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     dispatch({
       type: 'pos/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -27,9 +27,9 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     dispatch({
       type: 'pos/onServiceSearch',
       payload: {
-        searchText: searchText,
-        tmpServiceList: tmpServiceList,
-      },
+        searchText,
+        tmpServiceList
+      }
     })
   }
 
@@ -38,8 +38,8 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       type: 'pos/onServiceReset',
       payload: {
         searchText: '',
-        tmpServiceList: tmpServiceList,
-      },
+        tmpServiceList
+      }
     })
   }
   // {
@@ -55,25 +55,25 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       title: 'No',
       dataIndex: 'id',
       key: 'id',
-      width: 175,
+      width: 175
     },
     {
       title: 'Service Code',
       dataIndex: 'serviceCode',
       key: 'serviceCode',
-      width: 175,
+      width: 175
     },
     {
       title: 'Description',
       dataIndex: 'serviceName',
       key: 'serviceName',
-      width: 400,
+      width: 400
     }, {
       title: 'Service Cost',
       dataIndex: 'serviceCost',
       key: 'serviceCost',
-      width: 125,
-    },
+      width: 125
+    }
   ]
   return (
     <div>
@@ -82,9 +82,10 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
           <Input placeholder="Search Service Name"
             value={searchText}
             size="small"
-            onChange={(e) => handleChange(e)}
+            onChange={e => handleChange(e)}
             onPressEnter={handleSearch}
-            style={{ marginBottom: 16 }} />
+            style={{ marginBottom: 16 }}
+          />
         </FormItem>
         <FormItem>
           <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
@@ -97,12 +98,12 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 700, y: 388}}
+        scroll={{ x: 700, y: 388 }}
         columns={columns}
         simple
         size="small"
         rowKey={record => record.serviceCode}
-        onRowClick={(record) => handleMenuClick(record)}
+        onRowClick={record => handleMenuClick(record)}
       />
     </div>
   )
@@ -112,7 +113,7 @@ ListService.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   pos: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ pos }) => ({ pos }))(ListService)

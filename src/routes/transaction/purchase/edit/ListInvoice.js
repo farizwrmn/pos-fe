@@ -15,7 +15,7 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
 
   const handleMenuClick = (record) => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-    if (record.transDate < storeInfo.startPeriod) {  
+    if (record.transDate < storeInfo.startPeriod) {
       record.readOnly = true
       Warning({
         title: 'Read-only Invoice',
@@ -25,7 +25,7 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
         },
         onCancel () {
           console.log('cancel')
-        },
+        }
       })
     } else if (record.transDate >= storeInfo.startPeriod) {
       record.readOnly = false
@@ -37,7 +37,7 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
         },
         onCancel () {
           console.log('cancel')
-        },
+        }
       })
     }
   }
@@ -48,8 +48,8 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     dispatch({
       type: 'purchase/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -57,9 +57,9 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     dispatch({
       type: 'purchase/onInvoiceSearch',
       payload: {
-        searchText: searchText,
-        tmpInvoiceList: tmpInvoiceList,
-      },
+        searchText,
+        tmpInvoiceList
+      }
     })
   }
 
@@ -68,8 +68,8 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       type: 'purchase/onInvoiceReset',
       payload: {
         searchText: '',
-        tmpInvoiceList: tmpInvoiceList,
-      },
+        tmpInvoiceList
+      }
     })
   }
 
@@ -82,26 +82,26 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     }
     onInvoiceHeader(period)
   }
-  
+
   const columns = [
     {
       title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: '25%',
+      width: '25%'
     },
     {
       title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '45%',
+      width: '45%'
     },
     {
       title: 'SupplierName',
       dataIndex: 'supplierName',
       key: 'supplierName',
-      width: '30%',
-    },
+      width: '30%'
+    }
   ]
 
   return (
@@ -152,7 +152,7 @@ ListInvoice.propTypes = {
   onInvoiceHeader: PropTypes.func.isRequired,
   location: PropTypes.isRequired,
   purchase: PropTypes.isRequired,
-  dispatch: PropTypes.isRequired,
+  dispatch: PropTypes.isRequired
 }
 
 export default connect(({ purchase }) => ({ purchase }))(ListInvoice)

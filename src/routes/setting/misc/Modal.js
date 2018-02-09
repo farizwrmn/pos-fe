@@ -24,7 +24,7 @@ const modal = ({
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
+        key: item.key
       }
       data.userRole = data.userRole.join(' ')
       onOk(data)
@@ -33,7 +33,7 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
   const hdlButtonCancelClick = () => {
@@ -45,45 +45,44 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
 
       modalButtonSaveClick(data.miscCode, data.miscName, data)
     })
-
   }
 
 
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key='back'   onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
-        <Button key='submit' onClick={() => hdlButtonSaveClick()} type='primary' >Save</Button>,
+        <Button key="back" onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
+        <Button key="submit" onClick={() => hdlButtonSaveClick()} type="primary" >Save</Button>
       ]}
     >
-      <Form layout='horizontal'>
-        <FormItem label='Code' hasFeedback {...formItemLayout}>
+      <Form layout="horizontal">
+        <FormItem label="Code" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscCode', {
             initialValue: item.miscCode,
-            rules: [{required: true, min: 3, max: 10}],
+            rules: [{ required: true, min: 3, max: 10 }]
           })(<Input />)}
         </FormItem>
-        <FormItem label='Name' hasFeedback {...formItemLayout}>
+        <FormItem label="Name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscName', {
             initialValue: item.miscName,
-            rules: [{required: true, min:3, max: 10}],
+            rules: [{ required: true, min: 3, max: 10 }]
           })(<Input />)}
         </FormItem>
-        <FormItem label='Desc' hasFeedback {...formItemLayout}>
+        <FormItem label="Desc" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscDesc', {
             initialValue: item.miscDesc,
-            rules: [{max: 50}],
+            rules: [{ max: 50 }]
           })(<Input />)}
         </FormItem>
-        <FormItem label='Variable' hasFeedback {...formItemLayout}>
+        <FormItem label="Variable" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscVariable', {
             initialValue: item.miscVariable,
-            rules: [{max: 200}],
+            rules: [{ max: 200 }]
           })(<Input />)}
         </FormItem>
       </Form>
@@ -95,7 +94,7 @@ modal.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
-  onOk: PropTypes.func,
+  onOk: PropTypes.func
 }
 
 export default Form.create()(modal)

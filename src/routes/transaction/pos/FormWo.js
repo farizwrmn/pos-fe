@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Form, Input, Button, Checkbox } from 'antd'
-import moment from 'moment'
+import { Row, Col, Form, Input, Button } from 'antd'
 
 const FormItem = Form.Item
 
@@ -19,12 +18,11 @@ const FormItem = Form.Item
 // }
 
 const PurchaseList = ({
-  listSequence,
-  generateSequence,
+  // listSequence,
+  // generateSequence,
   notUsingWo,
   woNumber,
   usingWo,
-  ...modalProps,
   formItemLayout,
   form: {
     getFieldDecorator,
@@ -41,15 +39,15 @@ const PurchaseList = ({
   //   let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
   //   return concatSequence
   // }
-  const onGenerate = () => {
-    resetFields()
-    generateSequence('WO')
-  }
+  // const onGenerate = () => {
+  //   resetFields()
+  //   generateSequence('WO')
+  // }
   const notUsing = (e) => {
     const { value } = e.target
     notUsingWo(false, value)
   }
-  const disableUsingWo = (e) => {
+  const disableUsingWo = () => {
     resetFields()
     notUsingWo(false, null)
   }
@@ -59,14 +57,14 @@ const PurchaseList = ({
         <Row>
           <Col span={20}>
             {getFieldDecorator('woReference', {
-              initialValue: woNumber            
-            })(<Input disabled={usingWo} maxLength={30} onChange={(value) => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
+              initialValue: woNumber
+            })(<Input disabled={usingWo} maxLength={30} onChange={value => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
           </Col>
           {/* <Col span={7}>
             <Button onClick={() => onGenerate()} type="primary" style={{ width: '100%', height: '32px' }}>Auto</Button>
           </Col> */}
           <Col span={4}>
-            <Button icon="close" onClick={() => disableUsingWo()} type="dashed" style={{ width: '100%', height: '32px' }} className="bgcolor-red"/>
+            <Button icon="close" onClick={() => disableUsingWo()} type="dashed" style={{ width: '100%', height: '32px' }} className="bgcolor-red" />
           </Col>
         </Row>
       </FormItem>
@@ -75,6 +73,6 @@ const PurchaseList = ({
 }
 
 PurchaseList.propTypes = {
-  form: PropTypes.object,
+  form: PropTypes.object
 }
 export default Form.create()(PurchaseList)

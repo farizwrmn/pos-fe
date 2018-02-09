@@ -11,25 +11,25 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
 
   const purchaseProps = {
-    date: date,
-    datePicker: datePicker,
-    item: item ? item : '',
+    date,
+    datePicker,
+    item: item || '',
     curHead,
     tempo: 0,
     rounding,
     transNo,
-    dataBrowse: dataBrowse,
-    curDiscPercent: curDiscPercent,
-    curDiscNominal: curDiscNominal,
-    listSupplier: listSupplier,
-    modalProductVisible: modalProductVisible,
-    modalPurchaseVisible: modalPurchaseVisible,
-    supplierInformation: supplierInformation ? supplierInformation : null,
+    dataBrowse,
+    curDiscPercent,
+    curDiscNominal,
+    listSupplier,
+    modalProductVisible,
+    modalPurchaseVisible,
+    supplierInformation: supplierInformation || null,
     tmpSupplierData: listSupplier,
     dataSource: listProduct,
-    location: location,
-    loading: loading,
-    purchase: purchase,
+    location,
+    loading,
+    purchase,
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -40,36 +40,36 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           id,
           data,
           dataVoid,
-          e,
-        },
+          e
+        }
       })
     },
     onChangeRounding (e) {
       dispatch({
         type: 'purchase/changeRounding',
-        payload: e,
+        payload: e
       })
     },
     onChangeTotalItem (data) {
       dispatch({
         type: 'purchase/setTotalItem',
-        payload: data,
+        payload: data
       })
     },
     handleBrowseProduct () {
       dispatch({
-        type: 'purchase/getProducts',
+        type: 'purchase/getProducts'
       })
 
       dispatch({
         type: 'purchase/showProductModal',
         payload: {
-          modalType: 'browseProduct',
-        },
+          modalType: 'browseProduct'
+        }
       })
-    },    
+    },
     handleBrowseVoid () {
-      var voidList = localStorage.getItem('purchase_void') ? JSON.parse(localStorage.getItem('purchase_void')) : null
+      let voidList = localStorage.getItem('purchase_void') ? JSON.parse(localStorage.getItem('purchase_void')) : null
       if (voidList === null) {
         Modal.warning({
           title: 'No Void in storage',
@@ -80,8 +80,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           type: 'purchase/showProductModal',
           payload: {
             modalType: 'browseVoid',
-            listVoid: voidList,
-          },
+            listVoid: voidList
+          }
         })
       }
     },
@@ -97,24 +97,24 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({
         type: 'purchase/getProducts',
         payload: {
-          modalType: 'browseInvoice',
-        },
+          modalType: 'browseInvoice'
+        }
       })
 
       dispatch({
         type: 'purchase/showProductModal',
         payload: {
-          modalType: 'browseInvoice',
-        },
+          modalType: 'browseInvoice'
+        }
       })
     },
     onChooseItem (data, head) {
       // console.log('confirm', data)
       // dispatch({ type: 'purchase/checkQuantityEditProduct', payload: {data} })
-      dispatch({ type: 'purchase/editPurchaseList', payload: {data, head} })
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data, head } })
     },
-    onDiscPercent (x,data) {
-      dispatch({ type: 'purchase/returnState', payload: {dataBrowse: x, curHead: data} })
+    onDiscPercent (x, data) {
+      dispatch({ type: 'purchase/returnState', payload: { dataBrowse: x, curHead: data } })
     },
     onVoid (data) {
       console.log('void')
@@ -122,9 +122,9 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       data.count = dataVoid.length + 1
       dispatch({ type: 'purchase/voidPurchaseList', payload: data })
     },
-    onRestoreVoid (item) {
-      dispatch({ type: 'purchase/editPurchaseList', payload: { data: item,head: transNo } })
-      dispatch({ type: 'purchase/deleteVoidList', payload: item })
+    onRestoreVoid (e) {
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data: e, head: transNo } })
+      dispatch({ type: 'purchase/deleteVoidList', payload: e })
       dispatch({ type: 'purchase/hideProductModal' })
     },
     onDelete (data) {
@@ -160,7 +160,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           dpp: 0,
           ppn: 0,
           ket: 'add',
-          total: 0,
+          total: 0
         })
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
@@ -175,17 +175,17 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     onChooseInvoice (e) {
       dispatch({
         type: 'purchase/getInvoiceDetail',
-        payload: e,
+        payload: e
       })
     },
     modalShow (data) {
       dispatch({
         type: 'purchase/modalEditShow',
         payload: {
-          data: data,
-        },
+          data
+        }
       })
-    },
+    }
   }
 
   return (
@@ -200,7 +200,7 @@ Purchase.propTypes = {
   purchase: PropTypes.isRequired,
   location: PropTypes.isRequired,
   dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.isRequired,
+  loading: PropTypes.isRequired
 }
 
 

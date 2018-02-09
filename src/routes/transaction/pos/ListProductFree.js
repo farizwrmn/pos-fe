@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Input, Icon, Form } from 'antd'
+import { Table, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
-import { DropOption } from 'components'
 
 const FormItem = Form.Item
 
 const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
-  const { searchText, filtered, tmpProductList } = pos
+  const { searchText, tmpProductList } = pos
   console.log('props', listProps)
-  const handleMenuClick = (record, e) => {
+  const handleMenuClick = (record) => {
     onChooseItem(record)
   }
 
@@ -19,8 +18,8 @@ const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
     dispatch({
       type: 'pos/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -28,9 +27,9 @@ const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
     dispatch({
       type: 'pos/onProductSearch',
       payload: {
-        searchText: searchText,
-        tmpProductList: tmpProductList,
-      },
+        searchText,
+        tmpProductList
+      }
     })
   }
 
@@ -39,8 +38,8 @@ const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
       type: 'pos/onProductReset',
       payload: {
         searchText: '',
-        tmpProductList: tmpProductList,
-      },
+        tmpProductList
+      }
     })
   }
 
@@ -74,11 +73,12 @@ const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
       <Form layout="inline">
         <FormItem>
           <Input placeholder="Search Product Name"
-                 value={searchText}
-                 size="small"
-                 onChange={(e) => handleChange(e)}
-                 onPressEnter={handleSearch}
-                 style={{ marginBottom: 16 }} />
+            value={searchText}
+            size="small"
+            onChange={e => handleChange(e)}
+            onPressEnter={handleSearch}
+            style={{ marginBottom: 16 }}
+          />
         </FormItem>
         <FormItem>
           <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
@@ -91,12 +91,11 @@ const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
       <Table
         {...listProps}
         bordered
-        scroll={{ x: 500, y: 388}}
+        scroll={{ x: 500, y: 388 }}
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
-        onRowClick={(record) => handleMenuClick(record)}
+        onRowClick={record => handleMenuClick(record)}
       />
     </div>
   )
@@ -106,7 +105,7 @@ ListProductFree.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   pos: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ pos }) => ({ pos }))(ListProductFree)

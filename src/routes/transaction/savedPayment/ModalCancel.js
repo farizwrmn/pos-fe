@@ -6,7 +6,7 @@ const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 14 }
 }
 
 const modal = ({
@@ -22,19 +22,19 @@ const modal = ({
       }
       const data = {
         ...getFieldsValue(),
-        transNo: invoiceCancel,
+        transNo: invoiceCancel
       }
       onOk(data)
     })
   }
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>,
+        <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
       ]}
     >
       <Form>
@@ -46,10 +46,10 @@ const modal = ({
             rules: [
               {
                 required: true,
-                pattern: /^[a-z0-9\/ _-]{20,100}$/i,
+                pattern: /^[a-z0-9/ _-]{20,100}$/i,
                 message: 'At least 20 character'
-              },
-            ],
+              }
+            ]
           })(<Input />)}
         </FormItem>
       </Form>
@@ -61,7 +61,7 @@ modal.propTypes = {
   form: PropTypes.object.isRequired,
   location: PropTypes.object,
   onOk: PropTypes.func,
-  invoiceCancel: PropTypes.object,
+  invoiceCancel: PropTypes.object
 }
 
 export default Form.create()(modal)

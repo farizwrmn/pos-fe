@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Button, Input, Form, Select, Col, Row, Modal} from 'antd'
+import { Button, Input, Form, Col, Row, Modal } from 'antd'
 
 const FormItem = Form.Item
-const confirm = Modal.confirm
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 15 },
+  wrapperCol: { span: 15 }
 }
 
 const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
@@ -17,7 +16,7 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.Record = item.no
       onOk(data)
@@ -25,25 +24,6 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
     })
   }
 
-  const handleDelete = () => {
-    const Record = {
-      ...getFieldsValue(),
-    }
-    const data = {
-      Record: Record.Record,
-    }
-    confirm({
-      title: `Remove Record ${data.Record} ?`,
-      content: `Record ${data.Record} will remove from list !`,
-      onOk() {
-        console.log('Ok')
-        onChooseItem(data)
-      },
-      onCancel() {
-        console.log('Cancel')
-      },
-    })
-  }
   return (
     <Modal footer="" closable {...editProps}>
       <Form>
@@ -52,8 +32,8 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
             initialValue: item.no,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(
             <Input disabled />
           )
@@ -70,8 +50,8 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
             initialValue: item.price,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(
             <Input />
           )
@@ -82,8 +62,8 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
             initialValue: item.In,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(
             <Input disabled={disabledItemIn} />
           )
@@ -94,8 +74,8 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
             initialValue: item.Out,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(
             <Input disabled={disabledItemOut} />
           )
@@ -105,9 +85,9 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
           <Col span={6}>
             <Button type="primary" onClick={handleClick}> Change </Button>
           </Col>
-          {/*<Col span={6}>*/}
-            {/*<Button type="danger" onClick={handleDelete}> Delete </Button>*/}
-          {/*</Col>*/}
+          {/* <Col span={6}> */}
+          {/* <Button type="danger" onClick={handleDelete}> Delete </Button> */}
+          {/* </Col> */}
         </Row>
       </Form>
     </Modal>
@@ -120,6 +100,6 @@ AdjustList.propTypes = {
   item: PropTypes.object,
   onChooseItem: PropTypes.func,
   disabledItemIn: PropTypes.bool.isRequired,
-  disabledItemOut: PropTypes.bool.isRequired,
+  disabledItemOut: PropTypes.bool
 }
 export default Form.create()(AdjustList)

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { Row, Col, Button, Select, Badge, Icon, message, DatePicker } from 'antd'
 import moment from 'moment'
 import { color } from 'utils'
@@ -10,16 +9,16 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 moment.locale('id')
-const { Option, OptGroup } = Select
+const { Option } = Select
 
 const Booking = ({ booking, dispatch, app }) => {
-  const { listTrans, listBooking, listHistory, oldBookingStatus, period, date, modalVisible, focusBookingId, newBookingStatus, activeKey, newScheduleDate, newScheduleTime } = booking
+  const { listTrans, listBooking, oldBookingStatus, period, date, modalVisible, focusBookingId, newBookingStatus, activeKey, newScheduleDate, newScheduleTime } = booking
   const { user } = app
   const filterProps = {
     listTrans,
     resetModal () {
       dispatch({
-        type: 'booking/resetAll',
+        type: 'booking/resetAll'
       })
     },
     openModal () {
@@ -29,17 +28,17 @@ const Booking = ({ booking, dispatch, app }) => {
           active: 1,
           status: 'O',
           start: moment().format('YYYY-MM-DD'),
-          end: moment().format('YYYY-MM-DD'),
-        },
+          end: moment().format('YYYY-MM-DD')
+        }
       })
       dispatch({
         type: 'booking/updateState',
         payload: {
           period: moment().format('YYYY-MM'),
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -48,18 +47,18 @@ const Booking = ({ booking, dispatch, app }) => {
       dispatch({
         type: 'booking/updateState',
         payload: {
-          activeKey: key,
-        },
+          activeKey: key
+        }
       })
       if (key === '2') {
         dispatch({
           type: 'booking/queryBooking',
           payload: {
-            groupMonth: period,
-          },
+            groupMonth: period
+          }
         })
       }
-    },
+    }
   }
 
   const badge = (status) => {
@@ -72,7 +71,7 @@ const Booking = ({ booking, dispatch, app }) => {
             position: 'relative',
             display: 'inline-block',
             top: 0,
-            transform: 'none',
+            transform: 'none'
           }}
         />)
         break
@@ -92,7 +91,7 @@ const Booking = ({ booking, dispatch, app }) => {
             position: 'relative',
             display: 'inline-block',
             top: 0,
-            transform: 'none',
+            transform: 'none'
           }}
         />)
         break
@@ -125,34 +124,34 @@ const Booking = ({ booking, dispatch, app }) => {
           oldBookingStatus: status,
           date: dateBooking,
           focusBookingId: '',
-          listTrans: [],
-        },
+          listTrans: []
+        }
       })
       dispatch({
         type: 'booking/query',
         payload: {
           status,
-          dateBooking,
-        },
+          dateBooking
+        }
       })
     },
     onCancel () {
       dispatch({
-        type: 'booking/hideModal',
+        type: 'booking/hideModal'
       })
     },
     onFilterCalendar (value) {
       dispatch({
         type: 'booking/queryBooking',
         payload: {
-          groupMonth: value,
-        },
+          groupMonth: value
+        }
       })
       dispatch({
         type: 'booking/updateState',
         payload: {
-          period: value,
-        },
+          period: value
+        }
       })
     },
     onSelectDate (value) {
@@ -160,10 +159,10 @@ const Booking = ({ booking, dispatch, app }) => {
         type: 'booking/updateState',
         payload: {
           activeKey: '1',
-          date: value,
-        },
+          date: value
+        }
       })
-    },
+    }
   }
 
   const clickedItem = (e) => {
@@ -171,8 +170,8 @@ const Booking = ({ booking, dispatch, app }) => {
     dispatch({
       type: 'booking/updateBooking',
       payload: {
-        transNo: value,
-      },
+        transNo: value
+      }
     })
     if (listTrans.length > 0) {
       if (value === focusBookingId) {
@@ -191,10 +190,10 @@ const Booking = ({ booking, dispatch, app }) => {
                       status: {
                         oldStatus: oldBookingStatus,
                         newStatus: newBookingStatus,
-                        updateBy: user.userid,
+                        updateBy: user.userid
                       },
-                      leftOvers,
-                    },
+                      leftOvers
+                    }
                   })
                   break
                 default:
@@ -218,10 +217,10 @@ const Booking = ({ booking, dispatch, app }) => {
                           newStatus: newBookingStatus,
                           newScheduleDate,
                           newScheduleTime,
-                          updateBy: user.userid,
+                          updateBy: user.userid
                         },
-                        leftOvers,
-                      },
+                        leftOvers
+                      }
                     })
                   } else {
                     message.warning('Please choose your reschedule time!')
@@ -235,10 +234,10 @@ const Booking = ({ booking, dispatch, app }) => {
                       status: {
                         oldStatus: oldBookingStatus,
                         newStatus: newBookingStatus,
-                        updateBy: user.userid,
+                        updateBy: user.userid
                       },
-                      leftOvers,
-                    },
+                      leftOvers
+                    }
                   })
                   break
               }
@@ -255,7 +254,7 @@ const Booking = ({ booking, dispatch, app }) => {
     const { value } = e.target
     dispatch({
       type: 'booking/queryHistory',
-      payload: value,
+      payload: value
     })
   }
 
@@ -267,15 +266,15 @@ const Booking = ({ booking, dispatch, app }) => {
         type: 'booking/focusBookingId',
         payload: {
           newBookingStatus: payload[0],
-          focusBookingId: payload[1],
-        },
+          focusBookingId: payload[1]
+        }
       })
       dispatch({
         type: 'booking/updateState',
         payload: {
           newScheduleDate: '',
-          newScheduleTime: '',
-        },
+          newScheduleTime: ''
+        }
       })
     }
     function rescheduleBooking (value) {
@@ -284,8 +283,8 @@ const Booking = ({ booking, dispatch, app }) => {
         type: 'booking/updateState',
         payload: {
           newScheduleDate: payload[0],
-          newScheduleTime: payload[1],
-        },
+          newScheduleTime: payload[1]
+        }
       })
     }
     for (let key in list) {
@@ -303,7 +302,7 @@ const Booking = ({ booking, dispatch, app }) => {
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
-                    transform: 'none',
+                    transform: 'none'
                   }}
                 />
                 </Option>
@@ -316,7 +315,7 @@ const Booking = ({ booking, dispatch, app }) => {
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
-                    transform: 'none',
+                    transform: 'none'
                   }}
                 /></Option>
                 <Option value={`CC#${list[key].bookingId}`}><Badge status="warning" text="Cancel" /></Option>
@@ -369,7 +368,7 @@ const Booking = ({ booking, dispatch, app }) => {
               </Button>
               <Button onClick={value => showHistory(value)} value={list[key].bookingId}>History</Button>
             </div>
-          ),
+          )
         }
         card.push(
           <Col lg={8} md={24}>
@@ -402,7 +401,7 @@ const Booking = ({ booking, dispatch, app }) => {
 Booking.propTypes = {
   dispatch: PropTypes.func.isRequired,
   booking: PropTypes.object,
-  app: PropTypes.object,
+  app: PropTypes.object
 }
 
 export default connect(({ booking, app }) => ({ booking, app }))(Booking)

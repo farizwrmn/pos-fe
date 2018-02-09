@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Col, Row, Button, Modal, Collapse, Select, DatePicker } from 'antd'
+import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
+import config from 'config'
+import { lstorage } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
-import config from 'config'
-import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -14,16 +14,16 @@ const { prefix } = config
 const formItemLayout = {
   labelCol: { span: 11 },
   wrapperCol: { span: 12 },
-  style: { marginBottom: 5 },
+  style: { marginBottom: 5 }
 }
 const formItemLayout1 = {
   labelCol: { span: 11 },
-  wrapperCol: { span: 12 },
+  wrapperCol: { span: 12 }
 }
 
 const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
-    const data = {...getFieldsValue()}
+    const data = { ...getFieldsValue() }
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
     let discNominal = g.reduce((cnt, o) => cnt + (o.discount), 0)
@@ -31,37 +31,36 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
     let discTotal = (data.discInvoiceNominal || 0) + invoicePercent + discNominal + discPercent
     return discTotal
   }
-  const getGrandTotal = (g, totalDisc) => {
+  const getGrandTotal = (g) => {
     const grandTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     return grandTotal
   }
-  const getNettoTotal = (g,totalDisc,rounding, totalPpn) => {
-    const nettoTotal = g -  totalDisc + (parseFloat(rounding) || 0) + totalPpn
+  const getNettoTotal = (g, totalDisc, e, totalPpn) => {
+    const nettoTotal = (g - totalDisc) + (parseFloat(e) || 0) + totalPpn
     return nettoTotal
   }
   let dataPurchase = dataBrowse
   let g = dataPurchase
-  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)    
-  let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
+  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
   let totalDisc = getDiscTotal(g)
-  let grandTotal = getGrandTotal(g, totalDisc)
-  let nettoTotal = getNettoTotal(grandTotal,totalDisc, rounding, totalPpn)
+  let grandTotal = getGrandTotal(g)
+  let nettoTotal = getNettoTotal(grandTotal, totalDisc, rounding, totalPpn)
   let dataVoid = localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void'))
   const hdlChangePercent = () => {
     console.log('change')
-    const data = {...getFieldsValue()}
+    const data = { ...getFieldsValue() }
     let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
     let ppnType = data.taxType
     localStorage.setItem('taxType', ppnType)
     const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     const x = dataProduct
-    for (let key in x) {
-      x[key].dpp = parseFloat(((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+    for (let key = 0; key < x.length; key += 1) {
+      x[key].dpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
       x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
     localStorage.setItem('product_detail', JSON.stringify(x))
-    onDiscPercent(x,data)
+    onDiscPercent(x, data)
   }
   const confirmPurchase = () => {
     validateFields((errors) => {
@@ -70,14 +69,14 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
       }
       const data = {
         storeId: lstorage.getCurrentUserStore(),
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       onOk(transNo, dataPurchase, dataVoid, data)
       resetFields()
     })
   }
   const hdlBrowseProduct = () => {
-    const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}          
+    const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
     if (transNo === null) {
       Modal.warning({
         title: 'Cannot Find Invoice',
@@ -86,7 +85,7 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
     } else if (transNo.transDate < storeInfo.startPeriod) {
       Modal.warning({
         title: 'Read-only Invoice',
-        content: 'This Invoice cannot be edit',
+        content: 'This Invoice cannot be edit'
       })
     } else {
       handleBrowseProduct()
@@ -119,8 +118,8 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   rules: [{
                     required: true,
                     message: 'Required',
-                    pattern: /^[a-z0-9/-]{6,25}$/i,
-                  }],
+                    pattern: /^[a-z0-9/-]{6,25}$/i
+                  }]
                 })(<Input maxLength={25} disabled />)}
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
@@ -128,8 +127,8 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   initialValue: transNo === null ? '' : moment.utc(transNo.transDate, 'YYYY-MM-DD'),
                   rules: [{
                     required: true,
-                    message: 'Required',
-                  }],
+                    message: 'Required'
+                  }]
                 })(<DatePicker disabled />)}
               </FormItem>
               <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
@@ -137,8 +136,8 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   initialValue: transNo === null ? '' : transNo.taxType,
                   rules: [{
                     required: true,
-                    message: 'Required',
-                  }],
+                    message: 'Required'
+                  }]
                 })(<Select onBlur={hdlChangePercent} disabled>
                   <Option value="I">Include</Option>
                   <Option value="E">Exclude</Option>
@@ -151,8 +150,8 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   initialValue: transNo === null ? '' : transNo.invoiceType,
                   rules: [{
                     required: true,
-                    message: 'Required',
-                  }],
+                    message: 'Required'
+                  }]
                 })((<Select disabled>
                   <Option value="C">CASH</Option>
                   <Option value="K">KREDIT</Option>
@@ -164,12 +163,15 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   rules: [{
                     required: true,
                     pattern: /^([0-9.-]{0,5})$/i,
-                    message: 'Required',
-                  }],
-                })(<InputNumber 
-                  onBlur={hdlChangePercent} 
+                    message: 'Required'
+                  }]
+                })(<InputNumber
+                  onBlur={hdlChangePercent}
                   disabled
-                defaultValue={0} step={500} min={0}  />)}
+                  defaultValue={0}
+                  step={500}
+                  min={0}
+                />)}
               </FormItem>
               <FormItem label="Disc NML(N)" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discInvoiceNominal', {
@@ -177,12 +179,15 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   rules: [{
                     required: true,
                     pattern: /^([0-9.-]{0,19})$/i,
-                    message: 'Required',
-                  }],
-                })(<InputNumber 
-                  onBlur={hdlChangePercent} 
-                  disabled                  
-                defaultValue={0} step={500} min={0}  />)}
+                    message: 'Required'
+                  }]
+                })(<InputNumber
+                  onBlur={hdlChangePercent}
+                  disabled
+                  defaultValue={0}
+                  step={500}
+                  min={0}
+                />)}
               </FormItem>
             </Col>
           </Row>
@@ -221,8 +226,8 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
               rules: [{
                 pattern: /^([0-9.-]{0,5})$/i,
                 message: 'Rounding is not defined',
-                required: true,
-              }],
+                required: true
+              }]
             })((<Input disabled={transNo === null ? false : transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
@@ -248,7 +253,7 @@ PurchaseForm.propTypes = {
   handleBrowseVoid: PropTypes.func.isRequired,
   handleBrowseInvoice: PropTypes.func.isRequired,
   modalProductVisible: PropTypes.isRequired,
-  modalPurchaseVisible: PropTypes.isRequired,
+  modalPurchaseVisible: PropTypes.isRequired
 }
 
 export default Form.create()(PurchaseForm)

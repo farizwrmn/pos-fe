@@ -1,58 +1,56 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Switch, Row, Col, Modal } from 'antd'
+import { Form, Button, Switch, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: { lg: 14, md: 14, sm: 14, float: 'left' },
-  wrapperCol: { lg: 14, md: 14, sm: 14, }
+  wrapperCol: { lg: 14, md: 14, sm: 14 }
 }
 
 const Inventory = ({
   formHeader,
-  visible,
-  visibilityCommit,
   visibilitySave,
   config,
   onOk,
   changeVisible,
-  form: { getFieldDecorator, validateFields, getFieldsValue },
+  form: { getFieldDecorator, validateFields, getFieldsValue }
 }) => {
   Object.compare = function (obj1, obj2) {
-    //Loop through properties in object 1
-    for (var p in obj1) {
-      //Check property exists on both objects
-      if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false;
+    // Loop through properties in object 1
+    for (let p in obj1) {
+      // Check property exists on both objects
+      if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false
 
       switch (typeof (obj1[p])) {
-        //Deep compare objects
+      // Deep compare objects
         case 'object':
-          if (!Object.compare(obj1[p], obj2[p])) return false;
-          break;
-        //Compare function code
+          if (!Object.compare(obj1[p], obj2[p])) return false
+          break
+        // Compare function code
         case 'function':
-          if (typeof (obj2[p]) == 'undefined' || (p != 'compare' && obj1[p].toString() != obj2[p].toString())) return false;
-          break;
-        //Compare values
+          if (typeof (obj2[p]) === 'undefined' || (p !== 'compare' && obj1[p].toString() !== obj2[p].toString())) return false
+          break
+        // Compare values
         default:
-          if (obj1[p] != obj2[p]) return false;
+          if (obj1[p] !== obj2[p]) return false
       }
     }
 
-    //Check object 2 for any extra properties
-    for (var p in obj2) {
-      if (typeof (obj1[p]) == 'undefined') return false;
+    // Check object 2 for any extra properties
+    for (let p in obj2) {
+      if (typeof (obj1[p]) === 'undefined') return false
     }
-    return true;
+    return true
   }
-  const saveClick = () => { 
+  const saveClick = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       let dataInventory = {}
       dataInventory.posOrder = {}
@@ -65,18 +63,18 @@ const Inventory = ({
           content: 'No Changes Detected'
         })
       } else {
-        onOk(formHeader, dataInventory)      
+        onOk(formHeader, dataInventory)
         changeVisible('visible', 'Inventory')
       }
     })
   }
   return (
-    <Form layout='horizontal' className="ant-form-item-label-float-left">
+    <Form layout="horizontal" className="ant-form-item-label-float-left">
       <Row style={{ margin: '5px 10px 5px 10px' }}>
         <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }}>
-          <FormItem label='Enable Out of stock checkout' {...formItemLayout}>
+          <FormItem label="Enable Out of stock checkout" {...formItemLayout}>
             {getFieldDecorator('outOfStock', {
-              initialValue: config.posOrder.outOfStock,
+              initialValue: config.posOrder.outOfStock
             })(<Switch defaultChecked={config.posOrder.outOfStock} />)}
           </FormItem>
         </Col>

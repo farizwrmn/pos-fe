@@ -1,54 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Table, Modal, Button, Form, Card, Input, Select, Cascader } from 'antd'
+import { Modal, Button, Form, Card, Input, Cascader } from 'antd'
 
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: {
-    span: 10,
+    span: 10
   },
   wrapperCol: {
-    span: 14,
-  },
+    span: 14
+  }
 }
 
-const ModalCreditCard = ({payment, stock, app, dispatch, ...modalProps}) => {
-  const { listCreditCharge, creditCharge, creditChargeAmount, creditCardTotal, totalPayment, totalChange, creditCardNo, creditCardType, } = payment
-  const { memberInformation, technicianInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo, } = stock
+const ModalCreditCard = ({ payment, stock, app, dispatch, ...modalProps }) => {
+  const { listCreditCharge, creditCharge, creditChargeAmount, creditCardTotal, totalPayment, totalChange, creditCardNo, creditCardType } = payment
+  const { memberInformation, technicianInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = stock
   const { user } = app
 
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
 
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
-    let mm = today.getMonth()+1 //January is 0!
+    let mm = today.getMonth() + 1 // January is 0!
     let yyyy = today.getFullYear()
 
-    if(dd<10) {
-      dd='0'+dd
+    if (dd < 10) {
+      dd = `0${dd}`
     }
 
-    if(mm<10) {
-      mm='0'+mm
+    if (mm < 10) {
+      mm = `0${mm}`
     }
 
-    if ( mode == 1 ) {
-      today = dd+mm+yyyy
-    }
-    else if ( mode == 2 ) {
-      today = mm+yyyy
-    }
-    else if ( mode == 3 ) {
-      today = yyyy + '-' + mm + '-' + dd
+    if (mode === 1) {
+      today = dd + mm + yyyy
+    } else if (mode === 2) {
+      today = mm + yyyy
+    } else if (mode === 3) {
+      today = `${yyyy}-${mm}-${dd}`
     }
 
     return today
   }
-
+  const checkTime = (i) => {
+    if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
+    return i
+  }
   const setTime = () => {
     let today = new Date()
     let h = today.getHours()
@@ -57,31 +58,26 @@ const ModalCreditCard = ({payment, stock, app, dispatch, ...modalProps}) => {
     m = checkTime(m)
     s = checkTime(s)
 
-    return h + ":" + m + ":" + s
-  }
-
-  const checkTime = (i) => {
-    if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
-    return i
+    return `${h}:${m}:${s}`
   }
 
   const onChangeType = (value) => {
     dispatch({
       type: 'payment/getCreditCharge',
       payload: { creditCode: `${value}`,
-                 netto: parseInt(curTotal) + parseInt(curRounding), }
+        netto: parseInt(curTotal, 10) + parseInt(curRounding, 10) }
     })
   }
 
   const onChangeCreditCardNo = (e) => {
-    const {value} = e.target
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    const { value } = e.target
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
       dispatch({
         type: 'payment/setCreditCardNo',
         payload: {
-          creditCardNo: value,
-        },
+          creditCardNo: value
+        }
       })
     }
   }
@@ -90,42 +86,41 @@ const ModalCreditCard = ({payment, stock, app, dispatch, ...modalProps}) => {
     Modal.confirm({
       title: 'Confirm this payment?',
       content: 'This Operation cannot be undone...!',
-      onOk() {
-
+      onOk () {
         dispatch({
           type: 'payment/create',
           payload: { periode: getDate(2),
             transDate: getDate(1),
             transDate2: getDate(3),
             transTime: setTime(),
-            grandTotal: parseInt(curTotal) + parseInt(curTotalDiscount),
-            totalPayment: totalPayment,
-            creditCardNo: creditCardNo,
-            creditCardType: creditCardType,
+            grandTotal: parseInt(curTotal, 10) + parseInt(curTotalDiscount, 10),
+            totalPayment,
+            creditCardNo,
+            creditCardType,
             creditCardCharge: creditCharge,
             totalCreditCard: creditCardTotal,
-            totalChange: totalChange,
+            totalChange,
             totalDiscount: curTotalDiscount,
             rounding: curRounding,
             memberCode: memberInformation.memberCode,
             technicianId: technicianInformation.employeeId,
-            curShift: curShift,
-            curCashierNo: curCashierNo,
-            cashierId: user.userid,
+            curShift,
+            curCashierNo,
+            cashierId: user.userid
           }
         })
       },
-      onCancel() {},
+      onCancel () {}
     })
   }
 
   const handleCancel = () => {
     dispatch({
-      type: 'payment/setCreditCardPaymentNull',
+      type: 'payment/setCreditCardPaymentNull'
     })
 
     dispatch({
-      type: 'payment/hideCreditModal',
+      type: 'payment/hideCreditModal'
     })
   }
 
@@ -134,7 +129,7 @@ const ModalCreditCard = ({payment, stock, app, dispatch, ...modalProps}) => {
       <Card bordered={false} title="Credit Card Information">
         <Form layout="horizontal">
           <FormItem label="Credit Card No." {...formItemLayout}>
-            <Input value={creditCardNo} onChange={(e) => onChangeCreditCardNo(e)} size="large" style={{ fontSize: 16 }} />
+            <Input value={creditCardNo} onChange={e => onChangeCreditCardNo(e)} size="large" style={{ fontSize: 16 }} />
           </FormItem>
           <FormItem label="Credit Card Type" {...formItemLayout}>
             <Cascader
@@ -174,7 +169,7 @@ ModalCreditCard.propTypes = {
   payment: PropTypes.object,
   stock: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ stock, payment, app }) => ({ stock, payment, app }))(ModalCreditCard)

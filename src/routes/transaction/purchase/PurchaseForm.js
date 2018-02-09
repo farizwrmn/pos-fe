@@ -5,7 +5,6 @@ import { DatePicker, Form, Modal, Input, Select, InputNumber, Collapse, Popover,
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
-import PurchaseList from './PurchaseList'
 
 const { TextArea, Search } = Input
 const Panel = Collapse.Panel
@@ -23,9 +22,9 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
-                        modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                         onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps}) => {
+const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
+  modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
+  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -45,7 +44,7 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
     const nettoTotal = (g - totalDisc) + (parseFloat(e) || 0) + totalPpn
     return nettoTotal
   }
-  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))  
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
   let g = dataPurchase
   let realTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
   let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
@@ -75,8 +74,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
     localStorage.setItem('taxType', ppnType)
     const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     const x = dataProduct
-    for (let key in x) {
-      x[key].dpp = parseFloat(((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+    for (let key = 0; key < x.length; key += 1) {
+      x[key].dpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
       x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }

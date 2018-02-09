@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
-import { Tab, Row, Col, Menu, Dropdown, Button, Icon, Card, Modal } from 'antd'
+import { Row, Col, Button, Card, Modal } from 'antd'
 import { DropOption } from 'components'
 import Inventory from './inventory'
 
-const Config = ({ location, dispatch, configure, customer, loading }) => {
+const Config = ({ dispatch, configure, loading }) => {
   const { formHeader, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
   const inventoryProps = {
     formHeader,
@@ -24,7 +23,7 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
             type: 'configure/update',
             payload: {
               id,
-              data: data
+              data
             }
           })
         }
@@ -76,7 +75,7 @@ const Config = ({ location, dispatch, configure, customer, loading }) => {
           <DropOption onMenuClick={e => hdlDropOptionClick(e)}
             menuName="Options"
             menuOptions={[
-              { key: 'Inventory', name: 'Inventory' },
+              { key: 'Inventory', name: 'Inventory' }
             ]}
           />
         </Col>
@@ -89,7 +88,7 @@ Config.propTypes = {
   configure: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ configure, loading }) => ({ configure, loading }))(Config)

@@ -1,16 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Row, Col, Icon, Button, Tag } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import config from 'config'
-import { DropOption } from 'components'
 
 const { prefix } = config
-const gridStyle = {
-  width: '60%',
-  textAlign: 'center',
-};
-
-const confirm = Modal.confirm
 const Warning = Modal.warning
 
 const Browse = ({
@@ -20,64 +13,64 @@ const Browse = ({
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no',
+      key: 'no'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
+      key: 'productCode'
     },
     {
       title: 'Product Name',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty',
+      key: 'qty'
     },
     {
       title: 'Price',
       dataIndex: 'price',
-      key: 'price',
+      key: 'price'
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
-      key: 'disc1',
+      key: 'disc1'
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
-      key: 'discount',
+      key: 'discount'
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
-      key: 'dpp',
+      key: 'dpp'
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
-      key: 'ppn',
+      key: 'ppn'
     },
     {
       title: 'Total',
       dataIndex: 'total',
-      key: 'total',
+      key: 'total'
     },
     {
       title: 'KET',
       dataIndex: 'ket',
       key: 'ket',
       render: ket =>
-        <span>
+        (<span>
           <Tag color={ket === 'edit' ? 'blue' : 'green'}>
             {ket === 'edit' ? 'EDIT' : 'ADD'}
           </Tag>
-        </span>,
-    },
+        </span>)
+    }
   ]
 
   const hdlModalShow = (record) => {
@@ -108,7 +101,7 @@ const Browse = ({
 }
 
 Browse.propTypes = {
-  modalShow: PropTypes.func.isRequired,
+  modalShow: PropTypes.func.isRequired
 }
 
 export default Browse

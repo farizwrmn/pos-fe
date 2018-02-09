@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card } from 'antd'
 
-const CardIn = ({item, ...cardProps}) => {
+const CardIn = ({ item, ...cardProps }) => {
   return (
     <div>
       <Card style={{ width: 300 }} {...cardProps}>

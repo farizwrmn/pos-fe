@@ -1,24 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
-import { Table, Modal, Button } from 'antd'
+import { Modal } from 'antd'
 import List from './List'
 import ListMember from './ListMember'
 import ListMechanic from './ListMechanic'
 import ListProductLock from './ListProductLock'
-import ListProductFree from './ListProductFree'
 import ListService from './ListService'
 import ListQueue from './ListQueue'
 import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
 
 const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listMember, listMechanic, listProduct, listService,
-    pagination, itemPayment, itemService, modalType, isMotion } = pos
-  const { pageSize } = pagination
+  const { listMember, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
   const width = modalType === 'modalPayment' || modalType === 'modalService' ? '45%' : '80%'
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
   let listProductLock = listProduct.filter(el => el.count > 0)
   let listProductFree = listProduct
@@ -30,11 +26,11 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
             modalType === 'browseProductFree' ? listProductFree :
               modalType === 'browseService' ? listService : listMember
     ),
-    // loading: loading.effects[(modalType == 'browse' ? 'pos/query' : (modalType == 'browseMechanic' ? 'pos/queryMechanic' : (modalType == 'browseService' ? 'pos/queryService' : '')))],
+    // loading: loading.effects[(modalType==='browse' ? 'pos/query' : (modalType==='browseMechanic' ? 'pos/queryMechanic' : (modalType==='browseService' ? 'pos/queryService' : '')))],
     loading: loading.effects[(
       modalType === 'browseMember' ? 'pos/getMembers' :
         modalType === 'browseMechanic' ? 'pos/getMechanics' :
-        modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
+          modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
             modalType === 'browseService' ? 'pos/queryService' : 'pos/queryMember'
     )],
     // pagination,
@@ -51,7 +47,7 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
     },
     onChangeTotalItem (e) {
       onChangeTotalItem(e)
-    },
+    }
   }
   return (
     <Modal {...modalOpts} width={width} height="80%" footer={[]}>
@@ -75,7 +71,7 @@ Browse.propTypes = {
   onChangeTotalItem: PropTypes.func.isRequired,
   DeleteItem: PropTypes.func.isRequired,
   onChooseItem: PropTypes.func.isRequired,
-  totalItem: PropTypes.string.isRequired,
+  totalItem: PropTypes.string
 }
 
 export default Browse

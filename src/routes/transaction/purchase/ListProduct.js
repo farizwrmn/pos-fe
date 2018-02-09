@@ -18,8 +18,8 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
     dispatch({
       type: 'purchase/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -27,9 +27,9 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
     dispatch({
       type: 'purchase/onProductSearch',
       payload: {
-        searchText: searchText,
-        tmpProductList: tmpProductList,
-      },
+        searchText,
+        tmpProductList
+      }
     })
   }
 
@@ -38,8 +38,8 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       type: 'purchase/onProductReset',
       payload: {
         searchText: '',
-        tmpProductList: tmpProductList,
-      },
+        tmpProductList
+      }
     })
   }
 
@@ -48,23 +48,23 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '10%',
+      width: '10%'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%',
+      width: '25%'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '45%',
+      width: '45%'
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '20%',
+      width: '20%'
     }
   ]
 
@@ -75,7 +75,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
           <Input placeholder="Search Product Name"
             value={searchText}
             size="small"
-            onChange={(e) => handleChange(e)}
+            onChange={e => handleChange(e)}
             onPressEnter={handleSearch}
             style={{ marginBottom: 16 }}
           />
@@ -106,7 +106,7 @@ ListProduct.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   purchase: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ purchase }) => ({ purchase }))(ListProduct)

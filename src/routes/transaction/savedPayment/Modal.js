@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Cascader, Checkbox, Button, Row, Col, Popover, Dropdown, Menu, Table, Icon, Collapse } from 'antd'
+import { Form, Input, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
-const Panel = Collapse.Panel
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 14 }
 }
 
 const modal = ({
@@ -21,24 +20,24 @@ const modal = ({
   ...modalProps
 }) => {
   const handleOk = () => {
-    const data= {
-      posData: posData,
+    const data = {
+      posData,
       data: listPaymentDetail.data,
-      memberPrint: memberPrint,
-      mechanicPrint: mechanicPrint,
-      companyPrint: company,
+      memberPrint,
+      mechanicPrint,
+      companyPrint: company
     }
     onOk(data)
   }
 
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" >Print</Button>,
+        <Button key="submit" onClick={() => handleOk()} type="primary" >Print</Button>
       ]}
     >
       <Form>
@@ -55,7 +54,13 @@ modal.propTypes = {
   onOk: PropTypes.func,
   onChooseItem: PropTypes.func,
   enablePopover: PropTypes.func,
-  modalIsEmployeeChange: PropTypes.func
+  modalIsEmployeeChange: PropTypes.func,
+  listPaymentDetail: PropTypes.func,
+  listPayment: PropTypes.object,
+  memberPrint: PropTypes.object,
+  mechanicPrint: PropTypes.object,
+  posData: PropTypes.array,
+  company: PropTypes.object
 }
 
 export default Form.create()(modal)

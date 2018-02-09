@@ -14,8 +14,8 @@ const Misc = ({ location, dispatch, misc, loading }) => {
   const modalProps = {
     item: currentItem,
     visible: modalVisible,
-    visiblePopover: visiblePopover,
-    disabledItem: disabledItem,
+    visiblePopover,
+    disabledItem,
     maskClosable: false,
     confirmLoading: loading.effects['misc/update'],
     title: `${modalType === 'add' ? 'Add Misc' : 'Edit Misc'}`,
@@ -23,35 +23,35 @@ const Misc = ({ location, dispatch, misc, loading }) => {
     onOk (data) {
       dispatch({
         type: `misc/${modalType}`,
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'misc/modalHide',
+        type: 'misc/modalHide'
       })
     },
     modalPopoverVisible () {
       dispatch({
-        type: `misc/modalPopoverVisible`,
+        type: 'misc/modalPopoverVisible'
       })
     },
     modalPopoverClose () {
       dispatch({
-        type: `misc/modalPopoverClose`,
+        type: 'misc/modalPopoverClose'
       })
     },
     modalButtonCancelClick () {
-      dispatch({ type: `misc/modalHide` })
+      dispatch({ type: 'misc/modalHide' })
     },
     modalButtonSaveClick (id, name, data) {
       dispatch({
         type: `misc/${modalType}`,
         payload: {
-          id: id,
-          name: name,
-          data: data
-        },
+          id,
+          name,
+          data
+        }
       })
     }
   }
@@ -68,16 +68,16 @@ const Misc = ({ location, dispatch, misc, loading }) => {
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       }))
     },
     onAddItem () {
       dispatch({
         type: 'misc/modalShow',
         payload: {
-          modalType: 'add',
-        },
+          modalType: 'add'
+        }
       })
     },
     onEditItem (item) {
@@ -85,16 +85,16 @@ const Misc = ({ location, dispatch, misc, loading }) => {
         type: 'misc/modalShow',
         payload: {
           modalType: 'edit',
-          currentItem: item,
-        },
+          currentItem: item
+        }
       })
     },
     onDeleteItem (id, name) {
       dispatch({
         type: 'misc/delete',
         payload: {
-          id : id,
-          name : name
+          id,
+          name
         }
       })
     },
@@ -102,36 +102,36 @@ const Misc = ({ location, dispatch, misc, loading }) => {
       dispatch({
         type: 'misc/deleteBatch',
         payload: {
-          userId: selectedRowKeys,
-        },
+          userId: selectedRowKeys
+        }
       })
     },
     onSearchShow () { dispatch({ type: 'misc/searchShow' }) },
     modalPopoverClose () {
       dispatch({
-        type: `misc/modalPopoverClose`,
+        type: 'misc/modalPopoverClose'
       })
     },
-    size:'small',
+    size: 'small'
   }
   Object.assign(browseProps, disableMultiSelect ? null :
-    {rowSelection: {
+    { rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
           type: 'misc/updateState',
           payload: {
-            selectedRowKeys: keys,
-          },
+            selectedRowKeys: keys
+          }
         })
-      },
-    }}
+      }
+    } }
   )
 
   const filterProps = {
     visiblePanel: searchVisible,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch(routerRedux.push({
@@ -139,23 +139,22 @@ const Misc = ({ location, dispatch, misc, loading }) => {
         query: {
           ...value,
           page: 1,
-          pageSize,
-        },
+          pageSize
+        }
       }))
     },
     onSearch (fieldsValue) {
-
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/master/user',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/master/user',
-        }))
+        pathname: '/master/user',
+        query: {
+          field: fieldsValue.field,
+          keyword: fieldsValue.keyword
+        }
+      })) : dispatch(routerRedux.push({
+        pathname: '/master/user'
+      }))
     },
-    onSearchHide () { dispatch({ type: 'misc/searchHide'}) },
+    onSearchHide () { dispatch({ type: 'misc/searchHide' }) }
   }
 
   return (
@@ -171,7 +170,7 @@ Misc.propTypes = {
   misc: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ misc, loading }) => ({ misc, loading }))(Misc)

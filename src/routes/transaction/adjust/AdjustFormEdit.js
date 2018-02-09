@@ -1,28 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Form, Input, Popover, Button, Table, Icon, DatePicker, Cascader } from 'antd'
+import { Form, Input, Popover, Button, Table, Icon, DatePicker, Cascader } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
-const { TextArea } = Input;
+const { TextArea } = Input
 const { Search } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 }
 }
-const formItemLayout1 = {
-  labelCol: { xs: { span: 4 }, sm: { span: 8 }, md: { span: 8 }, lg: { span: 8 } },
-  wrapperCol: { xs: { span: 4 }, sm: { span: 11 }, md: { span: 11 }, lg: { span: 15 } },
-  style: { marginBottom: 3 },
-}
-const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-                      popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields}, ...adjustProps}) => {
+
+const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+  popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
   if (item) {
-    itemEmployee.employeeId=item.picId,
-    itemEmployee.employeeName=item.pic
+    itemEmployee.employeeId = item.picId
+    itemEmployee.employeeName = item.pic
   }
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
@@ -34,7 +30,7 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
         transNo: item.transNo,
         transType: item.transType,
         pic: itemEmployee !== null ? itemEmployee.employeeName : '',
-        picId: itemEmployee !== null ? itemEmployee.employeeId : '',
+        picId: itemEmployee !== null ? itemEmployee.employeeId : ''
       }
       data.transType = data.transType[0]
       onOk(data)
@@ -50,9 +46,9 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
     onResetAll()
   }
 
-  const handleGetEmployee = (e) => {
-    onGetEmployee(e)
-  }
+  // const handleGetEmployee = (e) => {
+  //   onGetEmployee(e)
+  // }
 
   const hdlSearch = (e) => {
     onSearchProduct(e, dataSource)
@@ -75,20 +71,20 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
       title: 'code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%',
+      width: '25%'
     },
     {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: '55%',
+      width: '55%'
     },
     {
       title: 'Cost',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '20%',
-    },
+      width: '20%'
+    }
   ]
   const contentPopover = (
     <Table
@@ -102,7 +98,7 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
       // }}
       size="small"
       rowKey={record => record.productCode}
-      onRowClick={(record) => handleMenuClick(record)}
+      onRowClick={record => handleMenuClick(record)}
     />
   )
   return (
@@ -114,8 +110,8 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
         {getFieldDecorator('transType', {
           initialValue: item ? [item.transType] : '',
           rules: [{
-            required: true,
-          }],
+            required: true
+          }]
         })(
           <Cascader
             size="large"
@@ -141,16 +137,17 @@ const AdjustForm = ({onChooseItem, onResetAll, disableItem, onGetEmployee, itemE
         <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
       </FormItem>
       <FormItem label="Search" {...formItemLayout}>
-        <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
+        <Popover visible={popoverVisible} title={<a href={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
           <Search prefix={<Icon type="barcode" />}
             autoFocus
             size="large"
             placeholder="Search Product By Code or Name"
             onEnter={value => hdlSearch(value)}
             onSearch={value => hdlSearch(value)}
-            onChange={(value) => handleChangeSearch(value)}
+            onChange={value => handleChangeSearch(value)}
             onFocus={() => hdlGetProduct()}
-            onClick={() => hdlGetProduct()} />
+            onClick={() => hdlGetProduct()}
+          />
         </Popover>
       </FormItem>
       <FormItem>
@@ -169,7 +166,7 @@ AdjustForm.propTyps = {
   location: PropTypes.object,
   item: PropTypes.object,
   onGetEmployee: PropTypes.func,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default Form.create()(AdjustForm)

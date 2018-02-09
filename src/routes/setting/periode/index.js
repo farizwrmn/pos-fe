@@ -12,14 +12,14 @@ import ModalClose from './ModalClose'
 
 const Period = ({ location, dispatch, period, loading, app }) => {
   const { list, pagination, modalVisible, visiblePopover,
-    disabledItem, modalType, modalEndVisible, accountActive, searchVisible, periodDate, accountNumber } = period
+    disabledItem, modalType, modalEndVisible, accountActive, periodDate, accountNumber } = period
   const { user } = app
-  const { pageSize } = pagination
+  // const { pageSize } = pagination
 
   const modalProps = {
     visible: modalVisible,
-    visiblePopover: visiblePopover,
-    disabledItem: disabledItem,
+    visiblePopover,
+    disabledItem,
     user,
     modalType,
     periodDate,
@@ -31,16 +31,16 @@ const Period = ({ location, dispatch, period, loading, app }) => {
     onOk (data) {
       dispatch({
         type: `period/${modalType}`,
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'period/modalHide',
+        type: 'period/modalHide'
       })
-    },
+    }
   }
-  
+
   const modalEndProps = {
     visible: modalEndVisible,
     user,
@@ -54,14 +54,14 @@ const Period = ({ location, dispatch, period, loading, app }) => {
     onOk (data) {
       dispatch({
         type: `period/${modalType}`,
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'period/modalCloseHide',
+        type: 'period/modalCloseHide'
       })
-    },
+    }
   }
 
   const browseProps = {
@@ -78,8 +78,8 @@ const Period = ({ location, dispatch, period, loading, app }) => {
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       }))
     },
     onStartPeriod () {
@@ -89,8 +89,8 @@ const Period = ({ location, dispatch, period, loading, app }) => {
           modalType: 'add',
           periodDate: {
             startDate: moment().format('YYYY/MM/DD hh:mm:ss')
-          },
-        },
+          }
+        }
       })
     },
     onEndPeriod (data) {
@@ -101,9 +101,9 @@ const Period = ({ location, dispatch, period, loading, app }) => {
           accountActive: {
             accountActive: data.transNo,
             startPeriod: data.startPeriod,
-            storeId: data.storeId,
-          },
-        },
+            storeId: data.storeId
+          }
+        }
       })
     },
     onEditItem (item) {
@@ -111,41 +111,41 @@ const Period = ({ location, dispatch, period, loading, app }) => {
         type: 'period/modalShow',
         payload: {
           modalType: 'edit',
-          currentItem: item,
-        },
+          currentItem: item
+        }
       })
     },
-    onSearchShow () { dispatch({ type: 'period/searchShow' }) },
+    onSearchShow () { dispatch({ type: 'period/searchShow' }) }
   }
 
-  const filterProps = {
-    visiblePanel: searchVisible,
-    filter: {
-      ...location.query,
-    },
-    onFilterChange (value) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          ...value,
-          page: 1,
-          pageSize,
-        },
-      }))
-    },
-    onSearch (fieldsValue) {
-      fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/setting/periods',
-        query: {
-          field: fieldsValue.field,
-          keyword: fieldsValue.keyword,
-        },
-      })) : dispatch(routerRedux.push({
-        pathname: '/setting/periods',
-      }))
-    },
-    onSearchHide () { dispatch({ type: 'period/searchHide'}) },
-  }
+  // const filterProps = {
+  //   visiblePanel: searchVisible,
+  //   filter: {
+  //     ...location.query
+  //   },
+  //   onFilterChange (value) {
+  //     dispatch(routerRedux.push({
+  //       pathname: location.pathname,
+  //       query: {
+  //         ...value,
+  //         page: 1,
+  //         pageSize
+  //       }
+  //     }))
+  //   },
+  //   onSearch (fieldsValue) {
+  //     fieldsValue.keyword.length ? dispatch(routerRedux.push({
+  //       pathname: '/setting/periods',
+  //       query: {
+  //         field: fieldsValue.field,
+  //         keyword: fieldsValue.keyword
+  //       }
+  //     })) : dispatch(routerRedux.push({
+  //       pathname: '/setting/periods'
+  //     }))
+  //   },
+  //   onSearchHide () { dispatch({ type: 'period/searchHide' }) }
+  // }
 
   return (
     <div className="content-inner">
@@ -161,7 +161,7 @@ Period.propTypes = {
   app: PropTypes.isRequired,
   location: PropTypes.isRequired,
   dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.isRequired,
+  loading: PropTypes.isRequired
 }
 
 export default connect(({ loading, app, period }) => ({ loading, app, period }))(Period)

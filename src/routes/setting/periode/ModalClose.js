@@ -12,7 +12,7 @@ const dateFormat = 'YYYY-MM-DD'
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 14 }
 }
 
 const modal = ({
@@ -34,7 +34,7 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (now >= endPeriod) {
         data.endPeriod = endPeriod
@@ -44,14 +44,14 @@ const modal = ({
         data.endPeriod = endPeriod
         Modal.warning({
           title: 'Period is not over yet',
-          content: `${now} is not end of this period`,
+          content: `${now} is not end of this period`
         })
       }
     })
   }
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
   return (
@@ -62,9 +62,9 @@ const modal = ({
             initialValue: accountActive.accountActive,
             rules: [
               {
-                required: true,
-              },
-            ],
+                required: true
+              }
+            ]
           })(<Input disabled />)}
         </FormItem>
         <FormItem label="EndDate" {...formItemLayout}>
@@ -72,18 +72,18 @@ const modal = ({
             initialValue: moment.utc(moment(uiDate).format('YYYY-MM-DD'), dateFormat),
             rules: [
               {
-                required: false,
-              },
-            ],
+                required: false
+              }
+            ]
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
         </FormItem>
         <FormItem label="Memo" {...formItemLayout}>
           {getFieldDecorator('memo', {
             rules: [
               {
-                required: false,
-              },
-            ],
+                required: false
+              }
+            ]
           })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
@@ -95,7 +95,7 @@ modal.propTypes = {
   form: PropTypes.isRequired,
   periodDate: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
-  accountActive: PropTypes.string.isRequired,
+  accountActive: PropTypes.string.isRequired
 }
 
 export default Form.create()(modal)
