@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './sales.less'
 import classnames from 'classnames'
 import { color } from 'utils'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import moment from 'moment'
+import styles from './sales.less'
 
 class CustomizedLabel extends React.Component {
-  render() {
+  render () {
     const { x, y, stroke, value } = this.props
 
-    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value}</text> 
+    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value}</text>
   }
 }
 
@@ -47,7 +47,7 @@ const Sales = ({ data }) => {
 }
 
 Sales.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.array
 }
 
 export default Sales

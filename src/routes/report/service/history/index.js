@@ -30,7 +30,7 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
     user,
     storeInfo,
     fromDate,
-    toDate,
+    toDate
   }
 
   const filterProps = {
@@ -45,8 +45,8 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
           from,
           to,
           serviceTypeId,
-          technicianId,
-        },
+          technicianId
+        }
       })
       dispatch({
         type: 'serviceReport/queryMechanic',
@@ -54,8 +54,8 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
           from,
           to,
           serviceTypeId,
-          technicianId,
-        },
+          technicianId
+        }
       })
     },
     onSearchClickWithService (from, to, serviceTypeId, technicianId, serviceCode) {
@@ -66,8 +66,8 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
           to,
           serviceTypeId,
           technicianId,
-          serviceCode,
-        },
+          serviceCode
+        }
       })
     },
     onResetClick () {
@@ -77,16 +77,16 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
           listMechanic: [],
           listService: [],
           fromDate: '',
-          toDate: '',
-        },
+          toDate: ''
+        }
       })
-    },
+    }
   }
 
   const listProps = {
     dataSource: listMechanic,
     loading: loading.effects['serviceReport/queryMechanic'],
-    style: { marginTop: 15 },
+    style: { marginTop: 15 }
   }
 
   return (
@@ -103,7 +103,7 @@ ServiceHistory.propTypes = {
   employee: PropTypes.object,
   loading: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.object,
+  dispatch: PropTypes.object
 }
 
 export default connect(({ serviceReport, service, employee, app, loading }) => ({ serviceReport, service, employee, app, loading }))(ServiceHistory)

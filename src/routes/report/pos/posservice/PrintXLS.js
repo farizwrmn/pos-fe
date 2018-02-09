@@ -11,7 +11,6 @@ import moment from 'moment'
 const warning = Modal.warning
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-
   let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
   let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
 
@@ -26,8 +25,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
       height: 20000,
       firstSheet: 0,
       activeTab: 1,
-      visibility: 'visible',
-    },
+      visibility: 'visible'
+    }
   ]
   const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize: 9, orientation: 'portrait' } })
@@ -35,42 +34,42 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
     if (fromDate === '' && toDate === '') {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else if (listTrans.length === 0) {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else {
       sheet.getCell('F2').font = {
         name: 'Courier New',
         family: 4,
         size: 12,
-        underline: true,
+        underline: true
       }
       sheet.getCell('F3').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('F4').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('J5').font = {
         name: 'Courier New',
         family: 4,
-        size: 10,
+        size: 10
       }
-      for (let n = 0; n <= listTrans.length; n++) {
-        for (let m = 65; m < 74; m++) {
+      for (let n = 0; n <= listTrans.length; n += 1) {
+        for (let m = 65; m < 74; m += 1) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
             family: 4,
-            size: 10,
+            size: 10
           }
         }
       }
@@ -81,23 +80,23 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         '',
         '',
         'GRAND TOTAL',
-        `${productTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${serviceTotal.toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        `${(parseFloat(serviceTotal) + parseFloat(productTotal)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-        ]
+        `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${serviceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${(parseFloat(serviceTotal) + parseFloat(productTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      ]
       for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
         let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
       }
 
-      for (let n = 0; n < listTrans.length; n++) {
+      for (let n = 0; n < listTrans.length; n += 1) {
         let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
@@ -109,11 +108,11 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`E${m}`).value = `${listTrans[n].policeNo}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].product)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].product)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].service)).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].service)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product))).toLocaleString(['ban', 'id'], {minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).value = `${((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product))).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -123,12 +122,12 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
           name: 'Times New Roman',
           family: 4,
-          size: 10,
+          size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
@@ -140,7 +139,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
       sheet.getCell('D3').value = `${storeInfo.name}`
       sheet.getCell('D4').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('D4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
-      workbook.xlsx.writeBuffer().then(function (data) {
+      workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `POS-Summary${moment().format('YYYYMMDD')}.xlsx`)
       })
@@ -158,13 +157,11 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  location: PropTypes.object,
   listTrans: PropTypes.array,
-  app: PropTypes.object,
   dataSource: PropTypes.object,
   storeInfo: PropTypes.object,
   fromDate: PropTypes.string,
-  toDate: PropTypes.string,
+  toDate: PropTypes.string
 }
 
 export default PrintXLS

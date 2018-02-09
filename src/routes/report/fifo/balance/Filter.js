@@ -12,12 +12,11 @@ import PrintPDF from './PrintPDF'
 const { MonthPicker } = DatePicker
 
 const Filter = ({ onChangePeriod, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
-  }
+  // const handleChange = (value) => {
+  //   const from = value[0].format('YYYY-MM-DD')
+  //   const to = value[1].format('YYYY-MM-DD')
+  //   onDateChange(from, to)
+  // }
 
   const handleReset = () => {
     const fields = getFieldsValue()
@@ -71,7 +70,7 @@ const Filter = ({ onChangePeriod, onListReset, form: { getFieldsValue, setFields
 Filter.propTypes = {
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
+  onFilterChange: PropTypes.func
 }
 
 export default Form.create()(Filter)

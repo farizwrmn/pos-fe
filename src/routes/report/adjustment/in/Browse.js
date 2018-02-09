@@ -11,38 +11,38 @@ const Browse = ({ ...browseProps }) => {
       title: 'Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '155px',
+      width: '155px'
     },
     {
       title: 'Description',
       dataIndex: 'productName',
       key: 'productName',
-      width: '200px',
+      width: '200px'
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '175px',
+      width: '175px'
     },
     {
       title: 'QTY',
       dataIndex: 'qtyIn',
       key: 'qtyIn',
-      width: '100px',
+      width: '100px'
     },
     {
       title: 'Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '100px',
+      width: '100px'
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
-      width: '100px',
-    },
+      width: '100px'
+    }
   ]
 
   return (
@@ -63,7 +63,7 @@ const Browse = ({ ...browseProps }) => {
 
 Browse.propTypes = {
   location: PropTypes.object,
-  onExportExcel: PropTypes.func.isRequired,
+  onExportExcel: PropTypes.func
 }
 
 export default Browse

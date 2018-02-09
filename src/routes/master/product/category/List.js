@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
@@ -15,7 +14,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         title: `Are you sure delete ${record.categoryName} ?`,
         onOk () {
           deleteItem(record.categoryCode)
-        },
+        }
       })
     }
   }
@@ -24,22 +23,22 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Code',
       dataIndex: 'categoryCode',
-      key: 'categoryCode',
+      key: 'categoryCode'
     },
     {
       title: 'Name',
       dataIndex: 'categoryName',
-      key: 'categoryName',
+      key: 'categoryName'
     },
     {
       title: 'Image',
       dataIndex: 'categoryImage',
-      key: 'categoryImage',
+      key: 'categoryImage'
     },
     {
       title: 'Parent Category',
       dataIndex: 'categoryParentId',
-      key: 'categoryParentId',
+      key: 'categoryParentId'
     },
     {
       title: 'Created',
@@ -47,14 +46,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'createdBy',
-          key: 'createdBy',
+          key: 'createdBy'
         },
         {
           title: 'Time',
           dataIndex: 'createdAt',
-          key: 'createdAt',
-        },
-      ],
+          key: 'createdAt'
+        }
+      ]
     },
     {
       title: 'Updated',
@@ -62,14 +61,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'updatedBy',
-          key: 'updatedBy',
+          key: 'updatedBy'
         },
         {
           title: 'Time',
           dataIndex: 'updatedAt',
-          key: 'updatedAt',
-        },
-      ],
+          key: 'updatedAt'
+        }
+      ]
     },
     {
       title: 'Operation',
@@ -78,8 +77,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -97,7 +96,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
 List.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default List

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
+const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -58,68 +58,68 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
-    },
+      color: 'black'
+    }
   }
   const header = {
     stack: [
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN NILAI PERSEDIAAN',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
                 fontSize: 12,
-                alignment: 'left',
+                alignment: 'left'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'right',
-              },
-            ],
-          },
-        ],
-      },
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
   const footer = (currentPage, pageCount) => {
     return {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -127,23 +127,23 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
               text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
   const tableHeader = [
@@ -164,7 +164,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       {},
       { fontSize: 12, text: 'SALDO AKHIR', colSpan: 2, alignment: 'center' },
       {},
-      {},
+      {}
     ],
     [
       {},
@@ -183,7 +183,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
       { fontSize: 12, text: 'QTY', alignment: 'center' },
       { fontSize: 12, text: 'AMOUNT HPP', alignment: 'center' },
-      { fontSize: 12, text: 'LABA-RUGI', alignment: 'center' },
+      { fontSize: 12, text: 'LABA-RUGI', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -194,7 +194,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },      
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
       { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
@@ -210,25 +210,25 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       { text: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
       { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
       { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-    ],
+      { text: `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 }
+    ]
   ]
 
   // Declare additional Props
   const pdfProps = {
-    className: "button-width02 button-extra-large bgcolor-blue",
+    className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['4%', '8%', '11%', '4%', '7%', '4%', '6%', '4%', '6%', '4%', '7%', '7%', '4%', '7%', '4%', '7%', '6%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: { width: 842, height: 1430 },
     pageOrientation: 'landscape',
     tableStyle: styles,
-    layout: "noBorder",
-    tableHeader: tableHeader,
-    tableBody: tableBody,
-    tableFooter: tableFooter,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    tableFooter,
     data: listRekap,
-    header: header,
-    footer: footer
+    header,
+    footer
   }
 
   return (
@@ -242,7 +242,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   period: PropTypes.string.isRequired,
   year: PropTypes.string.isRequired,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintPDF

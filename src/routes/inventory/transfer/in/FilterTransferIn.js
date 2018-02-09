@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Row, Col, DatePicker, Input } from 'antd'
 
@@ -11,23 +10,21 @@ const filterItemLayout = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 12 },
-  xl: { span: 12 },
+  xl: { span: 12 }
 }
 
 const FilterTransfer = ({
   filterChange,
   filterTransNo,
-  filter,
   period,
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const data = {
-    ...getFieldsValue(),
+    ...getFieldsValue()
   }
 
   const handleChangeDate = (date, dateString) => {

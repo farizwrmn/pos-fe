@@ -6,11 +6,10 @@ import { ModalList } from '../../../components'
 
 
 const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
-  const { list, listCustomer, pagination, searchText } = customer
-  const { pageSize } = pagination
+  const { list, listCustomer, searchText } = customer
   const width = '80%'
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
 
   const columns = [
@@ -18,29 +17,29 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '30px',
+      width: '30px'
     },
     {
       title: 'Member Code',
       dataIndex: 'memberCode',
       key: 'memberCode',
-      width: '100px',
+      width: '100px'
     }, {
       title: 'Member Name',
       dataIndex: 'memberName',
       key: 'memberName',
-      width: '140px',
+      width: '140px'
     }, {
       title: 'Address',
       dataIndex: 'address01',
       key: 'address01',
-      width: '200px',
+      width: '200px'
     }, {
       title: 'Phone',
       dataIndex: 'mobileNumber',
       key: 'mobileNumber',
-      width: '70px',
-    },
+      width: '70px'
+    }
   ]
 
   const listProps = {
@@ -54,8 +53,8 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
         type: 'customer/onSearch',
         payload: {
           search: searchText,
-          data: list,
-        },
+          data: list
+        }
       })
     },
     onReset () {
@@ -63,34 +62,34 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
         type: 'customer/updateState',
         payload: {
           listCustomer: list,
-          searchText: '',
-        },
+          searchText: ''
+        }
       })
     },
     onClickRow (record) {
       dispatch({
         type: 'customerunit/query',
         payload: {
-          code: record.memberCode,
-        },
+          code: record.memberCode
+        }
       })
       dispatch({
         type: 'customer/updateState',
         payload: {
           modalVisible: false,
           activeKey: '1',
-          dataCustomer: record,
-        },
+          dataCustomer: record
+        }
       })
     },
     changeText (text) {
       dispatch({
         type: 'customer/updateState',
         payload: {
-          searchText: text,
-        },
+          searchText: text
+        }
       })
-    },
+    }
   }
 
   return (
@@ -103,7 +102,7 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
 ModalBrowse.propTypes = {
   customer: PropTypes.object,
   loading: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ customer, loading }) => ({ customer, loading }))(ModalBrowse)

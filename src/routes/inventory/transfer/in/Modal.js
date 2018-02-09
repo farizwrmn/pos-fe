@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import { Form, Modal, DatePicker, Select } from 'antd'
 import moment from 'moment'
 
@@ -12,14 +12,14 @@ const formItemLayout = {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 8 },
-    xl: { span: 8 },
+    xl: { span: 8 }
   },
   wrapperCol: {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 12 },
-    xl: { span: 12 },
-  },
+    xl: { span: 12 }
+  }
 }
 
 const modal = ({
@@ -34,14 +34,14 @@ const modal = ({
     getFieldDecorator,
     resetFields,
     validateFields,
-    getFieldsValue,
-  },
-}) => {
-  const handleReset = () => {
-    resetFields()
-    resetItem()
-    onListReset()
+    getFieldsValue
   }
+}) => {
+  // const handleReset = () => {
+  //   resetFields()
+  //   resetItem()
+  //   onListReset()
+  // }
 
   const handleOk = () => {
     validateFields((errors) => {
@@ -49,7 +49,7 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
 
       data.transNo = data.transNo ? data.transNo : []
@@ -58,7 +58,7 @@ const modal = ({
       if (data.transNo.length === 0 && data.storeIdReceiver.length === 0) {
         Modal.warning({
           title: 'No Data',
-          content: 'No data inside storage',
+          content: 'No data inside storage'
         })
         return
       }
@@ -79,7 +79,7 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
   const filterDate = (date, dateString) => {
@@ -110,17 +110,17 @@ const modal = ({
           initialValue: moment.utc(period, 'YYYY-MM'),
           rules: [
             {
-              required: true,
-            },
-          ],
+              required: true
+            }
+          ]
         })(
         // <RangePicker onChange={filterDate} />
-        <MonthPicker onChange={filterDate} placeholder="Select Period" />
+          <MonthPicker onChange={filterDate} placeholder="Select Period" />
         )}
       </FormItem>
       <FormItem label="Trans No" hasFeedback {...formItemLayout}>
         {getFieldDecorator('transNo', {
-          initialValue: item.transNo,
+          initialValue: item.transNo
         })(<Select
           mode="multiple"
           style={{ width: 245 }}
@@ -134,7 +134,7 @@ const modal = ({
       </FormItem>
       <FormItem label="Store Name" hasFeedback {...formItemLayout}>
         {getFieldDecorator('storeIdReceiver', {
-          initialValue: item.storeIdReceiver,
+          initialValue: item.storeIdReceiver
         })(<Select
           mode="multiple"
           style={{ width: 245 }}

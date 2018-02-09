@@ -1,39 +1,39 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Row, Col, Form, DatePicker, Card } from 'antd'
-import ModalBrowse from './Modal'
 import { SelectItem } from 'components'
+import ModalBrowse from './Modal'
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 8,
+      span: 8
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 16,
+      span: 16
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 12 },
-  xl: { span: 12 },
+  xl: { span: 12 }
 }
 
 const FormItem = Form.Item
@@ -53,8 +53,8 @@ const Filter = ({
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   if (listPoliceNo.length > 0) {
     if (customerInfo.memberCode !== listPoliceNo[0].memberCode) {
@@ -95,7 +95,7 @@ const Filter = ({
           <Col span={18}>: {customerInfo.address01}</Col>
         </Row>
       </div>
-    ),
+    )
   }
 
   const { item } = cardProps
@@ -115,7 +115,7 @@ const Filter = ({
     componentValue: 'policeNo',
     allowClear: true,
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
-    placeholder: 'Select a plat',
+    placeholder: 'Select a plat'
   }
   const serviceTypeProps = {
     list: listServiceType,
@@ -124,7 +124,7 @@ const Filter = ({
     componentValue: 'miscDesc',
     allowClear: true,
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
-    placeholder: 'Select service type',
+    placeholder: 'Select service type'
   }
 
   return (
@@ -139,7 +139,7 @@ const Filter = ({
         </FormItem>
         <FormItem label="Police No" {...formItemLayout}>
           {getFieldDecorator('policeNo', {
-            rules: [{ required: true }],
+            rules: [{ required: true }]
           })(<SelectItem {...policeNoProps} />)}
         </FormItem>
         <FormItem label="Service Type" {...formItemLayout}>
@@ -166,7 +166,7 @@ Filter.propTypes = {
   openModal: PropTypes.func,
   onResetClick: PropTypes.func,
   resetHistory: PropTypes.func,
-  onSearchClick: PropTypes.func,
+  onSearchClick: PropTypes.func
 }
 
 export default Form.create()(Filter)

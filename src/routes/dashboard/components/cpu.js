@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './cpu.less'
 import { color } from 'utils'
 import CountUp from 'react-countup'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
+import styles from './cpu.less'
 
 const countUpProps = {
   start: 0,
   duration: 2.75,
   useEasing: true,
   useGrouping: true,
-  separator: ',',
+  separator: ','
 }
 
 function Cpu ({ usage, space, cpu, data }) {
@@ -56,7 +56,7 @@ Cpu.propTypes = {
   data: PropTypes.array,
   usage: PropTypes.number,
   space: PropTypes.number,
-  cpu: PropTypes.number,
+  cpu: PropTypes.number
 }
 
 export default Cpu

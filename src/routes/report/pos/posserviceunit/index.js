@@ -9,7 +9,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ location, dispatch, loading, posReport, app }) => {
-  const { listTrans, pagination, fromDate, toDate, productCode } = posReport
+  const { listTrans, fromDate, toDate, productCode } = posReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listTrans,
@@ -19,32 +19,32 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
-    },
+    }
   }
   const filterProps = {
-    listTrans: listTrans,
+    listTrans,
     user,
     storeInfo,
     dispatch,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
     },
     onDateChange (from, to) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       }))
-    },
+    }
   }
   return (
     <div className="content-inner">
@@ -59,7 +59,7 @@ Report.propTyps = {
   app: PropTypes.object,
   posReport: PropTypes.object,
   location: PropTypes.object,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)

@@ -39,12 +39,13 @@ const Filter = ({ onDateChange, onListReset, form: { resetFields, getFieldsValue
         <Col span={10} >
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" onChange={(value) => handleChange(value)} format="DD-MMM-YYYY" />
+              <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
             )}
           </FilterItem>
         </Col>
         <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
-          <Button type="dashed" size="large"
+          <Button type="dashed"
+            size="large"
             className="button-width02 button-extra-large bgcolor-lightgrey"
             onClick={() => handleReset()}
           >
@@ -63,7 +64,7 @@ Filter.propTypes = {
   filter: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   onListReset: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func.isRequired,
+  onDateChange: PropTypes.func.isRequired
 }
 
 export default Form.create()(Filter)

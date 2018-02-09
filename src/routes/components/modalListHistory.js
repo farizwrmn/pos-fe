@@ -9,7 +9,7 @@ const FormItem = Form.Item
 const ModalListHistory = ({
   ...tableProps,
   columns,
-  changeDate,
+  changeDate
 }) => {
   const onChange = (date, dateString) => {
     const fromDate = moment(dateString[0]).format('YYYY-MM-DD')
@@ -44,7 +44,7 @@ ModalListHistory.propTypes = {
   dispatch: PropTypes.func,
   changeDate: PropTypes.func,
   from: PropTypes.string,
-  to: PropTypes.string,
+  to: PropTypes.string
 }
 
 export default ModalListHistory

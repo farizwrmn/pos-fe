@@ -1,15 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Tabs, Row, Col, Select } from 'antd'
-import Filter from './Filter'
+import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd'
+import { lstorage } from 'utils'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
-import { lstorage } from 'utils'
 
-const { Option, OptGroup } = Select
+const { Option } = Select
 const FormItem = Form.Item
-const TabPane = Tabs.TabPane
 const { TextArea } = Input
 
 const formItemLayout = {
@@ -18,46 +16,46 @@ const formItemLayout = {
   },
   wrapperCol: {
     span: 9
-  },
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const FormAdd = ({
   item = {},
   onSubmit,
-  disabled,
-  resetItem,
+  // disabled,
+  // resetItem,
   modalProductVisible,
   button,
-  handleCancel,
+  // handleCancel,
   listItem,
   listEmployee,
   listStore,
   getEmployee,
   hideEmployee,
   ...listProps,
-  ...filterProps,
-  ...formProps,
+  // ...filterProps,
+  // ...formProps,
   ...formConfirmProps,
   modalConfirmVisible,
   modalProductProps,
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue,
-    resetFields,
-  },
-}) => {
-  const handleReset = () => {
-    resetItem()
-    resetFields()
+    getFieldsValue
+    // resetFields
   }
+}) => {
+  // const handleReset = () => {
+  //   resetItem()
+  //   resetFields()
+  // }
   const { handleProductBrowse } = modalProductProps
   // const change = (key) => {
   //   changeTab(key)
@@ -69,7 +67,7 @@ const FormAdd = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.employeeId = data.employeeId.key
       data.storeId = item.storeId
@@ -82,7 +80,7 @@ const FormAdd = ({
     listItem,
     itemHeader: {
       storeId: {
-        label: lstorage.getCurrentUserStoreName(),
+        label: lstorage.getCurrentUserStoreName()
       },
       ...getFieldsValue()
     },
@@ -92,22 +90,21 @@ const FormAdd = ({
 
   let childrenStoreReceived = []
   if (listStore.length > 0) {
-    const data = getFieldsValue()
     if (item.storeId) {
       let groupStore = []
-      for (let id in listStore) {
+      for (let id = 0; id < listStore.length; id += 1) {
         groupStore.push(
-            <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
-              {listStore[id].label}
-            </Option>
+          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+            {listStore[id].label}
+          </Option>
         )
       }
-      childrenStoreReceived.push(groupStore)      
-    }    
+      childrenStoreReceived.push(groupStore)
+    }
   }
-  const resetFieldsOnly = (value) => {
-    resetFields([value])
-  }
+  // const resetFieldsOnly = (value) => {
+  //   resetFields([value])
+  // }
   return (
     <div>
       <Form layout="horizontal">
@@ -118,9 +115,9 @@ const FormAdd = ({
                 initialValue: item.transNo,
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
+                    required: true
+                  }
+                ]
               })(<Input disabled maxLength={20} />)}
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
@@ -128,9 +125,9 @@ const FormAdd = ({
                 initialValue: item.reference,
                 rules: [
                   {
-                    required: false,
-                  },
-                ],
+                    required: false
+                  }
+                ]
               })(<Input />)}
             </FormItem>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
@@ -138,9 +135,9 @@ const FormAdd = ({
                 initialValue: 'MUOUT',
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
+                    required: true
+                  }
+                ]
               })(<Input disabled />)}
             </FormItem>
             <FormItem label="PIC" hasFeedback {...formItemLayout}>
@@ -149,10 +146,10 @@ const FormAdd = ({
                 valuePropName: 'value',
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
-              })(<Select labelInValue={true} onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
+                    required: true
+                  }
+                ]
+              })(<Select labelInValue onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
             </FormItem>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductProps} />}
@@ -163,11 +160,11 @@ const FormAdd = ({
                 initialValue: item.storeIdReceiver,
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
+                    required: true
+                  }
+                ]
               })(<Select
-                labelInValue={true}
+                labelInValue
               >
                 {childrenStoreReceived}
               </Select>)}
@@ -177,9 +174,9 @@ const FormAdd = ({
                 initialValue: item.carNumber,
                 rules: [
                   {
-                    required: false,
-                  },
-                ],
+                    required: false
+                  }
+                ]
               })(<Input />)}
             </FormItem>
             <FormItem label="Total Colly" hasFeedback {...formItemLayout}>
@@ -187,9 +184,9 @@ const FormAdd = ({
                 initialValue: item.totalColly,
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
+                    required: true
+                  }
+                ]
               })(<InputNumber min={0} max={qtyTotal} />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
@@ -197,9 +194,9 @@ const FormAdd = ({
                 initialValue: item.description,
                 rules: [
                   {
-                    required: false,
-                  },
-                ],
+                    required: false
+                  }
+                ]
               })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} />)}
             </FormItem>
           </Col>
@@ -222,7 +219,7 @@ FormAdd.propTypes = {
   resetItem: PropTypes.func,
   // changeTab: PropTypes.func,
   // activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(FormAdd)

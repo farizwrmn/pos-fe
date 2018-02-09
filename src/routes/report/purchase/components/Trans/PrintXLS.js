@@ -3,7 +3,6 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Icon, Modal } from 'antd'
 import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
@@ -16,51 +15,51 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   const styles = {
     header: {
       fontSize: 11,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     body: {
-      fontSize: 10,
+      fontSize: 10
     },
     footer: {
-      fontSize: 10,
+      fontSize: 10
     },
     title: {
       name: 'Courier New',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     merchant: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     date: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     tableHeader: {
       name: 'Courier New',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBody: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
     },
     tableFooter: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
-    },
+      size: 10
+    }
   }
   const tableBody = (list) => {
     let body = []
@@ -87,7 +86,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   const title = [
     { value: 'LAPORAN PEMBELIAN PER FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const header = [
     [
@@ -98,8 +97,8 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'ROUNDING', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    ],
+      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
   ]
   const contentBody = listTrans.length > 0 ? tableBody(listTrans) : []
   const footer = [
@@ -111,8 +110,8 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-    ],
+      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
   ]
 
   // Declare additional Props
@@ -127,7 +126,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     header,
     body: contentBody,
     footer,
-    fileName: 'Purchase-Summary',
+    fileName: 'Purchase-Summary'
   }
 
   return (
@@ -140,7 +139,7 @@ PrintXLS.propTypes = {
   listTrans: PropTypes.array,
   fromDate: PropTypes.string,
   toDate: PropTypes.string,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintXLS

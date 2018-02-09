@@ -17,37 +17,37 @@ const Report = ({ dispatch, posReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    list: list,
+    list,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset(){
+    onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'posReport/queryPart',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
       dispatch({
         type: 'posReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
-    },
+    }
   }
 
   return (
@@ -61,7 +61,7 @@ const Report = ({ dispatch, posReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  posReport: PropTypes.object,
+  posReport: PropTypes.object
 }
 
 export default connect(({ posReport, app }) => ({ posReport, app }))(Report)

@@ -2,15 +2,13 @@
  * Created by boo on 9/19/17.
  */
 import React from 'react'
-import { Icon, Button, Modal } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
-const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
+const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   const pdfMake = require('pdfmake/build/pdfmake.js')
   const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  const warning = Modal.warning
   pdfMake.vfs = pdfFonts.pdfMake.vfs
 
   let outJSON = listRekap
@@ -41,10 +39,8 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
 
   const createTableBody = (tabledata) => {
     let inQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pQty) || 0), 0)
-    let inPrice = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pPrice) || 0), 0)
     let inAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pAmount) || 0), 0)
     let outQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sQty) || 0), 0)
-    let outPrice = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sPrice) || 0), 0)
     let outAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sAmount) || 0), 0)
     const headers = {
       top: {
@@ -59,8 +55,8 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
         col_9: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'center' },
         col_10: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
         col_11: { fontSize: 12, text: 'COUNT', style: 'tableHeader', alignment: 'center' },
-        col_12: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
-      },
+        col_12: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+      }
     }
 
     const rows = tabledata
@@ -90,8 +86,8 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        countQtyValue = (parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0) - (parseFloat(data.sQty) || 0)
-        countAmountValue = (parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0) - (parseFloat(data.sAmount) || 0)
+        countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
+        countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
@@ -143,40 +139,40 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN KARTU STOK FIFO',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
                 fontSize: 12,
-                alignment: 'left',
+                alignment: 'left'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'right',
-              },
-            ],
-          },
-        ],
-      },
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
 
   const footer = (currentPage, pageCount) => {
@@ -184,7 +180,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -192,23 +188,23 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
               text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
 
@@ -216,25 +212,25 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
+      color: 'black'
     },
     tableTitle: {
       fontSize: 14,
-      margin: [0, 20, 0, 8],
-    },
+      margin: [0, 20, 0, 8]
+    }
   }
 
   const pdfProps = {
@@ -249,7 +245,7 @@ const PrintPDF = ({ user, listRekap, dataSource, storeInfo, period, year }) => {
     layout: 'noBorder',
     footer,
     tableStyle: styles,
-    data: arr,
+    data: arr
   }
 
   return (
@@ -263,7 +259,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   period: PropTypes.string.isRequired,
   year: PropTypes.string.isRequired,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintPDF

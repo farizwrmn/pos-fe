@@ -7,7 +7,7 @@ const { TextArea } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 14 }
 }
 
 const modal = ({
@@ -24,7 +24,7 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.transType = currentItemList.transType
       data.description = (data.description === '' || data.description === null ? null : data.description)
@@ -40,7 +40,7 @@ const modal = ({
   const handleDelete = () => {
     const data = {
       transType: currentItemList.transType,
-      ...getFieldsValue(),
+      ...getFieldsValue()
     }
     Modal.confirm({
       title: `Delete ${currentItemList.productName}`,
@@ -53,16 +53,17 @@ const modal = ({
   }
   const modalOpts = {
     ...formEditProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
   return (
-    <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`} {...modalOpts}
+    <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`}
+      {...modalOpts}
       footer={[
         <Button size="large" key="delete" type="danger" onClick={handleDelete}>Delete</Button>,
         <Button size="large" key="back" onClick={handleCancel}>Cancel</Button>,
         <Button size="large" key="submit" type="primary" onClick={handleOk}>
           Ok
-      </Button>,
+        </Button>
       ]}
     >
       <Form layout="horizontal">
@@ -70,24 +71,24 @@ const modal = ({
           {getFieldDecorator('no', {
             initialValue: currentItemList.no,
             rules: [{
-              required: true,
-            }],
+              required: true
+            }]
           })(<Input disabled maxLength={10} />)}
         </FormItem>
         <FormItem label="Qty" hasFeedback {...formItemLayout}>
           {getFieldDecorator('qty', {
             initialValue: currentItemList.qty,
             rules: [{
-              required: true,
-            }],
+              required: true
+            }]
           })(<InputNumber min={0} />)}
         </FormItem>
         <FormItem label="Description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
             initialValue: currentItemList.description,
             rules: [{
-              required: false,
-            }],
+              required: false
+            }]
           })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
@@ -100,7 +101,7 @@ modal.propTypes = {
   type: PropTypes.string,
   item: PropTypes.object,
   onOk: PropTypes.func,
-  enablePopover: PropTypes.func,
+  enablePopover: PropTypes.func
 }
 
 export default Form.create()(modal)

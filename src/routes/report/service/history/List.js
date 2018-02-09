@@ -11,32 +11,32 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'transDate',
       render: (text) => {
         return moment(text).format('MMMM, Do YYYY')
-      },
+      }
     },
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo',
+      key: 'transNo'
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      key: 'status',
+      key: 'status'
     },
     {
       title: 'Employee Name',
       dataIndex: 'employeeName',
-      key: 'employeeName',
+      key: 'employeeName'
     },
     {
       title: 'Service Name',
       dataIndex: 'serviceName',
-      key: 'serviceName',
+      key: 'serviceName'
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty',
+      key: 'qty'
     },
     {
       title: 'Selling Price',
@@ -44,7 +44,7 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'sellingPrice',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
+      }
     },
     {
       title: 'Discount',
@@ -52,7 +52,7 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'discount',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
+      }
     },
     {
       title: 'Amount',
@@ -60,8 +60,8 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'amount',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
-    },
+      }
+    }
   ]
 
   const totalPrice = dataSource.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
@@ -81,7 +81,7 @@ const List = ({ ...tableProps, dataSource }) => {
 }
 
 List.propTypes = {
-  dataSource: PropTypes.array,
+  dataSource: PropTypes.array
 }
 
 export default List

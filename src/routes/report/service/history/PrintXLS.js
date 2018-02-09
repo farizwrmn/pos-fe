@@ -18,52 +18,52 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
       name: 'Calibri',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     merchant: {
       name: 'Calibri',
       family: 4,
-      size: 12,
+      size: 12
     },
     period: {
       name: 'Calibri',
       family: 4,
-      size: 12,
+      size: 12
     },
     tableTitle: {
       name: 'Calibri',
       family: 4,
       size: 12,
-      bold: true,
+      bold: true
     },
     tableHeader: {
       name: 'Calibri',
       family: 4,
       size: 12,
-      bold: true,
+      bold: true
     },
     tableBody: {
       name: 'Calibri',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableFooter: {
       name: 'Calibri',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
-    },
+      right: { style: 'thin', color: { argb: '000000' } }
+    }
   }
 
   const title = [
     { value: 'LAPORAN HISTORY JASA PER MEKANIK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
 
   const tableHeader = [
@@ -75,7 +75,7 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
     { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'SELLING PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'DISCOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder }
   ]
 
   let tableTitles = []
@@ -134,7 +134,7 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: arr,
-    fileName: 'Mechanic-Services-Summary',
+    fileName: 'Mechanic-Services-Summary'
   }
 
   return (
@@ -147,7 +147,7 @@ PrintXLS.propTypes = {
   listRekap: PropTypes.array,
   storeInfo: PropTypes.string,
   period: PropTypes.string,
-  year: PropTypes.string,
+  year: PropTypes.string
 }
 
 export default PrintXLS

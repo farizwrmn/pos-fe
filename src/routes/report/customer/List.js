@@ -8,32 +8,32 @@ const List = ({ ...tableProps, dataSource }) => {
     {
       title: 'Member Code',
       dataIndex: 'memberCode',
-      key: 'memberCode',
+      key: 'memberCode'
     },
     {
       title: 'Member Name',
       dataIndex: 'memberName',
-      key: 'memberName',
+      key: 'memberName'
     },
     {
       title: 'Police No',
       dataIndex: 'policeNo',
-      key: 'policeNo',
+      key: 'policeNo'
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName',
+      key: 'productName'
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty',
+      key: 'qty'
     },
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo',
+      key: 'transNo'
     },
     {
       title: 'Transaction Date',
@@ -41,7 +41,7 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'transDate',
       render: (text) => {
         return moment(text).format('MMMM, Do YYYY')
-      },
+      }
     },
     {
       title: 'Total',
@@ -49,7 +49,7 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'total',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
+      }
     },
     {
       title: 'Total Discount',
@@ -57,7 +57,7 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'totalDiscount',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
+      }
     },
     {
       title: 'Netto Total',
@@ -65,8 +65,8 @@ const List = ({ ...tableProps, dataSource }) => {
       key: 'nettoTotal',
       render: (text) => {
         return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
-    },
+      }
+    }
   ]
 
   const totalPrice = dataSource.reduce((cnt, o) => cnt + parseFloat(o.nettoTotal), 0)
@@ -86,7 +86,7 @@ const List = ({ ...tableProps, dataSource }) => {
 }
 
 List.propTypes = {
-  dataSource: PropTypes.array,
+  dataSource: PropTypes.array
 }
 
 export default List

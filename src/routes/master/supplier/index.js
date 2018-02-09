@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../components'
 
@@ -14,25 +13,25 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'supplier/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'supplier/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'supplier/resetSupplierList' })
-    },
+    }
   }
 
   const listProps = {
@@ -47,8 +46,8 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
         type: 'supplier/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -58,19 +57,19 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'supplier/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -82,8 +81,8 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       // if (key === '1') {
       //   dispatch({
@@ -96,18 +95,18 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
       dispatch({
         type: 'supplier/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'supplier/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -123,22 +122,22 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
         type: `supplier/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'supplier/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
     },
     showCities () {
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -149,10 +148,10 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
           dispatch({
             type: 'supplier/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -174,7 +173,7 @@ Supplier.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ supplier, city, loading, app }) => ({ supplier, city, loading, app }))(Supplier)

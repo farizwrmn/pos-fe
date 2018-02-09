@@ -10,12 +10,11 @@ import moment from 'moment'
 
 const warning = Modal.warning
 
-const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productCode, category, brand }) => {
-
+const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category, brand }) => {
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-  let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total) - parseFloat(o.totalDiscount), 0)
+  let dppTotal = listDaily.reduce((cnt, o) => cnt + (parseFloat(o.total) - parseFloat(o.totalDiscount)), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
   let roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
   let nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
@@ -23,11 +22,16 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
-  //workbook.lastPrinted = new Date(2016, 9, 27)
+  // workbook.lastPrinted = new Date(2016, 9, 27)
   workbook.views = [
     {
-      x: 0, y: 0, width: 10000, height: 20000,
-      firstSheet: 0, activeTab: 1, visibility: 'visible'
+      x: 0,
+      y: 0,
+      width: 10000,
+      height: 20000,
+      firstSheet: 0,
+      activeTab: 1,
+      visibility: 'visible'
     }
   ]
   const sheet = workbook.addWorksheet('POS 1',
@@ -36,43 +40,43 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
     if (fromDate === '' && toDate === '') {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else if (listDaily.length === 0) {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else {
       sheet.getCell('F2').font = {
         name: 'Courier New',
         family: 4,
         size: 12,
-        underline: true,
+        underline: true
       }
       sheet.getCell('F3').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('F4').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('J5').font = {
         name: 'Courier New',
         family: 4,
-        size: 10,
+        size: 10
       }
       const header = ['NO.', '', 'CODE', 'PRODUK', 'QTY', 'TOTAL', 'DISKON', 'DPP', 'PPN', 'ROUNDING', 'NETTO']
-      for (let n = 0; n <= listDaily.length; n++) {
-        for (let m = 65; m < (65 + header.length); m++) {
+      for (let n = 0; n <= listDaily.length; n += 1) {
+        for (let m = 65; m < (65 + header.length); m += 1) {
           let o = 9 + n
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
             family: 4,
-            size: 10,
+            size: 10
           }
         }
       }
@@ -89,21 +93,21 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       ]
-      for (let m = 65; m < (65 + header.length); m++) {
+      for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
         let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
       }
 
-      for (let n = 0; n < listDaily.length; n++) {
+      for (let n = 0; n < listDaily.length; n += 1) {
         let m = 9 + n
-        sheet.getCell(`A${m}`).value = `${parseInt(n + 1)}`
+        sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`B${m}`).value = '.'
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
@@ -111,7 +115,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${listDaily[n].productName}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`E${m}`).value = `${parseInt(listDaily[n].qty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = `${parseInt(listDaily[n].qty, 10).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = `${(parseFloat(listDaily[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
@@ -127,18 +131,18 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < (65 + footer.length); m++) {
+      for (let m = 65; m < (65 + footer.length); m += 1) {
         let n = listDaily.length + 10
         let count = m - 65
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
           name: 'Times New Roman',
           family: 4,
-          size: 10,
+          size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
@@ -151,17 +155,18 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J5').value = `KATEGORI PRODUK : ${category ? category : 'ALL CATEGORY'}`
+      sheet.getCell('J5').value = `KATEGORI PRODUK : ${category || 'ALL CATEGORY'}`
       sheet.getCell('J6').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J6').value = `MERK : ${brand ? brand : 'ALL BRAND'}`
-      workbook.xlsx.writeBuffer().then(function (data) {
+      sheet.getCell('J6').value = `MERK : ${brand || 'ALL BRAND'}`
+      workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `Purchase-Monthly${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
   return (
-    <Button type="dashed" size="large"
+    <Button type="dashed"
+      size="large"
       className="button-width02 button-extra-large bgcolor-green"
       onClick={() => handleXLS(dataSource)}
     >
@@ -171,9 +176,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, productC
 }
 
 PrintXLS.propTypes = {
-  location: PropTypes.object,
-  listDaily: PropTypes.array,
-  app: PropTypes.object,
+  listDaily: PropTypes.array
 }
 
 export default PrintXLS

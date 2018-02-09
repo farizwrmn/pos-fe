@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
@@ -15,7 +14,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         title: `Are you sure delete ${record.productName} ?`,
         onOk () {
           deleteItem(record.productCode)
-        },
+        }
       })
     }
   }
@@ -27,27 +26,27 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'active',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
-      },
+      }
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
+      key: 'productCode'
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName',
+      key: 'productName'
     },
     {
       title: 'Brand',
       dataIndex: 'brandName',
-      key: 'brandName',
+      key: 'brandName'
     },
     {
       title: 'Category',
       dataIndex: 'categoryName',
-      key: 'categoryName',
+      key: 'categoryName'
     },
     {
       title: 'Sell Price',
@@ -55,7 +54,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'sellPrice',
       render: (text) => {
         return text.toLocaleString()
-      },
+      }
     },
     {
       title: 'Cost Price',
@@ -63,7 +62,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'costPrice',
       render: (text) => {
         return text.toLocaleString()
-      },
+      }
     },
     {
       title: 'Dist 01',
@@ -71,7 +70,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'distPrice01',
       render: (text) => {
         return text.toLocaleString()
-      },
+      }
     },
     {
       title: 'Dist 02',
@@ -79,7 +78,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'distPrice02',
       render: (text) => {
         return text.toLocaleString()
-      },
+      }
     },
     {
       title: 'Track Qty',
@@ -87,12 +86,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'trackQty',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'True' : 'False'}</Tag>
-      },
+      }
     },
     {
       title: 'Alert Qty',
       dataIndex: 'alertQty',
-      key: 'alertQty',
+      key: 'alertQty'
     },
     {
       title: 'Exception',
@@ -100,30 +99,30 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'exception01',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'True' : 'False'}</Tag>
-      },
+      }
     },
     {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
       render: (text) => {
-        return text ? text : 'no_image.png'
-      },
+        return text || 'no_image.png'
+      }
     },
     {
       title: 'Dummy Code',
       dataIndex: 'dummyCode',
-      key: 'dummyCode',
+      key: 'dummyCode'
     },
     {
       title: 'Dummy Name',
       dataIndex: 'dummyName',
-      key: 'dummyName',
+      key: 'dummyName'
     },
     {
       title: 'Brand ID',
       dataIndex: 'brandId',
-      key: 'brandId',
+      key: 'brandId'
     },
     {
       title: 'Created',
@@ -131,14 +130,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'createdBy',
-          key: 'createdBy',
+          key: 'createdBy'
         },
         {
           title: 'Time',
           dataIndex: 'createdAt',
-          key: 'createdAt',
-        },
-      ],
+          key: 'createdAt'
+        }
+      ]
     },
     {
       title: 'Updated',
@@ -146,14 +145,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'updatedBy',
-          key: 'updatedBy',
+          key: 'updatedBy'
         },
         {
           title: 'Time',
           dataIndex: 'updatedAt',
-          key: 'updatedAt',
-        },
-      ],
+          key: 'updatedAt'
+        }
+      ]
     },
     {
       title: 'Operation',
@@ -162,8 +161,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -181,7 +180,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
 List.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default List

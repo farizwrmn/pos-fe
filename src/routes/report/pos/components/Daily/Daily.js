@@ -17,11 +17,11 @@ const Report = ({ dispatch, posReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    listDaily: listDaily,
+    listDaily,
     user,
     storeInfo,
     fromDate,
@@ -29,40 +29,40 @@ const Report = ({ dispatch, posReport, app }) => {
     productCode,
     category,
     brand,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'posReport/queryDaily',
         payload: {
-          from: from,
-          to: to,
+          from,
+          to,
           mode: 'pbc'
-        },
+        }
       })
       dispatch({
         type: 'posReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
     },
-    onFilterChange(data) {
+    onFilterChange (data) {
       dispatch({
         type: 'posReport/queryDaily',
         payload: {
           ...data
-        },
+        }
       })
       dispatch({
         type: 'posReport/setDate',
         payload: {
           ...data
-        },
+        }
       })
     }
   }
@@ -78,7 +78,7 @@ const Report = ({ dispatch, posReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  posReport: PropTypes.object,
+  posReport: PropTypes.object
 }
 
 export default connect(({ posReport, app }) => ({ posReport, app }))(Report)

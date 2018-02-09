@@ -10,36 +10,36 @@ import PrintXLS from './PrintXLS'
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
 const Option = Select.Option
-const ButtonGroup = Button.Group
+// const ButtonGroup = Button.Group
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 13, },
-    sm: { span: 8, },
-    md: { span: 7, },
+    xs: { span: 13 },
+    sm: { span: 8 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: { span: 11, },
-    sm: { span: 14, },
-    md: { span: 14, },
-  },
+    xs: { span: 11 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
-    xs: { offset: 17, },
-    sm: { offset: 19, },
-    md: { offset: 18, },
-    lg: { offset: 17, },
-  },
+    xs: { offset: 17 },
+    sm: { offset: 19 },
+    md: { offset: 18 },
+    lg: { offset: 17 }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formCustomer = ({
@@ -66,8 +66,8 @@ const formCustomer = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -106,7 +106,7 @@ const formCustomer = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
 
       if (data.memberCode) {
@@ -115,7 +115,7 @@ const formCustomer = ({
           onOk () {
             onSubmit(data.memberCode, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Member Code can't be null")
@@ -141,16 +141,16 @@ const formCustomer = ({
   const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
   const childrenCity = listCity.length > 0 ? listCity.map(city => <Option value={city.id} key={city.id}>{city.cityName}</Option>) : []
 
-  const tabOperations = <div>
-    <ButtonGroup size="small">
-      <Button type="primary">
-        <Icon type="printer" /> Print
-      </Button>
-      <Button >
-        <Icon type="search" /> Search
-      </Button>
-    </ButtonGroup>
-  </div>
+  // const tabOperations = (<div>
+  //   <ButtonGroup size="small">
+  //     <Button type="primary">
+  //       <Icon type="printer" /> Print
+  //     </Button>
+  //     <Button >
+  //       <Icon type="search" /> Search
+  //     </Button>
+  //   </ButtonGroup>
+  // </div>)
 
   return (
     <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -164,10 +164,10 @@ const formCustomer = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_-]{3,16}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_-]{3,16}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={16} />)}
               </FormItem>
             </Col>
@@ -178,10 +178,10 @@ const formCustomer = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_.,\- ]{3,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_. ,-]{3,50}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -193,9 +193,9 @@ const formCustomer = ({
                   initialValue: item.memberGroupId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   onFocus={customerGroup}
@@ -210,9 +210,9 @@ const formCustomer = ({
                   initialValue: item.memberTypeId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -230,9 +230,9 @@ const formCustomer = ({
                   initialValue: item.idType,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -250,9 +250,9 @@ const formCustomer = ({
                     {
                       required: true,
                       pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={30} />)}
               </FormItem>
             </Col>
@@ -266,9 +266,9 @@ const formCustomer = ({
                     {
                       required: true,
                       pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -279,9 +279,9 @@ const formCustomer = ({
                   rules: [
                     {
                       pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -293,9 +293,9 @@ const formCustomer = ({
                   initialValue: item.cityId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -311,10 +311,10 @@ const formCustomer = ({
                   initialValue: item.state,
                   rules: [
                     {
-                      pattern: /^[a-z0-9\_\-]{3,20}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_-]{3,20}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -326,17 +326,17 @@ const formCustomer = ({
                   initialValue: item.zipCode,
                   rules: [
                     {
-                      pattern: /^[a-z0-9\_\-]{3,20}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_-]{3,20}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
             <Col {...col}>
               <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
-                  initialValue: item.phoneNumber,
+                  initialValue: item.phoneNumber
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -350,16 +350,16 @@ const formCustomer = ({
                     {
                       required: true,
                       pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                      message: 'mobile number is not valid',
-                    },
-                  ],
+                      message: 'mobile number is not valid'
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
             <Col {...col}>
               <FormItem label="Email" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('email', {
-                  initialValue: item.email,
+                  initialValue: item.email
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -368,7 +368,7 @@ const formCustomer = ({
             <Col {...col}>
               <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('birthDate', {
-                  initialValue: moment(item.birthDate),
+                  initialValue: moment(item.birthDate)
                 })(<DatePicker />)}
               </FormItem>
             </Col>
@@ -379,9 +379,9 @@ const formCustomer = ({
                   rules: [
                     {
                       pattern: /^[0-9]+$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -393,9 +393,9 @@ const formCustomer = ({
                   initialValue: item.gender,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(
                   <Radio.Group value={item.gender}>
                     <Radio value="M">Male</Radio>
@@ -422,21 +422,21 @@ const formCustomer = ({
 
 formCustomer.propTypes = {
   form: PropTypes.object.isRequired,
-  disabled: PropTypes.string,
-  item: PropTypes.object,
-  listGroup: PropTypes.object,
-  listType: PropTypes.object,
-  listCity: PropTypes.object,
-  listIdType: PropTypes.object,
-  onSubmit: PropTypes.func,
-  clickBrowse: PropTypes.func,
-  changeTab: PropTypes.func,
-  activeKey: PropTypes.string,
-  button: PropTypes.string,
-  showCustomerGroup: PropTypes.func,
-  showCustomerType: PropTypes.func,
-  showIdType: PropTypes.func,
-  showCity: PropTypes.func,
+  disabled: PropTypes.string.isRequired,
+  item: PropTypes.object.isRequired,
+  listGroup: PropTypes.object.isRequired,
+  listType: PropTypes.object.isRequired,
+  listCity: PropTypes.object.isRequired,
+  listIdType: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  clickBrowse: PropTypes.func.isRequired,
+  changeTab: PropTypes.func.isRequired,
+  activeKey: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
+  showCustomerGroup: PropTypes.func.isRequired,
+  showCustomerType: PropTypes.func.isRequired,
+  showIdType: PropTypes.func.isRequired,
+  showCity: PropTypes.func
 }
 
 export default Form.create()(formCustomer)

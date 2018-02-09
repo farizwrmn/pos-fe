@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -18,30 +17,30 @@ const Report = ({ dispatch, purchaseReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    listTrans: listTrans,
+    listTrans,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'purchaseReport/setListNull',
+        type: 'purchaseReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'purchaseReport/queryReturn',
         payload: {
-          from: from,
-          to: to
+          from,
+          to
         }
       })
-    },
+    }
   }
 
   return (
@@ -55,7 +54,7 @@ const Report = ({ dispatch, purchaseReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  purchaseReport: PropTypes.object,
+  purchaseReport: PropTypes.object
 }
 
 export default connect(({ purchaseReport, app }) => ({ purchaseReport, app }))(Report)

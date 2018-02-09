@@ -1,36 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../components'
 
 const City = ({ city, loading, dispatch, location, app }) => {
-  const { listCity, newItem, pagination, modalType, currentItem, activeKey, disable, show } = city
+  const { listCity, isChecked, newItem, pagination, modalType, currentItem, activeKey, disable, show } = city
   const { user, storeInfo } = app
   const filterProps = {
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'city/query',
         payload: {
           // userName: value.cityName,
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'city/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'city/resetCityList' })
-    },
+    }
   }
 
   const listProps = {
@@ -45,8 +44,8 @@ const City = ({ city, loading, dispatch, location, app }) => {
         type: 'city/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -56,19 +55,19 @@ const City = ({ city, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'city/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -80,8 +79,8 @@ const City = ({ city, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'city/resetCityList' })
     },
@@ -89,18 +88,18 @@ const City = ({ city, loading, dispatch, location, app }) => {
       dispatch({
         type: 'city/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'city/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -114,21 +113,21 @@ const City = ({ city, loading, dispatch, location, app }) => {
     onSubmit (data) {
       dispatch({
         type: `city/${modalType}`,
-        payload: data,
+        payload: data
       })
       dispatch({
         type: 'city/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
     },
     showCities () {
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -139,10 +138,10 @@ const City = ({ city, loading, dispatch, location, app }) => {
           dispatch({
             type: 'city/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -163,7 +162,7 @@ City.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ city, loading, app }) => ({ city, loading, app }))(City)

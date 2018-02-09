@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicInvoice } from 'components'
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, ...formConfirmProps }) => {
+const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -34,42 +34,42 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
-    },
+      color: 'black'
+    }
   }
   const header = {
     stack: [
       {
         columns: [
           {
-            stack: storeInfo.stackHeader02,
+            stack: storeInfo.stackHeader02
           },
           {
             text: 'TANDA TERIMA',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
             text: ' ',
             style: 'header',
             fontSize: 18,
-            alignment: 'right',
-          },
-        ],
+            alignment: 'right'
+          }
+        ]
       },
       {
         table: {
@@ -78,16 +78,16 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, { text: 'REF', fontSize: 11 }, ':', { text: (itemHeader.referenceTrans ? (itemHeader.referenceTrans || '') : '').toString(), fontSize: 11 }],
             [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(itemHeader.transDate, 'YYYY-MM-DD').format('YYYY/MM/DD'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
             [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeId ? (itemHeader.storeId.label || '') : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL COLLY', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
-            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeNameSender ? (itemHeader.storeNameSender.label || '') : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `MASUK${itemHeader.description ? `/${itemHeader.description}` : ''}`, fontSize: 11 }],
-          ],
+            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeNameSender ? (itemHeader.storeNameSender.label || '') : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `MASUK${itemHeader.description ? `/${itemHeader.description}` : ''}`, fontSize: 11 }]
+          ]
         },
-        layout: 'noBorders',
+        layout: 'noBorders'
       },
       {
-        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
-      },
+        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+      }
     ],
-    margin: [30, 12, 12, 30],
+    margin: [30, 12, 12, 30]
   }
   const footer = (currentPage, pageCount) => {
     if (currentPage === pageCount) {
@@ -96,7 +96,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
         height: 160,
         stack: [
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
           },
           {
             // columns: [
@@ -107,9 +107,9 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
           {
             columns: [
               { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: '', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },              
-              { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeReceiver ? itemHeader.employeeReceiver : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-            ],
+              { text: '', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeReceiver ? itemHeader.employeeReceiver : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
+            ]
           },
           {
             fontSize: 9,
@@ -118,30 +118,30 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
                 text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
                 margin: [0, 10, 0, 10],
                 fontSize: 9,
-                alignment: 'left',
+                alignment: 'left'
               },
               {
                 text: `Cetakan ke: ${printNo}`,
                 margin: [0, 10, 0, 10],
                 fontSize: 9,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: `Dicetak Oleh: ${user.username}`,
                 margin: [0, 10, 0, 10],
                 fontSize: 9,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: `page: ${currentPage.toString()} of ${pageCount} \n`,
                 fontSize: 9,
                 margin: [0, 10, 0, 10],
-                alignment: 'right',
-              },
+                alignment: 'right'
+              }
             ],
-            alignment: 'center',
-          },
-        ],
+            alignment: 'center'
+          }
+        ]
       }
     }
     return {
@@ -149,7 +149,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
       height: 160,
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -157,29 +157,29 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
               text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
               margin: [0, 20, 0, 40],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Cetakan ke: ${printNo}`,
               margin: [0, 20, 0, 40],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Dicetak Oleh: ${user.username}`,
               margin: [0, 20, 0, 40],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `page: ${currentPage.toString()} of ${pageCount} \n`,
               fontSize: 9,
               margin: [0, 20, 0, 40],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
   const tableHeader = [
@@ -188,8 +188,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
       { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
-    ],
+      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
+    ]
   ]
   let tableBody = []
   try {
@@ -203,8 +203,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
       {},
       {},
       { text: `${(parseFloat(productTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      {},
-    ],
+      {}
+    ]
   ]
   const tableLayout = {
     hLineWidth: (i, node) => {
@@ -218,7 +218,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
     },
     vLineColor: () => {
       return 'black'
-    },
+    }
   }
   // Declare additional Props
   const pdfProps = {
@@ -235,7 +235,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
     data: listItem,
     header,
     footer,
-    printNo: 1,
+    printNo: 1
   }
 
   return (
@@ -246,7 +246,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint, .
 PrintPDF.propTypes = {
   listItem: PropTypes.array,
   user: PropTypes.object.isRequired,
-  storeInfo: PropTypes.object.isRequired,
+  storeInfo: PropTypes.object.isRequired
   // fromDate: PropTypes.string.isRequired,
   // toDate: PropTypes.string.isRequired,
 }

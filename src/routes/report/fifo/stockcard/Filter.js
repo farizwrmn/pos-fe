@@ -4,8 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Button, DatePicker, Row, Col, Icon, Form, Select, Spin, Modal } from 'antd'
-import { FilterItem } from 'components'
+import { Button, DatePicker, Row, Col, Icon, Form, Select, Modal } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
@@ -13,17 +12,17 @@ const Option = Select.Option
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 
-const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, dispatch, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
+const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, dispatch, onListReset, form: { getFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
   let optionSelect = []
   let optionSelectName = []
   const selectChildren = () => {
-    for (let i = 0; i < productCode.length; i++) {
-      optionSelect.push(<Option key={productCode[i].toString(36)}>{productCode[i].toString(36)}</Option>);
+    for (let i = 0; i < productCode.length; i += 1) {
+      optionSelect.push(<Option key={productCode[i].toString(36)}>{productCode[i].toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
-    for (let i = 0; i < productCode.length; i++) {
-      optionSelectName.push(<Option key={productName[i].toString(36)}>{productName[i].toString(36)}</Option>);
+    for (let i = 0; i < productCode.length; i += 1) {
+      optionSelectName.push(<Option key={productName[i].toString(36)}>{productName[i].toString(36)}</Option>)
     }
   }
   const exportProps = {
@@ -33,7 +32,7 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
   }
   const formItemLayout = {
     labelCol: { xl: { span: 8 }, lg: { span: 8 }, md: { span: 24 }, sm: { span: 24 } },
-    wrapperCol: { xl: { span: 12 }, lg: { span: 12 }, md: { span: 24 }, sm: { span: 24 } },
+    wrapperCol: { xl: { span: 12 }, lg: { span: 12 }, md: { span: 24 }, sm: { span: 24 } }
   }
   const handleReset = () => {
     resetFields()
@@ -57,14 +56,14 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
         Modal.confirm({
           title: 'Cannot find parameter',
           content: 'Try to reset the form',
-          onOk() {
+          onOk () {
             handleReset()
           },
-          onCancel() {
-            return
+          onCancel () {
+
           }
         })
-        return        
+        return
       }
       let period = moment(data.Period).format('M')
       let year = moment(data.Period).format('Y')
@@ -83,17 +82,18 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
   return (
     <div>
       <Form
-        layout="horizontal">
+        layout="horizontal"
+      >
         <Row>
           <Col xl={14} lg={14} md={10} sm={24} >
             <FormItem label="Period" className="ant-form-item-margin-bottom" hasFeedback {...formItemLayout}>
               {getFieldDecorator('Period', {
-                initialValue: moment.utc(period + '-' + year, 'MM-YYYY'),
+                initialValue: moment.utc(`${period}-${year}`, 'MM-YYYY'),
                 rules: [
                   {
                     required: true
-                  },
-                ],
+                  }
+                ]
               })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
             </FormItem>
             <FormItem label="Product Code" className="ant-form-item-margin-bottom" hasFeedback {...formItemLayout}>
@@ -117,21 +117,21 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
                 style={{ width: '189px' }}
                 placeholder="Select Code"
                 onFocus={selectChildrenName()}
-                onChange={() => resetSelected('productCode')}                
+                onChange={() => resetSelected('productCode')}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 {...printProps}
               >
                 {optionSelectName}
               </Select>
-            )}
+              )}
             </FormItem>
           </Col>
           <Col xl={10} lg={10} md={10} sm={24} style={{ textAlign: 'right' }}>
             <FormItem>
-              <Button type="dashed"
+              <Button
+                type="dashed"
                 size="large"
                 style={{ marginLeft: '5px' }}
-                type="primary"
                 className="button-width02 button-extra-large"
                 onClick={() => handleSearch()}
               >

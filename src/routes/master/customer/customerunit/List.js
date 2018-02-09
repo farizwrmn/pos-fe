@@ -15,7 +15,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         title: `Are you sure delete ${record.policeNo} ?`,
         onOk () {
           deleteItem(record.memberCode, record.policeNo)
-        },
+        }
       })
     }
   }
@@ -24,42 +24,42 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Member Code',
       dataIndex: 'memberCode',
-      key: 'memberCode',
+      key: 'memberCode'
     },
     {
       title: 'Police No',
       dataIndex: 'policeNo',
-      key: 'policeNo',
+      key: 'policeNo'
     },
     {
       title: 'Merk',
       dataIndex: 'merk',
-      key: 'merk',
+      key: 'merk'
     },
     {
       title: 'Model',
       dataIndex: 'model',
-      key: 'model',
+      key: 'model'
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      key: 'type',
+      key: 'type'
     },
     {
       title: 'Year',
       dataIndex: 'year',
-      key: 'year',
+      key: 'year'
     },
     {
       title: 'Chassis No',
       dataIndex: 'chassisNo',
-      key: 'chassisNo',
+      key: 'chassisNo'
     },
     {
       title: 'Machine No',
       dataIndex: 'machineNo',
-      key: 'machineNo',
+      key: 'machineNo'
     },
     {
       title: 'Created',
@@ -68,15 +68,15 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           title: 'By',
           width: 70,
           dataIndex: 'createdBy',
-          key: 'createdBy',
+          key: 'createdBy'
         },
         {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
-          render: _text => `${moment(_text).format('LLL')}`,
-        },
-      ],
+          render: _text => `${moment(_text).format('LLL')}`
+        }
+      ]
     },
     {
       title: 'Updated',
@@ -84,15 +84,15 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'updatedBy',
-          key: 'updatedBy',
+          key: 'updatedBy'
         },
         {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
-          render: _text => `${moment(_text).format('LLL')}`,
-        },
-      ],
+          render: _text => `${moment(_text).format('LLL')}`
+        }
+      ]
     },
     {
       title: 'Operation',
@@ -101,8 +101,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -120,7 +120,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
 List.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default List

@@ -2,47 +2,47 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Row, Col, Form, DatePicker } from 'antd'
 import moment from 'moment'
+import { SelectItem } from 'components'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
-import { SelectItem } from 'components'
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 8,
+      span: 8
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 16,
+      span: 16
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 10 },
-  xl: { span: 10 },
+  xl: { span: 10 }
 }
 
 const columnButton = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 4 },
-  xl: { span: 4 },
+  xl: { span: 4 }
 }
 
 const FormItem = Form.Item
@@ -60,21 +60,21 @@ const Filter = ({
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const clickSearch = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
-      const data = { ...getFieldsValue() }      
+      const data = { ...getFieldsValue() }
       let from = moment(data.period).startOf('month').format('YYYY-MM-DD')
       let to = moment(data.period).endOf('month').format('YYYY-MM-DD')
       if (data.serviceCode) {
-        onSearchClickWithService(from, to, data.serviceTypeId.option, data.employeeId.option, data.serviceCode.option)        
+        onSearchClickWithService(from, to, data.serviceTypeId.option, data.employeeId.option, data.serviceCode.option)
       } else {
-        onSearchClick(from, to, data.serviceTypeId.option, data.employeeId.option)        
+        onSearchClick(from, to, data.serviceTypeId.option, data.employeeId.option)
       }
     })
   }
@@ -91,7 +91,7 @@ const Filter = ({
     componentValue: 'employeeName',
     allowClear: true,
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
-    placeholder: 'Select employee name',
+    placeholder: 'Select employee name'
   }
 
   const serviceProps = {
@@ -101,7 +101,7 @@ const Filter = ({
     componentValue: 'miscDesc',
     allowClear: true,
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
-    placeholder: 'Select service type',
+    placeholder: 'Select service type'
   }
 
   const serviceNameProps = {
@@ -111,7 +111,7 @@ const Filter = ({
     componentValue: 'serviceName',
     allowClear: true,
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
-    placeholder: 'Select service type',
+    placeholder: 'Select service type'
   }
   return (
     <Row>
@@ -121,31 +121,31 @@ const Filter = ({
             {getFieldDecorator('period', {
               rules: [
                 {
-                  required: true,
-                },
-              ],
+                  required: true
+                }
+              ]
             })(<MonthPicker style={{ width: 195 }} />)}
           </FormItem>
           <FormItem label="Service Type" {...formItemLayout}>
             {getFieldDecorator('serviceTypeId', {
               rules: [
                 {
-                  required: true,
-                },
-              ],
+                  required: true
+                }
+              ]
             })(<SelectItem {...serviceProps} />)}
           </FormItem>
           <FormItem label="Employee Name" {...formItemLayout}>
             {/* <SelectItem id="employeeId" {...employeeProps} /> */}
             {getFieldDecorator('employeeId', {
-              rules: [{ required: true }],
+              rules: [{ required: true }]
             })(<SelectItem {...employeeProps} />)}
           </FormItem>
         </Col>
         <Col {...column} >
           <FormItem label="Service Name" {...formItemLayout}>
             {getFieldDecorator('serviceCode', {
-              rules: [{ required: false }],
+              rules: [{ required: false }]
             })(<SelectItem {...serviceNameProps} />)}
           </FormItem>
         </Col>
@@ -173,7 +173,7 @@ Filter.propTypes = {
   listServices: PropTypes.array,
   onSearchClick: PropTypes.func,
   onSearchClickWithService: PropTypes.func,
-  onResetClick: PropTypes.func,
+  onResetClick: PropTypes.func
 }
 
 export default Form.create()(Filter)

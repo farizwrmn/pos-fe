@@ -39,37 +39,37 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
-    },
+      color: 'black'
+    }
   }
   const header = {
     stack: [
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN REKAP PENJUALAN PER HARI',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - 2 * 40, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -77,31 +77,31 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
                 text: `PERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`,
+                render: text => `${moment(text).format('LL ')}`
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'right',
-              },
-            ],
-          },
-        ],
-      },
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
   const footer = (currentPage, pageCount) => {
     return {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - 2 * 40, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -109,23 +109,23 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
               text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
   const tableHeader = [
@@ -136,7 +136,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'PRODUCT', colSpan: 2, style: 'tableHeader', alignment: 'center' },
       {},
       { fontSize: 12, text: 'SERVICE', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TOTAL', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TOTAL', rowSpan: 2, style: 'tableHeader', alignment: 'center' }
     ],
     [
       {},
@@ -170,32 +170,32 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
 
   // Declare additional Props
   const pdfProps = {
-    className: "button-width02 button-extra-large bgcolor-blue",
+    className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['4%', '10%', '6%', '20%', '20%', '20%', '20%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     tableStyle: styles,
-    layout: "noBorder",
-    tableHeader: tableHeader,
-    tableBody: tableBody,
-    tableFooter: tableFooter,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    tableFooter,
     data: listTrans,
-    header: header,
-    footer: footer
+    header,
+    footer
   }
 
   return (
-    <BasicReport  {...pdfProps} />
+    <BasicReport {...pdfProps} />
   )
 }
 
 PrintPDF.propTypes = {
-  listTrans: PropTypes.array,
+  listTrans: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string.isRequired,
+  toDate: PropTypes.string.isRequired
 }
 
 export default PrintPDF

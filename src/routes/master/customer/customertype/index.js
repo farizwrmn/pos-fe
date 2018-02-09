@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
+
 
 const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
   const { listType, newItem, listSellprice, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
@@ -13,7 +13,7 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     // onFilterChange (value) {
     //   dispatch(routerRedux.push({
@@ -29,8 +29,8 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
       dispatch({
         type: 'customertype/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
@@ -38,7 +38,7 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     },
     onResetClick () {
       dispatch({ type: 'customertype/resetCustomerTypeList' })
-    },
+    }
   }
 
   const listProps = {
@@ -53,8 +53,8 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
         type: 'customertype/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -64,24 +64,24 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'customertype/delete',
-        payload: id,
+        payload: id
       })
     },
     clickBrowse () {
       dispatch({
         type: 'customertype/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -93,8 +93,8 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'customertype/resetCustomerTypeList' })
     },
@@ -102,10 +102,10 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
       dispatch({
         type: 'customertype/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -119,21 +119,21 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     onSubmit (data) {
       dispatch({
         type: `customertype/${modalType}`,
-        payload: data,
+        payload: data
       })
       dispatch({
         type: 'customertype/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
       // if (key === '1') {
       //   dispatch({
       //     type: 'customertype/query',
       //   })
       // }
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -144,10 +144,10 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
           dispatch({
             type: 'customertype/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -168,7 +168,7 @@ CustomerType.propTypes = {
   app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ customertype, loading, app }) => ({ customertype, loading, app }))(CustomerType)

@@ -14,7 +14,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         title: `Are you sure delete ${record.typeName} ?`,
         onOk () {
           deleteItem(record.typeCode)
-        },
+        }
       })
     }
   }
@@ -23,37 +23,37 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Type Code',
       dataIndex: 'typeCode',
-      key: 'typeCode',
+      key: 'typeCode'
     },
     {
       title: 'Type Name',
       dataIndex: 'typeName',
-      key: 'typeName',
+      key: 'typeName'
     },
     {
       title: 'Discount 01',
       dataIndex: 'discPct01',
-      key: 'discPct01',
+      key: 'discPct01'
     },
     {
       title: 'Discount 02',
       dataIndex: 'discPct02',
-      key: 'discPct02',
+      key: 'discPct02'
     },
     {
       title: 'Discount 03',
       dataIndex: 'discPct03',
-      key: 'discPct03',
+      key: 'discPct03'
     },
     {
       title: 'Discount Nominal',
       dataIndex: 'discNominal',
-      key: 'discNominal',
+      key: 'discNominal'
     },
     {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
-      key: 'sellPrice',
+      key: 'sellPrice'
     },
     {
       title: 'Created',
@@ -61,14 +61,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'createdBy',
-          key: 'createdBy',
+          key: 'createdBy'
         },
         {
           title: 'Time',
           dataIndex: 'createdAt',
-          key: 'createdAt',
-        },
-      ],
+          key: 'createdAt'
+        }
+      ]
     },
     {
       title: 'Updated',
@@ -76,14 +76,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         {
           title: 'By',
           dataIndex: 'updatedBy',
-          key: 'updatedBy',
+          key: 'updatedBy'
         },
         {
           title: 'Time',
           dataIndex: 'updatedAt',
-          key: 'updatedAt',
-        },
-      ],
+          key: 'updatedAt'
+        }
+      ]
     },
     {
       title: 'Operation',
@@ -92,8 +92,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -111,7 +111,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
 List.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default List

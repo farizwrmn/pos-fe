@@ -5,5 +5,5 @@ import NewForm from './newForm'
 export default {
   ModalList,
   ModalListHistory,
-  NewForm,
+  NewForm
 }

@@ -8,7 +8,7 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, loading, app }) => {
+const Report = ({ dispatch, fifoReport, app }) => {
   const { listRekap, period, year, productCode } = fifoReport
   const { user, storeInfo } = app
 
@@ -22,9 +22,9 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'fifoReport/setNull',
+        type: 'fifoReport/setNull'
       })
-    },
+    }
   }
 
   const filterProps = {
@@ -37,26 +37,25 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'fifoReport/setNull',
+        type: 'fifoReport/setNull'
       })
     },
     onChangePeriod (month, yearPeriod) {
-      const { period, year, ...query } = location
       dispatch({
         type: 'setPeriod',
         payload: {
           month,
-          yearPeriod,
-        },
+          yearPeriod
+        }
       })
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
           period: month,
-          year: yearPeriod,
-        },
+          year: yearPeriod
+        }
       }))
-    },
+    }
   }
 
   return (
@@ -70,7 +69,7 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
 Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
-  fifoReport: PropTypes.object,
+  fifoReport: PropTypes.object
 }
 
 export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)

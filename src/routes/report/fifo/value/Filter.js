@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
@@ -11,18 +12,17 @@ import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
-const Filter = ({ onChangePeriod, dispatch, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
-  }
+const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
+  // const handleChange = (value) => {
+  //   const from = value[0].format('YYYY-MM-DD')
+  //   const to = value[1].format('YYYY-MM-DD')
+  //   onDateChange(from, to)
+  // }
 
   const handleReset = () => {
-    const { query, pathname } = location
+    const { pathname } = location
     dispatch(routerRedux.push({
-      pathname,
+      pathname
     }))
     resetFields()
     onListReset()
@@ -64,7 +64,7 @@ Filter.propTypes = {
   dispatch: PropTypes.func.isRequired,
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
+  onFilterChange: PropTypes.func
 }
 
 export default Form.create()(Filter)

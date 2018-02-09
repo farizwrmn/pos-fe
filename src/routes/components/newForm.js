@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Icon } from 'antd'
 
 const NewForm = ({
-  onClickNew,
+  onClickNew
 }) => {
   return (
     <Button style={{ height: 100 }} onClick={onClickNew}>

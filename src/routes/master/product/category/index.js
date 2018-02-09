@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
@@ -13,26 +12,26 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'productcategory/query',
         payload: {
           // userName: value.categoryName,
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'productcategory/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'productcategory/resetProductCategoryList' })
-    },
+    }
   }
 
   const listProps = {
@@ -47,8 +46,8 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
         type: 'productcategory/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -58,19 +57,19 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'productcategory/query',
+        type: 'productcategory/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'productcategory/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -82,8 +81,8 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       // if (key === '1') {
       //   dispatch({
@@ -96,18 +95,18 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
       dispatch({
         type: 'productcategory/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'productcategory/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -122,17 +121,17 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
         type: `productcategory/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'productcategory/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -143,10 +142,10 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
           dispatch({
             type: 'productcategory/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -167,7 +166,7 @@ ProductCategory.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ productcategory, loading, app }) => ({ productcategory, loading, app }))(ProductCategory)

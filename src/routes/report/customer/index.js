@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, Dropdown, Icon, Button, Menu } from 'antd'
 import { connect } from 'dva'
+import moment from 'moment'
 import Filter from './Filter'
 import List from './List'
-import moment from 'moment'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 
@@ -25,10 +25,10 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: false,
-        },
+          modalVisible: false
+        }
       })
-    },
+    }
   }
 
   const filterProps = {
@@ -41,15 +41,15 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: true,
-        },
+          modalVisible: true
+        }
       })
       dispatch({
         type: 'customer/updateState',
         payload: {
           searchText: '',
-          listCustomer: list,
-        },
+          listCustomer: list
+        }
       })
     },
     onResetClick () {
@@ -60,8 +60,8 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
           customerInfo: {},
           listHistory: [],
           from: '',
-          to: '',
-        },
+          to: ''
+        }
       })
     },
     resetHistory () {
@@ -71,8 +71,8 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
           listHistory: [],
           listPoliceNo: [],
           from: '',
-          to: '',
-        },
+          to: ''
+        }
       })
     },
     onSearchClick (memberCode, data) {
@@ -89,16 +89,16 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
           policeNo: data.policeNo,
           from: fromDate,
           to: toDate,
-          serviceType: data.serviceTypeId,
-        },
+          serviceType: data.serviceTypeId
+        }
       })
-    },
+    }
   }
 
   const listProps = {
     dataSource: listHistory,
     loading: loading.effects['customerReport/query'],
-    style: { marginTop: 15 },
+    style: { marginTop: 15 }
   }
 
   const printProps = {
@@ -106,7 +106,7 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
     user,
     storeInfo,
     from,
-    to,
+    to
   }
 
   const menu = (
@@ -149,7 +149,7 @@ CustomerHistory.propTypes = {
   service: PropTypes.object,
   app: PropTypes.object,
   loading: PropTypes.object,
-  dispatch: PropTypes.object,
+  dispatch: PropTypes.object
 }
 
 export default connect(({ customerReport, customer, service, app, loading }) => ({ customerReport, customer, service, app, loading }))(CustomerHistory)

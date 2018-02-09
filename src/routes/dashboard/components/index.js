@@ -3,12 +3,12 @@ import NumberCard from './numberCard'
 import Sales from './sales'
 import Info from './info'
 // import Weather from './weather'
-import RecentSales from './recentSales'
-import Comments from './comments'
-import Completed from './completed'
-import Browser from './browser'
-import Cpu from './cpu'
-import User from './user'
+// import RecentSales from './recentSales'
+// import Comments from './comments'
+// import Completed from './completed'
+// import Browser from './browser'
+// import Cpu from './cpu'
+// import User from './user'
 
 export {
   NumberCard

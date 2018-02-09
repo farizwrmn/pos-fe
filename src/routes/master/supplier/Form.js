@@ -13,55 +13,55 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 9,
+      span: 9
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 15,
+      span: 15
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   xs: {
     span: 24,
-    offset: 0,
+    offset: 0
   },
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formSupplier = ({
@@ -82,8 +82,8 @@ const formSupplier = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -106,7 +106,7 @@ const formSupplier = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (data.supplierCode) {
         Modal.confirm({
@@ -114,7 +114,7 @@ const formSupplier = ({
           onOk () {
             onSubmit(data.supplierCode, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Supplier Code can't be null")
@@ -154,9 +154,9 @@ const formSupplier = ({
                     {
                       required: true,
                       pattern: /^[a-z0-9_]{2,15}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
             </Col>
@@ -168,9 +168,9 @@ const formSupplier = ({
                     {
                       required: true,
                       pattern: /^([a-zA-Z]{2})+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
-                      message: 'a-Z min: 3 characters',
-                    },
-                  ],
+                      message: 'a-Z min: 3 characters'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -184,9 +184,9 @@ const formSupplier = ({
                     {
                       required: true,
                       pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -197,9 +197,9 @@ const formSupplier = ({
                   rules: [
                     {
                       pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9 min: 3 characters',
-                    },
-                  ],
+                      message: 'a-Z & 0-9 min: 3 characters'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -211,9 +211,9 @@ const formSupplier = ({
                   initialValue: item.cityId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -229,10 +229,10 @@ const formSupplier = ({
                   initialValue: item.state,
                   rules: [
                     {
-                      pattern: /^[a-z0-9\_\-]{3,20}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_-]{3,20}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -244,10 +244,10 @@ const formSupplier = ({
                   initialValue: item.zipCode,
                   rules: [
                     {
-                      pattern: /^[a-z0-9\_\-]{3,20}$/i,
-                      message: 'a-Z & 0-9 min: 3 characters',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_-]{3,20}$/i,
+                      message: 'a-Z & 0-9 min: 3 characters'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -258,9 +258,9 @@ const formSupplier = ({
                   rules: [
                     {
                       pattern: /^([0-9]{15,})+$/,
-                      message: 'invalid NPWP',
-                    },
-                  ],
+                      message: 'invalid NPWP'
+                    }
+                  ]
                 })(<Input maxLength={15} />)}
               </FormItem>
             </Col>
@@ -274,9 +274,9 @@ const formSupplier = ({
                     {
                       required: true,
                       pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                      message: 'Input a Phone No.[xxxx xxxx xxxx]',
-                    },
-                  ],
+                      message: 'Input a Phone No.[xxxx xxxx xxxx]'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -288,9 +288,9 @@ const formSupplier = ({
                     {
                       required: true,
                       pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                      message: 'Input a Mobile No.[xxxx xxxx xxxx]',
-                    },
-                  ],
+                      message: 'Input a Mobile No.[xxxx xxxx xxxx]'
+                    }
+                  ]
                 })(<Input maxLength={15} />)}
               </FormItem>
             </Col>
@@ -303,9 +303,9 @@ const formSupplier = ({
                   rules: [
                     {
                       pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-                      message: 'Email format is not valid',
-                    },
-                  ],
+                      message: 'Email format is not valid'
+                    }
+                  ]
                 })(<Input maxLength={15} />)}
               </FormItem>
             </Col>
@@ -337,7 +337,7 @@ formSupplier.propTypes = {
   onSubmit: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formSupplier)

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
@@ -13,26 +12,26 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'productbrand/query',
         payload: {
           userName: value.brandName,
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'productbrand/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'productbrand/resetProductBrandList' })
-    },
+    }
   }
 
   const listProps = {
@@ -47,8 +46,8 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
         type: 'productbrand/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -58,19 +57,19 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'productbrand/query',
+        type: 'productbrand/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'productbrand/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -82,8 +81,8 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       // if (key === '1') {
       //   dispatch({
@@ -96,18 +95,18 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
       dispatch({
         type: 'productbrand/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'productbrand/updateState',
         payload: {
-          show: !show,
+          show: !show
         }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -122,17 +121,17 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
         type: `productbrand/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'productbrand/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -143,10 +142,10 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
           dispatch({
             type: 'productbrand/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -167,7 +166,7 @@ ProductBrand.propTypes = {
   app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ productbrand, loading, app }) => ({ productbrand, loading, app }))(ProductBrand)

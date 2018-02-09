@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, category, brand }) => {
+const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, brand }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
     const rows = tabledata
     let count = 1
-    let ppn = 0
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
@@ -53,34 +52,34 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
-    },
+      color: 'black'
+    }
   }
   const header = {
     stack: [
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN REKAP PEMBELIAN',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
             canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
@@ -91,28 +90,28 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 11,
                 alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`,
+                render: text => `${moment(text).format('LL ')}`
               },
               {
                 stack: [
                   {
-                    text: `\nKATEGORY: ${category ? category : 'ALL CATEGORY'}`,
+                    text: `\nKATEGORY: ${category || 'ALL CATEGORY'}`,
                     fontSize: 11,
-                    alignment: 'right',
+                    alignment: 'right'
                   },
                   {
-                    text: `\nMERK: ${brand ? brand : 'ALL BRAND'}`,
+                    text: `\nMERK: ${brand || 'ALL BRAND'}`,
                     fontSize: 11,
-                    alignment: 'right',
-                  },
+                    alignment: 'right'
+                  }
                 ]
               }
-            ],
-          },
-        ],
-      },
+            ]
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
   const footer = (currentPage, pageCount) => {
     return {
@@ -127,23 +126,23 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
               text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
   const tableHeader = [
@@ -183,23 +182,23 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, productCode, c
 
   // Declare additional Props
   const pdfProps = {
-    className: "button-width02 button-extra-large bgcolor-blue",
+    className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['4%', '10%', '16%', '4%', '11%', '11%', '11%', '11%', '11%', '11%'],
     pageMargins: [40, 145, 40, 60],
     pageSize: 'A3',
     pageOrientation: 'landscape',
     tableStyle: styles,
-    layout: "noBorder",
-    tableHeader: tableHeader,
-    tableBody: tableBody,
-    tableFooter: tableFooter,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    tableFooter,
     data: listDaily,
-    header: header,
-    footer: footer
+    header,
+    footer
   }
 
   return (
-    <BasicReport  {...pdfProps} />
+    <BasicReport {...pdfProps} />
   )
 }
 
@@ -208,7 +207,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string.isRequired,
+  toDate: PropTypes.string
 }
 
 export default PrintPDF

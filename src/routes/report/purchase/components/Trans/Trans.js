@@ -18,37 +18,37 @@ const Report = ({ dispatch, loading, purchaseReport, app }) => {
     fromDate,
     toDate,
     productCode,
-    loading: loading.effects['purchaseReport/queryTrans'],
+    loading: loading.effects['purchaseReport/queryTrans']
   }
 
   const filterProps = {
-    listTrans: listTrans,
+    listTrans,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset(){
+    onListReset () {
       dispatch({
-        type: 'purchaseReport/setListNull',
+        type: 'purchaseReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'purchaseReport/queryTrans',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
       dispatch({
         type: 'purchaseReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
-    },
+    }
   }
 
   return (
