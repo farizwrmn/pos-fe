@@ -9,7 +9,7 @@ export async function login (data) {
   return request({
     url: userLogin,
     method: 'post',
-    data,
+    data
   })
 }
 
@@ -17,40 +17,40 @@ export async function prelogin (data) {
   return request({
     url: userPreLogin,
     method: 'post',
-    data,
+    data
   })
 }
 
 export async function verifyTOTP (data) {
   const apiHeaderToken = crypt.apiheader()
-  const url = userTotp.replace('/:id', '/' + data.userid)
+  const url = userTotp.replace('/:id', `/${data.userid}`)
   return request({
-    url: url,
+    url,
     method: 'post',
     headers: apiHeaderToken,
-    data,
+    data
   })
 }
 
 export async function getUserRole (params) {
-  console.log('getUserRole',params,'ls',lsUserId)
+  console.log('getUserRole', params, 'ls', lsUserId)
   const userId = (!params.userId) ? lsUserId : params.userId
-  const url = userRoles.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
+  const url = userRoles.replace('/:id', `/${userId}`) + (`?as=${params.as}` || '')
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function getUserStore (params) {
   const userId = (!params.userId) ? lsUserId : params.userId
-  const url = userStore.replace('/:id', '/' + userId) + ('?mode=lov')
+  const url = `${userStore.replace('/:id', `/${userId}`)}?mode=lov`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

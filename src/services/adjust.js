@@ -8,7 +8,7 @@ export async function query (params) {
     url: adjust,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -18,7 +18,7 @@ export async function queryDetail (params) {
     url: adjustDetail,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -26,11 +26,11 @@ export async function create (params) {
   let url = params.id ? `${adjust}/code/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -38,11 +38,11 @@ export async function createDetail (params) {
   let url = params.id ? `${adjustDetail}/purchase` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -50,11 +50,11 @@ export async function edit (params) {
   let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -62,9 +62,9 @@ export async function remove (params) {
   let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

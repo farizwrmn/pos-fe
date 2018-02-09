@@ -21,13 +21,13 @@ export async function query (params) {
   return request({
     url: dashboard,
     method: 'get',
-    data: params,
+    data: params
   })
 }
 export async function getIpAddr (params) {
   return request({
     url: ipaddr,
     method: 'get',
-    data: params,
+    data: params
   })
 }

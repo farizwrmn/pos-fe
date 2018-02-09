@@ -9,14 +9,14 @@ export async function query (params) {
     url: `${transfer}/in`,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: transfer + '/in/detail',
+    url: `${transfer}/in/detail`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -30,7 +30,7 @@ export async function queryTrans (params) {
     url: `${transfer}/in/code`,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -42,6 +42,6 @@ export async function add (params) {
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

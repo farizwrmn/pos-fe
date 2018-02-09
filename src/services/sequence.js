@@ -9,16 +9,16 @@ export async function query (params) {
     method: 'get',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function increase (params) {
-  const url = sequence + '/increase?seqCode=' + params.seqCode + '&type=' + params.type
+  const url = `${sequence}/increase?seqCode=${params.seqCode}&type=${params.type}`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

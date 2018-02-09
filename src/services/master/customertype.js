@@ -8,7 +8,7 @@ export async function query (params) {
     url: customertype,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -18,40 +18,40 @@ export async function querySellprice (params) {
     url: sellprice,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? customertype + '/' + params.typeCode : customertype
+  const url = params ? `${customertype}/${params.typeCode}` : customertype
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? customertype + '/' + params.typeCode : customertype
+  const url = params ? `${customertype}/${params.typeCode}` : customertype
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params ? customertype + '/' + params.typeCode : customertype
+  const url = params ? `${customertype}/${params.typeCode}` : customertype
   console.log(url, 'url')
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

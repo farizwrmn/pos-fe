@@ -4,16 +4,14 @@
  * (c) Sindre Sorhus; MIT License
  */
 (function () {
-  'use strict';
+  let document = typeof window !== 'undefined' && typeof window.document !== 'undefined' ? window.document : {}
+  let isCommonjs = typeof module !== 'undefined' && module.exports
+  let keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element
 
-  var document = typeof window !== 'undefined' && typeof window.document !== 'undefined' ? window.document : {};
-  var isCommonjs = typeof module !== 'undefined' && module.exports;
-  var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
+  let fn = (function () {
+    let val
 
-  var fn = (function () {
-    var val;
-
-    var fnMap = [
+    let fnMap = [
       [
         'requestFullscreen',
         'exitFullscreen',
@@ -58,111 +56,111 @@
         'MSFullscreenChange',
         'MSFullscreenError'
       ]
-    ];
+    ]
 
-    var i = 0;
-    var l = fnMap.length;
-    var ret = {};
+    let i = 0
+    let l = fnMap.length
+    let ret = {}
 
-    for (; i < l; i++) {
-      val = fnMap[i];
+    for (; i < l; i += 1) {
+      val = fnMap[i]
       if (val && val[1] in document) {
-        for (i = 0; i < val.length; i++) {
-          ret[fnMap[0][i]] = val[i];
+        for (i = 0; i < val.length; i += 1) {
+          ret[fnMap[0][i]] = val[i]
         }
-        return ret;
+        return ret
       }
     }
 
-    return false;
-  })();
+    return false
+  }())
 
-  var eventNameMap = {
+  let eventNameMap = {
     change: fn.fullscreenchange,
     error: fn.fullscreenerror
-  };
+  }
 
-  var screenfull = {
-    request: function (elem) {
-      var request = fn.requestFullscreen;
+  let screenfull = {
+    request (elem) {
+      let request = fn.requestFullscreen
 
-      elem = elem || document.documentElement;
+      elem = elem || document.documentElement
 
       // Work around Safari 5.1 bug: reports support for
       // keyboard in fullscreen even though it doesn't.
       // Browser sniffing, since the alternative with
       // setTimeout is even worse.
       if (/5\.1[.\d]* Safari/.test(navigator.userAgent)) {
-        elem[request]();
+        elem[request]()
       } else {
-        elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT);
+        elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT)
       }
     },
-    exit: function () {
-      document[fn.exitFullscreen]();
+    exit () {
+      document[fn.exitFullscreen]()
     },
-    toggle: function (elem) {
+    toggle (elem) {
       if (this.isFullscreen) {
-        this.exit();
+        this.exit()
       } else {
-        this.request(elem);
+        this.request(elem)
       }
     },
-    onchange: function (callback) {
-      this.on('change', callback);
+    onchange (callback) {
+      this.on('change', callback)
     },
-    onerror: function (callback) {
-      this.on('error', callback);
+    onerror (callback) {
+      this.on('error', callback)
     },
-    on: function (event, callback) {
-      var eventName = eventNameMap[event];
+    on (event, callback) {
+      let eventName = eventNameMap[event]
       if (eventName) {
-        document.addEventListener(eventName, callback, false);
+        document.addEventListener(eventName, callback, false)
       }
     },
-    off: function (event, callback) {
-      var eventName = eventNameMap[event];
+    off (event, callback) {
+      let eventName = eventNameMap[event]
       if (eventName) {
-        document.removeEventListener(eventName, callback, false);
+        document.removeEventListener(eventName, callback, false)
       }
     },
     raw: fn
-  };
+  }
 
   if (!fn) {
     if (isCommonjs) {
-      module.exports = false;
+      module.exports = false
     } else {
-      window.screenfull = false;
+      window.screenfull = false
     }
 
-    return;
+    return
   }
 
   Object.defineProperties(screenfull, {
     isFullscreen: {
-      get: function () {
-        return Boolean(document[fn.fullscreenElement]);
+      get () {
+        return Boolean(document[fn.fullscreenElement])
       }
     },
     element: {
       enumerable: true,
-      get: function () {
-        return document[fn.fullscreenElement];
+      get () {
+        return document[fn.fullscreenElement]
       }
     },
     enabled: {
       enumerable: true,
-      get: function () {
+      get () {
         // Coerce to boolean in case of old WebKit
-        return Boolean(document[fn.fullscreenEnabled]);
+        return Boolean(document[fn.fullscreenEnabled])
       }
     }
-  });
+  })
 
   if (isCommonjs) {
-    module.exports = screenfull;
+    module.exports = screenfull
   } else {
-    window.screenfull = screenfull;
+    window.screenfull = screenfull
   }
-})();
+}())

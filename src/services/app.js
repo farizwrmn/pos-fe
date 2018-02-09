@@ -7,7 +7,7 @@ export async function login (params) {
   return request({
     url: userLogin,
     method: 'post',
-    data: params,
+    data: params
   })
 }
 
@@ -16,15 +16,15 @@ export async function logout (params) {
     url: userLogout,
     method: 'post', // 'get',
     data: params,
-    headers: crypt.apiheader(),
+    headers: crypt.apiheader()
   })
 }
 
 export async function changePw (params) {
-  const url = params.id ? users + '/' + params.id  : users
+  const url = params.id ? `${users}/${params.id}` : users
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
     body: params.data,
@@ -39,23 +39,20 @@ export async function query (params) {
     const ascii = /^[a-z0-9]+$/i
     if (!ascii.test(url[1])) {
       lstorage.removeItemKey()
-      return { "success": false, "message": "URL Mismatch" }
-    } else {
-      if (apiHeaderToken) {
-        return request({
-          url: userRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]),
-          method: 'get',
-          headers: apiHeaderToken,
-        })
-      } else {
-        return request({
-          url: user.replace('/:id', ''),
-          method: 'get',
-          data: params,
-        })
-      }
+      return { success: false, message: 'URL Mismatch' }
     }
-  } else {
-    return { "success": false, "message": "No URL" }
+    if (apiHeaderToken) {
+      return request({
+        url: userRole.replace('/:id', `/${url[1]}`).replace('/:role', `/${url[2]}`),
+        method: 'get',
+        headers: apiHeaderToken
+      })
+    }
+    return request({
+      url: user.replace('/:id', ''),
+      method: 'get',
+      data: params
+    })
   }
+  return { success: false, message: 'No URL' }
 }
