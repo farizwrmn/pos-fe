@@ -1,10 +1,10 @@
 import axios from 'axios'
 import qs from 'qs'
-import { YQL, CORS } from './config'
 import jsonp from 'jsonp'
-import lodash from 'lodash'
 import pathToRegexp from 'path-to-regexp'
+import lodash from 'lodash'
 import { message } from 'antd'
+import { YQL, CORS } from './config'
 
 const fetch = (options) => {
   let {
@@ -12,7 +12,7 @@ const fetch = (options) => {
     data,
     fetchType,
     url,
-    headers,
+    headers
   } = options
 
   const cloneData = lodash.cloneDeep(data)
@@ -41,7 +41,7 @@ const fetch = (options) => {
         param: `${qs.stringify(data)}&callback`,
         name: `jsonp_${new Date().getTime()}`,
         timeout: 4000,
-        headers: headers,
+        headers
       }, (error, result) => {
         if (error) {
           reject(error)
@@ -58,19 +58,19 @@ const fetch = (options) => {
     case 'get':
       return axios.get(url, {
         params: cloneData,
-        headers: headers,
+        headers
       })
     case 'delete':
       return axios.delete(url, {
         data: cloneData,
-        headers: headers,
+        headers
       })
     case 'post':
-      return axios.post(url, cloneData, { headers: headers })
+      return axios.post(url, cloneData, { headers })
     case 'put':
-      return axios.put(url, cloneData, { headers: headers })
+      return axios.put(url, cloneData, { headers })
     case 'patch':
-      return axios.patch(url, cloneData, { headers: headers })
+      return axios.patch(url, cloneData, { headers })
     default:
       return axios(options)
   }
@@ -95,7 +95,7 @@ export default function request (options) {
     let data = options.fetchType === 'YQL' ? response.data.query.results.json : response.data
     if (data instanceof Array) {
       data = {
-        list: data,
+        list: data
       }
     }
 
@@ -103,7 +103,7 @@ export default function request (options) {
       success: true,
       message: statusText,
       statusCode: status,
-      ...data,
+      ...data
     }
   }).catch((error) => {
     const { response } = error
@@ -115,7 +115,7 @@ export default function request (options) {
       msg = data.message || statusText
     } else {
       statusCode = 600
-      if (error.hasOwnProperty('message')) {
+      if (Object.prototype.hasOwnProperty.call(error, 'message')) {
         msg = error.message || 'Network Error'
       } else {
         msg = error

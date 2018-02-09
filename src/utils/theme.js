@@ -14,5 +14,5 @@ module.exports = {
     warning: '#fac450',
     normal: '#108ee9',
     error: '#f50'
-  },
+  }
 }

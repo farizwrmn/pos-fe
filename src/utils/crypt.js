@@ -3,9 +3,10 @@
  */
 import { apiHeader, prefix } from './config'
 
-const crypto = require('crypto'),
-  algorithm = 'aes-256-ctr',
-  password = new Date().toISOString().slice(0,10).replace(/-/g,"")
+const crypto = require('crypto')
+
+const algorithm = 'aes-256-ctr'
+const password = new Date().toISOString().slice(0, 10).replace(/-/g, '')
 
 const encrypt = (text, rdmtxt) => {
   const cipher = crypto.createCipher(algorithm, (rdmtxt || '') + password)
@@ -28,7 +29,7 @@ const decrypt = (text, rdmtxt) => {
 const apiheader = () => {
   try {
     const idToken = localStorage.getItem(`${prefix}iKen`)
-    apiHeader.Authorization = 'JWT ' + idToken
+    apiHeader.Authorization = `JWT ${idToken}`
     return apiHeader
   } catch (err) {
     return null
@@ -38,5 +39,5 @@ const apiheader = () => {
 module.exports = {
   encrypt,
   decrypt,
-  apiheader,
+  apiheader
 }

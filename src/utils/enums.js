@@ -1,8 +1,8 @@
 const EnumRoleType = {
   LVL0: 'OWN',
-  IT: 'IT',
+  IT: 'IT'
 }
 
 module.exports = {
-  EnumRoleType,
+  EnumRoleType
 }
