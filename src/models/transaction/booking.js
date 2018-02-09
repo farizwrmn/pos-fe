@@ -1,10 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryHistory, update } from '../../services/transaction/booking'
-import { pageModel } from '../common'
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { config } from 'utils'
-import { route } from 'react-router/lib/PropTypes'
+import { query, queryHistory, update } from '../../services/transaction/booking'
+import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
   namespace: 'booking',
@@ -24,7 +22,7 @@ export default modelExtend(pageModel, {
     period: moment().format('YYYY-MM'),
     date: moment().format('YYYY-MM-DD'),
     newScheduleDate: '',
-    newScheduleTime: '',
+    newScheduleTime: ''
   },
 
   subscriptions: {
@@ -34,12 +32,12 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
-              listTrans: [],
-            },
+              listTrans: []
+            }
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -51,7 +49,7 @@ export default modelExtend(pageModel, {
         if (data.success === false) {
           Modal.warning({
             title: 'Something Went Wrong',
-            content: 'Please Refresh the page or change params',
+            content: 'Please Refresh the page or change params'
           })
         }
       } catch (e) {
@@ -63,24 +61,24 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'querySuccessTrans',
             payload: {
-              listTrans: data.data,
-            },
+              listTrans: data.data
+            }
           })
           yield put({ type: 'updateState', payload: { currentItem: {} } })
         } else {
           Modal.warning({
             title: 'No Data',
-            content: 'No data found with this status',
+            content: 'No data found with this status'
           })
           yield put({ type: 'resetAll' })
         }
       }
     },
-    * queryModal ({ payload = {} }, { call, put }) {
+    * queryModal ({ payload = {} }, { put }) {
       const period = payload
       yield put({ type: 'showModal', payload: period })
     },
-    * focusBookingId ({ payload = {} }, { call, put }) {
+    * focusBookingId ({ payload = {} }, { put }) {
       yield put({ type: 'setfocusBooking', payload })
     },
     * queryBooking ({ payload = {} }, { call, put }) {
@@ -89,12 +87,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listBooking: data.data,
-          },
+            listBooking: data.data
+          }
         })
       }
     },
-    * queryHistory ({ payload = {} }, { call, put }) {
+    * queryHistory ({ payload = {} }, { call }) {
       const data = yield call(queryHistory, payload)
       if (data.success) {
         if (data.data.length > 0) {
@@ -114,11 +112,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listTrans: leftOvers || [],
-          },
+            listTrans: leftOvers || []
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -130,15 +128,15 @@ export default modelExtend(pageModel, {
         listSuppliers,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
@@ -151,8 +149,8 @@ export default modelExtend(pageModel, {
         end,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
@@ -184,13 +182,13 @@ export default modelExtend(pageModel, {
         listBooking: [],
         listHistory: [],
         period: moment().format('YYYY-MM'),
-        date: moment().format('YYYY-MM-DD'),
+        date: moment().format('YYYY-MM-DD')
       }
       return { ...state, ...defaultState }
     },
 
     setfocusBooking (state, { payload }) {
       return { ...state, ...payload }
-    },
-  },
+    }
+  }
 })

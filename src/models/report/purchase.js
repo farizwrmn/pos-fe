@@ -1,8 +1,7 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-import { query as queryReport, queryTrans, queryReturn, queryPurchaseDaily } from '../../services/report/purchase'
-import { queryMode as miscQuery } from '../../services/misc'
+import { queryTrans, queryReturn, queryPurchaseDaily } from '../../services/report/purchase'
 
 export default {
   namespace: 'purchaseReport',
@@ -21,11 +20,11 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/report/purchase/return' && location.query.from) {
           dispatch({
@@ -33,9 +32,9 @@ export default {
           })
           dispatch({
             type: 'queryReturn',
-            payload: location.query,
+            payload: location.query
           })
-        } else if(location.pathname === '/report/purchase/return') {
+        } else if (location.pathname === '/report/purchase/return') {
           dispatch({
             type: 'setListNull'
           })
@@ -45,23 +44,23 @@ export default {
           })
         }
       })
-    },
+    }
   },
   effects: {
-    * queryTrans({ payload }, { call, put }) {
-      let data = new Array()
+    * queryTrans ({ payload }, { call, put }) {
+      let data = []
       data = yield call(queryTrans, payload)
       yield put({
         type: 'querySuccessTrans',
         payload: {
           listTrans: data.data,
           fromDate: payload.from,
-          toDate: payload.to,
-        },
+          toDate: payload.to
+        }
       })
     },
-    * queryReturn({ payload }, { call, put }) {
-      let data = new Array()
+    * queryReturn ({ payload }, { call, put }) {
+      let data = []
       if (payload) {
         data = yield call(queryReturn, payload)
         yield put({
@@ -70,13 +69,13 @@ export default {
             listTrans: data.data,
             fromDate: payload.from,
             toDate: payload.to
-          },
+          }
         })
       } else {
         data = yield call(queryReturn)
       }
     },
-    * queryDaily({ payload }, { call, put }) {
+    * queryDaily ({ payload }, { call, put }) {
       let data = yield call(queryPurchaseDaily, payload)
       yield put({
         type: 'querySuccessTrans',
@@ -85,23 +84,24 @@ export default {
           fromDate: payload.from,
           toDate: payload.to,
           ...payload
-        },
+        }
       })
-    },
+    }
   },
   reducers: {
-    querySuccessTrans(state, action) {
-      const { listTrans} = action.payload
+    querySuccessTrans (state, action) {
+      const { listTrans } = action.payload
       return {
+        listTrans,
         ...state,
         ...action.payload
       }
     },
-    setDate(state, action) {
+    setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
-    setListNull(state, action) {
+    setListNull (state, action) {
       return { ...state, list: [], listTrans: [], listDaily: [], ...action.payload }
-    },
-  },
+    }
+  }
 }

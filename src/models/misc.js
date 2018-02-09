@@ -14,27 +14,27 @@ export default modelExtend(pageModel, {
     modalVisible: false,
     searchVisible: false,
     modalType: 'add',
-    selectedRowKeys: [],
+    selectedRowKeys: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(location => {
+      history.listen((location) => {
         if (location.pathname === '/setting/misc') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/transaction/pos/payment') {
           dispatch({ type: 'misc/lovFullCode', payload: { code: 'PAYMENT' } })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -44,28 +44,28 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
 
-    *lov ({ payload }, { call, put }) {
+    * lov ({ payload }, { call, put }) {
       const miscCode = payload.code
       const data = yield call(queryMode, { code: miscCode, fields: 'miscName,miscDesc', for: 'user' })
-      if ( data.success ) {
+      if (data.success) {
         const dataLov = data.data
         const totalData = data.data.length
         yield put({
           type: 'querySuccessLov',
           payload: {
             code: miscCode.toLowerCase('miscCode'),
-            listLov: { [ miscCode.toLowerCase('miscCode') ] : dataLov },
+            listLov: { [miscCode.toLowerCase('miscCode')]: dataLov },
             pagination: {
-              total: totalData,
-            },
-          },
+              total: totalData
+            }
+          }
         })
       } else {
         console.log('not success')
@@ -75,25 +75,25 @@ export default modelExtend(pageModel, {
     * lovFullCode ({ payload }, { call, put }) {
       const miscCode = payload.code
       const data = yield call(queryMode, { code: miscCode, fields: 'miscName,miscDesc,miscVariable' })
-      if ( data.success ) {
+      if (data.success) {
         const dataLov = data.data
         const totalData = data.data.length
         yield put({
           type: 'querySuccessLov',
           payload: {
             code: miscCode.toLowerCase('miscCode'),
-            listLov: { [ miscCode.toLowerCase('miscCode') ] : dataLov },
+            listLov: { [miscCode.toLowerCase('miscCode')]: dataLov },
             pagination: {
-              total: totalData,
-            },
-          },
+              total: totalData
+            }
+          }
         })
       } else {
         console.log('not success')
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
       const { selectedRowKeys } = yield select(_ => _.misc)
       if (data.success) {
@@ -104,7 +104,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch' ({ payload }, { call, put }) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -114,7 +114,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, name: payload.name, data: payload.data })
       if (data.success) {
         yield put({ type: 'modalHide' })
@@ -124,7 +124,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
+    * edit ({ payload }, { select, call, put }) {
       const miscCode = yield select(({ misc }) => misc.currentItem.miscCode)
       const newMisc = { ...payload, miscCode }
       const data = yield call(edit, newMisc)
@@ -134,7 +134,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
 
   },
 
@@ -146,7 +146,7 @@ export default modelExtend(pageModel, {
         list,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     querySuccessLov (state, action) {
@@ -156,13 +156,13 @@ export default modelExtend(pageModel, {
         listLov,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     modalShow (state, { payload }) {
@@ -185,6 +185,6 @@ export default modelExtend(pageModel, {
     },
     searchHide (state) {
       return { ...state, searchVisible: false }
-    },
-  },
+    }
+  }
 })

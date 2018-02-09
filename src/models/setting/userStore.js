@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
-  from '../../services/setting/userStores'
-import { pageModel } from '../common'
 import { message } from 'antd'
+import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore } from '../../services/setting/userStores'
+import { pageModel } from '../common'
 
 const successInfo = (info) => {
   message.success(info)
@@ -15,67 +14,67 @@ export default modelExtend(pageModel, {
     storeItem: {},
     listAllStores: [],
     listUserStores: [],
-    listCheckedStores: [],
+    listCheckedStores: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(location => {
+      history.listen((location) => {
         if (location.pathname === '/setting/user') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
-      const userStore = yield call(getAllStores)
+    * query ({ payload = {} }, { call, put }) {
+      const userStore = yield call(getAllStores, payload)
       if (userStore.success) {
         yield put({
           type: 'successAllStore',
           payload: {
-            listUserStore: userStore.data.map(a=>a.key),
+            listUserStore: userStore.data.map(a => a.key),
             pagination: {
-              total: userStore.data.length,
-            },
-          },
+              total: userStore.data.length
+            }
+          }
         })
       } else {
         console.log('error')
       }
     },
-    *getAllStores ({ payload = {} }, { call, put }) {
-      const stores = yield call(getAllStores)
+    * getAllStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getAllStores, payload)
       if (stores.success) {
         // yield put({ type: 'getUserStores', payload })
         yield put({
           type: 'successAllStore',
-          payload: { listAllStores: stores.data },
+          payload: { listAllStores: stores.data }
         })
       } else {
         console.log('error')
       }
     },
-    *getUserStores ({ payload = {} }, { call, put }) {
+    * getUserStores ({ payload = {} }, { call, put }) {
       const stores = yield call(getUserStores, payload)
       // if (stores.success) {
-        yield put({
-          type: 'successUserStore',
-          payload: {
-            listUserStores: stores.success ? stores.userStore : '',
-            defaultStore: stores.success ? stores.defaultStore : ''
-          },
-        })
+      yield put({
+        type: 'successUserStore',
+        payload: {
+          listUserStores: stores.success ? stores.userStore : '',
+          defaultStore: stores.success ? stores.defaultStore : ''
+        }
+      })
       // } else {
       //   console.log('error')
       // }
     },
-    *saveDefaultStore ({ payload }, { select, call, put }) {
+    * saveDefaultStore ({ payload }, { call, put }) {
       // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultStore, payload)
@@ -83,24 +82,24 @@ export default modelExtend(pageModel, {
         successInfo(data.message)
         yield put({
           type: 'updateState',
-          payload: data.defaultStore,
+          payload: data.defaultStore
         })
       } else {
         throw data
       }
     },
-    *saveCheckedStore ({ payload }, { select, call, put }) {
+    * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
       if (data.success) {
         successInfo(data.message)
         yield put({
           type: 'updateState',
-          payload: data.defaultStore,
+          payload: data.defaultStore
         })
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -111,7 +110,7 @@ export default modelExtend(pageModel, {
         list,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     successAllStore (state, action) {
@@ -122,22 +121,22 @@ export default modelExtend(pageModel, {
     successUserStore (state, action) {
       return { ...state,
         listUserStores: action.payload.listUserStores.split(','),
-        storeItem: { default : action.payload.defaultStore }
+        storeItem: { default: action.payload.defaultStore }
       }
     },
-    updateState (state, action ) {
+    updateState (state, action) {
       return {
         ...state,
         ...action,
-        storeItem: { default : action.payload }
+        storeItem: { default: action.payload }
       }
     },
     updateCheckedStores (state, action) {
       return {
         ...state,
         ...action,
-        listCheckedStores : action.payload.data.store
+        listCheckedStores: action.payload.data.store
       }
     }
-  },
+  }
 })

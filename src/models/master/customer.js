@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { query, add, edit, remove } from '../../services/master/customer'
 import { pageModel } from './../common'
-import { message } from 'antd'
 
 const success = () => {
   message.success('Customer has been saved')
@@ -23,7 +23,7 @@ export default modelExtend(pageModel, {
     listCustomer: [],
     show: 1,
     modalVisible: false,
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -32,12 +32,12 @@ export default modelExtend(pageModel, {
         switch (location.pathname) {
           case '/master/customerunit':
             dispatch({
-              type: 'query',
+              type: 'query'
             })
             break
           case '/report/customer/history':
             dispatch({
-              type: 'query',
+              type: 'query'
             })
             break
           case '/master/customer':
@@ -45,14 +45,14 @@ export default modelExtend(pageModel, {
               type: 'updateState',
               payload: {
                 newItem: false,
-                activeKey: '0',
-              },
+                activeKey: '0'
+              }
             })
             break
           default:
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -67,9 +67,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -81,8 +81,8 @@ export default modelExtend(pageModel, {
           type: 'onSearch',
           payload: {
             list: payload.search === '' ? [] : data.data,
-            search: payload.search,
-          },
+            search: payload.search
+          }
         })
       }
     },
@@ -120,7 +120,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -134,8 +134,8 @@ export default modelExtend(pageModel, {
         dataCustomer: {},
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
@@ -166,14 +166,14 @@ export default modelExtend(pageModel, {
             return null
           }
           return {
-            ...record,
+            ...record
           }
         }).filter(record => !!record)
       } else {
         customerData = []
       }
       return { ...state, listCustomer: customerData }
-    },
+    }
 
-  },
+  }
 })

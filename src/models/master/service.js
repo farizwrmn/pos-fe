@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { query, queryServiceType, add, edit, remove } from '../../services/master/service'
 import { pageModel } from './../common'
-import { message } from 'antd'
 
 const success = () => {
   message.success('Service has been saved')
@@ -20,7 +20,7 @@ export default modelExtend(pageModel, {
     disable: '',
     listServiceType: [],
     show: 1,
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -29,33 +29,33 @@ export default modelExtend(pageModel, {
         switch (location.pathname) {
           case '/master/service':
             dispatch({
-              type: 'queryServiceType',
+              type: 'queryServiceType'
             })
             dispatch({
               type: 'updateState',
               payload: {
                 newItem: false,
-                activeKey: '0',
-              },
+                activeKey: '0'
+              }
             })
             break
           case '/report/service/history':
             dispatch({
-              type: 'queryServiceType',
+              type: 'queryServiceType'
             })
             dispatch({
-              type: 'query',
+              type: 'query'
             })
             break
           case '/report/customer/history':
             dispatch({
-              type: 'queryServiceType',
+              type: 'queryServiceType'
             })
             break
           default:
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -70,9 +70,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -83,8 +83,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessServiceType',
           payload: {
-            listServiceType: data.data,
-          },
+            listServiceType: data.data
+          }
         })
       }
     },
@@ -122,7 +122,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -134,7 +134,7 @@ export default modelExtend(pageModel, {
     querySuccessServiceType (state, action) {
       const { listServiceType } = action.payload
       return { ...state, listServiceType }
-    },
+    }
 
-  },
+  }
 })

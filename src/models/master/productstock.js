@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { query, add, edit, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
-import { message } from 'antd'
 
 const success = () => {
   message.success('Stock Product has been saved')
@@ -19,7 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     show: 1,
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -30,12 +30,12 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
-              activeKey: '0',
-            },
+              activeKey: '0'
+            }
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -50,9 +50,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -90,7 +90,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -109,7 +109,7 @@ export default modelExtend(pageModel, {
 
     resetProductStockList (state) {
       return { ...state, list: [], pagination: { total: 0 } }
-    },
+    }
 
-  },
+  }
 })

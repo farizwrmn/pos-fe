@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { config } from 'utils'
 import { query, add, edit, remove } from '../services/suppliers'
 import { pageModel } from './common'
-import { config } from 'utils'
 
 const { disableMultiSelect } = config
 
@@ -22,8 +22,8 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
 
   subscriptions: {
@@ -32,16 +32,16 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/master/supplier') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -51,14 +51,14 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.suppliers)
       if (data.success) {
@@ -69,7 +69,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch' ({ payload }, { call, put }) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -79,7 +79,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
         yield put({ type: 'modalHide' })
@@ -89,7 +89,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
+    * edit ({ payload }, { select, call, put }) {
       const supplierCode = yield select(({ suppliers }) => suppliers.currentItem.supplierCode)
       const newSupplier = { ...payload, supplierCode }
       const data = yield call(edit, newSupplier)
@@ -99,7 +99,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
 
   },
 
@@ -111,13 +111,13 @@ export default modelExtend(pageModel, {
         listSuppliers,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     modalShow (state, { payload }) {
@@ -152,9 +152,9 @@ export default modelExtend(pageModel, {
         ...action.payload,
         disabledItem: {
           userId: (state.modalType !== 'add' ? !state.disabledItem.userId : state.disabledItem.userId),
-          getEmployee: !state.disabledItem.getEmployee,
-        },
+          getEmployee: !state.disabledItem.getEmployee
+        }
       }
-    },
-  },
+    }
+  }
 })

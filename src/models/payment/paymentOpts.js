@@ -4,7 +4,7 @@ import { query as queryOpts } from '../../services/payment/paymentOptions'
 export default {
   namespace: 'paymentOpts',
   state: {
-    listOpts: [],
+    listOpts: []
   },
 
   subscriptions: {
@@ -12,11 +12,11 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos/payment') {
           dispatch({
-            type: 'queryOpts',
+            type: 'queryOpts'
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -27,16 +27,16 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            listOpts: data.data,
-          },
+            listOpts: data.data
+          }
         })
       } else {
         Modal.error({
           title: 'Cannot find payment method',
-          content: 'Using default setting',
+          content: 'Using default setting'
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -48,13 +48,13 @@ export default {
         listSuppliers,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
     updateState (state, { payload }) {
       return { ...state, ...payload }
-    },
-  },
+    }
+  }
 }

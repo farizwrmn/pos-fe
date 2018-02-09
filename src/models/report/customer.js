@@ -11,17 +11,17 @@ export default modelExtend(pageModel, {
     customerInfo: {},
     listHistory: [],
     from: '',
-    to: '',
+    to: ''
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup ({ history }) {
       history.listen((location) => {
         if (location.pathname === '/report/customer/history') {
           //
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -36,9 +36,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -48,11 +48,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listPoliceNo: data.data,
-          },
+            listPoliceNo: data.data
+          }
         })
       }
-    },
+    }
 
   },
 
@@ -64,9 +64,9 @@ export default modelExtend(pageModel, {
         listHistory,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
-    },
-  },
+    }
+  }
 })

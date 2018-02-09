@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryField, add, edit, remove } from '../services/units'
-import { pageModel } from './common'
 import { config } from 'utils'
 import { Modal } from 'antd'
+import { query, queryField, add, edit, remove } from '../services/units'
+import { pageModel } from './common'
 
 const { disableMultiSelect } = config
 
@@ -24,26 +24,26 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/master/customer') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -52,17 +52,17 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
+              total: data.total
             },
-            listUnit: data.data,
-          },
+            listUnit: data.data
+          }
         })
         // yield put({ type: 'misc/lov' })
         // yield put({ type: 'employee/lovForUser' })
       }
     },
 
-    *'delete'({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.customer)
       if (data.success) {
@@ -73,7 +73,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch'({ payload }, { call, put }) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -83,12 +83,12 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        const modal = Modal.info({
+        Modal.info({
           title: 'Information',
-          content: 'Unit has been saved...!',
+          content: 'Unit has been saved...!'
         })
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
@@ -98,7 +98,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit({ payload }, { select, call, put }) {
+    * edit ({ payload }, { select, call, put }) {
       const unit = yield select(({ customer }) => customer.currentItem.policeNo)
       const newUser = { ...payload, unit }
       const data = yield call(edit, newUser)
@@ -110,7 +110,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *lov({ payload }, { call, put }) {
+    * lov ({ payload }, { call, put }) {
       const data = yield call(queryField, { code: payload.id }, { fields: 'id,policeNo,merk,model', for: 'pos' })
       try {
         if (data.success ? data.data.length === 0 : false) {
@@ -118,7 +118,7 @@ export default modelExtend(pageModel, {
             id: null,
             policeNo: null,
             merk: null,
-            model: null,
+            model: null
           }
         }
       } catch (e) {
@@ -132,85 +132,86 @@ export default modelExtend(pageModel, {
           payload: {
             listLovMemberUnit: dataLov,
             pagination: {
-              total: totalData,
-            },
-          },
+              total: totalData
+            }
+          }
         })
 
         yield put({
           type: 'pos/chooseMemberUnit',
-          payload: { policeNo: data.data[0] },
+          payload: { policeNo: data.data[0] }
         })
         yield put({
           type: 'payment/setPoliceNo',
-          payload: { policeNo: data.data[0] },
+          payload: { policeNo: data.data[0] }
         })
       } else {
         console.log('not success')
       }
-    },
+    }
 
   },
 
   reducers: {
 
-    querySuccess(state, action) {
+    querySuccess (state, action) {
       const { listUnit, pagination } = action.payload
       return {
         ...state,
         listUnit,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         }
       }
     },
-    querySuccessLov(state, action) {
+    querySuccessLov (state, action) {
       const { listLovMemberUnit, pagination } = action.payload
       return {
         ...state,
         listLovMemberUnit,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         }
       }
     },
-    updateState(state, { payload }) {
+    updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
-    modalShow(state, { payload }) {
+    modalShow (state, { payload }) {
       return { ...state, ...payload, modalVisible: true, disabledItem: { memberCode: true } }
     },
-    modalHide(state) {
+    modalHide (state) {
       return { ...state, modalVisible: false }
     },
-    chooseEmployee(state, action) {
+    chooseEmployee (state, action) {
       return { ...state, ...action.payload }
     },
-    modalPopoverVisible(state, action) {
+    modalPopoverVisible (state, action) {
       return { ...state, ...action.payload, visiblePopover: true }
     },
-    modalPopoverClose(state) {
+    modalPopoverClose (state) {
       return { ...state, visiblePopover: false }
     },
-    searchShow(state) {
+    searchShow (state) {
       return { ...state, searchVisible: true }
     },
-    searchHide(state) {
+    searchHide (state) {
       return { ...state, searchVisible: false }
     },
-    modalIsEmployeeChange(state, action) {
+    modalIsEmployeeChange (state, action) {
       return {
-        ...state, ...action.payload,
+        ...state,
+        ...action.payload,
         disabledItem: {
           customerId: (state.modalType !== 'add' ? !state.disabledItem.customerId : state.disabledItem.customerId),
-          getEmployee: !state.disabledItem.getEmployee,
-        },
+          getEmployee: !state.disabledItem.getEmployee
+        }
       }
-    },
-  },
+    }
+  }
 })

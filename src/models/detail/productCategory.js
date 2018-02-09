@@ -6,7 +6,7 @@ export default {
   namespace: 'userDetail',
 
   state: {
-    data: {},
+    data: {}
   },
 
   subscriptions: {
@@ -17,26 +17,24 @@ export default {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
       })
-    },
+    }
   },
 
   effects: {
-    *query ({
-      payload,
-    }, { call, put }) {
+    * query ({ payload }, { call, put }) {
       const data = yield call(query, payload)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            data: other,
-          },
+            data: other
+          }
         })
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -44,8 +42,8 @@ export default {
       const { data } = payload
       return {
         ...state,
-        data,
+        data
       }
-    },
-  },
+    }
+  }
 }

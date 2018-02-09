@@ -1,22 +1,21 @@
-import { query, getIpAddr } from '../services/dashboard'
-import { queryTrans, queryAll } from '../services/report/pos'
-import { query as queryService } from '../services/report/service'
 import moment from 'moment'
 import { parse } from 'qs'
+import { query, getIpAddr } from '../services/dashboard'
+import { queryAll } from '../services/report/pos'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
 let zuimei = {
-  parseActualData(actual) {
+  parseActualData (actual) {
     let weather = {
       icon: `http://www.zuimeitianqi.com/res/icon/${zuimei.getIconName(actual.wea, 'big')}`,
       name: zuimei.getWeatherName(actual.wea),
       temperature: actual.tmp,
-      dateTime: new Date(actual.PTm).format('MM-dd hh:mm'),
+      dateTime: new Date(actual.PTm).format('MM-dd hh:mm')
     }
     return weather
   },
 
-  getIconName(wea, flg) {
+  getIconName (wea, flg) {
     let myDate = new Date()
     let hour = myDate.getHours()
     let num = 0
@@ -46,7 +45,7 @@ let zuimei = {
     return num
   },
 
-  replaceIcon(num) {
+  replaceIcon (num) {
     if (num === 21) {
       num = 7
     } else if (num === 22) {
@@ -68,7 +67,7 @@ let zuimei = {
     return num
   },
 
-  getWeatherName(wea) {
+  getWeatherName (wea) {
     let name = ''
     if (wea.indexOf('/') !== -1) {
       let weas = wea.split('/')
@@ -80,7 +79,7 @@ let zuimei = {
     return name
   },
 
-  getWeatherByCode(number) {
+  getWeatherByCode (number) {
     let wea = ''
     let num = Number(number)
     if (num === 0) {
@@ -162,7 +161,7 @@ let zuimei = {
     }
 
     return wea
-  },
+  }
 }
 
 export default {
@@ -173,12 +172,12 @@ export default {
       temperature: '5',
       name: '晴',
       icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
-      dateTime: new Date().format('MM-dd hh:mm'),
+      dateTime: new Date().format('MM-dd hh:mm')
     },
     sales: [],
     data: [],
     quote: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
+      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236'
     },
     numbers: [],
     recentSales: [],
@@ -188,28 +187,27 @@ export default {
     ipAddress: [],
     cpu: {},
     user: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
-    },
+      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236'
+    }
   },
   subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(location => {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({ type: 'query' })
         }
       })
-    },
+    }
   },
   effects: {
-    * query({ payload }, { call, put }) {
+    * query ({ payload }, { call, put }) {
       const last7day = moment().add(-6, 'days').format('YYYY-MM-DD')
       const today = moment().format('YYYY-MM-DD')
       const start = moment().add(-6, 'days')
       const end = moment()
       const date = moment().add(-6, 'days')
-      function construct(dataSales) {
+      function construct (dataSales) {
         let result = []
-        let currTransDate = ''
         let formatSales = []
         dataSales.data.reduce((res, value) => {
           if (!res[value.transDate]) {
@@ -224,7 +222,7 @@ export default {
           res[value.transDate].service += value.service
           return res
         }, {})
-        for (let key in result) {
+        for (let key = 0; key < result.length; key += 1) {
           const { transDate, product, service } = result[key]
           formatSales.push({
             name: moment(transDate).format('DD/MM'), // 'DD/MM/YY'
@@ -232,12 +230,11 @@ export default {
             Sales: product,
             Service: service
           })
-          currTransDate = transDate
         }
         for (let key = 0; key <= end.diff(start, 'days'); key += 1) {
-          const dateExists = (username) => {
+          const dateExists = (e) => {
             return formatSales.some((el) => {
-              return el.title === date.format('L')
+              return el.title === e
             })
           }
           if (!dateExists(date.format('L'))) {
@@ -245,17 +242,16 @@ export default {
               name: date.format('DD/MM'),
               title: date.format('L'),
               Sales: 0,
-              Service: 0,
+              Service: 0
             })
           }
           date.add(1, 'days')
         }
-        currTransDate = ''
         return formatSales
       }
 
       // dev test
-      // const date = moment('2017-11-21', 'YYYY-MM-DD')      
+      // const date = moment('2017-11-21', 'YYYY-MM-DD')
       // const start = moment('2017-11-21', 'YYYY-MM-DD')
       // const end = moment('2017-11-29', 'YYYY-MM-DD')
       // const last7day = '2017-11-21'
@@ -267,7 +263,6 @@ export default {
       }
       const data = yield call(query, parse(payload))
       const dataSales = yield call(queryAll, params)
-      const dataService = yield call(queryService, params)
       let formatWeekSales = construct(dataSales)
       // sort date
       formatWeekSales.sort((a, b) => {
@@ -275,40 +270,41 @@ export default {
       })
       const ipAddr = yield call(getIpAddr)
       yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
-      //yield put({ type: 'queryWeather', payload: { ...data } })
-    },
-    * queryWeather({
-    payload,
-  }, { call, put }) {
-      const myCityResult = yield call(myCity, { flg: 0 })
-      const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode })
-      const weather = zuimei.parseActualData(result.data.actual)
-      weather.city = myCityResult.selectCityName
-      yield put({
-        type: 'queryWeatherSuccess', payload: {
-          weather,
-        }
-      })
-    },
+      // yield put({ type: 'queryWeather', payload: { ...data } })
+    }
+    // * queryWeather ({
+    //   payload = {}
+    // }, { call, put }) {
+    //   const myCityResult = yield call(myCity, { flg: 0 })
+    //   const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode, ...payload })
+    //   const weather = zuimei.parseActualData(result.data.actual)
+    //   weather.city = myCityResult.selectCityName
+    //   yield put({
+    //     type: 'queryWeatherSuccess',
+    //     payload: {
+    //       weather
+    //     }
+    //   })
+    // }
   },
   reducers: {
-    querySuccess(state, action) {
+    querySuccess (state, action) {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload
       }
     },
-    queryWeatherSuccess(state, action) {
+    queryWeatherSuccess (state, action) {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload
       }
     },
-    queryWeather(state, action) {
+    queryWeather (state, action) {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload
       }
-    },
-  },
+    }
+  }
 }

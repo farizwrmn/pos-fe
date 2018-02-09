@@ -1,15 +1,14 @@
 import * as positionService from '../services/positions'
+
 const { query } = positionService
 
 export default {
   namespace: 'position',
   state: {
-    listPosition: [],
+    listPosition: []
   },
   effects: {
-    *lov ({
-      payload,
-    }, {put, call}) {
+    * lov ({ payload }, { put, call }) {
       const data = yield call(query, payload)
       let newData = data.data
 
@@ -19,7 +18,7 @@ export default {
           if ({}.hasOwnProperty.call(newData, id)) {
             fixed.push({
               value: newData[id].positionId,
-              label: newData[id].positionName,
+              label: newData[id].positionName
             })
           }
         }
@@ -31,19 +30,19 @@ export default {
         yield put({
           type: 'querySuccess',
           payload: {
-            listPosition: DICT_FIXED,
-          },
+            listPosition: DICT_FIXED
+          }
         })
       }
-    },
+    }
   },
   reducers: {
     querySuccess (state, action) {
       const { listPosition } = action.payload
       return {
         ...state,
-        listPosition,
+        listPosition
       }
-    },
+    }
   }
 }

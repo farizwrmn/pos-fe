@@ -12,8 +12,8 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
   )
   const childComp = (
     <Tooltip placement="leftBottom" title={prompt}>
-      <div className={separator ? styles.void : `${styles.button} ${styles[addClass || prompt]}`}>
-        <Link to={clickRoute} onClick={onClick}>
+      <div className={separator ? styles.void : `${styles.button} ${styles[addClass || prompt]}`} onClick={onClick}>
+        <Link to={clickRoute}>
           <Icon type={icon || prompt} />
         </Link>
       </div>

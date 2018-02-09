@@ -1,8 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { query, queryField, add, edit, remove } from '../../services/master/jobposition'
 import { pageModel } from '../common'
-import { config } from 'utils'
-const { disableMultiSelect } =  config
 
 export default modelExtend(pageModel, {
   namespace: 'jobposition',
@@ -16,24 +14,24 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: 'add',
     disableItem: {},
-    selectedRowKeys: [],
+    selectedRowKeys: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(location => {
+      history.listen((location) => {
         if (location.pathname === '/master/employee/jobposition') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
-    *query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -43,14 +41,14 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.employee)
       if (data.success) {
@@ -61,7 +59,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch' ({ payload }, { call, put }) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -71,7 +69,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         yield put({ type: 'modalHide' })
@@ -81,7 +79,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
+    * edit ({ payload }, { select, call, put }) {
       const employeeId = yield select(({ employee }) => employee.currentItem.employeeId)
       const newEmployee = { ...payload, employeeId }
       const data = yield call(edit, newEmployee)
@@ -92,10 +90,10 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-    *lov ({ payload }, { call, put }) {
+    * lov ({ payload = {} }, { call, put }) {
       const data = yield call(queryField, { fields: 'id,positionName', for: 'employee' })
 
-      if ( data.success ) {
+      if (data.success) {
         const dataLov = data.data
         const totalData = data.data.length
         yield put({
@@ -103,14 +101,15 @@ export default modelExtend(pageModel, {
           payload: {
             listLovJobPosition: dataLov,
             pagination: {
-              total: totalData,
+              total: totalData
             },
-          },
+            ...payload
+          }
         })
       } else {
         console.log('not success')
       }
-    },
+    }
   },
 
   reducers: {
@@ -122,7 +121,7 @@ export default modelExtend(pageModel, {
         listLovEmployee,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     querySuccessLov (state, action) {
@@ -131,18 +130,20 @@ export default modelExtend(pageModel, {
         listLovJobPosition,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     modalShow (state, { payload }) {
-      return { ...state, ...payload, modalVisible: true,
-        disableItem: { employeeId: payload.modalType === 'add' ? false : true}
+      return { ...state,
+        ...payload,
+        modalVisible: true,
+        disableItem: { employeeId: payload.modalType !== 'add' }
       }
     },
     modalHide (state) {
@@ -153,6 +154,6 @@ export default modelExtend(pageModel, {
     },
     searchHide (state) {
       return { ...state, searchVisible: false }
-    },
-  },
+    }
+  }
 })

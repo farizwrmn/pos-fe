@@ -1,10 +1,9 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-import { queryFifo, queryFifoValue, queryFifoCard } from '../../services/report/fifo'
 import { Modal } from 'antd'
 import moment from 'moment'
-import { error } from 'util';
+import { queryFifo, queryFifoValue, queryFifoCard } from '../../services/report/fifo'
 
 export default {
   namespace: 'fifoReport',
@@ -20,60 +19,60 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/report/fifo/summary' && location.query.period && location.query.year) {
           dispatch({
             type: 'queryInAdj',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/report/fifo/balance' && location.query.period && location.query.year) {
           dispatch({
             type: 'queryInAdj',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/report/fifo/card') {
           if (location.query.period && location.query.year) {
             dispatch({
               type: 'queryProductCode',
-              payload: location.query,
+              payload: location.query
             })
           } else {
             dispatch({
               type: 'queryProductCode',
               payload: {
                 period: moment().format('MM'),
-                year: moment().format('YYYY'),
-              },
+                year: moment().format('YYYY')
+              }
             })
           }
         } else if (location.pathname === '/report/fifo/value' && location.query.period && location.query.year) {
           dispatch({
             type: 'queryFifoValues',
-            payload: location.query,
+            payload: location.query
           })
         } else {
           dispatch({
-            type: 'setNull',
+            type: 'setNull'
           })
         }
       })
-    },
+    }
   },
   effects: {
-    * queryInAdj({ payload = {} }, { call, put }) {
+    * queryInAdj ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
         type: 'setPeriod',
-        payload: date,
+        payload: date
       })
       yield put({
         type: 'setNull',
-        payload: date,
+        payload: date
       })
       const data = yield call(queryFifo, payload)
       if (data.data.length > 0) {
@@ -86,29 +85,29 @@ export default {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
+              total: data.total
             },
-            date: date,
-          },
+            date
+          }
         })
       } else {
         console.log('no Data')
         Modal.warning({
           title: 'No Data',
-          content: 'No data inside storage',
+          content: 'No data inside storage'
         })
         yield put({ type: 'setNull' })
       }
     },
-    * queryFifoValues({ payload = {} }, { call, put }) {
+    * queryFifoValues ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
         type: 'setPeriod',
-        payload: date,
+        payload: date
       })
       yield put({
         type: 'setNull',
-        payload: date,
+        payload: date
       })
       const data = yield call(queryFifoValue, payload)
       if (data.data.length > 0) {
@@ -121,25 +120,25 @@ export default {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
+              total: data.total
             },
-            date: date,
-          },
+            date
+          }
         })
       } else {
         console.log('no Data')
         Modal.warning({
           title: 'No Data',
-          content: 'No data inside storage',
+          content: 'No data inside storage'
         })
         yield put({ type: 'setNull' })
       }
     },
-    * queryCard({ payload = {} }, { call, put }) {
+    * queryCard ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
         type: 'setPeriod',
-        payload: date,
+        payload: date
       })
       let data
       try {
@@ -165,51 +164,51 @@ export default {
               pagination: {
                 current: Number(payload.page) || 1,
                 pageSize: Number(payload.pageSize) || 5,
-                total: data.total,
+                total: data.total
               },
-              date: date,
-            },
+              date
+            }
           })
         } else {
           Modal.warning({
             title: 'No Data',
-            content: `No data inside storage, ${data.message}`,
+            content: `No data inside storage, ${data.message}`
           })
         }
       }
     },
-    * queryProductCode({ payload = {} }, { call, put }) {
+    * queryProductCode ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
         type: 'setPeriod',
-        payload: date,
+        payload: date
       })
       yield put({
         type: 'setNullProduct',
-        payload: date,
+        payload: date
       })
       const data = yield call(queryFifoValue, payload)
-      const productCode = data.data.map((n) => n.productCode)
-      const productName = data.data.map((n) => n.productName)
+      const productCode = data.data.map(n => n.productCode)
+      const productName = data.data.map(n => n.productName)
       if (data.data.length > 0) {
         yield put({
           type: 'queryProductCodeSuccess',
           payload: {
-            productCode: productCode,
-            productName: productName,
+            productCode,
+            productName,
             ...payload
-          },
+          }
         })
       } else {
         Modal.warning({
           title: 'No Data',
-          content: 'No data inside storage',
+          content: 'No data inside storage'
         })
       }
     }
   },
   reducers: {
-    querySuccessTrans(state, action) {
+    querySuccessTrans (state, action) {
       const { listRekap, date, pagination, period, year } = action.payload
       return {
         ...state,
@@ -220,21 +219,21 @@ export default {
         toDate: date.year,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
-    queryProductCodeSuccess(state, action) {
+    queryProductCodeSuccess (state, action) {
       return { ...state, ...action.payload }
     },
-    setPeriod(state, action) {
+    setPeriod (state, action) {
       return { ...state, period: action.payload.period, year: action.payload.year }
     },
-    setNull(state) {
+    setNull (state) {
       return { ...state, listRekap: [] }
     },
-    setNullProduct(state) {
+    setNullProduct (state) {
       return { ...state, listRekap: [], productCode: [] }
-    },
-  },
-};
+    }
+  }
+}

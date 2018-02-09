@@ -1,5 +1,3 @@
-import { parse } from 'qs'
-import { Modal } from 'antd'
 import moment from 'moment'
 import config from 'config'
 import { queryOut } from '../../services/poshistory'
@@ -12,7 +10,7 @@ export default {
   namespace: 'poshistory',
 
   state: {
-    period: moment(infoStore.startPeriod).format('YYYY-MM'),
+    period: moment(infoStore.startPeriod).format('YYYY-MM')
   },
 
   subscriptions: {
@@ -23,12 +21,12 @@ export default {
             type: 'query',
             payload: {
               start: infoStore.startPeriod,
-              end: infoStore.endPeriod,
-            },
+              end: infoStore.endPeriod
+            }
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -42,12 +40,12 @@ export default {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -59,10 +57,10 @@ export default {
         list,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
-    },
-  },
+    }
+  }
 
 }

@@ -3,11 +3,10 @@
  */
 import moment from 'moment'
 import { Modal } from 'antd'
-import { query as queryAllPeriod, create as createPeriod, queryLastCode as lastCode, queryLastActive, update as updatePeriod } from '../services/period'
-import { queryModeName as miscQuery } from '../services/misc'
+import { lstorage } from 'utils'
+import { query as queryAllPeriod, create as createPeriod, queryLastActive, update as updatePeriod } from '../services/period'
 import { queryFifo } from '../services/report/fifo'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
-import { lstorage } from 'utils'
 
 
 export default {
@@ -28,8 +27,8 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -37,19 +36,18 @@ export default {
         if (location.pathname === '/setting/periods') {
           dispatch({
             type: 'queryPeriod',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
   effects: {
     * queryPeriod ({ payload = {} }, { call, put }) {
-      const format = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
       const data = yield call(queryAllPeriod)
       const invoice = {
         seqCode: 'PRD',
-        type: lstorage.getCurrentUserStore(),
+        type: lstorage.getCurrentUserStore()
       }
       const transNo = yield call(querySequence, invoice)
       // const last = yield call(lastCode)
@@ -79,27 +77,27 @@ export default {
             list: data.data,
             accountActive: {
               accountActive: transNo.data,
-              startPeriod: activeAccount.data.length === 0 ? {} : activeAccount.data[0].startPeriod,
+              startPeriod: activeAccount.data.length === 0 ? {} : activeAccount.data[0].startPeriod
             },
             lastAccountNumber: transNo,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       } else {
         Modal.error({
           title: 'Something went wrong',
-          content: 'Try restart transaction',
+          content: 'Try restart transaction'
         })
       }
     },
     * addPeriod ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'PRD',
-        type: lstorage.getCurrentUserStore(),
+        type: lstorage.getCurrentUserStore()
       }
       const transNo = yield call(querySequence, invoice)
       // const misc = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
@@ -118,7 +116,7 @@ export default {
         yield put({ type: 'queryPeriod' })
         Modal.info({
           title: 'New period',
-          content: 'New period has been opened',
+          content: 'New period has been opened'
         })
       } else {
         throw data
@@ -129,12 +127,12 @@ export default {
         payload.storeid = lstorage.getCurrentUserStore()
         const period = moment(payload.endPeriod).format('M')
         const year = moment(payload.endPeriod).format('YYYY')
-        const check = yield call(queryFifo, { period: period, year: year })
+        const check = yield call(queryFifo, { period, year })
         const dataCheck = check.data.filter(el => el.count < 0)
         if (dataCheck.length > 0) {
           Modal.warning({
             title: 'Inventory Error',
-            content: 'Please Check Inventory before Closed transaction',
+            content: 'Please Check Inventory before Closed transaction'
           })
         } else if (dataCheck.length === 0) {
           const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
@@ -143,7 +141,7 @@ export default {
           } else {
             Modal.error({
               title: 'Something went wrong',
-              content: 'Try restart transaction',
+              content: 'Try restart transaction'
             })
           }
           if (data.success) {
@@ -151,7 +149,7 @@ export default {
             yield put({ type: 'queryPeriod' })
             Modal.info({
               title: 'Last period',
-              content: 'Last period has been closed',
+              content: 'Last period has been closed'
             })
           } else {
             throw data
@@ -160,10 +158,10 @@ export default {
       } else {
         Modal.warning({
           title: 'Cannot close another store period',
-          content: `You are currently at ${lstorage.getCurrentUserStoreName()}`,
+          content: `You are currently at ${lstorage.getCurrentUserStoreName()}`
         })
       }
-    },
+    }
   },
   reducers: {
     querySuccessPeriod (state, action) {
@@ -174,24 +172,24 @@ export default {
         accountActive,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
     setDate (state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
     },
     modalShow (state, { payload }) {
-      return { ...state, ...payload, modalVisible: true}
+      return { ...state, ...payload, modalVisible: true }
     },
     modalHide (state) {
       return { ...state, modalVisible: false }
     },
     modalCloseShow (state, { payload }) {
-      return { ...state, ...payload, modalEndVisible: true}
+      return { ...state, ...payload, modalEndVisible: true }
     },
     modalCloseHide (state) {
       return { ...state, modalEndVisible: false }
-    },
-  },
+    }
+  }
 }

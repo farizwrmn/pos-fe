@@ -33,7 +33,7 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
+      total: null
     },
     grandTotal: 0,
     creditCardNo: '',
@@ -54,7 +54,7 @@ export default {
     creditCardType: '',
     policeNo: '',
     usingWo: false,
-    woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null,
+    woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
   },
 
   subscriptions: {
@@ -64,7 +64,7 @@ export default {
           dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
         }
       })
-    },
+    }
   },
   // confirm payment
 
@@ -72,33 +72,33 @@ export default {
     * create ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'INV',
-        type: lstorage.getCurrentUserStore(),
+        type: lstorage.getCurrentUserStore()
       }
       const transNo = yield call(querySequence, invoice)
       if ((transNo.data === null)) {
         Modal.error({
           title: 'Something went wrong',
-          content: `Cannot read transaction number, message: ${transNo.data}`,
+          content: `Cannot read transaction number, message: ${transNo.data}`
         })
       } else if (payload.address === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Address is Undefined',
+          content: 'Address is Undefined'
         })
       } else if (payload.memberId === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Member Id is Undefined',
+          content: 'Member Id is Undefined'
         })
       } else if (payload.phone === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Phone is Undefined',
+          content: 'Phone is Undefined'
         })
       } else if (payload.policeNo === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Unit is Undefined',
+          content: 'Unit is Undefined'
         })
       } else {
         // let data = yield call(queryLastTransNo, payload.periode)
@@ -121,7 +121,7 @@ export default {
             discount: dataPos[key].discount,
             disc1: dataPos[key].disc1,
             disc2: dataPos[key].disc2,
-            disc3: dataPos[key].disc3,
+            disc3: dataPos[key].disc3
           })
         }
 
@@ -149,14 +149,14 @@ export default {
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
           change: payload.totalChange,
-          woReference: payload.woNumber,
+          woReference: payload.woNumber
         }
         const point = parseInt((payload.grandTotal / 10000), 10)
         const data_create = yield call(create, detailPOS)
         if (data_create.success) {
           const data_detail = yield call(createDetail, {
             data: arrayProd,
-            transNo: trans,
+            transNo: trans
           })
           if (data_detail.success) {
             try {
@@ -165,7 +165,7 @@ export default {
             } catch (e) {
               Modal.warning({
                 title: 'Something went wrong',
-                content: `Call your IT support, message: ${e}`,
+                content: `Call your IT support, message: ${e}`
               })
             }
             yield put({
@@ -202,8 +202,8 @@ export default {
                 cashierId: payload.cashierId,
                 userName: payload.userName,
                 posMessage: 'Data has been saved',
-                type: 'POS',
-              },
+                type: 'POS'
+              }
             })
             const data_cashier_trans_update = yield call(updateCashierTrans, {
               total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
@@ -211,19 +211,19 @@ export default {
               status: 'O',
               cashierNo: payload.curCashierNo,
               shift: payload.curShift,
-              transDate: payload.transDate2,
+              transDate: payload.transDate2
             })
             if (data_cashier_trans_update.success) {
               Modal.info({
                 title: 'Information',
-                content: 'Transaction has been saved...!',
+                content: 'Transaction has been saved...!'
               })
             }
           }
         } else {
           Modal.error({
             title: 'Error Saving Payment',
-            content: `${JSON.stringify(data_create.message)}`,
+            content: `${JSON.stringify(data_create.message)}`
           })
         }
       }
@@ -235,7 +235,7 @@ export default {
       console.log('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
-        payload: transNo.data,
+        payload: transNo.data
       })
     },
     * listCreditCharge ({ payload }, { put, call }) {
@@ -248,7 +248,7 @@ export default {
           if ({}.hasOwnProperty.call(newData, id)) {
             fixed.push({
               value: newData[id].creditCode,
-              label: newData[id].creditDesc,
+              label: newData[id].creditDesc
             })
           }
         }
@@ -260,8 +260,8 @@ export default {
         yield put({
           type: 'listSuccess',
           payload: {
-            listCreditCharge: DICT_FIXED,
-          },
+            listCreditCharge: DICT_FIXED
+          }
         })
       }
     },
@@ -276,8 +276,8 @@ export default {
           payload: {
             creditCharge: newData.creditCharge,
             netto: payload.netto,
-            creditCardType: payload.creditCode,
-          },
+            creditCardType: payload.creditCode
+          }
         })
       } else {
         throw data
@@ -290,18 +290,18 @@ export default {
         if (payload.seqCode) {
           sequenceData = {
             usingWo: true,
-            woNumber: data.data,
+            woNumber: data.data
           }
         }
         yield put({
           type: 'querySequenceSuccess',
           payload: {
             listSequence: data.data,
-            ...sequenceData,
-          },
+            ...sequenceData
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -314,7 +314,7 @@ export default {
       localStorage.removeItem('lastMeter')
       return {
         ...state,
-        posMessage: posMessage,
+        posMessage,
         totalPayment: 0,
         totalChange: 0,
         lastTransNo: '',
@@ -324,7 +324,7 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false,
+        modalCreditVisible: false
       }
     },
 
@@ -332,7 +332,7 @@ export default {
       const { listCreditCharge } = action.payload
       return {
         ...state,
-        listCreditCharge,
+        listCreditCharge
       }
     },
 
@@ -343,14 +343,14 @@ export default {
         creditCharge,
         creditChargeAmount: (parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100,
         creditCardTotal: (parseInt(netto, 10) + ((parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100)),
-        creditCardType,
+        creditCardType
       }
     },
 
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
@@ -388,7 +388,7 @@ export default {
         ...state,
         inputPayment: 0,
         totalPayment: 0,
-        totalChange: 0,
+        totalChange: 0
       }
     },
 
@@ -397,7 +397,7 @@ export default {
         ...state,
         inputPayment: action.payload.totalPayment,
         totalPayment: action.payload.totalPayment,
-        totalChange: (action.payload.totalPayment - action.payload.netto),
+        totalChange: (action.payload.totalPayment - action.payload.netto)
       }
     },
 
@@ -427,8 +427,8 @@ export default {
               col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
               col_5: { fontSize: 12, text: '@HET', style: 'tableHeader', alignment: 'center' },
               col_6: { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
-              col_7: { fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
-            },
+              col_7: { fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' }
+            }
           }
           let rows = tabledata
           let body = []
@@ -485,21 +485,21 @@ export default {
               {
                 columns: [
                   {
-                    stack: storeInfo,
+                    stack: storeInfo
                   },
                   {
                     text: 'NOTA PENJUALAN',
                     style: 'header',
                     fontSize: 18,
-                    alignment: 'center',
+                    alignment: 'center'
                   },
                   {
                     text: ' ',
                     style: 'header',
                     fontSize: 18,
-                    alignment: 'right',
-                  },
-                ],
+                    alignment: 'right'
+                  }
+                ]
               },
               {
                 table: {
@@ -508,16 +508,16 @@ export default {
                     [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
                     [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: (payload.lastMeter || 0).toString().toUpperCase(), fontSize: 12 }],
                     [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${(payload.memberName || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Contact', fontSize: 12 }, ':', { text: (payload.phone || '').toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }],
-                  ],
+                    [{ text: 'Contact', fontSize: 12 }, ':', { text: (payload.phone || '').toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }]
+                  ]
                 },
-                layout: 'noBorders',
+                layout: 'noBorders'
               },
               {
-                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
-              },
+                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+              }
             ],
-            margin: [30, 12, 12, 30],
+            margin: [30, 12, 12, 30]
           },
 
           content: [
@@ -526,7 +526,7 @@ export default {
               table: {
                 widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
                 headerRows: 1,
-                body: product,
+                body: product
               },
               layout: {
                 hLineWidth: (i, node) => {
@@ -540,21 +540,21 @@ export default {
                 },
                 vLineColor: (i, node) => {
                   return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                },
-              },
+                }
+              }
             },
             {
               text: ' ',
               style: 'header',
               fontSize: 12,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               writable: true,
               table: {
                 headerRows: 1,
                 widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                body,
+                body
               },
               layout: {
                 hLineWidth: (i, node) => {
@@ -568,9 +568,9 @@ export default {
                 },
                 vLineColor: (i, node) => {
                   return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                },
-              },
-            },
+                }
+              }
+            }
           ],
 
           footer: (currentPage, pageCount) => {
@@ -580,19 +580,19 @@ export default {
                 height: 160,
                 stack: [
                   {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
                   },
                   {
                     columns: [
                       { fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left' },
-                      { fontSize: 12, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' },
-                    ],
+                      { fontSize: 12, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' }
+                    ]
                   },
                   {
                     columns: [
                       { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-                    ],
+                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
+                    ]
                   },
                   {
                     fontSize: 9,
@@ -601,30 +601,30 @@ export default {
                         text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
                         margin: [0, 10, 0, 10],
                         fontSize: 9,
-                        alignment: 'left',
+                        alignment: 'left'
                       },
                       {
                         text: `Cetakan ke: ${payload.printNo}`,
                         margin: [0, 10, 0, 10],
                         fontSize: 9,
-                        alignment: 'center',
+                        alignment: 'center'
                       },
                       {
                         text: `Dicetak Oleh: ${payload.userName}`,
                         margin: [0, 10, 0, 10],
                         fontSize: 9,
-                        alignment: 'center',
+                        alignment: 'center'
                       },
                       {
                         text: `page: ${currentPage.toString()} of ${pageCount}\n`,
                         fontSize: 9,
                         margin: [0, 10, 0, 10],
-                        alignment: 'right',
-                      },
+                        alignment: 'right'
+                      }
                     ],
-                    alignment: 'center',
-                  },
-                ],
+                    alignment: 'center'
+                  }
+                ]
               }
             }
             return {
@@ -632,7 +632,7 @@ export default {
               height: 160,
               stack: [
                 {
-                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }],
+                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
                 },
                 {
                   columns: [
@@ -640,31 +640,31 @@ export default {
                       text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
                       margin: [0, 20, 0, 40],
                       fontSize: 9,
-                      alignment: 'left',
+                      alignment: 'left'
                     },
                     {
                       text: `Cetakan ke: ${payload.printNo}`,
                       margin: [0, 20, 0, 40],
                       fontSize: 9,
-                      alignment: 'center',
+                      alignment: 'center'
                     },
                     {
                       text: `Dicetak Oleh: ${payload.cashierId}`,
                       margin: [0, 20, 0, 40],
                       fontSize: 9,
-                      alignment: 'center',
+                      alignment: 'center'
                     },
                     {
                       text: `page: ${currentPage.toString()} of ${pageCount}\n`,
                       fontSize: 9,
                       margin: [0, 20, 0, 40],
-                      alignment: 'right',
-                    },
-                  ],
-                },
-              ],
+                      alignment: 'right'
+                    }
+                  ]
+                }
+              ]
             }
-          },
+          }
         }
         try {
           pdfMake.createPdf(docDefinition).print()
@@ -686,7 +686,7 @@ export default {
         } catch (e) {
           Modal.error({
             title: 'Error, Something Went Wrong!',
-            content: `Cache is not cleared correctly :${e}`,
+            content: `Cache is not cleared correctly :${e}`
           })
         }
       }
@@ -696,7 +696,7 @@ export default {
           id: null,
           policeNo: null,
           merk: null,
-          model: null,
+          model: null
         },
         usingWo: false,
         woNumber: null,
@@ -710,7 +710,7 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false,
+        modalCreditVisible: false
       }
     },
 
@@ -735,6 +735,6 @@ export default {
     },
     returnState (state, action) {
       return { ...state, ...action.payload }
-    },
-  },
+    }
+  }
 }

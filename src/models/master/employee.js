@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
+import { lstorage } from 'utils'
 import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
-import { message } from 'antd'
-import { lstorage } from 'utils'
 
 const success = (id) => {
   message.success(`Employee ${id} has been saved`)
@@ -24,7 +24,7 @@ export default modelExtend(pageModel, {
     sequence: '',
     disable: '',
     show: 1,
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -33,25 +33,25 @@ export default modelExtend(pageModel, {
         switch (location.pathname) {
           case '/master/employee':
             dispatch({
-              type: 'querySequenceEmployee',
+              type: 'querySequenceEmployee'
             })
             dispatch({
               type: 'updateState',
               payload: {
                 newItem: false,
-                activeKey: '0',
-              },
+                activeKey: '0'
+              }
             })
             break
           case '/report/service/history':
             dispatch({
-              type: 'query',
+              type: 'query'
             })
             break
           default:
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -66,22 +66,21 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
 
-    * querySequenceEmployee({ payload = {} }, { call, put }) {
+    * querySequenceEmployee ({ payload = {} }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
         type: lstorage.getCurrentUserStore()
       }
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
-        const item = {employeeId: sequence.data}
-        yield put({ type: 'updateState', payload: { sequence: sequence.data } })
+        yield put({ type: 'updateState', payload: { sequence: sequence.data, ...payload } })
       }
     },
 
@@ -99,12 +98,12 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: lstorage.getCurrentUserStore(), // storeId
+        type: lstorage.getCurrentUserStore() // storeId
       }
       const sequence = yield call(querySequence, seqDetail)
       const employeeData = {
         employeeId: sequence.data,
-        ...payload.data,
+        ...payload.data
       }
       let data = {}
       if (sequence.data !== null) {
@@ -124,7 +123,6 @@ export default modelExtend(pageModel, {
           yield put({ type: 'updateState', payload: { newItem: true } })
         } else {
           throw data
-          console.log('data :', data.message)
         }
       } else {
         console.log('employeeId = ', sequence.data)
@@ -144,7 +142,7 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-    * lovForUser ({ payload }, { call, put }) {
+    * lovForUser ({ payload = {} }, { call, put }) {
       const data = yield call(queryField, { fields: 'employeeId,employeeName,email,positionName', for: 'user' })
 
       if (data.success) {
@@ -155,27 +153,30 @@ export default modelExtend(pageModel, {
           payload: {
             listLovEmployee: employees,
             pagination: {
-              total: totalData,
+              total: totalData
             },
-          },
+            ...payload
+          }
         })
       } else {
         console.log('not success')
       }
-    },
+    }
   },
 
   reducers: {
 
     querySuccessEmployee (state, action) {
       const { list, listLovEmployee, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listEmployee: list,
         listLovEmployee,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        } }
+          ...pagination
+        }
+      }
     },
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
@@ -200,10 +201,10 @@ export default modelExtend(pageModel, {
         // activeKey: '0',
         sequence: '',
         disable: '',
-        show: 1,
+        show: 1
       }
       return { ...state, ...defaultState }
-    },
+    }
 
-  },
+  }
 })
