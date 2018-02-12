@@ -30,26 +30,26 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-          case '/master/customerunit':
-            dispatch({
-              type: 'query'
-            })
-            break
-          case '/report/customer/history':
-            dispatch({
-              type: 'query'
-            })
-            break
-          case '/master/customer':
-            dispatch({
-              type: 'updateState',
-              payload: {
-                newItem: false,
-                activeKey: '0'
-              }
-            })
-            break
-          default:
+        case '/master/customerunit':
+          dispatch({
+            type: 'query'
+          })
+          break
+        case '/report/customer/history':
+          dispatch({
+            type: 'query'
+          })
+          break
+        case '/master/customer':
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0'
+            }
+          })
+          break
+        default:
         }
       })
     }

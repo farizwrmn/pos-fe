@@ -118,17 +118,17 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
 
   let moreButtonTab
   switch (activeTabKey) {
-    case '1':
-      if (listHistory.length > 0) {
-        moreButtonTab = (<Dropdown overlay={menu}>
-          <Button>
-            <Icon type="printer" /> Print
-          </Button>
-        </Dropdown>)
-      }
-      break
-    default:
-      break
+  case '1':
+    if (listHistory.length > 0) {
+      moreButtonTab = (<Dropdown overlay={menu}>
+        <Button>
+          <Icon type="printer" /> Print
+        </Button>
+      </Dropdown>)
+    }
+    break
+  default:
+    break
   }
 
   return (

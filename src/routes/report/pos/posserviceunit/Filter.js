@@ -29,10 +29,10 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
         }
         result.push(res[value.transDate])
       }
-      res[value.transDate].qtyUnit += (value.qtyService !== 0 ? 1 : 0)
-      res[value.transDate].counter += (value.qtyService === 0 ? value.product : 0)
+      res[value.transDate].qtyUnit += ((value.woReference !== '' || value.woReference !== null) ? 1 : 0)
+      res[value.transDate].counter += ((value.woReference === '' || value.woReference === null) ? value.product : 0)
       res[value.transDate].qtyProduct += value.qtyProduct
-      res[value.transDate].product += (value.qtyService !== 0 ? value.product : 0)
+      res[value.transDate].product += ((value.woReference !== '' || value.woReference !== null) ? value.product : 0)
       res[value.transDate].qtyService += value.qtyService
       res[value.transDate].service += value.service
       return res

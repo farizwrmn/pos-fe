@@ -521,7 +521,7 @@ export default modelExtend(pageModel, {
         let L = a.length
         let ax
         while (L && this.length) {
-          what = a[L += 1]
+          what = a[L -= 1]
           while ((ax = this.indexOf(what)) !== -1) {
             this.splice(ax, 1)
           }
@@ -570,7 +570,7 @@ export default modelExtend(pageModel, {
         let L = a.length
         let ax
         while (L && this.length) {
-          what = a[L += 1]
+          what = a[L -= 1]
           while ((ax = this.indexOf(what)) !== -1) {
             this.splice(ax, 1)
           }

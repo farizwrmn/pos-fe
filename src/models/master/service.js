@@ -27,32 +27,32 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-          case '/master/service':
-            dispatch({
-              type: 'queryServiceType'
-            })
-            dispatch({
-              type: 'updateState',
-              payload: {
-                newItem: false,
-                activeKey: '0'
-              }
-            })
-            break
-          case '/report/service/history':
-            dispatch({
-              type: 'queryServiceType'
-            })
-            dispatch({
-              type: 'query'
-            })
-            break
-          case '/report/customer/history':
-            dispatch({
-              type: 'queryServiceType'
-            })
-            break
-          default:
+        case '/master/service':
+          dispatch({
+            type: 'queryServiceType'
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              newItem: false,
+              activeKey: '0'
+            }
+          })
+          break
+        case '/report/service/history':
+          dispatch({
+            type: 'queryServiceType'
+          })
+          dispatch({
+            type: 'query'
+          })
+          break
+        case '/report/customer/history':
+          dispatch({
+            type: 'queryServiceType'
+          })
+          break
+        default:
         }
       })
     }

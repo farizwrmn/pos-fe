@@ -16,19 +16,18 @@ const BasicReport = ({
   tableHeader = [],
   tableBody = [],
   tableFooter = [],
-  data,
   header = {},
   footer = {}
 }) => {
   const createPdfLineItems = () => {
     let body = []
     if (tableHeader.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
+      for (let c = 0; c < tableHeader.length; c += 1) {
         body.push(tableHeader[c])
       }
     }
     if (tableBody.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
+      for (let c = 0; c < tableBody.length; c += 1) {
         body.push(tableBody[c])
       }
     }
@@ -39,19 +38,21 @@ const BasicReport = ({
     }
     return body
   }
-  const printPdf = (data) => {
+  const printPdf = () => {
     if (tableHeader.length === 0 && tableFooter.length === 0) {
+      console.log('no header/footer')
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
       })
     } else if (tableBody.length === 0) {
+      console.log('no body of content')
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
       })
     } else {
-      const content = createPdfLineItems(data)
+      const content = createPdfLineItems()
       let docDefinition = {
         pageSize,
         pageOrientation,
@@ -82,7 +83,7 @@ const BasicReport = ({
     <Button type="dashed"
       size="large"
       className={className}
-      onClick={() => printPdf(data)}
+      onClick={() => printPdf()}
     >
       <Icon type="file-pdf" className="icon-large" />
       {name}

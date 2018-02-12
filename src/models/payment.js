@@ -2,6 +2,7 @@ import { Modal } from 'antd'
 import moment from 'moment'
 import config from 'config'
 import { lstorage } from 'utils'
+import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
@@ -25,7 +26,7 @@ export default {
   state: {
     currentItem: {},
     modalVisible: false,
-    modalType: 'create',
+    modalType: 'add',
     selectedRowKeys: [],
     isMotion: localStorage.getItem('antdAdminUserIsMotion') === 'true',
     pagination: {
@@ -35,6 +36,7 @@ export default {
       current: 1,
       total: null
     },
+    numberToString: 0,
     grandTotal: 0,
     creditCardNo: '',
     creditCardTotal: 0,
@@ -51,8 +53,10 @@ export default {
     lastMeter: 0,
     modalCreditVisible: false,
     listCreditCharge: [],
+    listAmount: [],
     creditCardType: '',
     policeNo: '',
+    itemPayment: {},
     usingWo: false,
     woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
   },
@@ -168,6 +172,23 @@ export default {
                 content: `Call your IT support, message: ${e}`
               })
             }
+
+            try {
+              yield call(addSome, {
+                head: {
+                  transNo: trans,
+                  storeId: lstorage.getCurrentUserStore(),
+                  storeIdPayment: lstorage.getCurrentUserStore()
+                },
+                data: payload.listAmount
+              })
+            } catch (e) {
+              Modal.warning({
+                title: 'Something went wrong',
+                content: `Call your IT support, message: ${e}`
+              })
+            }
+
             yield put({
               type: 'printPayment',
               payload: {
@@ -698,6 +719,7 @@ export default {
           merk: null,
           model: null
         },
+        listAmount: [],
         usingWo: false,
         woNumber: null,
         posMessage,
@@ -716,6 +738,18 @@ export default {
 
     setCreditCardPaymentNull (state) {
       return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '' }
+    },
+
+    addMethod (state, action) {
+      let { listAmount } = state
+      listAmount.push(action.payload.data)
+      return { ...state, listAmount }
+    },
+
+    editMethod (state, action) {
+      let { listAmount } = state
+      listAmount[action.payload.data.id - 1] = (action.payload.data)
+      return { ...state, listAmount, ...action.payload }
     },
 
     setCreditCardNo (state, action) {

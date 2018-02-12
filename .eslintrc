@@ -47,7 +47,8 @@
     "no-nested-ternary": 0,
     "no-prototype-builtins": 0,
     "no-shadow": 0,
-    "react/jsx-indent": ["warn", 2]
+    "react/jsx-indent": ["warn", 2],
+    "indent": ["warn", 2]
   },
   "parser": "babel-eslint",
   "globals": {

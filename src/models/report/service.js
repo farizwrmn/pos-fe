@@ -25,12 +25,12 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-          case '/report/service/summary':
-            dispatch({
-              type: 'setListNull'
-            })
-            break
-          default:
+        case '/report/service/summary':
+          dispatch({
+            type: 'setListNull'
+          })
+          break
+        default:
         }
       })
     }

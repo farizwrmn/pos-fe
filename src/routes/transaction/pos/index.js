@@ -555,7 +555,9 @@ const Pos = ({
         address01: item.address01,
         point: item.point ? item.point : 0,
         id: item.id,
-        memberTypeId: item.memberTypeId ? item.memberTypeId : 7,
+        memberTypeId: item.memberTypeId,
+        memberSellPrice: item.memberSellPrice,
+        memberPendingPayment: item.memberPendingPayment,
         gender: item.gender,
         phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       })
@@ -907,12 +909,12 @@ const Pos = ({
             name: item.productName,
             typeCode: 'P',
             qty: 1,
-            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
           }
 
           arrayProd.push({
@@ -922,12 +924,12 @@ const Pos = ({
             name: item.productName,
             typeCode: 'P',
             qty: 1,
-            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
           })
           dispatch({
             type: 'pos/checkQuantityNewProduct',

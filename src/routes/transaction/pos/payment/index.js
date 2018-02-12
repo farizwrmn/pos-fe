@@ -3,51 +3,63 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import config from 'config'
 import { routerRedux } from 'dva/router'
-import { Form, Input, Table, Row, Col, Card, Cascader, Button, Modal } from 'antd'
+import {
+  Form,
+  // Table,
+  Row, Col,
+  // Card,
+  // Cascader,
+  Button,
+  Modal
+} from 'antd'
 import moment from 'moment'
-import ModalCredit from './ModalCreditCard'
-import PaymentMethod from './PaymentMethod'
+// import ModalCredit from './ModalCreditCard'
+import FormPayment from './Form'
+// import PaymentMethod from './PaymentMethod'
 
 const { prefix } = config
 const FormItem = Form.Item
-const formItemLayout = {
-  labelCol: {
-    span: 10
-  },
-  wrapperCol: {
-    span: 14
-  }
-}
-const dataTrans = () => {
-  let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
-  let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
-  const cashier_trans = product.concat(service)
-  let arrayProd = []
-  for (let n = 0; n < cashier_trans.length; n += 1) {
-    arrayProd.push({
-      no: n + 1,
-      code: cashier_trans[n].code,
-      disc1: cashier_trans[n].disc1,
-      disc2: cashier_trans[n].disc2,
-      disc3: cashier_trans[n].disc3,
-      discount: cashier_trans[n].discount,
-      name: cashier_trans[n].name,
-      price: cashier_trans[n].price,
-      qty: cashier_trans[n].qty,
-      typeCode: cashier_trans[n].typeCode,
-      total: cashier_trans[n].total
-    })
-  }
-  return (arrayProd)
-}
+// const dataTrans = () => {
+//   let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
+//   let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+//   const cashier_trans = product.concat(service)
+//   let arrayProd = []
+//   for (let n = 0; n < cashier_trans.length; n += 1) {
+//     arrayProd.push({
+//       no: n + 1,
+//       code: cashier_trans[n].code,
+//       disc1: cashier_trans[n].disc1,
+//       disc2: cashier_trans[n].disc2,
+//       disc3: cashier_trans[n].disc3,
+//       discount: cashier_trans[n].discount,
+//       name: cashier_trans[n].name,
+//       price: cashier_trans[n].price,
+//       qty: cashier_trans[n].qty,
+//       typeCode: cashier_trans[n].typeCode,
+//       total: cashier_trans[n].total
+//     })
+//   }
+//   return (arrayProd)
+// }
 
 const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
-  const { totalPayment, totalChange, inputPayment, lastTransNo, creditCardTotal, creditCharge, modalCreditVisible, typeTrans, woNumber } = payment
-  const { mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
+  const { totalPayment,
+    totalChange,
+    // inputPayment,
+    lastTransNo,
+    listAmount,
+    // creditCardTotal,
+    // creditCharge,
+    // modalCreditVisible,
+    modalType,
+    typeTrans,
+    itemPayment,
+    woNumber } = payment
+  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
-  const keyShortcut = { 17: false, 16: false, 32: false }
+  // const keyShortcut = { 17: false, 16: false, 32: false }
   /*
    Ascii => Desc
    17 => Ctrl
@@ -55,16 +67,16 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
    32 => Space
    */
 
-  const modalCreditProps = {
-    visible: modalCreditVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    onCancel () {
-      dispatch({
-        type: 'payment/hideCreditModal'
-      })
-    }
-  }
+  // const modalCreditProps = {
+  //   visible: modalCreditVisible,
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'payment/hideCreditModal'
+  //     })
+  //   }
+  // }
 
   const getDate = (mode) => {
     let today = new Date()
@@ -102,28 +114,28 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     return `${h}:${m}:${s}`
   }
 
-  const onChange = (e) => {
-    const { value } = e.target
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      dispatch({
-        type: 'payment/changePayment',
-        payload: {
-          netto: parseInt(curTotal, 10) + parseInt(curRounding, 10),
-          totalPayment: value
-        }
-      })
-    }
-  }
+  // const onChange = (e) => {
+  //   const { value } = e.target
+  //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+  //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+  //     dispatch({
+  //       type: 'payment/changePayment',
+  //       payload: {
+  //         netto: parseInt(curTotal, 10) + parseInt(curRounding, 10),
+  //         totalPayment: value
+  //       }
+  //     })
+  //   }
+  // }
 
-  const onChangeCascader = (e) => {
-    dispatch({
-      type: 'payment/changeCascader',
-      payload: {
-        value: e
-      }
-    })
-  }
+  // const onChangeCascader = (e) => {
+  //   dispatch({
+  //     type: 'payment/changeCascader',
+  //     payload: {
+  //       value: e
+  //     }
+  //   })
+  // }
   const confirmPayment = () => {
     const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -135,10 +147,10 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
         break
       }
     }
-    if ((parseInt(totalPayment, 10) < parseInt(curTotal, 10) + parseInt(curRounding, 10))) {
+    if ((parseInt(memberInformation.memberPendingPayment, 10) ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseInt(curTotal, 10) + parseInt(curRounding, 10)) || listAmount.length === 0) {
       Modal.error({
         title: 'Payment',
-        content: 'Total Payment must be greater than Netto...!'
+        content: 'Total Payment must be greater than Netto'
       })
     } else if (checkProductId) {
       console.log(checkProductId)
@@ -194,6 +206,9 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           cashierId: user.userid,
           userName: user.username,
           setting,
+          listAmount,
+          curNetto: parseFloat(curTotal) + parseFloat(curRounding),
+          curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
           usingWo: !((woNumber === '' || woNumber === null)),
           woNumber: woNumber === '' ? null : woNumber
         }
@@ -236,7 +251,10 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   //       point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
   //       curCashierNo,
   //       cashierId: user.userid,
-  //       usingWo,
+  //       userName: user.username,
+  //       listAmount,
+  //       curNetto: parseFloat(curTotal) + parseFloat(curRounding),
+  //       curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
   //       woNumber
   //     }
   //   })
@@ -246,70 +264,118 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     dispatch(routerRedux.push('/transaction/pos'))
   }
 
-  let options = []
-  if (listOpts ? listOpts.length > 0 : false) {
-    for (let key in listOpts) {
-      if (Object.prototype.hasOwnProperty.call(listOpts, key)) {
-        options.push({
-          value: listOpts[key].typeCode,
-          label: listOpts[key].typeName
-        })
-      }
-    }
-  } else {
-    options = [
-      {
-        value: 'C',
-        label: 'Cash'
-      },
-      {
-        value: 'K',
-        label: 'Credit Card'
-      },
-      {
-        value: 'D',
-        label: 'Debit Card'
-      },
-      {
-        value: 'P',
-        label: 'Pending'
-      }
-    ]
-  }
+  // let options = []
+  // if (listOpts ? listOpts.length > 0 : false) {
+  //   for (let key in listOpts) {
+  //     if (Object.prototype.hasOwnProperty.call(listOpts, key)) {
+  //       options.push({
+  //         value: listOpts[key].typeCode,
+  //         label: listOpts[key].typeName
+  //       })
+  //     }
+  //   }
+  // } else {
+  //   options = [
+  //     {
+  //       value: 'C',
+  //       label: 'Cash'
+  //     },
+  //     {
+  //       value: 'K',
+  //       label: 'Credit Card'
+  //     },
+  //     {
+  //       value: 'D',
+  //       label: 'Debit Card'
+  //     },
+  //     {
+  //       value: 'P',
+  //       label: 'Pending'
+  //     }
+  //   ]
+  // }
 
-  const handleCreditCard = () => {
-    console.log('input credit card')
-    dispatch({
-      type: 'payment/setCashPaymentNull'
-    })
+  // const handleCreditCard = () => {
+  //   console.log('input credit card')
+  //   dispatch({
+  //     type: 'payment/setCashPaymentNull'
+  //   })
 
-    dispatch({
-      type: 'payment/listCreditCharge'
-    })
+  //   dispatch({
+  //     type: 'payment/listCreditCharge'
+  //   })
 
-    dispatch({
-      type: 'payment/showCreditModal'
-    })
-  }
+  //   dispatch({
+  //     type: 'payment/showCreditModal'
+  //   })
+  // }
 
-  const handleKeyDown = (e) => {
-    if (e.keyCode in keyShortcut) {
-      keyShortcut[e.keyCode] = true
+  // const handleKeyDown = (e) => {
+  //   if (e.keyCode in keyShortcut) {
+  //     keyShortcut[e.keyCode] = true
 
-      if (keyShortcut[17] && keyShortcut[32]) {
-        keyShortcut[17] = false
-        keyShortcut[32] = false
-        handleCreditCard()
-      }
+  //     if (keyShortcut[17] && keyShortcut[32]) {
+  //       keyShortcut[17] = false
+  //       keyShortcut[32] = false
+  //       handleCreditCard()
+  //     }
+  //   }
+  // }
+
+  const formPaymentProps = {
+    listAmount,
+    modalType,
+    item: itemPayment,
+    curTotal,
+    curTotalDiscount,
+    curRounding,
+    totalPayment,
+    totalChange,
+    onSubmit (data) {
+      dispatch({
+        type: 'payment/addMethod',
+        payload: {
+          data
+        }
+      })
+    },
+    onEdit (data) {
+      dispatch({
+        type: 'payment/editMethod',
+        payload: {
+          data,
+          modalType: 'add',
+          itemPayment: {}
+        }
+      })
+    },
+    cancelEdit () {
+      dispatch({
+        type: 'payment/updateState',
+        payload: {
+          modalType: 'add',
+          itemPayment: {}
+        }
+      })
+    },
+    editItem (data) {
+      dispatch({
+        type: 'payment/updateState',
+        payload: {
+          itemPayment: data,
+          modalType: 'edit'
+        }
+      })
     }
   }
 
   return (
     <div className="content-inner">
       <Row style={{ marginBottom: 16 }}>
-        <Col span={16}>
-          <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}>
-            <Form layout="horizontal">
+        <Col span={24}>
+          {/* <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}> */}
+          <FormPayment options={listOpts} {...formPaymentProps} />
+          {/* <Form layout="horizontal">
               <FormItem>
                 <Input
                   size="large"
@@ -327,14 +393,14 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
                 />
               </FormItem>
               {modalCreditVisible && <ModalCredit {...modalCreditProps} />}
-            </Form>
-          </Card>
+            </Form> */}
+          {/* </Card> */}
         </Col>
       </Row>
-      <Row style={{ marginBottom: 16 }} gutter={16}>
-        <Col xl={16} lg={16}>
-          <PaymentMethod autoFocus options={listOpts} />
-          <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
+      <Row style={{ marginBottom: 16 }}>
+        <Col xl={24} lg={24}>
+          {/* <PaymentMethod autoFocus options={listOpts} /> */}
+          {/* <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
             <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null} />
             <Table
               rowKey={(record, key) => key}
@@ -386,35 +452,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               pagination={false}
               style={{ marginBottom: 4, marginLeft: 4, marginRight: 4, marginTop: 4 }}
             />
-          </Card>
-        </Col>
-        <Col xl={8} lg={8}>
-          <Form layout="horizontal">
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Grand Total" {...formItemLayout}>
-              <Input value={parseInt(curTotal, 10)} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
-              <Input value={curTotalDiscount} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-              <Input value={curRounding} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card" {...formItemLayout}>
-              <Input value={creditCardTotal} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Credit Card Charge" {...formItemLayout}>
-              <Input value={creditCharge} defaultValue="0" style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-              <Input value={parseInt(curTotal, 10) + parseInt(curRounding, 10)} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
-              <Input value={totalPayment} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-              <Input value={totalChange} style={{ height: '40px', fontSize: '20pt' }} size="large" disabled />
-            </FormItem>
-          </Form>
+          </Card> */}
         </Col>
       </Row>
 
@@ -439,7 +477,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
 Payment.propTypes = {
   pos: PropTypes.object.isRequired,
-  position: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   payment: PropTypes.object.isRequired,
   paymentOpts: PropTypes.object.isRequired,

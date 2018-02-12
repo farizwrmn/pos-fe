@@ -148,7 +148,7 @@ export default {
         let L = a.length
         let ax
         while (L && this.length) {
-          what = a[L += 1]
+          what = a[L -= 1]
           while ((ax = this.indexOf(what)) !== -1) {
             this.splice(ax, 1)
           }
@@ -203,7 +203,7 @@ export default {
         let L = a.length
         let ax
         while (L && this.length) {
-          what = a[L += 1]
+          what = a[L -= 1]
           while ((ax = this.indexOf(what)) !== -1) {
             this.splice(ax, 1)
           }
@@ -683,6 +683,11 @@ export default {
       }
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+          Modal.warning({
+            title: 'Price is under the cost'
+          })
+        }
         tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
         let outOfStock = getSetting(payload.setting)
         if (totalQty > tempListProduct && outOfStock === 0) {
@@ -750,6 +755,11 @@ export default {
       const outOfStock = getSetting(payload.setting)
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+          Modal.warning({
+            title: 'Price is under the cost'
+          })
+        }
         tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
         if (totalQty > tempListProduct && outOfStock === 0) {
           Modal.warning({
@@ -882,7 +892,7 @@ export default {
             title: 'Warning',
             content: `Cashier Id ${payload.cashierId} status is Open in Machine ${newDataCashierTransById.cashierNo}...!`
           })
-        } else if (newDataCashierTransById.shift !== payload.shift) {
+        } else if (newDataCashierTransById.shift !== parseInt(payload.shift, 10)) {
           Modal.warning({
             title: 'Warning',
             content: `Cashier Id ${payload.cashierId} status is Open in this Machine on Shift ${newDataCashierTransById.shift}...!`
@@ -1003,7 +1013,7 @@ export default {
           let L = a.length
           let ax
           while (L && this.length) {
-            what = a[L += 1]
+            what = a[L -= 1]
             while ((ax = this.indexOf(what)) !== -1) {
               this.splice(ax, 1)
             }
