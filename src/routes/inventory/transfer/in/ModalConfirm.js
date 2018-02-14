@@ -46,7 +46,7 @@ const modal = ({
       visible
       footer={[
         <Button size="large" key="submit" type="danger" onClick={handleOk}>
-        Ignore
+          Ignore
         </Button>
       ]}
       {...modalOpts}

@@ -15,7 +15,25 @@ const TabPane = Tabs.TabPane
 moment.locale('id')
 
 const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
-  const { listTrans, listTransIn, listProducts, listTransferIn, activeTabKey, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber, filter, sort, showPrintModal, modalConfirmVisible } = transferIn
+  const { listTrans,
+    listTransIn,
+    listProducts,
+    listTransferIn,
+    activeTabKey,
+    listTransDetail,
+    transHeader,
+    transNo,
+    currentItem,
+    storeId,
+    period,
+    modalVisible,
+    modalAcceptVisible,
+    sequenceNumber,
+    filter,
+    sort,
+    disableButton,
+    showPrintModal,
+    modalConfirmVisible } = transferIn
   const { list } = employee
   const { user, storeInfo } = app
   let listEmployee = list
@@ -173,6 +191,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
   const modalAcceptProps = {
     ...formConfirmProps,
     modalConfirmVisible,
+    disableButton,
     item: transHeader,
     listTransDetail,
     user,
@@ -184,6 +203,12 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
     onOk (data, list, storeId) {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          disableButton: true
+        }
+      })
       dispatch({
         type: 'transferIn/add',
         payload: {

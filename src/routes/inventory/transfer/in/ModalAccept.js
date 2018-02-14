@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Modal, DatePicker, Select, Input, Row, Col } from 'antd'
+import { Form, Modal, Button, DatePicker, Select, Input, Row, Col } from 'antd'
 import moment from 'moment'
 import List from './ListItem'
 import ModalConfirm from './ModalConfirm'
@@ -25,6 +25,7 @@ const formItemLayout = {
 
 const modal = ({
   item,
+  disableButton,
   sequenceNumber,
   listTransDetail,
   listEmployee,
@@ -117,7 +118,12 @@ const modal = ({
 
   return (
     <div>
-      <Modal {...modalOpts}>
+      <Modal
+        footer={[
+          <Button disabled={disableButton} key="submit" type="primary" onClick={() => handleOk()} >Process</Button>
+        ]}
+        {...modalOpts}
+      >
         <Form layout="horizontal">
           <Row>
             <Col lg={12} md={24}>

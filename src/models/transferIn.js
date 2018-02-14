@@ -44,6 +44,7 @@ export default modelExtend(pageModel, {
     disable: '',
     filter: null,
     sort: null,
+    disableButton: false,
     showPrintModal: false,
     pagination: {
       showSizeChanger: true,

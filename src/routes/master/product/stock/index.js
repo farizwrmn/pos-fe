@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { NewForm } from 'components'
+import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {

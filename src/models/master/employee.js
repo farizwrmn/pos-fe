@@ -31,24 +31,24 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-        case '/master/employee':
-          dispatch({
-            type: 'querySequenceEmployee'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: '0'
-            }
-          })
-          break
-        case '/report/service/history':
-          dispatch({
-            type: 'query'
-          })
-          break
-        default:
+          case '/master/employee':
+            dispatch({
+              type: 'querySequenceEmployee'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: '0'
+              }
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'query'
+            })
+            break
+          default:
         }
       })
     }
@@ -110,7 +110,7 @@ export default modelExtend(pageModel, {
         data = yield call(add, { id: sequence.data, data: employeeData })
         if (data.success) {
           yield put({ type: 'query' })
-          const employeeIncrease = yield call(increaseSequence, 'EMP')
+          const employeeIncrease = yield call(increaseSequence, seqDetail)
           if (employeeIncrease.success) {
             success(sequence.data)
           } else {

@@ -183,7 +183,7 @@ const formPayment = ({
           </FormItem>
           <FormItem label="Amount" hasFeedback {...formItemLayout}>
             {getFieldDecorator('amount', {
-              initialValue: item.amount ? item.amount : 0,
+              initialValue: item.amount ? item.amount : (parseInt(curTotal, 10) + parseInt(curRounding, 10)) - curPayment > 0 ? (parseInt(curTotal, 10) + parseInt(curRounding, 10)) - curPayment : 0,
               rules: [
                 {
                   required: true,
