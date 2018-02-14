@@ -1,3 +1,4 @@
+import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { query as queryOpts } from '../../services/payment/paymentOptions'
 
@@ -10,6 +11,12 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryOpts'
+          })
+        }
         if (location.pathname === '/transaction/pos/payment') {
           dispatch({
             type: 'queryOpts'

@@ -363,6 +363,15 @@ const Routers = function ({ history, app }) {
             }, 'setting-user-detail')
           }
         }, {
+          path: 'accounts/payment/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/detail/paymentDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/accounts/payment/detail/'))
+            }, 'setting-payment-detail')
+          }
+        }, {
           path: 'inventory/transfer/in',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -404,6 +413,13 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/period'))
               cb(null, require('./routes/setting/periode/'))
             }, 'setting-misc')
+          }
+        }, {
+          path: '*',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/error/'))
+            }, 'error')
           }
         }
       ]

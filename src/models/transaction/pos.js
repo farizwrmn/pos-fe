@@ -104,7 +104,7 @@ export default {
           dispatch({
             type: 'loadDataPos'
           })
-        } else if (location.pathname === '/transaction/pos/history') {
+        } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',
@@ -683,19 +683,18 @@ export default {
       }
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        const totalTempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
+        let outOfStock = getSetting(payload.setting)
         if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
           Modal.warning({
             title: 'Price is under the cost'
           })
-        }
-        tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        let outOfStock = getSetting(payload.setting)
-        if (totalQty > tempListProduct && outOfStock === 0) {
+        } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
           })
-        } else if (totalQty > tempListProduct && outOfStock === 1) {
+        } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
@@ -755,18 +754,17 @@ export default {
       const outOfStock = getSetting(payload.setting)
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        const totalTempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
         if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
           Modal.warning({
             title: 'Price is under the cost'
           })
-        }
-        tempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        if (totalQty > tempListProduct && outOfStock === 0) {
+        } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
           })
-        } else if (totalQty > tempListProduct && outOfStock === 1) {
+        } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`

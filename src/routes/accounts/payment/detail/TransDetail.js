@@ -2,64 +2,57 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form,
-  Input,
-  Button,
+  // Input,
+  // Button,
   Row,
-  Col,
-  Modal,
-  DatePicker,
-  Select
+  // Col,
+  Modal
+  // DatePicker,
+  // Select
 } from 'antd'
-import moment from 'moment'
-import List from './List'
+// import moment from 'moment'
+import List from './ListDetail'
 
-const FormItem = Form.Item
-const Option = Select.Option
+// const FormItem = Form.Item
+// const Option = Select.Option
 
-const formItemLayout = {
-  labelCol: {
-    xs: {
-      span: 13
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
-  },
-  wrapperCol: {
-    xs: {
-      span: 11
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
-  }
-}
+// const formItemLayout = {
+//   labelCol: {
+//     xs: {
+//       span: 13
+//     },
+//     sm: {
+//       span: 8
+//     },
+//     md: {
+//       span: 7
+//     }
+//   },
+//   wrapperCol: {
+//     xs: {
+//       span: 11
+//     },
+//     sm: {
+//       span: 14
+//     },
+//     md: {
+//       span: 14
+//     }
+//   }
+// }
 
 const formPayment = ({
+  dataSource,
   item = {},
-  onSubmit,
   onEdit,
-  options,
-  editItem,
-  cancelEdit,
-  curTotal,
-  modalType,
-  curTotalDiscount,
-  curRounding,
+  onSubmit,
   listAmount,
+  modalType,
   form: {
-    getFieldDecorator,
-    validateFields,
+    // getFieldDecorator,
     getFieldsValue,
-    getFieldValue,
-    resetFields,
-    setFieldsValue
+    validateFields,
+    resetFields
   }
 }) => {
   // const { show } = filterProps
@@ -122,22 +115,22 @@ const formPayment = ({
   //   </Button>
   // </Dropdown> </div>)
   const listProps = {
-    dataSource: listAmount,
-    editList (data) {
-      editItem(data)
+    dataSource,
+    editList () {
+      // editItem(data)
       resetFields()
     }
   }
 
-  const changeToNumber = (e) => {
-    const { value } = e.target
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      setFieldsValue({
-        amount: value
-      })
-    }
-  }
+  // const changeToNumber = (e) => {
+  //   const { value } = e.target
+  //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+  //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+  //     setFieldsValue({
+  //       amount: value
+  //     })
+  //   }
+  // }
 
   let isCtrl = false
   const perfect = () => {
@@ -154,23 +147,26 @@ const formPayment = ({
     }
   }
 
-  const useNetto = (e) => {
-    setFieldsValue({
-      amount: e
-    })
-  }
+  // const useNetto = (e) => {
+  //   setFieldsValue({
+  //     amount: e
+  //   })
+  // }
 
-  const onCancelEdit = () => {
-    cancelEdit()
-    resetFields()
-  }
+  // const onCancelEdit = () => {
+  //   cancelEdit()
+  //   resetFields()
+  // }
 
-  const curNetto = (parseFloat(curTotal) + parseFloat(curRounding))
-  const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  // const curNetto = (parseFloat(curTotal) + parseFloat(curRounding))
+  // const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
   return (
     <Form layout="horizontal">
       <Row>
+        <List {...listProps} />
+      </Row>
+      {/* <Row>
         <Col lg={8} md={12} sm={24}>
           <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('typeCode', {
@@ -250,19 +246,13 @@ const formPayment = ({
             })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
           </FormItem>
         </Col>
-        <Col lg={8} md={12} sm={24}>
-          {/* <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
-            <Input value={curNetto} style={{ width: '100%', fontSize: '17pt' }} size="large" />
-          </FormItem> */}
-
-        </Col>
-      </Row>
-      <FormItem {...formItemLayout}>
+        <Col lg={8} md={12} sm={24} />
+      </Row> */}
+      {/* <FormItem {...formItemLayout}>
         <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>
         {modalType === 'edit' && <Button type="dashed" onClick={() => onCancelEdit()}>Cancel edit</Button>}
-      </FormItem>
-      <List {...listProps} />
-      <Row>
+      </FormItem> */}
+      {/* <Row>
         <Col lg={8} md={12} sm={24} />
         <Col lg={8} md={12} sm={24} />
         <Col lg={8} md={12} sm={24}>
@@ -279,7 +269,7 @@ const formPayment = ({
             <Input value={parseInt(curTotal, 10) + parseInt(curRounding, 10)} style={{ width: '100%', fontSize: '17pt' }} size="large" />
           </FormItem>
         </Col>
-      </Row>
+      </Row> */}
     </Form>
   )
 }

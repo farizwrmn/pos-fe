@@ -43,9 +43,9 @@ const List = ({ ...tableProps, editList }) => {
       key: 'cardName'
     },
     {
-      title: 'Batch No.',
-      dataIndex: 'batchNo',
-      key: 'batchNo'
+      title: 'Card No.',
+      dataIndex: 'cardNo',
+      key: 'cardNo'
     }
   ]
 

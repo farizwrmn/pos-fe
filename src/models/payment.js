@@ -66,6 +66,13 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos/payment') {
           dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listAmount: [],
+              itemPayment: {}
+            }
+          })
         }
       })
     }
