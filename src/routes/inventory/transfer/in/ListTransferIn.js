@@ -1,31 +1,34 @@
 import React from 'react'
 // import { connect } from 'dva'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import moment from 'moment'
 import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
 const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
-  const transHeader = listTransOut ? { employeeId: {
-    key: listTransOut.employeeId,
-    label: listTransOut.employeeName
-  },
-  storeId: {
-    key: listTransOut.storeIdSender,
-    label: listTransOut.storeNameSender
-  },
-  storeNameSender: {
-    key: listTransOut.storeId,
-    label: listTransOut.storeName
-  },
-  transDate: listTransOut.transDate,
-  totalColly: listTransOut.totalColly,
-  transNo: listTransOut.transNo,
-  transType: listTransOut.transType,
-  carNumber: listTransOut.carNumber,
-  description: listTransOut.description,
-  referenceTrans: listTransOut.referenceTrans,
-  reference: listTransOut.reference } : {}
+  const transHeader = listTransOut ? {
+    employeeId: {
+      key: listTransOut.employeeId,
+      label: listTransOut.employeeName
+    },
+    storeId: {
+      key: listTransOut.storeIdSender,
+      label: listTransOut.storeNameSender
+    },
+    storeNameSender: {
+      key: listTransOut.storeId,
+      label: listTransOut.storeName
+    },
+    transDate: listTransOut.transDate,
+    totalColly: listTransOut.totalColly,
+    transNo: listTransOut.transNo,
+    transType: listTransOut.transType,
+    carNumber: listTransOut.carNumber,
+    description: listTransOut.description,
+    referenceTrans: listTransOut.referenceTrans,
+    reference: listTransOut.reference
+  } : {}
 
   const clickPrint = (record) => {
     const { transNo, storeIdReceiver } = record
@@ -104,10 +107,10 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: text =>
+      render: (text, record) =>
         (<span>
-          <Tag color={text === 0 ? 'blue' : 'green'}>
-            {text === 0 ? 'In progress' : 'Accepted'}
+          <Tag color={!text && record.active ? 'blue' : text && record.active ? 'green' : 'red'}>
+            {!text && record.active ? 'In progress' : text && record.active ? 'Accepted' : 'Canceled'}
           </Tag>
         </span>)
     },
@@ -116,7 +119,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       dataIndex: 'transNo',
       key: 'transNo',
       sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
-      sortOrder: sort.columnKey === 'transNo' && sort.order
+      sortOrder: sort.columnKey === 'transNo' && sort.order,
+      render: (text, record) => (record.active ? <Link to={`/inventory/transfer/in/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
     },
     {
       title: 'Operation',

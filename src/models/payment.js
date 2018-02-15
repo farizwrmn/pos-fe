@@ -213,6 +213,7 @@ export default {
                 lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
                 lastTransNo: trans,
                 totalChange: payload.totalChange,
+                unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
                 totalDiscount: payload.totalDiscount,
                 policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
                 rounding: payload.rounding,
@@ -533,10 +534,13 @@ export default {
                 table: {
                   widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
                   body: [
-                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: (payload.lastMeter || 0).toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${(payload.memberName || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Contact', fontSize: 12 }, ':', { text: (payload.phone || '').toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }]
+                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi/KM', fontSize: 12 }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: 12 }],
+
+                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'Merk/Model', fontSize: 12 }, ':', { text: `${(payload.unitInfo.merk || '').toString().toUpperCase()}${payload.unitInfo.model ? '/' : ''}${(payload.unitInfo.model || '').toString().toUpperCase()}`, fontSize: 12 }],
+
+                    [{ text: 'Customer', fontSize: 12 }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Type/Tahun', fontSize: 12 }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: 12 }],
+
+                    [{ text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }]
                   ]
                 },
                 layout: 'noBorders'

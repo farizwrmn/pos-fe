@@ -64,8 +64,10 @@ const ModalCreditCard = ({ payment, stock, app, dispatch, ...modalProps }) => {
   const onChangeType = (value) => {
     dispatch({
       type: 'payment/getCreditCharge',
-      payload: { creditCode: `${value}`,
-        netto: parseInt(curTotal, 10) + parseInt(curRounding, 10) }
+      payload: {
+        creditCode: `${value}`,
+        netto: parseInt(curTotal, 10) + parseInt(curRounding, 10)
+      }
     })
   }
 
@@ -87,30 +89,30 @@ const ModalCreditCard = ({ payment, stock, app, dispatch, ...modalProps }) => {
       title: 'Confirm this payment?',
       content: 'This Operation cannot be undone...!',
       onOk () {
-        dispatch({
-          type: 'payment/create',
-          payload: { periode: getDate(2),
-            transDate: getDate(1),
-            transDate2: getDate(3),
-            transTime: setTime(),
-            grandTotal: parseInt(curTotal, 10) + parseInt(curTotalDiscount, 10),
-            totalPayment,
-            creditCardNo,
-            creditCardType,
-            creditCardCharge: creditCharge,
-            totalCreditCard: creditCardTotal,
-            totalChange,
-            totalDiscount: curTotalDiscount,
-            rounding: curRounding,
-            memberCode: memberInformation.memberCode,
-            technicianId: technicianInformation.employeeId,
-            curShift,
-            curCashierNo,
-            cashierId: user.userid
-          }
-        })
+        // dispatch({
+        //   type: 'payment/create',
+        //   payload: { periode: getDate(2),
+        //     transDate: getDate(1),
+        //     transDate2: getDate(3),
+        //     transTime: setTime(),
+        //     grandTotal: parseInt(curTotal, 10) + parseInt(curTotalDiscount, 10),
+        //     totalPayment,
+        //     creditCardNo,
+        //     creditCardType,
+        //     creditCardCharge: creditCharge,
+        //     totalCreditCard: creditCardTotal,
+        //     totalChange,
+        //     totalDiscount: curTotalDiscount,
+        //     rounding: curRounding,
+        //     memberCode: memberInformation.memberCode,
+        //     technicianId: technicianInformation.employeeId,
+        //     curShift,
+        //     curCashierNo,
+        //     cashierId: user.userid
+        //   }
+        // })
       },
-      onCancel () {}
+      onCancel () { }
     })
   }
 

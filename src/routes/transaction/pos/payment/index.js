@@ -191,6 +191,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
           paymentVia: typeTrans.toString(),
           totalChange,
+          unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           rounding: curRounding,

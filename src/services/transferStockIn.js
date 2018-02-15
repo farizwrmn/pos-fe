@@ -45,3 +45,15 @@ export async function add (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function voidTrans (params) {
+  let url = `${transfer}/in/cancel`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}

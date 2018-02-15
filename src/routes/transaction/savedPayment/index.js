@@ -43,8 +43,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
+              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
           let productId = data.data[n].serviceCode
@@ -60,8 +60,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
+              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
           let productId = '-'
@@ -77,8 +77,8 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
+              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc2 / 100))
           })
         }
       }
@@ -93,11 +93,14 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         payload: {
           dataPos,
           dataService,
-          transDatePrint: moment(posData.transDate).format('DD/MM/YYYY'),
+          transDatePrint: moment(posData.transDate || '').format('DD-MM-YYYY'),
           memberId: data.memberPrint.memberCode,
           gender: data.memberPrint.gender,
           company: data.companyPrint,
           lastTransNo: listPaymentDetail.id,
+          unitInfo: {
+            ...listPaymentDetail
+          },
           memberName: data.memberPrint.memberName,
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,

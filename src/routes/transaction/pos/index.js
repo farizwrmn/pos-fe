@@ -1387,12 +1387,12 @@ const Pos = ({
     dispatch({ type: 'pos/modalPopoverShow' })
   }
   const hdlTableRowClick = (record) => {
-    const { id, policeNo, merk, model } = record
+    const { id, policeNo, merk, model, type, year, chassisNo, machineNo } = record
     dispatch({
       type: 'pos/chooseMemberUnit',
       payload: {
         policeNo: {
-          id, policeNo, merk, model
+          id, policeNo, merk, model, type, year, chassisNo, machineNo
         }
       }
     })
@@ -1400,7 +1400,7 @@ const Pos = ({
       type: 'payment/setPoliceNo',
       payload: {
         policeNo: {
-          id, policeNo, merk, model
+          id, policeNo, merk, model, type, year, chassisNo, machineNo
         }
       }
     })

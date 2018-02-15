@@ -309,10 +309,22 @@ export default {
           type: 'querySuccessPaymentDetail',
           payload: {
             posData: PosData.pos,
-            listPaymentDetail: { id: payload.data.transNo, cashierId: payload.data.cashierId, policeNo: payload.data.policeNo, lastMeter: payload.data.lastMeter, data: data.pos },
-            memberPrint: member.data,
-            companyPrint: company.data,
-            mechanicPrint: mechanic.mechanic
+            listPaymentDetail: {
+              id: payload.data.transNo,
+              cashierId: payload.data.cashierId,
+              policeNo: payload.data.policeNo,
+              lastMeter: payload.data.lastMeter,
+              data: data.pos,
+              merk: PosData.pos.merk,
+              model: PosData.pos.model,
+              type: PosData.pos.type,
+              year: PosData.pos.year,
+              chassisNo: PosData.pos.chassisNo,
+              machineNo: PosData.pos.machineNo
+            },
+            memberPrint: member.data, // data member
+            companyPrint: company.data, // data company
+            mechanicPrint: mechanic.mechanic // data mechanic
           }
         })
         let dataPos = []

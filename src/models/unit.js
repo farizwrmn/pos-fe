@@ -111,14 +111,18 @@ export default modelExtend(pageModel, {
     },
 
     * lov ({ payload }, { call, put }) {
-      const data = yield call(queryField, { code: payload.id }, { fields: 'id,policeNo,merk,model', for: 'pos' })
+      const data = yield call(queryField, { code: payload.id }, { fields: 'id,policeNo,merk,model,type,year,chassisNo,machineNo', for: 'pos' })
       try {
         if (data.success ? data.data.length === 0 : false) {
           data.data[0] = {
             id: null,
             policeNo: null,
             merk: null,
-            model: null
+            model: null,
+            type: null,
+            year: null,
+            chassisNo: null,
+            machineNo: null
           }
         }
       } catch (e) {
