@@ -6,7 +6,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 const BasicReport = ({
   name,
-  className,
+  className = 'button-width02 button-extra-large bgcolor-blue',
   width = 'auto',
   pageMargins = [0, 0, 0, 0],
   pageSize = 'A4',

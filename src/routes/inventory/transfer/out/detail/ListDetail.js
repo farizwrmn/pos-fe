@@ -11,24 +11,28 @@ const List = ({ ...tableProps, editList }) => {
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no'
+      key: 'no',
+      width: '50px'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
+      width: '150px',
       render: (text, record) => (record.productCode || record.serviceCode)
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
+      width: '250px',
       render: (text, record) => (record.productName || record.serviceName)
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      width: '50px'
     }
   ]
 

@@ -1,240 +1,216 @@
 @import "./vars.less";
-
 body {
-  height: 100%;
-  overflow-y: hidden;
-  background-color: #f8f8f8;
+    height: 100%;
+    overflow-y: hidden;
+    background-color: #f8f8f8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #e6e6e6;
+    background-color: #e6e6e6;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+    width: 8px;
+    height: 8px;
 }
 
 :global {
-  .ant-breadcrumb {
-    & > span {
-      &:last-child {
+    .ant-breadcrumb {
+        &>span {
+            &:last-child {
+                color: #999;
+                font-weight: normal;
+            }
+        }
+    }
+    .ant-breadcrumb-link {
+        .anticon+span {
+            margin-left: 4px;
+        }
+    }
+    .ant-table {
+        .ant-table-thead>tr>th {
+            text-align: center;
+            padding: 4px 8px;
+            &.ant-table-selection-column {
+                min-width: 32px;
+                width: 32px;
+            }
+        }
+        .ant-table-tbody>tr>td {
+            //text-align: center;
+            padding: 4px 8px;
+            &.ant-table-selection-column {
+                min-width: 32px;
+                width: 32px;
+            }
+        }
+        &.ant-table-small {
+            .ant-table-thead>tr>th {
+                background: #f7f7f7;
+                font-size: larger
+            }
+            .ant-table-body>table {
+                padding: 0;
+            }
+        }
+    }
+    .ant-table-pagination {
+        float: none!important;
+        display: table;
+        margin: 16px auto !important;
+    }
+    .ant-popover-inner {
+        border: none;
+        border-radius: 0;
+        box-shadow: 0 0 20px rgba(100, 100, 100, 0.2);
+    }
+    .vertical-center-modal {
+        display: -webkit-box;
+        align-items: center;
+        justify-content: center;
+        .ant-modal {
+            top: 0;
+            .ant-modal-body {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+        }
+    }
+    .ant-card-head {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .ant-card-body {
+        padding: 15px;
+    }
+    .ant-form-item {
+        margin-bottom: 8px;
+    }
+    .ant-form-item-control {
+        vertical-align: middle;
+        height: auto;
+        min-height: 32px;
+        height: auto !important;
+        /* for IE as it does not support min-height */
+        height: 32px;
+    }
+    .ant-form-item-margin-bottom {
+        margin-bottom: 5px;
+    }
+    .ant-select-selection--multiple {
+        white-space: nowrap;
+        min-height: 32px;
+        max-height: 80px;
+        overflow: scroll;
+    }
+    .ant-form-item-label-float-left label {
+        float: left
+    }
+    .ant-form-save-width-half {
+        width: 30%;
+        float: right
+    }
+    .ant-modal-mask {
+        background-color: rgba(55, 55, 55, 0.2);
+    }
+    .ant-modal-content {
+        box-shadow: none;
+    } //boo-20171111
+    //.ant-card {
+    //  &:hover {
+    //    overflow: auto;
+    //  }
+    //}
+    //boo-20170621
+    //.ant-pagination-item {
+    //  margin-bottom: 8px;
+    //}
+    .ant-select-dropdown-menu-item {
+        padding: 12px 16px !important;
+    }
+    .margin-right {
+        margin-right: 16px;
+    }
+    .margin-bottom {
+        margin-bottom: 16px;
+    }
+    .button-width01 {
+        margin-right: 16px;
+        margin-bottom: 8px;
+        width: 120px;
+    }
+    .button-width02 {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    .button-extra-large {
+        width: 47px;
+        height: 47px;
+    }
+    .icon-large {
+        font-size: 24px;
+        margin-left: -4px
+    }
+    .bgcolor-lightskyblue {
+        background-color: @lightskyblue;
+    }
+    .bgcolor-green {
+        background-color: @green;
+    }
+    .bgcolor-red {
+        background-color: @red;
+    }
+    .bgcolor-blue {
+        background-color: @blue;
+    }
+    .bgcolor-lightgrey {
+        background-color: @lightgrey;
+    }
+    .dynamic-delete-button {
+        cursor: pointer;
+        position: relative;
+        top: 4px;
+        font-size: 24px;
         color: #999;
-        font-weight: normal;
-      }
+        transition: all .3s;
     }
-  }
-
-  .ant-breadcrumb-link {
-    .anticon + span {
-      margin-left: 4px;
+    .dynamic-delete-button:hover {
+        color: #777;
     }
-  }
-
-  .ant-table {
-    .ant-table-thead > tr > th {
-      text-align: center;
-      padding: 4px 8px;
-      &.ant-table-selection-column {
-        min-width: 32px;
-        width: 32px;
-      }
+    .dynamic-delete-button[disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
     }
-
-    .ant-table-tbody > tr > td {
-      //text-align: center;
-      padding: 4px 8px;
-      &.ant-table-selection-column {
-        min-width: 32px;
-        width: 32px;
-      }
+    .bgcolor-transparent {
+        background-color: transparent;
     }
-
-    &.ant-table-small {
-      .ant-table-thead > tr > th {
-        background: #f7f7f7;
-        font-size: larger
-      }
-
-      .ant-table-body > table {
-        padding: 0;
-      }
+    a:focus {
+        text-decoration: none;
     }
-  }
-
-  .ant-table-pagination {
-    float: none!important;
-    display: table;
-    margin: 16px auto !important;
-  }
-
-  .ant-popover-inner {
-    border: none;
-    border-radius: 0;
-    box-shadow: 0 0 20px rgba(100, 100, 100, 0.2);
-  }
-
-  .vertical-center-modal {
-    display: -webkit-box;
-    align-items: center;
-    justify-content: center;
-
-    .ant-modal {
-      top: 0;
-
-      .ant-modal-body {
-        max-height: 80vh;
-        overflow-y: auto;
-      }
-    }
-  }
-
-  .ant-card-head {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .ant-card-body {
-    padding: 15px;
-  }
-
-  .ant-form-item {
-    margin-bottom: 8px;
-  }
-
-  .ant-form-item-control {
-    vertical-align: middle;
-    height:auto;
-    min-height:32px;
-    height:auto !important;        /* for IE as it does not support min-height */
-    height:32px;
-  }
-
-  .ant-form-item-margin-bottom {
-    margin-bottom: 5px;
-  }
-  
-  .ant-select-selection--multiple {
-     white-space: nowrap;
-     min-height: 32px;
-     max-height: 80px;
-     overflow: scroll;
-  }
-
-  .ant-form-item-label-float-left label{
-    float: left
-  }
-
-  .ant-form-save-width-half {
-    width: 30%;
-    float: right
-  }
-
-  .ant-modal-mask {
-    background-color: rgba(55, 55, 55, 0.2);
-  }
-
-  .ant-modal-content {
-    box-shadow: none;
-  }
-
-  //boo-20171111
-  //.ant-card {
-  //  &:hover {
-  //    overflow: auto;
-  //  }
-  //}
-
-  //boo-20170621
-  //.ant-pagination-item {
-  //  margin-bottom: 8px;
-  //}
-
-  .ant-select-dropdown-menu-item {
-    padding: 12px 16px !important;
-  }
-
-  .margin-right {
-    margin-right: 16px;
-  }
-  .margin-bottom {
-    margin-bottom: 16px;
-  }
-  .button-width01 {
-    margin-right: 16px;
-    margin-bottom: 8px;
-    width: 120px;
-  }
-  .button-width02 {
-    margin-right: 8px;
-    margin-bottom: 8px;
-  }
-  .button-extra-large {
-    width: 47px;
-    height: 47px;
-  }
-  .icon-large {
-    font-size: 24px;
-    margin-left: -4px
-  }
-  .bgcolor-lightskyblue {
-    background-color: @lightskyblue;
-  }
-  .bgcolor-green {
-    background-color: @green;
-  }
-  .bgcolor-red {
-    background-color: @red;
-  }
-  .bgcolor-lightgrey {
-    background-color: @lightgrey;
-  }
-  .dynamic-delete-button {
-    cursor: pointer;
-    position: relative;
-    top: 4px;
-    font-size: 24px;
-    color: #999;
-    transition: all .3s;
-  }
-  .dynamic-delete-button:hover {
-    color: #777;
-  }
-  .dynamic-delete-button[disabled] {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-
-  .bgcolor-transparent {
-    background-color: transparent;
-  }
-
-  a:focus {
-    text-decoration: none;
-  }
 }
+
 @media (min-width: 1600px) {
-  :global {
-    .ant-col-xl-48 {
-      width: 20%;
+     :global {
+        .ant-col-xl-48 {
+            width: 20%;
+        }
+        .ant-col-xl-96 {
+            width: 40%;
+        }
     }
-
-    .ant-col-xl-96 {
-      width: 40%;
-    }
-  }
 }
-@media (max-width: 767px) {
-  :global {
-    .ant-card {
-      .ant-card-head {
-        padding: 0 12px;
-      }
 
-      .ant-card-body {
-        padding: 0;
-        margin: 0;
-      }
+@media (max-width: 767px) {
+     :global {
+        .ant-card {
+            .ant-card-head {
+                padding: 0 12px;
+            }
+            .ant-card-body {
+                padding: 0;
+                margin: 0;
+            }
+        }
     }
-  }
 }

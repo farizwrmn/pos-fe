@@ -165,7 +165,7 @@ const Detail = ({ transferIn, transferInDetail, dispatch, app }) => {
       <Col lg={17}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
-          <Button type="danger" icon="delete" disabled={data.length > 0 ? !data[0].active : 0} onClick={() => voidTrans()}>Void</Button>
+          <Button type="danger" icon="delete" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => voidTrans()}>Void</Button>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
