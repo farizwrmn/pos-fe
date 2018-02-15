@@ -2,11 +2,11 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
-import { queryTrans, queryDetail, voidTrans } from '../../../services/transferStockIn.js'
+import { queryByTrans, queryDetail, voidTrans } from '../../../services/transferStockOut.js'
 
 export default {
 
-  namespace: 'transferInDetail',
+  namespace: 'transferOutDetail',
 
   state: {
     itemCancel: {},
@@ -23,7 +23,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(() => {
-        const match = pathToRegexp('/inventory/transfer/in/:id').exec(location.pathname)
+        const match = pathToRegexp('/inventory/transfer/out/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -39,7 +39,7 @@ export default {
 
   effects: {
     * queryDetail ({ payload }, { call, put }) {
-      const invoiceInfo = yield call(queryTrans, payload)
+      const invoiceInfo = yield call(queryByTrans, payload)
       const data = yield call(queryDetail, payload)
       const dataInvoice = []
       const dataDetail = []
@@ -69,14 +69,12 @@ export default {
             }
           })
         }
-        console.log('dataInvoice', dataInvoice)
-        console.log('dataInvoice', dataDetail)
       } else {
         Modal.warning({
           title: 'Something went wrong',
           content: 'data is not found'
         })
-        yield put(routerRedux.push('/inventory/transfer/in'))
+        yield put(routerRedux.push('/inventory/transfer/out'))
       }
     },
     * voidTrans ({ payload }, { call, put }) {
@@ -92,7 +90,7 @@ export default {
             }
           })
         }
-        yield put(routerRedux.push('/inventory/transfer/in/'))
+        yield put(routerRedux.push('/inventory/transfer/out/'))
         Modal.info({
           title: 'Transaction has been canceled'
         })

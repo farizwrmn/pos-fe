@@ -68,6 +68,18 @@ export async function queryTransferOut (params) {
   })
 }
 
+export async function voidTrans (params) {
+  let url = `${transfer}/out/cancel`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
 // export async function edit (params) {
 //   let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
 //   const apiHeaderToken = crypt.apiheader()

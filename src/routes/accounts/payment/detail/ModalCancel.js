@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Input, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
+const { TextArea } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -50,11 +51,11 @@ const modal = ({
             rules: [
               {
                 required: true,
-                pattern: /^[a-z0-9/ _-]{20,100}$/i,
+                pattern: /^[a-z0-9/\n _-]{20,100}$/i,
                 message: 'At least 20 character'
               }
             ]
-          })(<Input />)}
+          })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)}
         </FormItem>
       </Form>
     </Modal>

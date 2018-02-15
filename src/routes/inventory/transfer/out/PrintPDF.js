@@ -76,7 +76,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeId ? itemHeader.employeeId.label : '').toString(), fontSize: 11 }],
-            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('YYYY/MM/DD'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
+            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
             [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeId ? itemHeader.storeId.label : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL COLLY', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
             [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeIdReceiver ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 11 }]
           ]

@@ -109,8 +109,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       key: 'status',
       render: (text, record) =>
         (<span>
-          <Tag color={!text && record.active ? 'blue' : text && record.active ? 'green' : 'red'}>
-            {!text && record.active ? 'In progress' : text && record.active ? 'Accepted' : 'Canceled'}
+          <Tag color={record.status ? 'green' : 'red'}>
+            {record.status ? 'Accepted' : 'Canceled'}
           </Tag>
         </span>)
     },
@@ -120,7 +120,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       key: 'transNo',
       sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
       sortOrder: sort.columnKey === 'transNo' && sort.order,
-      render: (text, record) => (record.active ? <Link to={`/inventory/transfer/in/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
+      render: text => <Link to={`/inventory/transfer/in/${encodeURIComponent(text)}`}>{text}</Link>
     },
     {
       title: 'Operation',

@@ -387,7 +387,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/detail/in'))
               registerModel(app, require('./models/transferIn'))
               cb(null, require('./routes/inventory/transfer/in/detail'))
-            }, 'inventory-transfer')
+            }, 'inventory-transfer-in')
           }
         }, {
           path: 'inventory/transfer/out',
@@ -398,6 +398,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
             }, 'setting-misc')
+          }
+        }, {
+          path: 'inventory/transfer/out/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/detail/out'))
+              registerModel(app, require('./models/transferOut'))
+              cb(null, require('./routes/inventory/transfer/out/detail'))
+            }, 'inventory-transfer-out')
           }
         }, {
           path: 'setting/misc',
