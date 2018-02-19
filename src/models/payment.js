@@ -7,6 +7,7 @@ import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { query as querySetting } from '../services/setting'
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -46,6 +47,7 @@ export default {
     netto: 0,
     print: '',
     company: [],
+    companyInfo: {},
     lastTransNo: '',
     totalPayment: 0,
     totalChange: 0,
@@ -64,7 +66,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/pos/payment') {
+        if (location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos/history') {
           dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
           dispatch({
             type: 'updateState',
@@ -260,12 +262,24 @@ export default {
 
     * setLastTrans ({ payload }, { call, put }) {
       const transNo = yield call(querySequence, payload)
+      const company = yield call(querySetting, { settingCode: 'Company' })
       localStorage.setItem('transNo', transNo.data)
       console.log('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
         payload: transNo.data
       })
+      if (company.success) {
+        let json = company.data[0]
+        let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
+        const data = JSON.parse(jsondata)
+        yield put({
+          type: 'updateState',
+          payload: {
+            companyInfo: data
+          }
+        })
+      }
     },
     * listCreditCharge ({ payload }, { put, call }) {
       const data = yield call(listCreditCharge, payload)
@@ -435,7 +449,16 @@ export default {
     },
 
     printPayment (state, action) {
+      const additionalMargin1 = [0, 10, 0, 10]
+      const additionalMargin2 = [0, 20, 0, 40]
+      const additionalFontSize = 9
+      const bottomFontSize = 11
+      const companyFontSize = 10
+      const tableContentFontSize = 11
+      const tableHeaderFontSize = 12
+      const headerFontSize = 11
       const payload = action.payload
+      const companyInfo = payload.companyInfo
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
@@ -444,19 +467,19 @@ export default {
         const createPdfLineItems = (tabledata, payload, node) => {
           let code = ''
           if (node === 1) {
-            code = 'Service'
+            code = 'SERVICE'
           } else if (node === 0) {
-            code = 'Product'
+            code = 'PRODUCT'
           }
           let headers = {
             top: {
-              col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-              col_2: { fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
-              col_3: { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
-              col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-              col_5: { fontSize: 12, text: '@HET', style: 'tableHeader', alignment: 'center' },
-              col_6: { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
-              col_7: { fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' }
+              col_1: { fontSize: tableHeaderFontSize, text: 'NO', style: 'tableHeader', alignment: 'center' },
+              col_2: { fontSize: tableHeaderFontSize, text: code, style: 'tableHeader', alignment: 'center' },
+              col_3: { fontSize: tableHeaderFontSize, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
+              col_4: { fontSize: tableHeaderFontSize, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+              col_5: { fontSize: tableHeaderFontSize, text: '@HET', style: 'tableHeader', alignment: 'center' },
+              col_6: { fontSize: tableHeaderFontSize, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
+              col_7: { fontSize: tableHeaderFontSize, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' }
             }
           }
           let rows = tabledata
@@ -480,13 +503,13 @@ export default {
               let data = rows[key]
               let totalDisc = (data.price * data.qty) - data.total
               let row = []
-              row.push({ text: data.no.toString(), alignment: 'center', fontSize: 11 })
-              row.push({ text: data.code.toString(), alignment: 'left', fontSize: 11 })
-              row.push({ text: data.name.toString(), alignment: 'left', fontSize: 11 })
-              row.push({ text: data.qty.toString(), alignment: 'center', fontSize: 11 })
-              row.push({ text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
-              row.push({ text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
-              row.push({ text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
+              row.push({ text: data.no.toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: data.code.toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: data.name.toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: data.qty.toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
               body.push(row)
             }
           }
@@ -497,6 +520,50 @@ export default {
         }
         let body = createPdfLineItems(dataService, payload, 1)
         let product = createPdfLineItems(dataPos, payload, 0)
+        const table1 = {
+          writable: true,
+          table: {
+            widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+            headerRows: 1,
+            body: product
+          },
+          layout: {
+            hLineWidth: (i) => {
+              return (i === 1 || i === 0) ? 0.01 : 0
+            },
+            vLineWidth: () => {
+              return 0
+            },
+            hLineColor: (i) => {
+              return (i === 1 || i === 0) ? 'black' : 'white'
+            },
+            vLineColor: () => {
+              return 'white'
+            }
+          }
+        }
+        const table2 = {
+          writable: true,
+          table: {
+            headerRows: 1,
+            widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+            body
+          },
+          layout: {
+            hLineWidth: (i, node) => {
+              return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
+            },
+            vLineWidth: (i, node) => {
+              return (i === 0 || i === node.table.widths.length) ? 0 : 0
+            },
+            hLineColor: (i, node) => {
+              return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white'
+            },
+            vLineColor: (i, node) => {
+              return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
+            }
+          }
+        }
         let salutation = ''
         if (payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0, 3) === 'MDN') {
           if (payload.gender === 'M') {
@@ -514,19 +581,55 @@ export default {
               {
                 columns: [
                   {
-                    stack: storeInfo
+                    stack: [
+                      {
+                        text: (companyInfo.companyName || ''),
+                        fontSize: tableHeaderFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: (companyInfo.companyAddress || '').substring(0, 32),
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: `NPWP: ${(companyInfo.taxID || '').substring(0, 20)}`,
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: `Tgl. Pengukuhan: ${companyInfo.taxConfirmDate ? moment(companyInfo.taxConfirmDate).format('DD.MM.YYYY') : ''}`,
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      }
+                    ]
                   },
                   {
-                    text: 'NOTA PENJUALAN',
+                    text: '',
                     style: 'header',
                     fontSize: 18,
                     alignment: 'center'
                   },
                   {
-                    text: ' ',
+                    stack: storeInfo
+                  }
+                ]
+              },
+              {
+                canvas: [{ type: 'line', x1: 0, y1: 0, x2: 733, y2: 0, lineWidth: 0.5 }]
+              },
+              {
+                columns: [
+                  {
+
+                  },
+                  {
+                    text: 'NOTA PENJUALAN',
                     style: 'header',
-                    fontSize: 18,
-                    alignment: 'right'
+                    fontSize: 15,
+                    alignment: 'center'
+                  },
+                  {
                   }
                 ]
               },
@@ -534,75 +637,29 @@ export default {
                 table: {
                   widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
                   body: [
-                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi/KM', fontSize: 12 }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: 12 }],
+                    [{ text: 'No Faktur', fontSize: headerFontSize }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: headerFontSize }, {}, { text: 'No Polisi/KM', fontSize: headerFontSize }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: headerFontSize }],
 
-                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'Merk/Model', fontSize: 12 }, ':', { text: `${(payload.unitInfo.merk || '').toString().toUpperCase()}${payload.unitInfo.model ? '/' : ''}${(payload.unitInfo.model || '').toString().toUpperCase()}`, fontSize: 12 }],
+                    [{ text: 'Tanggal Faktur', fontSize: headerFontSize }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: headerFontSize }, {}, { text: 'Merk/Model', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.merk || '').toString().toUpperCase()}${payload.unitInfo.model ? '/' : ''}${(payload.unitInfo.model || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
 
-                    [{ text: 'Customer', fontSize: 12 }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Type/Tahun', fontSize: 12 }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: 12 }],
+                    [{ text: 'Customer', fontSize: headerFontSize }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: headerFontSize }, {}, { text: 'Type/Tahun', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
 
-                    [{ text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }]
+                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Mechanic', fontSize: headerFontSize }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: headerFontSize }]
                   ]
                 },
                 layout: 'noBorders'
-              },
-              {
-                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
               }
             ],
             margin: [30, 12, 12, 30]
           },
-
           content: [
-            {
-              writable: true,
-              table: {
-                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                headerRows: 1,
-                body: product
-              },
-              layout: {
-                hLineWidth: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
-                },
-                vLineWidth: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 0 : 0
-                },
-                hLineColor: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 'black' : 'white'
-                },
-                vLineColor: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                }
-              }
-            },
-            {
+            dataPos.length > 0 ? table1 : {},
+            dataPos.length > 0 ? {
               text: ' ',
               style: 'header',
               fontSize: 12,
               alignment: 'left'
-            },
-            {
-              writable: true,
-              table: {
-                headerRows: 1,
-                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                body
-              },
-              layout: {
-                hLineWidth: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
-                },
-                vLineWidth: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 0 : 0
-                },
-                hLineColor: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white'
-                },
-                vLineColor: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                }
-              }
-            }
+            } : {},
+            dataService.length > 0 ? table2 : {}
           ],
 
           footer: (currentPage, pageCount) => {
@@ -616,41 +673,45 @@ export default {
                   },
                   {
                     columns: [
-                      { fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left' },
-                      { fontSize: 12, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' }
+                      {
+                        stack: [
+                          { fontSize: bottomFontSize, text: `Terbilang : ${terbilang(Total).toUpperCase()}RUPIAH`, alignment: 'left' },
+                          { fontSize: additionalFontSize, text: '* Harga sudah termasuk PPN 10%', alignment: 'left' }
+                        ]
+                      },
+                      { fontSize: bottomFontSize, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' }
                     ]
                   },
                   {
                     columns: [
-                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
+                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] },
+                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
                     ]
                   },
                   {
-                    fontSize: 9,
                     columns: [
                       {
                         text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
                         alignment: 'left'
                       },
                       {
                         text: `Cetakan ke: ${payload.printNo}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
                         alignment: 'center'
                       },
                       {
                         text: `Dicetak Oleh: ${payload.userName}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
                         alignment: 'center'
                       },
                       {
                         text: `page: ${currentPage.toString()} of ${pageCount}\n`,
-                        fontSize: 9,
-                        margin: [0, 10, 0, 10],
+                        fontSize: additionalFontSize,
+                        margin: additionalMargin1,
                         alignment: 'right'
                       }
                     ],
@@ -670,26 +731,26 @@ export default {
                   columns: [
                     {
                       text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                      margin: [0, 20, 0, 40],
-                      fontSize: 9,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
                       alignment: 'left'
                     },
                     {
                       text: `Cetakan ke: ${payload.printNo}`,
-                      margin: [0, 20, 0, 40],
-                      fontSize: 9,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
                       alignment: 'center'
                     },
                     {
                       text: `Dicetak Oleh: ${payload.cashierId}`,
-                      margin: [0, 20, 0, 40],
-                      fontSize: 9,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
                       alignment: 'center'
                     },
                     {
                       text: `page: ${currentPage.toString()} of ${pageCount}\n`,
-                      fontSize: 9,
-                      margin: [0, 20, 0, 40],
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
                       alignment: 'right'
                     }
                   ]

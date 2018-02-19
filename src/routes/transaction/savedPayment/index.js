@@ -7,9 +7,10 @@ import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
-const Pos = ({ location, dispatch, loading, pos, app }) => {
+const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
     pagination, modalPrintVisible, tmpListPayment, posData } = pos
+  const { companyInfo } = payment
   const { storeInfo } = app
 
   const modalProps = {
@@ -101,6 +102,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
           unitInfo: {
             ...listPaymentDetail
           },
+          companyInfo,
           memberName: data.memberPrint.memberName,
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,
@@ -128,7 +130,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     loading: loading.effects['pos/queryPosDetail'],
     maskClosable: false,
     invoiceCancel,
-    title: 'Cancel the Transaction Duplicate?',
+    title: 'Cancel the Transaction?',
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -214,6 +216,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
 
 Pos.propTypes = {
   pos: PropTypes.object,
+  payment: PropTypes.object,
   app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -221,4 +224,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, loading, app }) => ({ pos, loading, app }))(Pos)
+export default connect(({ pos, payment, loading, app }) => ({ pos, payment, loading, app }))(Pos)

@@ -124,7 +124,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     loading: loading.effects['pos/queryPosDetail'],
     maskClosable: false,
     invoiceCancel,
-    title: 'Cancel the Transaction Duplicate?',
+    title: 'Cancel the Transaction?',
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {

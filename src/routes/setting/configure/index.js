@@ -4,12 +4,46 @@ import { connect } from 'dva'
 import { Row, Col, Button, Card, Modal } from 'antd'
 import { DropOption } from 'components'
 import Inventory from './inventory'
+import Company from './company'
 
 const Config = ({ dispatch, configure, loading }) => {
-  const { formHeader, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
+  const { formHeader, formCompanyVisible, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
   const inventoryProps = {
     formHeader,
     visible: formInventoryVisible,
+    config,
+    visibilitySave,
+    visibilityCommit,
+    loading: loading.effects['configure/query'],
+    onOk (id, data) {
+      Modal.confirm({
+        title: 'Change Preference',
+        content: 'this action cannot be undone',
+        onOk () {
+          dispatch({
+            type: 'configure/update',
+            payload: {
+              id,
+              data
+            }
+          })
+        }
+      })
+    },
+    changeVisible (e, formHeader) {
+      dispatch({
+        type: 'configure/saveVisible',
+        payload: {
+          visibilitySave: e,
+          formHeader
+        }
+      })
+    }
+  }
+
+  const companyProps = {
+    formHeader,
+    visible: formCompanyVisible,
     config,
     visibilitySave,
     visibilityCommit,
@@ -68,6 +102,7 @@ const Config = ({ dispatch, configure, loading }) => {
         <Col lg={{ span: 19, offset: 1 }} md={{ span: 19, offset: 1 }} sm={{ span: 24 }}>
           <Card title={formHeader}>
             {formInventoryVisible && <Inventory {...inventoryProps} />}
+            {formCompanyVisible && <Company {...companyProps} />}
           </Card>
         </Col>
         <Col lg={{ span: 3, offset: 1 }} md={{ span: 5, offset: 1 }} sm={{ span: 24 }}>
@@ -75,7 +110,8 @@ const Config = ({ dispatch, configure, loading }) => {
           <DropOption onMenuClick={e => hdlDropOptionClick(e)}
             menuName="Options"
             menuOptions={[
-              { key: 'Inventory', name: 'Inventory' }
+              { key: 'Inventory', name: 'Inventory' },
+              { key: 'Company', name: 'Company' }
             ]}
           />
         </Col>

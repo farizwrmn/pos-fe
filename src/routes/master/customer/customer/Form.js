@@ -115,7 +115,7 @@ const formCustomer = ({
           onOk () {
             onSubmit(data.memberCode, data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Member Code can't be null")
@@ -130,7 +130,7 @@ const formCustomer = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
     </Button>
@@ -359,7 +359,14 @@ const formCustomer = ({
             <Col {...col}>
               <FormItem label="Email" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('email', {
-                  initialValue: item.email
+                  initialValue: item.email,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^([a-zA-Z0-9._-a-zA-Z0-9])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+                      message: 'The input is not valid E-mail!'
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
