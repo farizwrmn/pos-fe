@@ -75,7 +75,7 @@ const Filter = ({
       }
       const data = { ...getFieldsValue() }
       data.policeNo = data.policeNo.option
-      data.serviceTypeId = data.serviceTypeId.option
+      data.serviceTypeId = data.serviceTypeId ? data.serviceTypeId.option : null
       const { memberCode } = customerInfo
       onSearchClick(memberCode, data)
     })

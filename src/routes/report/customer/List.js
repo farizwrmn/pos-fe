@@ -48,7 +48,7 @@ const List = ({ ...tableProps, dataSource }) => {
       dataIndex: 'total',
       key: 'total',
       render: (text) => {
-        return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
       }
     },
     {
@@ -56,7 +56,7 @@ const List = ({ ...tableProps, dataSource }) => {
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
       render: (text) => {
-        return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
       }
     },
     {
@@ -64,7 +64,7 @@ const List = ({ ...tableProps, dataSource }) => {
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
       render: (text) => {
-        return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
       }
     }
   ]

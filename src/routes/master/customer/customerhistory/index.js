@@ -71,7 +71,7 @@ const History = ({ history, loading, dispatch }) => {
       key: 'nettoTotal',
       width: 40,
       render: (text) => {
-        return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
       }
     }
   ]

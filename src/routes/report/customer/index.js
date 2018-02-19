@@ -78,7 +78,7 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
     onSearchClick (memberCode, data) {
       let fromDate = null
       let toDate = null
-      if (data.period) {
+      if (data.period ? data.period[0] : false) {
         fromDate = moment(data.period[0]).format('YYYY-MM-DD')
         toDate = moment(data.period[1]).format('YYYY-MM-DD')
       }
@@ -89,7 +89,8 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
           policeNo: data.policeNo,
           from: fromDate,
           to: toDate,
-          serviceType: data.serviceTypeId
+          serviceType: data.serviceTypeId,
+          mode: 'detail'
         }
       })
     }
@@ -118,17 +119,17 @@ const CustomerHistory = ({ customerReport, customer, service, dispatch, app, loa
 
   let moreButtonTab
   switch (activeTabKey) {
-  case '1':
-    if (listHistory.length > 0) {
-      moreButtonTab = (<Dropdown overlay={menu}>
-        <Button>
-          <Icon type="printer" /> Print
+    case '1':
+      if (listHistory.length > 0) {
+        moreButtonTab = (<Dropdown overlay={menu}>
+          <Button>
+            <Icon type="printer" /> Print
         </Button>
-      </Dropdown>)
-    }
-    break
-  default:
-    break
+        </Dropdown>)
+      }
+      break
+    default:
+      break
   }
 
   return (
