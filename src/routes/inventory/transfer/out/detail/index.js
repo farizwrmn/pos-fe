@@ -165,7 +165,7 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
       <Col lg={17}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
-          <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0].status ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>
+          <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>

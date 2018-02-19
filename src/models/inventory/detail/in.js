@@ -101,6 +101,12 @@ export default {
           title: 'Something went wrong',
           content: data.message
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            disableConfirm: false
+          }
+        })
         throw data
       }
     }
