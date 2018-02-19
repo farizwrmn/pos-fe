@@ -152,7 +152,7 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
               <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             </Col>
             <Col lg={10} md={10} offset={2}>
-              {!showPrint && <Button icon="rollback" onClick={() => clickPrint()}>Print</Button>}
+              {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
               {showPrint && <PrintPDF {...printProps} />}
             </Col>
           </Row>
