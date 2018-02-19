@@ -14,51 +14,11 @@ const formItemLayout = {
 }
 
 const ModalCreditCard = ({ payment, stock, app, dispatch, ...modalProps }) => {
-  const { listCreditCharge, creditCharge, creditChargeAmount, creditCardTotal, totalPayment, totalChange, creditCardNo, creditCardType } = payment
-  const { memberInformation, technicianInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = stock
-  const { user } = app
+  const { listCreditCharge, creditCharge, creditChargeAmount, creditCardTotal, creditCardNo } = payment
+  const { curTotal, curRounding } = stock
 
   const modalOpts = {
     ...modalProps
-  }
-
-  const getDate = (mode) => {
-    let today = new Date()
-    let dd = today.getDate()
-    let mm = today.getMonth() + 1 // January is 0!
-    let yyyy = today.getFullYear()
-
-    if (dd < 10) {
-      dd = `0${dd}`
-    }
-
-    if (mm < 10) {
-      mm = `0${mm}`
-    }
-
-    if (mode === 1) {
-      today = dd + mm + yyyy
-    } else if (mode === 2) {
-      today = mm + yyyy
-    } else if (mode === 3) {
-      today = `${yyyy}-${mm}-${dd}`
-    }
-
-    return today
-  }
-  const checkTime = (i) => {
-    if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
-    return i
-  }
-  const setTime = () => {
-    let today = new Date()
-    let h = today.getHours()
-    let m = today.getMinutes()
-    let s = today.getSeconds()
-    m = checkTime(m)
-    s = checkTime(s)
-
-    return `${h}:${m}:${s}`
   }
 
   const onChangeType = (value) => {
