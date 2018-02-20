@@ -109,7 +109,7 @@ class DynamicFieldSet extends React.Component {
     }
     document.onkeydown = function (e) {
       if (e.which === 17) isCtrl = true
-      if (e.which === 66 && isCtrl === true) {
+      if (e.which === 66 && isCtrl === true && window.location.pathname === '/transaction/pos/payment') {
         perfect()
         return false
       }

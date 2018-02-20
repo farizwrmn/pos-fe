@@ -229,6 +229,7 @@ export default {
                 curShift: payload.curShift,
                 printNo: 1,
                 point,
+                companyInfo: payload.companyInfo,
                 curCashierNo: payload.curCashierNo,
                 cashierId: payload.cashierId,
                 userName: payload.userName,
@@ -550,17 +551,17 @@ export default {
             body
           },
           layout: {
-            hLineWidth: (i, node) => {
-              return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
+            hLineWidth: (i) => {
+              return (i === 1 || i === 0) ? 0.01 : 0
             },
-            vLineWidth: (i, node) => {
-              return (i === 0 || i === node.table.widths.length) ? 0 : 0
+            vLineWidth: () => {
+              return 0
             },
-            hLineColor: (i, node) => {
-              return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white'
+            hLineColor: (i) => {
+              return (i === 1 || i === 0) ? 'black' : 'white'
             },
-            vLineColor: (i, node) => {
-              return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
+            vLineColor: () => {
+              return 'white'
             }
           }
         }
@@ -583,22 +584,22 @@ export default {
                   {
                     stack: [
                       {
-                        text: (companyInfo.companyName || ''),
+                        text: companyInfo.companyName !== '' && companyInfo.companyName !== null ? (companyInfo.companyName || '') : '',
                         fontSize: tableHeaderFontSize,
                         alignment: 'left'
                       },
                       {
-                        text: (companyInfo.companyAddress || '').substring(0, 32),
+                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 32) : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       },
                       {
-                        text: `NPWP: ${(companyInfo.taxID || '').substring(0, 20)}`,
+                        text: companyInfo.taxID !== '' && companyInfo.taxID !== null ? `NPWP: ${(companyInfo.taxID || '').substring(0, 20)}` : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       },
                       {
-                        text: `Tgl. Pengukuhan: ${companyInfo.taxConfirmDate ? moment(companyInfo.taxConfirmDate).format('DD.MM.YYYY') : ''}`,
+                        text: companyInfo.taxConfirmDate !== '' && companyInfo.taxConfirmDate !== null ? `Tgl. Pengukuhan: ${companyInfo.taxConfirmDate ? moment(companyInfo.taxConfirmDate).format('DD.MM.YYYY') : ''}` : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       }

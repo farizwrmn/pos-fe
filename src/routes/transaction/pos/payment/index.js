@@ -54,7 +54,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     modalType,
     typeTrans,
     itemPayment,
-    woNumber } = payment
+    woNumber,
+    companyInfo } = payment
   const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -195,7 +196,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           totalDiscount: curTotalDiscount,
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           rounding: curRounding,
-          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
           memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
           mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
           memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
@@ -208,6 +209,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           userName: user.username,
           setting,
           listAmount,
+          companyInfo,
           curNetto: parseFloat(curTotal) + parseFloat(curRounding),
           curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
           usingWo: !((woNumber === '' || woNumber === null)),

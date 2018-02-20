@@ -4,9 +4,8 @@ import {
   Form,
   // Input,
   // Button,
-  Row,
+  Row
   // Col,
-  Modal
   // DatePicker,
   // Select
 } from 'antd'
@@ -43,15 +42,8 @@ import List from './ListDetail'
 
 const formPayment = ({
   dataSource,
-  item = {},
-  onEdit,
-  onSubmit,
-  listAmount,
-  modalType,
   form: {
     // getFieldDecorator,
-    getFieldsValue,
-    validateFields,
     resetFields
   }
 }) => {
@@ -65,39 +57,6 @@ const formPayment = ({
   //   changeTab(key)
   //   handleReset()
   // }
-
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      if (modalType === 'add') {
-        data.id = listAmount.length + 1
-        Modal.confirm({
-          title: 'Accept this payment ?',
-          onOk () {
-            onSubmit(data)
-            resetFields()
-          },
-          onCancel () { }
-        })
-      } else {
-        data.id = item.id
-        Modal.confirm({
-          title: 'Change this payment ?',
-          onOk () {
-            onEdit(data)
-            resetFields()
-          },
-          onCancel () { }
-        })
-      }
-    })
-  }
-
   // const browse = () => {
   //   clickBrowse()
   // }
@@ -131,22 +90,6 @@ const formPayment = ({
   //     })
   //   }
   // }
-
-  let isCtrl = false
-  const perfect = () => {
-    handleSubmit()
-  }
-  document.onkeyup = function (e) {
-    if (e.which === 17) isCtrl = false
-  }
-  document.onkeydown = function (e) {
-    if (e.which === 17) isCtrl = true
-    if (e.which === 66 && isCtrl === true) { // ctrl + b
-      perfect()
-      return false
-    }
-  }
-
   // const useNetto = (e) => {
   //   setFieldsValue({
   //     amount: e
