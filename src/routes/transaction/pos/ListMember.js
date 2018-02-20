@@ -59,6 +59,10 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
       title: 'Mobile',
       dataIndex: 'mobileNumber',
       key: 'mobileNumber'
+    }, {
+      title: 'Type',
+      dataIndex: 'memberTypeName',
+      key: 'memberTypeName'
     }
   ]
 

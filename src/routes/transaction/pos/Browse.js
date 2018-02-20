@@ -51,15 +51,15 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
   }
   return (
     <Modal {...modalOpts} width={width} height="80%" footer={[]}>
-      { (modalType === 'browse') && <List {...listProps} /> }
-      { (modalType === 'browseMember') && <ListMember {...listProps} /> }
-      { (modalType === 'browseMechanic') && <ListMechanic {...listProps} /> }
-      { (modalType === 'browseProductLock') && <ListProductLock {...listProps} /> }
-      { (modalType === 'browseProductFree') && <ListProductLock {...listProps} /> }
-      { (modalType === 'browseService') && <ListService {...listProps} /> }
-      { (modalType === 'queue') && <ListQueue {...listProps} /> }
-      { (modalType === 'modalPayment') && <PaymentList {...listProps} /> }
-      { (modalType === 'modalService') && <ServiceList {...listProps} /> }
+      {(modalType === 'browse') && <List {...listProps} />}
+      {(modalType === 'browseMember') && <ListMember {...listProps} />}
+      {(modalType === 'browseMechanic') && <ListMechanic {...listProps} />}
+      {(modalType === 'browseProductLock') && <ListProductLock {...listProps} />}
+      {(modalType === 'browseProductFree') && <ListProductLock {...listProps} />}
+      {(modalType === 'browseService') && <ListService {...listProps} />}
+      {(modalType === 'queue') && <ListQueue {...listProps} />}
+      {(modalType === 'modalPayment') && <PaymentList {...listProps} />}
+      {(modalType === 'modalService') && <ServiceList {...listProps} />}
     </Modal>
   )
 }

@@ -26,7 +26,7 @@ const ModalCreditCard = ({ payment, stock, app, dispatch, ...modalProps }) => {
       type: 'payment/getCreditCharge',
       payload: {
         creditCode: `${value}`,
-        netto: parseInt(curTotal, 10) + parseInt(curRounding, 10)
+        netto: parseFloat(curTotal) + parseFloat(curRounding)
       }
     })
   }

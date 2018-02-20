@@ -183,7 +183,7 @@ const formPayment = ({
           </FormItem>
           <FormItem label="Amount" hasFeedback {...formItemLayout}>
             {getFieldDecorator('amount', {
-              initialValue: item.amount ? item.amount : (parseInt(curTotal, 10) + parseInt(curRounding, 10)) - curPayment > 0 ? (parseInt(curTotal, 10) + parseInt(curRounding, 10)) - curPayment : 0,
+              initialValue: item.amount ? item.amount : (parseFloat(curTotal, 10) + parseFloat(curRounding, 10)) - curPayment > 0 ? (parseFloat(curTotal, 10) + parseFloat(curRounding, 10)) - curPayment : 0,
               rules: [
                 {
                   required: true,
@@ -191,7 +191,7 @@ const formPayment = ({
                   message: '0-9 please insert the value'
                 }
               ]
-            })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseInt(curTotal, 10) + parseInt(curRounding, 10))}>Netto</Button>)} autoFocus maxLength={10} />)}
+            })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
           </FormItem>
           <FormItem label="Note" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
@@ -276,7 +276,7 @@ const formPayment = ({
             <Input value={curPayment - curNetto} style={{ width: '100%', fontSize: '17pt' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-            <Input value={parseInt(curTotal, 10) + parseInt(curRounding, 10)} style={{ width: '100%', fontSize: '17pt' }} size="large" />
+            <Input value={parseFloat(curTotal) + parseFloat(curRounding)} style={{ width: '100%', fontSize: '17pt' }} size="large" />
           </FormItem>
         </Col>
       </Row>

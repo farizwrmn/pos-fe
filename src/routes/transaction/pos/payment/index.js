@@ -147,7 +147,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
         break
       }
     }
-    if ((parseInt(memberInformation.memberPendingPayment, 10) ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseInt(curTotal, 10) + parseInt(curRounding, 10)) || listAmount.length === 0) {
+    if ((parseFloat(memberInformation.memberPendingPayment) ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding)) || listAmount.length === 0) {
       Modal.error({
         title: 'Payment',
         content: 'Total Payment must be greater than Netto'
@@ -176,7 +176,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           transDate: getDate(1),
           transDate2: getDate(3),
           transTime: setTime(),
-          grandTotal: parseInt(curTotal, 10) + parseInt(curTotalDiscount, 10),
+          grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
           totalPayment,
           creditCardNo: '',
           creditCardType: '',
@@ -189,7 +189,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
           lastTransNo,
           lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-          paymentVia: typeTrans.toString(),
+          paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
           totalChange,
           unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
           totalDiscount: curTotalDiscount,
@@ -202,7 +202,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           technicianId: mechanicInformation.mechanicCode,
           curShift,
           printNo: 1,
-          point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
+          point: parseFloat((parseFloat(curTotal) - parseFloat(curTotalDiscount)) / 10000, 10),
           curCashierNo,
           cashierId: user.userid,
           userName: user.username,
@@ -375,7 +375,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
       <Row style={{ marginBottom: 16 }}>
         <Col span={24}>
           {/* <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}> */}
-          <FormPayment options={listOpts} {...formPaymentProps} />
+          {listOpts.length > 0 && <FormPayment options={listOpts} {...formPaymentProps} />}
           {/* <Form layout="horizontal">
               <FormItem>
                 <Input

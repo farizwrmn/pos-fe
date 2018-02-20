@@ -18,7 +18,6 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
     let H3 = H2 * (1 - (data.disc3 / 100))
     let TOTAL = H3 - data.discount
     data.total = TOTAL
-    console.log('data', data)
     data.productId = item.productId
     data.typeCode = item.typeCode
     onChangeTotalItem(data)

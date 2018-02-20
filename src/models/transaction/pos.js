@@ -693,11 +693,20 @@ export default {
         const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
         return outOfStock
       }
+      function checkPrice (input, temp) {
+        const price = (input.price * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
+        const cost = (temp[0].amount === 0 ? temp[0].costPrice : temp[0].amount)
+        if (price >= parseFloat(cost).toFixed(2)) {
+          return false
+        }
+        return true
+      }
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
         const totalTempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
         let outOfStock = getSetting(payload.setting)
-        if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+        // if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+        if (checkPrice(data, tempListProduct)) {
           Modal.warning({
             title: 'Price is under the cost'
           })
@@ -763,11 +772,20 @@ export default {
         const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
         return outOfStock
       }
+      function checkPrice (input, temp) {
+        const price = (input.price * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
+        const cost = (temp[0].amount === 0 ? temp[0].costPrice : temp[0].amount)
+        if (price >= parseFloat(cost).toFixed(2)) {
+          return false
+        }
+        return true
+      }
       const outOfStock = getSetting(payload.setting)
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
         const totalTempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+        // if (data.price < (tempListProduct[0].amount === 0 ? tempListProduct[0].costPrice : tempListProduct[0].amount)) {
+        if (checkPrice(data, tempListProduct)) {
           Modal.warning({
             title: 'Price is under the cost'
           })
@@ -1676,16 +1694,16 @@ export default {
         return cnt + (((tmpTotal - tmpDisc1 - tmpDisc2) * o.disc3) / 100)
       }, 0)
 
-      let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
+      // let ratusan = grandTotal.toString().substr(grandTotal.toString().length - 2, 2)
       // Ganti 100 dengan Jumlah Pembulatan yang diinginkan
-      let selisih = 100 - parseInt(ratusan, 10)
-      let curRounding
+      // let selisih = 100 - parseInt(ratusan, 10)
+      let curRounding = 0
 
-      if (selisih > 50) {
-        curRounding = parseInt(ratusan, 10) * -1
-      } else {
-        curRounding = parseInt(selisih, 10)
-      }
+      // if (selisih > 50) {
+      //   curRounding = parseInt(ratusan, 10) * -1
+      // } else {
+      //   curRounding = parseInt(selisih, 10)
+      // }
 
       return {
         ...state,
