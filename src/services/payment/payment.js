@@ -22,6 +22,16 @@ export async function queryPaymentGroup (params) {
   })
 }
 
+export async function queryPaymentWithPOS (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentOpts}/report/pos`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryPaymentSplit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

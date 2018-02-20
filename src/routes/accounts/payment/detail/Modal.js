@@ -72,7 +72,7 @@ const modal = ({
             </FormItem>
             <FormItem label="Amount" hasFeedback {...formItemLayout}>
               {getFieldDecorator('amount', {
-                initialValue: item.amount ? item.amount : parseFloat(data.length > 0 ? data[0].nettoTotal - curPayment : 0),
+                initialValue: item.amount ? item.amount : parseFloat(data.length > 0 ? data[0].nettoTotal - curPayment : 0).toFixed(0),
                 rules: [
                   {
                     required: true,

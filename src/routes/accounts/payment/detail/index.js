@@ -133,7 +133,8 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
         <div className="content-inner-zero-min-height">
           <h1>Payment</h1>
           <Tag color={parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) ? 'red' : parseFloat(data[0].nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'green' : 'yellow'}>
-            {parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) ? 'Pending' : parseFloat(data[0].nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'Paid' : 'Partial'}
+            {parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data[0].nettoTotal || 0 : 0) ? 'Pending' :
+              parseFloat(data[0].nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'Paid' : 'Partial'}
           </Tag>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <FormPayment {...formProps} />

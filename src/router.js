@@ -320,17 +320,15 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/report/customer/'))
             }, 'report-customer-history')
           }
-        },
-        // {
-        //   path: 'report/inventory/transfer',
-        //   getComponent (nextState, cb) {
-        //     require.ensure([], (require) => {
-        //       registerModel(app, require('./models/report/inventory'))
-        //       cb(null, require('./routes/report/inventory/summary/'))
-        //     }, 'report-pos-summary')
-        //   }
-        // },
-        {
+        }, {
+          path: 'report/accounts/payment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounts'))
+              cb(null, require('./routes/report/accounts/summary'))
+            }, 'report-account-summary')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
