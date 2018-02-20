@@ -2,11 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { save, saveUserDefaultRole } from '../../services/setting/userRoles'
 import { getUserRole } from '../../services/login'
 import { pageModel } from '../common'
-import { message } from 'antd'
-
-const successInfo = (info) => {
-  message.success(info)
-}
+import { messageInfo } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'userRole',
@@ -38,7 +34,6 @@ export default modelExtend(pageModel, {
       if (payload.userId) {
         const userRole = yield call(getUserRole, { as: 'key,title', userId: payload.userId })
         if (userRole.success) {
-          console.log('a1', userRole.data.defaultRole)
           yield put({
             type: 'querySuccessRole',
             payload: {
@@ -66,7 +61,7 @@ export default modelExtend(pageModel, {
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultRole, payload)
       if (data.success) {
-        successInfo(data.message)
+        messageInfo(data.message)
         yield put({
           type: 'updateState',
           payload: { roleItem: { default : data.defaultRole } },

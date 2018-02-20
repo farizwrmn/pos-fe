@@ -50,8 +50,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
     },
-    logout () {
-      dispatch({ type: 'app/logout' })
+    logout (sessionId) {
+      dispatch({ type: 'app/logout', payload: { sessionId } })
     },
     switchSider () {
       dispatch({ type: 'app/switchSider' })
@@ -137,7 +137,6 @@ const App = ({ children, dispatch, app, loading, location }) => {
     darkTheme,
     navOpenKeys,
     changeRole (roleCode) {
-      console.log('yy4')
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     },
     switchSider () {
@@ -171,16 +170,16 @@ const App = ({ children, dispatch, app, loading, location }) => {
           <Sider {...siderProps} />
         </aside> : ''}
         <LocaleProvider locale={enUS}>
-        <div className={styles.main}>
-          <Header {...headerProps} />
-          <Bread {...breadProps} />
-          <div className={styles.container}>
-            <div className={styles.content}>
-              {hasPermission ? children : <Error />}
+          <div className={styles.main}>
+            <Header {...headerProps} />
+            <Bread {...breadProps} />
+            <div className={styles.container}>
+              <div className={styles.content}>
+                {hasPermission ? children : <Error />}
+              </div>
             </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
         </LocaleProvider>
       </div>
     </div>

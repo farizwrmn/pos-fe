@@ -7,7 +7,7 @@ import styles from './index.less'
 import './index.less'
 import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
-import { crypt } from 'utils'
+import { crypt, ip, request } from 'utils'
 
 const { authBy } = config
 const FormItem = Form.Item
@@ -20,36 +20,24 @@ const Login = ({
     validateFieldsAndScroll,
   },
 }) => {
-  const { loginLoading, listUserRole, visibleItem, ipAddress } = login
+  const { loginLoading, listUserRole, visibleItem/*, ipAddress*/ } = login
 
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
-      if (!values.userrole) {
-        message.error('Choose a valid role');
-        return
-      }
       if (errors) { return }
 
-      values.userrole = values.userrole.toString()
+      const ipAddress = ip.getIpAddress() || '127.0.0.1'
+      dispatch({ type: 'app/saveIPClient', payload: { ipAddr: ipAddress } })
+      values.ipaddr = ipAddress
+      values.userrole= values.userrole ? values.userrole.toString() : ''
       dispatch({ type: 'login/login', payload: values })
     })
   }
-  const handleRole = () => {
-    validateFieldsAndScroll((errors, values) => {
-      if (errors) {
-        return
-      }
-      dispatch({ type: 'login/totp', payload: values })
-      // dispatch({ type: 'login/role', payload: values })
-    })
-  }
-
   return (
   <div className={styles.container}>
     <div className={styles.form}>
       <div className={styles.logo}>
         <img alt={'logo'} src={config.logo} />
-        <span>{config.name}</span>
       </div>
       <form>
         <FormItem className={styles.formItem} hasFeedback>
@@ -60,13 +48,13 @@ const Login = ({
         <FormItem className={styles.formItem} hasFeedback>
           {getFieldDecorator('password', {
             rules: [{ required: true }]
-          })(<Input size="large" type="password" onBlur={handleRole} onPressEnter={handleRole}
+          })(<Input size="large" type="password" onPressEnter={handleOk} //onBlur={handleRole} onPressEnter={handleRole}
                     placeholder="Password" />)}
         </FormItem>
         { visibleItem.verificationCode &&
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator('verification', {
-            })(<Input size="large" type="password" onBlur={handleRole} onPressEnter={handleRole}
+            })(<Input size="large" type="password" onPressEnter={handleOk}
                       placeholder="Verification" />)}
           </FormItem>
         }

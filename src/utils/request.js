@@ -1,10 +1,10 @@
 import axios from 'axios'
 import qs from 'qs'
-import { YQL, CORS } from './config'
 import jsonp from 'jsonp'
 import lodash from 'lodash'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
+import { YQL, CORS } from './config'
 
 const fetch = (options) => {
   let {
@@ -99,12 +99,12 @@ export default function request (options) {
       }
     }
 
-    return {
+    return Promise.resolve({
       success: true,
       message: statusText,
       statusCode: status,
       ...data,
-    }
+    })
   }).catch((error) => {
     const { response } = error
     let msg

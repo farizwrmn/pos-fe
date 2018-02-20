@@ -168,18 +168,18 @@ let zuimei = {
 export default {
   namespace: 'dashboard',
   state: {
-    weather: {
-      city: '成都',
-      temperature: '5',
-      name: '晴',
-      icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
-      dateTime: new Date().format('MM-dd hh:mm'),
-    },
+    // weather: {
+    //   city: '成都',
+    //   temperature: '5',
+    //   name: '晴',
+    //   icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
+    //   dateTime: new Date().format('MM-dd hh:mm'),
+    // },
     sales: [],
     data: [],
-    quote: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
-    },
+    // quote: {
+    //   avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
+    // },
     numbers: [],
     recentSales: [],
     comments: [],
@@ -187,9 +187,9 @@ export default {
     browser: [],
     ipAddress: [],
     cpu: {},
-    user: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
-    },
+    // user: {
+    //   avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
+    // },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -277,19 +277,19 @@ export default {
       yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
       //yield put({ type: 'queryWeather', payload: { ...data } })
     },
-    * queryWeather({
-    payload,
-  }, { call, put }) {
-      const myCityResult = yield call(myCity, { flg: 0 })
-      const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode })
-      const weather = zuimei.parseActualData(result.data.actual)
-      weather.city = myCityResult.selectCityName
-      yield put({
-        type: 'queryWeatherSuccess', payload: {
-          weather,
-        }
-      })
-    },
+  //   * queryWeather({
+  //   payload,
+  // }, { call, put }) {
+  //     const myCityResult = yield call(myCity, { flg: 0 })
+  //     const result = yield call(queryWeather, { cityCode: myCityResult.selectCityCode })
+  //     const weather = zuimei.parseActualData(result.data.actual)
+  //     weather.city = myCityResult.selectCityName
+  //     yield put({
+  //       type: 'queryWeatherSuccess', payload: {
+  //         weather,
+  //       }
+  //     })
+  //   },
   },
   reducers: {
     querySuccess(state, action) {
@@ -298,17 +298,17 @@ export default {
         ...action.payload,
       }
     },
-    queryWeatherSuccess(state, action) {
-      return {
-        ...state,
-        ...action.payload,
-      }
-    },
-    queryWeather(state, action) {
-      return {
-        ...state,
-        ...action.payload,
-      }
-    },
+    // queryWeatherSuccess(state, action) {
+    //   return {
+    //     ...state,
+    //     ...action.payload,
+    //   }
+    // },
+    // queryWeather(state, action) {
+    //   return {
+    //     ...state,
+    //     ...action.payload,
+    //   }
+    // },
   },
 }

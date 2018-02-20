@@ -1,7 +1,6 @@
 import NumberCard from './numberCard'
 // import Quote from './quote'
 import Sales from './sales'
-import Info from './info'
 // import Weather from './weather'
 import RecentSales from './recentSales'
 import Comments from './comments'
@@ -21,5 +20,4 @@ export {
   // , Browser
   // , Cpu
   // , User
-  , Info
 }

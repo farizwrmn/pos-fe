@@ -3,16 +3,15 @@ import { parse } from 'qs'
 import config from 'config'
 import moment from 'moment'
 import { EnumRoleType } from 'enums'
-import { query, logout, changePw, totpapp } from '../services/app'
+import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
-// import { query1store as queryStore } from '../services/store'
 import { queryLastActive } from '../services/period'
-import { lstorage } from 'utils'
+import { lstorage, messageInfo } from 'utils'
 
-const { prefix, apiHost } = config
+const { prefix } = config
 
 export default {
   namespace: 'app',
@@ -55,7 +54,6 @@ export default {
 
   },
   effects: {
-
     *query ({
       payload,
     }, { call, put }) {
@@ -79,54 +77,34 @@ export default {
         }
 
         const period = yield call(queryLastActive)
-        const startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
-        const endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
-        // const storeCode = lstorage.getCurrentUserStoreCode()
-        // const storeInfoData = yield call(queryStore, { code: storeCode })
+        let startPeriod, endPeriod
+        if (period.data[0]) {
+          startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
+          endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
+        }
+
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
         const misc = yield call(miscQuery, { code: 'company'})
-        // let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
+
         storeInfo.stackHeader01 = [
-          {
-            text: (name || ''),
-            fontSize: 11,
-            alignment: 'left',
-          },
-          {
-            text: (storeInfoData.address01 || ''),
-            fontSize: 11,
-            alignment: 'left',
-          },
-          {
-            text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || ''),
-            fontSize: 11,
-            alignment: 'left',
-          },
+          { text: (name || '') },
+          { text: (storeInfoData.address01 || '') },
+          { text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || '') },
         ]
-        storeInfo.stackHeader02 = [
-          {
-            text: (name || ''),
-            fontSize: 11,
-            alignment: 'left'
-          },
-          {
-            text: (storeInfoData.address01 || ''),
-            fontSize: 11,
-            alignment: 'left'
-          },
-          {
-            text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || ''),
-            fontSize: 11,
-            alignment: 'left'
-          },
-          {
-            text: ' ',
-            fontSize: 11,
-            alignment: 'left'
-          },
-        ]
+        storeInfo.stackHeader02 = storeInfo.stackHeader01
+        for (let index of storeInfo.stackHeader01) {
+          index.fontSize = 11
+          index.alignment = 'left'
+        }
+        storeInfo.stackHeader02.push({ text: ' ' })
+        storeInfo.stackHeader02 = storeInfo.stackHeader01
+        for (let index of storeInfo.stackHeader01) {
+          index.fontSize = 11
+          index.alignment = 'left'
+        }
+
         if (storeInfo !== []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {
@@ -168,6 +146,8 @@ export default {
       lstorage.removeItemKey()
 
       if (data.success) {
+        messageInfo(data.profile.sessionid)
+        messageInfo(data.message + ' at ' + moment(data.profile.userlogoutime).format('DD-MMM-YYYY hh:mm:ss'), 'success')
         yield put({ type: 'query' })
       } else {
         throw (data)

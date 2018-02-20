@@ -1,6 +1,7 @@
 import { routerRedux } from 'dva/router'
-import { queryURL, config, crypt, lstorage } from 'utils'
+import { queryURL, config, crypt, lstorage, messageInfo } from 'utils'
 import { login, prelogin, getUserRole, getUserStore, verifyTOTP } from '../services/login'
+import moment from 'moment'
 
 const { prefix } = config
 
@@ -16,108 +17,59 @@ export default {
   },
 
   effects: {
-    *login ({
-      payload,
-    }, { put, call }) {
+    *login ({ payload}, { put, call }) {
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (data.success) {
-        const from = queryURL('from')
-        if ( data.id_token ) {
-          localStorage.setItem(`${prefix}iKen`, data.id_token)
-          lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
+        if (data.profile.role) {
+          yield put({ type: 'loginSuccess', payload: {data} })
         } else {
-          localStorage.removeItem(`${prefix}iKen`)
-          localStorage.removeItem(`${prefix}udi`)
-        }
-        console.log('yy1')
-        yield put({ type: 'app/query', payload: data.profile })
-        if (from) {
-          yield put(routerRedux.push(from))
-        } else {
-          yield put(routerRedux.push('/dashboard'))
+          throw data
         }
       } else {
-        throw data
-      }
-    },
-    *totp ({ payload}, { put, call }) {
-      if (payload.verification) {
-        const data = yield call(verifyTOTP, payload)
-        if (data.success) {
-          if (data.profile.role) {
-            const from = queryURL('from')
-            localStorage.setItem(`${prefix}iKen`, data.id_token)
-            lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
-            console.log('yy2')
-            yield put({ type: 'app/query', payload: data.profile })
-            if (from) {
-              yield put(routerRedux.push(from))
+        if (data.hasOwnProperty('profile')) {
+          if (data.profile.istotp) {
+            if (payload.verification) {
+              if (data.profile.verified) {
+                yield put({
+                  type: 'queryStateTotp',
+                  payload: { visibleItem: { verificationCode: true, userRole: true } },
+                })
+                if (data.tempken) {
+                  localStorage.setItem(`${prefix}iKen`, data.tempken)
+                  yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+                  throw data
+                } else {
+                  throw data
+                }
+              } else {
+                throw data
+              }
             } else {
-              yield put(routerRedux.push('/dashboard'))
+              yield put({
+                type: 'queryStateTotp',
+                payload: { visibleItem: { verificationCode: true } },
+              })
+              throw data
             }
           } else {
             yield put({
               type: 'queryStateTotp',
-              payload: {
-                visibleItem: { userRole: true},
-              },
+              payload: { visibleItem: { userRole: true } },
             })
-            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
-            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
-          }
-
-        } else {
-          yield put({
-            type: 'queryStateTotp',
-            payload: {
-              visibleItem: { verificationCode: false},
-            },
-          })
-        }
-      } else {
-        const data = yield call(prelogin, payload)
-        if (data.success && data.pre_token) {
-          localStorage.setItem(`${prefix}iKen`, data.pre_token)
-          yield put({
-            type: 'queryStateTotp',
-            payload: {
-              visibleItem: {
-                userRole: data.profile.role ? false : data.profile.istotp ? false : true,
-                verificationCode: data.profile.istotp,
-              },
-            },
-          })
-
-          if (!data.profile.istotp) {
-            yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
-            yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
-          }
-        } else if (data.success && data.id_token) {
-          const from = queryURL('from')
-          localStorage.setItem(`${prefix}iKen`, data.id_token)
-          yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
-          yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
-          lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime])
-          console.log('yy3')
-          yield put({ type: 'app/query', payload: data.profile })
-          if (from) {
-            yield put(routerRedux.push(from))
-          } else {
-            yield put(routerRedux.push('/dashboard'))
+            if (data.tempken) {
+              localStorage.setItem(`${prefix}iKen`, data.tempken)
+              yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+              throw data
+            } else {
+              throw data
+            }
           }
         } else {
-          yield put({
-            type: 'queryStateTotp',
-            payload: {
-              visibleItem: { verificationCode: false},
-            },
-          })
           throw data
         }
       }
-
     },
     *getRole ({ payload }, { put, call }) {
       const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userId })
@@ -144,6 +96,22 @@ export default {
           listUserStore: storeLov,
         },
       })
+    },
+    *loginSuccess ({ payload }, { put, }) {
+      const { data } = payload
+      const from = queryURL('from')
+      localStorage.setItem(`${prefix}iKen`, data.id_token)
+      yield put({ type: 'getRole', payload: {userId: data.profile.userid} })
+      yield put({ type: 'getStore', payload: {userId: data.profile.userid} })
+      lstorage.putStorageKey('udi',[data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime, data.profile.sessionid])
+      yield put({ type: 'app/query', payload: data.profile })
+      if (from) {
+        yield put(routerRedux.push(from))
+      } else {
+        yield put(routerRedux.push('/dashboard'))
+      }
+      messageInfo(data.profile.sessionid)
+      messageInfo(data.message + ' at ' + moment(data.profile.userlogintime).format('DD-MMM-YYYY hh:mm:ss') + ' from ' + data.profile.useripaddr1, 'success')
     },
   },
   reducers: {

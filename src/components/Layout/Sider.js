@@ -36,13 +36,13 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
 
   const handleChangeRole = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3], localId[4], localId[5]], localId[0])
+    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3], localId[4], localId[5], localId[6]], localId[0])
     changeRole(value.toString())
   }
 
   const handleChangeStore = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], localId[5]], localId[0])
+    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], localId[5], localId[6]], localId[0])
     changeRole(value.toString())
     setInterval(function () { window.location.reload() }, 1000)
   }

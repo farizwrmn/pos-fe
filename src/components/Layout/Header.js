@@ -1,25 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon, Popover, Calendar, Switch, Cascader } from 'antd'
+import { Link } from 'dva/router'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
 import ChangeTotp from './ChangeTotp'
-import { classnames } from 'utils'
+import { classnames, lstorage } from 'utils'
 
 const SubMenu = Menu.SubMenu
 
 const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar,
   menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
-  handleShortcutKeyHide, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
+  handleShortcutKeyHide, handleMyProfileShow, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
   handleTotpLoad, handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
   handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
 }) => {
   let handleClickMenu = (e) => {
-    e.key === 'logout' && logout()
+    e.key === 'logout' && logout(lstorage.getSessionId())
+    e.key === 'myprofile' && handleMyProfileShow()
     e.key === 'password' && handleChangePwShow()
     e.key === 'totp' && handleChangeTotpShow(user.userid)
   }
@@ -130,6 +132,10 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
             title={<span> <Icon type="user" />
               {user.username} </span>}
           >
+            <Menu.Item key="myProfile">
+              My Profile
+              <Link to='/userprofile'></Link>
+            </Menu.Item>
             <Menu.Item key="password">
               Change Password
             </Menu.Item>

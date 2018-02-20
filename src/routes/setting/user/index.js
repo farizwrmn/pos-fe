@@ -21,7 +21,6 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   const listRole = listLov &&
     listLov.hasOwnProperty('userrole') ? listLov.userrole : []
 
-  // console.log('a2',roleItem)
   const modalProps = {
     item: currentItem,
     storeItem,

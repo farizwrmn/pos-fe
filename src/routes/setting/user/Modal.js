@@ -70,10 +70,8 @@ const modal = ({
       onOk(data)
     })
   }
-  // console.log('a5', roleItem.default)
-  const defaultValueRole = {key: roleItem.default}
-  // console.log('a6', defaultValueRole)
 
+  const defaultValueRole = {key: roleItem.default}
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
