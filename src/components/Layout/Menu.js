@@ -136,6 +136,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
       mode={siderFold ? 'vertical' : 'inline'}
       theme={darkTheme ? 'dark' : 'light'}
       onClick={handleClickNavMenu}
+      inlineCollapsed={siderFold}
       defaultSelectedKeys={defaultSelectedKeys}
     >
       {menuItems}
