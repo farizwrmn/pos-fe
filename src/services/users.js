@@ -1,4 +1,4 @@
-import { request, config, crypt } from '../utils'
+import { request, config, crypt } from 'utils'
 
 const { users, userTotp, userTotpr } = config.api
 
