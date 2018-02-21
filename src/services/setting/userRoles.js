@@ -1,9 +1,9 @@
 import { request, config, crypt } from 'utils'
 
-const { userRoles } = config.api
+const { apiUserRoles } = config.rest
 
 export async function save (params) {
-  const url = userRoles.replace('/:id', `/${params.userId}`)
+  const url = apiUserRoles.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -15,7 +15,7 @@ export async function save (params) {
 }
 
 export async function saveUserDefaultRole (params) {
-  const url = userRoles.replace('/:id', `/${params.userId}`)
+  const url = apiUserRoles.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

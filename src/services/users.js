@@ -1,11 +1,11 @@
 import { request, config, crypt } from 'utils'
 
-const { users, userTotp, userTotpr } = config.api
+const { apiUsers, apiUserTotp, apiUserTotpr } = config.rest
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: users,
+    url: apiUsers,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -13,7 +13,7 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  const url = params.id ? `${users}/${params.id}` : users
+  const url = params.id ? `${apiUsers}/${params.id}` : apiUsers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -25,7 +25,7 @@ export async function add (params) {
 }
 
 export async function edit (params) {
-  const url = params.id ? `${users}/${params.id}` : users
+  const url = params.id ? `${apiUsers}/${params.id}` : apiUsers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -37,7 +37,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  const url = params.id ? `${users}/:id` : users
+  const url = params.id ? `${apiUsers}/:id` : apiUsers
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -50,7 +50,7 @@ export async function remove (params) {
 export async function totp (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: (params.mode === 'generate') ? userTotpr : userTotp,
+    url: (params.mode === 'generate') ? apiUserTotpr : apiUserTotp,
     method: 'get',
     data: { id: params.id, mode: params.mode },
     headers: apiHeaderToken

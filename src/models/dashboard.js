@@ -167,18 +167,18 @@ let zuimei = {
 export default {
   namespace: 'dashboard',
   state: {
-    weather: {
-      city: '成都',
-      temperature: '5',
-      name: '晴',
-      icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
-      dateTime: new Date().format('MM-dd hh:mm')
-    },
+    // weather: {
+    //   city: '成都',
+    //   temperature: '5',
+    //   name: '晴',
+    //   icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
+    //   dateTime: new Date().format('MM-dd hh:mm'),
+    // },
     sales: [],
     data: [],
-    quote: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236'
-    },
+    // quote: {
+    //   avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
+    // },
     numbers: [],
     recentSales: [],
     comments: [],
@@ -186,9 +186,9 @@ export default {
     browser: [],
     ipAddress: [],
     cpu: {},
-    user: {
-      avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236'
-    }
+    // user: {
+    //   avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
+    // },
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -294,17 +294,17 @@ export default {
         ...action.payload
       }
     },
-    queryWeatherSuccess (state, action) {
-      return {
-        ...state,
-        ...action.payload
-      }
-    },
-    queryWeather (state, action) {
-      return {
-        ...state,
-        ...action.payload
-      }
-    }
-  }
+    // queryWeatherSuccess(state, action) {
+    //   return {
+    //     ...state,
+    //     ...action.payload,
+    //   }
+    // },
+    // queryWeather(state, action) {
+    //   return {
+    //     ...state,
+    //     ...action.payload,
+    //   }
+    // },
+  },
 }

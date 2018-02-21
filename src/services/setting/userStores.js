@@ -1,18 +1,18 @@
 import { request, config, crypt } from 'utils'
 
-const { stores, userStore } = config.api
+const { apiStores, apiUserStore } = config.rest
 
 export async function getAllStores () {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: stores,
+    url: apiStores,
     method: 'get',
     headers: apiHeaderToken
   })
 }
 
 export async function getUserStores (params) {
-  const url = userStore.replace('/:id', `/${params.userId}`)
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -22,7 +22,7 @@ export async function getUserStores (params) {
 }
 
 export async function saveUserDefaultStore (params) {
-  const url = userStore.replace('/:id', `/${params.userId}`)
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -33,7 +33,7 @@ export async function saveUserDefaultStore (params) {
 }
 
 export async function saveUserStore (params) {
-  const url = userStore.replace('/:id', `/${params.userId}`)
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

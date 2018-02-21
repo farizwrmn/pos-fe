@@ -6,7 +6,8 @@ import { prefix } from './config'
 import { encrypt, decrypt } from './crypt'
 
 const putStorageKey = (key, value, norandom) => {
-  // 'udi' { 1: userid, 2: role, 3: store, 4: usercompany, 5: userlogintime, 6: difftime_be-fe }
+  // 'udi' { 1: userid, 2: role, 3: store, 4: usercompany, 5: userlogintime, 6: difftime_be-fe, 7: sessionid }
+  // [data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime, data.profile.sessionaid]
   let rdmText
   let counter = 0
   if (norandom) {
@@ -18,10 +19,18 @@ const putStorageKey = (key, value, norandom) => {
   let cryptedValue = ''
   for (let index of value) {
     counter += 1
-    cryptedValue += `${encrypt((index) ? index.toString() : '', rdmTextcryp)}#`
-    if (key === 'udi' && counter === 5) {
-      const diffDate = moment(new Date()).diff(moment(new Date(index)))
-      cryptedValue += `${encrypt((diffDate) ? diffDate.toString() : '', rdmTextcryp)}#`
+    // cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
+    if (key === 'udi') {
+      if (counter === 5) {
+        const diffDate = moment(new Date()).diff(moment(new Date(index)))
+        cryptedValue += encrypt((diffDate) ? diffDate.toString() : '', rdmTextcryp) + '#'
+      } else if (counter === 6) {
+        cryptedValue += index ? index.toString() : ''
+      } else {
+        cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
+      }
+    } else {
+      cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
     }
   }
   localStorage.setItem(`${prefix}${key}`, `${rdmText}#${cryptedValue.slice(0, -1)}`)
@@ -45,7 +54,7 @@ const getStorageKey = (key) => {
     pair[3] = decrypt(localIds[3], rdmText) || ''
     pair[4] = decrypt(localIds[4], rdmText) || ''
     pair[5] = decrypt(localIds[5], rdmText) || ''
-    pair[6] = decrypt(localIds[6], rdmText) || ''
+    pair[6] = localIds[6] || ''
   } else {
     pair[1] = decrypt(localStorage.getItem(`${prefix}${key}`)) || ''
     pair[2] = '---'
@@ -77,8 +86,12 @@ const getCurrentUserRole = () => { return getStorageKey('udi')[2] }
 // company
 const getCompanyName = () => { return getStorageKey('udi')[4] }
 // login time
-const getLoginTime = () => { return getStorageKey('udi')[5] }
-const getLoginTimeDiff = () => { return getStorageKey('udi')[6] }
+const getLoginTimeDiff = () => { return getStorageKey('udi')[5] }
+const getLoginTime = () => {
+  return getStorageKey('udi')[5]
+}
+// session
+const getSessionId = () => { return getStorageKey('udi')[6] }
 // store
 const getListUserStores = () => {
   const lsuTores = getStorageKey('utores')[1]
@@ -151,5 +164,6 @@ module.exports = {
   getCurrentUserStore,
   getCurrentUserStoreName,
   getCurrentUserStoreCode,
-  getCurrentUserStoreDetail
+  getCurrentUserStoreDetail,
+  getSessionId
 }

@@ -5,7 +5,7 @@ const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.01.006',
+  version: '2018.02.001',
   prefix: 'dmiPos',
   footerText: 'Darkotech Mandiri Indonesia',
   footerSubText: 'Point of Sales © 2017-2018',
@@ -17,20 +17,22 @@ module.exports = {
   apiPrefix: `${APIV1}`,
   apiHeader: { Accept: 'application/json', 'Content-Type': 'application/json' },
   disableMultiSelect: true,
+  rest: {
+    apiUser: `${APIURL}${APIV1}/users/:id`,
+    apiUsers: `${APIURL}${APIV1}/users`,
+    apiUserLogin: `${APIURL}${APIV1}/users/login`,
+    apiUserLogout: `${APIURL}${APIV1}/users/logout`,
+    apiUserRole: `${APIURL}${APIV1}/users/:id/roles/:role`,
+    apiUserRoles: `${APIURL}${APIV1}/users/:id/roles`,
+    apiUserStore: `${APIURL}${APIV1}/users/:id/stores`,
+    apiUserTotp: `${APIURL}${APIV1}/users/:id/totp`,
+    apiUserTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
+    apiStores: `${APIURL}${APIV1}/stores`,
+  },
   api: {
     getIpAddress: `${APIURL}${APIV1}/utils/ipaddr`,
-    userPreLogin: `${APIURL}${APIV1}/users/prelogin`,
-    userRole: `${APIURL}${APIV1}/users/:id/roles/:role`,
-    userRoles: `${APIURL}${APIV1}/users/:id/roles`,
-    userTotp: `${APIURL}${APIV1}/users/:id/totp`,
-    userTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
-    userStore: `${APIURL}${APIV1}/users/:id/stores`,
-    userLogin: `${APIURL}${APIV1}/users/login`,
-    userLogout: `${APIURL}${APIV1}/users/logout`, // services/app.js post
     userInfo: `${APIV1}/userInfo`,
-    users: `${APIURL}${APIV1}/users`,
     sequence: `${APIURL}${APIV1}/sequence`,
-    user: `${APIURL}${APIV1}/users/:id`,
     employees: `${APIURL}${APIV1}/employees`,
     jobposition: `${APIURL}${APIV1}/employees/positions`,
     customers: `${APIURL}${APIV1}/members`,
@@ -72,7 +74,6 @@ module.exports = {
     period: `${APIURL}${APIV1}/period`,
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
     setting: `${APIURL}${APIV1}/setting`,
-    stores: `${APIURL}${APIV1}/stores`,
     mobileBooking: `${APIURL}${APIV1}/mobile/booking`,
     paymentOpts: `${APIURL}${APIV1}/payment`
   }

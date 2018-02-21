@@ -23,7 +23,19 @@ const app = dva({
           })
         }
       } else {
-        message.error(error.message)
+        if (error.success) {
+          message.info(error.message)
+        } else {
+          if (error.hasOwnProperty('detail')) {
+            if (error.detail.substring(0,5) === 'Login') {
+              message.info(error.message)
+            } else {
+              message.error(error.message)
+            }
+          } else {
+            message.error(error.message)
+          }
+        }
       }
     }
   }

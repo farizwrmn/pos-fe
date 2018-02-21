@@ -2,57 +2,33 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Tag } from 'antd'
-import { color, config } from 'utils'
+import { color, config, ip, lstorage } from 'utils'
 import styles from './Info.less'
 
+
 const status = {
-  1: {
-    color: color.green
-  },
-  2: {
-    color: color.red
-  },
-  3: {
-    color: color.blue
-  },
-  4: {
-    color: color.yellow
-  }
+  1: { color: color.pastelgreen },
+  2: { color: color.lightskyblue },
+  3: { color: color.wewak },
+  4: { color: color.teagreen },
+  5: { color: color.pattensblue },
+  6: { color: color.lavenderrose },
+  7: { color: color.saffron },
+  8: { color: color.wisteria }
 }
-
-const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
-  let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection // compatibility for firefox and chrome
-  const pc = new MyPeerConnection({ iceServers: [] })
-  const noop = function () {}
-  const localIPs = {}
-  const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-  function ipIterate (ip) {
-    if (!localIPs[ip]) onNewIP(ip)
-    localIPs[ip] = true
-  }
-  pc.createDataChannel('') // create a bogus data channel
-  pc.createOffer((sdp) => {
-    sdp.sdp.split('\n').forEach((line) => {
-      if (line.indexOf('candidate') < 0) return
-      line.match(ipRegex).forEach(ipIterate)
-    })
-    pc.setLocalDescription(sdp, noop, noop)
-  }, noop) // create offer and set local description
-  pc.onicecandidate = (ice) => { // listen for candidate events
-    if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return
-    ice.candidate.candidate.match(ipRegex).forEach(ipIterate)
-  }
-}
-let localIp = []
-
-findIP((ip) => { // get from app.js
-  localIp.push(ip)
-})
 
 const Info = ({ ipAddress, dispatch, app }) => {
   const { ipAddr } = app
+  ipAddress = ip.getIpAddress() || '127.0.0.1'
+  const sessionId = lstorage.getSessionId()
 
-  ipAddress = localIp[0] || '127.0.0.1'
+  if (!ipAddr) {
+    dispatch({
+      type: 'app/saveIPClient',
+      payload: { ipAddr: ipAddress }
+    })
+  }
+
   const columns = [
     {
       title: 'name',
@@ -62,31 +38,19 @@ const Info = ({ ipAddress, dispatch, app }) => {
       title: 'value',
       dataIndex: 'value',
       className: styles.value,
-      render: (text, it) => <Tag color={status[it.status].color}>{text}</Tag>
-    }
+      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color}>{text}</Tag></div>,
+    },
   ]
-  if (!ipAddr) {
-    dispatch({
-      type: 'app/saveIPClient',
-      payload: {
-        ipAddr: ipAddress
-      }
-    })
-  }
 
   const data = [
     { name: 'IP Address', value: `${ipAddress}`, status: 1 },
-    { name: 'Version', value: `${config.version}`, status: 2 }
+    { name: 'Version', value: `${config.version}`, status: 2 },
+    { name: 'Session', value: `${sessionId}`, status: 3 },
   ]
 
-  return (<Table pagination={false}
-    showHeader={false}
-    bordered={false}
-    size="small"
-    columns={columns}
-    rowKey={(record, key) => key}
-    dataSource={data}
-  />)
+  return <Table pagination={false} showHeader={false} bordered={false}
+                size='small'
+                columns={columns} rowKey={(record, key) => key} dataSource={data} />
 }
 
 Info.propTypes = {

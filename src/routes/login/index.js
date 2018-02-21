@@ -1,86 +1,68 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input, Cascader, message, Popover } from 'antd'
+import { Button, Row, Form, Input, Cascader, Icon, message, Popover } from 'antd'
 import { config } from 'utils'
+import styles from './index.less'
+import './index.less'
 import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
-import styles from './index.less'
+import { crypt, ip, request } from 'utils'
 
 const { authBy } = config
 const FormItem = Form.Item
 
 const Login = ({
-  login,
-  dispatch,
-  form: {
-    getFieldDecorator,
-    validateFieldsAndScroll
-  }
-}) => {
-  const { loginLoading, listUserRole, visibleItem } = login
+                 login,
+                 dispatch,
+                 form: {
+                   getFieldDecorator,
+                   validateFieldsAndScroll,
+                 },
+               }) => {
+  const { loginLoading, listUserRole, visibleItem/*, ipAddress*/ } = login
 
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
-      if (!values.userrole) {
-        message.error('Choose a valid role')
-        return
-      }
       if (errors) { return }
 
-      values.userrole = values.userrole.toString()
+      const ipAddress = ip.getIpAddress() || '127.0.0.1'
+      dispatch({ type: 'app/saveIPClient', payload: { ipAddr: ipAddress } })
+      values.ipaddr = ipAddress
+      values.userrole= values.userrole ? values.userrole.toString() : ''
       dispatch({ type: 'login/login', payload: values })
     })
   }
-  const handleRole = () => {
-    validateFieldsAndScroll((errors, values) => {
-      if (errors) {
-        return
-      }
-      dispatch({ type: 'login/totp', payload: values })
-      // dispatch({ type: 'login/role', payload: values })
-    })
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.form}>
         <div className={styles.logo}>
           <img alt={'logo'} src={config.logo} />
-          <span>{config.name}</span>
         </div>
         <form>
           <FormItem className={styles.formItem} hasFeedback>
-            {getFieldDecorator(`user${authBy}`, {
+            {getFieldDecorator('user' + authBy, {
               rules: [{ required: true }]
             })(<Input size="large" placeholder="Username" />)}
           </FormItem>
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator('password', {
               rules: [{ required: true }]
-            })(<Input size="large"
-              type="password"
-              onBlur={handleRole}
-              onPressEnter={handleRole}
-              placeholder="Password"
-            />)}
+            })(<Input size="large" type="password" onPressEnter={handleOk} //onBlur={handleRole} onPressEnter={handleRole}
+                      placeholder="Password" />)}
           </FormItem>
           { visibleItem.verificationCode &&
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator('verification', {
-            })(<Input size="large"
-              type="password"
-              onBlur={handleRole}
-              onPressEnter={handleRole}
-              placeholder="Verification"
-            />)}
+            })(<Input size="large" type="password" onPressEnter={handleOk}
+                      placeholder="Verification" />)}
           </FormItem>
           }
           {visibleItem.userRole &&
           <FormItem hasFeedback>
             {getFieldDecorator('userrole', {})(<Cascader
-              size="large"
-              style={{ width: '100%' }}
+              size='large'
+              style={{width: '100%'}}
               options={listUserRole}
               placeholder={listUserRole.length > 0 ? 'Choose' : 'No Role'}
             />)}
@@ -88,16 +70,16 @@ const Login = ({
           }
           <Row>
             <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
-            Sign in
+              Sign in
             </Button>
             <p>
-              <Footer otherClass={styles.footerlogin} />
+              <Footer otherClass={styles.footerlogin}/>
             </p>
           </Row>
         </form>
       </div>
-      <Popover placement="rightBottom" content={<div><Info /></div>} >
-        <Button className={styles.info} type="dashed" shape="circle" icon="info" />
+      <Popover placement='rightBottom' content={<div><Info/></div>} >
+        <Button className={styles.info} type='dashed' shape='circle' icon='info'/>
       </Popover>
     </div>
   )
@@ -106,7 +88,7 @@ const Login = ({
 Login.propTypes = {
   form: PropTypes.object,
   login: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
 }
 
 export default connect(({ login }) => ({ login }))(Form.create()(Login))

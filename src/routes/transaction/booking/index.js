@@ -298,7 +298,7 @@ const Booking = ({ booking, dispatch, app }) => {
               <Select placeholder="Update Status" style={{ width: 120 }} onChange={handleChange} >
                 <Option value={`OP#${list[key].bookingId}`}><Badge dot
                   text="Open"
-                  style={{ backgroundColor: color.purple,
+                  style={{ backgroundColor: color.wisteria,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -311,7 +311,7 @@ const Booking = ({ booking, dispatch, app }) => {
                 <Option value={`CO#${list[key].bookingId}`}><Badge status="success" text="Check-Out" /></Option>
                 <Option value={`RS#${list[key].bookingId}`}><Badge dot
                   text="Reschedule"
-                  style={{ backgroundColor: color.peach,
+                  style={{ backgroundColor: color.lavenderrose,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,

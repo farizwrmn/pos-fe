@@ -1,11 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
-import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore } from '../../services/setting/userStores'
+import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
+  from '../../services/setting/userStores'
 import { pageModel } from '../common'
-
-const successInfo = (info) => {
-  message.success(info)
-}
+import { messageInfo } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'userStore',
@@ -79,7 +76,7 @@ export default modelExtend(pageModel, {
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultStore, payload)
       if (data.success) {
-        successInfo(data.message)
+        messageInfo(data.message)
         yield put({
           type: 'updateState',
           payload: data.defaultStore
@@ -91,7 +88,7 @@ export default modelExtend(pageModel, {
     * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
       if (data.success) {
-        successInfo(data.message)
+        messageInfo(data.message)
         yield put({
           type: 'updateState',
           payload: data.defaultStore

@@ -99,12 +99,12 @@ export default function request (options) {
       }
     }
 
-    return {
+    return Promise.resolve({
       success: true,
       message: statusText,
       statusCode: status,
       ...data
-    }
+    })
   }).catch((error) => {
     const { response } = error
     let msg
