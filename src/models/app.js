@@ -77,7 +77,8 @@ export default {
         }
 
         const period = yield call(queryLastActive)
-        let startPeriod, endPeriod
+        let startPeriod
+        let endPeriod
         if (period.data[0]) {
           startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
           endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
@@ -92,7 +93,7 @@ export default {
         storeInfo.stackHeader01 = [
           { text: (name || '') },
           { text: (storeInfoData.address01 || '') },
-          { text: (storeInfoData.mobileNumber || '') + '/' + (storeInfoData.address02 || '') },
+          { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
         ]
         storeInfo.stackHeader02 = storeInfo.stackHeader01
         for (let index of storeInfo.stackHeader01) {
@@ -147,7 +148,7 @@ export default {
 
       if (data.success) {
         messageInfo(data.profile.sessionid)
-        messageInfo(data.message + ' at ' + moment(data.profile.userlogoutime).format('DD-MMM-YYYY hh:mm:ss'), 'success')
+        messageInfo(`${data.message} at ${moment(data.profile.userlogoutime).format('DD-MMM-YYYY hh:mm:ss')}`, 'success')
         yield put({ type: 'query' })
       } else {
         throw (data)

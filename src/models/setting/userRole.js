@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import { messageInfo } from 'utils'
 import { save, saveUserDefaultRole } from '../../services/setting/userRoles'
 import { getUserRole } from '../../services/login'
 import { pageModel } from '../common'
-import { messageInfo } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'userRole',
@@ -77,16 +77,19 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     querySuccessRole (state, action) {
       const { listUserRole, defaultRole } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listUserRole,
         listUserRoleTarget: listUserRole,
         roleItem: { default: defaultRole }
@@ -101,7 +104,8 @@ export default modelExtend(pageModel, {
       }
     },
     successUserRole (state, action) {
-      return { ...state,
+      return {
+        ...state,
         listUserStores: action.payload.listUserStores.split(','),
         roleItem: { default: action.payload.defaultRole }
       }

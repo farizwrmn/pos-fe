@@ -2,7 +2,7 @@
  * Created by Veirry on 04/10/2017.
  */
 import { query as queryReport, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
-import { queryPaymentGroup, queryPaymentWithPOS } from '../../services/payment/payment'
+import { queryPaymentWithPOS } from '../../services/payment/payment'
 
 export default {
   namespace: 'accountsReport',

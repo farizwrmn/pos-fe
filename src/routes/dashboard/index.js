@@ -2,9 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Row, Col, Card } from 'antd'
-import { NumberCard, Sales, Info } from './components'
-import { color } from 'utils'
-import { format } from 'url'
+import { NumberCard, Sales } from './components'
 
 function Dashboard ({ dashboard }) {
   const { data, numbers } = dashboard

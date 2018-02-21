@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import { messageInfo } from 'utils'
 import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
-import { messageInfo } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'userStore',
@@ -103,20 +103,24 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     successAllStore (state, action) {
-      return { ...state,
+      return {
+        ...state,
         listAllStores: action.payload.listAllStores
       }
     },
     successUserStore (state, action) {
-      return { ...state,
+      return {
+        ...state,
         listUserStores: action.payload.listUserStores.split(','),
         storeItem: { default: action.payload.defaultStore }
       }

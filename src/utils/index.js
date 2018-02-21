@@ -1,12 +1,12 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
+import { message } from 'antd'
 import config from './config'
 import request from './request'
 import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
 import ip from './ip'
-import { message } from 'antd'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -104,11 +104,11 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
 
 const messageInfo = (info, type = 'info', duration = 3) => {
   switch (type) {
-    case 'success':
-      message.success(info, duration)
-      break
-    default:
-      message.info(info, duration)
+  case 'success':
+    message.success(info, duration)
+    break
+  default:
+    message.info(info, duration)
   }
 }
 
