@@ -1,7 +1,5 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import { pageModel } from './common'
 import { query, edit } from '../services/setting'
 
@@ -11,14 +9,14 @@ export default modelExtend(pageModel, {
   state: {
     formHeader: '',
     formInventoryVisible: false,
-    formPaymentVisible: false,
+    formCompanyVisible: false,
     config: {},
     visibilitySave: 'visible',
-    visibilityCommit: 'hidden',    
+    visibilityCommit: 'hidden'
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/setting/configure') {
           dispatch({
@@ -29,15 +27,15 @@ export default modelExtend(pageModel, {
           })
         }
       })
-    },
+    }
   },
 
   effects: {
-    * query({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const setting = yield call(query, { settingCode: payload.formHeader })
       if (setting.success) {
         let json = setting.data[0]
-        let jsondata = JSON.stringify(eval("(" + json.settingValue + ")"));
+        let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
         const data = JSON.parse(jsondata)
         // JSON.parse(JSON.stringify(eval("(" + getdata + ")")))
         yield put({
@@ -49,13 +47,13 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * update({ payload = {} }, { call, put }) {
+    * update ({ payload = {} }, { call, put }) {
       const update = yield call(edit, payload = { id: payload.id, data: { settingValue: payload.data } })
       if (update.success) {
         const inventory = yield call(query, { settingCode: payload.formHeader })
         if (inventory.success) {
           let json = inventory.data[0]
-          let jsondata = JSON.stringify(eval("(" + json.settingValue + ")"));
+          let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
           const data = JSON.parse(jsondata)
           // JSON.parse(JSON.stringify(eval("(" + getdata + ")")))
           yield put({
@@ -70,16 +68,16 @@ export default modelExtend(pageModel, {
           title: 'Setting has been saved',
           content: 'Reload page to take effect',
           onOk () {
-            location=location.href
+            location = location.href
           },
           onCancel () {
-            location=location.href
+            location = location.href
           }
         })
         yield put({
           type: 'configure/saveVisible',
           payload: {
-            visibilitySave: 'visible',
+            visibilitySave: 'visible'
           }
         })
       } else {
@@ -90,7 +88,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'configure/saveVisible',
           payload: {
-            visibilitySave: 'visible',
+            visibilitySave: 'visible'
           }
         })
       }
@@ -98,20 +96,17 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    queryInventory(state, action) {
-      console.log('Inventory')
+    queryInventory (state, action) {
       return { ...state, ...action.payload, formInventoryVisible: true }
     },
-    queryPayment(state, action) {
-      console.log('Payment')
-      return { ...state, ...action.payload, formPaymentVisible: true }
+    queryCompany (state, action) {
+      return { ...state, ...action.payload, formCompanyVisible: true }
     },
-    close(state) {
-      return { ...state, formInventoryVisible: false, formPaymentVisible: false }
+    close (state) {
+      return { ...state, formInventoryVisible: false, formCompanyVisible: false }
     },
-    saveVisible(state, action) {
-      console.log('visible', action.payload)
+    saveVisible (state, action) {
       return { ...state, visibilityCommit: action.payload.visibilityCommit, visibilitySave: action.payload.visibilitySave }
     }
-  },
+  }
 })

@@ -21,9 +21,9 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     productName,
     onListReset () {
       dispatch({
-        type: 'fifoReport/setNull',
+        type: 'fifoReport/setNull'
       })
-    },
+    }
   }
 
   const filterProps = {
@@ -38,7 +38,7 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     productName,
     onListReset () {
       dispatch({
-        type: 'fifoReport/setNull',
+        type: 'fifoReport/setNull'
       })
     },
     onOk (month, yearPeriod, data) {
@@ -49,33 +49,32 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
           year: yearPeriod,
           productCode: data.productCode.toString(),
           productName: data.productName.toString()
-        },
+        }
       })
     },
     onChangePeriod (month, yearPeriod) {
-      const { period, year, ...query } = location
       dispatch({
         type: 'setPeriod',
         payload: {
           month,
-          yearPeriod,
-        },
+          yearPeriod
+        }
       })
       dispatch({
         type: 'fifoReport/queryProductCode',
         payload: {
           period: month,
-          year: yearPeriod,
+          year: yearPeriod
         }
       })
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
           period: month,
-          year: yearPeriod,
-        },
+          year: yearPeriod
+        }
       }))
-    },
+    }
   }
 
   return (
@@ -87,9 +86,9 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
 }
 
 Report.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   app: PropTypes.object,
-  fifoReport: PropTypes.object,
+  fifoReport: PropTypes.object
 }
 
 export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)

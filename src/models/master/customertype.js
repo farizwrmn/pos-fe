@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import * as customerTypeService from '../../services/master/customertype'
 import { pageModel } from './../common'
-import { message } from 'antd'
 
 const { query, querySellprice, add, edit, remove } = customerTypeService
 
@@ -23,7 +23,7 @@ export default modelExtend(pageModel, {
     listType: [],
     listSellprice: [],
     show: 1,
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -31,18 +31,18 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/master/customertype') {
           dispatch({
-            type: 'querySellprice',
+            type: 'querySellprice'
           })
           dispatch({
             type: 'updateState',
             payload: {
               newItem: false,
-              activeKey: '0',
-            },
+              activeKey: '0'
+            }
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -57,9 +57,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -70,8 +70,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessSellprice',
           payload: {
-            listSellprice: data.data,
-          },
+            listSellprice: data.data
+          }
         })
       }
     },
@@ -109,7 +109,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
   },
 
   reducers: {
@@ -136,13 +136,13 @@ export default modelExtend(pageModel, {
         listType,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
 
     querySuccessSellprice (state, action) {
       const { listSellprice } = action.payload
       return { ...state, listSellprice }
-    },
-  },
+    }
+  }
 })

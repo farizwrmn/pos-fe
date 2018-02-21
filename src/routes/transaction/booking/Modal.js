@@ -12,14 +12,14 @@ const formItemLayout = {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 8 },
-    xl: { span: 8 },
+    xl: { span: 8 }
   },
   wrapperCol: {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 12 },
-    xl: { span: 12 },
-  },
+    xl: { span: 12 }
+  }
 }
 
 const modal = ({
@@ -33,16 +33,16 @@ const modal = ({
   listBooking,
   form: {
     getFieldDecorator,
-    resetFields,
+    // resetFields,
     validateFields,
-    getFieldsValue,
-  },
-}) => {
-  const handleReset = () => {
-    resetFields()
-    resetItem()
-    onListReset()
+    getFieldsValue
   }
+}) => {
+  // const handleReset = () => {
+  //   resetFields()
+  //   resetItem()
+  //   onListReset()
+  // }
 
   const handleOk = () => {
     validateFields((errors) => {
@@ -50,7 +50,7 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       onSearch(data.status, data.period.format('YYYY-MM-DD'))
     })
@@ -68,16 +68,17 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
   const getListData = (value) => {
     let listData = []
-    for (let key in listBooking) {
+    for (let key = 0; key < listBooking.length; key += 1) {
       switch (value.format('YYYY-MM-DD')) {
-        case listBooking[key].scheduleDate:
-          listData.push({ type: listBooking[key].status, content: listBooking[key].counter })
-          break
+      case listBooking[key].scheduleDate:
+        listData.push({ type: listBooking[key].status, content: listBooking[key].counter })
+        break
+      default:
       }
     }
     return listData || []
@@ -91,52 +92,52 @@ const modal = ({
           listData.map((item) => {
             let badge
             switch (item.type) {
-              case 'Open':
-                badge = (<Badge dot
-                  style={{ backgroundColor: color.wisteria,
-                    position: 'relative',
-                    display: 'inline-block',
-                    top: 0,
-                    transform: 'none' }}
-                  text={item.content}
-                />)
-                break
-              case 'Confirmed':
-                badge = (<Badge status="default"
-                  text={item.content}
-                />)
-                break
-              case 'Check-In':
-                badge = (<Badge status="processing"
-                  text={item.content}
-                />)
-                break
-              case 'Check-Out':
-                badge = (<Badge status="success"
-                  text={item.content}
-                />)
-                break
-              case 'Reschedule':
-                badge = (<Badge dot
-                  style={{ backgroundColor: color.lavenderrose,
-                    position: 'relative',
-                    display: 'inline-block',
-                    top: 0,
-                    transform: 'none' }}
-                  text={item.content}
-                />)
-                break
-              case 'Cancel':
-                badge = (<Badge status="warning"
-                  text={item.content}
-                />)
-                break
-              case 'Reject':
-                badge = (<Badge status="error"
-                  text={item.content}
-                />)
-                break
-              default:
+            case 'Open':
+              badge = (<Badge dot
+                style={{ backgroundColor: color.purple,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none' }}
+                text={item.content}
+              />)
+              break
+            case 'Confirmed':
+              badge = (<Badge status="default"
+                text={item.content}
+              />)
+              break
+            case 'Check-In':
+              badge = (<Badge status="processing"
+                text={item.content}
+              />)
+              break
+            case 'Check-Out':
+              badge = (<Badge status="success"
+                text={item.content}
+              />)
+              break
+            case 'Reschedule':
+              badge = (<Badge dot
+                style={{ backgroundColor: color.peach,
+                  position: 'relative',
+                  display: 'inline-block',
+                  top: 0,
+                  transform: 'none' }}
+                text={item.content}
+              />)
+              break
+            case 'Cancel':
+              badge = (<Badge status="warning"
+                text={item.content}
+              />)
+              break
+            case 'Reject':
+              badge = (<Badge status="error"
+                text={item.content}
+              />)
+              break
+            default:
             }
             return (
               <li>
@@ -165,28 +166,30 @@ const modal = ({
 
   let month = groupByMonth(listBooking, 'scheduleDate')
   let full = {}
-  for (let key in month) {
+  for (let key = 0; key < month.length; key += 1) {
     full[key] = groupByStatus(month[key], 'status')
   }
 
   const getMonthData = (value) => {
     let monthlyData = []
-    for (let key in full) {
+    for (let key = 0; key < full.length; key += 1) {
       switch (value.format('YYYY-MM')) {
-        case key:
-          for (let status in full[key]) {
-            switch (status) {
-              case status:
-                let total = 0
-                for (let i = 0; i < full[key][status].length; i += 1) {
-                  total += full[key][status][i].counter
-                }
-                monthlyData.push({ type: status, content: total })
-                break
+      case key:
+        for (let status = 0; status < full[key].length; status += 1) {
+          switch (status) {
+          case status: {
+            let total = 0
+            for (let i = 0; i < full[key][status].length; i += 1) {
+              total += full[key][status][i].counter
             }
+            monthlyData.push({ type: status, content: total })
+            break
           }
-          break
-        default:
+          default:
+          }
+        }
+        break
+      default:
       }
     }
     return monthlyData || []
@@ -199,52 +202,52 @@ const modal = ({
         listData.map((item) => {
           let badge
           switch (item.type) {
-            case 'Open':
-              badge = (<Badge dot
-                style={{ backgroundColor: color.wisteria,
-                  position: 'relative',
-                  display: 'inline-block',
-                  top: 0,
-                  transform: 'none' }}
-                text={item.content}
-              />)
-              break
-            case 'Confirmed':
-              badge = (<Badge status="default"
-                text={item.content}
-              />)
-              break
-            case 'Check-In':
-              badge = (<Badge status="processing"
-                text={item.content}
-              />)
-              break
-            case 'Check-Out':
-              badge = (<Badge status="success"
-                text={item.content}
-              />)
-              break
-            case 'Reschedule':
-              badge = (<Badge dot
-                style={{ backgroundColor: color.lavenderrose,
-                  position: 'relative',
-                  display: 'inline-block',
-                  top: 0,
-                  transform: 'none' }}
-                text={item.content}
-              />)
-              break
-            case 'Cancel':
-              badge = (<Badge status="warning"
-                text={item.content}
-              />)
-              break
-            case 'Reject':
-              badge = (<Badge status="error"
-                text={item.content}
-              />)
-              break
-            default:
+          case 'Open':
+            badge = (<Badge dot
+              style={{ backgroundColor: color.purple,
+                position: 'relative',
+                display: 'inline-block',
+                top: 0,
+                transform: 'none' }}
+              text={item.content}
+            />)
+            break
+          case 'Confirmed':
+            badge = (<Badge status="default"
+              text={item.content}
+            />)
+            break
+          case 'Check-In':
+            badge = (<Badge status="processing"
+              text={item.content}
+            />)
+            break
+          case 'Check-Out':
+            badge = (<Badge status="success"
+              text={item.content}
+            />)
+            break
+          case 'Reschedule':
+            badge = (<Badge dot
+              style={{ backgroundColor: color.peach,
+                position: 'relative',
+                display: 'inline-block',
+                top: 0,
+                transform: 'none' }}
+              text={item.content}
+            />)
+            break
+          case 'Cancel':
+            badge = (<Badge status="warning"
+              text={item.content}
+            />)
+            break
+          case 'Reject':
+            badge = (<Badge status="error"
+              text={item.content}
+            />)
+            break
+          default:
           }
           return (
             <li>
@@ -260,7 +263,7 @@ const modal = ({
   const calendarProps = {
     dateCellRender,
     monthCellRender,
-    style: { width: '730px', float: 'right' },
+    style: { width: '730px', float: 'right' }
   }
 
   return (
@@ -272,16 +275,16 @@ const modal = ({
               initialValue: moment.utc(date, 'YYYY-MM-DD'),
               rules: [
                 {
-                  required: true,
-                },
-              ],
+                  required: true
+                }
+              ]
             })(
               <DatePicker placeholder="Select Period" />
             )}
           </FormItem>
           <FormItem label="Status" hasFeedback {...formItemLayout}>
             {getFieldDecorator('status', {
-              initialValue: 'OP',
+              initialValue: 'OP'
             })(<Select placeholder="Choose Status" defaultValue="OP" style={{ width: 120 }} >
               <Option value="OP"><Badge dot
                 text="Open"
@@ -289,7 +292,7 @@ const modal = ({
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none',
+                  transform: 'none'
                 }}
               />
               </Option>
@@ -302,7 +305,7 @@ const modal = ({
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none',
+                  transform: 'none'
                 }}
               /></Option>
               <Option value="CC"><Badge status="warning" text="Cancel" /></Option>
@@ -318,7 +321,7 @@ const modal = ({
                 display: 'inline-block',
                 top: '-0.2vh',
                 transform: 'none',
-                marginRight: '8px',
+                marginRight: '8px'
               }}
             />
             <Badge status="default" />
@@ -330,7 +333,7 @@ const modal = ({
                 display: 'inline-block',
                 top: '-0.2vh',
                 transform: 'none',
-                marginRight: '8px',
+                marginRight: '8px'
               }}
             />
             <Badge status="warning" />
@@ -342,7 +345,7 @@ const modal = ({
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none',
+                  transform: 'none'
                 }}
               />
             </div>
@@ -362,7 +365,7 @@ const modal = ({
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none',
+                  transform: 'none'
                 }}
               />
             </div>
@@ -373,7 +376,7 @@ const modal = ({
               <Badge status="error" text="Reject" />
             </div>
           </div>
-          <Calendar {...calendarProps} onSelect={date => selectDate(date)} onPanelChange={date => getFieldCalendar(date)} />
+          <Calendar {...calendarProps} onSelect={e => selectDate(e)} onPanelChange={e => getFieldCalendar(e)} />
         </TabPane>
       </Tabs>
     </Modal>

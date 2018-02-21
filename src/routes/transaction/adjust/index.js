@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Tabs, Modal, Row, Col } from 'antd'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import AdjustForm from './AdjustForm'
 import History from './History'
-import { Tabs, Modal, Row, Col } from 'antd'
 import AdjustList from './AdjustList'
 import AdjustFormEdit from './AdjustFormEdit'
 
@@ -12,7 +11,7 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    lastTrans, templistType, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType, curQty
+    lastTrans, templistType, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
@@ -24,22 +23,22 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     onOk (data) {
       dispatch({
         type: `adjust/${modalType}`,
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'adjust/modalHide',
+        type: 'adjust/modalHide'
       })
     },
     onDeleteUnit (id) {
       dispatch({
         type: 'units/delete',
         payload: {
-          id,
-        },
+          id
+        }
       })
-    },
+    }
   }
 
   const editProps = {
@@ -47,22 +46,22 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     item,
     disabledItemIn,
     disabledItemOut,
-    onOk(data) {
+    onOk (data) {
       dispatch({
         type: 'adjust/adjustEdit',
-        payload: data,
+        payload: data
       })
     },
-    onCancel() {
+    onCancel () {
       dispatch({
-        type: 'adjust/modalEditHide',
+        type: 'adjust/modalEditHide'
       })
-    },
+    }
   }
   const adjustProps = {
     item: currentItem,
     lastTrans,
-    location: location,
+    location,
     loading: loading.effects['adjust/create'],
     listType,
     templistType,
@@ -71,41 +70,41 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     listEmployee,
     tmpProductList,
     dataSource: listProduct,
-    dataBrowse: dataBrowse,
+    dataBrowse,
     visible: modalProductVisible,
     maskClosable: false,
-    onOk(data) {
+    onOk (data) {
       dispatch({
         type: 'adjust/add',
-        payload: data,
+        payload: data
       })
     },
     onResetAll () {
       dispatch({
-        type: 'adjust/resetAll',
+        type: 'adjust/resetAll'
       })
     },
     handleBrowseProduct () {
       dispatch({
-        type: 'adjust/getProducts',
+        type: 'adjust/getProducts'
       })
 
       dispatch({
         type: 'adjust/showProductModal',
         payload: {
-          modalType: 'browseProduct',
-        },
+          modalType: 'browseProduct'
+        }
       })
     },
     loadData () {
       dispatch({
-        type: 'adjust/modalEditHide',
+        type: 'adjust/modalEditHide'
       })
     },
     changeDisabledItem (e) {
       dispatch({
         type: 'adjust/onChangeDisabledItem',
-        payload: e,
+        payload: e
       })
     },
     onSearchProduct (data, e) {
@@ -113,9 +112,9 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       dispatch({
         type: 'adjust/onProductSearch',
         payload: {
-          searchText: searchText,
-          tmpProductData: e,
-        },
+          searchText,
+          tmpProductData: e
+        }
       })
     },
     onGetProduct () {
@@ -131,25 +130,24 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       dispatch({
         type: 'adjust/onInputChange',
         payload: {
-          searchText: e,
-        },
+          searchText: e
+        }
       })
     },
-    onHidePopover() {
+    onHidePopover () {
       dispatch({
-        type: 'adjust/hidePopover',
+        type: 'adjust/hidePopover'
       })
     },
     modalShow (data) {
       dispatch({
         type: 'adjust/modalEditShow',
         payload: {
-          data: data,
-        },
+          data
+        }
       })
     },
     onChooseItem (e) {
-      
       const listByCode = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       const checkExists = listByCode.filter(el => el.code === e.productCode)
       if (checkExists.length === 0) {
@@ -162,7 +160,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
           productName: e.productName,
           In: 0,
           Out: 0,
-          price: e.sellPrice,
+          price: e.sellPrice
         })
         localStorage.setItem('adjust', JSON.stringify(arrayProd))
         const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
@@ -173,14 +171,14 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
           content: 'Already Exists in list'
         })
       }
-    },
+    }
   }
 
   const historyProps = {
     dataSource: listAdjust,
     onGetAdjust () {
       dispatch({
-        type: 'adjust/queryAdjust',
+        type: 'adjust/queryAdjust'
       })
     },
     onEditItem (e) {
@@ -188,10 +186,10 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         type: 'adjust/modalShow',
         payload: {
           modalType: 'edit',
-          currentItem: e,
-        },
+          currentItem: e
+        }
       })
-    },
+    }
   }
 
   // const modalProductProps = {
@@ -248,7 +246,7 @@ Adjust.propTypes = {
   adjust: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 

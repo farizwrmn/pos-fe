@@ -5,7 +5,6 @@ import { DatePicker, Form, Modal, Input, Select, InputNumber, Collapse, Popover,
 import moment from 'moment'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
-import PurchaseList from './PurchaseList'
 
 const { TextArea, Search } = Input
 const Panel = Collapse.Panel
@@ -17,45 +16,19 @@ const ButtonGroup = Button.Group
 const formItemLayout = {
   labelCol: { span: 11 },
   wrapperCol: { span: 12 },
-  style: { marginBottom: 5 },
+  style: { marginBottom: 5 }
 }
 const formItemLayout1 = {
   labelCol: { span: 10 },
-  wrapperCol: { span: 11 },
+  wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
-                        modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                         onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker,onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps}) => {
-  const confirmPurchase = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
-      const data = {
-        ...getFieldsValue(),
-        supplierCode: supplierInformation.id,
-        supplierName: supplierInformation.supplierName,
-        dueDate: date,
-        invoiceTotal: parseInt(grandTotal),
-        nettoTotal: parseInt(realTotal) + parseInt(grandTotal),
-        totalDPP: parseInt(totalDpp) - parseInt(totalDisc),
-        totalPPN: parseInt(totalPpn),
-        discTotal: totalDisc,
-      }
-      if (moment(data.transDate).format('YYYY-MM-DD') >= moment(startPeriod).format('YYYY-MM-DD')) {
-        onOk(data)
-        resetFields()
-      } else {
-        Modal.warning({
-          title: 'Period has been closed',
-          content: 'This period has been closed'
-        })
-      }
-    })
-  }
+const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
+  modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
+  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
-    const data = {...getFieldsValue()}
+    const data = {
+      ...getFieldsValue()
+    }
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     let discPercent = g.reduce((cnt, o) => cnt + (o.disc1 * o.qty * (o.price / 100)), 0)
     let discNominal = g.reduce((cnt, o) => cnt + (o.discount), 0)
@@ -63,26 +36,26 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
     let discTotal = (data.discInvoiceNominal || 0) + invoicePercent + discNominal + discPercent
     return discTotal
   }
-  const getGrandTotal = (g, totalDisc) => {
+  const getGrandTotal = (g) => {
     const grandTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     return grandTotal
   }
-  const getNettoTotal = (g,totalDisc,rounding, totalPpn) => {
-    const nettoTotal = g -  totalDisc + (parseFloat(rounding) || 0) + totalPpn
+  const getNettoTotal = (g, totalDisc, e, totalPpn) => {
+    const nettoTotal = (g - totalDisc) + (parseFloat(e) || 0) + totalPpn
     return nettoTotal
   }
-  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))  
+  let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
   let g = dataPurchase
   let realTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
-  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)    
+  let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
   let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
   let totalDisc = getDiscTotal(g)
-  let grandTotal = getGrandTotal(g, totalDisc)
-  let nettoTotal = getNettoTotal(grandTotal,totalDisc, rounding, totalPpn)
+  let grandTotal = getGrandTotal(g)
+  let nettoTotal = getNettoTotal(grandTotal, totalDisc, rounding, totalPpn)
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
-    border: 0,
+    border: 0
   }
   const hdlDateChange = (e) => {
     let a = e.format('YYYY-MM-DD')
@@ -93,19 +66,21 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
 
   const hdlChangePercent = () => {
     console.log('change')
-    const data = {...getFieldsValue()}
+    const data = {
+      ...getFieldsValue()
+    }
     let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
     let ppnType = data.taxType
     localStorage.setItem('taxType', ppnType)
     const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     const x = dataProduct
-    for (let key in x) {
-      x[key].dpp = parseFloat(((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100)) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+    for (let key = 0; key < x.length; key += 1) {
+      x[key].dpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
       x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
     localStorage.setItem('product_detail', JSON.stringify(x))
-    onDiscPercent(x,data)
+    onDiscPercent(x, data)
   }
 
   const onChange = (e) => {
@@ -126,20 +101,20 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
       title: 'ID',
       dataIndex: 'supplierCode',
       key: 'supplierCode',
-      width: '10%',
+      width: '10%'
     },
     {
       title: 'Name',
       dataIndex: 'supplierName',
       key: 'supplierName',
-      width: '45%',
+      width: '45%'
     },
     {
       title: 'Address',
       dataIndex: 'address01',
       key: 'address01',
-      width: '45%',
-    },
+      width: '45%'
+    }
   ]
   const handleMenuClick = (record) => {
     onChooseSupplier(record)
@@ -161,18 +136,37 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
       dataSource={listSupplier}
       size="small"
       pageSize={5}
-      rowKey={record => record.productCode}
       onRowClick={_record => handleMenuClick(_record)}
     />
   )
-  const hdlPPN = (e) => {
-    onChangePPN(e)
+  const confirmPurchase = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+      const data = {
+        ...getFieldsValue(),
+        supplierCode: supplierInformation.id,
+        supplierName: supplierInformation.supplierName,
+        dueDate: date,
+        invoiceTotal: parseInt(grandTotal, 10),
+        nettoTotal: parseInt(realTotal, 10) + parseInt(grandTotal, 10),
+        totalDPP: parseInt(totalDpp, 10) - parseInt(totalDisc, 10),
+        totalPPN: parseInt(totalPpn, 10),
+        discTotal: totalDisc
+      }
+      if (moment(data.transDate).format('YYYY-MM-DD') >= moment(startPeriod).format('YYYY-MM-DD')) {
+        onOk(data)
+        resetFields()
+      } else {
+        Modal.warning({
+          title: 'Period has been closed',
+          content: 'This period has been closed'
+        })
+      }
+    })
   }
-  const resetProduct = () => {
-    localStorage.removeItem('product_detail')
-    onResetBrowse()
-  }
-
   return (
     <Form style={{ padding: 3 }}>
       <Row>
@@ -186,8 +180,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       rules: [{
                         required: true,
                         message: 'Required',
-                        pattern: /^[a-z0-9/-]{6,25}$/i,
-                      }],
+                        pattern: /^[a-z0-9/-]{6,25}$/i
+                      }]
                     })(<Input maxLength={25} />)}
                   </FormItem>
                   <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
@@ -195,8 +189,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
                       rules: [{
                         required: true,
-                        message: 'Required',
-                      }],
+                        message: 'Required'
+                      }]
                     })(<Select onBlur={hdlChangePercent}>
                       <Option value="I">Include</Option>
                       <Option value="E">Exclude</Option>
@@ -208,11 +202,9 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       rules: [{
                         required: false,
                         pattern: /^([0-9.-]{0,5})$/i,
-                        message: 'Required',
-                      }],
-                    })(<InputNumber 
-                      onBlur={hdlChangePercent}
-                     size="large" min={0} max={100} step={0.1} defaultValue={0} />)}
+                        message: 'Required'
+                      }]
+                    })(<InputNumber onBlur={hdlChangePercent} size="large" min={0} max={100} step={0.1} defaultValue={0} />)}
                   </FormItem>
                   <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discInvoiceNominal', {
@@ -220,11 +212,9 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       rules: [{
                         required: false,
                         pattern: /^([0-9.-]{0,19})$/i,
-                        message: 'Required',
-                      }],
-                    })(<InputNumber 
-                      onBlur={hdlChangePercent} 
-                    defaultValue={0} step={500} min={0}  />)}
+                        message: 'Required'
+                      }]
+                    })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
                   </FormItem>
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
@@ -232,8 +222,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                     {getFieldDecorator('transDate', {
                       rules: [{
                         required: true,
-                        message: 'Required',
-                      }],
+                        message: 'Required'
+                      }]
                     })(<DatePicker onChange={_value => hdlDateChange(_value)} />)}
                   </FormItem>
                   <FormItem label="Tempo" hasFeedback {...formItemLayout}>
@@ -242,8 +232,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                       rules: [{
                         required: true,
                         message: 'Required',
-                        pattern: /^\d+$/gi,
-                      }],
+                        pattern: /^\d+$/gi
+                      }]
                     })(<Input maxLength={5} onChange={_value => onChange(_value)} />)}
                   </FormItem>
                   <FormItem label="Due Date" hasFeedback {...formItemLayout}>
@@ -253,8 +243,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
                     {getFieldDecorator('invoiceType', {
                       rules: [{
                         required: true,
-                        message: 'Required',
-                      }],
+                        message: 'Required'
+                      }]
                     })((<Select>
                       <Option value="C">CASH</Option>
                       <Option value="K">KREDIT</Option>
@@ -298,7 +288,6 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
         </Col>
       </Row>
       <Browse {...purchaseProps} />
-      {/* {modalPurchaseVisible && <PurchaseList {...purchaseProps} />} */}
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
@@ -322,8 +311,8 @@ const PurchaseForm = ({onDiscPercent, rounding, onChangeRounding, dataBrowse, on
               rules: [{
                 pattern: /^([0-9.-]{0,5})$/i,
                 message: 'Rounding is not defined',
-                required: true,
-              }],
+                required: true
+              }]
             })((<Input maxLength={5} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
@@ -345,7 +334,7 @@ PurchaseForm.propTyps = {
   location: PropTypes.object,
   dispatch: PropTypes.objects,
   onGetSupplier: PropTypes.func,
-  dataBrowse: PropTypes.array,
+  dataBrowse: PropTypes.array
 }
 
 export default Form.create()(PurchaseForm)

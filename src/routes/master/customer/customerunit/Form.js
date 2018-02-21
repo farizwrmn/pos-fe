@@ -14,51 +14,51 @@ const Panel = Collapse.Panel
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 12 },
-  xl: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formCustomerType = ({
@@ -80,8 +80,8 @@ const formCustomerType = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { openModal } = modalProps
   const handleReset = () => {
@@ -99,17 +99,16 @@ const formCustomerType = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
 
-      const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Member Code can't be null")
@@ -131,32 +130,32 @@ const formCustomerType = ({
     <div>
       <FormItem label="Member Code" {...formItemLayout} >
         {getFieldDecorator('memberCode', {
-          initialValue: dataCustomer.memberCode,
+          initialValue: dataCustomer.memberCode
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Name" {...formItemLayout}>
         {getFieldDecorator('memberName', {
-          initialValue: dataCustomer.memberName,
+          initialValue: dataCustomer.memberName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="BirthDate" {...formItemLayout}>
         {getFieldDecorator('birthDate', {
-          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : '',
+          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : ''
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="City" {...formItemLayout}>
         {getFieldDecorator('cityName', {
-          initialValue: dataCustomer.cityName,
+          initialValue: dataCustomer.cityName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Address" {...formItemLayout}>
         {getFieldDecorator('address01', {
-          initialValue: dataCustomer.address01,
+          initialValue: dataCustomer.address01
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Type" {...formItemLayout}>
         {getFieldDecorator('memberTypeName', {
-          initialValue: dataCustomer.memberTypeName,
+          initialValue: dataCustomer.memberTypeName
         })(<Input disabled />)}
       </FormItem>
     </div>
@@ -189,9 +188,9 @@ const formCustomerType = ({
                       {
                         required: true,
                         pattern: /^[A-Z0-9]{1,10}\S+$/,
-                        message: 'A-Z & 0-9',
-                      },
-                    ],
+                        message: 'A-Z & 0-9'
+                      }
+                    ]
                   })(<Input disabled={disabled} maxLength={10} />)}
                 </FormItem>
                 <FormItem label="Merk" hasFeedback {...formItemLayout}>
@@ -199,9 +198,9 @@ const formCustomerType = ({
                     initialValue: item.merk,
                     rules: [
                       {
-                        required: true,
-                      },
-                    ],
+                        required: true
+                      }
+                    ]
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Model" hasFeedback {...formItemLayout}>
@@ -209,14 +208,14 @@ const formCustomerType = ({
                     initialValue: item.model,
                     rules: [
                       {
-                        required: true,
-                      },
-                    ],
+                        required: true
+                      }
+                    ]
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('type', {
-                    initialValue: item.type,
+                    initialValue: item.type
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Tahun" hasFeedback {...formItemLayout}>
@@ -225,19 +224,19 @@ const formCustomerType = ({
                     rules: [
                       {
                         pattern: /^[12][0-9]{3}$/,
-                        message: 'year is not valid',
-                      },
-                    ],
+                        message: 'year is not valid'
+                      }
+                    ]
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('chassisNo', {
-                    initialValue: item.chassisNo,
+                    initialValue: item.chassisNo
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('machineNo', {
-                    initialValue: item.machineNo,
+                    initialValue: item.machineNo
                   })(<Input />)}
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
@@ -274,7 +273,7 @@ formCustomerType.propTypes = {
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
   modalVisible: PropTypes.bool,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formCustomerType)

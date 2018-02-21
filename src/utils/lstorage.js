@@ -3,12 +3,13 @@
  */
 import moment from 'moment'
 import { prefix } from './config'
-import { encrypt, decrypt} from './crypt'
+import { encrypt, decrypt } from './crypt'
 
 const putStorageKey = (key, value, norandom) => {
   // 'udi' { 1: userid, 2: role, 3: store, 4: usercompany, 5: userlogintime, 6: difftime_be-fe, 7: sessionid }
   // [data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime, data.profile.sessionaid]
-  let rdmText, counter = 0
+  let rdmText
+  let counter = 0
   if (norandom) {
     rdmText = norandom
   } else {
@@ -32,22 +33,22 @@ const putStorageKey = (key, value, norandom) => {
       cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
     }
   }
-  localStorage.setItem(`${prefix}` + key, rdmText + '#' + cryptedValue.slice(0,-1))
+  localStorage.setItem(`${prefix}${key}`, `${rdmText}#${cryptedValue.slice(0, -1)}`)
 }
 
 const getStorageKey = (key) => {
-  const localId = localStorage.getItem(`${prefix}` + key)
+  const localId = localStorage.getItem(`${prefix}${key}`)
   let pair = []
-  if (localId && localId.indexOf("#") > -1) {
-    const localIds = localId.split("#")
+  if (localId && localId.indexOf('#') > -1) {
+    const localIds = localId.split('#')
     const rdmText = encrypt(localIds[0])
     pair[0] = localIds[0]
     switch (key) {
-      case 'uelor':
-        pair[1] = JSON.parse(decrypt(localIds[1], rdmText) || '')
-        break
-      default:
-        pair[1] = decrypt(localIds[1], rdmText) || ''
+    case 'uelor':
+      pair[1] = JSON.parse(decrypt(localIds[1], rdmText) || '')
+      break
+    default:
+      pair[1] = decrypt(localIds[1], rdmText) || ''
     }
     pair[2] = decrypt(localIds[2], rdmText) || ''
     pair[3] = decrypt(localIds[3], rdmText) || ''
@@ -55,8 +56,12 @@ const getStorageKey = (key) => {
     pair[5] = decrypt(localIds[5], rdmText) || ''
     pair[6] = localIds[6] || ''
   } else {
-    pair[1] = decrypt(localStorage.getItem(`${prefix}` + key)) || ''
-    pair[2] = pair[3] = pair[4] = pair[5] = pair[6] = '---'
+    pair[1] = decrypt(localStorage.getItem(`${prefix}${key}`)) || ''
+    pair[2] = '---'
+    pair[3] = '---'
+    pair[4] = '---'
+    pair[5] = '---'
+    pair[6] = '---'
   }
   return pair
 }
@@ -96,11 +101,11 @@ const getListUserStores = () => {
   }
   return listUserStores
 }
-const getCurrentUserStore = () => { return parseInt(getStorageKey('udi')[3]) }
+const getCurrentUserStore = () => { return parseInt(getStorageKey('udi')[3], 10) }
 const getCurrentUserStoreName = () => {
-  function valueStoreName(store) {
+  function valueStoreName (store) {
     if (store.value === this[0]) {
-      return store;
+      return store
     }
   }
   const listUserStores = getListUserStores()
@@ -114,9 +119,9 @@ const getCurrentUserStoreName = () => {
 }
 // current StoreCode 22/01/2017
 const getCurrentUserStoreCode = () => {
-  function valueStoreName(store) {
+  function valueStoreName (store) {
     if (store.value === this[0]) {
-      return store;
+      return store
     }
   }
   const listUserStores = getListUserStores()
@@ -131,9 +136,9 @@ const getCurrentUserStoreCode = () => {
 
 // current StoreCode 24/01/2017
 const getCurrentUserStoreDetail = () => {
-  function valueStoreName(store) {
+  function valueStoreName (store) {
     if (store.value === this[0]) {
-      return store;
+      return store
     }
   }
   const listUserStores = getListUserStores()
@@ -160,5 +165,5 @@ module.exports = {
   getCurrentUserStoreName,
   getCurrentUserStoreCode,
   getCurrentUserStoreDetail,
-  getSessionId,
+  getSessionId
 }

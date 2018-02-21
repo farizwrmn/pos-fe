@@ -1,25 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button, Input, Icon, Form } from 'antd'
+import { Table, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
-import { DropOption } from 'components'
 
 const FormItem = Form.Item
 
 const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) => {
-  const { searchText, filtered, tmpMemberList } = pos
+  const { searchText, tmpMemberList } = pos
 
-  const handleMenuClick = (record, e) => {
+  const handleMenuClick = (record) => {
     onChooseItem(record)
   }
 
   const handleChange = (e) => {
-    const {value} = e.target
+    const { value } = e.target
     dispatch({
       type: 'pos/onInputChange',
       payload: {
-        searchText: value,
-      },
+        searchText: value
+      }
     })
   }
 
@@ -27,9 +26,9 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
     dispatch({
       type: 'pos/onMemberSearch',
       payload: {
-        searchText: searchText,
-        tmpMemberList: tmpMemberList,
-      },
+        searchText,
+        tmpMemberList
+      }
     })
   }
 
@@ -38,8 +37,8 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
       type: 'pos/onMemberReset',
       payload: {
         searchText: '',
-        tmpMemberList: tmpMemberList,
-      },
+        tmpMemberList
+      }
     })
   }
 
@@ -47,20 +46,24 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
     {
       title: 'Member Code',
       dataIndex: 'memberCode',
-      key: 'memberCode',
+      key: 'memberCode'
     }, {
       title: 'Member Name',
       dataIndex: 'memberName',
-      key: 'memberName',
+      key: 'memberName'
     }, {
       title: 'Address',
       dataIndex: 'address01',
-      key: 'address01',
+      key: 'address01'
     }, {
       title: 'Mobile',
       dataIndex: 'mobileNumber',
-      key: 'mobileNumber',
-    },
+      key: 'mobileNumber'
+    }, {
+      title: 'Type',
+      dataIndex: 'memberTypeName',
+      key: 'memberTypeName'
+    }
   ]
 
   return (
@@ -68,11 +71,12 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
       <Form layout="inline">
         <FormItem>
           <Input placeholder="Search Member Name"
-                 value={searchText}
-                 size="small"
-                 onChange={(e) => handleChange(e)}
-                 onPressEnter={handleSearch}
-                 style={{ marginBottom: 16 }} />
+            value={searchText}
+            size="small"
+            onChange={e => handleChange(e)}
+            onPressEnter={handleSearch}
+            style={{ marginBottom: 16 }}
+          />
         </FormItem>
         <FormItem>
           <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
@@ -89,7 +93,7 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
         simple
         size="small"
         rowKey={record => record.memberCode}
-        onRowClick={(record) => handleMenuClick(record)}
+        onRowClick={record => handleMenuClick(record)}
       />
     </div>
   )
@@ -99,7 +103,7 @@ ListMember.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   pos: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ pos }) => ({ pos }))(ListMember)

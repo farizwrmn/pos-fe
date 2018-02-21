@@ -1,41 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Table, Modal, Button, Badge, Form, Radio, Tabs } from 'antd'
+import { Card, Table, Modal, Button, Tabs } from 'antd'
 import { connect } from 'dva'
-import styles from './List.less'
-import classnames from 'classnames'
-import AnimTableBody from 'components/DataTable/AnimTableBody'
-import { DropOption } from 'components'
 
-const FormItem = Form.Item
+const TabPane = Tabs.TabPane
 
-const TabPane = Tabs.TabPane;
-
-const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
+const ListQueue = ({ pos, dispatch }) => {
   const { listQueue, curQueue } = pos
   const handleChange = (e) => {
-
     dispatch({
       type: 'pos/changeQueue',
       payload: {
-        queue: e,
-      },
+        queue: e
+      }
     })
   }
 
 
   const handleClick = () => {
     const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+    const listOfQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
     const useQueue = `queue${curQueue}`
-    if (Object.keys(listQueue).length === 0) {
+    if (Object.keys(listOfQueue).length === 0) {
       Modal.warning({
         title: 'Warning',
-        content: `Queue ${curQueue} Not Found...!`,
+        content: `Queue ${curQueue} Not Found...!`
       })
     } else {
-      const cashier_trans = listQueue
-      const trans = cashier_trans[0]
+      const trans = listOfQueue[0]
       let arrayMember = []
       let arrayMechanic = []
       arrayMember.push({
@@ -46,7 +38,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         id: trans.id,
         address01: trans.address01,
         gender: trans.gender,
-        phone: trans.phone,
+        phone: trans.phone
       })
       arrayMechanic.push({
         mechanicCode: trans.mechanicCode,
@@ -85,7 +77,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       localStorage.setItem('queue', JSON.stringify(queue))
       document.getElementById('KM').value = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       dispatch({
-        type: 'pos/setCurTotal',
+        type: 'pos/setCurTotal'
       })
       dispatch({
         type: 'payment/querySequenceSuccess',
@@ -95,7 +87,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
         }
       })
       dispatch({
-        type: 'pos/hideQueueModal',
+        type: 'pos/hideQueueModal'
       })
     }
   }
@@ -116,7 +108,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       <Card bodyStyle={{ padding: 0, fontSize: '150%' }} bordered={false} style={{ width: '100%', marginBottom: 5 }}>
         <div style={{ textAlign: 'center' }}>
           General Information
-          </div>
+        </div>
         <div>
           <Table
             bordered
@@ -148,12 +140,12 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
               {
                 title: 'Point',
                 dataIndex: 'point'
-              },
+              }
             ]}
             dataSource={listQueue}
             pagination={false}
             locale={{
-              emptyText: 'No General Information',
+              emptyText: 'No General Information'
             }}
           />
         </div>
@@ -161,7 +153,7 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
       <Card bodyStyle={{ padding: 0, fontSize: '200%' }} bordered={false} style={{ width: '100%' }}>
         <div style={{ textAlign: 'center' }}>
           Payment List
-          </div>
+        </div>
         <div>
           <Table
             rowKey={(record, key) => key}
@@ -171,49 +163,49 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
             columns={[
               {
                 title: 'No',
-                dataIndex: 'no',
+                dataIndex: 'no'
               },
               {
                 title: 'Barcode',
-                dataIndex: 'code',
+                dataIndex: 'code'
               },
               {
                 title: 'Product Name',
-                dataIndex: 'name',
+                dataIndex: 'name'
               },
               {
                 title: 'Qty',
-                dataIndex: 'qty',
+                dataIndex: 'qty'
               },
               {
                 title: 'Price',
-                dataIndex: 'price',
+                dataIndex: 'price'
               },
               {
                 title: 'Disc 1(%)',
-                dataIndex: 'disc1',
+                dataIndex: 'disc1'
               },
               {
                 title: 'Disc 2(%)',
-                dataIndex: 'disc2',
+                dataIndex: 'disc2'
               },
               {
                 title: 'Disc 3(%)',
-                dataIndex: 'disc3',
+                dataIndex: 'disc3'
               },
               {
                 title: 'Discount',
-                dataIndex: 'discount',
+                dataIndex: 'discount'
               },
               {
                 title: 'Total',
-                dataIndex: 'total',
-              },
+                dataIndex: 'total'
+              }
             ]}
             dataSource={listQueue[0] ? listQueue[0].cashier_trans : []}
             style={{ marginBottom: 16 }}
             locale={{
-              emptyText: 'No Payment Information',
+              emptyText: 'No Payment Information'
             }}
           />
         </div>
@@ -226,49 +218,49 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
             columns={[
               {
                 title: 'No',
-                dataIndex: 'no',
+                dataIndex: 'no'
               },
               {
                 title: 'Barcode',
-                dataIndex: 'code',
+                dataIndex: 'code'
               },
               {
                 title: 'Product Name',
-                dataIndex: 'name',
+                dataIndex: 'name'
               },
               {
                 title: 'Qty',
-                dataIndex: 'qty',
+                dataIndex: 'qty'
               },
               {
                 title: 'Price',
-                dataIndex: 'price',
+                dataIndex: 'price'
               },
               {
                 title: 'Disc 1(%)',
-                dataIndex: 'disc1',
+                dataIndex: 'disc1'
               },
               {
                 title: 'Disc 2(%)',
-                dataIndex: 'disc2',
+                dataIndex: 'disc2'
               },
               {
                 title: 'Disc 3(%)',
-                dataIndex: 'disc3',
+                dataIndex: 'disc3'
               },
               {
                 title: 'Discount',
-                dataIndex: 'discount',
+                dataIndex: 'discount'
               },
               {
                 title: 'Total',
-                dataIndex: 'total',
-              },
+                dataIndex: 'total'
+              }
             ]}
             dataSource={listQueue[0] ? listQueue[0].service_detail : []}
             style={{ marginBottom: 16 }}
             locale={{
-              emptyText: 'No Payment Information',
+              emptyText: 'No Payment Information'
             }}
           />
         </div>
@@ -279,11 +271,8 @@ const ListQueue = ({ isMotion, pos, dispatch, location, ...tableProps }) => {
 }
 
 ListQueue.propTypes = {
-  onChooseItem: PropTypes.func,
-  isMotion: PropTypes.bool,
-  location: PropTypes.object,
   pos: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ pos }) => ({ pos }))(ListQueue)

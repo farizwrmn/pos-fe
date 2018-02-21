@@ -6,13 +6,13 @@ import PropTypes from 'prop-types'
 import { Form, Modal, Input, DatePicker } from 'antd'
 import moment from 'moment'
 
-const { TextArea } = Input;
+const { TextArea } = Input
 const FormItem = Form.Item
 const dateFormat = 'YYYY/MM/DD hh:mm:ss'
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 14 }
 }
 
 const modal = ({
@@ -28,14 +28,14 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       onOk(data)
     })
   }
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
   return (
@@ -46,18 +46,18 @@ const modal = ({
             initialValue: accountNumber,
             rules: [
               {
-                required: true,
-              },
-            ],
+                required: true
+              }
+            ]
           })(<Input disabled />)}
         </FormItem>
         <FormItem label="Reference" {...formItemLayout}>
           {getFieldDecorator('reference', {
             rules: [
               {
-                required: true,
-              },
-            ],
+                required: true
+              }
+            ]
           })(<Input maxLength={40} />)}
         </FormItem>
         <FormItem label="StartDate" {...formItemLayout}>
@@ -65,27 +65,27 @@ const modal = ({
             initialValue: moment.utc(periodDate.startDate, dateFormat),
             rules: [
               {
-                required: false,
-              },
-            ],
+                required: false
+              }
+            ]
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
         </FormItem>
         <FormItem label="EndDate" {...formItemLayout}>
           {getFieldDecorator('endPeriod', {
             rules: [
               {
-                required: false,
-              },
-            ],
+                required: false
+              }
+            ]
           })(<DatePicker disabled format="YYYY-MM-DD" />)}
         </FormItem>
         <FormItem label="Memo" {...formItemLayout}>
           {getFieldDecorator('memo', {
             rules: [
               {
-                required: false,
-              },
-            ],
+                required: false
+              }
+            ]
           })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
@@ -97,7 +97,7 @@ modal.propTypes = {
   form: PropTypes.isRequired,
   periodDate: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
-  accountNumber: PropTypes.string.isRequired,
+  accountNumber: PropTypes.string.isRequired
 }
 
 export default Form.create()(modal)

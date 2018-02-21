@@ -2,6 +2,7 @@
  * Created by Veirry on 24/10/2017.
  */
 import { request, config, crypt, lstorage } from '../../utils'
+
 const { fiforeport } = config.api
 
 export async function queryFifo (params) {
@@ -9,10 +10,10 @@ export async function queryFifo (params) {
   params.store = lstorage.getCurrentUserStore()
   const url = `${fiforeport}/products`
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -21,10 +22,10 @@ export async function queryFifoValue (params) {
   params.store = lstorage.getCurrentUserStore()
   const url = `${fiforeport}/value`
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -33,9 +34,9 @@ export async function queryFifoCard (params) {
   params.store = lstorage.getCurrentUserStore()
   const url = `${fiforeport}/card`
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

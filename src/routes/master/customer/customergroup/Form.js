@@ -12,51 +12,51 @@ const TabPane = Tabs.TabPane
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formCustomerGroup = ({
@@ -75,8 +75,8 @@ const formCustomerGroup = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -95,7 +95,7 @@ const formCustomerGroup = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (data.groupCode) {
         Modal.confirm({
@@ -103,7 +103,7 @@ const formCustomerGroup = ({
           onOk () {
             onSubmit(data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Group Code can't be null")
@@ -140,10 +140,10 @@ const formCustomerGroup = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_]{1,5}$/i,
-                      message: 'a-z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_]{1,5}$/i,
+                      message: 'a-z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={5} />)}
               </FormItem>
             </Col>
@@ -156,9 +156,9 @@ const formCustomerGroup = ({
                   initialValue: item.groupName,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -190,7 +190,7 @@ formCustomerGroup.propTypes = {
   changeTab: PropTypes.func,
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formCustomerGroup)

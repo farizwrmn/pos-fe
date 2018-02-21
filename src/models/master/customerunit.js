@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { queryUnits, addUnit, removeUnit, editUnit } from '../../services/master/customer'
 import { pageModel } from './../common'
-import { message } from 'antd'
 
 const success = () => {
   message.success('Customer Unit has been saved')
@@ -19,7 +19,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listUnit: [],
-    newItem: false,
+    newItem: false
   },
 
   subscriptions: {
@@ -30,8 +30,8 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
-              activeKey: '0',
-            },
+              activeKey: '0'
+            }
           })
           // const payload = location.query
           // dispatch({
@@ -39,7 +39,7 @@ export default modelExtend(pageModel, {
           // })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -54,9 +54,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -95,7 +95,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
+    }
 
   },
 
@@ -124,10 +124,10 @@ export default modelExtend(pageModel, {
         listUnit,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
-    },
+    }
 
-  },
+  }
 })

@@ -3,10 +3,10 @@ import { request, config, crypt } from 'utils'
 const { apiUserRoles } = config.rest
 
 export async function save (params) {
-  const url = apiUserRoles.replace('/:id', '/' + params.userId)
+  const url = apiUserRoles.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
     body: params.data,
@@ -15,10 +15,10 @@ export async function save (params) {
 }
 
 export async function saveUserDefaultRole (params) {
-  const url = apiUserRoles.replace('/:id', '/' + params.userId)
+  const url = apiUserRoles.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken

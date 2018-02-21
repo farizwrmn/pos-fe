@@ -7,7 +7,7 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ location, dispatch, loading, posReport, app }) => {
+const Report = ({ dispatch, loading, posReport, app }) => {
   const { listTrans, fromDate, toDate, productCode } = posReport
   const { user, storeInfo } = app
   const browseProps = {
@@ -18,32 +18,32 @@ const Report = ({ location, dispatch, loading, posReport, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
-    },
+    }
   }
   const filterProps = {
-    listTrans: listTrans,
+    listTrans,
     user,
     storeInfo,
     dispatch,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'posReport/setListNull',
+        type: 'posReport/setListNull'
       })
     },
     onDateChange (from, to) {
       dispatch({
         type: 'posReport/queryTransCancel',
         payload: {
-          from: from,
-          to: to
+          from,
+          to
         }
       })
-    },
+    }
   }
   return (
     <div className="content-inner">
@@ -58,7 +58,7 @@ Report.propTyps = {
   app: PropTypes.object,
   posReport: PropTypes.object,
   location: PropTypes.object,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)

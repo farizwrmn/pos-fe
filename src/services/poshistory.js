@@ -8,6 +8,17 @@ export async function queryOut (params) {
     url: params ? `${transfer}/out` : transfer,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
+
+export async function add (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: params ? `${transfer}/out` : transfer,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+

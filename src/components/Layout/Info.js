@@ -2,18 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Tag } from 'antd'
-import styles from './Info.less'
 import { color, config, ip, lstorage } from 'utils'
+import styles from './Info.less'
+
 
 const status = {
-  1: { color: color.pastelgreen, },
-  2: { color: color.lightskyblue, },
-  3: { color: color.wewak, },
-  4: { color: color.teagreen, },
-  5: { color: color.pattensblue, },
-  6: { color: color.lavenderrose, },
-  7: { color: color.saffron, },
-  8: { color: color.wisteria, },
+  1: { color: color.pastelgreen },
+  2: { color: color.lightskyblue },
+  3: { color: color.wewak },
+  4: { color: color.teagreen },
+  5: { color: color.pattensblue },
+  6: { color: color.lavenderrose },
+  7: { color: color.saffron },
+  8: { color: color.wisteria }
 }
 
 const Info = ({ ipAddress, dispatch, app }) => {
@@ -32,7 +33,7 @@ const Info = ({ ipAddress, dispatch, app }) => {
     {
       title: 'name',
       dataIndex: 'name',
-      className: styles.name,
+      className: styles.name
     }, {
       title: 'value',
       dataIndex: 'value',
@@ -53,8 +54,8 @@ const Info = ({ ipAddress, dispatch, app }) => {
 }
 
 Info.propTypes = {
-  ipAddress: PropTypes.array,
-  dispatch: PropTypes.func,
+  ipAddress: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 export default connect(({ ipAddress, app }) => ({ ipAddress, app }))(Info)

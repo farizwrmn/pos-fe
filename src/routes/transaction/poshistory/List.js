@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Table, Modal, Button } from 'antd'
-
-const confirm = Modal.confirm
+import { Table, Button } from 'antd'
 
 const List = ({ ...tableProps }) => {
   const printPOSHistory = (record) => {
@@ -14,12 +11,12 @@ const List = ({ ...tableProps }) => {
     {
       title: 'Store Name',
       dataIndex: 'storeName',
-      key: 'storeName',
+      key: 'storeName'
     },
     {
       title: 'Store Name Receiver',
       dataIndex: 'storeNameReceiver',
-      key: 'storeNameReceiver',
+      key: 'storeNameReceiver'
     },
     {
       title: 'Transaction Date',
@@ -27,12 +24,12 @@ const List = ({ ...tableProps }) => {
       key: 'transDate',
       render: (text) => {
         return moment(text).format('DD MMMM YYYY')
-      },
+      }
     },
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo',
+      key: 'transNo'
     },
     {
       title: 'Operation',
@@ -41,8 +38,8 @@ const List = ({ ...tableProps }) => {
       fixed: 'right',
       render: (record) => {
         return <Button type="primary" onClick={() => printPOSHistory(record)}>Print</Button>
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -60,7 +57,7 @@ const List = ({ ...tableProps }) => {
 
 List.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default List

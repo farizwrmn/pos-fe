@@ -9,7 +9,7 @@ import { Return, Trans, Daily } from '../components'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, purchaseReport }) => {
+const Report = ({ dispatch }) => {
   const callback = () => {
     dispatch({
       type: 'purchaseReport/setListNull'
@@ -27,7 +27,7 @@ const Report = ({ dispatch, purchaseReport }) => {
 }
 
 Report.propTypes = {
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ loading, purchaseReport }) => ({ loading, purchaseReport }))(Report)

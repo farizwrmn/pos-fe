@@ -1,12 +1,8 @@
 import React from 'react'
-import { connect } from 'dva'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
-import { DropOption } from 'components'
+import { Table } from 'antd'
 
-const confirm = Modal.confirm
-
-const ListItem = ({ ...tableProps, onModalVisible, editItem, deleteItem }) => {
+const ListItem = ({ ...tableProps, onModalVisible }) => {
   const handleMenuClick = (record) => {
     onModalVisible(record)
   }
@@ -15,28 +11,28 @@ const ListItem = ({ ...tableProps, onModalVisible, editItem, deleteItem }) => {
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no',
+      key: 'no'
     },
     {
       title: 'Code',
       dataIndex: 'productCode',
-      key: 'productCode',
+      key: 'productCode'
     },
     {
       title: 'Name',
       dataIndex: 'productName',
-      key: 'productName',
+      key: 'productName'
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty',
+      key: 'qty'
     },
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description',
-    },
+      key: 'description'
+    }
   ]
 
   return (
@@ -48,7 +44,7 @@ const ListItem = ({ ...tableProps, onModalVisible, editItem, deleteItem }) => {
         size="small"
         scroll={{ x: 1000 }}
         rowKey={record => record.no}
-        onRowClick={(item) => handleMenuClick(item)}
+        onRowClick={item => handleMenuClick(item)}
       />
     </div>
   )
@@ -56,7 +52,7 @@ const ListItem = ({ ...tableProps, onModalVisible, editItem, deleteItem }) => {
 
 ListItem.propTypes = {
   editItem: PropTypes.func,
-  deleteItem: PropTypes.func,
+  deleteItem: PropTypes.func
 }
 
 export default ListItem

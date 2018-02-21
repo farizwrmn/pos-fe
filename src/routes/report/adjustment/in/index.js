@@ -19,31 +19,31 @@ const Report = ({ location, dispatch, loading, adjustReport, app }) => {
     productCode,
     onListReset () {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'adjustReport/setListNull'
       })
-    },
+    }
   }
   const filterProps = {
-    listTrans: listTrans,
+    listTrans,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'adjustReport/setListNull',
+        type: 'adjustReport/setListNull'
       })
     },
     onDateChange (from, to) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       }))
-    },
+    }
   }
   return (
     <div className="content-inner">
@@ -58,7 +58,7 @@ Report.propTyps = {
   app: PropTypes.object,
   adjustReport: PropTypes.object,
   location: PropTypes.object,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ loading, adjustReport, app }) => ({ loading, adjustReport, app }))(Report)

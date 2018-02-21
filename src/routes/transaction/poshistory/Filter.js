@@ -12,31 +12,29 @@ const searchBarLayout = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 12 },
-  xl: { span: 12 },
+  xl: { span: 12 }
 }
 
 const filterItemLayout = {
   sm: { span: 12 },
   md: { span: 12 },
   lg: { span: 6 },
-  xl: { span: 6 },
+  xl: { span: 6 }
 }
 
 const Filter = ({
   filterChange,
   filterTransNo,
-  filter,
   period,
   status,
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const data = {
-    ...getFieldsValue(),
+    ...getFieldsValue()
   }
 
   const handleChangeDate = (date, dateString) => {
@@ -88,6 +86,14 @@ const Filter = ({
       </Col>
     </Row>
   )
+}
+
+Filter.propTypes = {
+  filterChange: PropTypes.func,
+  filterTransNo: PropTypes.func,
+  period: PropTypes.string,
+  status: PropTypes.string,
+  form: PropTypes.object
 }
 
 export default Form.create()(Filter)

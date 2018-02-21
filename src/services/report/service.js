@@ -2,6 +2,7 @@
  * Created by Veirry on 18/09/2017.
  */
 import { request, config, crypt, lstorage } from '../../utils'
+
 const { servicereport } = config.api
 
 export async function query (params) {
@@ -9,10 +10,10 @@ export async function query (params) {
   params.storeId = lstorage.getCurrentUserStore()
   const url = `${servicereport}/trans`
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -21,9 +22,9 @@ export async function queryMechanic (params) {
   params.storeId = lstorage.getCurrentUserStore()
   const url = `${servicereport}/mechanic`
   return request({
-    url: url,
+    url,
     data: params,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

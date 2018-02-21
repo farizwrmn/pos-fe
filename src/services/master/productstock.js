@@ -8,7 +8,7 @@ export async function query (params) {
     url: stock,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -19,7 +19,7 @@ export async function queryPOSstock (params) {
     url: `${fiforeport}/balance`,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -27,41 +27,41 @@ export async function queryProductByCode (params) {
   let url = `${stock}/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
+  const url = params.id ? `${stock}/${encodeURIComponent(params.id)}` : stock
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
+  const url = params.id ? `${stock}/${encodeURIComponent(params.id)}` : stock
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = stock + '/code'
+  const url = `${stock}/code`
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

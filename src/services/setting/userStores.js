@@ -2,30 +2,30 @@ import { request, config, crypt } from 'utils'
 
 const { apiStores, apiUserStore } = config.rest
 
-export async function getAllStores() {
+export async function getAllStores () {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: apiStores,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
-export async function getUserStores(params) {
-  const url = apiUserStore.replace('/:id', '/' + params.userId)
+export async function getUserStores (params) {
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function saveUserDefaultStore (params) {
-  const url = apiUserStore.replace('/:id', '/' + params.userId)
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken
@@ -33,10 +33,10 @@ export async function saveUserDefaultStore (params) {
 }
 
 export async function saveUserStore (params) {
-  const url = apiUserStore.replace('/:id', '/' + params.userId)
+  const url = apiUserStore.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken

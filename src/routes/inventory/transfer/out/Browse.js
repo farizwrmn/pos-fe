@@ -1,25 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
-import { Table, Modal, Button } from 'antd'
+import { Modal } from 'antd'
 import ListProduct from './ListProductLock'
 
 const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listProduct, pagination, itemPayment, itemService, modalType, isMotion } = pos
-  const { pageSize } = pagination
+  const { listProduct, itemPayment, itemService, modalType, isMotion } = pos
   const width = '80%'
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
   let listProductLock = listProduct.filter(el => el.count > 0)
-  let listProductFree = listProduct
   const listProps = {
     dataSource: listProductLock,
-    // loading: loading.effects[(modalType == 'browse' ? 'pos/query' : (modalType == 'browseMechanic' ? 'pos/queryMechanic' : (modalType == 'browseService' ? 'pos/queryService' : '')))],
+    // loading: loading.effects[(modalType==='browse' ? 'pos/query' : (modalType==='browseMechanic' ? 'pos/queryMechanic' : (modalType==='browseService' ? 'pos/queryService' : '')))],
     loading: loading.effects[(
       modalType === 'browseMember' ? 'pos/getMembers' :
         modalType === 'browseMechanic' ? 'pos/getMechanics' :
-        modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
+          modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
             modalType === 'browseService' ? 'pos/queryService' : 'pos/queryMember'
     )],
     // pagination,
@@ -30,7 +27,7 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
     totalItem,
     onChooseItem (item) {
       onChooseItem(item)
-    },
+    }
   }
   return (
     <Modal {...modalOpts} width={width} height="80%" footer={[]}>
@@ -46,7 +43,7 @@ Browse.propTypes = {
   onChangeTotalItem: PropTypes.func.isRequired,
   DeleteItem: PropTypes.func.isRequired,
   onChooseItem: PropTypes.func.isRequired,
-  totalItem: PropTypes.string.isRequired,
+  totalItem: PropTypes.string
 }
 
 export default Browse

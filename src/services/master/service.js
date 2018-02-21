@@ -8,39 +8,39 @@ export async function query (params) {
     url: services,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function queryServiceType (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: misc + '/code/SERVICE',
+    url: `${misc}/code/SERVICE`,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function queryServiceByCode (params) {
-  const url = params.serviceCode? services + '/' + encodeURIComponent(params.serviceCode) : services + '/' + encodeURIComponent(params)
+  const url = params.serviceCode ? `${services}/${encodeURIComponent(params.serviceCode)}` : `${services}/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? services + '/' + params.id : services
+  const url = params.id ? `${services}/${params.id}` : services
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -48,20 +48,20 @@ export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${services}/:id` : services
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? services + '/' + params.id : services
+  const url = params.id ? `${services}/${params.id}` : services
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

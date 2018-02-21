@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -18,22 +17,22 @@ const Report = ({ dispatch, serviceReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    list: list,
+    list,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'serviceReport/setListNull',
+        type: 'serviceReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       // dispatch(routerRedux.push({
       //   pathname: location.pathname,
       //   query: {
@@ -44,18 +43,18 @@ const Report = ({ dispatch, serviceReport, app }) => {
       dispatch({
         type: 'serviceReport/queryMechanic',
         payload: {
-          from: from,
-          to: to
+          from,
+          to
         }
       })
       dispatch({
         type: 'serviceReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
-    },
+    }
   }
 
   return (
@@ -69,7 +68,7 @@ const Report = ({ dispatch, serviceReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.app,
-  serviceReport: PropTypes.object,
+  serviceReport: PropTypes.object
 }
 
 export default connect(({ serviceReport, app }) => ({ serviceReport, app }))(Report)

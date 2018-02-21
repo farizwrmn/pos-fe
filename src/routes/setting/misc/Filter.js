@@ -12,13 +12,13 @@ const ColProps = {
   xs: 24,
   sm: 12,
   style: {
-    marginBottom: 16,
-  },
+    marginBottom: 16
+  }
 }
 
 const TwoColProps = {
   ...ColProps,
-  xl: 96,
+  xl: 96
 }
 
 const Filter = ({
@@ -29,26 +29,25 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-    resetFields
-  },
+    setFieldsValue
+  }
 }) => {
   const handleFields = (fields) => {
-    console.log(typeof fields,'handleFields', fields)
+    console.log(typeof fields, 'handleFields', fields)
     const { createdAt, customSearch } = fields
     console.log('customSearch', customSearch)
     let finalObj = {}
     let tempText = []
     if (customSearch) {
       // samadengan="page=1&pageSize=5"
-      tempText[0]=customSearch.split('&')
-      for (let i in tempText[0]) {
+      tempText[0] = customSearch.split('&')
+      for (let i = 0; i < tempText[0].length; i += 1) {
         console.log(tempText[0][i])
-        tempText[1]=tempText[0][i].split('=')
-        tempText[2]='{"'+tempText[1][0]+'":"'+tempText[1][1]+'"}'
-        console.log(typeof tempText[2], 'tempText[2]',tempText[2])
+        tempText[1] = tempText[0][i].split('=')
+        tempText[2] = `{"${tempText[1][0]}":"${tempText[1][1]}"}`
+        console.log(typeof tempText[2], 'tempText[2]', tempText[2])
         console.log(JSON.parse(tempText[2]))
-        finalObj = Object.assign(finalObj,JSON.parse(tempText[2]))
+        finalObj = Object.assign(finalObj, JSON.parse(tempText[2]))
       }
       fields = finalObj
     } else {
@@ -71,8 +70,8 @@ const Filter = ({
 
   const handleReset = () => {
     const fields = getFieldsValue()
-    for (let item in fields) {
-      console.log('handleReset',item)
+    for (let item = 0; item < fields.length; item += 1) {
+      console.log('handleReset', item)
       if ({}.hasOwnProperty.call(fields, item)) {
         if (fields[item] instanceof Array) {
           fields[item] = []
@@ -105,14 +104,13 @@ const Filter = ({
   if (filter.createdAt && filter.createdAt[1]) {
     initialCreateTime[1] = moment(filter.createdAt[1])
   }
-  let initialCustomSearch = ''
-  const collapseStyle={
-    show: {display: 'block'},
-    hide: {display: 'none'}
+  const collapseStyle = {
+    show: { display: 'block' },
+    hide: { display: 'none' }
   }
 
   return (
-    <Collapse defaultActiveKey={['1']} style={ visiblePanel ? collapseStyle.show : collapseStyle.hide}>
+    <Collapse defaultActiveKey={['1']} style={visiblePanel ? collapseStyle.show : collapseStyle.hide}>
       <Panel header="Search" key="1">
         <Row gutter={24}>
           <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
@@ -152,7 +150,7 @@ Filter.propTypes = {
   form: PropTypes.object,
   visiblePanel: PropTypes.bool,
   filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
+  onFilterChange: PropTypes.func
 }
 
 export default Form.create()(Filter)

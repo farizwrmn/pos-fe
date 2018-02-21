@@ -12,51 +12,51 @@ const TabPane = Tabs.TabPane
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formProductBrand = ({
@@ -75,8 +75,8 @@ const formProductBrand = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { onShowHideSearch } = tabProps
   const { show } = filterProps
@@ -95,7 +95,7 @@ const formProductBrand = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (data.brandCode) {
         Modal.confirm({
@@ -103,7 +103,7 @@ const formProductBrand = ({
           onOk () {
             onSubmit(data.brandCode, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Product Brand Code can't be null")
@@ -141,9 +141,9 @@ const formProductBrand = ({
                     {
                       required: true,
                       pattern: /^[a-zA-Z0-9_]{3,}$/,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={10} />)}
               </FormItem>
             </Col>
@@ -158,9 +158,9 @@ const formProductBrand = ({
                     {
                       required: true,
                       pattern: /^.{3,20}$/,
-                      message: 'Brand Name must be between 3 and 20 characters',
-                    },
-                  ],
+                      message: 'Brand Name must be between 3 and 20 characters'
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -192,7 +192,7 @@ formProductBrand.propTypes = {
   clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formProductBrand)

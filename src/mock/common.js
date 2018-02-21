@@ -1,7 +1,4 @@
 // const Mock = require('mockjs')
-const config = require('../utils/config')
-
-const { apiPrefix } = config
 
 // const queryArray = (array, key, keyAlias = 'key') => {
 //   if (!(array instanceof Array)) {

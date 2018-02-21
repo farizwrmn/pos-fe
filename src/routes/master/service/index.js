@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../components'
 
@@ -11,19 +10,19 @@ const Service = ({ service, loading, dispatch, location, app }) => {
   const filterProps = {
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'service/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     onResetClick () {
       dispatch({ type: 'service/resetServiceList' })
-    },
+    }
   }
 
   const listProps = {
@@ -38,8 +37,8 @@ const Service = ({ service, loading, dispatch, location, app }) => {
         type: 'service/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -49,16 +48,16 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'service/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -70,8 +69,8 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'service/resetServiceList' })
     },
@@ -79,18 +78,18 @@ const Service = ({ service, loading, dispatch, location, app }) => {
       dispatch({
         type: 'service/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'service/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -106,17 +105,17 @@ const Service = ({ service, loading, dispatch, location, app }) => {
         type: `service/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'service/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -127,10 +126,10 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           dispatch({
             type: 'service/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -148,11 +147,10 @@ const Service = ({ service, loading, dispatch, location, app }) => {
 
 Service.propTypes = {
   service: PropTypes.object,
-  city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
-export default connect(({ service, city, loading, app }) => ({ service, city, loading, app }))(Service)
+export default connect(({ service, loading, app }) => ({ service, loading, app }))(Service)

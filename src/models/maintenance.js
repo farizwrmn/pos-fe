@@ -1,10 +1,11 @@
 import modelExtend from 'dva-model-extend'
-import { query as queryPos, updatePosHeader, updatePos } from '../services/payment'
-import { Modal } from 'antd'
-import { pageModel } from './common'
 import moment from 'moment'
 import config from 'config'
+import { Modal, Select } from 'antd'
+import { query as queryPos, updatePosHeader } from '../services/payment'
+import { pageModel } from './common'
 
+const Option = Select.Option
 const { prefix } = config
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
@@ -20,35 +21,21 @@ export default modelExtend(pageModel, {
     listMember: [],
     period: {
       period: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('MM'),
-      year: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('YYYY'),
+      year: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('YYYY')
     }
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen((location) => {
-        if (location.pathname === '/maintenance') {
-          const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
-          // dispatch({
-          //   type: 'queryPos',
-          //   payload: {
-          //     startPeriod: infoStore.startPeriod,
-          //     endPeriod: infoStore.endPeriod
-          //   },
-          // })
-        }
-      })
-    },
   },
 
   effects: {
 
-    * queryPos({ payload = {} }, { call, put }) {
+    * queryPos ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
       let optionSelect = []
       if ((data.data.length || 0) > 0) {
-        for (let i = 0; i < data.data.length; i++) {
-          optionSelect.push(<Option key={data.data[i].id}>{data.data[i].transNo.toString(36)}</Option>);
+        for (let i = 0; i < data.data.length; i += 1) {
+          optionSelect.push(<Option key={data.data[i].id}>{data.data[i].transNo.toString(36)}</Option>)
         }
         yield put({
           type: 'querySuccess',
@@ -57,23 +44,23 @@ export default modelExtend(pageModel, {
             optionPos: optionSelect,
             period: {
               period: moment(payload.startPeriod, 'YYYY-MM-DD').format('MM'),
-              year: moment(payload.startPeriod, 'YYYY-MM-DD').format('YYYY'),
+              year: moment(payload.startPeriod, 'YYYY-MM-DD').format('YYYY')
             }
-          },
+          }
         })
       } else {
         Modal.warning({
           title: 'Empty Data',
-          content: 'No Data in Storage',
+          content: 'No Data in Storage'
         })
       }
     },
-    *update({ payload }, { call, put }) {
+    * update ({ payload }, { call, put }) {
       const data = yield call(updatePosHeader, payload)
       if (data.success) {
         Modal.info({
           title: 'Information',
-          content: 'Transaction has been saved...!',
+          content: 'Transaction has been saved...!'
         })
         const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
         yield put({
@@ -81,53 +68,53 @@ export default modelExtend(pageModel, {
           payload: {
             startPeriod: infoStore.startPeriod,
             endPeriod: infoStore.endPeriod
-          },
+          }
         })
       } else {
         Modal.warning({
           title: 'Warning',
-          content: 'Something went wrong...!',
+          content: 'Something went wrong...!'
         })
       }
     }
   },
 
   reducers: {
-    querySuccess(state, action) {
+    querySuccess (state, action) {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload
       }
     },
-    showModal(state, action) {
+    showModal (state, action) {
       return {
         ...state,
         ...action.payload,
         modalVisible: true
       }
     },
-    hideModal(state) {
+    hideModal (state) {
       return {
         ...state,
         modalVisible: false
       }
     },
-    setAllNull(state) {
+    setAllNull (state) {
       return {
         ...state,
         optionPos: [],
         period: {
           period: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('MM'),
-          year: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('YYYY'),
+          year: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('YYYY')
         },
         listTrans: []
       }
     },
-    setInitialValue(state, action) {
+    setInitialValue (state, action) {
       return { ...state, ...action.payload }
     },
-    setItem(state, action) {
+    setItem (state) {
       return { ...state }
     }
-  },
+  }
 })

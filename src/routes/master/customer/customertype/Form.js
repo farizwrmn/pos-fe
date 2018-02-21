@@ -13,51 +13,51 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formCustomerType = ({
@@ -77,8 +77,8 @@ const formCustomerType = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -97,7 +97,7 @@ const formCustomerType = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       console.log('Submit')
       if (data.typeCode) {
@@ -106,7 +106,7 @@ const formCustomerType = ({
           onOk () {
             onSubmit(data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Type Code can't be null")
@@ -145,10 +145,10 @@ const formCustomerType = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9\_]{1,5}$/i,
-                      message: 'a-z & 0-9',
-                    },
-                  ],
+                      pattern: /^[a-z0-9_]{1,5}$/i,
+                      message: 'a-z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={5} />)}
               </FormItem>
             </Col>
@@ -161,9 +161,9 @@ const formCustomerType = ({
                   initialValue: item.typeName,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -178,9 +178,9 @@ const formCustomerType = ({
                     {
                       required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
@@ -195,9 +195,9 @@ const formCustomerType = ({
                     {
                       required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
@@ -212,9 +212,9 @@ const formCustomerType = ({
                     {
                       required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
@@ -229,9 +229,9 @@ const formCustomerType = ({
                     {
                       required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
@@ -244,9 +244,9 @@ const formCustomerType = ({
                   initialValue: item.sellPrice,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -285,7 +285,7 @@ formCustomerType.propTypes = {
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string,
-  listSellprice: PropTypes.object,
+  listSellprice: PropTypes.object
 }
 
 export default Form.create()(formCustomerType)

@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import moment from 'moment'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -12,50 +11,50 @@ const Browse = ({ ...browseProps }) => {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '227px',
+      width: '227px'
     },
     {
       title: 'Begin',
       dataIndex: 'beginQty',
       key: 'beginQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
     },
     {
       title: 'Purchase Qty',
       dataIndex: 'purchaseQty',
       key: 'purchaseQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
     },
     {
       title: 'Adjust IN',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
     },
     {
       title: 'POS Qty',
       dataIndex: 'posQty',
       key: 'posQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
     },
     {
       title: 'Adjust OUT',
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
     },
     {
       title: 'Count',
       dataIndex: 'count',
       key: 'count',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>,
-    },
+      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+    }
   ]
 
   return (
@@ -76,7 +75,7 @@ const Browse = ({ ...browseProps }) => {
 
 Browse.propTypes = {
   location: PropTypes.object,
-  onExportExcel: PropTypes.func,
+  onExportExcel: PropTypes.func
 }
 
 export default Browse

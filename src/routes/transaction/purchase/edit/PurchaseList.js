@@ -6,29 +6,10 @@ const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 10 },
+  wrapperCol: { span: 10 }
 }
 
 const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoid, onDelete, item, onCancel, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, modalPurchaseVisible }) => {
-  const handleClick = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      hdlChange()
-      const data = {
-        ...getFieldsValue(),
-      }
-      data.code = item.code
-      data.ket = item.ket
-      data.id = item.id
-      onChooseItem(data, curHead)
-      resetFields()
-    })
-  }
-  const hdlCancel = (e) => {
-    onCancel()
-  }
   const hdlChange = () => {
     const data = getFieldsValue()
     data.code = item.code
@@ -47,16 +28,35 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
     data.total = TOTAL + data.ppn
     onChangeTotalItem(data)
   }
+  const handleClick = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      hdlChange()
+      const data = {
+        ...getFieldsValue()
+      }
+      data.code = item.code
+      data.ket = item.ket
+      data.id = item.id
+      onChooseItem(data, curHead)
+      resetFields()
+    })
+  }
+  const hdlCancel = () => {
+    onCancel()
+  }
   const handleVoid = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       let dataVoid = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.code = item.code
       data.ket = 'void'
@@ -76,12 +76,12 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
         Modal.confirm({
           title: `Are you sure Void ${data.name} ?`,
           content: 'Void cannot be undone',
-          onOk() {
+          onOk () {
             onVoid(data)
             onChooseItem(dataVoid, transNo)
             resetFields()
           },
-          onCancel() {
+          onCancel () {
             console.log('cancel')
           }
         })
@@ -89,11 +89,11 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
         Modal.confirm({
           title: `Are you sure Delete ${data.name} ?`,
           content: 'Delete cannot be undone',
-          onOk() {
+          onOk () {
             onDelete(data)
             resetFields()
           },
-          onCancel() {
+          onCancel () {
             console.log('cancel')
           }
         })
@@ -108,8 +108,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.no,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Product Code">
@@ -117,8 +117,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.productCode,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Product Name">
@@ -126,8 +126,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.name,
             rules: [{
               required: true,
-              message: 'Required',
-            }],
+              message: 'Required'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Quantity">
@@ -136,8 +136,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Quantity is not define',
-            }],
+              message: 'Quantity is not define'
+            }]
           })(<InputNumber
             min={0}
             onBlur={value => hdlChange(value)}
@@ -149,8 +149,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Price is not define',
-            }],
+              message: 'Price is not define'
+            }]
           })(<Input
             maxLength={13}
             onBlur={value => hdlChange(value)}
@@ -162,8 +162,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,4})$/i,
-              message: 'Discount is not define',
-            }],
+              message: 'Discount is not define'
+            }]
           })(<InputNumber min={0} max={100} onBlur={value => hdlChange(value)} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Disc(N)">
@@ -172,8 +172,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             rules: [{
               required: true,
               pattern: /^([0-9.]{0,13})$/i,
-              message: 'Discount is not define',
-            }],
+              message: 'Discount is not define'
+            }]
           })(<InputNumber
             maxLength={13}
             min={0}
@@ -186,8 +186,8 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.dpp,
             rules: [{
               required: true,
-              message: 'DPP is not define',
-            }],
+              message: 'DPP is not define'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="PPN">
@@ -195,18 +195,16 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
             initialValue: item.ppn,
             rules: [{
               required: true,
-              message: 'PPN is not define',
-            }],
+              message: 'PPN is not define'
+            }]
           })(<Input disabled />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Total">
           {getFieldDecorator('total', {
             initialValue: item.total,
             rules: [{
-              required: true,
-              pattern: /^([0-9.]{0,13})$/i,
-              message: 'Total is not define',
-            }],
+              required: true
+            }]
           })(<Input disabled />)}
         </FormItem>
         <Button type="primary" onClick={handleClick}> Change </Button>
@@ -225,6 +223,6 @@ PurchaseList.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onVoid: PropTypes.func.isRequired,
-  modalPurchaseVisible: PropTypes.isRequired,
+  modalPurchaseVisible: PropTypes.isRequired
 }
 export default Form.create()(PurchaseList)

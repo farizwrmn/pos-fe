@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './Footer.less'
-import { config } from 'utils'
 import { Popover, Button } from 'antd'
+import { config } from 'utils'
 import Info from 'components/Layout/Info'
+import styles from './Footer.less'
 
 // const Footer = () => <div className={styles.footer}>
 //   {config.footerText}
@@ -26,7 +26,7 @@ const Footer = ({ otherClass }) => {
 }
 
 Footer.propTypes = {
-  otherClass: PropTypes.string,
+  otherClass: PropTypes.string
 }
 
 export default Footer

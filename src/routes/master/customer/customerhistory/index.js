@@ -4,8 +4,8 @@ import { connect } from 'dva'
 import { Button, Modal } from 'antd'
 import { ModalListHistory } from '../components'
 
-const History = ({ history, loading, dispatch, location }) => {
-  const { list, listTrans, modalVisible, policeNoId, memberCode } = history
+const History = ({ history, loading, dispatch }) => {
+  const { listTrans, modalVisible, policeNoId, memberCode } = history
 
   // const removeDuplicates = (array, prop) => {
   //   return array.filter((obj, pos, arr) => {
@@ -20,15 +20,15 @@ const History = ({ history, loading, dispatch, location }) => {
       type: 'history/query',
       payload: {
         memberCode,
-        policeNoId,
-      },
+        policeNoId
+      }
     })
 
     dispatch({
       type: 'history/updateState',
       payload: {
-        modalVisible: true,
-      },
+        modalVisible: true
+      }
     })
   }
 
@@ -43,10 +43,10 @@ const History = ({ history, loading, dispatch, location }) => {
       dispatch({
         type: 'history/updateState',
         payload: {
-          modalVisible: false,
-        },
+          modalVisible: false
+        }
       })
-    },
+    }
   }
 
   const columns = [
@@ -54,26 +54,26 @@ const History = ({ history, loading, dispatch, location }) => {
       title: 'Member Code',
       dataIndex: 'memberCode',
       key: 'memberCode',
-      width: 45,
+      width: 45
     }, {
       title: 'Member Name',
       dataIndex: 'memberName',
       key: 'memberName',
-      width: 100,
+      width: 100
     }, {
       title: 'Police No',
       dataIndex: 'policeNo',
       key: 'policeNo',
-      width: 50,
+      width: 50
     }, {
       title: 'Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
       width: 40,
       render: (text) => {
-        return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      },
-    },
+        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      }
+    }
   ]
 
   const modalListHistory = {
@@ -87,10 +87,10 @@ const History = ({ history, loading, dispatch, location }) => {
           memberCode,
           from: fromDate,
           to: toDate,
-          policeNoId,
-        },
+          policeNoId
+        }
       })
-    },
+    }
   }
   return (
     <div className="content-inner">
@@ -104,7 +104,7 @@ History.propTypes = {
   history: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ history, loading, app }) => ({ history, loading, app }))(History)

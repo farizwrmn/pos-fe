@@ -31,7 +31,7 @@ NumberCard.propTypes = {
   color: PropTypes.string,
   title: PropTypes.string,
   number: PropTypes.number,
-  countUp: PropTypes.object,
+  countUp: PropTypes.object
 }
 
 export default NumberCard

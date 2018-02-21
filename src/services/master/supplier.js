@@ -8,18 +8,18 @@ export async function query (params) {
     url: suppliers,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? suppliers + '/' + params.id : suppliers
+  const url = params.id ? `${suppliers}/${params.id}` : suppliers
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -27,20 +27,20 @@ export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${suppliers}/:id` : suppliers
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? suppliers + '/' + params.id : suppliers
+  const url = params.id ? `${suppliers}/${params.id}` : suppliers
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

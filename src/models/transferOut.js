@@ -1,15 +1,14 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
-import { query as queryStore } from '../services/store'
-import {
-  query as querySequence,
-  increase as increaseSequence,
-} from '../services/sequence'
 import moment from 'moment'
 import config from 'config'
-import { pageModel } from './common'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
+import {
+  query as querySequence,
+  increase as increaseSequence
+} from '../services/sequence'
+import { pageModel } from './common'
 
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
@@ -48,11 +47,11 @@ export default modelExtend(pageModel, {
       current: 1,
       total: null,
       pageSize: 5
-    },
+    }
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/inventory/transfer/out') {
           dispatch({
@@ -60,7 +59,7 @@ export default modelExtend(pageModel, {
             payload: {
               seqCode: 'MUOUT',
               type: lstorage.getCurrentUserStore() // diganti dengan StoreId
-            },
+            }
           })
         }
         // else if (location.pathname === '/inventory/transfer/in') {
@@ -69,11 +68,11 @@ export default modelExtend(pageModel, {
         //   })
         // }
       })
-    },
+    }
   },
 
   effects: {
-    * query({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
         yield put({
@@ -83,15 +82,14 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
-    * querySequence({ payload }, { call, put }) {
+    * querySequence ({ payload }, { call, put }) {
       yield put({ type: 'resetState' })
-      const store = yield call(queryStore)
       const data = yield call(querySequence, payload)
       if (data.success) {
         yield put({
@@ -108,7 +106,7 @@ export default modelExtend(pageModel, {
         throw (data)
       }
     },
-    * add({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const sequenceData = {
         seqCode: 'MUOUT',
         type: lstorage.getCurrentUserStore() // diganti dengan StoreId
@@ -139,10 +137,10 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-    * deleteListState({ payload }, { put }) {
+    * deleteListState ({ payload }, { put }) {
       let effectedRecord = payload.no
       let arrayProd = payload.listItem
-      arrayProd.splice(effectedRecord,1)
+      arrayProd.splice(effectedRecord, 1)
       let ary = []
       for (let n = 0; n < arrayProd.length; n += 1) {
         ary.push({
@@ -152,7 +150,7 @@ export default modelExtend(pageModel, {
           productName: arrayProd[n].productName,
           transType: arrayProd[n].transType,
           qty: arrayProd[n].qty,
-          dscription: arrayProd[n].dscription,
+          dscription: arrayProd[n].dscription
         })
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
@@ -168,9 +166,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -180,7 +178,7 @@ export default modelExtend(pageModel, {
       if (data) {
         yield put({
           type: 'querySuccessProducts',
-          payload: data.mutasi,
+          payload: data.mutasi
         })
       }
     },
@@ -190,10 +188,10 @@ export default modelExtend(pageModel, {
       if (data.mutasi) {
         yield put({
           type: 'querySuccessTrans',
-          payload: data.mutasi,
+          payload: data.mutasi
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -201,29 +199,29 @@ export default modelExtend(pageModel, {
     querySuccessTransferOut (state, action) {
       const {
         listSuppliers,
-        pagination,
+        pagination
       } = action.payload
       return {
         ...state,
         listSuppliers,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         }
       }
     },
     querySuccessListTransferOut (state, action) {
       const {
         listTransferOut,
-        pagination,
+        pagination
       } = action.payload
       return {
         ...state,
         listTransferOut,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
     querySuccessProducts (state, action) {
@@ -235,7 +233,7 @@ export default modelExtend(pageModel, {
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     resetState (state) {
@@ -275,10 +273,10 @@ export default modelExtend(pageModel, {
           return null
         }
         return {
-          ...record,
+          ...record
         }
       }).filter(record => !!record)
       return { ...state, listTransferOut: transNo }
-    },
-  },
+    }
+  }
 })

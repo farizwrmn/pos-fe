@@ -13,13 +13,13 @@ const { authBy } = config
 const FormItem = Form.Item
 
 const Login = ({
-  login,
-  dispatch,
-  form: {
-    getFieldDecorator,
-    validateFieldsAndScroll,
-  },
-}) => {
+                 login,
+                 dispatch,
+                 form: {
+                   getFieldDecorator,
+                   validateFieldsAndScroll,
+                 },
+               }) => {
   const { loginLoading, listUserRole, visibleItem/*, ipAddress*/ } = login
 
   const handleOk = () => {
@@ -34,31 +34,31 @@ const Login = ({
     })
   }
   return (
-  <div className={styles.container}>
-    <div className={styles.form}>
-      <div className={styles.logo}>
-        <img alt={'logo'} src={config.logo} />
-      </div>
-      <form>
-        <FormItem className={styles.formItem} hasFeedback>
-          {getFieldDecorator('user' + authBy, {
-            rules: [{ required: true }]
-          })(<Input size="large" placeholder="Username" />)}
-        </FormItem>
-        <FormItem className={styles.formItem} hasFeedback>
-          {getFieldDecorator('password', {
-            rules: [{ required: true }]
-          })(<Input size="large" type="password" onPressEnter={handleOk} //onBlur={handleRole} onPressEnter={handleRole}
-                    placeholder="Password" />)}
-        </FormItem>
-        { visibleItem.verificationCode &&
+    <div className={styles.container}>
+      <div className={styles.form}>
+        <div className={styles.logo}>
+          <img alt={'logo'} src={config.logo} />
+        </div>
+        <form>
+          <FormItem className={styles.formItem} hasFeedback>
+            {getFieldDecorator('user' + authBy, {
+              rules: [{ required: true }]
+            })(<Input size="large" placeholder="Username" />)}
+          </FormItem>
+          <FormItem className={styles.formItem} hasFeedback>
+            {getFieldDecorator('password', {
+              rules: [{ required: true }]
+            })(<Input size="large" type="password" onPressEnter={handleOk} //onBlur={handleRole} onPressEnter={handleRole}
+                      placeholder="Password" />)}
+          </FormItem>
+          { visibleItem.verificationCode &&
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator('verification', {
             })(<Input size="large" type="password" onPressEnter={handleOk}
                       placeholder="Verification" />)}
           </FormItem>
-        }
-        {visibleItem.userRole &&
+          }
+          {visibleItem.userRole &&
           <FormItem hasFeedback>
             {getFieldDecorator('userrole', {})(<Cascader
               size='large'
@@ -67,21 +67,21 @@ const Login = ({
               placeholder={listUserRole.length > 0 ? 'Choose' : 'No Role'}
             />)}
           </FormItem>
-        }
-        <Row>
-          <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
-            Sign in
-          </Button>
-          <p>
-            <Footer otherClass={styles.footerlogin}/>
-          </p>
-        </Row>
-      </form>
+          }
+          <Row>
+            <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
+              Sign in
+            </Button>
+            <p>
+              <Footer otherClass={styles.footerlogin}/>
+            </p>
+          </Row>
+        </form>
+      </div>
+      <Popover placement='rightBottom' content={<div><Info/></div>} >
+        <Button className={styles.info} type='dashed' shape='circle' icon='info'/>
+      </Popover>
     </div>
-    <Popover placement='rightBottom' content={<div><Info/></div>} >
-      <Button className={styles.info} type='dashed' shape='circle' icon='info'/>
-    </Popover>
-  </div>
   )
 }
 

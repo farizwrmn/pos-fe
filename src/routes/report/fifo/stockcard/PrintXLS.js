@@ -23,52 +23,52 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       name: 'Calibri',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     merchant: {
       name: 'Calibri',
       family: 4,
-      size: 12,
+      size: 12
     },
     period: {
       name: 'Calibri',
       family: 4,
-      size: 12,
+      size: 12
     },
     tableTitle: {
       name: 'Calibri',
       family: 4,
       size: 12,
-      bold: true,
+      bold: true
     },
     tableHeader: {
       name: 'Calibri',
       family: 4,
       size: 12,
-      bold: true,
+      bold: true
     },
     tableBody: {
       name: 'Calibri',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableFooter: {
       name: 'Calibri',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
-    },
+      right: { style: 'thin', color: { argb: '000000' } }
+    }
   }
 
   const title = [
     { value: 'LAPORAN KARTU STOK FIFO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period },
+    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
 
   const tableHeader = [
@@ -84,7 +84,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     { value: 'PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'COUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder }
   ]
 
   let tableTitles = []
@@ -102,7 +102,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     let countQtyValue = 0
     let group = []
     for (let n = 0; n < arr[i].length; n += 1) {
-      countQtyValue = (parseFloat(countQtyValue) || 0) + (parseFloat(arr[i][n].pQty) || 0) - (parseFloat(arr[i][n].sQty) || 0)
+      countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(arr[i][n].pQty) || 0)) - (parseFloat(arr[i][n].sQty) || 0)
       let tableBody = []
       tableBody.push({ value: `${parseInt((n + 1), 10)} .`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
@@ -152,7 +152,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: arr,
-    fileName: 'Purchase-Summary',
+    fileName: 'Purchase-Summary'
   }
 
   return (
@@ -163,11 +163,11 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
 PrintXLS.propTypes = {
   location: PropTypes.object,
   listRekap: PropTypes.array,
-//  dataSource: PropTypes.array,
+  //  dataSource: PropTypes.array,
   storeInfo: PropTypes.string,
   period: PropTypes.string,
-  year: PropTypes.string,
-  //app: PropTypes.object,
+  year: PropTypes.string
+  // app: PropTypes.object
 }
 
 export default PrintXLS

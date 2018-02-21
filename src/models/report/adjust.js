@@ -2,7 +2,7 @@
  * Created by Veirry on 19/09/2017.
  */
 // import { query as queryReport, queryTrans } from '../../services/report/purchase'
-import { queryIn , queryOut } from '../../services/report/adjust'
+import { queryIn, queryOut } from '../../services/report/adjust'
 
 export default {
   namespace: 'adjustReport',
@@ -19,8 +19,8 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -28,13 +28,13 @@ export default {
         if (location.pathname === '/report/adjust/in' && Object.keys(location.query).length > 0) {
           dispatch({
             type: 'queryInAdj',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/report/adjust/out' && Object.keys(location.query).length > 0) {
           // console.log('query', Object.keys(location.query).length)
           dispatch({
             type: 'queryOutAdj',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/report/adjust/in') {
           dispatch({ type: 'setListNull' })
@@ -42,7 +42,7 @@ export default {
           dispatch({ type: 'setListNull' })
         }
       })
-    },
+    }
   },
   effects: {
     * queryInAdj ({ payload = {} }, { call, put }) {
@@ -50,7 +50,7 @@ export default {
       yield put({ type: 'setListNull' })
       yield put({
         type: 'setDate',
-        payload: date,
+        payload: date
       })
       const data = yield call(queryIn, payload)
       if (data.data.length > 0) {
@@ -62,10 +62,10 @@ export default {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
+              total: data.total
             },
-            date: date,
-          },
+            date
+          }
         })
       } else {
         yield put({ type: 'setListNull' })
@@ -76,10 +76,10 @@ export default {
       yield put({ type: 'setListNull' })
       yield put({
         type: 'setDate',
-        payload: date,
+        payload: date
       })
       let data = {}
-      try{
+      try {
         data = yield call(queryOut, payload)
         if (data.data.length > 0) {
           yield put({
@@ -90,10 +90,10 @@ export default {
               pagination: {
                 current: Number(payload.page) || 1,
                 pageSize: Number(payload.pageSize) || 5,
-                total: data.total,
+                total: data.total
               },
-              date: date,
-            },
+              date
+            }
           })
         } else {
           yield put({ type: 'setListNull' })
@@ -101,7 +101,7 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    },
+    }
   },
   reducers: {
     querySuccessTrans (state, action) {
@@ -114,15 +114,15 @@ export default {
         tmpList,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
     setDate (state, action) {
-      return { ...state, fromDate: action.payload.from, toDate: action.payload.to}
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
     },
-    setListNull (state, action) {
-      return { ...state, list: [], listTrans: [], listOut: []}
-    },
-  },
+    setListNull (state) {
+      return { ...state, list: [], listTrans: [], listOut: [] }
+    }
+  }
 }

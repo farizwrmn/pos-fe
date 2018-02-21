@@ -3,5 +3,5 @@ import RepeatReport from './RepeatReport'
 
 export default {
   BasicReport,
-  RepeatReport,
+  RepeatReport
 }

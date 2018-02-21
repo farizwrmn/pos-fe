@@ -12,67 +12,67 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   } = purchase
 
   const purchaseProps = {
-    date: date,
-    datePicker: datePicker,
-    item: item ? item : '',
+    date,
+    datePicker,
+    item: item || '',
     curHead,
     tempo: 0,
     rounding,
-    dataBrowse: dataBrowse,
-    curDiscPercent: curDiscPercent,
-    curDiscNominal: curDiscNominal,
-    listSupplier: listSupplier,
-    modalProductVisible: modalProductVisible,
-    modalPurchaseVisible: modalPurchaseVisible,
-    supplierInformation: supplierInformation ? supplierInformation : null,
-    tmpSupplierData: tmpSupplierData,
+    dataBrowse,
+    curDiscPercent,
+    curDiscNominal,
+    listSupplier,
+    modalProductVisible,
+    modalPurchaseVisible,
+    supplierInformation: supplierInformation || null,
+    tmpSupplierData,
     dataSource: listProduct,
-    location: location,
-    loading: loading,
-    purchase: purchase,
+    location,
+    loading,
+    purchase,
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onOk(data) {
+    onOk (data) {
       dispatch({
         type: 'purchase/add',
-        payload: data,
+        payload: data
       })
     },
     onChangeRounding (e) {
       dispatch({
         type: 'purchase/changeRounding',
-        payload: e,
+        payload: e
       })
     },
     onChangeTotalItem (data) {
       dispatch({
         type: 'purchase/setTotalItem',
-        payload: data,
+        payload: data
       })
     },
     handleBrowseProduct () {
       dispatch({
-        type: 'purchase/getProducts',
+        type: 'purchase/getProducts'
       })
 
       dispatch({
         type: 'purchase/showProductModal',
         payload: {
-          modalType: 'browseProduct',
-        },
+          modalType: 'browseProduct'
+        }
       })
     },
     onChangeDatePicker (e) {
       dispatch({
         type: 'purchase/chooseDatePicker',
-        payload: e,
+        payload: e
       })
     },
     onChangeDate (e) {
       dispatch({
         type: 'purchase/chooseDate',
-        payload: e,
+        payload: e
       })
     },
     onSearchSupplier (data, e) {
@@ -80,25 +80,25 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         type: 'purchase/onSupplierSearch',
         payload: {
           searchText: data,
-          tmpSupplierData: e,
-        },
+          tmpSupplierData: e
+        }
       })
     },
     onChooseSupplier (data) {
       dispatch({
         type: 'purchase/onChooseSupplier',
-        payload: data,
+        payload: data
       })
     },
-    onDiscPercent (x,data) {
-      dispatch({ type: 'purchase/returnState', payload: {dataBrowse: x, curHead: data} })
+    onDiscPercent (x, data) {
+      dispatch({ type: 'purchase/returnState', payload: { dataBrowse: x, curHead: data } })
     },
     onChangePPN (data) {
       localStorage.setItem('taxType', data)
       dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
     },
     onChooseItem (data, head) {
-      dispatch({ type: 'purchase/editPurchaseList', payload: { data:data, head: head} })
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data, head } })
     },
     onResetBrowse () {
       dispatch({ type: 'purchase/resetBrowse' })
@@ -114,7 +114,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({ type: 'purchase/hideProductModal' })
     },
     onChooseItemItem (e) {
-      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
+      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [])
       let arrayProd
       const checkExists = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')).filter(el => el.productCode === e.productCode) : []
       if (checkExists.length === 0) {
@@ -135,7 +135,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           dpp: 0,
           ppn: 0,
           ket: '',
-          total: 0,
+          total: 0
         })
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
@@ -151,10 +151,10 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({
         type: 'purchase/modalEditShow',
         payload: {
-          data: data,
-        },
+          data
+        }
       })
-    },
+    }
   }
 
   return (
@@ -169,7 +169,7 @@ Purchase.propTypes = {
   purchase: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 

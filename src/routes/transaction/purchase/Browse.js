@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Table, Modal, Row, Col, Icon, Button} from 'antd'
-import {DropOption} from 'components'
+import { Table } from 'antd'
 
 const Browse = ({
   modalShow, ...purchaseProps }) => {
@@ -9,58 +8,58 @@ const Browse = ({
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no',
+      key: 'no'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
+      key: 'productCode'
     },
     {
       title: 'Product Name',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty',
+      key: 'qty'
     },
     {
       title: 'Price',
       dataIndex: 'price',
-      key: 'price',
+      key: 'price'
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
-      key: 'disc1',
+      key: 'disc1'
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
-      key: 'discount',
+      key: 'discount'
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
-      key: 'dpp',
+      key: 'dpp'
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
-      key: 'ppn',
+      key: 'ppn'
     },
     {
       title: 'Total',
       dataIndex: 'total',
-      key: 'total',
+      key: 'total'
     },
     {
       title: 'Ket',
       dataIndex: 'ket',
-      key: 'ket',
-    },
+      key: 'ket'
+    }
   ]
 
   const hdlModalShow = (record) => {
@@ -82,6 +81,7 @@ const Browse = ({
 }
 
 Browse.propTypes = {
+  modalShow: PropTypes.func
 }
 
 export default Browse

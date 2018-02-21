@@ -8,7 +8,7 @@ export async function query (params) {
     url: mobileBooking,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -18,7 +18,7 @@ export async function queryHistory (params) {
     url: params ? `${mobileBooking}/${params}/history` : mobileBooking,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -30,18 +30,6 @@ export async function update (params) {
     method: 'put',
     data: params.status,
     body: params.status,
-    headers: apiHeaderToken,
-  })
-}
-
-export async function add (params) {
-  let url = `${transfer}/in`
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url,
-    method: 'post',
-    data: params,
-    body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

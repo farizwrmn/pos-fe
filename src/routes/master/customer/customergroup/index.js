@@ -1,40 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
 const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
-  const { listGroup, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customergroup
-  const { pageSize } = pagination
+  const { listGroup, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = customergroup
   const { user, storeInfo } = app
   const filterProps = {
     display,
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'customergroup/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'customergroup/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({
-        type: 'customergroup/resetCustomerGroupList',
+        type: 'customergroup/resetCustomerGroupList'
       })
-    },
+    }
   }
 
   const listProps = {
@@ -42,15 +40,14 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['customergroup/query'],
-    pagination,
     location,
     onChange (page) {
       dispatch({
         type: 'customergroup/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -60,24 +57,24 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'customergroup/delete',
-        payload: id,
+        payload: id
       })
     },
     clickBrowse () {
       dispatch({
         type: 'customergroup/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -89,8 +86,8 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'customergroup/resetCustomerGroupList' })
     },
@@ -98,10 +95,10 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
       dispatch({
         type: 'customergroup/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -114,16 +111,16 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
     onSubmit (data) {
       dispatch({
         type: `customergroup/${modalType}`,
-        payload: data,
+        payload: data
       })
       dispatch({
         type: 'customergroup/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -134,10 +131,10 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
           dispatch({
             type: 'customergroup/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -158,7 +155,7 @@ CustomerGroup.propTypes = {
   loading: PropTypes.object,
   app: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ customergroup, loading, app }) => ({ customergroup, loading, app }))(CustomerGroup)

@@ -22,8 +22,7 @@ const Detail = ({ userDetail }) => {
 }
 
 Detail.propTypes = {
-  userDetail: PropTypes.object,
-  loading: PropTypes.bool,
+  userDetail: PropTypes.object
 }
 
 export default connect(({ userDetail, loading }) => ({ userDetail, loading: loading.models.userDetail }))(Detail)

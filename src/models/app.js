@@ -2,6 +2,7 @@ import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import config from 'config'
 import moment from 'moment'
+import { lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
@@ -9,7 +10,6 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
-import { lstorage, messageInfo } from 'utils'
 
 const { prefix } = config
 
@@ -27,17 +27,17 @@ export default {
         id: 1,
         icon: 'laptop',
         name: 'Dashboard',
-        router: '/dashboard',
-      },
+        router: '/dashboard'
+      }
     ],
     menuPopoverVisible: false,
-    visibleItem: {shortcutKey: false, changePw: false, changeTotp: false },
+    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false },
     visiblePw: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
-    ipAddr: '',
+    ipAddr: ''
   },
   subscriptions: {
 
@@ -50,12 +50,12 @@ export default {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
-    },
+    }
 
   },
   effects: {
-    *query ({
-      payload,
+    * query ({
+      payload
     }, { call, put }) {
       const { success, user } = yield call(query, payload)
       if (success && user) {
@@ -70,7 +70,7 @@ export default {
             const cases = [
               permissions.visit.includes(item.menuId),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
-              item.bpid ? permissions.visit.includes(item.bpid) : true,
+              item.bpid ? permissions.visit.includes(item.bpid) : true
             ]
             return cases.every(_ => _)
           })
@@ -84,7 +84,8 @@ export default {
         }
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
-        const misc = yield call(miscQuery, { code: 'company'})
+        const misc = yield call(miscQuery, { code: 'company' })
+        // let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
 
@@ -111,13 +112,12 @@ export default {
           console.log('unexpected error misc')
         }
         let setting = {}
-        try { setting = yield call(querySetting) }
-        catch (e) { alert(`warning: ${e}`) }
+        try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }
         let json = setting.data
         let arrayProd = []
-        let settingdata = json.map((x) => x.settingCode)
-        let settingvalue = setting.data.map((x) => x.settingValue)
-        for (let n in settingdata) {
+        let settingdata = json.map(x => x.settingCode)
+        let settingvalue = setting.data.map(x => x.settingValue)
+        for (let n = 0; n < settingdata.length; n += 1) {
           arrayProd[settingdata[n]] = settingvalue[n]
         }
         yield put({
@@ -127,8 +127,8 @@ export default {
             storeInfo,
             permissions,
             menu,
-            setting: arrayProd,
-          },
+            setting: arrayProd
+          }
         })
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
@@ -139,8 +139,8 @@ export default {
       }
     },
 
-    *logout ({
-      payload,
+    * logout ({
+      payload
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
       lstorage.removeItemKey()
@@ -154,8 +154,8 @@ export default {
       }
     },
 
-    *changePw({
-      payload,
+    * changePw ({
+      payload
     }, { call, put }) {
       const data = yield call(changePw, parse(payload))
 
@@ -167,18 +167,16 @@ export default {
       }
     },
 
-    *changeNavbar ({
-      payload,
-    }, { put, select }) {
-      const { app } = yield(select(_ => _))
+    * changeNavbar ({ payload = {} }, { put, select }) {
+      const { app } = yield (select(_ => _))
       const isNavbar = document.body.clientWidth < 769
       if (isNavbar !== app.isNavbar) {
-        yield put({ type: 'handleNavbar', payload: isNavbar })
+        yield put({ type: 'handleNavbar', payload: { isNavbar, ...payload } })
       }
     },
 
-    *totp ({ payload = {} }, { call, put }) {
-      //...clone from models/user
+    * totp ({ payload = {} }, { call, put }) {
+      // ...clone from models/user
       const mode = payload.mode
       if (mode === 'edit') {
         const data = yield call(edit, payload)
@@ -200,14 +198,14 @@ export default {
                 key: data.key,
                 url: data.otpURL,
                 isTotp: data.isTOTP
-              },
-            },
+              }
+            }
           })
         }
       }
     },
 
-    *changeTotp ({ payload = {} }, { call, put }) {
+    * changeTotp ({ payload = {} }, { put }) {
       yield put({
         type: 'querySuccessTotp',
         payload
@@ -218,7 +216,7 @@ export default {
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
@@ -226,70 +224,70 @@ export default {
       localStorage.setItem(`${prefix}siderFold`, true)
       return {
         ...state,
-        siderFold: true,
+        siderFold: true
       }
     },
     saveIPClient (state, { payload }) {
       return {
         ...state,
         ...payload,
-        ipAddr: payload.ipAddr,
+        ipAddr: payload.ipAddr
       }
     },
     switchSider (state) {
       localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
       return {
         ...state,
-        siderFold: !state.siderFold,
+        siderFold: !state.siderFold
       }
     },
     shortcutKeyShow (state, { payload }) {
-      return { ...state, ...payload, visibleItem: {shortcutKey: true } }
+      return { ...state, ...payload, visibleItem: { shortcutKey: true } }
     },
     shortcutKeyHide (state) {
-      return { ...state, visibleItem: {shortcutKey: false } }
+      return { ...state, visibleItem: { shortcutKey: false } }
     },
     changePwShow (state, { payload }) {
-      return { ...state, ...payload, visibleItem: {changePw: true } }
+      return { ...state, ...payload, visibleItem: { changePw: true } }
     },
     changePwHide (state) {
-      return { ...state, visibleItem: {changePw: false } }
+      return { ...state, visibleItem: { changePw: false } }
     },
     togglePw (state) {
       return { ...state, visiblePw: !state.visiblePw }
     },
     changeTotpShow (state, { payload }) {
-      return { ...state, ...payload, visibleItem: {changeTotp: true } }
+      return { ...state, ...payload, visibleItem: { changeTotp: true } }
     },
     changeTotpHide (state) {
-      return { ...state, visibleItem: {changeTotp: false } }
+      return { ...state, visibleItem: { changeTotp: false } }
     },
     switchTheme (state) {
       localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)
       return {
         ...state,
-        darkTheme: !state.darkTheme,
+        darkTheme: !state.darkTheme
       }
     },
 
     switchMenuPopver (state) {
       return {
         ...state,
-        menuPopoverVisible: !state.menuPopoverVisible,
+        menuPopoverVisible: !state.menuPopoverVisible
       }
     },
 
     handleNavbar (state, { payload }) {
       return {
         ...state,
-        isNavbar: payload,
+        isNavbar: payload.isNavbar
       }
     },
 
     handleNavOpenKeys (state, { payload: navOpenKeys }) {
       return {
         ...state,
-        ...navOpenKeys,
+        ...navOpenKeys
       }
     },
 
@@ -297,9 +295,10 @@ export default {
       const { totp, mode, isTotp } = action.payload
       if (mode === 'load') state.totpChecked = totp.isTotp
       if (mode === 'edit') state.totpChecked = isTotp
-      return { ...state,
-        totp,
+      return {
+        ...state,
+        totp
       }
-    },
-  },
+    }
+  }
 }

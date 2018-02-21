@@ -9,7 +9,7 @@ import { Mechanic, Trans } from '../components'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, serviceReport }) => {
+const Report = ({ dispatch }) => {
   const callback = () => {
     dispatch({
       type: 'serviceReport/setListNull'
@@ -26,7 +26,7 @@ const Report = ({ dispatch, serviceReport }) => {
 }
 
 Report.propTypes = {
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ loading, serviceReport }) => ({ loading, serviceReport }))(Report)

@@ -17,37 +17,37 @@ const Report = ({ dispatch, serviceReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    list: list,
+    list,
     user,
     storeInfo,
     fromDate,
     toDate,
     productCode,
-    onListReset(){
+    onListReset () {
       dispatch({
-        type: 'serviceReport/setListNull',
+        type: 'serviceReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'serviceReport/query',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
       dispatch({
         type: 'serviceReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
-    },
+    }
   }
 
   return (
@@ -61,7 +61,7 @@ const Report = ({ dispatch, serviceReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.app,
-  serviceReport: PropTypes.object,
+  serviceReport: PropTypes.object
 }
 
 export default connect(({ serviceReport, app }) => ({ serviceReport, app }))(Report)

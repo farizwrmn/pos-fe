@@ -23,7 +23,7 @@ Quote.propTypes = {
   name: PropTypes.string,
   content: PropTypes.string,
   title: PropTypes.string,
-  avatar: PropTypes.string,
+  avatar: PropTypes.string
 }
 
 export default Quote

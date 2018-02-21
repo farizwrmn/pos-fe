@@ -12,51 +12,51 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
   const styles = {
     header: {
       fontSize: 11,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     body: {
-      fontSize: 10,
+      fontSize: 10
     },
     footer: {
-      fontSize: 10,
+      fontSize: 10
     },
     title: {
       name: 'Courier New',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     merchant: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     date: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     tableHeader: {
       name: 'Courier New',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBody: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
     },
     tableFooter: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
-    },
+      size: 10
+    }
   }
   const tableBody = (list) => {
     let body = []
@@ -92,7 +92,7 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
   const title = [
     { value: 'LAPORAN TRANSAKSI PER CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    periode,
+    periode
   ]
   const header = [
     [
@@ -104,8 +104,8 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TOTAL DISCOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    ],
+      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
   ]
   const contentBody = listHistory.length > 0 ? tableBody(listHistory) : []
   const footer = [
@@ -118,8 +118,8 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
       { value: qtyTotal.toString(), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-    ],
+      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
   ]
 
   // Declare additional Props
@@ -134,7 +134,7 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
     header,
     body: contentBody,
     footer,
-    fileName: 'Customer-Transaction-Summary',
+    fileName: 'Customer-Transaction-Summary'
   }
 
   return (
@@ -147,7 +147,7 @@ PrintXLS.propTypes = {
   listHistory: PropTypes.array,
   from: PropTypes.string,
   to: PropTypes.string,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintXLS

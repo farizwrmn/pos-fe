@@ -8,39 +8,39 @@ export async function query (params) {
     url: brand,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? brand + '/' + encodeURIComponent(params.id) : brand
+  const url = params.id ? `${brand}/${encodeURIComponent(params.id)}` : brand
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? brand + '/' + encodeURIComponent(params.id) : brand
+  const url = params.id ? `${brand}/${encodeURIComponent(params.id)}` : brand
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? brand + '/' + encodeURIComponent(params.id) : brand
+  const url = params.id ? `${brand}/${encodeURIComponent(params.id)}` : brand
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

@@ -17,11 +17,11 @@ const Report = ({ dispatch, purchaseReport, app }) => {
     user,
     fromDate,
     toDate,
-    productCode,
+    productCode
   }
 
   const filterProps = {
-    listDaily: listDaily,
+    listDaily,
     user,
     storeInfo,
     fromDate,
@@ -29,40 +29,40 @@ const Report = ({ dispatch, purchaseReport, app }) => {
     productCode,
     category,
     brand,
-    onListReset() {
+    onListReset () {
       dispatch({
-        type: 'purchaseReport/setListNull',
+        type: 'purchaseReport/setListNull'
       })
     },
-    onDateChange(from, to) {
+    onDateChange (from, to) {
       dispatch({
         type: 'purchaseReport/queryDaily',
         payload: {
-          from: from,
-          to: to,
+          from,
+          to,
           mode: 'pbc'
-        },
+        }
       })
       dispatch({
         type: 'purchaseReport/setDate',
         payload: {
-          from: from,
-          to: to,
-        },
+          from,
+          to
+        }
       })
     },
-    onFilterChange(data) {
+    onFilterChange (data) {
       dispatch({
         type: 'purchaseReport/queryDaily',
         payload: {
           ...data
-        },
+        }
       })
       dispatch({
         type: 'purchaseReport/setDate',
         payload: {
           ...data
-        },
+        }
       })
     }
   }
@@ -78,7 +78,7 @@ const Report = ({ dispatch, purchaseReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  purchaseReport: PropTypes.object,
+  purchaseReport: PropTypes.object
 }
 
 export default connect(({ purchaseReport, app }) => ({ purchaseReport, app }))(Report)

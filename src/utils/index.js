@@ -1,8 +1,8 @@
+import classnames from 'classnames'
+import lodash from 'lodash'
 import config from './config'
 import request from './request'
-import classnames from 'classnames'
 import { color } from './theme'
-import lodash from 'lodash'
 import crypt from './crypt'
 import lstorage from './lstorage'
 import ip from './ip'
@@ -30,7 +30,7 @@ Date.prototype.format = function (format) {
     'm+': this.getMinutes(),
     's+': this.getSeconds(),
     'q+': Math.floor((this.getMonth() + 3) / 3),
-    S: this.getMilliseconds(),
+    S: this.getMilliseconds()
   }
   if (/(y+)/.test(format)) {
     format = format.replace(RegExp.$1, `${this.getFullYear()}`.substr(4 - RegExp.$1.length))
@@ -52,7 +52,7 @@ Date.prototype.format = function (format) {
 const queryURL = (name) => {
   let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
   let r = window.location.search.substr(1).match(reg)
-  if (r != null) return decodeURI(r[2])
+  if (r !== null) return decodeURI(r[2])
   return null
 }
 

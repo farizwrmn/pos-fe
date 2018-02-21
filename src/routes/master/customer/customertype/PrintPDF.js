@@ -8,20 +8,20 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
+      color: 'black'
     },
     headerStoreName: {
       fontSize: 18,
-      margin: [45, 10, 0, 0],
+      margin: [45, 10, 0, 0]
     },
     headerTitle: {
       fontSize: 16,
-      margin: [45, 2, 0, 0],
-    },
+      margin: [45, 2, 0, 0]
+    }
   }
   const header = [
     { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR TIPE CUSTOMER', style: 'headerTitle' },
+    { text: 'LAPORAN DAFTAR TIPE CUSTOMER', style: 'headerTitle' }
   ]
 
   let tableHeaders = {
@@ -32,8 +32,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       col_4: { text: 'DISC-2', style: 'tableHeader', alignment: 'center' },
       col_5: { text: 'DISC-3', style: 'tableHeader', alignment: 'center' },
       col_6: { text: 'DISC(NOMINAL)', style: 'tableHeader', alignment: 'center' },
-      col_7: { text: 'KATEGORI', style: 'tableHeader', alignment: 'center' },
-    },
+      col_7: { text: 'KATEGORI', style: 'tableHeader', alignment: 'center' }
+    }
   }
 
   const createTableHeader = (tableHeader) => {
@@ -88,7 +88,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       margin: [40, 30, 40, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }],
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -96,23 +96,23 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
               text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak Oleh: ${user.userid}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
 
@@ -132,7 +132,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     tableBody,
     data: dataSource,
     header,
-    footer,
+    footer
   }
 
   return (
@@ -143,7 +143,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 PrintPDF.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object,
-  dataSource: PropTypes.object,
+  dataSource: PropTypes.object
 }
 
 export default PrintPDF

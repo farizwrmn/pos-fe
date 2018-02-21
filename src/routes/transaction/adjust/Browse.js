@@ -1,48 +1,43 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import {Table, Modal, Row, Col, Icon, Button} from 'antd'
-import {DropOption} from 'components'
+import { Table } from 'antd'
 
-const gridStyle = {
-  width: '60%',
-  textAlign: 'center',
-};
-
-const confirm = Modal.confirm
-
+// const gridStyle = {
+//   width: '60%',
+//   textAlign: 'center'
+// }
 const Browse = ({
   modalShow, dataBrowse }) => {
   const columns = [
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no',
+      key: 'no'
     },
     {
       title: 'Product Code',
       dataIndex: 'code',
-      key: 'code',
+      key: 'code'
     },
     {
       title: 'Product Name',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: 'Cost',
       dataIndex: 'price',
-      key: 'price',
+      key: 'price'
     },
     {
       title: 'In',
       dataIndex: 'In',
-      key: 'In',
+      key: 'In'
     },
     {
       title: 'Out',
       dataIndex: 'Out',
-      key: 'Out',
-    },
+      key: 'Out'
+    }
   ]
 
   const hdlModalShow = (record) => {
@@ -58,7 +53,7 @@ const Browse = ({
       pagination={{ pageSize: 5 }}
       size="small"
       dataSource={dataBrowse}
-      onRowClick={(record) => hdlModalShow(record)}
+      onRowClick={record => hdlModalShow(record)}
     />
   )
 }

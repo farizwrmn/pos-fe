@@ -11,13 +11,13 @@ const ColProps = {
   xs: 24,
   sm: 12,
   style: {
-    marginBottom: 16,
-  },
+    marginBottom: 16
+  }
 }
 
 const TwoColProps = {
   ...ColProps,
-  xl: 96,
+  xl: 96
 }
 
 const Filter = ({
@@ -29,8 +29,8 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-  },
+    setFieldsValue
+  }
 }) => {
   const switchFilter = () => {
     switchIsChecked()
@@ -112,9 +112,9 @@ Filter.propTypes = {
   isChecked: PropTypes.bool,
   switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  display:PropTypes.string,
+  display: PropTypes.string,
   filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
+  onFilterChange: PropTypes.func
 }
 
 export default Form.create()(Filter)

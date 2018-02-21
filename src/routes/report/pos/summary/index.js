@@ -5,11 +5,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
-import { Product, Cancel, Trans, Daily } from '../components'
+import { Cancel, Trans, Daily } from '../components'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, posReport }) => {
+const Report = ({ dispatch }) => {
   const callback = () => {
     dispatch({
       type: 'posReport/setListNull'
@@ -28,7 +28,7 @@ const Report = ({ dispatch, posReport }) => {
 }
 
 Report.propTypes = {
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ loading, posReport }) => ({ loading, posReport }))(Report)

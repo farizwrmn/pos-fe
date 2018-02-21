@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { Row, Col, Button, Tabs } from 'antd'
 import moment from 'moment'
 import CardIn from './CardIn'
 import Filter from './Filter'
 import Modal from './Modal'
 import ModalAccept from './ModalAccept'
-import ModalConfirm from './ModalConfirm'
 import ListTransfer from './ListTransferIn'
 import FilterTransfer from './FilterTransferIn'
 
@@ -17,7 +15,25 @@ const TabPane = Tabs.TabPane
 moment.locale('id')
 
 const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
-  const { listTrans, listTransIn, listProducts, listTransferIn, activeTabKey, listTransDetail, transHeader, transNo, currentItem, storeId, period, modalVisible, modalAcceptVisible, sequenceNumber, filter, sort, showPrintModal, modalConfirmVisible } = transferIn
+  const { listTrans,
+    listTransIn,
+    listProducts,
+    listTransferIn,
+    activeTabKey,
+    listTransDetail,
+    transHeader,
+    transNo,
+    currentItem,
+    storeId,
+    period,
+    modalVisible,
+    modalAcceptVisible,
+    sequenceNumber,
+    filter,
+    sort,
+    disableButton,
+    showPrintModal,
+    modalConfirmVisible } = transferIn
   const { list } = employee
   const { user, storeInfo } = app
   let listEmployee = list
@@ -25,16 +41,16 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     dispatch({
       type: 'transferIn/updateState',
       payload: {
-        activeTabKey: key.toString(),
+        activeTabKey: key.toString()
       }
     })
   }
   const filterProps = {
-    activeTabKey: activeTabKey,
+    activeTabKey,
     listTrans,
     resetModal () {
       dispatch({
-        type: 'transferIn/resetAll',
+        type: 'transferIn/resetAll'
       })
     },
     openModal () {
@@ -44,10 +60,10 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
           active: 1,
           status: 0,
           start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-        },
+          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+        }
       })
-    },
+    }
   }
   const modalProps = {
     item: currentItem,
@@ -66,7 +82,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
           end: moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
           active: 1,
           status: 0
-        },
+        }
       })
     },
     onSearch (startDate, endDate, data) {
@@ -78,16 +94,16 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
           active: 1,
           status: 0,
           ...data
-        },
+        }
       })
     },
     onCancel () {
       dispatch({
-        type: 'transferIn/hideModal',
+        type: 'transferIn/hideModal'
       })
-    },
+    }
   }
-  
+
   const clickedItem = (e) => {
     const { value } = e.target
     // dispatch({
@@ -104,20 +120,20 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
 
   const getComponentCard = (list) => {
     let card = []
-    let then = "" 
-    let now = moment().format("DD/MM/YYYY hh:mm:ss")
-    for (let key in list) {
+    let then = ''
+    let now = moment().format('DD/MM/YYYY hh:mm:ss')
+    for (let key = 0; key < list.length; key += 1) {
       then = moment(list[key].transDate).format('dddd, DD-MM-YYYY')
       // let ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"))
       // let d = moment.duration(ms)
       // let duration = Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss")
-      let duration = moment(moment(now, "DD/MM/YYYY hh:mm:ss")).diff(moment(then, "DD/MM/YYYY hh:mm:ss"), 'd')
+      let duration = moment(moment(now, 'DD/MM/YYYY hh:mm:ss')).diff(moment(then, 'DD/MM/YYYY hh:mm:ss'), 'd')
       const cardProps = {
         title: list[key].transNo,
         style: {
           margin: '5px 5px'
         },
-        extra:(<Button type="primary" onClick={(value) => clickedItem(value)} value={list[key].transNo}>Detail</Button>),
+        extra: (<Button type="primary" onClick={value => clickedItem(value)} value={list[key].transNo}>Detail</Button>),
         item: (
           <div>
             <p>from: {list[key].storeName}/{list[key].employeeName}</p>
@@ -128,9 +144,9 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         )
       }
       card.push(
-          <Col lg={8} md={24}>
-            <CardIn { ...cardProps }/>
-          </Col>
+        <Col lg={8} md={24}>
+          <CardIn {...cardProps} />
+        </Col>
       )
     }
     return (
@@ -147,7 +163,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     user,
     storeInfo,
     wrapClassName: 'vertical-center-modal',
-    onShowModal(item) {
+    onShowModal () {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
@@ -155,7 +171,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         }
       })
     },
-    onOkPrint(item) {
+    onOkPrint () {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
@@ -175,6 +191,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
   const modalAcceptProps = {
     ...formConfirmProps,
     modalConfirmVisible,
+    disableButton,
     item: transHeader,
     listTransDetail,
     user,
@@ -185,17 +202,23 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     width: '700px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
-    onOk(data, list, storeId) {
+    onOk (data, list, storeId) {
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          disableButton: true
+        }
+      })
       dispatch({
         type: 'transferIn/add',
         payload: {
-          storeId: storeId,
-          data: data,
+          storeId,
+          data,
           detail: list
-        },
+        }
       })
     },
-    onCancel() {
+    onCancel () {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
@@ -205,39 +228,39 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         }
       })
     },
-    getEmployee() {
+    getEmployee () {
       dispatch({
         type: 'employee/query',
         payload: {}
       })
     },
-    hideEmployee() {
+    hideEmployee () {
       dispatch({
         type: 'employee/updateState',
         payload: {
           listEmployee: {}
         }
       })
-    },
+    }
   }
   const filterTransferProps = {
     period,
     filter: {
-      ...location.query,
+      ...location.query
     },
     filterChange (date) {
       dispatch({
         type: 'transferIn/queryTransferIn',
         payload: {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-        },
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+        }
       })
       dispatch({
         type: 'transferIn/updateState',
         payload: {
-          period: date,
-        },
+          period: date
+        }
       })
     },
     filterTransNo (date, no) {
@@ -246,10 +269,10 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         payload: {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
           end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-          transNo: no,
-        },
+          transNo: no
+        }
       })
-    },
+    }
   }
   const listTransferProps = {
     dataSource: listTransferIn,
@@ -268,16 +291,16 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         type: 'transferIn/updateState',
         payload: {
           filter: filters,
-          sort: sorts,
-        },
+          sort: sorts
+        }
       })
     },
     getProducts (transNo) {
       dispatch({
         type: 'transferIn/queryProducts',
         payload: {
-          transNo,
-        },
+          transNo
+        }
       })
     },
     getTrans (transNo, storeId) {
@@ -285,26 +308,26 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         type: 'transferIn/queryByTrans',
         payload: {
           transNo,
-          storeId,
-        },
+          storeId
+        }
       })
     },
     onShowPrint () {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
-          showPrintModal: true,
-        },
+          showPrintModal: true
+        }
       })
     },
     onClosePrint () {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
-          showPrintModal: false,
-        },
+          showPrintModal: false
+        }
       })
-    },
+    }
   }
   return (
     <div className="content-inner">

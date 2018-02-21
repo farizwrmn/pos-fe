@@ -10,45 +10,45 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     merchant: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     title: {
       name: 'Courier New',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     header: {
       fontSize: 11,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     body: {
-      fontSize: 10,
+      fontSize: 10
     },
     footer: {
-      fontSize: 10,
+      fontSize: 10
     },
     tableHeader: {
       name: 'Courier New',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBody: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
     },
     tableFooter: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
-    },
+      size: 10
+    }
   }
   const tableBody = (list) => {
     let body = []
@@ -74,7 +74,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
   }
   const title = [
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date },
+    { value: 'LAPORAN DAFTAR TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const header = [
     [
@@ -86,8 +86,8 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       { value: 'DISC-2', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC-3', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC(NOMINAL)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'KATEGORI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    ],
+      { value: 'KATEGORI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
   ]
   const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
 
@@ -104,7 +104,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     title,
     header,
     body: contentBody,
-    fileName: 'CustomerType-Summary',
+    fileName: 'CustomerType-Summary'
   }
 
   return (
@@ -114,7 +114,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
 PrintXLS.propTypes = {
   dataSource: PropTypes.object,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintXLS

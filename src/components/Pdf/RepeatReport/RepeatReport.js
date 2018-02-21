@@ -12,19 +12,17 @@ const RepeatReport = ({
   pageMargins = [0, 0, 0, 0],
   pageOrientation = 'portrait',
   tableStyle,
-  style,
-  layout = '',
   pageSize = 'A4',
   tableBody = [],
   header = [],
   footer = [],
   data = [],
-  tableTitle = [],
+  tableTitle = []
 }) => {
   const createPdfLineItems = (listData) => {
     let body = []
     if (listData.length > 0) {
-      for (let c in listData) {
+      for (let c = 0; c < listData.length; c += 1) {
         body.push(listData[c])
       }
     }
@@ -34,7 +32,7 @@ const RepeatReport = ({
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',
-        content: 'No Data in Storage',
+        content: 'No Data in Storage'
       })
     } else {
       let contentPdf = []
@@ -50,9 +48,9 @@ const RepeatReport = ({
             table: {
               widths: width,
               headerRows: 1,
-              body: content[i],
+              body: content[i]
             },
-            layout: 'noBorder',
+            layout: 'noBorder'
           })
       }
 
@@ -63,7 +61,7 @@ const RepeatReport = ({
         header,
         content: contentPdf,
         footer,
-        styles: tableStyle,
+        styles: tableStyle
       }
       try {
         pdfMake.createPdf(docDefinition).open()

@@ -13,51 +13,51 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formEmployee = ({
@@ -81,8 +81,8 @@ const formEmployee = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -113,7 +113,7 @@ const formEmployee = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (data.employeeId) {
         Modal.confirm({
@@ -121,7 +121,7 @@ const formEmployee = ({
           onOk () {
             onSubmit(data.employeeId, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Employee Id can't be null")
@@ -157,10 +157,10 @@ const formEmployee = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-zA-Z0-9\_]{6,15}$/i,
-                      message: 'a-z & 0-9, min: 6 characters',
-                    },
-                  ],
+                      pattern: /^[a-zA-Z0-9_]{6,15}$/i,
+                      message: 'a-z & 0-9, min: 6 characters'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
             </Col>
@@ -173,9 +173,9 @@ const formEmployee = ({
                   initialValue: item.employeeName,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -188,9 +188,9 @@ const formEmployee = ({
                   initialValue: item.positionId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   onFocus={() => jobPosition()}
@@ -208,9 +208,9 @@ const formEmployee = ({
                   initialValue: item.address01,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -220,7 +220,7 @@ const formEmployee = ({
             <Col {...col}>
               <FormItem label="Address 2" {...formItemLayout}>
                 {getFieldDecorator('address02', {
-                  initialValue: item.address02,
+                  initialValue: item.address02
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -233,9 +233,9 @@ const formEmployee = ({
                   initialValue: item.cityId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   onFocus={() => city()}
@@ -255,9 +255,9 @@ const formEmployee = ({
                     {
                       required: true,
                       pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                      message: 'mobile number is not valid',
-                    },
-                  ],
+                      message: 'mobile number is not valid'
+                    }
+                  ]
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -267,7 +267,7 @@ const formEmployee = ({
             <Col {...col}>
               <FormItem label="Phone Number" {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
-                  initialValue: item.phoneNumber,
+                  initialValue: item.phoneNumber
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -277,7 +277,7 @@ const formEmployee = ({
             <Col {...col}>
               <FormItem label="Email" {...formItemLayout}>
                 {getFieldDecorator('email', {
-                  initialValue: item.email,
+                  initialValue: item.email
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -313,7 +313,7 @@ formEmployee.propTypes = {
   onSubmit: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formEmployee)

@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { Table } from 'antd'
@@ -9,18 +8,18 @@ const History = ({ bookinghistory }) => {
   const columns = [{
     title: 'Old Status',
     dataIndex: 'oldStatus',
-    key: 'oldStatus',
+    key: 'oldStatus'
   }, {
     title: 'New Status',
     dataIndex: 'newStatus',
-    key: 'newStatus',
+    key: 'newStatus'
   }, {
     title: 'Old Schedule',
     dataIndex: 'oldSchedule',
     key: 'oldSchedule',
     render: (text) => {
       return text ? moment(text).format('MMMM Do YYYY, HH:mm') : ''
-    },
+    }
   }, {
     title: 'Updated',
     children: [{
@@ -29,22 +28,22 @@ const History = ({ bookinghistory }) => {
       key: 'updatedBy',
       render: (text) => {
         return text !== 'undefined' && text ? text : ''
-      },
+      }
     }, {
       title: 'Last Updated',
       dataIndex: 'updateAt',
       key: 'updateAt',
       render: (text) => {
         return text ? moment().format('MMMM Do YYYY, HH:mm') : ''
-      },
-    }],
+      }
+    }]
   }]
 
   const tableProps = {
     dataSource: listHistory,
     columns,
     bordered: true,
-    pagination: false,
+    pagination: false
   }
 
   return (

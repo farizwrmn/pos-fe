@@ -3,11 +3,10 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Input, Button, Row, Col } from 'antd'
+import { Table, Row, Col } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 
-const confirm = Modal.confirm
 
 const Browse = ({
   onEndPeriod, onStartPeriod, accountActive,
@@ -17,27 +16,18 @@ const Browse = ({
       onEndPeriod(record)
     }
   }
-  const handleStartPeriod = () => {
-    onStartPeriod()
-  }
-  const handleEndPeriod = () => {
-    const data = {
-      transNo: accountActive.accountActive
-    }
-    onEndPeriod(data)
-  }
   const columns = [
     {
       title: 'store',
       dataIndex: 'storeId',
       key: 'storeId',
-      width: 200,
+      width: 200
     },
     {
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: 200,
+      width: 200
     },
     {
       title: 'Start',
@@ -45,7 +35,7 @@ const Browse = ({
       key: 'startPeriod',
       width: 190,
       sorter: (a, b) => moment.utc(a.startPeriod, 'YYYY/MM/DD') - moment.utc(b.startPeriod, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('ll LTS')}`,
+      render: _text => `${moment(_text).format('ll LTS')}`
     },
     {
       title: 'End',
@@ -53,13 +43,13 @@ const Browse = ({
       key: 'endPeriod',
       width: 190,
       sorter: (a, b) => moment.utc(a.endPeriod, 'YYYY/MM/DD') - moment.utc(b.endPeriod, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('ll LTS')}`,
+      render: _text => `${moment(_text).format('ll LTS')}`
     },
     {
       title: 'Desc',
       dataIndex: 'memo',
       key: 'memo',
-      width: 200,
+      width: 200
     },
     {
       title: 'Created',
@@ -68,16 +58,16 @@ const Browse = ({
           title: 'By',
           dataIndex: 'createdBy',
           key: 'createdBy',
-          width: 100,
+          width: 100
         },
         {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
           width: 200,
-          render: _text => `${moment(_text).format('LL LTS')}`,
-        },
-      ],
+          render: _text => `${moment(_text).format('LL LTS')}`
+        }
+      ]
     },
     {
       title: 'Updated',
@@ -86,15 +76,15 @@ const Browse = ({
           title: 'By',
           dataIndex: 'updatedBy',
           key: 'updatedBy',
-          width: 100,
+          width: 100
         }, {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
           width: 200,
-          render: _text => `${moment(_text).format('LL LTS')}`,
-        },
-      ],
+          render: _text => `${moment(_text).format('LL LTS')}`
+        }
+      ]
     },
     {
       title: 'Operation',
@@ -102,22 +92,22 @@ const Browse = ({
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
+        return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           menuOptions={[
-            { key: '1', name: 'End Period', icon: 'edit' },
+            { key: '1', name: 'End Period', icon: 'edit' }
           ]}
-        />
-      },
-    },
+        />)
+      }
+    }
   ]
   return (
     <div>
       <Row>
-        {/*<Col span={4}>*/}
-          {/*<Button onClick={() => handleStartPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>*/}
-            {/*Start Period*/}
-          {/*</Button>*/}
-        {/*</Col>*/}
+        {/* <Col span={4}> */}
+        {/* <Button onClick={() => handleStartPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}> */}
+        {/* Start Period */}
+        {/* </Button> */}
+        {/* </Col> */}
         {/* <Col span={4}>
           <Button onClick={() => handleEndPeriod()} size="large" type="primary" style={{ marginBottom: '30px' }}>
             End Period
@@ -143,7 +133,7 @@ const Browse = ({
 Browse.propTypes = {
   onStartPeriod: PropTypes.func.isRequired,
   onEndPeriod: PropTypes.func.isRequired,
-  location: PropTypes.isRequired,
+  location: PropTypes.isRequired
 }
 
 export default Browse

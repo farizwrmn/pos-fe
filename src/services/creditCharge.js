@@ -1,4 +1,5 @@
 import { request, config } from '../utils'
+
 const { apiURL, apiPrefix, api, prefix } = config
 const { creditCharge } = api
 const idToken = localStorage.getItem(`${prefix}iKen`)
@@ -9,21 +10,21 @@ export async function listCreditCharge (params) {
     method: 'get',
     data: params,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
+      Authorization: `JWT ${idToken}`
     }
   })
 }
 
 export async function getCreditCharge (params) {
   return request({
-    url: apiURL + apiPrefix + creditCharge + '/' + params,
+    url: `${apiURL + apiPrefix + creditCharge}/${params}`,
     method: 'get',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
+      Authorization: `JWT ${idToken}`
     }
   })
 }
@@ -35,9 +36,9 @@ export async function createCreditCharge (params) {
     data: params,
     body: params,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
+      Authorization: `JWT ${idToken}`
     }
   })
 }
@@ -49,9 +50,9 @@ export async function removeCreditCharge (params) {
     data: params,
     body: params,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
+      Authorization: `JWT ${idToken}`
     }
   })
 }
@@ -63,9 +64,9 @@ export async function updateCreditCharge (params) {
     data: params,
     body: params,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'JWT ' + idToken
+      Authorization: `JWT ${idToken}`
     }
   })
 }

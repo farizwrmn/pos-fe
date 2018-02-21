@@ -1,30 +1,33 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import config from 'config'
-import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
+import { lstorage } from 'utils'
+import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
-import { editPoint as updateMemberPoint } from '../services/master/customer'
-import { queryMode as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
-import { lstorage } from 'utils'
-const { prefix } = config
+import { query as querySetting } from '../services/setting'
+
 const terbilang = require('terbilang-spelling')
-const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
 const pdfMake = require('pdfmake/build/pdfmake.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+
+const { prefix } = config
+const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
+
 const { create, createDetail } = cashierService
-const { updateCashierTrans, createCashierTrans, getCashierNo } = cashierTransService
+const { updateCashierTrans } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
+
 export default {
   namespace: 'payment',
   state: {
     currentItem: {},
     modalVisible: false,
-    modalType: 'create',
+    modalType: 'add',
     selectedRowKeys: [],
     isMotion: localStorage.getItem('antdAdminUserIsMotion') === 'true',
     pagination: {
@@ -32,8 +35,9 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
+      total: null
     },
+    numberToString: 0,
     grandTotal: 0,
     creditCardNo: '',
     creditCardTotal: 0,
@@ -43,6 +47,7 @@ export default {
     netto: 0,
     print: '',
     company: [],
+    companyInfo: {},
     lastTransNo: '',
     totalPayment: 0,
     totalChange: 0,
@@ -50,25 +55,34 @@ export default {
     lastMeter: 0,
     modalCreditVisible: false,
     listCreditCharge: [],
+    listAmount: [],
     creditCardType: '',
     policeNo: '',
+    itemPayment: {},
     usingWo: false,
-    woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null,
+    woNumber: localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(location => {
-        if (location.pathname === '/transaction/pos/payment') {
-          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore()} }) // type diganti storeId
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos/history') {
+          dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listAmount: [],
+              itemPayment: {}
+            }
+          })
         }
       })
-    },
+    }
   },
   // confirm payment
 
   effects: {
-    * create({ payload }, { call, put }) {
+    * create ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'INV',
         type: lstorage.getCurrentUserStore()
@@ -77,27 +91,27 @@ export default {
       if ((transNo.data === null)) {
         Modal.error({
           title: 'Something went wrong',
-          content: `Cannot read transaction number, message: ${transNo.data}`,
+          content: `Cannot read transaction number, message: ${transNo.data}`
         })
       } else if (payload.address === undefined) {
-        const modal = Modal.error({
+        Modal.error({
           title: 'Payment Fail',
-          content: 'Address is Undefined',
+          content: 'Address is Undefined'
         })
       } else if (payload.memberId === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Member Id is Undefined',
+          content: 'Member Id is Undefined'
         })
       } else if (payload.phone === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Phone is Undefined',
+          content: 'Phone is Undefined'
         })
       } else if (payload.policeNo === undefined) {
         Modal.error({
           title: 'Payment Fail',
-          content: 'Unit is Undefined',
+          content: 'Unit is Undefined'
         })
       } else {
         // let data = yield call(queryLastTransNo, payload.periode)
@@ -106,10 +120,10 @@ export default {
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         const dataPos = product.concat(service)
         const trans = transNo.data
-        const storeId = lstorage.getCurrentUserStore()        
+        const storeId = lstorage.getCurrentUserStore()
         for (let key = 0; key < dataPos.length; key += 1) {
           arrayProd.push({
-            storeId: storeId,
+            storeId,
             transNo: trans,
             productId: dataPos[key].productId,
             productCode: dataPos[key].code,
@@ -120,7 +134,7 @@ export default {
             discount: dataPos[key].discount,
             disc1: dataPos[key].disc1,
             disc2: dataPos[key].disc2,
-            disc3: dataPos[key].disc3,
+            disc3: dataPos[key].disc3
           })
         }
 
@@ -148,35 +162,9 @@ export default {
           policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
           policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
           change: payload.totalChange,
-          woReference: payload.woNumber,
+          woReference: payload.woNumber
         }
         const point = parseInt((payload.grandTotal / 10000), 10)
-
-        // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-        // const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        // const dataStock = listProductData.data
-        // let warningStock = []
-        // for (let key in product) {
-        //   let productId = product[key].productId
-        //   let filterDataStock = dataStock.filter(el => el.productId === productId)
-        //   let qtySell = product[key].qty
-        //   let qtyStock = filterDataStock.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-        //   if (qtySell > qtyStock) {
-        //     product[key].qty = product[key].qty - qtyStock
-        //     warningStock = warningStock.concat(product[key])
-        //   }
-
-        // }
-        // const { setting } = payload
-        // let json = setting["Inventory"]
-        // let jsondata = JSON.stringify(eval("(" + json + ")"));
-        // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-        // if (outOfStock === 0) {
-        //   Modal.info({
-        //     title: 'No available stock',
-        //     content: JSON.stringify(warningStock)
-        //   })
-        // }
         const data_create = yield call(create, detailPOS)
         if (data_create.success) {
           const data_detail = yield call(createDetail, {
@@ -193,6 +181,23 @@ export default {
                 content: `Call your IT support, message: ${e}`
               })
             }
+
+            try {
+              yield call(addSome, {
+                head: {
+                  transNo: trans,
+                  storeId: lstorage.getCurrentUserStore(),
+                  storeIdPayment: lstorage.getCurrentUserStore()
+                },
+                data: payload.listAmount
+              })
+            } catch (e) {
+              Modal.warning({
+                title: 'Something went wrong',
+                content: `Call your IT support, message: ${e}`
+              })
+            }
+
             yield put({
               type: 'printPayment',
               payload: {
@@ -210,6 +215,7 @@ export default {
                 lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
                 lastTransNo: trans,
                 totalChange: payload.totalChange,
+                unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
                 totalDiscount: payload.totalDiscount,
                 policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
                 rounding: payload.rounding,
@@ -222,16 +228,17 @@ export default {
                 technicianId: payload.technicianId,
                 curShift: payload.curShift,
                 printNo: 1,
-                point: point,
+                point,
+                companyInfo: payload.companyInfo,
                 curCashierNo: payload.curCashierNo,
                 cashierId: payload.cashierId,
                 userName: payload.userName,
                 posMessage: 'Data has been saved',
-                type: 'POS',
-              },
+                type: 'POS'
+              }
             })
             const data_cashier_trans_update = yield call(updateCashierTrans, {
-              total: (parseInt(payload.grandTotal) - parseInt(payload.totalDiscount) + parseInt(payload.rounding)),
+              total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
               totalCreditCard: payload.totalCreditCard,
               status: 'O',
               cashierNo: payload.curCashierNo,
@@ -239,32 +246,43 @@ export default {
               transDate: payload.transDate2
             })
             if (data_cashier_trans_update.success) {
-              // yield call(updateMemberPoint, { point, memberCode: payload.memberId })
               Modal.info({
                 title: 'Information',
-                content: 'Transaction has been saved...!',
+                content: 'Transaction has been saved...!'
               })
             }
           }
         } else {
           Modal.error({
             title: 'Error Saving Payment',
-            content: `${JSON.stringify(data_create.message)}`,
+            content: `${JSON.stringify(data_create.message)}`
           })
         }
       }
     },
 
-    * setLastTrans({ payload }, { call, put }) {
+    * setLastTrans ({ payload }, { call, put }) {
       const transNo = yield call(querySequence, payload)
+      const company = yield call(querySetting, { settingCode: 'Company' })
       localStorage.setItem('transNo', transNo.data)
       console.log('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
-        payload: transNo.data,
+        payload: transNo.data
       })
+      if (company.success) {
+        let json = company.data[0]
+        let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
+        const data = JSON.parse(jsondata)
+        yield put({
+          type: 'updateState',
+          payload: {
+            companyInfo: data
+          }
+        })
+      }
     },
-    * listCreditCharge({ payload }, { put, call }) {
+    * listCreditCharge ({ payload }, { put, call }) {
       const data = yield call(listCreditCharge, payload)
       let newData = data.creditCharges
 
@@ -274,7 +292,7 @@ export default {
           if ({}.hasOwnProperty.call(newData, id)) {
             fixed.push({
               value: newData[id].creditCode,
-              label: newData[id].creditDesc,
+              label: newData[id].creditDesc
             })
           }
         }
@@ -286,13 +304,13 @@ export default {
         yield put({
           type: 'listSuccess',
           payload: {
-            listCreditCharge: DICT_FIXED,
-          },
+            listCreditCharge: DICT_FIXED
+          }
         })
       }
     },
 
-    *getCreditCharge({ payload }, { call, put }) {
+    * getCreditCharge ({ payload }, { call, put }) {
       const data = yield call(getCreditCharge, payload.creditCode)
       let newData = data.creditCharges
 
@@ -302,14 +320,14 @@ export default {
           payload: {
             creditCharge: newData.creditCharge,
             netto: payload.netto,
-            creditCardType: payload.creditCode,
-          },
+            creditCardType: payload.creditCode
+          }
         })
       } else {
         throw data
       }
     },
-    * sequenceQuery({ payload }, { call, put }) {
+    * sequenceQuery ({ payload }, { call, put }) {
       const data = yield call(querySequence, payload)
       let sequenceData = {}
       if (data.success) {
@@ -331,7 +349,7 @@ export default {
   },
 
   reducers: {
-    successPost(state, action) {
+    successPost (state, action) {
       const { posMessage } = action.payload
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
@@ -340,7 +358,7 @@ export default {
       localStorage.removeItem('lastMeter')
       return {
         ...state,
-        posMessage: posMessage,
+        posMessage,
         totalPayment: 0,
         totalChange: 0,
         lastTransNo: '',
@@ -350,66 +368,66 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false,
+        modalCreditVisible: false
       }
     },
 
-    listSuccess(state, action) {
+    listSuccess (state, action) {
       const { listCreditCharge } = action.payload
       return {
         ...state,
-        listCreditCharge: listCreditCharge,
+        listCreditCharge
       }
     },
 
-    getCreditChargeSuccess(state, action) {
+    getCreditChargeSuccess (state, action) {
       const { creditCharge, netto, creditCardType } = action.payload
       return {
         ...state,
-        creditCharge: creditCharge,
-        creditChargeAmount: (parseInt(netto) * parseInt(creditCharge)) / 100,
-        creditCardTotal: (parseInt(netto) + ((parseInt(netto) * parseInt(creditCharge)) / 100)),
-        creditCardType: creditCardType,
+        creditCharge,
+        creditChargeAmount: (parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100,
+        creditCardTotal: (parseInt(netto, 10) + ((parseInt(netto, 10) * parseInt(creditCharge, 10)) / 100)),
+        creditCardType
       }
     },
 
-    updateState(state, { payload }) {
+    updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
-    showModal(state, action) {
+    showModal (state, action) {
       return { ...state, ...action.payload, modalVisible: true }
     },
 
-    hideModal(state) {
+    hideModal (state) {
       return { ...state, modalVisible: false }
     },
 
-    showCreditModal(state, action) {
+    showCreditModal (state, action) {
       return { ...state, ...action.payload, modalCreditVisible: true }
     },
 
-    setLastMeter(state, action) {
+    setLastMeter (state, action) {
       return { ...state, lastMeter: action.payload.lastMeter }
     },
 
-    setPoliceNo(state, action) {
+    setPoliceNo (state, action) {
       localStorage.setItem('memberUnit', JSON.stringify(action.payload.policeNo))
       return { ...state, policeNo: action.payload.policeNo.policeNo }
     },
 
-    hideCreditModal(state) {
+    hideCreditModal (state) {
       return { ...state, modalCreditVisible: false }
     },
 
-    lastTransNo(state, action) {
+    lastTransNo (state, action) {
       return { ...state, lastTransNo: action.payload }
     },
 
-    setCurTotal(state, action) {
+    setCurTotal (state) {
       return {
         ...state,
         inputPayment: 0,
@@ -418,7 +436,7 @@ export default {
       }
     },
 
-    changePayment(state, action) {
+    changePayment (state, action) {
       return {
         ...state,
         inputPayment: action.payload.totalPayment,
@@ -427,12 +445,21 @@ export default {
       }
     },
 
-    setCashPaymentNull(state, action) {
+    setCashPaymentNull (state) {
       return { ...state, inputPayment: 0, totalPayment: 0, totalChange: 0 }
     },
 
-    printPayment(state, action) {
+    printPayment (state, action) {
+      const additionalMargin1 = [0, 10, 0, 10]
+      const additionalMargin2 = [0, 20, 0, 40]
+      const additionalFontSize = 9
+      const bottomFontSize = 11
+      const companyFontSize = 10
+      const tableContentFontSize = 11
+      const tableHeaderFontSize = 12
+      const headerFontSize = 11
       const payload = action.payload
+      const companyInfo = payload.companyInfo
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
@@ -441,27 +468,27 @@ export default {
         const createPdfLineItems = (tabledata, payload, node) => {
           let code = ''
           if (node === 1) {
-            code = 'Service'
+            code = 'SERVICE'
           } else if (node === 0) {
-            code = 'Product'
+            code = 'PRODUCT'
           }
           let headers = {
             top: {
-              col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-              col_2: { fontSize: 12, text: code, style: 'tableHeader', alignment: 'center' },
-              col_3: { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
-              col_4: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-              col_5: { fontSize: 12, text: '@HET', style: 'tableHeader', alignment: 'center' },
-              col_6: { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
-              col_7: { fontSize: 12, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' },
-            },
+              col_1: { fontSize: tableHeaderFontSize, text: 'NO', style: 'tableHeader', alignment: 'center' },
+              col_2: { fontSize: tableHeaderFontSize, text: code, style: 'tableHeader', alignment: 'center' },
+              col_3: { fontSize: tableHeaderFontSize, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
+              col_4: { fontSize: tableHeaderFontSize, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+              col_5: { fontSize: tableHeaderFontSize, text: '@HET', style: 'tableHeader', alignment: 'center' },
+              col_6: { fontSize: tableHeaderFontSize, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
+              col_7: { fontSize: tableHeaderFontSize, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' }
+            }
           }
           let rows = tabledata
           let body = []
           for (let key in headers) {
             if (headers.hasOwnProperty(key)) {
               let header = headers[key]
-              let row = new Array()
+              let row = []
               row.push(header.col_1)
               row.push(header.col_2)
               row.push(header.col_3)
@@ -476,14 +503,14 @@ export default {
             if (rows.hasOwnProperty(key)) {
               let data = rows[key]
               let totalDisc = (data.price * data.qty) - data.total
-              let row = new Array()
-              row.push({ text: data.no.toString(), alignment: 'center', fontSize: 11 })
-              row.push({ text: data.code.toString(), alignment: 'left', fontSize: 11 })
-              row.push({ text: data.name.toString(), alignment: 'left', fontSize: 11 })
-              row.push({ text: data.qty.toString(), alignment: 'center', fontSize: 11 })
-              row.push({ text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
-              row.push({ text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
-              row.push({ text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: 11 })
+              let row = []
+              row.push({ text: data.no.toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: data.code.toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: data.name.toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: data.qty.toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
               body.push(row)
             }
           }
@@ -494,6 +521,50 @@ export default {
         }
         let body = createPdfLineItems(dataService, payload, 1)
         let product = createPdfLineItems(dataPos, payload, 0)
+        const table1 = {
+          writable: true,
+          table: {
+            widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+            headerRows: 1,
+            body: product
+          },
+          layout: {
+            hLineWidth: (i) => {
+              return (i === 1 || i === 0) ? 0.01 : 0
+            },
+            vLineWidth: () => {
+              return 0
+            },
+            hLineColor: (i) => {
+              return (i === 1 || i === 0) ? 'black' : 'white'
+            },
+            vLineColor: () => {
+              return 'white'
+            }
+          }
+        }
+        const table2 = {
+          writable: true,
+          table: {
+            headerRows: 1,
+            widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
+            body
+          },
+          layout: {
+            hLineWidth: (i) => {
+              return (i === 1 || i === 0) ? 0.01 : 0
+            },
+            vLineWidth: () => {
+              return 0
+            },
+            hLineColor: (i) => {
+              return (i === 1 || i === 0) ? 'black' : 'white'
+            },
+            vLineColor: () => {
+              return 'white'
+            }
+          }
+        }
         let salutation = ''
         if (payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0, 3) === 'MDN') {
           if (payload.gender === 'M') {
@@ -511,92 +582,85 @@ export default {
               {
                 columns: [
                   {
-                    stack: storeInfo
+                    stack: [
+                      {
+                        text: companyInfo.companyName !== '' && companyInfo.companyName !== null ? (companyInfo.companyName || '') : '',
+                        fontSize: tableHeaderFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 32) : '',
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: companyInfo.taxID !== '' && companyInfo.taxID !== null ? `NPWP: ${(companyInfo.taxID || '').substring(0, 20)}` : '',
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      },
+                      {
+                        text: companyInfo.taxConfirmDate !== '' && companyInfo.taxConfirmDate !== null ? `Tgl. Pengukuhan: ${companyInfo.taxConfirmDate ? moment(companyInfo.taxConfirmDate).format('DD.MM.YYYY') : ''}` : '',
+                        fontSize: companyFontSize,
+                        alignment: 'left'
+                      }
+                    ]
                   },
                   {
-                    text: 'NOTA PENJUALAN',
+                    text: '',
                     style: 'header',
                     fontSize: 18,
                     alignment: 'center'
                   },
                   {
-                    text: ' ',
-                    style: 'header',
-                    fontSize: 18,
-                    alignment: 'right'
+                    stack: storeInfo
+                  }
+                ]
+              },
+              {
+                canvas: [{ type: 'line', x1: 0, y1: 0, x2: 733, y2: 0, lineWidth: 0.5 }]
+              },
+              {
+                columns: [
+                  {
+
                   },
-                ],
+                  {
+                    text: 'NOTA PENJUALAN',
+                    style: 'header',
+                    fontSize: 15,
+                    alignment: 'center'
+                  },
+                  {
+                  }
+                ]
               },
               {
                 table: {
                   widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
                   body: [
-                    [{ text: 'No Faktur', fontSize: 12 }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: 12 }, {}, { text: 'No Polisi', fontSize: 12 }, ':', { text: (payload.policeNo || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Tanggal Faktur', fontSize: 12 }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: 12 }, {}, { text: 'KM Terakhir', fontSize: 12 }, ':', { text: (payload.lastMeter || 0).toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Nama Customer', fontSize: 12 }, ':', { text: `${salutation}${(payload.memberName || '').toString().toUpperCase()}`, fontSize: 12 }, {}, { text: 'Mechanic', fontSize: 12 }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: 12 }],
-                    [{ text: 'Contact', fontSize: 12 }, ':', { text: (payload.phone || '').toString().toUpperCase(), fontSize: 12 }, {}, { text: 'Alamat', fontSize: 12 }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: 12 }],
-                  ],
-                },
-                layout: 'noBorders',
-              },
-              {
-                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }]
-              },
-            ],
-            margin: [30, 12, 12, 30],
-          },
+                    [{ text: 'No Faktur', fontSize: headerFontSize }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: headerFontSize }, {}, { text: 'No Polisi/KM', fontSize: headerFontSize }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: headerFontSize }],
 
+                    [{ text: 'Tanggal Faktur', fontSize: headerFontSize }, ':', { text: (payload.transDatePrint || '').toString(), fontSize: headerFontSize }, {}, { text: 'Merk/Model', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.merk || '').toString().toUpperCase()}${payload.unitInfo.model ? '/' : ''}${(payload.unitInfo.model || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
+
+                    [{ text: 'Customer', fontSize: headerFontSize }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: headerFontSize }, {}, { text: 'Type/Tahun', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
+
+                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Mechanic', fontSize: headerFontSize }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: headerFontSize }]
+                  ]
+                },
+                layout: 'noBorders'
+              }
+            ],
+            margin: [30, 12, 12, 30]
+          },
           content: [
-            {
-              writable: true,
-              table: {
-                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                headerRows: 1,
-                body: product,
-              },
-              layout: {
-                hLineWidth: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
-                },
-                vLineWidth: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 0 : 0
-                },
-                hLineColor: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 'black' : 'white'
-                },
-                vLineColor: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                },
-              },
-            },
-            {
+            dataPos.length > 0 ? table1 : {},
+            dataPos.length > 0 ? {
               text: ' ',
               style: 'header',
               fontSize: 12,
-              alignment: 'left',
-            },
-            {
-              writable: true,
-              table: {
-                headerRows: 1,
-                widths: ['4%', '20%', '36%', '4%', '12%', '12%', '12%'],
-                body: body,
-              },
-              layout: {
-                hLineWidth: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length) ? 0.01 : 0
-                },
-                vLineWidth: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 0 : 0
-                },
-                hLineColor: (i, node) => {
-                  return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'white'
-                },
-                vLineColor: (i, node) => {
-                  return (i === 0 || i === node.table.widths.length) ? 'black' : 'black'
-                },
-              },
-            },
+              alignment: 'left'
+            } : {},
+            dataService.length > 0 ? table2 : {}
           ],
 
           footer: (currentPage, pageCount) => {
@@ -606,92 +670,95 @@ export default {
                 height: 160,
                 stack: [
                   {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
+                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
                   },
                   {
                     columns: [
-                      { fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left' },
-                      { fontSize: 12, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' },
-                    ],
+                      {
+                        stack: [
+                          { fontSize: bottomFontSize, text: `Terbilang : ${terbilang(Total).toUpperCase()}RUPIAH`, alignment: 'left' },
+                          { fontSize: additionalFontSize, text: '* Harga sudah termasuk PPN 10%', alignment: 'left' }
+                        ]
+                      },
+                      { fontSize: bottomFontSize, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' }
+                    ]
                   },
                   {
                     columns: [
-                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-                    ],
-                  },
-                  {
-                    fontSize: 9,
-                    columns: [
-                      {
-                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
-                        alignment: 'left',
-                      },
-                      {
-                        text: `Cetakan ke: ${payload.printNo}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
-                        alignment: 'center',
-                      },
-                      {
-                        text: `Dicetak Oleh: ${payload.userName}`,
-                        margin: [0, 10, 0, 10],
-                        fontSize: 9,
-                        alignment: 'center',
-                      },
-                      {
-                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
-                        fontSize: 9,
-                        margin: [0, 10, 0, 10],
-                        alignment: 'right',
-                      },
-                    ],
-                    alignment: 'center',
-                  },
-                ],
-              }
-            } else {
-              return {
-                margin: [40, 100, 40, 10],
-                height: 160,
-                stack: [
-                  {
-                    canvas: [{ type: 'line', x1: 0, y1: 5, x2: 813 - 2 * 40, y2: 5, lineWidth: 0.5 }],
+                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] },
+                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
+                    ]
                   },
                   {
                     columns: [
                       {
                         text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
-                        alignment: 'left',
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
+                        alignment: 'left'
                       },
                       {
                         text: `Cetakan ke: ${payload.printNo}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
-                        alignment: 'center',
-                      },
-                      {
-                        text: `Dicetak Oleh: ${payload.cashierId}`,
-                        margin: [0, 20, 0, 40],
-                        fontSize: 9,
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
                         alignment: 'center'
                       },
                       {
-                        text: 'page: ' + currentPage.toString() + ' of ' + pageCount + '\n',
-                        fontSize: 9,
-                        margin: [0, 20, 0, 40],
-                        alignment: 'right',
+                        text: `Dicetak Oleh: ${payload.userName}`,
+                        margin: additionalMargin1,
+                        fontSize: additionalFontSize,
+                        alignment: 'center'
                       },
+                      {
+                        text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                        fontSize: additionalFontSize,
+                        margin: additionalMargin1,
+                        alignment: 'right'
+                      }
                     ],
-                  },
-                ],
+                    alignment: 'center'
+                  }
+                ]
               }
             }
-          },
+            return {
+              margin: [40, 100, 40, 10],
+              height: 160,
+              stack: [
+                {
+                  canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+                },
+                {
+                  columns: [
+                    {
+                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
+                      alignment: 'left'
+                    },
+                    {
+                      text: `Cetakan ke: ${payload.printNo}`,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
+                      alignment: 'center'
+                    },
+                    {
+                      text: `Dicetak Oleh: ${payload.cashierId}`,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
+                      alignment: 'center'
+                    },
+                    {
+                      text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                      margin: additionalMargin2,
+                      fontSize: additionalFontSize,
+                      alignment: 'right'
+                    }
+                  ]
+                }
+              ]
+            }
+          }
         }
         try {
           pdfMake.createPdf(docDefinition).print()
@@ -725,9 +792,10 @@ export default {
           merk: null,
           model: null
         },
+        listAmount: [],
         usingWo: false,
         woNumber: null,
-        posMessage: posMessage,
+        posMessage,
         totalPayment: 0,
         totalChange: 0,
         lastTransNo: '',
@@ -737,22 +805,34 @@ export default {
         creditChargeAmount: 0,
         creditCardNo: 0,
         creditCardType: '',
-        modalCreditVisible: false,
+        modalCreditVisible: false
       }
     },
 
-    setCreditCardPaymentNull(state, action) {
-      return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '', }
+    setCreditCardPaymentNull (state) {
+      return { ...state, creditCardTotal: 0, creditCharge: 0, creditChargeAmount: 0, creditCardNo: 0, creditCardType: '' }
     },
 
-    setCreditCardNo(state, action) {
+    addMethod (state, action) {
+      let { listAmount } = state
+      listAmount.push(action.payload.data)
+      return { ...state, listAmount }
+    },
+
+    editMethod (state, action) {
+      let { listAmount } = state
+      listAmount[action.payload.data.id - 1] = (action.payload.data)
+      return { ...state, listAmount, ...action.payload }
+    },
+
+    setCreditCardNo (state, action) {
       return { ...state, creditCardNo: action.payload.creditCardNo }
     },
 
-    changeCascader(state, action) {
+    changeCascader (state, action) {
       return { ...state, typeTrans: action.payload.value[0] }
     },
-    querySequenceSuccess(state, action) {
+    querySequenceSuccess (state, action) {
       if (action.payload.woNumber) {
         localStorage.setItem('woNumber', action.payload.woNumber)
       } else if (action.payload.woNumber === null) {
@@ -760,7 +840,7 @@ export default {
       }
       return { ...state, ...action.payload }
     },
-    returnState(state, action) {
+    returnState (state, action) {
       return { ...state, ...action.payload }
     }
   }

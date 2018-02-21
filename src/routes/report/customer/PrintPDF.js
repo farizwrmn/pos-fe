@@ -38,21 +38,21 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
-    },
+      color: 'black'
+    }
   }
 
   let periode
@@ -62,18 +62,18 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
         text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`,
         fontSize: 12,
         alignment: 'left',
-        render: text => `${moment(text).format('LL ')}`,
+        render: text => `${moment(text).format('LL ')}`
       },
       {
         text: '',
         fontSize: 12,
-        alignment: 'center',
+        alignment: 'center'
       },
       {
         text: '',
         fontSize: 12,
-        alignment: 'right',
-      },
+        alignment: 'right'
+      }
     ]
   }
 
@@ -82,31 +82,31 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN TRANSAKSI PER CUSTOMER',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - (2 * 40), y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - (2 * 40), y2: 5, lineWidth: 0.5 }]
           },
           {
-            columns: periode,
-          },
-        ],
-      },
+            columns: periode
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
   const footer = (currentPage, pageCount) => {
     return {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -114,23 +114,23 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
               text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
   const tableHeader = [
@@ -142,8 +142,8 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL DISCOUNT', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' },
-    ],
+      { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' }
+    ]
   ]
   let tableBody = []
   try {
@@ -160,8 +160,8 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
       { text: qtyTotal.toString(), alignment: 'right', fontSize: 12 },
       { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    ],
+      { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+    ]
   ]
 
   // Declare additional Props
@@ -178,7 +178,7 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
     tableFooter,
     data: listHistory,
     header,
-    footer,
+    footer
   }
 
   return (
@@ -191,7 +191,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired,
   from: PropTypes.string,
-  to: PropTypes.string,
+  to: PropTypes.string
 }
 
 export default PrintPDF

@@ -1,5 +1,4 @@
 const APIV1 = '/api/v1'
-const APIV2 = '/api/v2'
 const APIHOST = 'localhost'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
@@ -45,11 +44,11 @@ module.exports = {
     servicestype: `${APIURL}${APIV1}/misc/code/service`,
     misc: `${APIURL}${APIV1}/misc`,
     ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
-    posts: `${APIV1}/posts`,// mock js ===========
-    dashboard: `${APIV1}/dashboard`,// mock js ===========
+    posts: `${APIV1}/posts`, // mock js ===========
+    dashboard: `${APIV1}/dashboard`, // mock js ===========
     // menus: `${APIV1}/menus`,
     menus: `${APIURL}${APIV1}/menus`,
-    position: `${APIV1}/position`,// mock js ===========
+    position: `${APIURL}${APIV1}/position`, // mock js ===========
     sellprice: `${APIURL}${APIV1}/misc/code/SELLPRICE`,
     brand: `${APIURL}${APIV1}/stocks/brands`,
     stockcategory: `${APIURL}${APIV1}/stocks/categories`,
@@ -76,5 +75,6 @@ module.exports = {
     creditCharge: `${APIURL}${APIV1}/creditCharge`,
     setting: `${APIURL}${APIV1}/setting`,
     mobileBooking: `${APIURL}${APIV1}/mobile/booking`,
-  },
+    paymentOpts: `${APIURL}${APIV1}/payment`
+  }
 }

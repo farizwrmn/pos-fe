@@ -11,8 +11,7 @@ import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 
-const Filter = ({ onDateChange, dispatch, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-
+const Filter = ({ onDateChange, dispatch, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
   const handleChange = (value) => {
     const from = value[0].format('YYYY-MM-DD')
     const to = value[1].format('YYYY-MM-DD')
@@ -20,9 +19,9 @@ const Filter = ({ onDateChange, dispatch, onListReset, form: { getFieldsValue, s
   }
 
   const handleReset = () => {
-    const { query, pathname } = location
+    const { pathname } = location
     dispatch(routerRedux.push({
-      pathname,
+      pathname
     }))
     resetFields()
     onListReset()
@@ -34,12 +33,13 @@ const Filter = ({ onDateChange, dispatch, onListReset, form: { getFieldsValue, s
         <Col span={10} >
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" onChange={(value) => handleChange(value)} format="DD-MMM-YYYY" />
+              <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
             )}
           </FilterItem>
         </Col>
         <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
-          <Button type="dashed" size="large"
+          <Button type="dashed"
+            size="large"
             className="button-width02 button-extra-large bgcolor-lightgrey"
             onClick={() => handleReset()}
           >
@@ -59,7 +59,7 @@ Filter.propTypes = {
   filter: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   onListReset: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func.isRequired,
+  onDateChange: PropTypes.func
 }
 
 export default Form.create()(Filter)

@@ -1,25 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
+import { Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
 import Browse from './Browse'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
-const { TextArea } = Input;
+const { TextArea } = Input
 const { Search } = Input
 
 const formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 9 }, md: { span: 9 }, lg: { span: 8 } },
   wrapperCol: { xs: { span: 24 }, sm: { span: 10 }, md: { span: 10 }, lg: { span: 10 } },
-  style: { marginBottom: 3 },
+  style: { marginBottom: 3 }
 }
 const formItemLayout1 = {
   labelCol: { xs: { span: 24 }, sm: { span: 9 }, md: { span: 9 }, lg: { span: 8 } },
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
-  style: { marginBottom: 3 },
+  style: { marginBottom: 3 }
 }
-const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-                      popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: {getFieldDecorator, getFieldsValue, validateFields, resetFields}, ...adjustProps}) => {
+const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+  popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...adjustProps }) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -28,7 +28,7 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
       const data = {
         ...getFieldsValue(),
         pic: itemEmployee !== null ? itemEmployee.employeeName : '',
-        picId: itemEmployee !== null ? itemEmployee.employeeId : '',
+        picId: itemEmployee !== null ? itemEmployee.employeeId : ''
       }
       data.transType = data.transType[0]
       onOk(data)
@@ -57,8 +57,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
     onChangeSearch(value)
   }
 
-  const handleMenuClick = (item) => {
-    onChooseItem(item)
+  const handleMenuClick = (e) => {
+    onChooseItem(e)
   }
   const changeCascader = (e) => {
     const value = e[0]
@@ -98,20 +98,20 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
       title: 'code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '25%',
+      width: '25%'
     },
     {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: '55%',
+      width: '55%'
     },
     {
       title: 'Cost',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '20%',
-    },
+      width: '20%'
+    }
   ]
   let listProductFilter = dataSource.filter(el => el.active === true)
   const contentPopover = (
@@ -122,11 +122,11 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
       simple
       dataSource={listProductFilter}
       locale={{
-        emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
+        emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
       }}
       size="small"
       rowKey={record => record.productCode}
-      onRowClick={(record) => handleMenuClick(record)}
+      onRowClick={record => handleMenuClick(record)}
     />
   )
   return (
@@ -137,8 +137,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
             {getFieldDecorator('transNo', {
               initialValue: lastTrans,
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(<Input disabled maxLength={25} />)}
           </FormItem>
         </Col>
@@ -146,8 +146,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
           <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('transType', {
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(
               <Cascader
                 size="large"
@@ -163,8 +163,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
           <FormItem label="Date" {...formItemLayout}>
             {getFieldDecorator('transDate', {
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(<DatePicker format={dateFormat} />)}
           </FormItem>
         </Col>
@@ -172,8 +172,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
           <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('reference', {
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(<Input maxLength={40} />)}
           </FormItem>
         </Col>
@@ -183,8 +183,8 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
           <FormItem label="Memo" {...formItemLayout1}>
             {getFieldDecorator('memo', {
               rules: [{
-                required: false,
-              }],
+                required: false
+              }]
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
           </FormItem>
         </Col>
@@ -192,16 +192,15 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
           <FormItem label="Employee" {...formItemLayout}>
             {getFieldDecorator('employeeName', {
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(
               <AutoComplete
                 style={{ width: 200 }}
                 dataSource={listEmployee}
-                onChange={(value) => handleGetEmployee(value)}
+                onChange={value => handleGetEmployee(value)}
                 placeholder="Select Employee"
                 filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-
               />
             )}
           </FormItem>
@@ -220,13 +219,13 @@ const AdjustForm = ({lastTrans, loadData, changeDisabledItem, templistType, onCh
       <div style={{ marginTop: 30 }}>
         <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
           <Search prefix={<Icon type="barcode" />}
-                  autoFocus
-                  size="large"
-                  placeholder="Search Product By Code or Name"
-                  onEnter={value => hdlSearch(value)}
-                  onSearch={value => hdlSearch(value)}
-                  onChange={_value => handleChangeSearch(_value)}
-                  onFocus={() => hdlGetProduct()}
+            autoFocus
+            size="large"
+            placeholder="Search Product By Code or Name"
+            onEnter={value => hdlSearch(value)}
+            onSearch={value => hdlSearch(value)}
+            onChange={_value => handleChangeSearch(_value)}
+            onFocus={() => hdlGetProduct()}
           />
         </Popover>
       </div>
@@ -248,6 +247,7 @@ AdjustForm.propTyps = {
   loadData: PropTypes.func,
   changeDisabledItem: PropTypes.func,
   templistType: PropTypes.array.isRequired,
+  dataSource: PropTypes.array
 }
 
 export default Form.create()(AdjustForm)

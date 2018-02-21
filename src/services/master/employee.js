@@ -8,18 +8,18 @@ export async function query (params) {
     url: employees,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? employees + '/' + params.id : employees
+  const url = params.id ? `${employees}/${params.id}` : employees
   return request({
-    url: url,
+    url,
     method: 'post',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -27,21 +27,21 @@ export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${employees}/:id` : employees
   return request({
-    url: url,
+    url,
     method: 'delete',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = params.id ? employees + '/' + params.id : employees
+  const url = params.id ? `${employees}/${params.id}` : employees
   return request({
-    url: url,
+    url,
     method: 'put',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -49,10 +49,10 @@ export async function queryByCode (params) {
   const url = params ? `${employees}/${encodeURIComponent(params)}` : `${encodeURIComponent(employees)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -62,17 +62,17 @@ export async function queryField (params) {
     url: employees,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
-export async function queryMechanics (params) {
+export async function queryMechanics () {
   const url = `${employees}/mechanics/`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -80,8 +80,8 @@ export async function queryMechanicByCode (params) {
   const url = params.employeeId ? `${employees}/mechanics/${encodeURIComponent(params.employeeId)}` : `${employees}/mechanics/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

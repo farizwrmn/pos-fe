@@ -2,9 +2,6 @@
  * Created by Veirry on 18/09/2017.
  */
 import { query as queryReport, queryMechanic } from '../../services/report/service'
-import { queryMode as miscQuery } from '../../services/misc'
-import { parse } from 'qs'
-import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'serviceReport',
@@ -21,33 +18,22 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-          case '/report/service/summary':
-            dispatch({
-              type: 'setListNull',
-            })
-            break
-          case '/report/service/history':
-            dispatch({
-              type: 'updateState',
-              payload: {
-                listService: [],
-                listMechanic: [],
-                fromDate: '',
-                toDate: '',
-              },
-            })
-            break
-          default:
+        case '/report/service/summary':
+          dispatch({
+            type: 'setListNull'
+          })
+          break
+        default:
         }
       })
-    },
+    }
   },
   effects: {
     * query ({ payload }, { call, put }) {
@@ -62,9 +48,9 @@ export default {
         payload: {
           list: data.data,
           pagination: {
-            total: data.total,
-          },
-        },
+            total: data.total
+          }
+        }
       })
     },
     * queryService ({ payload }, { call, put }) {
@@ -74,8 +60,8 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            listService: data.data,
-          },
+            listService: data.data
+          }
         })
       }
     },
@@ -86,16 +72,17 @@ export default {
         yield put({
           type: 'querySuccessMechanic',
           payload: {
+            list: data.data,
             listMechanic: data.data,
             fromDate: payload.from,
             toDate: payload.to,
             pagination: {
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
-    },
+    }
   },
   reducers: {
     querySuccess (state, action) {
@@ -108,21 +95,22 @@ export default {
         toDate,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
     querySuccessMechanic (state, action) {
-      const { listMechanic, pagination, fromDate, toDate } = action.payload
+      const { list, listMechanic, pagination, fromDate, toDate } = action.payload
 
       return { ...state,
+        list,
         listMechanic,
         fromDate,
         toDate,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
     updateState (state, { payload }) {
@@ -133,6 +121,6 @@ export default {
     },
     setListNull (state) {
       return { ...state, list: [] }
-    },
-  },
+    }
+  }
 }

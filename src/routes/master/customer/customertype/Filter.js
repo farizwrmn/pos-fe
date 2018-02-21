@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from '../../../../components'
-import { Form, Button, Row, Col, DatePicker, Input, Switch } from 'antd'
+import { Form, Button, Row, Col, DatePicker, Input } from 'antd'
+import { FilterItem } from 'components'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -11,19 +11,19 @@ const ColProps = {
   xs: 24,
   sm: 12,
   style: {
-    marginBottom: 16,
-  },
+    marginBottom: 16
+  }
 }
 
 const TwoColProps = {
   ...ColProps,
-  xl: 96,
+  xl: 96
 }
 
 const Filter = ({
-  isChecked,
-  display,
-  switchIsChecked,
+  // isChecked,
+  // display,
+  // switchIsChecked,
   onFilterChange,
   filter,
   show,
@@ -31,8 +31,8 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-  },
+    setFieldsValue
+  }
 }) => {
   const handleFields = (fields) => {
     const { createTime } = fields
@@ -113,11 +113,11 @@ Filter.propTypes = {
   isChecked: PropTypes.bool,
   switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  display:PropTypes.string,
+  display: PropTypes.string,
   filter: PropTypes.object,
   show: PropTypes.bool,
   onFilterChange: PropTypes.func,
-  onResetClick: PropTypes.func,
+  onResetClick: PropTypes.func
 }
 
 export default Form.create()(Filter)

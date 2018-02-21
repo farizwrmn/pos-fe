@@ -20,11 +20,11 @@ export default {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
         if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
           dispatch({
@@ -32,7 +32,7 @@ export default {
           })
           dispatch({
             type: 'queryTransAll',
-            payload: location.query,
+            payload: location.query
           })
         } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit') {
           dispatch({
@@ -44,10 +44,10 @@ export default {
           })
         }
       })
-    },
+    }
   },
   effects: {
-    * queryPart({ payload }, { call, put }) {
+    * queryPart ({ payload }, { call, put }) {
       let data = []
       if (payload) {
         data = yield call(queryReport, payload)
@@ -59,12 +59,12 @@ export default {
         payload: {
           list: data.data,
           pagination: {
-            total: data.total,
-          },
-        },
+            total: data.total
+          }
+        }
       })
     },
-    * queryTransAll({ payload }, { call, put }) {
+    * queryTransAll ({ payload }, { call, put }) {
       const data = yield call(queryAll, payload)
       yield put({
         type: 'querySuccessTrans',
@@ -73,12 +73,12 @@ export default {
           fromDate: payload.from,
           toDate: payload.to,
           pagination: {
-            total: data.total,
-          },
-        },
+            total: data.total
+          }
+        }
       })
     },
-    * queryTransCancel({ payload }, { call, put }) {
+    * queryTransCancel ({ payload }, { call, put }) {
       const data = yield call(queryTransCancel, payload)
       yield put({
         type: 'querySuccessTrans',
@@ -87,12 +87,12 @@ export default {
           fromDate: payload.from,
           toDate: payload.to,
           pagination: {
-            total: data.total,
-          },
-        },
+            total: data.total
+          }
+        }
       })
     },
-    * queryTrans({ payload }, { call, put }) {
+    * queryTrans ({ payload }, { call, put }) {
       let data = []
       if (payload) {
         data = yield call(queryTrans, payload)
@@ -104,14 +104,14 @@ export default {
         payload: {
           listTrans: data.data,
           pagination: {
-            total: data.total,
+            total: data.total
           },
           fromDate: payload.from,
-          toDate: payload.to,
-        },
+          toDate: payload.to
+        }
       })
     },
-    * queryDaily({ payload }, { call, put }) {
+    * queryDaily ({ payload }, { call, put }) {
       let data = yield call(queryPosDaily, payload)
       yield put({
         type: 'querySuccessDaily',
@@ -120,27 +120,27 @@ export default {
           fromDate: payload.from,
           toDate: payload.to,
           ...payload
-        },
+        }
       })
-    },
+    }
   },
   reducers: {
-    querySuccessPart(state, action) {
+    querySuccessPart (state, action) {
       const { list, tmpList } = action.payload
 
       return {
         ...state,
         list,
-        tmpList,
+        tmpList
       }
     },
-    querySuccessDaily(state, action) {
+    querySuccessDaily (state, action) {
       return {
         ...state,
         ...action.payload
       }
     },
-    querySuccessTrans(state, action) {
+    querySuccessTrans (state, action) {
       const { listTrans, pagination, tmpList, fromDate, toDate } = action.payload
 
       return {
@@ -151,14 +151,14 @@ export default {
         tmpList,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
-    setDate(state, action) {
+    setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
-    setListNull(state) {
+    setListNull (state) {
       return {
         ...state,
         list: [],
@@ -169,9 +169,9 @@ export default {
           showQuickJumper: true,
           showTotal: total => `Total ${total} Records`,
           current: 1,
-          total: null,
-        },
+          total: null
+        }
       }
-    },
-  },
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, edit, remove } from '../services/sellprice'
-import { pageModel } from './common'
 import { config } from 'utils'
+import { query } from '../services/sellprice'
+import { pageModel } from './common'
 
 const { disableMultiSelect } = config
 
@@ -22,8 +22,8 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
 
   subscriptions: {
@@ -32,11 +32,11 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/master/customertype') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -52,12 +52,12 @@ export default modelExtend(pageModel, {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
               // pageSizeOptions: ['5','10','20','50'],
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -68,13 +68,13 @@ export default modelExtend(pageModel, {
         listSellPrice,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     choosePrice (state, action) {
@@ -82,6 +82,6 @@ export default modelExtend(pageModel, {
     },
     chooseEmployee (state, action) {
       return { ...state, ...action.payload, visiblePopover: false }
-    },
-  },
+    }
+  }
 })

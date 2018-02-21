@@ -13,32 +13,32 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 9,
+      span: 9
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
+      span: 7
     },
     lg: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 15,
+      span: 15
     },
     sm: {
-      span: 11,
+      span: 11
     },
     md: {
-      span: 13,
+      span: 13
     },
     lg: {
-      span: 16,
-    },
-  },
+      span: 16
+    }
+  }
 }
 
 const tailFormItemLayout = {
@@ -46,31 +46,31 @@ const tailFormItemLayout = {
     xs: {
       span: 7,
       offset: 0,
-      push: 17,
+      push: 17
     },
     sm: {
       span: 3,
       offset: 0,
-      push: 16,
+      push: 16
     },
     md: {
       span: 3,
       offset: 0,
-      push: 17,
+      push: 17
     },
     lg: {
       span: 2,
       offset: 0,
-      push: 22,
-    },
-  },
+      push: 22
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 8,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formProductCategory = ({
@@ -94,8 +94,8 @@ const formProductCategory = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -114,7 +114,7 @@ const formProductCategory = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
@@ -125,7 +125,7 @@ const formProductCategory = ({
           onOk () {
             onSubmit(data.productCode, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Product Code can't be null")
@@ -173,10 +173,10 @@ const formProductCategory = ({
                   rules: [
                     {
                       required: true,
-                      pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i ,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={30} />)}
               </FormItem>
             </Col>
@@ -187,9 +187,9 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -201,9 +201,9 @@ const formProductCategory = ({
                     {
                       required: true,
                       pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={30} />)}
               </FormItem>
             </Col>
@@ -217,9 +217,9 @@ const formProductCategory = ({
                     {
                       required: true,
                       pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -230,9 +230,9 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -244,9 +244,9 @@ const formProductCategory = ({
                     {
                       required: true,
                       pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -255,7 +255,7 @@ const formProductCategory = ({
             <Col {...col}>
               <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('otherName01', {
-                  initialValue: item.otherName01,
+                  initialValue: item.otherName01
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -266,16 +266,16 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
             <Col {...col}>
               <FormItem label="Location 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('location01', {
-                  initialValue: item.location01,
+                  initialValue: item.location01
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -284,7 +284,7 @@ const formProductCategory = ({
             <Col {...col}>
               <FormItem label="Similar Name 2" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('otherName02', {
-                  initialValue: item.otherName02,
+                  initialValue: item.otherName02
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -295,16 +295,16 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
             <Col {...col}>
               <FormItem label="Location 2" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('location02', {
-                  initialValue: item.location02,
+                  initialValue: item.location02
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -316,9 +316,9 @@ const formProductCategory = ({
                   initialValue: item.categoryId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   onFocus={() => category()}
@@ -335,9 +335,9 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -345,7 +345,7 @@ const formProductCategory = ({
               <FormItem label="Exception" {...formItemLayout}>
                 {getFieldDecorator('exception01', {
                   valuePropName: 'checked',
-                  initialValue: item.exception01,
+                  initialValue: item.exception01
                 })(<Checkbox>Exception</Checkbox>)}
               </FormItem>
             </Col>
@@ -357,9 +357,9 @@ const formProductCategory = ({
                   initialValue: item.brandId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   onFocus={() => brand()}
@@ -373,14 +373,14 @@ const formProductCategory = ({
               <FormItem label="Track Qty" {...formItemLayout}>
                 {getFieldDecorator('trackQty', {
                   valuePropName: 'checked',
-                  initialValue: item.trackQty,
+                  initialValue: item.trackQty
                 })(<Checkbox>Track</Checkbox>)}
               </FormItem>
             </Col>
             <Col {...col}>
               <FormItem label="Image" {...formItemLayout}>
                 {getFieldDecorator('productImage', {
-                  initialValue: item.productImage,
+                  initialValue: item.productImage
                 })(<Upload>
                   <Button>
                     <Icon type="upload" /> Click to Upload
@@ -393,7 +393,7 @@ const formProductCategory = ({
             <Col {...col}>
               <FormItem label="barCode 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode01', {
-                  initialValue: item.barCode01,
+                  initialValue: item.barCode01
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -404,9 +404,9 @@ const formProductCategory = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -416,7 +416,7 @@ const formProductCategory = ({
             <Col {...col}>
               <FormItem label="barCode 2" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode02', {
-                  initialValue: item.barCode02,
+                  initialValue: item.barCode02
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -428,7 +428,7 @@ const formProductCategory = ({
               <FormItem label="Status" {...formItemLayout}>
                 {getFieldDecorator('active', {
                   valuePropName: 'checked',
-                  initialValue: item.active,
+                  initialValue: item.active
                 })(<Checkbox>Active</Checkbox>)}
               </FormItem>
             </Col>
@@ -460,7 +460,7 @@ formProductCategory.propTypes = {
   changeTab: PropTypes.func,
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formProductCategory)

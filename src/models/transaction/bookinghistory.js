@@ -1,12 +1,12 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { queryHistory } from '../../services/transaction/booking'
 import { pageModel } from '../common'
-import pathToRegexp from 'path-to-regexp'
 
 export default modelExtend(pageModel, {
   namespace: 'bookinghistory',
   state: {
-    listHistory: [],
+    listHistory: []
   },
 
   subscriptions: {
@@ -17,7 +17,7 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'query', payload: match[1] })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -27,11 +27,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            listHistory: data.data,
-          },
+            listHistory: data.data
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -40,8 +40,8 @@ export default modelExtend(pageModel, {
       const { listHistory } = action.payload
       return {
         ...state,
-        listHistory,
+        listHistory
       }
-    },
-  },
+    }
+  }
 })

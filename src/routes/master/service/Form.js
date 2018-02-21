@@ -13,51 +13,51 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13,
+      span: 13
     },
     sm: {
-      span: 8,
+      span: 8
     },
     md: {
-      span: 7,
-    },
+      span: 7
+    }
   },
   wrapperCol: {
     xs: {
-      span: 11,
+      span: 11
     },
     sm: {
-      span: 14,
+      span: 14
     },
     md: {
-      span: 14,
-    },
-  },
+      span: 14
+    }
+  }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
     xs: {
-      offset: 17,
+      offset: 17
     },
     sm: {
-      offset: 19,
+      offset: 19
     },
     md: {
-      offset: 18,
+      offset: 18
     },
     lg: {
-      offset: 17,
-    },
-  },
+      offset: 17
+    }
+  }
 }
 
 const col = {
   lg: {
     span: 12,
-    offset: 0,
-  },
+    offset: 0
+  }
 }
 
 const formService = ({
@@ -77,8 +77,8 @@ const formService = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-  },
+    resetFields
+  }
 }) => {
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
@@ -97,7 +97,7 @@ const formService = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       if (data.serviceCode) {
         Modal.confirm({
@@ -105,7 +105,7 @@ const formService = ({
           onOk () {
             onSubmit(data.serviceCode, data)
           },
-          onCancel () {},
+          onCancel () {}
         })
       } else {
         message.warning("Service Code can't be null")
@@ -145,9 +145,9 @@ const formService = ({
                     {
                       required: true,
                       pattern: /^[a-zA-Z0-9_]+$/,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input disabled={disabled} maxLength={30} />)}
               </FormItem>
             </Col>
@@ -162,9 +162,9 @@ const formService = ({
                     {
                       required: true,
                       pattern: /^[a-zA-Z0-9 _-]+$/,
-                      message: 'a-Z & 0-9',
-                    },
-                  ],
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
                 })(<Input maxLength={50} />)}
               </FormItem>
             </Col>
@@ -179,9 +179,9 @@ const formService = ({
                     {
                       required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -195,9 +195,9 @@ const formService = ({
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9',
-                    },
-                  ],
+                      message: '0-9'
+                    }
+                  ]
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
@@ -210,9 +210,9 @@ const formService = ({
                   initialValue: item.serviceTypeId,
                   rules: [
                     {
-                      required: true,
-                    },
-                  ],
+                      required: true
+                    }
+                  ]
                 })(<Select
                   optionFilterProp="children"
                   mode="default"
@@ -250,7 +250,7 @@ formService.propTypes = {
   clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,
   activeKey: PropTypes.string,
-  button: PropTypes.string,
+  button: PropTypes.string
 }
 
 export default Form.create()(formService)

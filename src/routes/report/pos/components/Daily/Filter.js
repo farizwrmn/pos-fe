@@ -18,27 +18,20 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
     let myArray = listDaily
     let category = _.groupBy(myArray, 'categoryName')
     let brand = _.groupBy(myArray, 'brandName')
-    for (let i = 0; i < Object.keys(category).length; i++) {
-      optionCategory.push(<Option key={Object.keys(category)[i].toString(36)}>{Object.keys(category)[i].toString(36)}</Option>);
+    for (let i = 0; i < Object.keys(category).length; i += 1) {
+      optionCategory.push(<Option key={Object.keys(category)[i].toString(36)}>{Object.keys(category)[i].toString(36)}</Option>)
     }
-    for (let i = 0; i < Object.keys(brand).length; i++) {
-      optionBrand.push(<Option key={Object.keys(brand)[i].toString(36)}>{Object.keys(brand)[i].toString(36)}</Option>);
+    for (let i = 0; i < Object.keys(brand).length; i += 1) {
+      optionBrand.push(<Option key={Object.keys(brand)[i].toString(36)}>{Object.keys(brand)[i].toString(36)}</Option>)
     }
   }
 
-  const handleChange = (value) => {
+  const handleChange = () => {
     const data = getFieldsValue()
     data.mode = 'pbc'
     data.from = data.rangePicker[0].format('YYYY-MM-DD')
     data.to = data.rangePicker[1].format('YYYY-MM-DD')
     onFilterChange(data)
-  }
-
-  const handleChangeDate = (value) => {
-    handleReset()
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
   }
 
   const handleReset = () => {
@@ -56,6 +49,14 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
     resetFields()
     onListReset()
   }
+
+  const handleChangeDate = (value) => {
+    handleReset()
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+    onDateChange(from, to)
+  }
+
   const printOpts = {
     listDaily,
     ...printProps
@@ -67,8 +68,9 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
               <RangePicker size="large"
-                onChange={(value) => handleChangeDate(value)}
-                format="DD-MMM-YYYY" />
+                onChange={value => handleChangeDate(value)}
+                format="DD-MMM-YYYY"
+              />
             )}
           </FilterItem>
           <FilterItem label="Category">
@@ -105,7 +107,8 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
           >
             <Icon type="search" className="icon-large" />
           </Button>
-          <Button type="dashed" size="large"
+          <Button type="dashed"
+            size="large"
             className="button-width02 button-extra-large bgcolor-lightgrey"
             onClick={() => handleReset()}
           >
@@ -122,7 +125,6 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
 Filter.propTypes = {
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
   onFilterChange: PropTypes.func
 }
 

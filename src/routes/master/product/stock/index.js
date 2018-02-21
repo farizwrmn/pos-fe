@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
-import Form from './Form'
 import { NewForm } from '../../../components'
+import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productstock
@@ -15,25 +14,25 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'productstock/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'productstock/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'productstock/resetProductStockList' })
-    },
+    }
   }
 
   const listProps = {
@@ -48,8 +47,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         type: 'productstock/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -59,22 +58,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'productcategory/query',
+        type: 'productcategory/query'
       })
       dispatch({
-        type: 'productbrand/query',
+        type: 'productbrand/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'productstock/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -86,8 +85,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       // if (key === '1') {
       //   dispatch({
@@ -100,18 +99,18 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       dispatch({
         type: 'productstock/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'productstock/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -129,27 +128,27 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         type: `productstock/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'productstock/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
     },
     showBrands () {
       dispatch({
-        type: 'productbrand/query',
+        type: 'productbrand/query'
       })
     },
     showCategories () {
       dispatch({
-        type: 'productcategory/query',
+        type: 'productcategory/query'
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -160,10 +159,10 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           dispatch({
             type: 'productstock/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -186,7 +185,7 @@ ProductStock.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ productstock, productcategory, productbrand, loading, app }) => ({ productstock, productcategory, productbrand, loading, app }))(ProductStock)

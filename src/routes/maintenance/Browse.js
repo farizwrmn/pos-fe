@@ -1,20 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import config from 'config'
-import { Table, Modal, Button, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
+import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 
-const { MonthPicker, RangePicker } = DatePicker;
+const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = config
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,
-  form: { getFieldDecorator },
-  ...tableProps }) => {
-  const data = dataSource
+  form: { getFieldDecorator } }) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
@@ -25,7 +23,7 @@ const BrowseGroup = ({
       } else {
         Modal.warning({
           title: 'Can`t Void this Invoice',
-          content: 'has been Closed',
+          content: 'has been Closed'
         })
       }
     }
@@ -39,7 +37,7 @@ const BrowseGroup = ({
         return null
       }
       return {
-        ...record,
+        ...record
       }
     }).filter(record => !!record)
     onSearchChange(newData)
@@ -51,26 +49,26 @@ const BrowseGroup = ({
       key: 'transDate',
       width: 150,
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('LL')}`,
+      render: _text => `${moment(_text).format('LL')}`
     },
     {
       title: 'Car Unit',
       dataIndex: 'policeNo',
       key: 'policeNo',
-      width: 120,
+      width: 120
     },
     {
       title: 'KM',
       dataIndex: 'lastMeter',
       key: 'lastMeter',
       width: 120,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
+      sorter: (a, b) => a.lastMeter - b.lastMeter
     },
     {
       title: 'Cashier',
       dataIndex: 'cashierId',
       key: 'cashierId',
-      width: 100,
+      width: 100
     },
     {
       title: 'Status',
@@ -78,20 +76,20 @@ const BrowseGroup = ({
       key: 'status',
       width: 100,
       render: text =>
-        <span>
+        (<span>
           <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-           {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
           </Tag>
-        </span>,
+        </span>),
       filters: [{
         text: 'Active',
-        value: 'A',
+        value: 'A'
       }, {
         text: 'Canceled',
-        value: 'C',
+        value: 'C'
       }],
       filterMultiple: false,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      onFilter: (value, record) => record.status.indexOf(value) === 0
     },
     {
       title: 'Payment',
@@ -100,28 +98,28 @@ const BrowseGroup = ({
       width: 100,
       filters: [{
         text: 'CASH',
-        value: 'C',
+        value: 'C'
       }, {
         text: 'Pending',
-        value: 'P',
+        value: 'P'
       }, {
         text: 'Card',
-        value: 'K',
+        value: 'K'
       }],
       filterMultiple: false,
       onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
       render: text =>
-        <span>
+        (<span>
           <Tag color={text === 'C' ? 'blue' : text === 'P' ? 'red' : 'green'}>
-           {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
+            {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
           </Tag>
-        </span>,
+        </span>)
     },
     {
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: 180,
+      width: 180
     },
     {
       title: <Icon type="setting" />,
@@ -130,14 +128,14 @@ const BrowseGroup = ({
       width: 75,
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
-                            type="primary"
-                            menuOptions={[
-                              { key: '1', name: 'Print', icon: 'printer' },
-                              { key: '2', name: 'Void', icon: 'delete' },
-                            ]}
+          type="primary"
+          menuOptions={[
+            { key: '1', name: 'Print', icon: 'printer' },
+            { key: '2', name: 'Void', icon: 'delete' }
+          ]}
         />)
-      },
-    },
+      }
+    }
   ]
   const onChange = (date, dateString) => {
     let dateFormat = moment(dateString).format('YYYY-MM-DD')
@@ -153,8 +151,8 @@ const BrowseGroup = ({
             {getFieldDecorator('typeCode', {
               initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
               rules: [{
-                required: true,
-              }],
+                required: true
+              }]
             })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
@@ -173,14 +171,13 @@ const BrowseGroup = ({
 }
 
 BrowseGroup.propTypes = {
-  form: PropTypes.isRequired,
-  location: PropTypes.object,
+  form: PropTypes.object.isRequired,
   onGetDetail: PropTypes.func,
   onChangePeriod: PropTypes.func,
   onSearchChange: PropTypes.func,
   onShowCancelModal: PropTypes.func,
   dataSource: PropTypes.array,
-  tmpDataSource: PropTypes.array,
+  tmpDataSource: PropTypes.array
 }
 
 export default Form.create()(BrowseGroup)

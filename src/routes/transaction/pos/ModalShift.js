@@ -1,30 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Button, Form, Input, Cascader } from 'antd'
-import { browserHistory, routerRedux } from 'dva/router'
+import { routerRedux } from 'dva/router'
 
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 10,
-  },
+    span: 10
+  }
 }
 
 const listShift = [
   {
     value: '1',
-    label: '1',
+    label: '1'
   },
   {
     value: '2',
-    label: '2',
+    label: '2'
   },
   {
     value: '3',
-    label: '3',
+    label: '3'
   }]
 
 const getDate = (mode) => {
@@ -56,7 +56,7 @@ const getDate = (mode) => {
 const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
-  getFieldsValue,
+  getFieldsValue
 }, ...modalProps }) => {
   const handleOk = () => {
     validateFields((errors) => {
@@ -65,11 +65,11 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
       }
       const data = {
         ...getFieldsValue(),
-        cashierId: cashierId,
+        cashierId,
         transDate: getDate(3),
         total: 0,
         totalCreditCard: 0,
-        status: 'O',
+        status: 'O'
       }
       data.cashierNo = data.cashierNo.join(' ')
       data.shift = data.shift.join(' ')
@@ -79,12 +79,12 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
 
   const handleBack = () => {
     dispatch(routerRedux.push({
-      pathname: '/dashboard',
+      pathname: '/dashboard'
     }))
   }
 
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
 
   return (
@@ -94,7 +94,7 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
         Confirm
-        </Button>,
+        </Button>
       ]}
       closable={false}
     >
@@ -104,9 +104,9 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
             initialValue: item.cashierNo && item.cashierNo.split(' '),
             rules: [
               {
-                required: true,
-              },
-            ],
+                required: true
+              }
+            ]
           })(<Cascader
             size="large"
             style={{ width: '100%' }}
@@ -119,9 +119,9 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
             initialValue: (item.shift ? item.shift.toString() && item.shift.toString().split(' ') : ''),
             rules: [
               {
-                required: true,
-              },
-            ],
+                required: true
+              }
+            ]
           })(<Cascader
             size="large"
             style={{ width: '100%' }}
@@ -136,10 +136,10 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
               {
                 required: true,
                 pattern: /^[0-9]{1,50}$/i,
-                message: 'Balance must be a number...!',
+                message: 'Balance must be a number...!'
 
-              },
-            ],
+              }
+            ]
           })(<Input />)}
         </FormItem>
       </Form>
@@ -157,7 +157,7 @@ ModalShift.propTypes = {
   listCashier: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default Form.create()(ModalShift)

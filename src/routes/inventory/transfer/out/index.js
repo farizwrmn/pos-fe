@@ -1,8 +1,7 @@
 import React from 'react'
-import PropTypes, { array } from 'prop-types'
+import PropTypes from 'prop-types'
 import { Modal, Tabs } from 'antd'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import Form from './Form'
 import ModalItem from './Modal'
@@ -11,8 +10,8 @@ import FilterTransfer from './FilterTransferOut'
 
 const TabPane = Tabs.TabPane
 
-const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading, misc }) => {
-  const { listTransferOut, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, searchVisible, pagination, disable, filter, sort, showPrintModal } = transferOut
+const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
+  const { listTransferOut, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { modalProductVisible, listProduct } = pos
   const { list } = employee
   let listEmployee = list
@@ -20,23 +19,23 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
   const filterProps = {
     display,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'transferOut/query',
         payload: {
           userName: value.cityName,
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'transferOut/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
-    },
+    }
   }
 
   const listProps = {
@@ -49,8 +48,8 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -60,19 +59,19 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           formType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'transferOut/query',
+        type: 'transferOut/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'transferOut/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -84,23 +83,22 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           activeKey: key,
           formType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       if (key === '1') {
         dispatch({
-          type: 'transferOut/query',
+          type: 'transferOut/query'
         })
       }
-    },
+    }
   }
 
-  function getQueueQuantity(productId) {
+  function getQueueQuantity () {
     const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
     // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
     let tempQueue = []
     let tempTrans = []
-    const listQueue = _.get(queue, `queue1`) ? _.get(queue, `queue1`) : []
     for (let n = 0; n < 10; n += 1) {
       tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
       if (tempQueue.length > 0) {
@@ -109,10 +107,9 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     }
     if (tempTrans.length > 0) {
       return tempTrans
-    } else {
-      console.log('queue is empty, nothing to check')
-      return []
     }
+    console.log('queue is empty, nothing to check')
+    return []
   }
 
   const getCashierQuantity = () => {
@@ -128,7 +125,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     const Queue = tempQueue.filter(el => el.productId === data.productId)
     // const item = listItem.filter(el => el.productId === data.productId)
     let arrData = []
-    arrData.push({...data})
+    arrData.push({ ...data })
     const totalData = arrData.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
     const totalLocal = (Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)) + Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
     const Quantity = (arrData.concat(Queue)).concat(Cashier)
@@ -138,22 +135,21 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     if (totalQty > totalListProduct) {
       Modal.warning({
         title: 'No available stock',
-        content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`,
+        content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
       })
       return false
-    } else {
-      return true
     }
+    return true
   }
   const modalProductProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() { dispatch({ type: 'pos/hideProductModal' }) },
-    handleProductBrowse() {
+    onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
+    handleProductBrowse () {
       dispatch({
         type: 'pos/getProducts',
         payload: {
@@ -161,55 +157,55 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         }
       })
     },
-    onChooseItem(item) {
-        let arrayProd = []
-        const listByCode = listItem
-        const checkExists = listByCode.filter(el => el.productCode === item.productCode)
-        if (checkExists.length === 0) {
-          arrayProd = listByCode
-          const data = {
-            no: arrayProd.length + 1,
-            productCode: item.productCode,
-            productId: item.id,
-            transType: 'MUOUT',
-            productName: item.productName,
-            qty: 1,
-            description: null
-          }
-          const check = {
-            data
-          }
-          const checkQuantity = checkQuantityNewProduct(check)
-          if (!checkQuantity) {
-            return
-          } else {
-            arrayProd.push({...data})
-          }
-          dispatch({
-            type: 'transferOut/updateState',
-            payload: {
-              listItem: arrayProd,
-            }
-          })
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              modalProductVisible: false,
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'Cannot add product',
-            content: 'Already Exists in list'
-          })
+    onChooseItem (item) {
+      let arrayProd = []
+      const listByCode = listItem
+      const checkExists = listByCode.filter(el => el.productCode === item.productCode)
+      if (checkExists.length === 0) {
+        arrayProd = listByCode
+        const data = {
+          no: arrayProd.length + 1,
+          productCode: item.productCode,
+          productId: item.id,
+          transType: 'MUOUT',
+          productName: item.productName,
+          qty: 1,
+          description: null
         }
+        const check = {
+          data
+        }
+        const checkQuantity = checkQuantityNewProduct(check)
+        if (!checkQuantity) {
+          return
+        }
+        arrayProd.push({ ...data })
+
+        dispatch({
+          type: 'transferOut/updateState',
+          payload: {
+            listItem: arrayProd
+          }
+        })
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalProductVisible: false
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
+      }
     }
   }
 
   const formEditProps = {
     visible: modalVisible,
     currentItemList,
-    onOkList(item) {
+    onOkList (item) {
       const check = {
         data: item
       }
@@ -223,15 +219,15 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       const checkQuantity = checkQuantityNewProduct(check)
       if (!checkQuantity) {
         return
-      } else {
-        listItem[item.no - 1] = item        
       }
+      listItem[item.no - 1] = item
+
       dispatch({
         type: 'transferOut/updateState',
         payload: {
           currentItemList: {},
           modalVisible: false,
-          listItem: listItem
+          listItem
         }
       })
     },
@@ -248,8 +244,8 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       dispatch({
         type: 'transferOut/deleteListState',
         payload: {
-          no: no,
-          listItem: listItem
+          no,
+          listItem
         }
       })
     },
@@ -269,7 +265,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     itemPrint: currentItem,
     user,
     storeInfo,
-    onShowModal(item) {
+    onShowModal () {
       dispatch({
         type: 'transferOut/updateState',
         payload: {
@@ -277,7 +273,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         }
       })
     },
-    onOkPrint(item) {
+    onOkPrint () {
       dispatch({
         type: 'transferOut/updateState',
         payload: {
@@ -341,18 +337,18 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: `transferOut/${formType}`,
         payload: {
           storeId: data.storeId,
-          data: data,
+          data,
           detail: list
-        },
+        }
       })
     },
-    getEmployee() {
+    getEmployee () {
       dispatch({
         type: 'employee/query',
         payload: {}
       })
     },
-    hideEmployee() {
+    hideEmployee () {
       dispatch({
         type: 'employee/updateState',
         payload: {
@@ -360,7 +356,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         }
       })
     },
-    onModalVisible(record) {
+    onModalVisible (record) {
       dispatch({
         type: 'transferOut/updateState',
         payload: {
@@ -375,15 +371,15 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         payload: {
           formType: 'add',
           currentItem: {},
-          currentItemList: {},
-        },
+          currentItemList: {}
+        }
       })
     },
     showCities () {
       dispatch({
-        type: 'transferOut/query',
+        type: 'transferOut/query'
       })
-    },
+    }
   }
 
   const listTransferProps = {
@@ -403,16 +399,16 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/updateState',
         payload: {
           filter: filters,
-          sort: sorts,
-        },
+          sort: sorts
+        }
       })
     },
     getProducts (transNo) {
       dispatch({
         type: 'transferOut/queryProducts',
         payload: {
-          transNo,
-        },
+          transNo
+        }
       })
     },
     getTrans (transNo, storeId) {
@@ -420,46 +416,46 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/queryByTrans',
         payload: {
           transNo,
-          storeId,
-        },
+          storeId
+        }
       })
     },
     onShowPrint () {
       dispatch({
         type: 'transferOut/updateState',
         payload: {
-          showPrintModal: true,
-        },
+          showPrintModal: true
+        }
       })
     },
     onClosePrint () {
       dispatch({
         type: 'transferOut/updateState',
         payload: {
-          showPrintModal: false,
-        },
+          showPrintModal: false
+        }
       })
-    },
+    }
   }
 
   const filterTransferProps = {
     period,
     filter: {
-      ...location.query,
+      ...location.query
     },
     filterChange (date) {
       dispatch({
         type: 'transferOut/queryTransferOut',
         payload: {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-        },
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+        }
       })
       dispatch({
         type: 'transferOut/updateState',
         payload: {
-          period: date,
-        },
+          period: date
+        }
       })
     },
     filterTransNo (date, no) {
@@ -468,10 +464,10 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         payload: {
           start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
           end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-          transNo: no,
-        },
+          transNo: no
+        }
       })
-    },
+    }
   }
 
   let activeTabKey = '0'
@@ -482,8 +478,8 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/queryTransferOut',
         payload: {
           start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-        },
+          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+        }
       })
     }
   }
@@ -510,7 +506,7 @@ Transfer.propTypes = {
   app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 

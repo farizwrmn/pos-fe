@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
-import styles from './user.less'
 import CountUp from 'react-countup'
 import { color } from 'utils'
+import styles from './user.less'
 
 const countUpProps = {
   start: 0,
   duration: 2.75,
   useEasing: true,
   useGrouping: true,
-  separator: ',',
+  separator: ','
 }
 
 function User ({ avatar, name, email, sales, sold }) {
@@ -50,7 +50,7 @@ User.propTypes = {
   name: PropTypes.string,
   email: PropTypes.string,
   sales: PropTypes.number,
-  sold: PropTypes.number,
+  sold: PropTypes.number
 }
 
 export default User

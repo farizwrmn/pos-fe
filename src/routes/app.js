@@ -5,11 +5,11 @@ import { connect } from 'dva'
 import { Layout, Loader } from 'components'
 import { classnames, config } from 'utils'
 import { Helmet } from 'react-helmet'
-import '../themes/index.less'
-import './app.less'
 import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
+import '../themes/index.less'
+import './app.less'
 import Error from './error'
 
 const { prefix, openPages } = config
@@ -80,13 +80,13 @@ const App = ({ children, dispatch, app, loading, location }) => {
     handleTotpLoad (userId) {
       dispatch({
         type: 'app/totp',
-        payload: { mode: 'load', id: userId },
+        payload: { mode: 'load', id: userId }
       })
     },
     handleRegenerateTotp (userId) {
       dispatch({
         type: 'app/totp',
-        payload: { mode: 'generate', id: userId },
+        payload: { mode: 'generate', id: userId }
       })
     },
     handleChangeTotpShow (userId) {
@@ -98,18 +98,18 @@ const App = ({ children, dispatch, app, loading, location }) => {
     },
     handleSavePw (data) {
       dispatch({
-        type: `app/changePw`,
+        type: 'app/changePw',
         payload: {
           id: user.userid,
-          data: data,
+          data,
           currentItem: {}
-        },
+        }
       })
     },
     handleSaveTotp (userId, data) {
       dispatch({
-        type: `app/totp`,
-        payload: { mode: 'edit',  id: userId, data: data },
+        type: 'app/totp',
+        payload: { mode: 'edit', id: userId, data }
       })
     },
     modalSwitchChange (checked, userId) {
@@ -119,15 +119,15 @@ const App = ({ children, dispatch, app, loading, location }) => {
         })
         dispatch({
           type: 'app/updateState',
-          payload: { totpChecked: true },
+          payload: { totpChecked: true }
         })
       } else {
         dispatch({
           type: 'app/updateState',
-          payload: { totpChecked: false },
+          payload: { totpChecked: false }
         })
       }
-    },
+    }
   }
 
   const siderProps = {
@@ -145,11 +145,11 @@ const App = ({ children, dispatch, app, loading, location }) => {
     changeOpenKeys (openKeys) {
       localStorage.setItem(`${prefix}navOpenKeys`, JSON.stringify(openKeys))
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
-    },
+    }
   }
 
   const breadProps = {
-    menu,
+    menu
   }
   if (openPages && openPages.includes(pathname)) {
     return (<div>
@@ -191,7 +191,7 @@ App.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 export default connect(({ app, loading }) => ({ app, loading }))(App)

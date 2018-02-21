@@ -32,8 +32,8 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
         col_5: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
         col_6: { fontSize: 12, text: 'SELLING PRICE', style: 'tableHeader', alignment: 'center' },
         col_7: { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader', alignment: 'center' },
-        col_8: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
-      },
+        col_8: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+      }
     }
 
     const rows = tabledata
@@ -59,8 +59,8 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        countQtyValue = (parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0) - (parseFloat(data.sQty) || 0)
-        countAmountValue = (parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0) - (parseFloat(data.sAmount) || 0)
+        countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
+        countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
         row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
@@ -104,40 +104,40 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01,
+            stack: storeInfo.stackHeader01
           },
           {
             text: 'LAPORAN HISTORY JASA PER MEKANIK',
             style: 'header',
             fontSize: 18,
-            alignment: 'center',
+            alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }],
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
-                alignment: 'left',
+                alignment: 'left'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'center',
+                alignment: 'center'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'right',
-              },
-            ],
-          },
-        ],
-      },
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
     ],
-    margin: [50, 12, 50, 30],
+    margin: [50, 12, 50, 30]
   }
 
   const footer = (currentPage, pageCount) => {
@@ -145,7 +145,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }],
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -153,23 +153,23 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
               text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'left',
+              alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
-              alignment: 'center',
+              alignment: 'center'
             },
             {
               text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
-              alignment: 'right',
-            },
-          ],
-        },
-      ],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
     }
   }
 
@@ -177,25 +177,25 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     subheader: {
       fontSize: 16,
       bold: true,
-      margin: [0, 10, 0, 5],
+      margin: [0, 10, 0, 5]
     },
     tableExample: {
-      margin: [0, 5, 0, 15],
+      margin: [0, 5, 0, 15]
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black',
+      color: 'black'
     },
     tableTitle: {
       fontSize: 14,
-      margin: [0, 20, 0, 8],
-    },
+      margin: [0, 20, 0, 8]
+    }
   }
 
   const pdfProps = {
@@ -210,7 +210,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     layout: 'noBorder',
     footer,
     tableStyle: styles,
-    data: arr,
+    data: arr
   }
 
   return (
@@ -223,7 +223,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
   toDate: PropTypes.string.isRequired,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintPDF

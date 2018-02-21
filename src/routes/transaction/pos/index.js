@@ -1,15 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import config from 'config'
-import { DataTable, Layout } from 'components'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 // import ModalCustomer from '../../master/customer/customer/Modal'
-import { color } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
-import { read } from 'fs';
 import FormWo from './FormWo'
 
 const { prefix } = config
@@ -19,32 +16,40 @@ const FormItem = Form.Item
 const ButtonGroup = Button.Group
 const formItemLayout = {
   labelCol: {
-    span: 6,
+    span: 6
   },
   wrapperCol: {
-    span: 18,
+    span: 18
   },
   style: {
     marginBottom: '5px'
   }
 }
 
-const Pos = ({ location, customer, city, customergroup, customertype, loading, dispatch, pos, unit, app, payment }) => {
-  const {
-    modalVisible,
-    visiblePopoverCity,
-    visiblePopoverGroup,
-    visiblePopoverType,
-    currentItem,
-    modalType
-  } = customer
-  const { listCity } = city
-  const { listGroup } = customergroup
-  const { listType } = customertype
+const Pos = ({
+  location,
+  // customer,
+  // city,
+  // customergroup,
+  // customertype,
+  loading,
+  dispatch,
+  pos,
+  unit,
+  app,
+  payment }) => {
+  // const {
+  //   visiblePopoverCity,
+  //   visiblePopoverGroup,
+  //   visiblePopoverType,
+  //   currentItem,
+  //   modalType
+  // } = customer
+  // const { listCity } = city
+  // const { listGroup } = customergroup
+  // const { listType } = customertype
   const { setting } = app
   const {
-    listProduct,
-    listSequence,
     modalServiceVisible,
     modalMemberVisible,
     modalMechanicVisible,
@@ -55,13 +60,11 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     curQty,
     totalItem,
     curTotal,
-    listByCode,
     kodeUtil,
     itemService,
     itemPayment,
     infoUtil,
     memberInformation,
-    setCurTotal,
     memberUnitInfo,
     modalServiceListVisible,
     mechanicInformation,
@@ -72,16 +75,27 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     dataCashierTrans,
     curCashierNo,
     curShift,
-    lastMeter,
-    modalQueueVisible,
+    modalQueueVisible
   } = pos
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
-  //Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
+  // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
-    16: false, 17: false, 18: false, 77: false, 49: false, 50: false, 67: false,
-    51: false, 52: false, 72: false, 76: false, 73: false, 85: false, 75: false
+    16: false,
+    17: false,
+    18: false,
+    77: false,
+    49: false,
+    50: false,
+    67: false,
+    51: false,
+    52: false,
+    72: false,
+    76: false,
+    73: false,
+    85: false,
+    75: false
   }
   /*
   Ascii => Desc
@@ -94,6 +108,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   52 => 4
   77 => M
   72 => H
+  66 => B
   67 => C
   69 => E
   73 => I
@@ -104,29 +119,27 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   let dataPos = product.concat(service)
   let a = dataPos
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
-  let totalQty = a.reduce(function (cnt, o) { return cnt + parseInt(o.qty); }, 0)
+  let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
-    let mm = today.getMonth() + 1 //January is 0!
+    let mm = today.getMonth() + 1 // January is 0!
     let yyyy = today.getFullYear()
 
     if (dd < 10) {
-      dd = '0' + dd
+      dd = `0${dd}`
     }
 
     if (mm < 10) {
-      mm = '0' + mm
+      mm = `0${mm}`
     }
 
     if (mode === 1) {
-      today = dd + '-' + mm + '-' + yyyy
-    }
-    else if (mode === 2) {
+      today = `${dd}-${mm}-${yyyy}`
+    } else if (mode === 2) {
       today = mm + yyyy
-    }
-    else if (mode === 3) {
-      today = yyyy + '-' + mm + '-' + dd
+    } else if (mode === 3) {
+      today = `${yyyy}-${mm}-${dd}`
     }
 
     return today
@@ -136,17 +149,17 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     woNumber,
     formItemLayout: {
       labelCol: {
-        span: 24,
+        span: 24
       },
       wrapperCol: {
-        span: 24,
+        span: 24
       },
       style: {
         marginTop: '5px',
         marginBottom: '5px'
       }
     },
-    generateSequence(params) {
+    generateSequence () {
       dispatch({
         type: 'payment/sequenceQuery',
         payload: {
@@ -155,7 +168,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         }
       })
     },
-    notUsingWo(check, value) {
+    notUsingWo (check, value) {
       dispatch({
         type: 'payment/querySequenceSuccess',
         payload: {
@@ -165,6 +178,12 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       })
     }
   }
+
+  const checkTime = (i) => {
+    if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
+    return i
+  }
+
   const setTime = () => {
     let today = new Date()
     let h = today.getHours()
@@ -173,12 +192,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     m = checkTime(m)
     s = checkTime(s)
 
-    return h + ":" + m + ":" + s
-  }
-
-  const checkTime = (i) => {
-    if (i < 10) { i = "0" + i }  // add zero in front of numbers < 10
-    return i
+    return `${h}:${m}:${s}`
   }
 
   // const getQueueQuantity = (productId) => {
@@ -206,20 +220,19 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       dispatch({
         type: 'pos/changeQueue',
         payload: {
-          queue: '1',
-        },
+          queue: '1'
+        }
       })
       dispatch({
         type: 'pos/showQueueModal',
         payload: {
-          modalType: 'queue',
-        },
+          modalType: 'queue'
+        }
       })
-    }
-    else {
+    } else {
       Modal.warning({
         title: 'Warning',
-        content: 'Please finish your current Transaction...!',
+        content: 'Please finish your current Transaction...!'
       })
     }
   }
@@ -227,9 +240,10 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   const objectSize = () => {
     let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
     Object.size = function (obj) {
-      let size = 0, key
+      let size = 0
+      let key
       for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++
+        if (obj.hasOwnProperty(key)) size += 1
       }
       return size
     }
@@ -238,20 +252,20 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   }
 
   const handleMemberBrowse = () => {
-    //get member data
+    // get member data
     dispatch({
-      type: 'pos/getMembers',
+      type: 'pos/getMembers'
     })
 
     dispatch({
       type: 'pos/showMemberModal',
       payload: {
-        modalType: 'browseMember',
-      },
+        modalType: 'browseMember'
+      }
     })
   }
 
-  const handleAddMember = (type) => {
+  const handleAddMember = () => {
     // dispatch({
     //   type: 'customer/modalShow',
     //   payload: {
@@ -271,8 +285,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       type: 'pos/showPaymentModal',
       payload: {
         item: record,
-        modalType: 'modalPayment',
-      },
+        modalType: 'modalPayment'
+      }
     })
   }
   const modalEditService = (record) => {
@@ -280,29 +294,29 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       type: 'pos/showServiceListModal',
       payload: {
         item: record,
-        modalType: 'modalService',
-      },
+        modalType: 'modalService'
+      }
     })
   }
 
   const handleMechanicBrowse = () => {
     // get mechanic data
     dispatch({
-      type: 'pos/getMechanics',
+      type: 'pos/getMechanics'
     })
 
     dispatch({
       type: 'pos/showMechanicModal',
       payload: {
-        modalType: 'browseMechanic',
-      },
+        modalType: 'browseMechanic'
+      }
     })
   }
 
   const handleProductBrowse = () => {
     // get products data
-    let json = setting["Inventory"]
-    let jsondata = JSON.stringify(eval("(" + json + ")"));
+    let json = setting.Inventory
+    let jsondata = JSON.stringify(eval(`(${json})`))
     const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
     dispatch({
       type: 'pos/getProducts',
@@ -313,21 +327,21 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
   }
   const handleServiceBrowse = () => {
     dispatch({
-      type: 'pos/getServices',
+      type: 'pos/getServices'
     })
 
     dispatch({
       type: 'pos/showServiceModal',
       payload: {
-        modalType: 'browseService',
-      },
+        modalType: 'browseService'
+      }
     })
   }
 
   const handlePayment = () => {
     let defaultRole = ''
     const localId = localStorage.getItem(`${prefix}udi`)
-    if (localId && localId.indexOf("#") > -1) {
+    if (localId && localId.indexOf('#') > -1) {
       defaultRole = localId.split(/[# ]+/).pop()
     }
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -335,7 +349,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     if (service.length > 0 && (woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Service Validation',
-        content: 'You are giving service without WorkOrder',
+        content: 'You are giving service without WorkOrder'
       })
       if (defaultRole !== 'OWN') {
         return
@@ -344,7 +358,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Unit Validation',
-        content: 'Member Unit is not Defined ',
+        content: 'Member Unit is not Defined '
       })
       if (defaultRole !== 'OWN') {
         return
@@ -353,12 +367,12 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Unit Validation',
-        content: 'You are inserting Member Unit without Work Order',
+        content: 'You are inserting Member Unit without Work Order'
       })
     } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
       Modal.warning({
         title: 'Unit Validation',
-        content: 'You are Work Order without Member Unit',
+        content: 'You are Work Order without Member Unit'
       })
       if (defaultRole !== 'OWN') {
         return
@@ -389,6 +403,16 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     })
   }
 
+  const setCurBarcode = (curBarcode, curQty) => {
+    dispatch({
+      type: 'pos/setCurBarcode',
+      payload: {
+        curBarcode,
+        curQty
+      }
+    })
+  }
+
   const handleDiscount = (tipe, value) => {
     let discountQty
     if (tipe < 5) {
@@ -404,36 +428,33 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             kodeUtil: (tipe === 4 ? 'discount' :
               tipe === 5 ? 'quantity'
                 : `disc${tipe}`),
-            infoUtil: `Insert ${discountQty} ${(tipe === 4 ? 'Nominal' : tipe === 5 ? '' : (tipe + ' (%)'))} for Record ${value}`,
-          },
+            infoUtil: `Insert ${discountQty} ${(tipe === 4 ? 'Nominal' : tipe === 5 ? '' : (`${tipe} (%)`))} for Record ${value}`
+          }
         })
 
         dispatch({
           type: 'pos/setEffectedRecord',
           payload: {
             effectedRecord: value
-          },
+          }
         })
-      }
-      else {
+      } else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Record is out of range...!',
+          content: 'Record is out of range...!'
         })
 
 
         setTimeout(() => modal.destroy(), 1000)
       }
-    }
-    else {
+    } else {
       const modal = Modal.warning({
         title: 'Warning',
-        content: `Please define Record to be Change !`,
+        content: 'Please define Record to be Change !'
       })
 
       setTimeout(() => modal.destroy(), 1000)
     }
-
     setCurBarcode('', 1)
   }
 
@@ -441,9 +462,9 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     if (value) {
       if (value < (curRecord)) {
         Modal.confirm({
-          title: 'Are you sure want to void/delete item Record ' + value + '?',
+          title: `Are you sure want to void/delete item Record ${value}?`,
           content: 'This Operation cannot be undone...!',
-          onOk() {
+          onOk () {
             let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
             let arrayProd = dataPos.slice()
 
@@ -458,25 +479,23 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
 
             dispatch({
-              type: 'pos/setCurTotal',
+              type: 'pos/setCurTotal'
             })
           },
-          onCancel() { },
+          onCancel () { }
         })
-      }
-      else {
+      } else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Record is out of range...!',
+          content: 'Record is out of range...!'
         })
 
         setTimeout(() => modal.destroy(), 1000)
       }
-    }
-    else {
+    } else {
       const modal = Modal.warning({
         title: 'Warning',
-        content: 'Please define Record to be Void...!',
+        content: 'Please define Record to be Void...!'
       })
 
       setTimeout(() => modal.destroy(), 1000)
@@ -485,51 +504,41 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     setCurBarcode('', 1)
   }
 
-  const setCurBarcode = (curBarcode, curQty) => {
-    dispatch({
-      type: 'pos/setCurBarcode',
-      payload: {
-        curBarcode: curBarcode,
-        curQty: curQty,
-      },
-    })
-  }
-
   const modalShiftProps = {
     item: dataCashierTrans,
-    listCashier: listCashier,
-    curCashierNo: curCashierNo,
+    listCashier,
+    curCashierNo,
     visible: modalShiftVisible,
     cashierId: user.userid,
     dispatch,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onBack() {
+    onBack () {
       dispatch({ type: 'pos/backPrevious' })
     },
-    onCancel() {
+    onCancel () {
       Modal.error({
         title: 'Error',
         content: 'Please Use Confirm Button...!'
       })
     },
-    onOk(data) {
+    onOk (data) {
       dispatch({ type: 'app/foldSider' })
       dispatch({
         type: 'pos/setCashierTrans',
-        payload: data,
+        payload: data
       })
-    },
+    }
   }
   const modalMemberProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalMemberVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() { dispatch({ type: 'pos/hideMemberModal' }) },
-    onChooseItem(item) {
+    onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
+    onChooseItem (item) {
       localStorage.removeItem('member', [])
       localStorage.removeItem('memberUnit')
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
@@ -546,263 +555,268 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         address01: item.address01,
         point: item.point ? item.point : 0,
         id: item.id,
-        memberTypeId: item.memberTypeId ? item.memberTypeId : 7,
+        memberTypeId: item.memberTypeId,
+        memberSellPrice: item.memberSellPrice,
+        memberPendingPayment: item.memberPendingPayment,
         gender: item.gender,
-        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber,
+        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       })
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
-      dispatch({ type: 'pos/queryGetMemberSuccess', payload: { memberInformation: item } }),
-        dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } }),
-        dispatch({
-          type: 'pos/hideMemberModal',
-        })
+      dispatch({
+        type: 'pos/queryGetMemberSuccess',
+        payload: { memberInformation: item }
+      })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
+      dispatch({
+        type: 'pos/hideMemberModal'
+      })
 
       setCurBarcode('', 1)
-    },
+    }
   }
 
-  const modalCustomerProps = {
-    item: currentItem,
-    visible: 'modalVisible',
-    visiblePopoverCity,
-    listCity,
-    visiblePopoverGroup,
-    listGroup,
-    visiblePopoverType,
-    listType,
-    onOk(data) {
-      dispatch({
-        type: `customer/${modalType}`,
-        payload: data,
-      })
-    },
-    modalButtonSaveClick(id, data) {
-      dispatch({
-        type: `customer/${modalType}`,
-        payload: {
-          id,
-          data: {
-            address01: data.address01,
-            address02: data.address02,
-            birthDate: data.birthDate,
-            cityId: data.cityId,
-            cityName: data.cityName,
-            email: data.email,
-            idNo: data.idNo,
-            idType: data.idType,
-            gender: data.gender,
-            memberCode: data.memberCode,
-            memberGroupId: data.memberGroupId,
-            memberGroupName: data.memberGroupName,
-            memberName: data.memberName,
-            memberTypeId: data.memberTypeId,
-            memberTypeName: data.memberTypeName,
-            mobileNumber: data.mobileNumber,
-            phoneNumber: data.phoneNumber,
-            state: data.state,
-            taxId: data.taxId,
-            zipCode: data.zipCode,
-          },
-        },
-      })
-    },
-    modalButtonSaveUnitClick(id, data) {
-      dispatch({
-        type: 'unit/add',
-        payload: {
-          id,
-          data: {
-            memberCode: data.memberCode,
-            policeNo: data.policeNo,
-            merk: data.merk,
-            model: data.model,
-            type: data.type,
-            year: data.year,
-            chassisNo: data.chassisNo,
-            machineNo: data.machineNo,
-          },
-        },
-      })
-    },
-    modalButtonEditUnitClick(id, data) {
-      dispatch({
-        type: 'unit/edit',
-        payload: {
-          id,
-          data: {
-            memberCode: data.memberCode,
-            policeNo: data.policeNo,
-            merk: data.merk,
-            model: data.model,
-            type: data.type,
-            year: data.year,
-            chassisNo: data.chassisNo,
-            machineNo: data.machineNo,
-          },
-        },
-      })
-    },
-    modalButtonDeleteUnitClick(id, data) {
-      dispatch({
-        type: 'unit/delete',
-        payload: {
-          id,
-          data: data.memberCode,
-        },
-      })
-    },
-    onCancel() {
-      dispatch({
-        type: 'customer/modalHide',
-      })
-    },
-    modalButtonCancelClick2() {
-      dispatch({
-        type: 'customer/modalHide',
-      })
-    },
-    modalButtonGroupClick() {
-      dispatch({
-        type: 'customergroup/query',
-      })
-    },
-    modalButtonTypeClick() {
-      dispatch({
-        type: 'customertype/query',
-      })
-    },
-    modalButtonCityClick() {
-      dispatch({
-        type: 'city/query',
-      })
-    },
-    modalPopoverVisible() {
-      dispatch({
-        type: 'customer/modalPopoverVisible',
-      })
-    },
-    modalPopoverVisibleCity() {
-      dispatch({
-        type: 'customer/modalPopoverVisibleCity',
-      })
-    },
-    modalPopoverVisibleType() {
-      dispatch({
-        type: 'customer/modalPopoverVisibleType',
-      })
-    },
-    modalPopoverClose() {
-      dispatch({
-        type: 'customer/modalPopoverClose',
-      })
-    },
-    onChooseItem(data) {
-      dispatch({
-        type: 'customer/chooseEmployee',
-        payload: {
-          modalType,
-          currentItem: {
-            memberGroupId: data.id,
-            memberGroupName: data.groupName,
-            memberCode: currentItem.memberCode,
-            memberTypeName: currentItem.memberTypeName,
-            memberTypeId: currentItem.memberTypeId,
-            idType: currentItem.idType,
-            idNo: currentItem.idNo,
-            cityId: currentItem.cityId,
-            memberName: currentItem.memberName,
-            birthDate: currentItem.birthDate,
-            address01: currentItem.address01,
-            address02: currentItem.address02,
-            cityName: currentItem.cityName,
-            state: currentItem.state,
-            zipCode: currentItem.zipCode,
-            taxId: currentItem.taxId,
-            email: currentItem.email,
-            phoneNumber: currentItem.phoneNumber,
-            mobileNumber: currentItem.mobileNumber,
-          },
-        },
-      })
-    },
-    onChooseType(data) {
-      dispatch({
-        type: 'customer/chooseType',
-        payload: {
-          modalType,
-          currentItem: {
-            memberGroupId: currentItem.memberGroupId,
-            memberGroupName: currentItem.memberGroupName,
-            memberTypeName: data.typeName,
-            memberTypeId: data.id,
-            memberCode: currentItem.memberCode,
-            idType: currentItem.idType,
-            idNo: currentItem.idNo,
-            cityId: currentItem.cityId,
-            memberName: currentItem.memberName,
-            birthDate: currentItem.birthDate,
-            address01: currentItem.address01,
-            address02: currentItem.address02,
-            cityName: currentItem.cityName,
-            state: currentItem.state,
-            zipCode: currentItem.zipCode,
-            taxId: currentItem.taxId,
-            email: currentItem.email,
-            phoneNumber: currentItem.phoneNumber,
-            mobileNumber: currentItem.mobileNumber,
-          },
-        },
-      })
-    },
-    onChooseCity(data) {
-      dispatch({
-        type: 'customer/chooseCity',
-        payload: {
-          modalType,
-          currentItem: {
-            cityId: data.id,
-            memberGroupName: currentItem.memberGroupName,
-            memberGroupId: currentItem.memberGroupId,
-            memberTypeId: currentItem.memberTypeId,
-            memberCode: currentItem.memberCode,
-            memberTypeName: currentItem.memberTypeName,
-            idType: currentItem.idType,
-            idNo: currentItem.idNo,
-            memberName: currentItem.memberName,
-            birthDate: currentItem.birthDate,
-            address01: currentItem.address01,
-            address02: currentItem.address02,
-            cityName: data.cityName,
-            state: currentItem.state,
-            zipCode: currentItem.zipCode,
-            taxId: currentItem.taxId,
-            email: currentItem.email,
-            phoneNumber: currentItem.phoneNumber,
-            mobileNumber: currentItem.mobileNumber,
-          },
-        },
-      })
-    },
-  }
+  // const modalCustomerProps = {
+  //   item: currentItem,
+  //   visible: 'modalVisible',
+  //   visiblePopoverCity,
+  //   listCity,
+  //   visiblePopoverGroup,
+  //   listGroup,
+  //   visiblePopoverType,
+  //   listType,
+  //   onOk (data) {
+  //     dispatch({
+  //       type: `customer/${modalType}`,
+  //       payload: data
+  //     })
+  //   },
+  //   modalButtonSaveClick (id, data) {
+  //     dispatch({
+  //       type: `customer/${modalType}`,
+  //       payload: {
+  //         id,
+  //         data: {
+  //           address01: data.address01,
+  //           address02: data.address02,
+  //           birthDate: data.birthDate,
+  //           cityId: data.cityId,
+  //           cityName: data.cityName,
+  //           email: data.email,
+  //           idNo: data.idNo,
+  //           idType: data.idType,
+  //           gender: data.gender,
+  //           memberCode: data.memberCode,
+  //           memberGroupId: data.memberGroupId,
+  //           memberGroupName: data.memberGroupName,
+  //           memberName: data.memberName,
+  //           memberTypeId: data.memberTypeId,
+  //           memberTypeName: data.memberTypeName,
+  //           mobileNumber: data.mobileNumber,
+  //           phoneNumber: data.phoneNumber,
+  //           state: data.state,
+  //           taxId: data.taxId,
+  //           zipCode: data.zipCode
+  //         }
+  //       }
+  //     })
+  //   },
+  //   modalButtonSaveUnitClick (id, data) {
+  //     dispatch({
+  //       type: 'unit/add',
+  //       payload: {
+  //         id,
+  //         data: {
+  //           memberCode: data.memberCode,
+  //           policeNo: data.policeNo,
+  //           merk: data.merk,
+  //           model: data.model,
+  //           type: data.type,
+  //           year: data.year,
+  //           chassisNo: data.chassisNo,
+  //           machineNo: data.machineNo
+  //         }
+  //       }
+  //     })
+  //   },
+  //   modalButtonEditUnitClick (id, data) {
+  //     dispatch({
+  //       type: 'unit/edit',
+  //       payload: {
+  //         id,
+  //         data: {
+  //           memberCode: data.memberCode,
+  //           policeNo: data.policeNo,
+  //           merk: data.merk,
+  //           model: data.model,
+  //           type: data.type,
+  //           year: data.year,
+  //           chassisNo: data.chassisNo,
+  //           machineNo: data.machineNo
+  //         }
+  //       }
+  //     })
+  //   },
+  //   modalButtonDeleteUnitClick (id, data) {
+  //     dispatch({
+  //       type: 'unit/delete',
+  //       payload: {
+  //         id,
+  //         data: data.memberCode
+  //       }
+  //     })
+  //   },
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'customer/modalHide'
+  //     })
+  //   },
+  //   modalButtonCancelClick2 () {
+  //     dispatch({
+  //       type: 'customer/modalHide'
+  //     })
+  //   },
+  //   modalButtonGroupClick () {
+  //     dispatch({
+  //       type: 'customergroup/query'
+  //     })
+  //   },
+  //   modalButtonTypeClick () {
+  //     dispatch({
+  //       type: 'customertype/query'
+  //     })
+  //   },
+  //   modalButtonCityClick () {
+  //     dispatch({
+  //       type: 'city/query'
+  //     })
+  //   },
+  //   modalPopoverVisible () {
+  //     dispatch({
+  //       type: 'customer/modalPopoverVisible'
+  //     })
+  //   },
+  //   modalPopoverVisibleCity () {
+  //     dispatch({
+  //       type: 'customer/modalPopoverVisibleCity'
+  //     })
+  //   },
+  //   modalPopoverVisibleType () {
+  //     dispatch({
+  //       type: 'customer/modalPopoverVisibleType'
+  //     })
+  //   },
+  //   modalPopoverClose () {
+  //     dispatch({
+  //       type: 'customer/modalPopoverClose'
+  //     })
+  //   },
+  //   onChooseItem (data) {
+  //     dispatch({
+  //       type: 'customer/chooseEmployee',
+  //       payload: {
+  //         modalType,
+  //         currentItem: {
+  //           memberGroupId: data.id,
+  //           memberGroupName: data.groupName,
+  //           memberCode: currentItem.memberCode,
+  //           memberTypeName: currentItem.memberTypeName,
+  //           memberTypeId: currentItem.memberTypeId,
+  //           idType: currentItem.idType,
+  //           idNo: currentItem.idNo,
+  //           cityId: currentItem.cityId,
+  //           memberName: currentItem.memberName,
+  //           birthDate: currentItem.birthDate,
+  //           address01: currentItem.address01,
+  //           address02: currentItem.address02,
+  //           cityName: currentItem.cityName,
+  //           state: currentItem.state,
+  //           zipCode: currentItem.zipCode,
+  //           taxId: currentItem.taxId,
+  //           email: currentItem.email,
+  //           phoneNumber: currentItem.phoneNumber,
+  //           mobileNumber: currentItem.mobileNumber
+  //         }
+  //       }
+  //     })
+  //   },
+  //   onChooseType (data) {
+  //     dispatch({
+  //       type: 'customer/chooseType',
+  //       payload: {
+  //         modalType,
+  //         currentItem: {
+  //           memberGroupId: currentItem.memberGroupId,
+  //           memberGroupName: currentItem.memberGroupName,
+  //           memberTypeName: data.typeName,
+  //           memberTypeId: data.id,
+  //           memberCode: currentItem.memberCode,
+  //           idType: currentItem.idType,
+  //           idNo: currentItem.idNo,
+  //           cityId: currentItem.cityId,
+  //           memberName: currentItem.memberName,
+  //           birthDate: currentItem.birthDate,
+  //           address01: currentItem.address01,
+  //           address02: currentItem.address02,
+  //           cityName: currentItem.cityName,
+  //           state: currentItem.state,
+  //           zipCode: currentItem.zipCode,
+  //           taxId: currentItem.taxId,
+  //           email: currentItem.email,
+  //           phoneNumber: currentItem.phoneNumber,
+  //           mobileNumber: currentItem.mobileNumber
+  //         }
+  //       }
+  //     })
+  //   },
+  //   onChooseCity (data) {
+  //     dispatch({
+  //       type: 'customer/chooseCity',
+  //       payload: {
+  //         modalType,
+  //         currentItem: {
+  //           cityId: data.id,
+  //           memberGroupName: currentItem.memberGroupName,
+  //           memberGroupId: currentItem.memberGroupId,
+  //           memberTypeId: currentItem.memberTypeId,
+  //           memberCode: currentItem.memberCode,
+  //           memberTypeName: currentItem.memberTypeName,
+  //           idType: currentItem.idType,
+  //           idNo: currentItem.idNo,
+  //           memberName: currentItem.memberName,
+  //           birthDate: currentItem.birthDate,
+  //           address01: currentItem.address01,
+  //           address02: currentItem.address02,
+  //           cityName: data.cityName,
+  //           state: currentItem.state,
+  //           zipCode: currentItem.zipCode,
+  //           taxId: currentItem.taxId,
+  //           email: currentItem.email,
+  //           phoneNumber: currentItem.phoneNumber,
+  //           mobileNumber: currentItem.mobileNumber
+  //         }
+  //       }
+  //     })
+  //   }
+  // }
 
   const modalPaymentProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
-    totalItem: totalItem,
+    location,
+    loading,
+    pos,
+    totalItem,
     item: itemPayment,
     visible: modalPaymentVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() {
+    onCancel () {
       dispatch({ type: 'pos/hidePaymentModal' })
     },
-    DeleteItem(data) {
+    DeleteItem (data) {
       dispatch({ type: 'pos/paymentDelete', payload: data })
     },
-    onChooseItem(data) {
+    onChooseItem (data) {
       dispatch({
         type: 'pos/checkQuantityEditProduct',
         payload: {
@@ -812,49 +826,49 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       })
       // dispatch({ type: 'pos/paymentEdit', payload: data })
     },
-    onChangeTotalItem(data) {
+    onChangeTotalItem (data) {
       dispatch({
         type: 'pos/setTotalItem',
-        payload: data,
+        payload: data
       })
-    },
+    }
   }
   const ModalServiceListProps = {
-    location: location,
-    loading: loading,
-    totalItem: totalItem,
-    pos: pos,
+    location,
+    loading,
+    totalItem,
+    pos,
     item: itemService,
     visible: modalServiceListVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() {
+    onCancel () {
       dispatch({ type: 'pos/hideServiceListModal' })
     },
-    onChooseItem(data) {
+    onChooseItem (data) {
       dispatch({ type: 'pos/serviceEdit', payload: data })
       dispatch({ type: 'pos/hideServiceListModal' })
     },
-    DeleteItem(data) {
+    DeleteItem (data) {
       dispatch({ type: 'pos/serviceDelete', payload: data })
     },
-    onChangeTotalItem(data) {
+    onChangeTotalItem (data) {
       dispatch({
         type: 'pos/setTotalItemService',
-        payload: data,
+        payload: data
       })
-    },
+    }
   }
 
   const modalMechanicProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalMechanicVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() { dispatch({ type: 'pos/hideMechanicModal' }) },
-    onChooseItem(item) {
+    onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
+    onChooseItem (item) {
       localStorage.removeItem('mechanic')
       let arrayProd = []
       arrayProd.push({
@@ -863,20 +877,20 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       })
       localStorage.setItem('mechanic', JSON.stringify(arrayProd))
       dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' }, })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
       dispatch({ type: 'pos/hideMechanicModal' })
-    },
+    }
   }
 
   const modalProductProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() { dispatch({ type: 'pos/hideProductModal' }) },
-    onChooseItem(item) {
+    onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
+    onChooseItem (item) {
       if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
         let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
         let arrayProd
@@ -895,12 +909,12 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             name: item.productName,
             typeCode: 'P',
             qty: 1,
-            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
           }
 
           arrayProd.push({
@@ -910,12 +924,12 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             name: item.productName,
             typeCode: 'P',
             qty: 1,
-            price: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02),
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberTypeId !== 2 ? item.sellPrice : item.distPrice02) * curQty,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
           })
           dispatch({
             type: 'pos/checkQuantityNewProduct',
@@ -931,61 +945,59 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             content: 'Already Exists in list'
           })
         }
-      } else {
-        if (memberInformation.length === 0) {
-          Modal.info({
-            title: 'Member Information is not found',
-            content: 'Insert Member',
-            onOk() {
-              dispatch({ type: 'pos/hideProductModal' })
-              dispatch({
-                type: 'pos/getMembers',
-              })
+      } else if (memberInformation.length === 0) {
+        Modal.info({
+          title: 'Member Information is not found',
+          content: 'Insert Member',
+          onOk () {
+            dispatch({ type: 'pos/hideProductModal' })
+            dispatch({
+              type: 'pos/getMembers'
+            })
 
-              dispatch({
-                type: 'pos/showMemberModal',
-                payload: {
-                  modalType: 'browseMember',
-                },
-              })
-            }
-          })
-        } else if (mechanicInformation.length === 0) {
-          Modal.info({
-            title: 'Mechanic Information is not found',
-            content: 'Insert Mechanic',
-            onOk() {
-              dispatch({ type: 'pos/hideProductModal' })
-              dispatch({
-                type: 'pos/getMechanics',
-              })
+            dispatch({
+              type: 'pos/showMemberModal',
+              payload: {
+                modalType: 'browseMember'
+              }
+            })
+          }
+        })
+      } else if (mechanicInformation.length === 0) {
+        Modal.info({
+          title: 'Mechanic Information is not found',
+          content: 'Insert Mechanic',
+          onOk () {
+            dispatch({ type: 'pos/hideProductModal' })
+            dispatch({
+              type: 'pos/getMechanics'
+            })
 
-              dispatch({
-                type: 'pos/showMechanicModal',
-                payload: {
-                  modalType: 'browseMechanic',
-                },
-              })
-            }
-          })
-        }
+            dispatch({
+              type: 'pos/showMechanicModal',
+              payload: {
+                modalType: 'browseMechanic'
+              }
+            })
+          }
+        })
       }
-    },
+    }
   }
 
   const modalServiceProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalServiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() {
+    onCancel () {
       dispatch({
-        type: 'pos/hideServiceModal',
+        type: 'pos/hideServiceModal'
       })
     },
-    onChooseItem(item) {
+    onChooseItem (item) {
       let listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
       let arrayProd
       const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
@@ -1018,12 +1030,12 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           type: 'pos/queryServiceSuccessByCode',
           payload: {
             listByCode: item,
-            curRecord: curRecord + 1,
-          },
+            curRecord: curRecord + 1
+          }
         })
 
         dispatch({
-          type: 'pos/hideServiceModal',
+          type: 'pos/hideServiceModal'
         })
 
         setCurBarcode('', 1)
@@ -1033,29 +1045,28 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           content: 'Already Exists in list'
         })
       }
-    },
+    }
   }
 
   const modalQueueProps = {
-    location: location,
-    loading: loading,
-    pos: pos,
+    location,
+    loading,
+    pos,
     visible: modalQueueVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel() {
+    onCancel () {
       dispatch({
-        type: 'pos/hideQueueModal',
+        type: 'pos/hideQueueModal'
       })
-    },
+    }
   }
 
   const handleKeyPress = (e) => {
     const { value } = e.target
     if (e.key === '+') {
       setCurBarcode('', value)
-    }
-    else if (e.key === 'Enter') {
+    } else if (e.key === 'Enter') {
       if (kodeUtil === 'barcode') {
         if (value) {
           dispatch({
@@ -1063,16 +1074,15 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
             payload: {
               productCode: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty: curQty,
+              curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,
-            },
+              curRecord
+            }
           })
         }
-      }
-      else if (kodeUtil === 'member') {
+      } else if (kodeUtil === 'member') {
         if (value) {
-          dispatch({ type: 'pos/getMember', payload: { memberCode: value, } })
+          dispatch({ type: 'pos/getMember', payload: { memberCode: value } })
 
           dispatch({ type: 'unit/lov', payload: { id: value } })
         }
@@ -1081,16 +1091,15 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic',
-          },
+            infoUtil: 'Mechanic'
+          }
         })
-      }
-      else if (kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'mechanic') {
         if (value) {
           dispatch({
             type: 'pos/getMechanic',
             payload: {
-              employeeId: value,
+              employeeId: value
             }
           })
         }
@@ -1099,21 +1108,20 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'barcode',
-            infoUtil: 'Product',
-          },
+            infoUtil: 'Product'
+          }
         })
-      }
-      else if (kodeUtil === 'service') {
+      } else if (kodeUtil === 'service') {
         if (value) {
           dispatch({
             type: 'pos/getService',
             payload: {
               serviceId: value,
               listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty: curQty,
+              curQty,
               memberCode: memberInformation.memberCode,
-              curRecord: curRecord,
-            },
+              curRecord
+            }
           })
         }
       } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
@@ -1121,29 +1129,27 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           dispatch({
             type: 'pos/editPayment',
             payload: {
-              value: value,
-              effectedRecord: effectedRecord,
-              kodeUtil: kodeUtil,
-            },
+              value,
+              effectedRecord,
+              kodeUtil
+            }
           })
         }
         dispatch({
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'barcode',
-            infoUtil: 'Product',
-          },
+            infoUtil: 'Product'
+          }
         })
       }
 
       if (kodeUtil !== 'refund') {
         setCurBarcode('', 1)
+      } else if (value) {
+        setCurBarcode('', value * -1)
       } else {
-        if (value) {
-          setCurBarcode('', value * -1)
-        } else {
-          setCurBarcode('', 1)
-        }
+        setCurBarcode('', 1)
       }
     }
   }
@@ -1161,23 +1167,23 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     if (e.keyCode in keyShortcut) {
       keyShortcut[e.keyCode] = true
 
-      if (keyShortcut[17] && keyShortcut[18] && keyShortcut[77]) { //shortcut member (Ctrl + Alt + M)
+      if (keyShortcut[17] && keyShortcut[18] && keyShortcut[77]) { // shortcut member (Ctrl + Alt + M)
         dispatch({
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'member',
-            infoUtil: 'Member',
-          },
+            infoUtil: 'Member'
+          }
         })
-      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[72]) {// shortcut untuk Help (Ctrl + ALT + H)
+      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[72]) { // shortcut untuk Help (Ctrl + ALT + H)
         dispatch({ type: 'app/shortcutKeyShow' })
-      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[67]) {// shortcut mechanic (Ctrl + Alt + C)
+      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[67]) { // shortcut mechanic (Ctrl + Alt + C)
         dispatch({
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic',
-          },
+            infoUtil: 'Mechanic'
+          }
         })
       } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[52]) { // shortcut discount nominal (Ctrl + Shift + 4)
         handleDiscount(4, value)
@@ -1204,7 +1210,7 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           Modal.confirm({
             title: 'Are you sure want to close this Cashier?',
             content: 'This Operation cannot be undone...!',
-            onOk() {
+            onOk () {
               dispatch({
                 type: 'pos/setCloseCashier',
                 payload: {
@@ -1213,27 +1219,25 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                   status: 'C',
                   cashierNo: curCashierNo,
                   shift: curShift,
-                  transDate: getDate(3),
-                },
+                  transDate: getDate(3)
+                }
               })
 
               // dispatch({
               //   type: 'pos/showShiftModal',
               // })
             },
-            onCancel() {
+            onCancel () {
               console.log('cancel')
-            },
+            }
           })
-        }
-        else {
+        } else {
           Modal.warning({
             title: 'Warning',
-            content: 'Cannot closed cashier when having transaction...!',
+            content: 'Cannot closed cashier when having transaction...!'
           })
         }
-      }
-      else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
+      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
         keyShortcut[17] = false
         keyShortcut[16] = false
         keyShortcut[85] = false
@@ -1259,71 +1263,67 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         // end-mechanicInfo
 
         arrayProd.push({
-          cashier_trans: cashier_trans,
+          cashier_trans,
           memberCode: memberInfo.memberCode,
           memberName: memberInfo.memberName,
           point: memberInfo.point,
-          memberUnit: memberUnit,
-          lastMeter: lastMeter,
+          memberUnit,
+          lastMeter,
           mechanicCode: mechanic.mechanicCode,
-          mechanicName: mechanic.mechanicName,
+          mechanicName: mechanic.mechanicName
         })
         if (localStorage.getItem('cashier_trans') === null) {
           Modal.warning({
             title: 'Warning',
-            content: 'Transaction Not Found...!',
+            content: 'Transaction Not Found...!'
+          })
+        } else if (localStorage.getItem('queue1') === null) {
+          localStorage.setItem('queue1', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          dispatch({
+            type: 'pos/insertQueue',
+            payload: {
+              queue: '1'
+            }
+          })
+        } else if (localStorage.getItem('queue2') === null) {
+          localStorage.setItem('queue2', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          dispatch({
+            type: 'pos/insertQueue',
+            payload: {
+              queue: '2'
+            }
+          })
+        } else if (localStorage.getItem('queue3') === null) {
+          localStorage.setItem('queue3', JSON.stringify(arrayProd))
+          localStorage.removeItem('cashier_trans')
+          localStorage.removeItem('service_detail')
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
+          localStorage.removeItem('lastMeter')
+          dispatch({
+            type: 'pos/insertQueue',
+            payload: {
+              queue: '3'
+            }
           })
         } else {
-          if (localStorage.getItem('queue1') === null) {
-            localStorage.setItem('queue1', JSON.stringify(arrayProd))
-            localStorage.removeItem('cashier_trans')
-            localStorage.removeItem('service_detail')
-            localStorage.removeItem('member')
-            localStorage.removeItem('memberUnit')
-            localStorage.removeItem('mechanic')
-            localStorage.removeItem('lastMeter')
-            dispatch({
-              type: 'pos/insertQueue',
-              payload: {
-                queue: '1',
-              },
-            })
-          }
-          else if (localStorage.getItem('queue2') === null) {
-            localStorage.setItem('queue2', JSON.stringify(arrayProd))
-            localStorage.removeItem('cashier_trans')
-            localStorage.removeItem('service_detail')
-            localStorage.removeItem('member')
-            localStorage.removeItem('memberUnit')
-            localStorage.removeItem('mechanic')
-            localStorage.removeItem('lastMeter')
-            dispatch({
-              type: 'pos/insertQueue',
-              payload: {
-                queue: '2',
-              },
-            })
-          } else if (localStorage.getItem('queue3') === null) {
-            localStorage.setItem('queue3', JSON.stringify(arrayProd))
-            localStorage.removeItem('cashier_trans')
-            localStorage.removeItem('service_detail')
-            localStorage.removeItem('member')
-            localStorage.removeItem('memberUnit')
-            localStorage.removeItem('mechanic')
-            localStorage.removeItem('lastMeter')
-            dispatch({
-              type: 'pos/insertQueue',
-              payload: {
-                queue: '3',
-              },
-            })
-          }
-          else {
-            Modal.warning({
-              title: 'Warning',
-              content: 'Queues are full, Please finish previous transaction first...!',
-            })
-          }
+          Modal.warning({
+            title: 'Warning',
+            content: 'Queues are full, Please finish previous transaction first...!'
+          })
         }
       }
     } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
@@ -1332,41 +1332,40 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'service',
-            infoUtil: 'Service',
-          },
+            infoUtil: 'Service'
+          }
         })
       } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'mechanic') {
         dispatch({
           type: 'pos/setUtil',
           payload: {
             kodeUtil: 'barcode',
-            infoUtil: 'Product',
-          },
+            infoUtil: 'Product'
+          }
         })
       }
-    } else if (e.keyCode == '118') { // Tombol F7 untuk void/hapus item
+    } else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
       handleVoid(value)
-    } else if (e.keyCode == '120') { // Tombol F9 untuk void/hapus all item
+    } else if (e.keyCode === '120') { // Tombol F9 untuk void/hapus all item
       Modal.confirm({
         title: 'Are you sure want to void/delete all items?',
         content: 'This Operation cannot be undone...!',
-        onOk() {
+        onOk () {
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
           dispatch({
-            type: 'pos/setCurTotal',
+            type: 'pos/setCurTotal'
           })
         },
-        onCancel() { },
+        onCancel () { }
       })
-    }
-    else if (e.keyCode === '115') { // Tombol F4 untuk refund
+    } else if (e.keyCode === '115') { // Tombol F4 untuk refund
       dispatch({
         type: 'pos/setUtil',
         payload: {
           kodeUtil: 'refund',
-          infoUtil: 'Input Qty Refund',
-        },
+          infoUtil: 'Input Qty Refund'
+        }
       })
     }
   }
@@ -1388,26 +1387,26 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     dispatch({ type: 'pos/modalPopoverShow' })
   }
   const hdlTableRowClick = (record) => {
-    const { id, policeNo, merk, model } = record
+    const { id, policeNo, merk, model, type, year, chassisNo, machineNo } = record
     dispatch({
       type: 'pos/chooseMemberUnit',
       payload: {
         policeNo: {
-          id, policeNo, merk, model
+          id, policeNo, merk, model, type, year, chassisNo, machineNo
         }
-      },
+      }
     })
     dispatch({
       type: 'payment/setPoliceNo',
       payload: {
         policeNo: {
-          id, policeNo, merk, model
+          id, policeNo, merk, model, type, year, chassisNo, machineNo
         }
-      },
+      }
     })
     dispatch({
       type: 'payment/setLastMeter',
-      payload: { policeNo: record.policeNo },
+      payload: { policeNo: record.policeNo }
     })
   }
 
@@ -1415,24 +1414,27 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     title: 'Unit No',
     dataIndex: 'policeNo',
     key: 'policeNo',
-    width: 100,
+    width: 100
   }, {
     title: 'Merk',
     dataIndex: 'merk',
     key: 'merk',
-    width: 250,
+    width: 250
   }, {
     title: 'Model',
     dataIndex: 'model',
     key: 'model',
-    width: 200,
+    width: 200
   }]
   const titlePopover = (
     <Row>
       <Col span={8}>Choose Member Unit</Col>
       <Col span={1} offset={15}>
-        <Button shape="circle" icon="close-circle" size="small"
-          onClick={() => hdlPopoverClose()} />
+        <Button shape="circle"
+          icon="close-circle"
+          size="small"
+          onClick={() => hdlPopoverClose()}
+        />
       </Col>
     </Row>
   )
@@ -1441,13 +1443,13 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
       {/* <Button type="primary" onClick={handleAddMember}>Add</Button> */}
       <Table
         columns={columns}
-        dataSource={listUnit ? listUnit : listLovMemberUnit}
+        dataSource={listUnit || listLovMemberUnit}
         size="small"
         bordered
         pagination={{ pageSize: 5 }}
         onRowClick={_record => hdlTableRowClick(_record)}
         locale={{
-          emptyText: 'No Unit',
+          emptyText: 'No Unit'
         }}
       />
     </div>
@@ -1459,8 +1461,8 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
     dispatch({
       type: 'payment/setLastMeter',
       payload: {
-        lastMeter: lastMeter,
-      },
+        lastMeter
+      }
     })
   }
 
@@ -1471,43 +1473,59 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
         <Col lg={18} md={20}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              {/*<Input placeholder="Name" disabled style={{ marginBottom: 8}}/>*/}
+              {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
               {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
-              <Input size="large" autoFocus={true} value={curBarcode} style={{ fontSize: 24, marginBottom: 8 }}
-                placeholder="Search Code Here" onKeyDown={(e) => handleKeyDown(e)} onChange={(e) => onChange(e)}
-                onKeyPress={(e) => handleKeyPress(e)} />
+              <Input size="large"
+                autoFocus
+                value={curBarcode}
+                style={{ fontSize: 24, marginBottom: 8 }}
+                placeholder="Search Code Here"
+                onKeyDown={e => handleKeyDown(e)}
+                onChange={e => onChange(e)}
+                onKeyPress={e => handleKeyPress(e)}
+              />
             </Form>
 
             <ButtonGroup>
               <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
               <Tooltip title="add Member">
                 <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-                {/*{modalVisible && <ModalCustomer {...modalCustomerProps} />}*/}
               </Tooltip>
             </ButtonGroup>
             {modalMemberVisible && <Browse {...modalMemberProps} />}
 
-            <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-              onClick={handleMechanicBrowse}>Mechanic
+            <Button type="primary"
+              size="large"
+              icon="down-square-o"
+              className="button-width01"
+              onClick={handleMechanicBrowse}
+            >Mechanic
             </Button>
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
 
             <ButtonGroup>
               <Button type="primary" size="large" icon="down-square-o" onClick={handleProductBrowse}>Product</Button>
               <Tooltip title="add Product">
-                <Button type="primary" size="large" icon="plus-square-o" className="button-width02">
-                </Button>
+                <Button type="primary" size="large" icon="plus-square-o" className="button-width02" />
               </Tooltip>
             </ButtonGroup>
             {modalProductVisible && <Browse {...modalProductProps} />}
 
-            <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-              onClick={handleServiceBrowse}>Service
+            <Button type="primary"
+              size="large"
+              icon="down-square-o"
+              className="button-width01"
+              onClick={handleServiceBrowse}
+            >Service
             </Button>
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             <Badge count={objectSize()}>
-              <Button type="primary" size="large" icon="down-square-o" className="button-width01"
-                onClick={handleQueue}>Queue
+              <Button type="primary"
+                size="large"
+                icon="down-square-o"
+                className="button-width01"
+                onClick={handleQueue}
+              >Queue
               </Button>
             </Badge>
             {modalQueueVisible && <Browse {...modalQueueProps} />}
@@ -1532,64 +1550,64 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
                 <Table
                   rowKey={(record, key) => key}
                   pagination={{ pageSize: 5 }}
-                  bordered={true}
+                  bordered
                   size="small"
                   scroll={{ x: '908px', y: '220px' }}
                   locale={{
-                    emptyText: 'Your Payment List',
+                    emptyText: 'Your Payment List'
                   }}
                   columns={[
                     {
                       title: 'No',
                       dataIndex: 'no',
-                      width: '41px',
+                      width: '41px'
                     },
                     {
                       title: 'Code',
                       dataIndex: 'code',
-                      width: '100px',
+                      width: '100px'
                     },
                     {
                       title: 'Product Name',
-                      dataIndex: 'name',
+                      dataIndex: 'name'
                     },
                     {
                       title: 'Q',
                       dataIndex: 'qty',
-                      width: '40px',
+                      width: '40px'
                     },
                     {
                       title: 'Price',
                       dataIndex: 'price',
-                      width: '100px',
+                      width: '100px'
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
-                      width: '90px',
+                      width: '90px'
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
-                      width: '90px',
+                      width: '90px'
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
-                      width: '90px',
+                      width: '90px'
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
-                      width: '100px',
+                      width: '100px'
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
-                      width: '100px',
-                    },
+                      width: '100px'
+                    }
                   ]}
-                  onRowClick={(record) => modalEditPayment(record)}
+                  onRowClick={record => modalEditPayment(record)}
                   dataSource={dataTrans()}
                   style={{ marginBottom: 16 }}
                 />
@@ -1598,68 +1616,67 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
               <TabPane tab="Service" key="2"><Table
                 rowKey={(record, key) => key}
                 pagination={{ pageSize: 5 }}
-                bordered={true}
+                bordered
                 size="small"
                 scroll={{ x: '908px', y: '220px' }}
                 locale={{
-                  emptyText: 'Your Payment List',
+                  emptyText: 'Your Payment List'
                 }}
                 columns={[
                   {
                     title: 'No',
                     dataIndex: 'no',
-                    width: '41px',
+                    width: '41px'
                   },
                   {
                     title: 'Code',
                     dataIndex: 'code',
-                    width: '100px',
+                    width: '100px'
                   },
                   {
                     title: 'Service Name',
-                    dataIndex: 'name',
+                    dataIndex: 'name'
                   },
                   {
                     title: 'Q',
                     dataIndex: 'qty',
-                    width: '40px',
+                    width: '40px'
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
-                    width: '100px',
+                    width: '100px'
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
-                    width: '90px',
+                    width: '90px'
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
-                    width: '90px',
+                    width: '90px'
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
-                    width: '90px',
+                    width: '90px'
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
-                    width: '100px',
+                    width: '100px'
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
-                    width: '100px',
-                  },
+                    width: '100px'
+                  }
                 ]}
                 onRowClick={_record => modalEditService(_record)}
                 dataSource={dataService()}
                 style={{ marginBottom: 16 }}
-              />
-                {modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
+              />{modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
             </Tabs>
           </Card>
         </Col>
@@ -1754,17 +1771,17 @@ const Pos = ({ location, customer, city, customergroup, customertype, loading, d
 }
 
 Pos.propTypes = {
-  pos: PropTypes.object,
-  payment: PropTypes.object,
-  customer: PropTypes.object,
-  unit: PropTypes.object,
-  app: PropTypes.object,
-  position: PropTypes.object,
-  location: PropTypes.object,
-  dispatch: PropTypes.func,
-  loading: PropTypes.object,
-  customertype: PropTypes.object,
-  customergroup: PropTypes.object
+  pos: PropTypes.object.isRequired,
+  payment: PropTypes.object.isRequired,
+  customer: PropTypes.object.isRequired,
+  unit: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired,
+  position: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  loading: PropTypes.object.isRequired,
+  customertype: PropTypes.object.isRequired,
+  customergroup: PropTypes.object.isRequired
 }
 
 export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }))(Pos)

@@ -10,19 +10,18 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/post') {
-          dispatch({ type: 'query', payload: {
-            status: 2,
-            ...location.query,
-          } })
+          dispatch({ type: 'query',
+            payload: {
+              status: 2,
+              ...location.query
+            } })
         }
       })
-    },
+    }
   },
 
   effects: {
-    *query ({
-      payload,
-    }, { call, put }) {
+    * query ({ payload }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -32,13 +31,13 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       } else {
         throw data
       }
-    },
-  },
+    }
+  }
 })

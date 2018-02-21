@@ -13,11 +13,11 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   } = user
 
   const { listLovEmployee } = employee
-  const { listLov }  = misc
-  const { roleItem, listUserRole, listUserRoleTarget, listUserRoleChange }  = userRole
-  const { storeItem, listAllStores, listUserStores, listCheckedStores }  = userStore
+  const { listLov } = misc
+  const { roleItem, listUserRole, listUserRoleTarget, listUserRoleChange } = userRole
+  const { storeItem, listAllStores, listUserStores, listCheckedStores } = userStore
   const { pageSize } = pagination
-  
+
   const listRole = listLov &&
     listLov.hasOwnProperty('userrole') ? listLov.userrole : []
 
@@ -29,17 +29,17 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     listUserStores,
     listCheckedStores,
     visible: modalVisible,
-    visiblePopover: visiblePopover,
-    disabledItem: disabledItem,
-    activeTab: activeTab,
+    visiblePopover,
+    disabledItem,
+    activeTab,
     totpChecked,
     totp,
     maskClosable: false,
     confirmLoading: loading.effects['user/query'],
     title: `${modalType === 'add' ? 'Add User' : 'Edit User'}`,
-    modalType: modalType,
+    modalType,
     wrapClassName: 'vertical-center-modal',
-    listLovEmployee: listLovEmployee,
+    listLovEmployee,
     listRole,
     listUserRole,
     listUserRoleTarget,
@@ -47,41 +47,41 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     onOk (data) {
       dispatch({
         type: `user/${modalType}`,
-        payload: data,
+        payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'user/modalHide',
+        type: 'user/modalHide'
       })
     },
     onChooseItem (data) {
       dispatch({
         type: 'user/chooseEmployee',
         payload: {
-          modalType: modalType,
+          modalType,
           currentItem: {
             userId: data.employeeId,
             userName: data.employeeName.replace(' ', ''),
             email: data.email,
-            fullName: data.employeeName,
-          },
-        },
+            fullName: data.employeeName
+          }
+        }
       })
     },
     modalPopoverVisible () {
       dispatch({
-        type: 'user/modalPopoverVisible',
+        type: 'user/modalPopoverVisible'
       })
     },
     modalPopoverClose () {
       dispatch({
-        type: 'user/modalPopoverClose',
+        type: 'user/modalPopoverClose'
       })
     },
-    modalIsEmployeeChange (data) {
+    modalIsEmployeeChange () {
       dispatch({
-        type: 'user/modalIsEmployeeChange',
+        type: 'user/modalIsEmployeeChange'
         // payload: { disabledUserId: data.disabledUserId }
       })
     },
@@ -89,44 +89,44 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
       dispatch({ type: 'user/modalHide' })
     },
     modalButtonSaveClick (userId, data, activeTab) {
-      if (activeTab === '3') {                  // tab Role
+      if (activeTab === '3') { // tab Role
         dispatch({
-          type: `userRole/save`,
+          type: 'userRole/save',
           payload: { userId, data, activeTab
-          },
+          }
         })
-      } else if (activeTab === '4' ) {          // tab Store
+      } else if (activeTab === '4') { // tab Store
         dispatch({
           type: 'userStore/saveCheckedStore',
           payload: { userId, data: { store: data } }
         })
-      } else if (activeTab === '5' ) {          // tab Security
+      } else if (activeTab === '5') { // tab Security
         dispatch({
-          type: `user/edit`,
+          type: 'user/edit',
           payload: { id: userId, data, activeTab
-          },
+          }
         })
       } else {
         dispatch({
           type: `user/${modalType}`,
           payload: {
             id: userId,
-            data: data,
+            data,
             currentItem: {},
             activeTab
-          },
+          }
         })
       }
     },
     modalActiveTab (activeTab) {
-      dispatch({ type: 'user/activeTab', payload: {activeTab} })
+      dispatch({ type: 'user/activeTab', payload: { activeTab } })
     },
     modalRoleLoad (userId) {
       console.log('modalRoleLoad', userId)
       if (userId) {
         dispatch({
           type: 'userRole/query',
-          payload: { userId },
+          payload: { userId }
         })
       }
     },
@@ -135,8 +135,8 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         type: 'userRole/updateState',
         payload: {
           listUserRoleTarget: userRole,
-          listUserRoleChange: { in: userRoleAdd, out: userRoleDel },
-        },
+          listUserRoleChange: { in: userRoleAdd, out: userRoleDel }
+        }
       })
     },
     modalChangeDefaultRole (userId, defaultRole) {
@@ -152,19 +152,19 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         })
         dispatch({
           type: 'user/updateState',
-          payload: { totpChecked: true },
+          payload: { totpChecked: true }
         })
       } else {
         dispatch({
           type: 'user/updateState',
-          payload: { totpChecked: false },
+          payload: { totpChecked: false }
         })
       }
     },
     modalTotpLoad (userId) {
       dispatch({
         type: 'user/totp',
-        payload: { mode: 'load', id: userId },
+        payload: { mode: 'load', id: userId }
       })
     },
     modalAllStoresLoad (userId) {
@@ -181,7 +181,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         type: 'userStore/updateCheckedStores',
         payload: { userId, data: { store: listCheckedStore } }
       })
-    },
+    }
   }
 
   const browseProps = {
@@ -196,16 +196,16 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       }))
     },
     onAddItem () {
       dispatch({
         type: 'user/modalShow',
         payload: {
-          modalType: 'add',
-        },
+          modalType: 'add'
+        }
       })
     },
     onEditItem (item) {
@@ -215,36 +215,36 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         type: 'user/modalShow',
         payload: {
           modalType: 'edit',
-          currentItem: item,
-        },
+          currentItem: item
+        }
       })
     },
     onDeleteItem (id) {
       dispatch({
         type: 'user/delete',
-        payload: id,
+        payload: id
       })
     },
     onDeleteBatch (selectedRowKeys) {
       dispatch({
         type: 'user/deleteBatch',
         payload: {
-          userId: selectedRowKeys,
-        },
+          userId: selectedRowKeys
+        }
       })
     },
     onSearchShow () { dispatch({ type: 'user/searchShow' }) },
     modalPopoverClose () {
       dispatch({
-        type: 'user/modalPopoverClose',
+        type: 'user/modalPopoverClose'
       })
     },
     modalTabChange () {
       dispatch({
-        type: 'user/modalTabChange',
+        type: 'user/modalTabChange'
       })
     },
-    size: 'small',
+    size: 'small'
   }
   Object.assign(browseProps, disableMultiSelect ? null :
     { rowSelection: {
@@ -253,17 +253,17 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         dispatch({
           type: 'user/updateState',
           payload: {
-            selectedRowKeys: keys,
-          },
+            selectedRowKeys: keys
+          }
         })
-      },
+      }
     } }
   )
 
   const filterProps = {
     visiblePanel: searchVisible,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch(routerRedux.push({
@@ -271,22 +271,22 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
         query: {
           ...value,
           page: 1,
-          pageSize,
-        },
+          pageSize
+        }
       }))
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-          pathname: '/setting/user',
-          query: {
-            field: fieldsValue.field,
-            keyword: fieldsValue.keyword,
-          },
-        })) : dispatch(routerRedux.push({
-          pathname: '/setting/user',
-        }))
+        pathname: '/setting/user',
+        query: {
+          field: fieldsValue.field,
+          keyword: fieldsValue.keyword
+        }
+      })) : dispatch(routerRedux.push({
+        pathname: '/setting/user'
+      }))
     },
-    onSearchHide () { dispatch({ type: 'user/searchHide' }) },
+    onSearchHide () { dispatch({ type: 'user/searchHide' }) }
   }
 
   return (
@@ -306,7 +306,7 @@ User.propTypes = {
   userStore: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object,
+  loading: PropTypes.object
 }
 
 

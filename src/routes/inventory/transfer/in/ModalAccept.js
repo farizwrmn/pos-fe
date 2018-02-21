@@ -1,11 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Modal, DatePicker, Select, Input, Row, Col } from 'antd'
+import { Form, Modal, Button, DatePicker, Select, Input, Row, Col } from 'antd'
 import moment from 'moment'
 import List from './ListItem'
 import ModalConfirm from './ModalConfirm'
-import { lstorage } from 'utils'
-import { formatPattern } from 'dva/router';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -16,18 +13,19 @@ const formItemLayout = {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 8 },
-    xl: { span: 8 },
+    xl: { span: 8 }
   },
   wrapperCol: {
     sm: { span: 24 },
     md: { span: 24 },
     lg: { span: 12 },
-    xl: { span: 12 },
-  },
+    xl: { span: 12 }
+  }
 }
 
 const modal = ({
   item,
+  disableButton,
   sequenceNumber,
   listTransDetail,
   listEmployee,
@@ -41,12 +39,12 @@ const modal = ({
   modalConfirmVisible,
   form: {
     getFieldDecorator,
-    resetFields,
+    // resetFields,
     validateFields,
-    getFieldsValue,
+    getFieldsValue
   },
   ...formConfirmProps,
-  ...modalAcceptProps,
+  ...modalAcceptProps
 }) => {
   const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
   const formConfirmOpts = {
@@ -58,7 +56,7 @@ const modal = ({
     },
     itemHeader: {
       storeId: {
-        label: getFieldsValue().storeName,
+        label: getFieldsValue().storeName
       },
       transNo: getFieldsValue().transNo,
       storeName: {
@@ -79,11 +77,11 @@ const modal = ({
     listItem,
     ...formConfirmProps
   }
-  const handleReset = () => {
-    resetFields()
-    resetItem()
-    onListReset()
-  }
+  // const handleReset = () => {
+  //   resetFields()
+  //   resetItem()
+  //   onListReset()
+  // }
 
   const handleOk = () => {
     validateFields((errors) => {
@@ -91,7 +89,7 @@ const modal = ({
         return
       }
       const data = {
-        ...getFieldsValue(),
+        ...getFieldsValue()
       }
       const dataHeader = {
         storeIdSender: item.storeId,
@@ -111,126 +109,131 @@ const modal = ({
   const modalOpts = {
     ...modalAcceptProps,
     title: item.transNo,
-    onOk: handleOk,
+    onOk: handleOk
   }
 
-  const resetSelectedField = (value) => {
-    resetFields([value])
-  }
+  // const resetSelectedField = (value) => {
+  //   resetFields([value])
+  // }
 
   return (
     <div>
-    <Modal {...modalOpts}>
-      <Form layout="horizontal">
-        <Row>
-          <Col lg={12} md={24}>
-          <FormItem label="No Trans" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transNo', {
-                initialValue: sequenceNumber,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input disabled/>)}
-            </FormItem>
-            <FormItem label="Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transDate', {
-                initialValue: moment.utc(moment(item.transDate).format('YYYY-MM-DD hh:mm:ss'), 'YYYY-MM-DD hh:mm:ss'),
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<DatePicker placeholder="Select Period" disabled />)}
-            </FormItem>
-            <FormItem label="reference" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transNoReference', {
-                initialValue: item.transNo,
-                rules: [
-                  {
-                    required: false,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transType', {
-                initialValue: 'MUIN',
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="Received By" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('employeeId', {
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Select labelInValue={true} onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
-            </FormItem>
-          </Col>
-          <Col lg={12} md={24}>
-            <FormItem label="From Store" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('storeName', {
-                initialValue: item.storeName,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="To Store" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('storeNameReceiver', {
-                initialValue: item.storeNameReceiver,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="Car Number" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('carNumber', {
-                initialValue: item.carNumber,
-                rules: [
-                  {
-                    required: false,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="Total Colly" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('totalColly', {
-                initialValue: item.totalColly,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description', {
-                initialValue: item.description,
-                rules: [
-                  {
-                    required: false,
-                  },
-                ],
-              })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} disabled />)}
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <List dataSource={listTransDetail} />
-      {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}          
-    </Modal>
+      <Modal
+        footer={[
+          <Button disabled={disableButton} key="submit" type="primary" onClick={() => handleOk()} >Process</Button>
+        ]}
+        {...modalOpts}
+      >
+        <Form layout="horizontal">
+          <Row>
+            <Col lg={12} md={24}>
+              <FormItem label="No Trans" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transNo', {
+                  initialValue: sequenceNumber,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Date" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transDate', {
+                  initialValue: moment.utc(moment(item.transDate).format('YYYY-MM-DD hh:mm:ss'), 'YYYY-MM-DD hh:mm:ss'),
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<DatePicker placeholder="Select Period" disabled />)}
+              </FormItem>
+              <FormItem label="reference" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transNoReference', {
+                  initialValue: item.transNo,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transType', {
+                  initialValue: 'MUIN',
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Received By" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('employeeId', {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select labelInValue onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
+              </FormItem>
+            </Col>
+            <Col lg={12} md={24}>
+              <FormItem label="From Store" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('storeName', {
+                  initialValue: item.storeName,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="To Store" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('storeNameReceiver', {
+                  initialValue: item.storeNameReceiver,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Car Number" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('carNumber', {
+                  initialValue: item.carNumber,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Total Colly" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('totalColly', {
+                  initialValue: item.totalColly,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="Description" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('description', {
+                  initialValue: item.description,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} disabled />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Form>
+        <List dataSource={listTransDetail} />
+        {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
+      </Modal>
     </div>
   )
 }

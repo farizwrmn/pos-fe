@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { Form, Button, Row, Col, DatePicker, Input } from 'antd'
 import { FilterItem } from '../../../../components'
-import { Form, Button, Row, Col, DatePicker, Input, Switch } from 'antd'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -11,19 +11,19 @@ const ColProps = {
   xs: 24,
   sm: 12,
   style: {
-    marginBottom: 16,
-  },
+    marginBottom: 16
+  }
 }
 
 const TwoColProps = {
   ...ColProps,
-  xl: 96,
+  xl: 96
 }
 
 const Filter = ({
-  isChecked,
-  display,
-  switchIsChecked,
+  // isChecked,
+  // display,
+  // switchIsChecked,
   onFilterChange,
   filter,
   show,
@@ -31,12 +31,12 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
-  },
-}) => {
-  const switchFilter = () => {
-    switchIsChecked()
+    setFieldsValue
   }
+}) => {
+  // const switchFilter = () => {
+  //   switchIsChecked()
+  // }
   const handleFields = (fields) => {
     const { createTime } = fields
     if (createTime.length) {
@@ -89,7 +89,7 @@ const Filter = ({
   }
 
   return (
-    <Row gutter={24} style={{ display: show ? 'block' : 'none'}}>
+    <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('searchName', { initialValue: productCode })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
@@ -116,11 +116,11 @@ Filter.propTypes = {
   isChecked: PropTypes.bool,
   switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  display:PropTypes.string,
+  display: PropTypes.string,
   filter: PropTypes.object,
   show: PropTypes.bool,
   onFilterChange: PropTypes.func,
-  onResetClick: PropTypes.func,
+  onResetClick: PropTypes.func
 }
 
 export default Form.create()(Filter)

@@ -7,45 +7,45 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     merchant: {
       name: 'Courier New',
       family: 4,
-      size: 12,
+      size: 12
     },
     title: {
       name: 'Courier New',
       family: 4,
       size: 12,
-      underline: true,
+      underline: true
     },
     header: {
       fontSize: 11,
-      margin: [0, 0, 0, 10],
+      margin: [0, 0, 0, 10]
     },
     body: {
-      fontSize: 10,
+      fontSize: 10
     },
     footer: {
-      fontSize: 10,
+      fontSize: 10
     },
     tableHeader: {
       name: 'Courier New',
       family: 4,
-      size: 11,
+      size: 11
     },
     tableBody: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
-      right: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
     },
     tableFooter: {
       name: 'Times New Roman',
       family: 4,
-      size: 10,
-    },
+      size: 10
+    }
   }
   const tableBody = (list) => {
     let body = []
@@ -66,15 +66,15 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
   }
   const title = [
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR KATEGORI BARANG', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date },
+    { value: 'LAPORAN DAFTAR KATEGORI BARANG', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const header = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'CATEGORY CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'CATEGORY NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    ],
+      { value: 'CATEGORY NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
   ]
   const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
 
@@ -91,7 +91,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     title,
     header,
     body: contentBody,
-    fileName: 'ProductCategory-Summary',
+    fileName: 'ProductCategory-Summary'
   }
 
   return (
@@ -101,7 +101,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
 PrintXLS.propTypes = {
   dataSource: PropTypes.object,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object
 }
 
 export default PrintXLS

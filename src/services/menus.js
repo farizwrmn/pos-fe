@@ -9,6 +9,16 @@ export async function query (params) {
     url: menus,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
+  })
+}
+
+export async function add (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: menus,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
   })
 }

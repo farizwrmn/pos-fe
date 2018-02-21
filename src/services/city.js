@@ -8,31 +8,31 @@ export async function query (params) {
     url: city,
     method: 'get',
     data: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function add (params) {
-  const url = params.cityCode ? city + '/' + params.cityCode : null
+  const url = params.cityCode ? `${city}/${params.cityCode}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url:url,
+    url,
     method: 'post',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function edit (params) {
-  const url = params.cityCode ? `${city}/${encodeURIComponent(params.cityCode)}` : cityCode
+  const url = `${city}/${encodeURIComponent(params.cityCode)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
     method: 'put',
     data: params,
     body: params,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
@@ -43,6 +43,6 @@ export async function remove (params) {
     url,
     method: 'delete',
     data: params.data,
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

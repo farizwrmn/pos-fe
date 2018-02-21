@@ -2,17 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tabs } from 'antd'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import FormEdit from './FormEdit'
-import moment from 'moment'
 
 const TabPane = Tabs.TabPane
 
-const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, unit, app }) => {
+const Maintenance = ({ dispatch, maintenance, pos, payment }) => {
   const { optionPos, listTrans, period, item, modalVisible, modalType } = maintenance
   const { listMember, listMechanic, listUnit } = pos
   const { usingWo, woNumber } = payment
-  const { storeInfo } = app
   const formWoProps = {
     usingWo,
     woNumber,
@@ -24,7 +21,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         marginTop: '5px'
       }
     },
-    generateSequence(params) {
+    generateSequence () {
       dispatch({
         type: 'payment/sequenceQuery',
         payload: {
@@ -32,7 +29,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         }
       })
     },
-    notUsingWo(check, value) {
+    notUsingWo (check, value) {
       dispatch({
         type: 'payment/querySequenceSuccess',
         payload: {
@@ -53,7 +50,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
     period,
     modalVisible,
     ...formWoProps,
-    onChangePeriod(start, end) {
+    onChangePeriod (start, end) {
       dispatch({
         type: 'maintenance/setAllNull'
       })
@@ -61,11 +58,11 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         type: 'maintenance/queryPos',
         payload: {
           startPeriod: start,
-          endPeriod: end,
+          endPeriod: end
         }
       })
     },
-    setFormItem(data) {
+    setFormItem (data) {
       dispatch({
         type: 'maintenance/setInitialValue',
         payload: {
@@ -73,7 +70,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         }
       })
     },
-    setItem(data) {
+    setItem (data) {
       dispatch({
         type: 'maintenance/setItem',
         payload: {
@@ -81,10 +78,10 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         }
       })
     },
-    onShowModal(e, memberId) {
+    onShowModal (e, memberId) {
       if (e === 'member') {
         dispatch({
-          type: 'pos/getMembers',
+          type: 'pos/getMembers'
         })
         dispatch({
           type: 'maintenance/showModal',
@@ -94,7 +91,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         })
       } else if (e === 'mechanic') {
         dispatch({
-          type: 'pos/getMechanics',
+          type: 'pos/getMechanics'
         })
         dispatch({
           type: 'maintenance/showModal',
@@ -117,12 +114,12 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
         })
       }
     },
-    onHideModal(e) {
+    onHideModal () {
       dispatch({
-        type: 'maintenance/hideModal',
+        type: 'maintenance/hideModal'
       })
     },
-    onOk(data) {
+    onOk (data) {
       dispatch({
         type: 'maintenance/update',
         payload: {
@@ -130,7 +127,7 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
           data
         }
       })
-    },
+    }
   }
 
   return (
@@ -141,7 +138,6 @@ const Maintenance = ({ location, dispatch, loading, maintenance, pos, payment, u
     </div>
   )
 }
-Maintenance
 Maintenance.propTypes = {
   maintenance: PropTypes.object,
   pos: PropTypes.object,

@@ -36,8 +36,8 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       height: 20000,
       firstSheet: 0,
       activeTab: 1,
-      visibility: 'visible',
-    },
+      visibility: 'visible'
+    }
   ]
   const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize: 9, orientation: 'portrait' } })
@@ -45,34 +45,34 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
     if (period === '' && year === '') {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else if (listRekap.length === 0) {
       warning({
         title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...',
+        content: 'your Trans Date paramater probably not set...'
       })
     } else {
       sheet.getCell('F2').font = {
         name: 'Courier New',
         family: 4,
         size: 12,
-        underline: true,
+        underline: true
       }
       sheet.getCell('F3').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('F4').font = {
         name: 'Courier New',
         family: 4,
-        size: 12,
+        size: 12
       }
       sheet.getCell('J5').font = {
         name: 'Courier New',
         family: 4,
-        size: 10,
+        size: 10
       }
       const header = ['', '', '', '', '', 'SALDO AWAL', '', 'PEMBELIAN', '', 'ADJ IN + RTR JUAL', '', 'PENJUALAN', '', 'ADJ OUT + RTR BELI', '', 'SALDO AKHIR']
       const header2 = ['NO.', '', 'PRODUCT CODE', 'PRODUCT NAME', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT', 'QTY', 'AMOUNT']
@@ -82,7 +82,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
           sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
             name: 'Times New Roman',
             family: 4,
-            size: 10,
+            size: 10
           }
         }
       }
@@ -109,7 +109,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header2[counter]}`
@@ -120,7 +120,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[counter]}`
@@ -168,12 +168,12 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`C${n}`).font = {
           name: 'Courier New',
           family: 4,
-          size: 11,
+          size: 11
         }
         sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
           name: 'Times New Roman',
           family: 4,
-          size: 10,
+          size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[counter]}`
@@ -204,13 +204,11 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  location: PropTypes.object,
   listRekap: PropTypes.array,
   dataSource: PropTypes.array,
   storeInfo: PropTypes.string,
   period: PropTypes.string,
-  year: PropTypes.string,
-  app: PropTypes.object,
+  year: PropTypes.string
 }
 
 export default PrintXLS

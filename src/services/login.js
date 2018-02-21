@@ -8,39 +8,39 @@ export async function login (data) {
   return request({
     url: apiUserLogin,
     method: 'post',
-    data,
+    data
   })
 }
 
 export async function verifyTOTP (data) {
   const apiHeaderToken = crypt.apiheader()
-  const url = apiUserTotp.replace('/:id', '/' + data.userid)
+  const url = apiUserTotp.replace('/:id', `/${data.userid}`)
   return request({
-    url: url,
+    url,
     method: 'post',
     headers: apiHeaderToken,
-    data,
+    data
   })
 }
 
 export async function getUserRole (params) {
   const userId = (!params.userId) ? lsUserId : params.userId
-  const url = apiUserRoles.replace('/:id', '/' + userId) + ('?as=' + params.as || '')
+  const url = apiUserRoles.replace('/:id', `/${userId}`) + (`?as=${params.as}` || '')
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }
 
 export async function getUserStore (params) {
   const userId = (!params.userId) ? lsUserId : params.userId
-  const url = apiUserStore.replace('/:id', '/' + userId) + ('?mode=lov')
+  const url = `${apiUserStore.replace('/:id', `/${userId}`)}?mode=lov`
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: url,
+    url,
     method: 'get',
-    headers: apiHeaderToken,
+    headers: apiHeaderToken
   })
 }

@@ -13,13 +13,11 @@ const ChangeTotp = ({
   onSaveTotpButton,
   onRegenerateTotp,
   form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-  },
+    validateFields
+  }
 }) => {
   const modalOpts = {
-    ...modalProps,
+    ...modalProps
   }
   const hdlButtonCancelClick = () => {
     onCancelButton()
@@ -29,11 +27,7 @@ const ChangeTotp = ({
       if (errors) {
         return
       }
-      let data = {
-        ...getFieldsValue(),
-      }
-      data =  {totp: totp.key}
-      onSaveTotpButton(user.userid, {totp: totpChecked? totp.key : null})
+      onSaveTotpButton(user.userid, { totp: totpChecked ? totp.key : null })
     })
   }
   const hdlRegenerateTotp = () => {
@@ -46,14 +40,14 @@ const ChangeTotp = ({
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
-      onOk() {
-        console.log('OK');
+      onOk () {
+        console.log('OK')
         modalSwitchChange(false, user.userid)
       },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
+      onCancel () {
+        console.log('Cancel')
+      }
+    })
   }
   const hdlSwitchChange = (checked) => {
     if (!checked) {
@@ -66,25 +60,26 @@ const ChangeTotp = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key='back' onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
-        <Button key='submit' type='primary' onClick={() => hdlButtonSaveClick()} >Save</Button>,
+        <Button key="back" onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
+        <Button key="submit" type="primary" onClick={() => hdlButtonSaveClick()} >Save</Button>
       ]}
     >
       <Card bordered={false} title="Change TOTP" >
         <Switch checked={totpChecked}
-                checkedChildren={<div><Icon type="lock" /><span> Secure with TOTP</span></div>}
-                unCheckedChildren={<div><Icon type="unlock" /><span> Not Secure</span></div>}
-                onChange={hdlSwitchChange}
+          checkedChildren={<div><Icon type="lock" /><span> Secure with TOTP</span></div>}
+          unCheckedChildren={<div><Icon type="unlock" /><span> Not Secure</span></div>}
+          onChange={hdlSwitchChange}
         />
         <br />
         {(totpChecked) &&
-          <div style={{paddingTop: 10, position: 'relative', textAlign: 'center'}}>
-            <p style={{paddingBottom: 10}}>Scan the QR code or enter the secret in Google Authenticator</p>
+          <div style={{ paddingTop: 10, position: 'relative', textAlign: 'center' }}>
+            <p style={{ paddingBottom: 10 }}>Scan the QR code or enter the secret in Google Authenticator</p>
             <Card title="Re-generate TOTP"
-                  extra={<Button type="primary" shape="circle" icon="reload" onClick={() => hdlRegenerateTotp()}/>}
-                  style={{width: 240, display: 'inline-block'}}>
+              extra={<Button type="primary" shape="circle" icon="reload" onClick={() => hdlRegenerateTotp()} />}
+              style={{ width: 240, display: 'inline-block' }}
+            >
               <div className="custom-image">
-                <img alt="example" width="100%" src={totp.url}/>
+                <img alt="example" width="100%" src={totp.url} />
               </div>
               <div className="custom-card">
                 <h3>Secret - {totp.key}</h3>

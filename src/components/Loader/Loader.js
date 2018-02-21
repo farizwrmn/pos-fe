@@ -14,7 +14,7 @@ const Loader = ({ spinning }) => {
 
 
 Loader.propTypes = {
-  spinning: PropTypes.bool,
+  spinning: PropTypes.bool
 }
 
 export default Loader

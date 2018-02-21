@@ -1,31 +1,34 @@
 import React from 'react'
-import { connect } from 'dva'
+// import { connect } from 'dva'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import moment from 'moment'
 import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
-const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, listTransferOut, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
-  const transHeader = listTransOut ? { employeeId: {
-    key: listTransOut.employeeId,
-    label: listTransOut.employeeName,
-  },
-  storeId: {
-    key: listTransOut.storeIdSender,
-    label: listTransOut.storeNameSender,
-  },
-  storeNameSender: {
-    key: listTransOut.storeId,
-    label: listTransOut.storeName,
-  },
-  transDate: listTransOut.transDate,
-  totalColly: listTransOut.totalColly,
-  transNo: listTransOut.transNo,
-  transType: listTransOut.transType,
-  carNumber: listTransOut.carNumber,
-  description: listTransOut.description,
-  referenceTrans: listTransOut.referenceTrans,
-  reference: listTransOut.reference } : {}
+const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
+  const transHeader = listTransOut ? {
+    employeeId: {
+      key: listTransOut.employeeId,
+      label: listTransOut.employeeName
+    },
+    storeId: {
+      key: listTransOut.storeIdSender,
+      label: listTransOut.storeNameSender
+    },
+    storeNameSender: {
+      key: listTransOut.storeId,
+      label: listTransOut.storeName
+    },
+    transDate: listTransOut.transDate,
+    totalColly: listTransOut.totalColly,
+    transNo: listTransOut.transNo,
+    transType: listTransOut.transType,
+    carNumber: listTransOut.carNumber,
+    description: listTransOut.description,
+    referenceTrans: listTransOut.referenceTrans,
+    reference: listTransOut.reference
+  } : {}
 
   const clickPrint = (record) => {
     const { transNo, storeIdReceiver } = record
@@ -39,7 +42,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
     itemHeader: transHeader,
     storeInfo,
     user,
-    printNo: 1,
+    printNo: 1
   }
 
   const modalProps = {
@@ -50,7 +53,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
     visible: showPrintModal,
     onCancel () {
       onClosePrint()
-    },
+    }
   }
 
   const handleChange = (pagination, filters, sorter) => {
@@ -85,12 +88,12 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       filteredValue: filter.storeName || null,
       onFilter: (value, record) => record.storeName.includes(value),
       sorter: (a, b) => (a.storeName.length + 1) - b.storeName.length,
-      sortOrder: sort.columnKey === 'storeName' && sort.order,
+      sortOrder: sort.columnKey === 'storeName' && sort.order
     },
     {
       title: 'Store Name Receiver',
       dataIndex: 'storeNameReceiver',
-      key: 'storeNameReceiver',
+      key: 'storeNameReceiver'
     },
     {
       title: 'Transaction Date',
@@ -98,18 +101,18 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       key: 'transDate',
       render: (text) => {
         return moment(text).format('DD MMMM YYYY')
-      },
+      }
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: text =>
-        <span>
-          <Tag color={text === 0 ? 'blue' : 'green'}>
-           {text === 0 ? 'In progress' : 'Accepted'}
+      render: (text, record) =>
+        (<span>
+          <Tag color={record.status ? 'green' : 'red'}>
+            {record.status ? 'Accepted' : 'Canceled'}
           </Tag>
-        </span>,
+        </span>)
     },
     {
       title: 'Transaction No',
@@ -117,6 +120,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       key: 'transNo',
       sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
       sortOrder: sort.columnKey === 'transNo' && sort.order,
+      render: text => <Link to={`/inventory/transfer/in/${encodeURIComponent(text)}`}>{text}</Link>
     },
     {
       title: 'Operation',
@@ -126,8 +130,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       render: (record) => {
         return <Button onClick={() => clickPrint(record)}>Print</Button>
         // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -158,9 +162,9 @@ ListTransfer.propTypes = {
   listTransferOut: PropTypes.object,
   getProducts: PropTypes.func,
   getTrans: PropTypes.func,
-  listProducts: PropTypes.object, 
+  listProducts: PropTypes.object,
   listTransOut: PropTypes.object,
-  onClosePrint: PropTypes.func,
+  onClosePrint: PropTypes.func
 }
 
 export default ListTransfer

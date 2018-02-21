@@ -12,51 +12,51 @@ export default modelExtend(pageModel, {
     list: [],
     listUserRole: [],
     listUserRoleTarget: [],
-    listUserRoleChange: { in: [], out: [] },
+    listUserRoleChange: { in: [], out: [] }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(location => {
+      history.listen((location) => {
         if (location.pathname === '/setting/user') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       if (payload.userId) {
         const userRole = yield call(getUserRole, { as: 'key,title', userId: payload.userId })
         if (userRole.success) {
           yield put({
             type: 'querySuccessRole',
             payload: {
-              listUserRole: userRole.data.mapped.map(a=>a.key),
-              defaultRole : userRole.data.defaultRole
-            },
+              listUserRole: userRole.data.mapped.map(a => a.key),
+              defaultRole: userRole.data.defaultRole
+            }
           })
         } else {
           console.log('error')
         }
       }
     },
-    *save ({ payload }, { call, put }) {
+    * save ({ payload }, { call, put }) {
       const data = yield call(save, payload)
       if (data.success) {
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
-        yield put({ type: 'user/modalHide'})
+        yield put({ type: 'user/modalHide' })
       } else {
         throw data
       }
     },
-    *saveDefaultRole ({ payload }, { select, call, put }) {
+    * saveDefaultRole ({ payload }, { call, put }) {
       // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultRole, payload)
@@ -64,12 +64,12 @@ export default modelExtend(pageModel, {
         messageInfo(data.message)
         yield put({
           type: 'updateState',
-          payload: { roleItem: { default : data.defaultRole } },
+          payload: { roleItem: { default: data.defaultRole } }
         })
       } else {
         throw data
       }
-    },
+    }
 
   },
 
@@ -81,7 +81,7 @@ export default modelExtend(pageModel, {
         list,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     querySuccessRole (state, action) {
@@ -89,7 +89,7 @@ export default modelExtend(pageModel, {
       return { ...state,
         listUserRole,
         listUserRoleTarget: listUserRole,
-        roleItem: { default : defaultRole }
+        roleItem: { default: defaultRole }
       }
     },
     updateState (state, { payload }) {
@@ -103,8 +103,8 @@ export default modelExtend(pageModel, {
     successUserRole (state, action) {
       return { ...state,
         listUserStores: action.payload.listUserStores.split(','),
-        roleItem: { default : action.payload.defaultRole }
+        roleItem: { default: action.payload.defaultRole }
       }
-    },
-  },
+    }
+  }
 })

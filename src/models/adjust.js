@@ -1,15 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { query, createDetail, create, edit, remove } from '../services/adjust'
+import { lstorage } from 'utils'
+import { query, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as queryTransType } from '../services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
-import { queryModeName as miscQuery } from '../services/misc'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
-import { lstorage } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -37,7 +35,7 @@ export default modelExtend(pageModel, {
     listProduct: [],
     curDiscPercent: 0,
     curDiscNominal: 0,
-    datePicker: '',
+    datePicker: ''
   },
 
   subscriptions: {
@@ -45,21 +43,21 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/transaction/adjust') {
           dispatch({
-            type: 'loadDataAdjust',
+            type: 'loadDataAdjust'
           })
           // dispatch({
           //   type: 'queryAdjust',
           // })
           dispatch({
-            type: 'queryLastAdjust',
+            type: 'queryLastAdjust'
           })
           dispatch({
             type: 'setDataBrowse',
-            payload: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null,
+            payload: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
           })
         }
       })
-    },
+    }
   },
 
   effects: {
@@ -75,9 +73,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -93,8 +91,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryEmployeeSuccess',
           payload: {
-            item: data.employee,
-          },
+            item: data.employee
+          }
         })
       }
     },
@@ -110,23 +108,24 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryAdjustSuccess',
           payload: {
-            item: data.data,
-          },
+            item: data.data
+          }
         })
       }
     },
 
-    * queryLastAdjust ({ payload }, { call, put }) {
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
       const invoice = {
         seqCode: 'ADJ',
-        type: lstorage.getCurrentUserStore()
+        type: lstorage.getCurrentUserStore(),
+        ...payload
       }
       const data = yield call(querySequence, invoice)
       const transNo = data.data
       yield put({ type: 'SuccessTransNo', payload: transNo })
     },
 
-    * 'delete' ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
       const { selectedRowKeys } = yield select(_ => _.purchaseId)
       if (data.success) {
@@ -137,7 +136,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * 'deleteBatch' ({payload}, {call, put}) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -160,19 +159,19 @@ export default modelExtend(pageModel, {
         let arrayProd = []
         for (let n = 0; n < dataAdj.length; n += 1) {
           arrayProd.push({
-            storeId: storeId,
-            transNo: transNo,
+            storeId,
+            transNo,
             transType: payload.transType,
             productId: dataAdj[n].productId,
             productCode: dataAdj[n].code,
             productName: dataAdj[n].name,
             adjInQty: dataAdj[n].In,
             adjOutQty: dataAdj[n].Out,
-            sellingPrice: dataAdj[n].price,
+            sellingPrice: dataAdj[n].price
           })
         }
         payload.storeId = lstorage.getCurrentUserStore()
-        const data = yield call(create, {id: transNo, data: payload, detail: arrayProd})
+        const data = yield call(create, { id: transNo, data: payload, detail: arrayProd })
         if (data.success) {
           let transNoIncrease = {}
           try {
@@ -186,7 +185,7 @@ export default modelExtend(pageModel, {
           if (transNoIncrease.success) {
             Modal.info({
               title: 'Success',
-              content: 'Data has been saved...!',
+              content: 'Data has been saved...!'
             })
             yield put(routerRedux.push('/transaction/adjust'))
             yield put({ type: 'SuccessData' })
@@ -197,13 +196,13 @@ export default modelExtend(pageModel, {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: 'You cannot let the product Null...!',
+          content: 'You cannot let the product Null...!'
         })
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
-      const stockCode = yield select(({purchase}) => purchase.currentItem.transNo)
+    * edit ({ payload }, { select, call, put }) {
+      const stockCode = yield select(({ purchase }) => purchase.currentItem.transNo)
       const newStock = { ...payload, stockCode }
       const data = yield call(edit, newStock)
       if (data.success) {
@@ -226,14 +225,17 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
 
-    * adjustDelete ({ payload }, { call, put }) {
+    * adjustDelete ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()
-        Array.prototype.remove = function() {
-          let what, a = arguments, L = a.length, ax
+        Array.prototype.remove = function () {
+          let what
+          let a = arguments
+          let L = a.length
+          let ax
           while (L && this.length) {
-            what = a[--L]
+            what = a[L -= 1]
             while ((ax = this.indexOf(what)) !== -1) {
               this.splice(ax, 1)
             }
@@ -252,14 +254,14 @@ export default modelExtend(pageModel, {
             name: ary[n].name,
             price: ary[n].price,
             In: ary[n].In,
-            Out: ary[n].Out,
+            Out: ary[n].Out
           })
         }
       }
       yield put({ type: 'modalEditHide' })
     },
 
-    *getProducts ({ payload }, { call, put }) {
+    * getProducts ({ payload }, { call, put }) {
       const data = yield call(queryProducts, payload)
       let newData = payload ? data.product : data.data
       if (data.success) {
@@ -267,30 +269,30 @@ export default modelExtend(pageModel, {
           type: 'queryGetProductsSuccess',
           payload: {
             productInformation: newData,
-            tmpProductList: newData,
-          },
+            tmpProductList: newData
+          }
         })
       } else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Product Not Found...!',
+          content: 'Product Not Found...!'
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data
       }
     },
-    * loadDataAdjust ({ payload }, { call, put }) {
-      const dataAdjust = yield call(queryTransType)
-      const dataEmployee = yield call(queryEmployee)
+    * loadDataAdjust ({ payload = {} }, { call, put }) {
+      const dataAdjust = yield call(queryTransType, payload)
+      const dataEmployee = yield call(queryEmployee, payload)
       localStorage.removeItem('adjust')
       yield put({
-        type: 'modalEditHide',
+        type: 'modalEditHide'
       })
       yield put({
         type: 'setTransType',
-        payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data },
+        payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data }
       })
-    },
+    }
   },
 
   reducers: {
@@ -303,8 +305,8 @@ export default modelExtend(pageModel, {
         tmpProductList,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
@@ -312,7 +314,7 @@ export default modelExtend(pageModel, {
       const { item } = action.payload
       return {
         ...state,
-        itemEmployee: item,
+        itemEmployee: item
       }
     },
 
@@ -320,7 +322,7 @@ export default modelExtend(pageModel, {
       const { item } = action.payload
       return {
         ...state,
-        listAdjust: item,
+        listAdjust: item
       }
     },
 
@@ -328,14 +330,14 @@ export default modelExtend(pageModel, {
       const { productInformation, tmpProductList } = action.payload
       let dataPurchase = (localStorage.getItem('purchase_detail') === null ? [] : JSON.parse(localStorage.getItem('purchase_detail')))
       let a = dataPurchase
-      let grandTotal = a.reduce(function (cnt, o) {
+      let grandTotal = a.reduce((cnt, o) => {
         return cnt + o.total
       }, 0)
       return {
         ...state,
         listProduct: productInformation,
-        tmpProductList: tmpProductList,
-        curTotal: grandTotal,
+        tmpProductList,
+        curTotal: grandTotal
       }
     },
     onProductSearch (state, action) {
@@ -348,15 +350,15 @@ export default modelExtend(pageModel, {
           return null
         }
         return {
-          ...record,
+          ...record
         }
       }).filter(record => !!record)
       if (newData === null) {
-        newData = reset
+        newData = tmpProductData
       } else {
         newData
       }
-      return {...state, listProduct: newData}
+      return { ...state, listProduct: newData }
     },
     setTransType (state, action) {
       const { listType, listEmployee } = action.payload
@@ -367,16 +369,15 @@ export default modelExtend(pageModel, {
           if ({}.hasOwnProperty.call(listType, id)) {
             fixed.push({
               value: listType[id].code,
-              label: listType[id].type,
+              label: listType[id].type
             })
           }
         }
         return fixed
       }())
-
       let EMPLOYEE_FIXED = (function () {
         let fixed = []
-        for (let id in listEmployee) {
+        for (let id = 0; id < listEmployee.length; id += 1) {
           let employeeName = listEmployee[id].employeeName
           fixed.push(employeeName)
         }
@@ -413,15 +414,16 @@ export default modelExtend(pageModel, {
       return { ...state, ...action.payload, modalEditVisible: true, item: action.payload.data }
     },
     modalEditHide (state, action) {
-      return { ...state, ...action.payload, modalEditVisible: false,
-        dataBrowse: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []}
+      return { ...state,
+        ...action.payload,
+        modalEditVisible: false,
+        dataBrowse: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : [] }
     },
     setDataBrowse (state, action) {
       return { ...state, ...action.payload, dataBrowse: action.payload }
     },
     onChangeDisabledItem (state, action) {
-      console.log('onChangeDisabledItem', action.payload)
       return { ...state, ...action.payload }
-    },
-  },
+    }
+  }
 })

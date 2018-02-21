@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
@@ -18,25 +17,25 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'customer/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'customer/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({ type: 'customer/resetCustomerList' })
-    },
+    }
   }
 
   const listProps = {
@@ -51,8 +50,8 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         type: 'customer/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -62,25 +61,25 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'customergroup/query',
+        type: 'customergroup/query'
       })
       dispatch({
-        type: 'customertype/query',
+        type: 'customertype/query'
       })
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'customer/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -92,8 +91,8 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           activeKey: key,
           modalType: 'add',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'customer/resetCustomerList' })
     },
@@ -101,10 +100,10 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       dispatch({
         type: 'customer/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -123,48 +122,48 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         type: `customer/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'customer/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
     },
     showCustomerGroup () {
       dispatch({
-        type: 'customergroup/query',
+        type: 'customergroup/query'
       })
     },
     showCustomerType () {
       dispatch({
-        type: 'customertype/query',
+        type: 'customertype/query'
       })
     },
     showIdType () {
       dispatch({
         type: 'misc/lov',
         payload: {
-          code: 'IDTYPE',
-        },
+          code: 'IDTYPE'
+        }
       })
     },
     showCity () {
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
     },
     clickBrowse () {
       dispatch({
         type: 'customer/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -175,10 +174,10 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           dispatch({
             type: 'customer/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -203,7 +202,7 @@ Customer.propTypes = {
   city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ customer, customergroup, customertype, city, misc, loading, app }) => ({ customer, customergroup, customertype, city, misc, loading, app }))(Customer)

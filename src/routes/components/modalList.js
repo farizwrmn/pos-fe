@@ -12,7 +12,7 @@ const ModalList = ({
   changeText,
   searchText,
   columns,
-  placeholderText,
+  placeholderText
 }) => {
   const search = (e) => {
     const { value } = e.target
@@ -77,7 +77,7 @@ ModalList.propTypes = {
   onReset: PropTypes.func,
   onClickRow: PropTypes.func,
   changeText: PropTypes.func,
-  searchText: PropTypes.func,
+  searchText: PropTypes.func
 }
 
 export default ModalList

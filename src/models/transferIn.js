@@ -1,11 +1,12 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
-import { query as queryOut, queryDetail as queryOutDetail, queryByTrans as queryByTransOut, queryByTransReceive } from '../services/transferStockOut'
-import { query as querySequence, increase as increaseSequence } from '../services/sequence'
-import { pageModel } from './common'
 import moment from 'moment'
 import { Modal, message } from 'antd'
 import { config, lstorage } from 'utils'
+import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
+import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
+import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { pageModel } from './common'
+
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
@@ -31,8 +32,8 @@ export default modelExtend(pageModel, {
     listItem: [],
     currentItem: {},
     addItem: {},
-    activeTabKey: "0",
-    sequenceNumber: "",
+    activeTabKey: '0',
+    sequenceNumber: '',
     modalVisible: false,
     modalAcceptVisible: false,
     modalConfirmVisible: false,
@@ -41,27 +42,20 @@ export default modelExtend(pageModel, {
     display: 'none',
     activeKey: '0',
     disable: '',
-    period: moment(localDate.startPeriod).format('YYYY-MM'),
     filter: null,
     sort: null,
+    disableButton: false,
     showPrintModal: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null,
-    },
+      total: null
+    }
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        if (location.pathname === '/inventory/transfer/in') {
-
-        }
-      })
-    },
   },
 
   effects: {
@@ -76,9 +70,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
@@ -95,8 +89,8 @@ export default modelExtend(pageModel, {
           payload: {
             transNo,
             storeId,
-            ...payload,
-          },
+            ...payload
+          }
         })
       }
     },
@@ -105,7 +99,7 @@ export default modelExtend(pageModel, {
       const data = yield call(queryOut, other)
       let transNo = []
       let storeId = []
-      // yield put({ type: 'resetAll', payload: payload })      
+      // yield put({ type: 'resetAll', payload: payload })
       if (data.data.length > 0) {
         transNo = data.data.map(n => n.transNo)
         storeId = data.data.map(n => n)
@@ -115,25 +109,24 @@ export default modelExtend(pageModel, {
             period,
             storeId,
             transNo
-          },
+          }
         })
       } else {
         Modal.warning({
           title: 'No Data',
-          content: 'No data inside storage',
+          content: 'No data inside storage'
         })
       }
     },
     * queryMutasiOut ({ payload = {} }, { call, put }) {
-      const period = payload
-      yield put({ type: 'setPeriod', payload: payload })
+      yield put({ type: 'setPeriod', payload })
       let data
       try {
         data = yield call(queryOut, payload)
         if (data.success === false) {
           Modal.warning({
             title: 'Something Went Wrong',
-            content: 'Please Refresh the page or change params',
+            content: 'Please Refresh the page or change params'
           })
         }
       } catch (e) {
@@ -152,15 +145,15 @@ export default modelExtend(pageModel, {
               pagination: {
                 current: Number(payload.page) || 1,
                 pageSize: Number(payload.pageSize) || 5,
-                total: data.total,
-              },
-            },
+                total: data.total
+              }
+            }
           })
           yield put({ type: 'updateState', payload: { currentItem: {} } })
         } else {
           Modal.warning({
             title: 'No Data',
-            content: 'No data inside storage',
+            content: 'No data inside storage'
           })
         }
       }
@@ -175,17 +168,17 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
       }
     },
-    * queryOutDetail({ payload= {} }, { call, put }) {
+    * queryOutDetail ({ payload = {} }, { call, put }) {
       const { start, end, ...other } = payload
       const sequenceParam = {
         seqCode: 'MUIN',
-        type: lstorage.getCurrentUserStore(),
+        type: lstorage.getCurrentUserStore()
       }
       const sequence = yield call(querySequence, sequenceParam)
       const data = yield call(queryByTransReceive, payload)
@@ -249,7 +242,7 @@ export default modelExtend(pageModel, {
       if (data) {
         yield put({
           type: 'querySuccessProducts',
-          payload: data.mutasi,
+          payload: data.mutasi
         })
       }
     },
@@ -260,10 +253,10 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listTransIn: data.mutasi
-          },
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -275,15 +268,15 @@ export default modelExtend(pageModel, {
         listSuppliers,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
@@ -296,8 +289,8 @@ export default modelExtend(pageModel, {
         end,
         pagination: {
           ...state.pagination,
-          ...pagination,
-        },
+          ...pagination
+        }
       }
     },
 
@@ -328,7 +321,7 @@ export default modelExtend(pageModel, {
         listItem: [],
         currentItem: {},
         addItem: {},
-        sequenceNumber: "",
+        sequenceNumber: '',
         modalVisible: false,
         searchVisible: false,
         formType: 'add',
@@ -337,10 +330,10 @@ export default modelExtend(pageModel, {
           showQuickJumper: true,
           showTotal: total => `Total ${total} Records`,
           current: 1,
-          total: null,
-        },
+          total: null
+        }
       }
-      return { ...state, ...defaultState}
-    },
-  },
+      return { ...state, ...defaultState }
+    }
+  }
 })

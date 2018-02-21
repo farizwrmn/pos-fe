@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../components'
 
 const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, disable, show } = employee
+  const { list, newItem, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
   const { user, storeInfo } = app
@@ -15,27 +14,27 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     isChecked,
     show,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onFilterChange (value) {
       dispatch({
         type: 'employee/query',
         payload: {
-          ...value,
-        },
+          ...value
+        }
       })
     },
     switchIsChecked () {
       dispatch({
         type: 'employee/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`,
+        payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
       dispatch({
-        type: 'employee/resetEmployeeList',
+        type: 'employee/resetEmployeeList'
       })
-    },
+    }
   }
 
   const listProps = {
@@ -50,8 +49,8 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
         type: 'employee/query',
         payload: {
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -62,40 +61,39 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
           activeKey: '0',
           currentItem: item,
           sequence: item.employeeId,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
       dispatch({
-        type: 'jobposition/lov',
+        type: 'jobposition/lov'
       })
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
     },
     deleteItem (id) {
       dispatch({
         type: 'employee/delete',
-        payload: id,
+        payload: id
       })
-    },
+    }
   }
 
   const tabProps = {
     activeKey,
     loading: loading.effects['employee/querySequenceEmployee'],
     changeTab (key) {
-      const { employeeId } = currentItem
       if (key === '0') {
         dispatch({
-          type: 'employee/querySequenceEmployee',
+          type: 'employee/querySequenceEmployee'
         })
         dispatch({
           type: 'employee/updateState',
           payload: {
             activeKey: key,
             modalType: 'add',
-            disable: '',
-          },
+            disable: ''
+          }
         })
       } else {
         dispatch({
@@ -105,7 +103,7 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
             modalType: 'add',
             disable: '',
             currentItem: {}
-          },
+          }
         })
       }
       // if (key === '1') {
@@ -117,32 +115,32 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
         type: 'employee/querySequence',
         payload: {
           seqCode: 'EMP',
-          type: 1, // storeId
-        },
+          type: 1 // storeId
+        }
       })
       dispatch({
-        type: 'employee/resetEmployeeList',
+        type: 'employee/resetEmployeeList'
       })
     },
     clickBrowse () {
       dispatch({
         type: 'employee/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
       dispatch({
-        type: 'employee/resetEmployeeList',
+        type: 'employee/resetEmployeeList'
       })
     },
     onShowHideSearch () {
       dispatch({
         type: 'employee/updateState',
         payload: {
-          show: !show,
-        },
+          show: !show
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -154,15 +152,15 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     item: currentItem,
     sequence,
     disabled: true,
-    loading: loading.effects['employee/querySequenceEmployee'],    
+    loading: loading.effects['employee/querySequenceEmployee'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
       dispatch({
         type: `employee/${modalType}`,
         payload: {
           id,
-          data,
-        },
+          data
+        }
       })
       dispatch({
         type: 'employee/updateState',
@@ -170,21 +168,21 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
           modalType: 'add',
           activeKey: '0',
           currentItem: {},
-          disable: '',
-        },
+          disable: ''
+        }
       })
       dispatch({ type: 'employee/querySequenceEmployee' })
     },
     showPosition () {
       dispatch({
-        type: 'jobposition/lov',
+        type: 'jobposition/lov'
       })
     },
     showCities () {
       dispatch({
-        type: 'city/query',
+        type: 'city/query'
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -195,10 +193,10 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
           dispatch({
             type: 'employee/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -221,7 +219,7 @@ Employee.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ employee, jobposition, city, loading, app }) => ({ employee, jobposition, city, loading, app }))(Employee)

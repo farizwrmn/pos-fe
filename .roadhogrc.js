@@ -23,18 +23,18 @@ export default {
   //   }
   // },
   "env": {
-      "development": {
-        "extraBabelPlugins": [
-          "dva-hmr",
-          "transform-runtime",
-  		    ["import", { "libraryName": "antd", "style": true }]
-        ]
-      },
-      "production": {
-        "extraBabelPlugins": [
-          "transform-runtime",
-  		    ["import", { "libraryName": "antd", "style": true}]
-        ]
-      }
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr",
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "style": true }]
+      ]
+    },
+    "production": {
+      "extraBabelPlugins": [
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "style": true }]
+      ]
+    }
   }
 }

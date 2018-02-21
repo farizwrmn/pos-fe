@@ -5,8 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../../components'
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, newItem, pagination, modalType, currentItem, activeKey, disable } = customerunit
-  const { pageSize } = pagination
+  const { listUnit, newItem, modalType, currentItem, activeKey, disable } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer } = customer
   const modalProps = {
@@ -20,8 +19,8 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
       dispatch({
         type: 'customer/updateState',
         payload: {
-          modalVisible: false,
-        },
+          modalVisible: false
+        }
       })
     },
     openModal () {
@@ -30,10 +29,10 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         payload: {
           modalVisible: true,
           searchText: '',
-          listCustomer: list,
-        },
+          listCustomer: list
+        }
       })
-    },
+    }
   }
 
   const inputSearchProps = {
@@ -44,23 +43,23 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         type: 'customer/onSearch',
         payload: {
           search: value,
-          data: list,
-        },
+          data: list
+        }
       })
     },
     resetUnit () {
       dispatch({
-        type: 'customerunit/resetUnit',
+        type: 'customerunit/resetUnit'
       })
     },
     showItem (value) {
       dispatch({
         type: 'customerunit/query',
         payload: {
-          code: value,
-        },
+          code: value
+        }
       })
-    },
+    }
   }
 
   const listProps = {
@@ -68,7 +67,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     user,
     loading: loading.effects['customerunit/query'],
     storeInfo,
-    pagination,
     location,
     onChange (page) {
       dispatch({
@@ -76,8 +74,8 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         payload: {
           code: listUnit[0].memberCode,
           page: page.current,
-          pageSize: page.pageSize,
-        },
+          pageSize: page.pageSize
+        }
       })
     },
     editItem (item) {
@@ -87,8 +85,8 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           modalType: 'edit',
           activeKey: '0',
           currentItem: item,
-          disable: 'disabled',
-        },
+          disable: 'disabled'
+        }
       })
     },
     deleteItem (code, id) {
@@ -96,10 +94,10 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         type: 'customerunit/delete',
         payload: {
           memberCode: code,
-          policeNo: id,
-        },
+          policeNo: id
+        }
       })
-    },
+    }
   }
 
   const formProps = {
@@ -109,35 +107,35 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     listItem: listUnit,
     dataCustomer,
     filter: {
-      ...location.query,
+      ...location.query
     },
     onSubmit (data) {
       dispatch({
         type: `customerunit/${modalType}`,
-        payload: data,
+        payload: data
       })
       dispatch({
         type: 'customerunit/updateState',
         payload: {
           modalType: 'add',
-          currentItem: {},
-        },
+          currentItem: {}
+        }
       })
       dispatch({
         type: 'customer/updateState',
         payload: {
-          dataCustomer: {},
-        },
+          dataCustomer: {}
+        }
       })
     },
     clickBrowse () {
       dispatch({
         type: 'customerunit/updateState',
         payload: {
-          activeKey: '1',
-        },
+          activeKey: '1'
+        }
       })
-    },
+    }
   }
 
   const tabProps = {
@@ -158,17 +156,17 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           disable: '',
           listUnit: [],
           pagination: {
-            total: 0,
-          },
-        },
+            total: 0
+          }
+        }
       })
       dispatch({
         type: 'customer/updateState',
         payload: {
-          dataCustomer: {},
-        },
+          dataCustomer: {}
+        }
       })
-    },
+    }
   }
 
   const page = (boolean) => {
@@ -179,10 +177,10 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           dispatch({
             type: 'customerunit/updateState',
             payload: {
-              newItem: false,
-            },
+              newItem: false
+            }
           })
-        },
+        }
       }
       currentPage = <NewForm {...newFormProps} />
     } else {
@@ -204,7 +202,7 @@ CustomerUnit.propTypes = {
   loading: PropTypes.object,
   app: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ customerunit, customer, loading, app }) => ({ customerunit, customer, loading, app }))(CustomerUnit)
