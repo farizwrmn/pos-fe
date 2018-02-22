@@ -185,7 +185,7 @@ export default {
     completed: [],
     browser: [],
     ipAddress: [],
-    cpu: {},
+    cpu: {}
     // user: {
     //   avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
     // },
@@ -293,7 +293,7 @@ export default {
         ...state,
         ...action.payload
       }
-    },
+    }
     // queryWeatherSuccess(state, action) {
     //   return {
     //     ...state,
@@ -306,5 +306,5 @@ export default {
     //     ...action.payload,
     //   }
     // },
-  },
+  }
 }

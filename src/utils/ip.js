@@ -1,5 +1,5 @@
 const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
-  let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection //compatibility for firefox and chrome
+  let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection // compatibility for firefox and chrome
   const pc = new MyPeerConnection({ iceServers: [] }),
     noop = function () {},
     localIPs = {},

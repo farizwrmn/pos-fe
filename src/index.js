@@ -22,20 +22,16 @@ const app = dva({
             description: error.message.errors[i].message
           })
         }
-      } else {
-        if (error.success) {
+      } else if (error.success) {
+        message.info(error.message)
+      } else if (error.hasOwnProperty('detail')) {
+        if (error.detail.substring(0, 5) === 'Login') {
           message.info(error.message)
         } else {
-          if (error.hasOwnProperty('detail')) {
-            if (error.detail.substring(0,5) === 'Login') {
-              message.info(error.message)
-            } else {
-              message.error(error.message)
-            }
-          } else {
-            message.error(error.message)
-          }
+          message.error(error.message)
         }
+      } else {
+        message.error(error.message)
       }
     }
   }

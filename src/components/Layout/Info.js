@@ -38,19 +38,24 @@ const Info = ({ ipAddress, dispatch, app }) => {
       title: 'value',
       dataIndex: 'value',
       className: styles.value,
-      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color}>{text}</Tag></div>,
-    },
+      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color}>{text}</Tag></div>
+    }
   ]
 
   const data = [
     { name: 'IP Address', value: `${ipAddress}`, status: 1 },
     { name: 'Version', value: `${config.version}`, status: 2 },
-    { name: 'Session', value: `${sessionId}`, status: 3 },
+    { name: 'Session', value: `${sessionId}`, status: 3 }
   ]
 
-  return <Table pagination={false} showHeader={false} bordered={false}
-                size='small'
-                columns={columns} rowKey={(record, key) => key} dataSource={data} />
+  return (<Table pagination={false}
+    showHeader={false}
+    bordered={false}
+    size="small"
+    columns={columns}
+    rowKey={(record, key) => key}
+    dataSource={data}
+  />)
 }
 
 Info.propTypes = {

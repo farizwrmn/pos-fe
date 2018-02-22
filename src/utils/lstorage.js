@@ -23,14 +23,14 @@ const putStorageKey = (key, value, norandom) => {
     if (key === 'udi') {
       if (counter === 5) {
         const diffDate = moment(new Date()).diff(moment(new Date(index)))
-        cryptedValue += encrypt((diffDate) ? diffDate.toString() : '', rdmTextcryp) + '#'
+        cryptedValue += `${encrypt((diffDate) ? diffDate.toString() : '', rdmTextcryp)}#`
       } else if (counter === 6) {
         cryptedValue += index ? index.toString() : ''
       } else {
-        cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
+        cryptedValue += `${encrypt((index) ? index.toString() : '', rdmTextcryp)}#`
       }
     } else {
-      cryptedValue += encrypt((index) ? index.toString() : '', rdmTextcryp) + '#'
+      cryptedValue += `${encrypt((index) ? index.toString() : '', rdmTextcryp)}#`
     }
   }
   localStorage.setItem(`${prefix}${key}`, `${rdmText}#${cryptedValue.slice(0, -1)}`)

@@ -1,4 +1,5 @@
 import { request, config, crypt, lstorage } from 'utils'
+
 const { apiUser, apiUsers, apiUserLogout, apiUserRole } = config.rest
 
 export async function logout (params) {
@@ -29,23 +30,20 @@ export async function query (params) {
     const ascii = /^[a-z0-9]+$/i
     if (!ascii.test(url[1])) {
       lstorage.removeItemKey()
-      return { success: false, message: "URL Mismatch" }
-    } else {
-      if (apiHeaderToken) {
-        return request({
-          url: apiUserRole.replace('/:id', '/' + url[1]).replace('/:role', '/' + url[2]),
-          method: 'get',
-          headers: apiHeaderToken,
-        })
-      } else {
-        return request({
-          url: apiUser.replace('/:id', ''),
-          method: 'get',
-          data: params,
-        })
-      }
+      return { success: false, message: 'URL Mismatch' }
     }
-  } else {
-    return { success: false, message: "No URL" }
+    if (apiHeaderToken) {
+      return request({
+        url: apiUserRole.replace('/:id', `/${url[1]}`).replace('/:role', `/${url[2]}`),
+        method: 'get',
+        headers: apiHeaderToken
+      })
+    }
+    return request({
+      url: apiUser.replace('/:id', ''),
+      method: 'get',
+      data: params
+    })
   }
+  return { success: false, message: 'No URL' }
 }

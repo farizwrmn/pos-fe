@@ -21,7 +21,7 @@ UserProfile.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ userprofile, loading, app }) => ({ userprofile, loading, app }))(UserProfile)

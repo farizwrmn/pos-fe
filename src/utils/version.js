@@ -10,5 +10,5 @@ module.exports = [
   { version: '2018.01.006',
     info: 'fix menu pos, add info version and ip address on login',
     date: '2018-01-31'
-  },
+  }
 ]

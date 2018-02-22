@@ -25,20 +25,20 @@ export default modelExtend(pageModel, {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(location => {
+      history.listen((location) => {
         if (location.pathname === '/setting/user') {
           dispatch({
             type: 'query',
-            payload: location.query,
+            payload: location.query
           })
         }
       })
-    },
+    }
   },
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -48,9 +48,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
-              total: data.total,
-            },
-          },
+              total: data.total
+            }
+          }
         })
         yield put({ type: 'misc/lov', payload: { code: 'USERROLE' } })
         yield put({ type: 'employee/lovForUser' })
@@ -58,7 +58,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
       if (data.success) {
@@ -69,7 +69,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'deleteBatch' ({ payload }, { call, put }) {
+    * deleteBatch ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
@@ -79,7 +79,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         yield put({ type: 'modalHide' })
@@ -89,12 +89,12 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *edit ({ payload }, { select, call, put }) {
-      console.log('edit',payload)
+    * edit ({ payload }, { select, call, put }) {
+      console.log('edit', payload)
       const userId = yield select(({ user }) => user.currentItem.userId)
       const newUser = { ...payload, userId }
       const data = yield call(edit, newUser)
-      yield put({ type: 'activeTab', payload: {activeTab: payload.activeTab} })
+      yield put({ type: 'activeTab', payload: { activeTab: payload.activeTab } })
       if (data.success) {
         console.log('edituser', data)
         console.log('edituser1', data.user.isTOTP)
@@ -106,7 +106,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *totp ({ payload = {} }, { call, put }) {
+    * totp ({ payload = {} }, { call, put }) {
       console.log('mode', payload.mode)
       const mode = payload.mode
       const data = yield call(totp, payload)
@@ -119,11 +119,11 @@ export default modelExtend(pageModel, {
               key: data.key,
               url: data.otpURL,
               isTotp: data.isTOTP
-            },
-          },
+            }
+          }
         })
       }
-    },
+    }
   },
 
   reducers: {
@@ -134,7 +134,7 @@ export default modelExtend(pageModel, {
         list,
         pagination: {
           ...state.pagination,
-          ...pagination,
+          ...pagination
         } }
     },
     querySuccessTotp (state, action) {
@@ -144,13 +144,13 @@ export default modelExtend(pageModel, {
       // console.log('querySuccessTotpv', totp)
       if (mode === 'load') state.totpChecked = totp.isTotp
       return { ...state,
-        totp,
+        totp
       }
     },
     updateState (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
     modalShow (state, { payload }) {
@@ -175,18 +175,19 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: false }
     },
     modalIsEmployeeChange (state, action) {
-      return { ...state, ...action.payload,
-        disabledItem:{
+      return { ...state,
+        ...action.payload,
+        disabledItem: {
           userId: (state.modalType !== 'add' ? !state.disabledItem.userId : state.disabledItem.userId),
-          getEmployee: !state.disabledItem.getEmployee,
-        },
+          getEmployee: !state.disabledItem.getEmployee
+        }
       }
     },
     activeTab (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
-    },
-  },
+    }
+  }
 })
