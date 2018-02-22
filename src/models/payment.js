@@ -589,7 +589,7 @@ export default {
                         alignment: 'left'
                       },
                       {
-                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 32) : '',
+                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 65) : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       },
@@ -604,12 +604,6 @@ export default {
                         alignment: 'left'
                       }
                     ]
-                  },
-                  {
-                    text: '',
-                    style: 'header',
-                    fontSize: 18,
-                    alignment: 'center'
                   },
                   {
                     stack: storeInfo

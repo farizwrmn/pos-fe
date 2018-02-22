@@ -23,12 +23,12 @@ const BasicInvoice = ({
   const createPdfLineItems = () => {
     let body = []
     if (tableHeader.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
+      for (let c = 0; c < tableHeader.length; c += 1) {
         body.push(tableHeader[c])
       }
     }
     if (tableBody.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
+      for (let c = 0; c < tableBody.length; c += 1) {
         body.push(tableBody[c])
       }
     }

@@ -98,7 +98,7 @@ export default {
         storeInfo.stackHeader02 = storeInfo.stackHeader01
         for (let index of storeInfo.stackHeader01) {
           index.fontSize = 11
-          index.alignment = 'left'
+          index.alignment = 'right'
         }
         storeInfo.stackHeader02.push({ text: ' ' })
         storeInfo.stackHeader02 = storeInfo.stackHeader01
