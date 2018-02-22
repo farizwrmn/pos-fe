@@ -58,7 +58,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
             stack: storeInfo.stackHeader02
           },
           {
-            text: 'TANDA TERIMA',
+            text: 'SURAT PENGANTAR',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
