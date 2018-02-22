@@ -102,11 +102,12 @@ const formCustomerType = ({
         ...getFieldsValue()
       }
 
+      const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data)
+            onSubmit(other)
           },
           onCancel () {}
         })

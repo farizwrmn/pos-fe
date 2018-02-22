@@ -53,15 +53,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  xs: {
-    span: 24,
-    offset: 0
-  },
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formSupplier = ({
@@ -146,7 +142,7 @@ const formSupplier = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierCode', {
                   initialValue: item.supplierCode,
@@ -159,8 +155,6 @@ const formSupplier = ({
                   ]
                 })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Supplier Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierName', {
                   initialValue: item.supplierName,
@@ -173,10 +167,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Address 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address01', {
                   initialValue: item.address01,
@@ -189,8 +179,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Address 2" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address02', {
                   initialValue: item.address02,
@@ -202,10 +190,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="City" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityId', {
                   initialValue: item.cityId,
@@ -222,8 +206,6 @@ const formSupplier = ({
                 >{cities}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Province" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('state', {
                   initialValue: item.state,
@@ -236,9 +218,7 @@ const formSupplier = ({
                 })(<Input maxLength={20} />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
+            <Col {...column} >
               <FormItem label="Post Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('zipCode', {
                   initialValue: item.zipCode,
@@ -250,8 +230,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={20} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxId', {
                   initialValue: item.taxId,
@@ -263,10 +241,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={15} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Phone" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
                   initialValue: item.phoneNumber,
@@ -279,8 +253,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={20} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('mobileNumber', {
                   initialValue: item.mobileNumber,
@@ -293,10 +265,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={15} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Email" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('email', {
                   initialValue: item.email,
@@ -308,8 +276,6 @@ const formSupplier = ({
                   ]
                 })(<Input maxLength={15} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>

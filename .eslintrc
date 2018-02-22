@@ -73,6 +73,7 @@
     "alert": true,
     "location": true,
     "Element": true,
+    "Image": true,
     "_": true
   },
   "parserOptions": {

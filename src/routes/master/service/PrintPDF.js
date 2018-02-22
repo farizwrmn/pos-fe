@@ -37,8 +37,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         let row = []
         row.push({ text: (tableBody[key].serviceCode || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].serviceName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].cost || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].serviceCost || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].cost || 0).toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].serviceCost || 0).toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].serviceTypeId || '').toString(), alignment: 'left' })
         body.push(row)
       }

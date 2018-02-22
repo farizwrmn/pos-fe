@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../../components'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
+  const { list, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -43,17 +43,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     user,
     storeInfo,
     loading: loading.effects['customer/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'customer/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'customer/updateState',

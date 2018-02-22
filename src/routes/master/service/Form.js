@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, Row, Col, Menu, Icon, Dropdown, Modal, message } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Select, Row, Col, Menu, Icon, Dropdown, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -53,11 +53,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formService = ({
@@ -137,7 +137,7 @@ const formService = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('serviceCode', {
                   initialValue: item.serviceCode,
@@ -150,11 +150,6 @@ const formService = ({
                   ]
                 })(<Input disabled={disabled} maxLength={30} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Service" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('serviceName', {
                   initialValue: item.serviceName,
@@ -167,11 +162,6 @@ const formService = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Cost" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cost', {
                   initialValue: item.cost,
@@ -182,13 +172,8 @@ const formService = ({
                       message: '0-9'
                     }
                   ]
-                })(<Input maxLength={20} />)}
+                })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Service Cost" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('serviceCost', {
                   initialValue: item.serviceCost,
@@ -200,11 +185,6 @@ const formService = ({
                   ]
                 })(<Input maxLength={20} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Service Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('serviceTypeId', {
                   initialValue: item.serviceTypeId,
@@ -220,16 +200,10 @@ const formService = ({
                 >{serviceType}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>

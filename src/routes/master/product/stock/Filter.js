@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Button, Row, Col, DatePicker, Input } from 'antd'
-import { FilterItem } from '../../../../components'
+import { FilterItem } from 'components'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker

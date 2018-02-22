@@ -35,11 +35,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formCustomer = ({
@@ -115,7 +115,7 @@ const formCustomer = ({
           onOk () {
             onSubmit(data.memberCode, data)
           },
-          onCancel () { }
+          onCancel () {}
         })
       } else {
         message.warning("Member Code can't be null")
@@ -157,7 +157,7 @@ const formCustomer = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Member Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('memberCode', {
                   initialValue: item.memberCode,
@@ -170,8 +170,6 @@ const formCustomer = ({
                   ]
                 })(<Input disabled={disabled} maxLength={16} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Member Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('memberName', {
                   initialValue: item.memberName,
@@ -184,10 +182,6 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Member Group Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('memberGroupId', {
                   initialValue: item.memberGroupId,
@@ -203,8 +197,6 @@ const formCustomer = ({
                 >{childrenGroup}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Member Type Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('memberTypeId', {
                   initialValue: item.memberTypeId,
@@ -221,10 +213,6 @@ const formCustomer = ({
                 >{childrenType}
                 </Select>)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="ID Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('idType', {
                   initialValue: item.idType,
@@ -241,8 +229,6 @@ const formCustomer = ({
                 >{childrenLov}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="ID No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('idNo', {
                   initialValue: item.idNo,
@@ -255,10 +241,6 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={30} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Address 01" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address01', {
                   initialValue: item.address01,
@@ -271,8 +253,6 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Address 02" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address02', {
                   initialValue: item.address02,
@@ -284,10 +264,6 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={50} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="City" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityId', {
                   initialValue: item.cityId,
@@ -305,7 +281,7 @@ const formCustomer = ({
                 </Select>)}
               </FormItem>
             </Col>
-            <Col {...col}>
+            <Col {...column} >
               <FormItem label="State" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('state', {
                   initialValue: item.state,
@@ -317,10 +293,6 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={20} />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Zip Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('zipCode', {
                   initialValue: item.zipCode,
@@ -332,17 +304,11 @@ const formCustomer = ({
                   ]
                 })(<Input maxLength={20} />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
                   initialValue: item.phoneNumber
                 })(<Input />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('mobileNumber', {
                   initialValue: item.mobileNumber,
@@ -355,8 +321,6 @@ const formCustomer = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Email" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('email', {
                   initialValue: item.email,
@@ -369,17 +333,11 @@ const formCustomer = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('birthDate', {
                   initialValue: moment(item.birthDate)
                 })(<DatePicker />)}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxId', {
                   initialValue: item.taxId,
@@ -391,10 +349,6 @@ const formCustomer = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Gender" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('gender', {
                   initialValue: item.gender,
@@ -410,8 +364,6 @@ const formCustomer = ({
                   </Radio.Group>
                 )}
               </FormItem>
-            </Col>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>

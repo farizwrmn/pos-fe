@@ -5,7 +5,7 @@ import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productstock
+  const { list, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show, showModal, stickerQty, logo } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
@@ -40,17 +40,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     user,
     storeInfo,
     loading: loading.effects['productstock/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'productstock/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'productstock/updateState',
@@ -78,6 +68,16 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
 
   const tabProps = {
     activeKey,
+    showModal,
+    stickerQty,
+    changeQty (qty) {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          stickerQty: qty || 1
+        }
+      })
+    },
     changeTab (key) {
       dispatch({
         type: 'productstock/updateState',
@@ -88,11 +88,6 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           disable: ''
         }
       })
-      // if (key === '1') {
-      //   dispatch({
-      //     type: 'productstock/query',
-      //   })
-      // }
       dispatch({ type: 'productstock/resetProductStockList' })
     },
     clickBrowse () {
@@ -110,6 +105,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           show: !show
         }
       })
+    },
+    onShowModal () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          showModal: true
+        }
+      })
+    },
+    onCloseModal () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          showModal: false
+        }
+      })
     }
   }
 
@@ -120,22 +131,24 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     listCategory,
     listBrand,
     modalType,
+    logo,
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    convertImage (url) {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          logo: url
+        }
+      })
+    },
     onSubmit (id, data) {
       dispatch({
         type: `productstock/${modalType}`,
         payload: {
           id,
           data
-        }
-      })
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
         }
       })
     },

@@ -21,9 +21,6 @@ const TwoColProps = {
 }
 
 const Filter = ({
-  // isChecked,
-  // display,
-  // switchIsChecked,
   onFilterChange,
   filter,
   show,
@@ -34,9 +31,6 @@ const Filter = ({
     setFieldsValue
   }
 }) => {
-  // const switchFilter = () => {
-  //   switchIsChecked()
-  // }
   const handleFields = (fields) => {
     const { createTime } = fields
     if (createTime.length) {
@@ -114,7 +108,6 @@ const Filter = ({
 
 Filter.propTypes = {
   isChecked: PropTypes.bool,
-  switchIsChecked: PropTypes.func,
   form: PropTypes.object,
   display: PropTypes.string,
   filter: PropTypes.object,

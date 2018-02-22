@@ -52,11 +52,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formCity = ({
@@ -133,7 +133,7 @@ const formCity = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityCode', {
                   initialValue: item.cityCode,
@@ -146,11 +146,6 @@ const formCity = ({
                   ]
                 })(<Input disabled={disabled} maxLength={10} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="City Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityName', {
                   initialValue: item.cityName,
@@ -161,16 +156,10 @@ const formCity = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>

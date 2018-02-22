@@ -53,11 +53,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formEmployee = ({
@@ -150,7 +150,7 @@ const formEmployee = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Employee ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeId', {
                   initialValue: sequence,
@@ -163,11 +163,6 @@ const formEmployee = ({
                   ]
                 })(<Input disabled={disabled} maxLength={15} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeName', {
                   initialValue: item.employeeName,
@@ -178,11 +173,6 @@ const formEmployee = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Position" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('positionId', {
                   initialValue: item.positionId,
@@ -198,11 +188,6 @@ const formEmployee = ({
                 >{jobposition}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Address 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address01', {
                   initialValue: item.address01,
@@ -213,21 +198,11 @@ const formEmployee = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Address 2" {...formItemLayout}>
                 {getFieldDecorator('address02', {
                   initialValue: item.address02
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="City" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityId', {
                   initialValue: item.cityId,
@@ -243,11 +218,6 @@ const formEmployee = ({
                 >{cities}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('mobileNumber', {
                   initialValue: item.mobileNumber,
@@ -260,36 +230,20 @@ const formEmployee = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Phone Number" {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
                   initialValue: item.phoneNumber
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Email" {...formItemLayout}>
                 {getFieldDecorator('email', {
                   initialValue: item.email
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>

@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../../components'
 
 const ProductCategory = ({ productcategory, loading, dispatch, location, app }) => {
-  const { listCategory, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
+  const { listCategory, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
   const { storeInfo, user } = app
   const filterProps = {
     display,
@@ -37,19 +37,9 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
   const listProps = {
     dataSource: listCategory,
     loading: loading.effects['productcategory/query'],
-    pagination,
     user,
     storeInfo,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'productcategory/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'productcategory/updateState',

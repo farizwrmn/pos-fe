@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../components'
 
 const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
+  const { list, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
   const { listCity } = city
   const { user, storeInfo } = app
   const filterProps = {
@@ -39,17 +39,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['supplier/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'supplier/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'supplier/updateState',

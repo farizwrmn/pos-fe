@@ -41,15 +41,6 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
     storeInfo,
     loading: loading.effects['customergroup/query'],
     location,
-    onChange (page) {
-      dispatch({
-        type: 'customergroup/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'customergroup/updateState',

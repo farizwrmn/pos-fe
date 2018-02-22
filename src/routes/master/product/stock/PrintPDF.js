@@ -47,10 +47,10 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push({ text: (tableBody[key].productName || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].brandName || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].categoryName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].sellPrice || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].costPrice || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].distPrice01 || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].distPrice02 || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].sellPrice || 0).toLocaleString(), alignment: 'right' })
+        row.push({ text: (tableBody[key].costPrice || 0).toLocaleString(), alignment: 'right' })
+        row.push({ text: (tableBody[key].distPrice01 || 0).toLocaleString(), alignment: 'right' })
+        row.push({ text: (tableBody[key].distPrice02 || 0).toLocaleString(), alignment: 'right' })
         row.push({ text: (tableBody[key].otherName01 || '').toString(), alignment: 'left' })
         body.push(row)
       }
@@ -84,7 +84,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 790, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -146,8 +146,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 }
 
 PrintPDF.propTypes = {
-  user: PropTypes.object.isRequired,
-  storeInfo: PropTypes.object.isRequired,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object,
   dataSource: PropTypes.object
 }
 

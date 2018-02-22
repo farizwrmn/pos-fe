@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../components'
 
 const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
+  const { list, newItem, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
   const { user, storeInfo } = app
@@ -34,6 +34,13 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
       dispatch({
         type: 'employee/resetEmployeeList'
       })
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          pagination: { total: 0 },
+          filterText: ''
+        }
+      })
     }
   }
 
@@ -42,17 +49,7 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     user,
     storeInfo,
     loading: loading.effects['employee/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'employee/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'employee/updateState',

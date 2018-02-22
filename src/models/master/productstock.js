@@ -19,7 +19,10 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     show: 1,
-    newItem: false
+    newItem: false,
+    showModal: false,
+    stickerQty: 1,
+    logo: ''
   },
 
   subscriptions: {
@@ -86,8 +89,9 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({ type: 'updateState', payload: { newItem: true, modalType: 'add', currentItem: {} } })
       } else {
+        yield put({ type: 'updateState', payload: { modalType: 'edit' } })
         throw data
       }
     }

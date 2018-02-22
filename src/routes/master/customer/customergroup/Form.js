@@ -52,11 +52,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formCustomerGroup = ({
@@ -133,7 +133,7 @@ const formCustomerGroup = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Group Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('groupCode', {
                   initialValue: item.groupCode,
@@ -146,11 +146,6 @@ const formCustomerGroup = ({
                   ]
                 })(<Input disabled={disabled} maxLength={5} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Group Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('groupName', {
                   initialValue: item.groupName,
@@ -161,16 +156,10 @@ const formCustomerGroup = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>

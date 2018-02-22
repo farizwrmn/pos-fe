@@ -68,16 +68,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     loading: loading.effects['customerunit/query'],
     storeInfo,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'customerunit/query',
-        payload: {
-          code: listUnit[0].memberCode,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'customerunit/changeTab',

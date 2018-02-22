@@ -4,9 +4,8 @@ import { connect } from 'dva'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
-
 const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
-  const { listType, newItem, listSellprice, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
+  const { listType, newItem, listSellprice, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -46,17 +45,7 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['customertype/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'customertype/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'customertype/updateState',

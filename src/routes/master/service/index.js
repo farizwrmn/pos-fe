@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../components'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, newItem, listServiceType, pagination, modalType, currentItem, activeKey, disable, show } = service
+  const { list, newItem, listServiceType, modalType, currentItem, activeKey, disable, show } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -30,17 +30,7 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['service/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'service/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'service/updateState',

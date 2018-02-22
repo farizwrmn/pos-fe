@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../components'
 
 const City = ({ city, loading, dispatch, location, app }) => {
-  const { listCity, isChecked, newItem, pagination, modalType, currentItem, activeKey, disable, show } = city
+  const { listCity, newItem, modalType, currentItem, activeKey, disable, show } = city
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -21,12 +21,6 @@ const City = ({ city, loading, dispatch, location, app }) => {
         }
       })
     },
-    switchIsChecked () {
-      dispatch({
-        type: 'city/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`
-      })
-    },
     onResetClick () {
       dispatch({ type: 'city/resetCityList' })
     }
@@ -37,17 +31,7 @@ const City = ({ city, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['city/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'city/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'city/updateState',

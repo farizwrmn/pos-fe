@@ -52,11 +52,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formProductCategory = ({
@@ -133,7 +133,7 @@ const formProductCategory = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('categoryCode', {
                   initialValue: item.categoryCode,
@@ -146,11 +146,6 @@ const formProductCategory = ({
                   ]
                 })(<Input disabled={disabled} maxLength={10} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Category Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('categoryName', {
                   initialValue: item.categoryName,
@@ -163,16 +158,10 @@ const formProductCategory = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>

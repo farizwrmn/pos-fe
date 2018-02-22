@@ -5,7 +5,7 @@ import Form from './Form'
 import { NewForm } from '../../../components'
 
 const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
-  const { listBrand, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = productbrand
+  const { listBrand, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = productbrand
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -18,7 +18,6 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
       dispatch({
         type: 'productbrand/query',
         payload: {
-          userName: value.brandName,
           ...value
         }
       })
@@ -39,17 +38,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     loading: loading.effects['productbrand/query'],
-    pagination,
     location,
-    onChange (page) {
-      dispatch({
-        type: 'productbrand/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    },
     editItem (item) {
       dispatch({
         type: 'productbrand/updateState',

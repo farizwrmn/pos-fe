@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
-  Tabs, Transfer, Tree, Switch, Icon, Card, Select
-} from 'antd'
+import { Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
+  Tabs, Transfer, Tree, Switch, Icon, Card, Select } from 'antd'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel

@@ -53,11 +53,11 @@ const tailFormItemLayout = {
   }
 }
 
-const col = {
-  lg: {
-    span: 12,
-    offset: 0
-  }
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const formCustomerType = ({
@@ -138,7 +138,7 @@ const formCustomerType = ({
       <TabPane tab="Form" key="0" >
         <Form layout="horizontal">
           <Row>
-            <Col {...col}>
+            <Col {...column}>
               <FormItem label="Type Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('typeCode', {
                   initialValue: item.typeCode,
@@ -151,11 +151,6 @@ const formCustomerType = ({
                   ]
                 })(<Input disabled={disabled} maxLength={5} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Type Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('typeName', {
                   initialValue: item.typeName,
@@ -166,11 +161,6 @@ const formCustomerType = ({
                   ]
                 })(<Input />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Discount 1" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discPct01', {
                   initialValue: item.discPct01,
@@ -183,11 +173,6 @@ const formCustomerType = ({
                   ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Discount 2" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discPct02', {
                   initialValue: item.discPct02,
@@ -200,11 +185,6 @@ const formCustomerType = ({
                   ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Discount 3" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discPct03', {
                   initialValue: item.discPct03,
@@ -217,11 +197,6 @@ const formCustomerType = ({
                   ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Discount Nominal" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discNominal', {
                   initialValue: item.discNominal,
@@ -234,11 +209,6 @@ const formCustomerType = ({
                   ]
                 })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('sellPrice', {
                   initialValue: item.sellPrice,
@@ -254,16 +224,10 @@ const formCustomerType = ({
                 >{children}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col {...col} />
-          </Row>
-          <Row>
-            <Col {...col}>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
-            <Col {...col} />
           </Row>
         </Form>
       </TabPane>
