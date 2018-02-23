@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
-import { queryURL, config, crypt, lstorage, messageInfo } from 'utils'
-import { login, prelogin, getUserRole, getUserStore, verifyTOTP } from '../services/login'
 import moment from 'moment'
+import { queryURL, config, lstorage, messageInfo } from 'utils'
+import { login, getUserRole, getUserStore } from '../services/login'
 
 const { prefix } = config
 

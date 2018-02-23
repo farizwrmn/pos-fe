@@ -1,6 +1,6 @@
 import { request, config, crypt, lstorage } from 'utils'
 
-const { apiUserLogin, apiUserRoles, apiUserStore, apiUserTotp } = config.rest
+const { apiUserLogin, apiUserRoles, apiUserStore } = config.rest
 
 const lsUserId = lstorage.getStorageKey('udi')[1]
 
@@ -8,17 +8,6 @@ export async function login (data) {
   return request({
     url: apiUserLogin,
     method: 'post',
-    data
-  })
-}
-
-export async function verifyTOTP (data) {
-  const apiHeaderToken = crypt.apiheader()
-  const url = apiUserTotp.replace('/:id', `/${data.userid}`)
-  return request({
-    url,
-    method: 'post',
-    headers: apiHeaderToken,
     data
   })
 }

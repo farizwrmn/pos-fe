@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+// import { routerRedux } from 'dva/router'
 
-const UserProfile = ({ userprofile, loading, dispatch, location, app }) => {
+const UserProfile = ({ userprofile/* , loading, dispatch, location, app */ }) => {
   const { data } = userprofile
-  const { user, storeInfo } = app
+  // const { user, storeInfo } = app
 
 
   return (
@@ -17,11 +17,12 @@ const UserProfile = ({ userprofile, loading, dispatch, location, app }) => {
 }
 
 UserProfile.propTypes = {
-  userprofile: PropTypes.object,
-  loading: PropTypes.object,
-  location: PropTypes.object,
-  app: PropTypes.object,
-  dispatch: PropTypes.func
+  userprofile: PropTypes.object
+  // ,
+  // loading: PropTypes.object,
+  // location: PropTypes.object,
+  // app: PropTypes.object,
+  // dispatch: PropTypes.func
 }
 
 export default connect(({ userprofile, loading, app }) => ({ userprofile, loading, app }))(UserProfile)

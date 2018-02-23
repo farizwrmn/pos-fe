@@ -1,12 +1,13 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
+import { message } from 'antd'
 import config from './config'
 import request from './request'
 import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
 import ip from './ip'
-import { message } from 'antd'
+
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {

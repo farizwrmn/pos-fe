@@ -1,13 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input, Cascader, Icon, message, Popover } from 'antd'
-import { config } from 'utils'
-import styles from './index.less'
-import './index.less'
+import { Button, Row, Form, Input, Cascader, Popover } from 'antd'
+import { config, ip } from 'utils'
 import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
-import { crypt, ip, request } from 'utils'
+import styles from './index.less'
 
 const { authBy } = config
 const FormItem = Form.Item

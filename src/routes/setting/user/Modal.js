@@ -73,7 +73,7 @@ const modal = ({
     })
   }
 
-  const defaultValueRole = { key: roleItem.default }
+  // const defaultValueRole = { key: roleItem.default }
   const modalOpts = {
     ...modalProps,
     onOk: handleOk

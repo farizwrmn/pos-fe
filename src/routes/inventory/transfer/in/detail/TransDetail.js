@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form,
-  Row,
-  Modal
+  Row
 } from 'antd'
 import List from './ListDetail'
 

@@ -77,8 +77,8 @@ export default {
         }
 
         const period = yield call(queryLastActive)
-        let startPeriod,
-          endPeriod
+        let startPeriod
+        let endPeriod
         if (period.data[0]) {
           startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
           endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')

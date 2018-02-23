@@ -1,9 +1,9 @@
 const findIP = (onNewIP) => { //  onNewIp - your listener function for new IPs
   let MyPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection // compatibility for firefox and chrome
-  const pc = new MyPeerConnection({ iceServers: [] }),
-    noop = function () {},
-    localIPs = {},
-    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
+  const pc = new MyPeerConnection({ iceServers: [] })
+  const noop = function () {}
+  const localIPs = {}
+  const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
   function ipIterate (ip) {
     if (!localIPs[ip]) onNewIP(ip)
     localIPs[ip] = true

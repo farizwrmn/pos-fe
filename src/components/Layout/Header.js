@@ -1,21 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar, Switch, Cascader } from 'antd'
+import { Menu, Icon, Popover, Calendar, Switch } from 'antd'
 import { Link } from 'dva/router'
+import { classnames, lstorage } from 'utils'
 import styles from './Header.less'
 import Menus from './Menu'
 import HeaderMenu from './HeaderMenu'
 import ShortcutKey from './ShortcutKey'
 import ChangePw from './ChangePassword'
 import ChangeTotp from './ChangeTotp'
-import { classnames, lstorage } from 'utils'
 
 const SubMenu = Menu.SubMenu
 
 const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar,
   menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
   handleShortcutKeyHide, handleMyProfileShow, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
-  handleTotpLoad, handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
+  handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
   handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu
 }) => {

@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import { messageInfo } from 'utils'
 import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
-import { messageInfo } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'userStore',
