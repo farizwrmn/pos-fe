@@ -150,8 +150,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     }
     if ((parseFloat(memberInformation.memberPendingPayment) ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding)) || listAmount.length === 0) {
       Modal.error({
-        title: 'Payment',
-        content: 'Total Payment must be greater than Netto'
+        title: 'Payment pending restricted',
+        content: 'This member type cannot allow to pending'
       })
     } else if (checkProductId) {
       console.log(checkProductId)

@@ -27,7 +27,8 @@ module.exports = {
     apiUserStore: `${APIURL}${APIV1}/users/:id/stores`,
     apiUserTotp: `${APIURL}${APIV1}/users/:id/totp`,
     apiUserTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
-    apiStores: `${APIURL}${APIV1}/stores`
+    apiStores: `${APIURL}${APIV1}/stores`,
+    apiTime: `${APIURL}${APIV1}/time`
   },
   api: {
     getIpAddress: `${APIURL}${APIV1}/utils/ipaddr`,

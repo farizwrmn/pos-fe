@@ -1712,7 +1712,7 @@ const Pos = ({
                   </Col>
                 </FormItem>
                 <FormItem label="KM" hasFeedback {...formItemLayout}>
-                  <Input type="number" onChange={value => onChangeLastMeter(value)} id="KM" defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} />
+                  <Input type="number" maxNumber={11} onChange={value => onChangeLastMeter(value)} id="KM" defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} />
                 </FormItem>
                 <FormItem label="Code" {...formItemLayout}>
                   <Input value={memberInformation.memberCode} disabled />
@@ -1743,7 +1743,7 @@ const Pos = ({
                 <Col span={12} style={{ padding: 12 }}>
                   <Row>
                     <Col xs={24} sm={24} md={16} lg={16} xl={18}>
-                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '200%', height: 40, color: '#000000', background: '#8fc9fb' }} className="margin-right" width="100%" onClick={handlePayment}> Payment </Button>
+                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '200%', height: 40, color: '#000000', background: '#8fc9fb' }} className="margin-right" width="100%" onClick={handlePayment}>Payment</Button>
                     </Col>
                     <Col xs={24} sm={24} md={16} lg={10} xl={8}>
                       <Button style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40, color: '#000000', background: '#ffff66' }} onClick={handleSuspend}> Suspend </Button>

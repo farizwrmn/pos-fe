@@ -694,9 +694,11 @@ export default {
         return outOfStock
       }
       function checkPrice (input, temp) {
-        const price = (input.price * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
-        const cost = (temp[0].amount === 0 ? temp[0].costPrice : temp[0].amount)
-        if (price >= parseFloat(cost).toFixed(2)) {
+        const price = ((input.price * input.qty) * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
+        const cost = temp[0].amount * input.qty
+        console.log('price', price)
+        console.log('cost', cost)
+        if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
         return true
@@ -773,9 +775,11 @@ export default {
         return outOfStock
       }
       function checkPrice (input, temp) {
-        const price = (input.price * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
-        const cost = (temp[0].amount === 0 ? temp[0].costPrice : temp[0].amount)
-        if (price >= parseFloat(cost).toFixed(2)) {
+        const price = ((input.price * input.qty) * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
+        const cost = temp[0].amount * input.qty
+        console.log('price', price)
+        console.log('cost', cost)
+        if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
         return true

@@ -25,17 +25,17 @@ const Company = ({
       if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false
 
       switch (typeof (obj1[p])) {
-      // Deep compare objects
-      case 'object':
-        if (!Object.compare(obj1[p], obj2[p])) return false
-        break
+        // Deep compare objects
+        case 'object':
+          if (!Object.compare(obj1[p], obj2[p])) return false
+          break
         // Compare function code
-      case 'function':
-        if (typeof (obj2[p]) === 'undefined' || (p !== 'compare' && obj1[p].toString() !== obj2[p].toString())) return false
-        break
+        case 'function':
+          if (typeof (obj2[p]) === 'undefined' || (p !== 'compare' && obj1[p].toString() !== obj2[p].toString())) return false
+          break
         // Compare values
-      default:
-        if (obj1[p] !== obj2[p]) return false
+        default:
+          if (obj1[p] !== obj2[p]) return false
       }
     }
 
@@ -77,7 +77,7 @@ const Company = ({
               initialValue: config.companyName,
               rules: [
                 {
-                  pattern: /^[A-Za-z0-9-._/ ]{5,60}$/i,
+                  pattern: /^[a-z0-9-.,_/ ]{5,65}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]
