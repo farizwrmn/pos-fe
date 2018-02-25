@@ -29,16 +29,24 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
         }
         result.push(res[value.transDate])
       }
-      res[value.transDate].qtyUnit += ((value.woReference !== '' || value.woReference !== null) ? 1 : 0)
-      res[value.transDate].counter += ((value.woReference === '' || value.woReference === null) ? value.product : 0)
+      res[value.transDate].qtyUnit += (!(value.woReference === null || value.woReference === '') ? 1 : 0)
+      res[value.transDate].counter += (value.woReference === null || value.woReference === '' ? value.product : 0)
       res[value.transDate].qtyProduct += value.qtyProduct
-      res[value.transDate].product += ((value.woReference !== '' || value.woReference !== null) ? value.product : 0)
+      res[value.transDate].product += (!(value.woReference === null || value.woReference === '') ? value.product : 0)
       res[value.transDate].qtyService += value.qtyService
       res[value.transDate].service += value.service
       return res
     }, {})
     for (let key = 0; key < result.length; key += 1) {
-      const { transDate, product, qtyProduct, service, qtyService, qtyUnit, counter } = result[key]
+      const {
+        transDate,
+        product,
+        qtyProduct,
+        service,
+        qtyService,
+        qtyUnit,
+        counter
+      } = result[key]
       formatSales.push({
         transDate: moment(transDate).format('YYYY-MM-DD'), // 'DD/MM/YY'
         title: moment(transDate).format('L'), // 'DD/MM/YY'
