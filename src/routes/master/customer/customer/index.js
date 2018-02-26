@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
 import { NewForm } from '../../../components'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, newItem, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
+  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -20,12 +21,21 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       ...location.query
     },
     onFilterChange (value) {
-      dispatch({
-        type: 'customer/query',
-        payload: {
-          ...value
+      // dispatch({
+      //   type: 'customer/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
         }
-      })
+      }))
     },
     switchIsChecked () {
       dispatch({
@@ -34,7 +44,14 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       })
     },
     onResetClick () {
-      dispatch({ type: 'customer/resetCustomerList' })
+      const { query, pathname } = location
+      const { q, createdAt, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...other
+        }
+      }))
     }
   }
 
@@ -42,8 +59,27 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     dataSource: list,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['customer/query'],
     location,
+    onChange (page) {
+      // dispatch({
+      //   type: 'customer/query',
+      //   payload: {
+      //     pageSize: Number(e.pageSize),
+      //     page: Number(e.current)
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'customer/updateState',
@@ -84,6 +120,14 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           disable: ''
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({ type: 'customer/resetCustomerList' })
     },
     onShowHideSearch () {

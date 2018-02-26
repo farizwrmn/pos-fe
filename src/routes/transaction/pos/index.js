@@ -61,6 +61,7 @@ const Pos = ({
     totalItem,
     curTotal,
     kodeUtil,
+    searchText,
     itemService,
     itemPayment,
     infoUtil,
@@ -533,10 +534,21 @@ const Pos = ({
   const modalMemberProps = {
     location,
     loading,
+    dispatch,
     pos,
     visible: modalMemberVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getMembers',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
+        }
+      })
+    },
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
       localStorage.removeItem('member', [])
@@ -863,10 +875,22 @@ const Pos = ({
   const modalMechanicProps = {
     location,
     loading,
+    dispatch,
     pos,
     visible: modalMechanicVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          pagination: {
+            current: Number(e.current),
+            pageSize: Number(e.pageSize)
+          }
+        }
+      })
+    },
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
       localStorage.removeItem('mechanic')
@@ -885,10 +909,22 @@ const Pos = ({
   const modalProductProps = {
     location,
     loading,
+    dispatch,
     pos,
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          pagination: {
+            current: Number(e.current),
+            pageSize: Number(e.pageSize)
+          }
+        }
+      })
+    },
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
       if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
@@ -988,10 +1024,22 @@ const Pos = ({
   const modalServiceProps = {
     location,
     loading,
+    dispatch,
     pos,
     visible: modalServiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          pagination: {
+            current: Number(e.current),
+            pageSize: Number(e.pageSize)
+          }
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'pos/hideServiceModal'
@@ -1051,6 +1099,7 @@ const Pos = ({
   const modalQueueProps = {
     location,
     loading,
+    dispatch,
     pos,
     visible: modalQueueVisible,
     maskClosable: false,

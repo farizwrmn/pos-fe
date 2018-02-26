@@ -2,12 +2,15 @@ import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
+import { moment } from 'moment'
 import { query, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as queryTransType } from '../services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { getDateTime } from '../services/setting/time'
+import { queryLastActive } from '../services/period'
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -171,27 +174,42 @@ export default modelExtend(pageModel, {
           })
         }
         payload.storeId = lstorage.getCurrentUserStore()
-        const data = yield call(create, { id: transNo, data: payload, detail: arrayProd })
-        if (data.success) {
-          let transNoIncrease = {}
-          try {
-            transNoIncrease = yield call(increaseSequence, invoice)
-          } catch (e) {
-            Modal.warning({
-              title: 'Something went wrong',
-              content: `Call your IT support, message: ${e}`
-            })
+        const period = yield call(queryLastActive)
+        let startPeriod
+        if (period.data[0]) {
+          startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
+        }
+        const time = yield call(getDateTime, {
+          id: 'date'
+        })
+        if (moment(time).format('YYYY-MM-DD') >= startPeriod) {
+          const data = yield call(create, { id: transNo, data: payload, detail: arrayProd })
+          if (data.success) {
+            let transNoIncrease = {}
+            try {
+              transNoIncrease = yield call(increaseSequence, invoice)
+            } catch (e) {
+              Modal.warning({
+                title: 'Something went wrong',
+                content: `Call your IT support, message: ${e}`
+              })
+            }
+            if (transNoIncrease.success) {
+              Modal.info({
+                title: 'Success',
+                content: 'Data has been saved...!'
+              })
+              yield put(routerRedux.push('/transaction/adjust'))
+              yield put({ type: 'SuccessData' })
+              yield put({ type: 'hidePopover' })
+              yield put({ type: 'modalHide' })
+            }
           }
-          if (transNoIncrease.success) {
-            Modal.info({
-              title: 'Success',
-              content: 'Data has been saved...!'
-            })
-            yield put(routerRedux.push('/transaction/adjust'))
-            yield put({ type: 'SuccessData' })
-            yield put({ type: 'hidePopover' })
-            yield put({ type: 'modalHide' })
-          }
+        } else {
+          Modal.warning({
+            title: 'Period Has been closed',
+            content: 'can`t insert new transaction'
+          })
         }
       } else {
         Modal.warning({
@@ -414,10 +432,12 @@ export default modelExtend(pageModel, {
       return { ...state, ...action.payload, modalEditVisible: true, item: action.payload.data }
     },
     modalEditHide (state, action) {
-      return { ...state,
+      return {
+        ...state,
         ...action.payload,
         modalEditVisible: false,
-        dataBrowse: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : [] }
+        dataBrowse: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
+      }
     },
     setDataBrowse (state, action) {
       return { ...state, ...action.payload, dataBrowse: action.payload }

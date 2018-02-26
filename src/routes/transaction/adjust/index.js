@@ -62,7 +62,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     item: currentItem,
     lastTrans,
     location,
-    loading: loading.effects['adjust/create'],
+    loading: loading.effects['adjust/add'],
     listType,
     templistType,
     itemEmployee,

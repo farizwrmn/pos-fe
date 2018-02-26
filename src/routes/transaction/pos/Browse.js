@@ -10,8 +10,8 @@ import ListQueue from './ListQueue'
 import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
 
-const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listMember, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
+const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
+  const { listMember, pagination, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
   const width = modalType === 'modalPayment' || modalType === 'modalService' ? '45%' : '80%'
   const modalOpts = {
     ...modalProps
@@ -33,12 +33,15 @@ const Browse = ({ location, pos, loading, DeleteItem, onChooseItem, totalItem, o
           modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
             modalType === 'browseService' ? 'pos/queryService' : 'pos/queryMember'
     )],
-    // pagination,
+    pagination,
     location,
     item: modalType === 'modalPayment' ? itemPayment : {},
     itemService: modalType === 'modalService' ? itemService : {},
     isMotion,
     totalItem,
+    onChange (e) {
+      onChange(e)
+    },
     onChooseItem (item) {
       onChooseItem(item)
     },

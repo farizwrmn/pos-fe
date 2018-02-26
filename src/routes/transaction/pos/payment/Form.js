@@ -165,6 +165,13 @@ const formPayment = ({
     resetFields()
   }
 
+  const changeMethod = () => {
+    setFieldsValue({
+      cardName: null,
+      cardNo: null
+    })
+  }
+
   const curNetto = (parseFloat(curTotal) + parseFloat(curRounding))
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
 
@@ -176,7 +183,7 @@ const formPayment = ({
             {getFieldDecorator('typeCode', {
               initialValue: item.typeCode ? item.typeCode : 'C'
             })(
-              <Select style={{ width: '100%', fontSize: '14pt' }} min={0} maxLength={10}>
+              <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
                 {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
               </Select>
             )}
@@ -254,7 +261,6 @@ const formPayment = ({
           {/* <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
             <Input value={curNetto} style={{ width: '100%', fontSize: '17pt' }} size="large" />
           </FormItem> */}
-
         </Col>
       </Row>
       <FormItem {...formItemLayout}>

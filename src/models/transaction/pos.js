@@ -58,11 +58,9 @@ export default {
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      showTotal: total => `Total ${total} Records`,
       current: 1,
-      total: null
+      pageSize: 10,
+      total: 0
     },
     curBarcode: '',
     curTotal: 0,
@@ -553,13 +551,18 @@ export default {
 
     * getMembers ({ payload }, { call, put }) {
       const data = yield call(queryMembers, payload)
-      let newData = payload ? data.member : data.data
+      let newData = data.data
       if (data.success) {
         yield put({
           type: 'queryGetMembersSuccess',
           payload: {
             memberInformation: newData,
-            tmpMemberList: newData
+            tmpMemberList: newData,
+            pagination: {
+              total: Number(data.total) || 0,
+              current: Number(data.page) || 0,
+              pageSize: Number(data.pageSize) || 0
+            }
           }
         })
       } else {
@@ -603,6 +606,14 @@ export default {
             tmpServiceList: newData
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: newData.length
+            }
+          }
+        })
       } else {
         const modal = Modal.warning({
           title: 'Warning',
@@ -642,6 +653,14 @@ export default {
           payload: {
             mechanicInformation: newData,
             tmpMechanicList: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: newData.length
+            }
           }
         })
       } else {
@@ -1413,7 +1432,7 @@ export default {
     },
 
     queryGetMembersSuccess (state, action) {
-      const { memberInformation, tmpMemberList } = action.payload
+      const { memberInformation, tmpMemberList, ...other } = action.payload
       let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -1422,7 +1441,8 @@ export default {
         ...state,
         listMember: memberInformation,
         tmpMemberList,
-        curTotal: grandTotal
+        curTotal: grandTotal,
+        ...other
       }
     },
 
@@ -1748,7 +1768,7 @@ export default {
       const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpMechanicList.map((record) => {
-        const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg) || record.positionId.match(reg)
+        const match = record.employeeName.match(reg) || record.employeeId.match(reg) || record.positionName.match(reg)
         if (!match) {
           return null
         }

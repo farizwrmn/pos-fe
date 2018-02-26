@@ -23,33 +23,43 @@ export default modelExtend(pageModel, {
     listCustomer: [],
     show: 1,
     modalVisible: false,
-    newItem: false
+    newItem: false,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey, ...other } = location.query
         switch (location.pathname) {
-        case '/master/customerunit':
-          dispatch({
-            type: 'query'
-          })
-          break
-        case '/report/customer/history':
-          dispatch({
-            type: 'query'
-          })
-          break
-        case '/master/customer':
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: '0'
-            }
-          })
-          break
-        default:
+          case '/master/customerunit':
+            dispatch({
+              type: 'query'
+            })
+            break
+          case '/report/customer/history':
+            dispatch({
+              type: 'query'
+            })
+            break
+          case '/master/customer':
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: activeKey || '0'
+              }
+            })
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+            break
+          default:
         }
       })
     }
@@ -65,8 +75,8 @@ export default modelExtend(pageModel, {
           payload: {
             list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
           }

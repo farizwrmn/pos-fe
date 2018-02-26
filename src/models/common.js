@@ -24,7 +24,7 @@ const pageModel = modelExtend(model, {
       showTotal: total => `Total ${total} Records`,
       current: 1,
       total: 0,
-      pageSizeOptions: ['5', '10', '20', '50']
+      pageSizeOptions: ['5', '10', '20', '40']
     },
     disableMultiSelect
   },

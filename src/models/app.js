@@ -54,9 +54,7 @@ export default {
 
   },
   effects: {
-    * query ({
-      payload
-    }, { call, put }) {
+    * query ({ payload }, { call, put }) {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const { data } = yield call(menusService.query)

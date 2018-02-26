@@ -32,22 +32,23 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    const { createTime } = fields
-    if (createTime.length) {
-      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
+    const { createdAt } = fields
+    if (createdAt.length) {
+      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
     }
-    return fields
+    const { birthDate, ...other } = fields
+    return other
   }
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.memberName = fields.searchName
+    fields.q = fields.searchName
     delete fields.searchName
-    delete fields.birthDate
-    if (fields.memberName === undefined || fields.memberName === '') {
-      delete fields.memberName
-    }
+    // if (fields.q === undefined || fields.q === '') {
+    //   delete fields.q
+    // }
     fields = handleFields(fields)
+    console.log('fields', fields)
     onFilterChange(fields)
   }
 
@@ -73,25 +74,24 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { groupName } = filter
 
   let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
+  if (filter.createdAt && filter.createdAt[0]) {
+    initialCreateTime[0] = moment(filter.createdAt[0])
   }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
+  if (filter.createdAt && filter.createdAt[1]) {
+    initialCreateTime[1] = moment(filter.createdAt[1])
   }
 
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: groupName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('searchName')(<Search placeholder="Search" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} >
-        <FilterItem label="Createtime" >
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+        <FilterItem label="Create At" >
+          {getFieldDecorator('createdAt', { initialValue: initialCreateTime })(
+            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createdAt')} />
           )}
         </FilterItem>
       </Col>

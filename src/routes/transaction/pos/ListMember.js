@@ -6,7 +6,7 @@ import { connect } from 'dva'
 const FormItem = Form.Item
 
 const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) => {
-  const { searchText, tmpMemberList } = pos
+  const { searchText } = pos
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -24,20 +24,25 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/onMemberSearch',
+      type: 'pos/getMembers',
       payload: {
-        searchText,
-        tmpMemberList
+        q: searchText === '' ? null : searchText,
+        page: 1
       }
     })
   }
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/onMemberReset',
+      type: 'pos/updateState',
       payload: {
-        searchText: '',
-        tmpMemberList
+        searchText: ''
+      }
+    })
+    dispatch({
+      type: 'pos/getMembers',
+      payload: {
+        page: 1
       }
     })
   }
