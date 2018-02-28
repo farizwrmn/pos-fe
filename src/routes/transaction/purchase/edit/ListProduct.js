@@ -6,7 +6,8 @@ import { connect } from 'dva'
 const FormItem = Form.Item
 
 const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
-  const { searchText, tmpProductList } = purchase
+  const { pagination } = tableProps
+  const { searchText } = purchase
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -16,7 +17,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
     const { value } = e.target
 
     dispatch({
-      type: 'purchase/onInputChange',
+      type: 'purchase/updateState',
       payload: {
         searchText: value
       }
@@ -25,20 +26,28 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
 
   const handleSearch = () => {
     dispatch({
-      type: 'purchase/onProductSearch',
+      type: 'purchase/getProducts',
       payload: {
-        searchText,
-        tmpProductList
+        page: 1,
+        pageSize: pagination.pageSize,
+        q: searchText
       }
     })
   }
 
   const handleReset = () => {
     dispatch({
-      type: 'purchase/onProductReset',
+      type: 'purchase/getProducts',
       payload: {
-        searchText: '',
-        tmpProductList
+        page: 1,
+        pageSize: pagination.pageSize,
+        q: null
+      }
+    })
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        searchText: null
       }
     })
   }

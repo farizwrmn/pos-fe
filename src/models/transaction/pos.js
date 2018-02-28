@@ -58,6 +58,8 @@ export default {
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
       current: 1,
       pageSize: 10,
       total: 0
@@ -610,7 +612,9 @@ export default {
           type: 'updateState',
           payload: {
             pagination: {
-              total: newData.length
+              total: newData.length,
+              page: 1,
+              pageSize: 10
             }
           }
         })
@@ -659,7 +663,9 @@ export default {
           type: 'updateState',
           payload: {
             pagination: {
-              total: newData.length
+              total: newData.length,
+              page: 1,
+              pageSize: 10
             }
           }
         })

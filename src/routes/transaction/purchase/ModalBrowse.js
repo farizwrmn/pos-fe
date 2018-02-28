@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import ListProduct from './ListProduct'
 
-const Browse = ({ location, purchase, loading, onChooseItemItem, ...purchaseProps }) => {
+const Browse = ({ location, purchase, onChange, loading, pagination, onChooseItemItem, ...purchaseProps }) => {
   const { listProduct, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
     ...purchaseProps
@@ -17,14 +17,18 @@ const Browse = ({ location, purchase, loading, onChooseItemItem, ...purchaseProp
     location,
     item: itemPayment,
     isMotion,
+    pagination,
+    onChange (e) {
+      onChange(e)
+    },
     onChooseItem (item) {
       onChooseItemItem(item)
     }
   }
 
   return (
-    <Modal {...modalOpts} width={'80%'} height="80%" footer={[]}>
-      { (modalType === 'browseProduct') && <ListProduct {...listProps} /> }
+    <Modal {...modalOpts} width="80%" height="80%" footer={null}>
+      {(modalType === 'browseProduct') && <ListProduct {...listProps} />}
     </Modal>
   )
 }

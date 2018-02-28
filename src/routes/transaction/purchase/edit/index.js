@@ -7,12 +7,13 @@ import PurchaseList from './PurchaseList'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, supplierInformation, listProduct, curHead, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
+    item, supplierInformation, searchText, listProduct, pagination, curHead, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
 
   const purchaseProps = {
     date,
     datePicker,
+    pagination,
     item: item || '',
     curHead,
     tempo: 0,
@@ -41,6 +42,16 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           data,
           dataVoid,
           e
+        }
+      })
+    },
+    onChange (e) {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          q: searchText === '' ? null : searchText
         }
       })
     },

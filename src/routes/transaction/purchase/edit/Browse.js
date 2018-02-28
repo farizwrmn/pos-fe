@@ -75,7 +75,6 @@ const Browse = ({
 
   const hdlModalShow = (record) => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-    console.log(transNo)
     if (transNo.transDate < storeInfo.startPeriod) {
       Warning({
         title: 'Read-only Item',

@@ -374,106 +374,26 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
   return (
     <div className="content-inner">
-      <Row style={{ marginBottom: 16 }}>
-        <Col span={24}>
-          {/* <Card bordered={false} title="Payment" bodyStyle={{ padding: 0 }}> */}
-          {listOpts.length > 0 && <FormPayment options={listOpts} {...formPaymentProps} />}
-          {/* <Form layout="horizontal">
-              <FormItem>
-                <Input
-                  size="large"
-                  style={{ fontSize: 24 }}
-                  value={inputPayment}
-                  onKeyDown={e => handleKeyDown(e)}
-                  onChange={e => onChange(e)}
-                  placeholder="Input Payment Amount Here"
-                />
-                <Cascader showSearch
-                  options={options}
-                  onChange={_value => onChangeCascader(_value)}
-                  placeholder="Please select"
-                  defaultValue={[typeTrans]}
-                />
-              </FormItem>
-              {modalCreditVisible && <ModalCredit {...modalCreditProps} />}
-            </Form> */}
-          {/* </Card> */}
-        </Col>
-      </Row>
-      <Row style={{ marginBottom: 16 }}>
-        <Col xl={24} lg={24}>
-          {/* <PaymentMethod autoFocus options={listOpts} /> */}
-          {/* <Card noHovering bordered={false} title="Point Information" bodyStyle={{ padding: 0 }}>
-            <Input value={localStorage.getItem('transNo') ? localStorage.getItem('transNo') : null} />
-            <Table
-              rowKey={(record, key) => key}
-              bordered
-              scroll={{ x: 1000 }}
-              columns={[
-                {
-                  title: 'No',
-                  dataIndex: 'no'
-                },
-                {
-                  title: 'Code',
-                  dataIndex: 'code'
-                },
-                {
-                  title: 'Product Name',
-                  dataIndex: 'name'
-                },
-                {
-                  title: 'Qty',
-                  dataIndex: 'qty'
-                },
-                {
-                  title: 'Price',
-                  dataIndex: 'price'
-                },
-                {
-                  title: 'Disc 1(%)',
-                  dataIndex: 'disc1'
-                },
-                {
-                  title: 'Disc 2(%)',
-                  dataIndex: 'disc2'
-                },
-                {
-                  title: 'Disc 3(%)',
-                  dataIndex: 'disc3'
-                },
-                {
-                  title: 'Discount',
-                  dataIndex: 'discount'
-                },
-                {
-                  title: 'Total',
-                  dataIndex: 'total'
-                }
-              ]}
-              dataSource={dataTrans()}
-              pagination={false}
-              style={{ marginBottom: 4, marginLeft: 4, marginRight: 4, marginTop: 4 }}
-            />
-          </Card> */}
-        </Col>
-      </Row>
+      {listOpts.length > 0 && <div>
+        <Row style={{ marginBottom: 16 }}>
+          <Col span={24}>
+            <FormPayment options={listOpts} {...formPaymentProps} />
+          </Col>
+        </Row>
 
-      <Row>
-        <Col span={24}>
-          <Form layout="vertical">
-            {/* <FormItem>
-              <Button size="large" onEnter={printPreview} onClick={printPreview} className="margin-right" width="100%" > Print Preview </Button>
-            </FormItem> */}
-            <FormItem>
-              <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
-            </FormItem>
-            <FormItem>
-              <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
-            </FormItem>
-          </Form>
-        </Col>
-      </Row>
+        <Row>
+          <Col span={24}>
+            <Form layout="vertical">
+              <FormItem>
+                <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
+              </FormItem>
+              <FormItem>
+                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
+              </FormItem>
+            </Form>
+          </Col>
+        </Row>
+      </div>}
     </div>
   )
 }

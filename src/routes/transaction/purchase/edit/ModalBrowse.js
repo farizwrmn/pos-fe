@@ -5,7 +5,7 @@ import ListProduct from './ListProduct'
 import ListInvoice from './ListInvoice'
 import ListVoid from './ListVoid'
 
-const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
+const Browse = ({ location, pagination, purchase, onChange, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
   const { listProduct, listInvoice, listVoid, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
     ...purchaseProps
@@ -32,11 +32,18 @@ const Browse = ({ location, purchase, loading, onRestoreVoid, onChooseItemItem, 
       onChooseInvoice(item)
     }
   }
+  const productProps = {
+    pagination,
+    onChange (e) {
+      onChange(e)
+    },
+    ...listProps
+  }
   return (
-    <Modal {...modalOpts} width={'80%'} height="80%" footer={[]}>
-      { (modalType === 'browseProduct') && <ListProduct {...listProps} /> }
-      { (modalType === 'browseInvoice') && <ListInvoice {...listProps} /> }
-      { (modalType === 'browseVoid') && <ListVoid {...listProps} /> }
+    <Modal {...modalOpts} width={'80%'} height="80%" footer={null}>
+      {(modalType === 'browseProduct') && <ListProduct {...productProps} />}
+      {(modalType === 'browseInvoice') && <ListInvoice {...listProps} />}
+      {(modalType === 'browseVoid') && <ListVoid {...listProps} />}
     </Modal>
   )
 }

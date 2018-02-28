@@ -46,7 +46,7 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     const { value } = e.target
 
     dispatch({
-      type: 'purchase/onInputChange',
+      type: 'purchase/updateState',
       payload: {
         searchText: value
       }

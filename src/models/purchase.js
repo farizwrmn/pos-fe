@@ -74,24 +74,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listPurchase: data.data,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
-              total: data.total
-            }
-          }
-        })
-      }
-    },
-
     * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
       if (data) {
@@ -310,8 +292,8 @@ export default modelExtend(pageModel, {
     },
 
     * getProducts ({ payload }, { call, put }) {
-      let data = []
-      let dataDetail = []
+      let data
+      let dataDetail
       if (payload ? payload.modalType === 'browseInvoice' : false) {
         const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
         const period = {
@@ -320,37 +302,31 @@ export default modelExtend(pageModel, {
         }
         dataDetail = yield call(query, period)
       } else {
-        data = yield call(queryProducts)
+        data = yield call(queryProducts, payload)
       }
-      let newData = payload ? data.product : data.data
-      let dataInvoice = dataDetail.data
-      if (data.length === 0 || dataDetail.length === 0) {
+      if (data && data.success) {
+        let newData = data.data
         yield put({
           type: 'queryGetProductsSuccess',
           payload: {
             productInformation: newData,
-            tmpProductList: newData,
             pagination: {
-              total: data.total
+              total: data.total,
+              pageSize: data.pageSize,
+              current: data.page
             }
           }
         })
+      }
+      if (dataDetail && dataDetail.success) {
+        let dataInvoice = dataDetail.data
         yield put({
           type: 'queryGetInvoiceSuccess',
           payload: {
             dataInvoice,
-            tmpInvoiceList: dataInvoice,
-            pagination: {
-              total: dataDetail.total
-            }
+            tmpInvoiceList: dataInvoice
           }
         })
-      } else {
-        const modal = Modal.warning({
-          title: 'Warning',
-          content: 'Content Not Found...!'
-        })
-        setTimeout(() => modal.destroy(), 1000)
       }
     },
     * getInvoiceHeader ({ payload }, { call, put }) {
@@ -616,17 +592,17 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const { listPurchase, listSupplier, tmpSupplierData, pagination } = action.payload
+      const { listPurchase, listSupplier, tmpSupplierData } = action.payload
       return {
         ...state,
         listPurchase,
         listSupplier,
-        tmpSupplierData,
-        pagination: {
-          ...state.pagination,
-          ...pagination
-        }
+        tmpSupplierData
       }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     queryGetProductsSuccess (state, action) {
@@ -648,32 +624,12 @@ export default modelExtend(pageModel, {
       }
     },
     queryGetInvoiceSuccess (state, action) {
-      const { dataInvoice, pagination, tmpInvoiceList } = action.payload
+      const { dataInvoice, tmpInvoiceList } = action.payload
       return {
         ...state,
         listInvoice: dataInvoice,
-        tmpInvoiceList,
-        pagination: {
-          ...state.pagination,
-          ...pagination
-        }
+        tmpInvoiceList
       }
-    },
-    onProductSearch (state, action) {
-      const { searchText, tmpProductList } = action.payload
-      const reg = new RegExp(searchText, 'gi')
-      let newData
-      newData = tmpProductList.map((record) => {
-        const match = record.productName.match(reg) || record.productCode.match(reg)
-        if (!match) {
-          return null
-        }
-        return {
-          ...record
-        }
-      }).filter(record => !!record)
-
-      return { ...state, listProduct: newData }
     },
     onInvoiceSearch (state, action) {
       const { searchText, tmpInvoiceList } = action.payload
@@ -724,23 +680,6 @@ export default modelExtend(pageModel, {
 
       return { ...state, listSupplier: newData, searchText }
     },
-    onProductReset (state, action) {
-      const { searchText, tmpProductList } = action.payload
-      const reg = new RegExp(searchText, 'gi')
-      let newData
-
-      newData = tmpProductList.map((record) => {
-        const match = record.productName.match(reg)
-        if (!match) {
-          return null
-        }
-        return {
-          ...record
-        }
-      }).filter(record => !!record)
-
-      return { ...state, listProduct: newData, searchText }
-    },
     onInvoiceReset (state, action) {
       const { searchText, tmpInvoiceList } = action.payload
       const reg = new RegExp(searchText, 'gi')
@@ -771,9 +710,6 @@ export default modelExtend(pageModel, {
         curTotal: grandTotal,
         curRecord
       }
-    },
-    onInputChange (state, action) {
-      return { ...state, searchText: action.payload.searchText }
     },
     onDiscPercent (state, action) {
       return { ...state, curDiscPercent: action.payload }
