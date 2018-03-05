@@ -38,7 +38,12 @@ export default modelExtend(pageModel, {
     listProduct: [],
     curDiscPercent: 0,
     curDiscNominal: 0,
-    datePicker: ''
+    datePicker: '',
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
@@ -281,13 +286,17 @@ export default modelExtend(pageModel, {
 
     * getProducts ({ payload }, { call, put }) {
       const data = yield call(queryProducts, payload)
-      let newData = payload ? data.product : data.data
+      let newData = data.data
       if (data.success) {
         yield put({
-          type: 'queryGetProductsSuccess',
+          type: 'updateState',
           payload: {
-            productInformation: newData,
-            tmpProductList: newData
+            listProduct: newData,
+            pagination: {
+              pageSize: Number(data.pageSize) || 10,
+              current: Number(data.page) || 1,
+              total: Number(data.total)
+            }
           }
         })
       } else {
@@ -402,6 +411,9 @@ export default modelExtend(pageModel, {
         return fixed
       }())
       return { ...state, templistType: tmpListType, listType: DICT_FIXED, listEmployee: EMPLOYEE_FIXED }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
     SuccessData (state) {
       localStorage.removeItem('adjust')

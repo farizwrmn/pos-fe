@@ -18,7 +18,7 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 }
 }
-const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, item,
   popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...adjustProps }) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
@@ -34,10 +34,6 @@ const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onC
       onOk(data)
       resetFields()
     })
-  }
-
-  const hdlGetProduct = () => {
-    onGetProduct()
   }
 
   const handleGetEmployee = (e) => {
@@ -64,7 +60,6 @@ const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onC
     const value = e[0]
     const variable = templistType.filter(x => x.code === value)
     const { miscVariable } = variable[0]
-    console.log(miscVariable)
     let disabledItem = {}
     let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
     if (miscVariable === 'IN') {
@@ -113,20 +108,20 @@ const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onC
       width: '20%'
     }
   ]
-  let listProductFilter = dataSource.filter(el => el.active === true)
   const contentPopover = (
     <Table
-      pagination={{ total: dataSource.length, pageSize: 5 }}
+      pagination={pagination}
       scroll={{ x: 600, y: 150 }}
       columns={columns}
+      dataSource={dataSource}
       simple
-      dataSource={listProductFilter}
-      locale={{
-        emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
-      }}
+      // locale={{
+      //   emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
+      // }}
       size="small"
       rowKey={record => record.productCode}
       onRowClick={record => handleMenuClick(record)}
+      {...adjustProps}
     />
   )
   return (
@@ -225,7 +220,6 @@ const AdjustForm = ({ lastTrans, loadData, changeDisabledItem, templistType, onC
             onEnter={value => hdlSearch(value)}
             onSearch={value => hdlSearch(value)}
             onChange={_value => handleChangeSearch(_value)}
-            onFocus={() => hdlGetProduct()}
           />
         </Popover>
       </div>

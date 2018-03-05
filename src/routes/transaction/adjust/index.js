@@ -11,7 +11,7 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    lastTrans, templistType, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
+    lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
@@ -58,9 +58,23 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       })
     }
   }
+  const browseProps = {
+    onChange (e) {
+      dispatch({
+        type: 'adjust/getProducts',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          q: searchText
+        }
+      })
+    }
+  }
   const adjustProps = {
+    ...browseProps,
     item: currentItem,
     lastTrans,
+    pagination,
     location,
     loading: loading.effects['adjust/add'],
     listType,
@@ -107,13 +121,20 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         payload: e
       })
     },
-    onSearchProduct (data, e) {
-      console.log('searchtext', searchText)
+    onSearchProduct () {
+      // dispatch({
+      //   type: 'adjust/onProductSearch',
+      //   payload: {
+      //     searchText,
+      //     tmpProductData: e
+      //   }
+      // })
       dispatch({
-        type: 'adjust/onProductSearch',
+        type: 'adjust/getProducts',
         payload: {
-          searchText,
-          tmpProductData: e
+          q: searchText,
+          page: 1,
+          pageSize: pagination.pageSize
         }
       })
     },
