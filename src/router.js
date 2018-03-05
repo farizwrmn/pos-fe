@@ -261,6 +261,14 @@ const Routers = function ({ history, app }) {
             }, 'report-service-summary')
           }
         }, {
+          path: 'report/purchaseinvoice/summary',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/purchaseinvoice'))
+              cb(null, require('./routes/report/purchaseinvoice/'))
+            }, 'report-purchaseinvoice-summary')
+          }
+        }, {
           path: 'report/service/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -327,6 +335,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/service'))
               cb(null, require('./routes/report/customer/'))
             }, 'report-customer-history')
+          }
+        }, {
+          path: 'report/product/stock/quantity-alerts',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/productstock'))
+              cb(null, require('./routes/report/product/stock'))
+            }, 'report-product-stock-qty-alerts')
           }
         }, {
           path: 'report/inventory/transfer',
