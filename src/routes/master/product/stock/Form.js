@@ -208,21 +208,21 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-    case '0':
-      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-      break
-    case '1':
-      moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-        <Button style={{ marginLeft: 8 }}>
-          <Icon type="printer" /> Print
+  case '0':
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+    break
+  case '1':
+    moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+      <Button style={{ marginLeft: 8 }}>
+        <Icon type="printer" /> Print
       </Button>
-      </Dropdown> </div>)
-      break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    default:
-      break
+    </Dropdown> </div>)
+    break
+  case '2':
+    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+    break
+  default:
+    break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
