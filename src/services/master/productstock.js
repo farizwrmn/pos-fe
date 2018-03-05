@@ -12,6 +12,17 @@ export async function query (params) {
   })
 }
 
+export async function queryProductsBelowMinimum (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.store = lstorage.getCurrentUserStore()
+  return request({
+    url: `${stock}/alert`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryPOSstock (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

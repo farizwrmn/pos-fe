@@ -104,10 +104,10 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     onDiscPercent (x, data) {
       dispatch({ type: 'purchase/returnState', payload: { dataBrowse: x, curHead: data } })
     },
-    onChangePPN (data) {
-      localStorage.setItem('taxType', data)
-      dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
-    },
+    // onChangePPN (data) {
+    //   localStorage.setItem('taxType', data)
+    //   dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
+    // },
     onChooseItem (data, head) {
       dispatch({ type: 'purchase/editPurchaseList', payload: { data, head } })
     },

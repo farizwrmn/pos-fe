@@ -19,7 +19,8 @@ export default modelExtend(pageModel, {
     addItem: {},
     curHead: {
       discInvoiceNominal: 0,
-      discInvoicePercent: 0
+      discInvoicePercent: 0,
+      taxType: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
     },
     curTotal: 0,
     tmpSupplierData: [],
@@ -121,8 +122,9 @@ export default modelExtend(pageModel, {
         const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
         const x = dataProduct
         for (let key = 0; key < x.length; key += 1) {
-          x[key].dpp = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice !== 0 ? totalPrice : 1)) * (data.discInvoiceNominal))
-          x[key].ppn = (ppnType === 'I' ? (x[key].dpp * 0.1) : 0)
+          const totalDpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
+          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
           x[key].total = x[key].dpp + x[key].ppn
         }
         localStorage.setItem('product_detail', JSON.stringify(x))
@@ -488,7 +490,6 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
     * deleteList ({ payload }, { put }) {
-      console.log('payload', payload.no)
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
@@ -537,7 +538,6 @@ export default modelExtend(pageModel, {
       }
     },
     * deleteVoidList ({ payload }, { put }) {
-      console.log('payload', payload.no)
       let dataPos = (localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void')))
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {

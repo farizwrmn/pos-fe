@@ -9,7 +9,14 @@ import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
-import { queryLastActive } from '../services/period'
+import { query as queryAllPeriod, queryLastActive } from '../services/period'
+import {
+  queryTotalBirthdayInAMonth,
+  queryTotalBirthdayPerDate,
+  queryShowCustomerBirthdayPerDate,
+  queryShowCustomerBirthdayPerMonth
+} from '../services/customerBirthday'
+import { queryProductsBelowMinimum } from '../services/master/productstock'
 
 const { prefix } = config
 
@@ -31,18 +38,30 @@ export default {
       }
     ],
     menuPopoverVisible: false,
-    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false },
+    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, displayBirthdate: false },
     visiblePw: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
-    ipAddr: ''
+    ipAddr: '',
+    selectedDate: moment().format('MMMM, Do YYYY'),
+    calendarMode: 'month',
+    selectedMonth: moment().format('MM'),
+    totalBirthdayInAMonth: 0,
+    listTotalBirthdayPerDate: [],
+    listTotalBirthdayPerMonth: [],
+    listCustomerBirthday: [],
+    listNotification: []
   },
   subscriptions: {
 
     setup ({ dispatch }) {
       dispatch({ type: 'query' })
+      dispatch({ type: 'queryTotalBirthdayInAMonthOfAYear' })
+      dispatch({ type: 'queryTotalBirthdayInAMonth', payload: { month: moment().format('MM') } })
+      dispatch({ type: 'queryTotalBirthdayPerDate', payload: { month: moment().format('MM') } })
+      dispatch({ type: 'queryPeriod' })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -209,10 +228,86 @@ export default {
         type: 'querySuccessTotp',
         payload
       })
+    },
+
+    * queryTotalBirthdayInAMonthOfAYear (payload, { call, put }) {
+      const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+      let data
+      let listTotalBirthdayPerMonth = []
+      for (let i = 0; i < months.length; i += 1) {
+        const month = months[i]
+        data = yield call(queryTotalBirthdayInAMonth, payload = { month })
+        listTotalBirthdayPerMonth.push(Object.assign({}, data.data, { month }))
+      }
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { listTotalBirthdayPerMonth, ...payload } })
+      }
+    },
+
+    * queryTotalBirthdayInAMonth ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTotalBirthdayInAMonth, payload)
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { totalBirthdayInAMonth: data.data.counter } })
+      }
+    },
+
+    * queryTotalBirthdayPerDate ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTotalBirthdayPerDate, payload)
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { listTotalBirthdayPerDate: data.data } })
+      }
+    },
+
+    * queryShowCustomerBirthdayPerDate ({ payload = {} }, { call, put }) {
+      const data = yield call(queryShowCustomerBirthdayPerDate, payload)
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { listCustomerBirthday: data.data } })
+      }
+    },
+
+    * queryShowCustomerBirthdayPerMonth ({ payload = {} }, { call, put }) {
+      const data = yield call(queryShowCustomerBirthdayPerMonth, payload)
+      if (data.success) {
+        yield put({ type: 'updateState', payload: { listCustomerBirthday: data.data } })
+      }
+    },
+
+    * queryPeriod (payload, { call, put }) {
+      const data = yield call(queryAllPeriod)
+      if (data.success) {
+        const start = data.data[0].startPeriod
+        yield put({
+          type: 'queryNotifications',
+          payload: {
+            start,
+            end: moment().format('YYYY-MM-DD')
+          }
+        })
+      }
+    },
+
+    * queryNotifications ({ payload = {} }, { call, put }) {
+      let allNotifications = []
+      const dataStocks = yield call(queryProductsBelowMinimum, payload)
+      if (dataStocks.success) {
+        allNotifications.push({ title: 'Quantity Alerts', route: '/report/product/stock/quantity-alerts', counter: Object.keys(dataStocks.data).length })
+      }
+
+      if (allNotifications.length > 0) {
+        yield put({ type: 'updateState', payload: { listNotification: allNotifications } })
+      }
     }
+
   },
   reducers: {
     updateState (state, { payload }) {
+      return {
+        ...state,
+        ...payload
+      }
+    },
+
+    showTotalBirthdayInCurrentMonth (state, { payload }) {
       return {
         ...state,
         ...payload

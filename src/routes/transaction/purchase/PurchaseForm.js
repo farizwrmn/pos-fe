@@ -22,7 +22,7 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, onChangePPN, handleBrowseProduct,
+const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
   modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
   onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
@@ -40,8 +40,8 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
     const grandTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     return grandTotal
   }
-  const getNettoTotal = (g, totalDisc, e, totalPpn) => {
-    const nettoTotal = (g - totalDisc) + (parseFloat(e) || 0) + totalPpn
+  const getNettoTotal = (totalDpp, e, totalPpn) => {
+    const nettoTotal = totalDpp + (parseFloat(e) || 0) + totalPpn
     return nettoTotal
   }
   let dataPurchase = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
@@ -51,7 +51,7 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
   let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
   let totalDisc = getDiscTotal(g)
   let grandTotal = getGrandTotal(g)
-  let nettoTotal = getNettoTotal(grandTotal, totalDisc, rounding, totalPpn)
+  let nettoTotal = getNettoTotal(totalDpp, rounding, totalPpn)
   const customPanelStyle = {
     borderRadius: 4,
     marginBottom: 24,
@@ -75,8 +75,9 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
     const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     const x = dataProduct
     for (let key = 0; key < x.length; key += 1) {
-      x[key].dpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
+      const totalDpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
+      x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
     localStorage.setItem('product_detail', JSON.stringify(x))
@@ -193,7 +194,8 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
                       }]
                     })(<Select onBlur={hdlChangePercent}>
                       <Option value="I">Include</Option>
-                      <Option value="E">Exclude</Option>
+                      <Option value="E">Exclude (0%)</Option>
+                      <Option value="S">Exclude (10%)</Option>
                     </Select>)}
                   </FormItem>
                   <FormItem label="Disc Invoice(%)" hasFeedback {...formItemLayout}>
@@ -291,17 +293,17 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={grandTotal} />
+            <Input disabled value={(parseFloat(grandTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalDisc} />
+            <Input disabled value={(parseFloat(totalDisc)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={totalPpn} />
+            <Input disabled value={(parseFloat(totalPpn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
         <Row>
@@ -318,7 +320,7 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
         </Row>
         <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={nettoTotal} />
+            <Input disabled value={(parseFloat(nettoTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>
         </Row>
       </div>

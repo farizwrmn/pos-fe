@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
-import { Cancel, Trans, Daily } from '../components'
+import { Cancel, Trans, Daily, Detail } from '../components'
 
 const TabPane = Tabs.TabPane
 
@@ -22,6 +22,7 @@ const Report = ({ dispatch }) => {
         {/* <TabPane tab="By Product" key="2"><Product /></TabPane> */}
         <TabPane tab="Void Invoice" key="2"><Cancel /></TabPane>
         <TabPane tab="History" key="3"><Daily /></TabPane>
+        <TabPane tab="Detail" key="4"><Detail /></TabPane>
       </Tabs>
     </div>
   )

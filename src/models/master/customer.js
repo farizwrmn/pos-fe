@@ -40,10 +40,22 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query'
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              searchText: ''
+            }
+          })
           break
         case '/report/customer/history':
           dispatch({
             type: 'query'
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              searchText: ''
+            }
           })
           break
         case '/master/customer':

@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { queryCustomerHistory } from '../../services/report/pos'
+import { queryCustomerHistory, queryCustomerAsset } from '../../services/report/pos'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -8,17 +8,26 @@ export default modelExtend(pageModel, {
   state: {
     modalVisible: false,
     listPoliceNo: [],
+    listAsset: [],
     customerInfo: {},
     listHistory: [],
     from: '',
-    to: ''
+    to: '',
+    activeKey: 0
   },
 
   subscriptions: {
-    setup ({ history }) {
+    setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey, ...other } = location.query
         if (location.pathname === '/report/customer/history') {
-          //
+          dispatch({ type: 'queryCustomerAsset', payload: other })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || 0
+            }
+          })
         }
       })
     }
@@ -52,6 +61,17 @@ export default modelExtend(pageModel, {
           }
         })
       }
+    },
+    * queryCustomerAsset ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCustomerAsset, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessAsset',
+          payload: {
+            listAsset: data.data
+          }
+        })
+      }
     }
 
   },
@@ -62,6 +82,17 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listHistory,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    querySuccessAsset (state, action) {
+      const { listAsset, pagination } = action.payload
+      return {
+        ...state,
+        listAsset,
         pagination: {
           ...state.pagination,
           ...pagination

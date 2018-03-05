@@ -1,0 +1,167 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import moment from 'moment'
+import { RepeatReportMergeCell } from 'components'
+
+const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
+  const styles = {
+    title: {
+      name: 'Calibri',
+      family: 4,
+      size: 12,
+      underline: true
+    },
+    merchant: {
+      name: 'Calibri',
+      family: 4,
+      size: 12
+    },
+    period: {
+      name: 'Calibri',
+      family: 4,
+      size: 12
+    },
+    tableTitle: {
+      name: 'Calibri',
+      family: 4,
+      size: 12,
+      bold: true
+    },
+    tableHeader: {
+      name: 'Calibri',
+      family: 4,
+      size: 12,
+      bold: true
+    },
+    tableBody: {
+      name: 'Calibri',
+      family: 4,
+      size: 11
+    },
+    tableFooter: {
+      name: 'Calibri',
+      family: 4,
+      size: 11
+    },
+    tableBorder: {
+      top: { style: 'thin', color: { argb: '000000' } },
+      left: { style: 'thin', color: { argb: '000000' } },
+      bottom: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
+    }
+  }
+
+  const title = [
+    { value: 'LAPORAN HISTORY POS DETAIL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
+  ]
+
+  const tableHeader = [
+    { value: 'NO', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'INVOICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'DATE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'PRODUCT CODE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'UNIT PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'DISCOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder }
+  ]
+
+  let tableTitles = []
+  let tableBodies = []
+  let tableFooters = []
+  let tableMerge = []
+  let charCode = 65
+  let position = 9
+  let count = 1
+  for (let i = 0; i < listData.length; i += 1) {
+    let master = listData[i]
+    let tableTitle = []
+    tableTitle.push({ value: `${master.memberName}(${master.memberCode})`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
+    tableTitle.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
+    tableTitle.push({ value: `${master.policeNo}(${master.merk} ${master.model})`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle })
+    tableTitles.push(tableTitle)
+
+    let mergeField = {
+      no: `${String.fromCharCode(charCode)}${position}:${String.fromCharCode(charCode)}${position + (master.items.length - 1)}`,
+      space: `${String.fromCharCode(charCode + 1)}${position}:${String.fromCharCode(charCode + 1)}${position + (master.items.length - 1)}`,
+      transNo: `${String.fromCharCode(charCode + 2)}${position}:${String.fromCharCode(charCode + 2)}${position + (master.items.length - 1)}`,
+      date: `${String.fromCharCode(charCode + 3)}${position}:${String.fromCharCode(charCode + 3)}${position + (master.items.length - 1)}`
+    }
+    for (let key in mergeField) {
+      tableMerge.push(mergeField[key])
+    }
+    position += (master.items.length + 4)
+
+    let group = []
+    for (let n = 0; n < master.items.length; n += 1) {
+      let data = master.items[n]
+      let tableBody = []
+      tableBody.push({ value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${data.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      group.push(tableBody)
+    }
+    tableBodies.push(group)
+    count += 1
+
+    let totalQty = master.items.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
+    let totalSubTotal = master.items.reduce((cnt, o) => cnt + (parseFloat(o.total) || 0), 0)
+    let totalDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
+    let totalAfterDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
+
+    let tableFooter = []
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${totalSubTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${totalAfterDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooters.push(tableFooter)
+  }
+
+  // Declare additional Props
+  const XLSProps = {
+    className: 'button-width02 button-extra-large bgcolor-green',
+    paperSize: 9,
+    orientation: 'portrait',
+    title,
+    tableTitle: tableTitles,
+    tableHeader,
+    tableMerge,
+    tableBody: tableBodies,
+    tableFooter: tableFooters,
+    data: listData,
+    fileName: 'POS-Detail-Summary'
+  }
+
+  return (
+    <RepeatReportMergeCell {...XLSProps} />
+  )
+}
+
+PrintXLS.propTypes = {
+  location: PropTypes.object,
+  storeInfo: PropTypes.string,
+  fromDate: PropTypes.string,
+  toDate: PropTypes.string
+}
+
+export default PrintXLS

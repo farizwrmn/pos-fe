@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import { Button, Row, Col, Form, DatePicker, Card } from 'antd'
 import { SelectItem } from 'components'
 import ModalBrowse from './Modal'
+import PrintXLS from './PrintXLS'
+import PrintPDF from './PrintPDF'
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 8
+      span: 9
     },
     sm: {
       span: 8
@@ -18,10 +20,10 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 16
+      span: 15
     },
     sm: {
-      span: 14
+      span: 16
     },
     md: {
       span: 14
@@ -30,8 +32,9 @@ const formItemLayout = {
 }
 
 const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
+  xs: { span: 24 },
+  sm: { span: 12 },
+  md: { span: 12 },
   lg: { span: 12 },
   xl: { span: 12 }
 }
@@ -49,6 +52,7 @@ const Filter = ({
   resetHistory,
   onSearchClick,
   ...modalProps,
+  ...printProps,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -151,6 +155,8 @@ const Filter = ({
         <Button type="danger" onClick={clickReset}>Reset</Button>
       </Col>
       <Col {...column} >
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
         {Object.keys(customerInfo).length > 0 && <Card {...cardProps}>{item}</Card>}
       </Col>
     </Row>

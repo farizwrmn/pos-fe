@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Modal } from 'antd'
-import { ModalList } from '../../components'
+import { ModalList } from '../../../../components'
 
 
 const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
-  const { list, listCustomer, searchText } = customer
+  const { listCustomer, searchText, pagination } = customer
   const width = '80%'
   const modalOpts = {
     ...modalProps
@@ -46,22 +46,25 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
     searchText,
     placeholderText: 'Search Customer',
     columns,
+    pagination,
     dataSource: listCustomer,
     loading: loading.effects['customer/query'],
     onSearch () {
       dispatch({
-        type: 'customer/onSearch',
+        type: 'customer/query',
         payload: {
-          search: searchText,
-          data: list
+          page: 1,
+          q: searchText
         }
       })
     },
     onReset () {
       dispatch({
+        type: 'customer/query'
+      })
+      dispatch({
         type: 'customer/updateState',
         payload: {
-          listCustomer: list,
           searchText: ''
         }
       })
@@ -86,6 +89,15 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
         type: 'customer/updateState',
         payload: {
           searchText: text
+        }
+      })
+    },
+    onChange (page) {
+      dispatch({
+        type: 'customer/query',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize
         }
       })
     }

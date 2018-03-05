@@ -37,10 +37,13 @@ const PurchaseList = ({ onChooseItem, curHead, onChangeTotalItem, onDelete, item
       data.dpp = TOTAL
       data.ppn = 0
     } else if (tax === 'I') {
+      data.dpp = TOTAL / 1.1
+      data.ppn = TOTAL * 0.1
+    } else if (tax === 'S') {
       data.dpp = TOTAL
       data.ppn = TOTAL * 0.1
     }
-    data.total = TOTAL + data.ppn
+    data.total = data.dpp + data.ppn
     onChangeTotalItem(data)
   }
   const handleDelete = () => {

@@ -14,8 +14,8 @@ const BasicReportCard = ({
   tableStyle,
   tableBody = [],
   header = {},
-  footer = {},
-  companyLogo
+  footer = {}
+  // companyLogo
 }) => {
   const createPdfLineItems = (tabledata) => {
     let body = []
@@ -53,7 +53,7 @@ const BasicReportCard = ({
             }
           }
         ],
-        images: { companyLogo } || {},
+        // images: { companyLogo } || {},
         footer,
         styles: tableStyle
       }

@@ -28,32 +28,38 @@ const Browse = ({
     {
       title: 'Price',
       dataIndex: 'price',
-      key: 'price'
+      key: 'price',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
-      key: 'disc1'
+      key: 'disc1',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
-      key: 'discount'
+      key: 'discount',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
-      key: 'dpp'
+      key: 'dpp',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
-      key: 'ppn'
+      key: 'ppn',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Total',
       dataIndex: 'total',
-      key: 'total'
+      key: 'total',
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Ket',

@@ -94,11 +94,13 @@ const modal = ({
             switch (item.type) {
             case 'Open':
               badge = (<Badge dot
-                style={{ backgroundColor: color.purple,
+                style={{
+                  backgroundColor: color.purple,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none' }}
+                  transform: 'none'
+                }}
                 text={item.content}
               />)
               break
@@ -119,11 +121,13 @@ const modal = ({
               break
             case 'Reschedule':
               badge = (<Badge dot
-                style={{ backgroundColor: color.peach,
+                style={{
+                  backgroundColor: color.peach,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
-                  transform: 'none' }}
+                  transform: 'none'
+                }}
                 text={item.content}
               />)
               break
@@ -204,11 +208,13 @@ const modal = ({
           switch (item.type) {
           case 'Open':
             badge = (<Badge dot
-              style={{ backgroundColor: color.purple,
+              style={{
+                backgroundColor: color.purple,
                 position: 'relative',
                 display: 'inline-block',
                 top: 0,
-                transform: 'none' }}
+                transform: 'none'
+              }}
               text={item.content}
             />)
             break
@@ -229,11 +235,13 @@ const modal = ({
             break
           case 'Reschedule':
             badge = (<Badge dot
-              style={{ backgroundColor: color.peach,
+              style={{
+                backgroundColor: color.peach,
                 position: 'relative',
                 display: 'inline-block',
                 top: 0,
-                transform: 'none' }}
+                transform: 'none'
+              }}
               text={item.content}
             />)
             break
@@ -288,7 +296,8 @@ const modal = ({
             })(<Select placeholder="Choose Status" defaultValue="OP" style={{ width: 120 }} >
               <Option value="OP"><Badge dot
                 text="Open"
-                style={{ backgroundColor: color.wisteria,
+                style={{
+                  backgroundColor: color.wisteria,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -301,7 +310,8 @@ const modal = ({
               <Option value="CO"><Badge status="success" text="Check-Out" /></Option>
               <Option value="RS"><Badge dot
                 text="Reschedule"
-                style={{ backgroundColor: color.lavenderrose,
+                style={{
+                  backgroundColor: color.lavenderrose,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -316,7 +326,8 @@ const modal = ({
         <TabPane tab="Browse" key="2">
           <div style={{ width: '230px', float: 'left' }} >
             <Badge dot
-              style={{ backgroundColor: color.wisteria,
+              style={{
+                backgroundColor: color.wisteria,
                 position: 'relative',
                 display: 'inline-block',
                 top: '-0.2vh',
@@ -328,7 +339,8 @@ const modal = ({
             <Badge status="processing" />
             <Badge status="success" />
             <Badge dot
-              style={{ backgroundColor: color.lavenderrose,
+              style={{
+                backgroundColor: color.lavenderrose,
                 position: 'relative',
                 display: 'inline-block',
                 top: '-0.2vh',
@@ -341,7 +353,8 @@ const modal = ({
             <div>
               <Badge dot
                 text="Open"
-                style={{ backgroundColor: color.wisteria,
+                style={{
+                  backgroundColor: color.wisteria,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -361,7 +374,8 @@ const modal = ({
             <div>
               <Badge dot
                 text="Reschedule"
-                style={{ backgroundColor: color.lavenderrose,
+                style={{
+                  backgroundColor: color.lavenderrose,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,

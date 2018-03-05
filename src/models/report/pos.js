@@ -1,7 +1,15 @@
 /**
  * Created by Veirry on 04/10/2017.
  */
-import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
+import {
+  query as queryReport,
+  queryTrans,
+  queryAll,
+  queryTransCancel,
+  queryPosDaily,
+  queryPOS,
+  queryPOSDetail
+} from '../../services/report/pos'
 
 export default {
   namespace: 'posReport',
@@ -10,6 +18,8 @@ export default {
     list: [],
     listTrans: [],
     listDaily: [],
+    listPOS: [],
+    listPOSDetail: [],
     fromDate: '',
     toDate: '',
     category: 'ALL CATEGORY',
@@ -122,9 +132,53 @@ export default {
           ...payload
         }
       })
+    },
+    * queryPOS ({ payload }, { call, put }) {
+      let data = yield call(queryPOS, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPOS',
+          payload: {
+            listPOS: data.data,
+            fromDate: payload.startPeriod,
+            toDate: payload.endPeriod
+          }
+        })
+      }
+    },
+    * queryPOSDetail ({ payload }, { call, put }) {
+      let data = yield call(queryPOSDetail, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPOSDetail',
+          payload: {
+            listPOSDetail: data.data
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
   reducers: {
+    querySuccessPOS (state, { payload }) {
+      const { listPOS } = payload
+
+      return {
+        ...state,
+        listPOS,
+        ...payload
+      }
+    },
+    querySuccessPOSDetail (state, { payload }) {
+      const { listPOSDetail } = payload
+
+      return {
+        ...state,
+        listPOSDetail,
+        ...payload
+      }
+    },
     querySuccessPart (state, action) {
       const { list, tmpList } = action.payload
 
@@ -164,6 +218,8 @@ export default {
         list: [],
         listTrans: [],
         listDaily: [],
+        listPOS: [],
+        listPOSDetail: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

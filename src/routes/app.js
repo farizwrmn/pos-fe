@@ -7,6 +7,7 @@ import { classnames, config } from 'utils'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
+import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
 import '../themes/index.less'
 import './app.less'
@@ -19,14 +20,15 @@ let lastHref
 
 const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
-    visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked } = app
+    visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked,
+    selectedDate, calendarMode, selectedMonth, totalBirthdayInAMonth, listTotalBirthdayPerDate,
+    listTotalBirthdayPerMonth, listCustomerBirthday, listNotification } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { logo } = config
   const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
   const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
-
   if (lastHref !== href) {
     NProgress.start()
     if (!loading.global) {
@@ -47,6 +49,14 @@ const App = ({ children, dispatch, app, loading, location }) => {
     totp,
     totpChecked,
     navOpenKeys,
+    selectedDate,
+    calendarMode,
+    selectedMonth,
+    totalBirthdayInAMonth,
+    listTotalBirthdayPerDate,
+    listTotalBirthdayPerMonth,
+    listCustomerBirthday,
+    listNotification,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
     },
@@ -114,7 +124,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
     },
     modalSwitchChange (checked, userId) {
       if (checked) {
-        dispatch({ type: 'app/totp',
+        dispatch({
+          type: 'app/totp',
           payload: { mode: 'generate', id: userId }
         })
         dispatch({
@@ -125,6 +136,64 @@ const App = ({ children, dispatch, app, loading, location }) => {
         dispatch({
           type: 'app/updateState',
           payload: { totpChecked: false }
+        })
+      }
+    },
+    showBirthDayListModal (date) {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          visibleItem: {
+            displayBirthdate: true
+          },
+          selectedDate: moment(date).format('YYYY-MM-DD')
+        }
+      })
+      if (calendarMode === 'month') {
+        const monthdate = moment(date).format('MMDD')
+        dispatch({
+          type: 'app/queryShowCustomerBirthdayPerDate',
+          payload: {
+            monthdate
+          }
+        })
+      } else {
+        const month = moment(date).format('MM')
+        dispatch({
+          type: 'app/queryShowCustomerBirthdayPerMonth',
+          payload: {
+            month
+          }
+        })
+      }
+    },
+    hideBirthDayListModal () {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          visibleItem: {
+            displayBirthdate: false
+          },
+          selectedDate: '',
+          listCustomerBirthday: [],
+          calendarMode: 'month'
+        }
+      })
+    },
+    changeCalendarMode (month, mode) {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          selectedMonth: month,
+          calendarMode: mode
+        }
+      })
+      if (mode === 'month') {
+        dispatch({
+          type: 'app/queryTotalBirthdayPerDate',
+          payload: {
+            month
+          }
         })
       }
     }

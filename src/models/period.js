@@ -166,7 +166,8 @@ export default {
   reducers: {
     querySuccessPeriod (state, action) {
       const { list, lastAccountNumber, accountActive, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         accountNumber: lastAccountNumber,
         accountActive,

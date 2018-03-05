@@ -18,11 +18,22 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     activeKey: '0',
     disable: '',
+    searchText: '',
     show: 1,
     newItem: false,
     showModal: false,
     stickerQty: 1,
-    logo: ''
+    logo: '',
+    showModalProduct: false,
+    modalProductType: '',
+    listDummy: [],
+    listUpdateDummy: [],
+    auto: [],
+    dummy: [],
+    updateDummy: [],
+    listSticker: [],
+    selectedSticker: {},
+    period: []
   },
 
   subscriptions: {
@@ -33,16 +44,49 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
-              activeKey: '0'
+              activeKey: '0',
+              listSticker: []
             }
           })
+          dispatch({ type: 'queryAuto' })
         }
       })
     }
   },
 
   effects: {
-
+    * queryAuto ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessAuto',
+          payload: data.data
+        })
+        const dataDummy = data.data.map(x => x.productName)
+        yield put({
+          type: 'updateState',
+          payload: {
+            dummy: dataDummy
+          }
+        })
+      }
+    },
+    * queryUpdateAuto ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessUpdateAuto',
+          payload: data.data
+        })
+        const dataDummy = data.data.map(x => x.productName)
+        yield put({
+          type: 'updateState',
+          payload: {
+            updateDummy: dataDummy
+          }
+        })
+      }
+    },
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
@@ -103,6 +147,14 @@ export default modelExtend(pageModel, {
       return { ...state, isChecked: !state.isChecked, display: payload }
     },
 
+    querySuccessAuto (state, { payload }) {
+      return { ...state, listDummy: payload }
+    },
+
+    querySuccessUpdateAuto (state, { payload }) {
+      return { ...state, listUpdateDummy: payload }
+    },
+
     changeTab (state, { payload }) {
       return { ...state, ...payload }
     },
@@ -113,6 +165,26 @@ export default modelExtend(pageModel, {
 
     resetProductStockList (state) {
       return { ...state, list: [], pagination: { total: 0 } }
+    },
+
+    getAutoText (state, action) {
+      const { data, text } = action.payload
+      const reg = new RegExp(text, 'gi')
+      let productNames
+      if (text.length > 0) {
+        productNames = data.map((record) => {
+          const match = record.productName.match(reg)
+          if (!match) {
+            return null
+          }
+          return {
+            ...record
+          }
+        }).filter(record => !!record)
+      } else {
+        productNames = []
+      }
+      return { ...state, auto: productNames }
     }
 
   }

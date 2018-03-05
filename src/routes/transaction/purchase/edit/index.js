@@ -139,7 +139,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       dispatch({ type: 'purchase/hideProductModal' })
     },
     onDelete (data) {
-      console.log('delete', data)
       dispatch({ type: 'purchase/deleteList', payload: data })
     },
     onResetBrowse () {

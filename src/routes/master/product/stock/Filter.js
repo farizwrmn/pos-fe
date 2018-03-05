@@ -47,10 +47,10 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.productCode = fields.searchName
+    fields.q = fields.searchName
     delete fields.searchName
-    if (fields.productCode === undefined || fields.productCode === '') {
-      delete fields.productCode
+    if (fields.q === undefined || fields.q === '') {
+      delete fields.q
     }
     fields = handleFields(fields)
     onFilterChange(fields)

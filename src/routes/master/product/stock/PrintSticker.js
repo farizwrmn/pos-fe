@@ -1,19 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { BasicReportCard } from 'components'
 
-const PrintSticker = ({ dataSource, user, storeInfo, total, logo }) => {
+const PrintSticker = ({ stickers }) => {
   const createTableBody = (tableBody) => {
     let body = []
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
-        for (let i = 0; i < total; i += 1) {
+        for (let i = 0; i < tableBody[key].qty; i += 1) {
           let row = []
-          const maxStringPerRow = tableBody[key].productName.substr(0, 25).toString()
+          const maxStringPerRow = tableBody[key].name.substr(0, 20).toString()
           row.push({ text: maxStringPerRow, style: 'productName' })
-          row.push({ image: 'companyLogo', width: 50, alignment: 'center' })
-          row.push({ text: `Rp ${(tableBody[key].sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
+          row.push({ text: `Rp ${(tableBody[key].price || 0).toLocaleString()}`, style: 'sellPrice' })
           body.push(row)
         }
       }
@@ -27,11 +25,12 @@ const PrintSticker = ({ dataSource, user, storeInfo, total, logo }) => {
     },
     sellPrice: {
       bold: true,
-      alignment: 'left',
-      fontSize: 8
+      alignment: 'right',
+      fontSize: 10,
+      margin: [0, 7, 0, 2]
     },
     productName: {
-      fontSize: 8,
+      fontSize: 10,
       alignment: 'center'
     },
     headerStoreName: {
@@ -44,48 +43,9 @@ const PrintSticker = ({ dataSource, user, storeInfo, total, logo }) => {
     }
   }
 
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR HARGA STOK BARANG', style: 'headerTitle' }
-  ]
-
-  const footer = (currentPage, pageCount) => {
-    return {
-      margin: [40, 30, 40, 0],
-
-      stack: [
-        {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 790, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
-        },
-        {
-          columns: [
-            {
-              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
-              margin: [0, 0, 0, 0],
-              fontSize: 9,
-              alignment: 'left'
-            },
-            {
-              text: `Dicetak Oleh: ${user.userid}`,
-              fontSize: 9,
-              margin: [0, 0, 0, 0],
-              alignment: 'center'
-            },
-            {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
-              fontSize: 9,
-              margin: [0, 0, 0, 0],
-              alignment: 'right'
-            }
-          ]
-        }
-      ]
-    }
-  }
-
   let tableBody = []
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(stickers)
   } catch (e) {
     console.log(e)
   }
@@ -112,16 +72,14 @@ const PrintSticker = ({ dataSource, user, storeInfo, total, logo }) => {
   }
 
   const pdfProps = {
-    name: 'Print',
+    name: 'Print Sticker',
     width: [130, 130, 130, 130, 130, 130],
-    pageSize: { width: 890, height: 565 },
+    pageSize: { width: 890, height: 615 },
     pageOrientation: 'landscape',
     pageMargins: [25, 80, 25, 70],
     tableStyle: styles,
-    tableBody: getList,
-    companyLogo: logo,
-    header,
-    footer
+    tableBody: getList
+    // companyLogo: logo,
   }
 
   return (

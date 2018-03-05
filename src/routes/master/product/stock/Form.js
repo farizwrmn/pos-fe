@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Button, Tabs, Row, Col, Checkbox, Upload, Icon, Select, Menu, Dropdown, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import Sticker from './Sticker'
 import PrintPDF from './PrintPDF'
 import PrintShelf from './PrintShelf'
-// import PrintSticker from './PrintSticker'
+import PrintSticker from './PrintSticker'
 import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
@@ -93,6 +94,7 @@ const formProductCategory = ({
   ...filterProps,
   ...printProps,
   ...tabProps,
+  ...modalProductProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -100,11 +102,11 @@ const formProductCategory = ({
     resetFields
   }
 }) => {
+  const { showModalProduct, auto, dummy, updateDummy, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
+    onAutoSearch, pushSticker, selectedSticker, onSelectSticker, onSearchUpdateSticker } = modalProductProps
   const { show } = filterProps
   const {
     onShowHideSearch,
-    onCloseModal,
-    showModal,
     changeQty
     // stickerQty
   } = tabProps
@@ -204,43 +206,51 @@ const formProductCategory = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown> </div>)
+  let moreButtonTab
+  switch (activeKey) {
+    case '0':
+      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+      break
+    case '1':
+      moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+        <Button style={{ marginLeft: 8 }}>
+          <Icon type="printer" /> Print
+      </Button>
+      </Dropdown> </div>)
+      break
+    case '2':
+      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      break
+    default:
+      break
+  }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = listBrand.length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
 
-  const modalProps = {
-    visible: showModal,
-    title: 'Sticker Qty',
-    width: 250,
-    footer: [
-      <Button key="back" onClick={onCloseModal}>Cancel</Button>
-      // <PrintSticker total={stickerQty} logo={logo} {...printProps} />
-    ],
-    onCancel () {
-      onCloseModal()
-    }
-  }
-
-  const inputNumberProps = {
-    style: { width: '120px' },
-    min: 1,
-    max: 100,
-    defaultValue: 1,
-    onChange (value) {
-      changeQty(value)
-    }
+  const stickerProps = {
+    onShowModalProduct,
+    onCloseModalProduct,
+    showModalProduct,
+    auto,
+    dummy,
+    updateDummy,
+    period,
+    listSticker,
+    modalProductType,
+    onAutoSearch,
+    pushSticker,
+    onSearchUpdateSticker,
+    changeQty,
+    selectedSticker,
+    onSelectSticker
   }
 
   return (
     <div>
-      {showModal && <Modal {...modalProps}>
+      {/* {showModal && <Modal {...modalProps}>
         <span style={{ padding: '10px 20px' }}>Qty: <InputNumber {...inputNumberProps} /></span>
-      </Modal>}
+      </Modal>} */}
       <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           <Form layout="horizontal">
@@ -465,6 +475,9 @@ const formProductCategory = ({
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
           <List {...listProps} />
+        </TabPane>
+        <TabPane tab="Sticker" key="2" >
+          <Sticker {...stickerProps} />
         </TabPane>
       </Tabs>
     </div>

@@ -138,87 +138,100 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   //   })
   // }
   const confirmPayment = () => {
-    const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    const dataPos = product.concat(service)
-    let checkProductId = false
-    for (let n = 0; n < dataPos.length; n += 1) {
-      if (dataPos[n].productId === 0) {
-        checkProductId = true
-        break
-      }
-    }
-    if ((parseFloat(memberInformation.memberPendingPayment) ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding)) || listAmount.length === 0) {
-      Modal.error({
-        title: 'Payment pending restricted',
-        content: 'This member type cannot allow to pending'
-      })
-    } else if (checkProductId) {
-      console.log(checkProductId)
-      Modal.error({
-        title: 'Payment',
-        content: 'Something Wrong with Product'
-      })
-    } else if (service.length > 0 && (woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Service Validation',
-        content: 'You are giving service without WorkOrder'
-      })
-    } else if (typeTrans.toString().length === 0) {
-      Modal.warning({
-        title: 'Payment method',
-        content: 'Your Payment method is empty'
-      })
-    } else {
-      dispatch({
-        type: 'payment/create',
-        payload: {
-          periode: moment().format('MMYY'),
-          transDate: getDate(1),
-          transDate2: getDate(3),
-          transTime: setTime(),
-          grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
-          totalPayment,
-          creditCardNo: '',
-          creditCardType: '',
-          creditCardCharge: 0,
-          totalCreditCard: 0,
-          transDatePrint: moment().format('DD/MM/YYYY'),
-          company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-          gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-          phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-          address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-          lastTransNo,
-          lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-          paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
-          totalChange,
-          unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
-          totalDiscount: curTotalDiscount,
-          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-          rounding: curRounding,
-          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
-          memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-          mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
-          memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-          technicianId: mechanicInformation.mechanicCode,
-          curShift,
-          printNo: 1,
-          point: parseFloat((parseFloat(curTotal) - parseFloat(curTotalDiscount)) / 10000, 10),
-          curCashierNo,
-          cashierId: user.userid,
-          userName: user.username,
-          setting,
-          listAmount,
-          companyInfo,
-          curNetto: parseFloat(curTotal) + parseFloat(curRounding),
-          curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-          usingWo: !((woNumber === '' || woNumber === null)),
-          woNumber: woNumber === '' ? null : woNumber
+    Modal.confirm({
+      title: 'Save Payment',
+      content: 'are you sure ?',
+      onOk () {
+        const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        const dataPos = product.concat(service)
+        let checkProductId = false
+        for (let n = 0; n < dataPos.length; n += 1) {
+          if (dataPos[n].productId === 0) {
+            checkProductId = true
+            break
+          }
         }
-      })
-      dispatch({ type: 'pos/setAllNull' })
-      dispatch(routerRedux.push('/transaction/pos'))
-    }
+        if ((memberInformation.memberPendingPayment ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding))) {
+          Modal.error({
+            title: 'Payment pending restricted',
+            content: 'This member type cannot allow to pending'
+          })
+          return
+        }
+        if (checkProductId) {
+          console.log(checkProductId)
+          Modal.error({
+            title: 'Payment',
+            content: 'Something Wrong with Product'
+          })
+          return
+        }
+        if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+          Modal.warning({
+            title: 'Service Validation',
+            content: 'You are giving service without WorkOrder'
+          })
+        } else if (typeTrans.toString().length === 0) {
+          Modal.warning({
+            title: 'Payment method',
+            content: 'Your Payment method is empty'
+          })
+        } else {
+          dispatch({
+            type: 'payment/create',
+            payload: {
+              periode: moment().format('MMYY'),
+              transDate: getDate(1),
+              transDate2: getDate(3),
+              transTime: setTime(),
+              grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+              totalPayment,
+              creditCardNo: '',
+              creditCardType: '',
+              creditCardCharge: 0,
+              totalCreditCard: 0,
+              transDatePrint: moment().format('DD/MM/YYYY'),
+              company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+              gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+              phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+              address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+              lastTransNo,
+              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+              paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+              totalChange,
+              unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+              totalDiscount: curTotalDiscount,
+              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+              rounding: curRounding,
+              memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+              memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+              mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+              memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+              technicianId: mechanicInformation.mechanicCode,
+              curShift,
+              printNo: 1,
+              point: parseFloat((parseFloat(curTotal) - parseFloat(curTotalDiscount)) / 10000, 10),
+              curCashierNo,
+              cashierId: user.userid,
+              userName: user.username,
+              setting,
+              listAmount,
+              companyInfo,
+              curNetto: parseFloat(curTotal) + parseFloat(curRounding),
+              curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+              usingWo: !((woNumber === '' || woNumber === null)),
+              woNumber: woNumber === '' ? null : woNumber
+            }
+          })
+          dispatch({ type: 'pos/setAllNull' })
+          dispatch(routerRedux.push('/transaction/pos'))
+        }
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
   }
 
   // const printPreview = () => {
@@ -266,64 +279,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   const cancelPayment = () => {
     dispatch(routerRedux.push('/transaction/pos'))
   }
-
-  // let options = []
-  // if (listOpts ? listOpts.length > 0 : false) {
-  //   for (let key in listOpts) {
-  //     if (Object.prototype.hasOwnProperty.call(listOpts, key)) {
-  //       options.push({
-  //         value: listOpts[key].typeCode,
-  //         label: listOpts[key].typeName
-  //       })
-  //     }
-  //   }
-  // } else {
-  //   options = [
-  //     {
-  //       value: 'C',
-  //       label: 'Cash'
-  //     },
-  //     {
-  //       value: 'K',
-  //       label: 'Credit Card'
-  //     },
-  //     {
-  //       value: 'D',
-  //       label: 'Debit Card'
-  //     },
-  //     {
-  //       value: 'P',
-  //       label: 'Pending'
-  //     }
-  //   ]
-  // }
-
-  // const handleCreditCard = () => {
-  //   console.log('input credit card')
-  //   dispatch({
-  //     type: 'payment/setCashPaymentNull'
-  //   })
-
-  //   dispatch({
-  //     type: 'payment/listCreditCharge'
-  //   })
-
-  //   dispatch({
-  //     type: 'payment/showCreditModal'
-  //   })
-  // }
-
-  // const handleKeyDown = (e) => {
-  //   if (e.keyCode in keyShortcut) {
-  //     keyShortcut[e.keyCode] = true
-
-  //     if (keyShortcut[17] && keyShortcut[32]) {
-  //       keyShortcut[17] = false
-  //       keyShortcut[32] = false
-  //       handleCreditCard()
-  //     }
-  //   }
-  // }
 
   const formPaymentProps = {
     listAmount,

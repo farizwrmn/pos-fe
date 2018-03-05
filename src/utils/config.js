@@ -1,5 +1,5 @@
 const APIV1 = '/api/v1'
-const APIHOST = 'localhost'
+const APIHOST = 'localhost' // '192.168.80.64'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
@@ -28,7 +28,8 @@ module.exports = {
     apiUserTotp: `${APIURL}${APIV1}/users/:id/totp`,
     apiUserTotpr: `${APIURL}${APIV1}/users/:id/totp/:mode`,
     apiStores: `${APIURL}${APIV1}/stores`,
-    apiTime: `${APIURL}${APIV1}/time`
+    apiTime: `${APIURL}${APIV1}/time`,
+    apicustomerbirthday: `${APIURL}${APIV1}/members/bday`
   },
   api: {
     getIpAddress: `${APIURL}${APIV1}/utils/ipaddr`,

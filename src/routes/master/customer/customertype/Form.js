@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Select, InputNumber, Row, Col, Dropdown, Menu, Icon, Modal, message } from 'antd'
+import { Form, Input, Checkbox, Button, Tabs, Select, InputNumber, Row, Col, Dropdown, Menu, Icon, Modal, message } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -99,6 +99,7 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue()
       }
+      data.pendingPayment = data.pendingPayment === 0 || data.pendingPayment === false ? '0' : '1'
       console.log('Submit')
       if (data.typeCode) {
         Modal.confirm({
@@ -113,7 +114,6 @@ const formCustomerType = ({
       }
     })
   }
-
   const browse = () => {
     clickBrowse()
   }
@@ -125,7 +125,7 @@ const formCustomerType = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
     </Button>
@@ -223,6 +223,12 @@ const formCustomerType = ({
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >{children}
                 </Select>)}
+              </FormItem>
+              <FormItem label="Pending Payment" {...formItemLayout}>
+                {getFieldDecorator('pendingPayment', {
+                  valuePropName: 'checked',
+                  initialValue: item.pendingPayment ? (item.pendingPayment === '0' ? 0 : 1) : item.pendingPayment
+                })(<Checkbox />)}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>

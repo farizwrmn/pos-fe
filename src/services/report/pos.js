@@ -3,7 +3,7 @@
  */
 import { request, config, crypt, lstorage } from '../../utils'
 
-const { posReport, posreport } = config.api
+const { pos, posReport, posreport } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -72,6 +72,39 @@ export async function queryCustomerHistory (params) {
     url,
     data: params,
     method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryCustomerAsset (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posReport}/member/assets`
+  return request({
+    url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPOS (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: pos,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPOSDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${posReport}/detail`,
+    method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }
