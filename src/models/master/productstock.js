@@ -26,17 +26,15 @@ export default modelExtend(pageModel, {
     logo: '',
     showModalProduct: false,
     modalProductType: '',
-    listDummy: [],
-    listUpdateDummy: [],
-    auto: [],
-    dummy: [],
     listPrintSelectedStock: [],
     listPrintAllStock: [],
-    updateDummy: [],
+    listItem: [],
     listSticker: [],
+    update: false,
     selectedSticker: {},
     period: [],
-    showPDFModal: false
+    showPDFModal: false,
+    mode: ''
   },
 
   subscriptions: {
@@ -59,36 +57,13 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryAuto ({ payload = {} }, { call, put }) {
+    * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      console.log(data.data)
+      if (data.success) {
         yield put({
-          type: 'querySuccessAuto',
+          type: 'querySuccessItem',
           payload: data.data
-        })
-        const dataDummy = data.data.map(x => x.productName)
-        yield put({
-          type: 'updateState',
-          payload: {
-            dummy: dataDummy
-          }
-        })
-      }
-    },
-
-    * queryUpdateAuto ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
-        yield put({
-          type: 'querySuccessUpdateAuto',
-          payload: data.data
-        })
-        const dataDummy = data.data.map(x => x.productName)
-        yield put({
-          type: 'updateState',
-          payload: {
-            updateDummy: dataDummy
-          }
         })
       }
     },
@@ -109,7 +84,7 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data) {
         if ((payload.q === undefined && payload.pageSize === undefined) || payload.q) {
-          const listData = yield call(query, { pageSize: data.total })
+          const listData = yield call(query, { q: payload.q, pageSize: data.total })
           if (listData.success) {
             yield put({
               type: 'updateState',
@@ -171,17 +146,12 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccessItem (state, { payload }) {
+      return { ...state, listItem: payload }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
-    },
-
-    querySuccessAuto (state, { payload }) {
-      return { ...state, listDummy: payload }
-    },
-
-    querySuccessUpdateAuto (state, { payload }) {
-      return { ...state, listUpdateDummy: payload }
     },
 
     changeTab (state, { payload }) {

@@ -86,14 +86,14 @@ const distPriceStyleRight = {
   textAlign: 'right'
 }
 
-const Sticker = ({
-  onShowModalProduct,
-  showModalProduct,
-  listSticker,
-  pushSticker,
-  onSelectSticker,
-  ...modalStickerProps
-}) => {
+const Shelf = ({
+                 onShowModalProduct,
+                 showModalProduct,
+                 listSticker,
+                 pushSticker,
+                 onSelectSticker,
+                 ...modalStickerProps
+               }) => {
   let totalQty = 0
   if (listSticker.length > 0) {
     totalQty = listSticker.map(x => x.qty).reduce((total, qty) => total + qty)
@@ -164,7 +164,6 @@ const Sticker = ({
 
   let stickers = []
   if (listSticker.length > 0) {
-    console.log(listSticker, ' list')
     stickers = listSticker.map((x) => {
       let count = []
       for (let i = 0; i < x.qty; i += 1) {
@@ -212,4 +211,4 @@ const Sticker = ({
   )
 }
 
-export default Sticker
+export default Shelf

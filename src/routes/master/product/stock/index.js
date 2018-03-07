@@ -5,8 +5,8 @@ import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, listDummy, listPrintSelectedStock, listPrintAllStock, showPDFModal, mode, listUpdateDummy, newItem, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, showModal, searchText, logo, showModalProduct, modalProductType, auto, dummy, updateDummy, period, listSticker,
+  const { list, listItem, update, listPrintSelectedStock, listPrintAllStock, showPDFModal, mode, newItem, display, isChecked, modalType, currentItem, activeKey,
+    disable, show, showModal, searchText, logo, showModalProduct, modalProductType, period, listSticker,
     selectedSticker, pagination } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -153,9 +153,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
 
   const modalProductProps = {
     showModalProduct,
-    auto,
-    dummy,
-    updateDummy,
+    listItem,
+    update,
     period,
     listSticker,
     modalProductType,
@@ -166,7 +165,6 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         payload: {
           showModalProduct: true,
           modalProductType: key,
-          auto: [],
           selectedSticker: {}
         }
       })
@@ -183,26 +181,27 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       dispatch({
         type: 'productstock/updateState',
         payload: {
+          update: false,
           showModalProduct: false,
-          modalProductType: ''
+          modalProductType: '',
+          listItem: [],
+          period: []
         }
       })
     },
     onAutoSearch (value) {
-      if (modalProductType === 'all') {
+      if (value.length < 1) {
         dispatch({
-          type: 'productstock/getAutoText',
+          type: 'productstock/updateState',
           payload: {
-            text: value,
-            data: listDummy
+            listItem: []
           }
         })
-      } else {
+      } else if (value.length > 0) {
         dispatch({
-          type: 'productstock/getAutoText',
+          type: 'productstock/queryItem',
           payload: {
-            text: value,
-            data: listUpdateDummy
+            q: value
           }
         })
       }
@@ -218,7 +217,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     onSearchUpdateSticker (value) {
       if (value.updatedAt.length !== 0) {
         dispatch({
-          type: 'productstock/queryUpdateAuto',
+          type: 'productstock/queryItem',
           payload: {
             ...value
           }
@@ -227,7 +226,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         dispatch({
           type: 'productstock/updateState',
           payload: {
-            listUpdateDummy: []
+            listItem: []
           }
         })
       }

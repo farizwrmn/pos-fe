@@ -46,37 +46,37 @@ const column = {
 }
 
 const formProductCategory = ({
-  item = {},
-  onSubmit,
-  disabled,
-  clickBrowse,
-  modalType,
-  activeKey,
-  button,
-  listCategory,
-  showCategories,
-  listBrand,
-  showBrands,
-  showPDFModal,
-  mode,
-  onShowPDFModal,
-  onHidePDFModal,
-  listPrintSelectedStock,
-  listPrintAllStock,
-  // logo,
-  changeTab,
-  ...listProps,
-  ...filterProps,
-  ...printProps,
-  ...tabProps,
-  ...modalProductProps,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
-}) => {
+                               item = {},
+                               onSubmit,
+                               disabled,
+                               clickBrowse,
+                               modalType,
+                               activeKey,
+                               button,
+                               listCategory,
+                               showCategories,
+                               listBrand,
+                               showBrands,
+                               showPDFModal,
+                               mode,
+                               onShowPDFModal,
+                               onHidePDFModal,
+                               listPrintSelectedStock,
+                               listPrintAllStock,
+                               // logo,
+                               changeTab,
+                               ...listProps,
+                               ...filterProps,
+                               ...printProps,
+                               ...tabProps,
+                               ...modalProductProps,
+                               form: {
+                                 getFieldDecorator,
+                                 validateFields,
+                                 getFieldsValue,
+                                 resetFields
+                               }
+                             }) => {
   const { showModalProduct, listItem, update, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
     onAutoSearch, pushSticker, selectedSticker, onSelectSticker, onSearchUpdateSticker } = modalProductProps
   const { show } = filterProps
@@ -197,7 +197,7 @@ const formProductCategory = ({
       moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
         <Button style={{ marginLeft: 8 }}>
           <Icon type="printer" /> Print
-      </Button>
+        </Button>
       </Dropdown> </div>)
       break
     case '2':
