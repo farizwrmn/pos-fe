@@ -77,7 +77,6 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       fillColor: '#3d7de2'
     }
   }
-  console.log(storeInfo)
   const header = {
     stack: [
       {

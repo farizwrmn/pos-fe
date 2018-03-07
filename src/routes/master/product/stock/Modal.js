@@ -113,7 +113,7 @@ const ModalSticker = ({
           {getFieldDecorator('updatedAt', { initialValue: currentPeriod })(<RangePicker onChange={handleChange.bind(null, 'updatedAt')} />)}
         </FormItem>}
       <FormItem label="Name" >
-        {getFieldDecorator('name', { initialValue: selectedSticker.name })(<AutoComplete {...autoCompleteProps} />)}
+        {getFieldDecorator('name', { initialValue: selectedSticker.name })(<AutoComplete {...autoCompleteProps} style={{ width: '100%' }} />)}
       </FormItem>
       <FormItem label="Qty" >
         {getFieldDecorator('qty', { initialValue: selectedSticker.qty })(<InputNumber {...inputNumberProps} />)}
