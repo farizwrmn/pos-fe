@@ -56,13 +56,16 @@ const formProductCategory = ({
   listCategory,
   showCategories,
   listBrand,
+  changed,
+  getAllStock,
   showBrands,
   showPDFModal,
   mode,
   onShowPDFModal,
   onHidePDFModal,
-  listPrintSelectedStock,
+  list,
   listPrintAllStock,
+  stockLoading,
   // logo,
   changeTab,
   ...listProps,
@@ -190,24 +193,24 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-    case '0':
-      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-      break
-    case '1':
-      moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-        <Button style={{ marginLeft: 8 }}>
-          <Icon type="printer" /> Print
+  case '0':
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+    break
+  case '1':
+    moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+      <Button style={{ marginLeft: 8 }}>
+        <Icon type="printer" /> Print
       </Button>
-      </Dropdown> </div>)
-      break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    case '3':
-      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-      break
-    default:
-      break
+    </Dropdown> </div>)
+    break
+  case '2':
+    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+    break
+  case '3':
+    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+    break
+  default:
+    break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -254,15 +257,22 @@ const formProductCategory = ({
     }
   }
 
+
+  const changeButton = () => {
+    getAllStock()
+  }
+
+  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let notification = changed ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
   let printmode
   if (mode === 'pdf') {
-    printmode = (<div><PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />
-      <span style={{ padding: '0px 10px' }} />
-      <PrintPDF data={listPrintSelectedStock} name="Print Current Stock" {...printProps} /></div>)
+    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}> <PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
   } else {
-    printmode = (<div><PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />
+    printmode = (<div>{buttonClickXLS}
       <span style={{ padding: '0px 10px' }} />
-      <PrintXLS data={listPrintSelectedStock} name="Print Current Stock" {...printProps} /></div>)
+      <PrintXLS data={list} name="Print Current Page" {...printProps} /></div>)
   }
 
   return (

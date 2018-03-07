@@ -26,17 +26,16 @@ export default modelExtend(pageModel, {
     logo: '',
     showModalProduct: false,
     modalProductType: '',
-    listDummy: [],
-    listUpdateDummy: [],
-    auto: [],
-    dummy: [],
-    listPrintSelectedStock: [],
     listPrintAllStock: [],
-    updateDummy: [],
+    listItem: [],
     listSticker: [],
+    update: false,
     selectedSticker: {},
     period: [],
-    showPDFModal: false
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    stockLoading: false
   },
 
   subscriptions: {
@@ -47,55 +46,33 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
+              changed: false,
               activeKey: '0',
               listSticker: []
             }
           })
-          dispatch({ type: 'queryAuto' })
-          dispatch({ type: 'queryAllStock', payload: { type: 'all' } })
         }
       })
     }
   },
 
   effects: {
-    * queryAuto ({ payload = {} }, { call, put }) {
+    * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      console.log(data.data)
+      if (data.success) {
         yield put({
-          type: 'querySuccessAuto',
+          type: 'querySuccessItem',
           payload: data.data
-        })
-        const dataDummy = data.data.map(x => x.productName)
-        yield put({
-          type: 'updateState',
-          payload: {
-            dummy: dataDummy
-          }
-        })
-      }
-    },
-
-    * queryUpdateAuto ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
-        yield put({
-          type: 'querySuccessUpdateAuto',
-          payload: data.data
-        })
-        const dataDummy = data.data.map(x => x.productName)
-        yield put({
-          type: 'updateState',
-          payload: {
-            updateDummy: dataDummy
-          }
         })
       }
     },
 
     * queryAllStock ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
       const data = yield call(query, payload)
-      if (data) {
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
@@ -108,17 +85,6 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
-        if ((payload.q === undefined && payload.pageSize === undefined) || payload.q) {
-          const listData = yield call(query, { pageSize: data.total })
-          if (listData.success) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                listPrintSelectedStock: listData.data
-              }
-            })
-          }
-        }
         yield put({
           type: 'querySuccess',
           payload: {
@@ -171,17 +137,26 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    showLoading (state) {
+      return {
+        ...state,
+        stockLoading: true
+      }
+    },
+
+    hideLoading (state) {
+      return {
+        ...state,
+        stockLoading: false
+      }
+    },
+
+    querySuccessItem (state, { payload }) {
+      return { ...state, listItem: payload }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
-    },
-
-    querySuccessAuto (state, { payload }) {
-      return { ...state, listDummy: payload }
-    },
-
-    querySuccessUpdateAuto (state, { payload }) {
-      return { ...state, listUpdateDummy: payload }
     },
 
     changeTab (state, { payload }) {
@@ -193,7 +168,7 @@ export default modelExtend(pageModel, {
     },
 
     resetProductStockList (state) {
-      return { ...state, list: [], listPrintSelectedStock: [], pagination: { total: 0 } }
+      return { ...state, list: [], pagination: { total: 0 } }
     },
 
     getAutoText (state, action) {
