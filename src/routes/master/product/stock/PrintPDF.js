@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ data, user, storeInfo, name }) => {
   let tableHeaders = {
     top: {
       col_1: { text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
@@ -115,19 +115,19 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   let tableHeader = []
   let tableBody = []
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(data)
     tableHeader = createTableHeader(tableHeaders)
   } catch (e) {
     console.log(e)
   }
 
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
     buttonSize: '',
-    name: 'PDF',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['10%', '20%', '8%', '12%', '8%', '8%', '8%', '8%', '18%'],
+    name: name,
+    className: '',
+    width: ['14%', '20%', '6%', '8%', '8%', '8%', '8%', '8%', '20%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [15, 80, 15, 60],
@@ -135,7 +135,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     layout: 'noBorder',
     tableHeader,
     tableBody,
-    data: dataSource,
+    data,
     header,
     footer
   }
@@ -148,7 +148,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 PrintPDF.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object,
-  dataSource: PropTypes.object
+  data: PropTypes.object
 }
 
 export default PrintPDF

@@ -1,35 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { BasicReportCard } from 'components'
 
-const PrintShelf = ({ dataSource }) => {
+const PrintShelf = ({ stickers, user, storeInfo }) => {
   const createTableBody = (tableBody) => {
     let body = []
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
-        let row = []
-        const maxStringPerRow = tableBody[key].productName.substr(0, 28).toString()
-        row.push({ text: maxStringPerRow, style: 'productName', alignment: 'left' })
-        row.push({
-          columns: [
-            { text: tableBody[key].sellPrice === 0 || tableBody[key].sellPrice === undefined ? '' : `Rp ${(tableBody[key].sellPrice || 0).toLocaleString()}`, style: 'sellPrice' },
-            { text: '(Sellprice)', style: 'info', margin: [0, 12, 0, 0] }
-          ]
-        })
-        row.push({
-          columns: [
-            { text: tableBody[key].distPrice01 === 0 || tableBody[key].distPrice01 === undefined ? '' : `Rp ${(tableBody[key].distPrice01 || 0).toLocaleString()}`, style: 'others' },
-            { text: '(Dist price 01)', style: 'info', margin: [0, 5, 0, 0] }
-          ]
-        })
-        row.push({
-          columns: [
-            { text: tableBody[key].distPrice02 === 0 || tableBody[key].distPrice02 === undefined ? '' : `Rp ${(tableBody[key].distPrice02 || 0).toLocaleString()}`, style: 'others' },
-            { text: '(Dist price 02)', style: 'info', margin: [0, 5, 0, 0] }
-          ]
-        })
-        row.push({ text: (tableBody[key].productCode || '').toString(), style: 'others', alignment: 'left' })
-        body.push(row)
+        for (let i = 0; i < tableBody[key].qty; i += 1) {
+          let row = []
+          const maxStringPerRow = tableBody[key].name.substr(0, 28).toString()
+          row.push({ text: maxStringPerRow, style: 'productName', alignment: 'left' })
+          row.push({
+            columns: [
+              { text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' },
+              { text: '(Sellprice)', style: 'info', margin: [0, 12, 0, 0] }
+            ]
+          })
+          row.push({
+            columns: [
+              { text: `Rp ${(tableBody[key].info.distPrice01 || 0).toLocaleString()}`, style: 'others' },
+              { text: '(Dist price 01)', style: 'info', margin: [0, 5, 0, 0] }
+            ]
+          })
+          row.push({
+            columns: [
+              { text: `Rp ${(tableBody[key].info.distPrice02 || 0).toLocaleString()}`, style: 'others' },
+              { text: '(Dist price 02)', style: 'info', margin: [0, 5, 0, 0] }
+            ]
+          })
+          row.push({ text: (tableBody[key].info.productCode || '').toString(), style: 'others', alignment: 'left' })
+          body.push(row)
+        }
       }
     }
     return body
@@ -64,9 +67,48 @@ const PrintShelf = ({ dataSource }) => {
     }
   }
 
+  const header = [
+    { text: `${storeInfo.name}`, style: 'headerStoreName' },
+    { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' }
+  ]
+
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [40, 30, 40, 0],
+
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+        },
+        {
+          columns: [
+            {
+              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left'
+            },
+            {
+              text: `Dicetak Oleh: ${user.userid}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'center'
+            },
+            {
+              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
+    }
+  }
+
   let tableBody = []
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(stickers)
   } catch (e) {
     console.log(e)
   }
@@ -99,7 +141,9 @@ const PrintShelf = ({ dataSource }) => {
     pageOrientation: 'landscape',
     pageMargins: [25, 90, 25, 70],
     tableStyle: styles,
-    tableBody: getList
+    tableBody: getList,
+    header,
+    footer
   }
 
   return (
@@ -110,7 +154,7 @@ const PrintShelf = ({ dataSource }) => {
 PrintShelf.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object,
-  dataSource: PropTypes.object
+  stickers: PropTypes.object
 }
 
 export default PrintShelf

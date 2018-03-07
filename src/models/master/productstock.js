@@ -30,10 +30,13 @@ export default modelExtend(pageModel, {
     listUpdateDummy: [],
     auto: [],
     dummy: [],
+    listPrintSelectedStock: [],
+    listPrintAllStock: [],
     updateDummy: [],
     listSticker: [],
     selectedSticker: {},
-    period: []
+    period: [],
+    showPDFModal: false
   },
 
   subscriptions: {
@@ -49,6 +52,7 @@ export default modelExtend(pageModel, {
             }
           })
           dispatch({ type: 'queryAuto' })
+          dispatch({ type: 'queryAllStock', payload: { type: 'all' } })
         }
       })
     }
@@ -71,6 +75,7 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
     * queryUpdateAuto ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
@@ -87,9 +92,33 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
+    * queryAllStock ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPrintAllStock: data.data
+          }
+        })
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
+        if ((payload.q == undefined && payload.pageSize == undefined) || payload.q) {
+          const listData = yield call(query, { pageSize: data.total })
+          if (listData.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                listPrintSelectedStock: listData.data
+              }
+            })
+          }
+        }
         yield put({
           type: 'querySuccess',
           payload: {
@@ -164,7 +193,7 @@ export default modelExtend(pageModel, {
     },
 
     resetProductStockList (state) {
-      return { ...state, list: [], pagination: { total: 0 } }
+      return { ...state, list: [], listPrintSelectedStock: [], pagination: { total: 0 } }
     },
 
     getAutoText (state, action) {

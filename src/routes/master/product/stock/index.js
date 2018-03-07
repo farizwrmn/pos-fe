@@ -5,7 +5,7 @@ import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, listDummy, listUpdateDummy, newItem, display, isChecked, modalType, currentItem, activeKey,
+  const { list, listDummy, listPrintSelectedStock, listPrintAllStock, showPDFModal, listUpdateDummy, newItem, display, isChecked, modalType, currentItem, activeKey,
     disable, show, showModal, searchText, logo, showModalProduct, modalProductType, auto, dummy, updateDummy, period, listSticker,
     selectedSticker, pagination } = productstock
   const { listCategory } = productcategory
@@ -245,9 +245,12 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     ...filterProps,
     ...listProps,
     ...modalProductProps,
+    listPrintSelectedStock,
+    listPrintAllStock,
     listCategory,
     listBrand,
     modalType,
+    showPDFModal,
     logo,
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
@@ -277,6 +280,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     showCategories () {
       dispatch({
         type: 'productcategory/query'
+      })
+    },
+    onShowPDFModal () {
+      dispatch({
+        type: `productstock/updateState`,
+        payload: {
+          showPDFModal: true
+        }
+      })
+    },
+    onHidePDFModal () {
+      dispatch({
+        type: `productstock/updateState`,
+        payload: {
+          showPDFModal: false
+        }
       })
     }
   }
