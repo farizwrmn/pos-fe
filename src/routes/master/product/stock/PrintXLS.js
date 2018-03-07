@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ data, storeInfo, name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -92,18 +92,17 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       { value: 'OTHER PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+  const contentBody = data.length > 0 ? tableBody(data) : []
 
   // Declare additional Props
   const XLSProps = {
     buttonType: '',
     iconSize: '',
     buttonSize: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    name,
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data,
     title,
     header,
     body: contentBody,
@@ -116,7 +115,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  dataSource: PropTypes.object,
+  data: PropTypes.object,
   storeInfo: PropTypes.object
 }
 

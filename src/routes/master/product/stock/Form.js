@@ -58,6 +58,7 @@ const formProductCategory = ({
   listBrand,
   showBrands,
   showPDFModal,
+  mode,
   onShowPDFModal,
   onHidePDFModal,
   listPrintSelectedStock,
@@ -132,9 +133,10 @@ const formProductCategory = ({
     clickBrowse()
   }
 
-  const openPDFModal = () => {
-    onShowPDFModal()
+  const openPDFModal = (mode) => {
+    onShowPDFModal(mode)
   }
+
 
   // const getDataUri = (url, callback) => {
   //   let image = new Image()
@@ -179,33 +181,33 @@ const formProductCategory = ({
 
   const menu = (
     <Menu>
-      <Menu.Item key="1"><Button onClick={openPDFModal} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
+      <Menu.Item key="1"><Button onClick={() => openPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
       {/* <Menu.Item key="3"><Button {...btnSticker}><Icon type="tag-o" />Sticker</Button></Menu.Item> */}
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => openPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
       {/* <Menu.Item key="3"><PrintShelf {...printProps} /></Menu.Item> */}
     </Menu>
   )
 
   let moreButtonTab
   switch (activeKey) {
-  case '0':
-    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-    break
-  case '1':
-    moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-      <Button style={{ marginLeft: 8 }}>
-        <Icon type="printer" /> Print
+    case '0':
+      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+      break
+    case '1':
+      moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+        <Button style={{ marginLeft: 8 }}>
+          <Icon type="printer" /> Print
       </Button>
-    </Dropdown> </div>)
-    break
-  case '2':
-    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-    break
-  case '3':
-    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-    break
-  default:
-    break
+      </Dropdown> </div>)
+      break
+    case '2':
+      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      break
+    case '3':
+      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+      break
+    default:
+      break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -245,11 +247,22 @@ const formProductCategory = ({
 
   const PDFModalProps = {
     visible: showPDFModal,
-    title: 'Choose PDF',
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
     width: 375,
     onCancel () {
       onHidePDFModal()
     }
+  }
+
+  let printmode
+  if (mode === 'pdf') {
+    printmode = (<div><PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />
+      <span style={{ padding: '0px 10px' }} />
+      <PrintPDF data={listPrintSelectedStock} name="Print Current Stock" {...printProps} /></div>)
+  } else {
+    printmode = (<div><PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />
+      <span style={{ padding: '0px 10px' }} />
+      <PrintXLS data={listPrintSelectedStock} name="Print Current Stock" {...printProps} /></div>)
   }
 
   return (
@@ -258,9 +271,7 @@ const formProductCategory = ({
         <span style={{ padding: '10px 20px' }}>Qty: <InputNumber {...inputNumberProps} /></span>
       </Modal>} */}
       {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
-        <PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />
-        <span style={{ padding: '0px 10px' }} />
-        <PrintPDF data={listPrintSelectedStock} name="Print Current Stock" {...printProps} />
+        {printmode}
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
