@@ -125,7 +125,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     buttonType: 'default',
     iconSize: '',
     buttonSize: '',
-    name: name,
+    name,
     className: '',
     width: ['14%', '20%', '6%', '8%', '8%', '8%', '8%', '8%', '20%'],
     pageSize: { width: 1000, height: 530 },

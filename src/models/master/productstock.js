@@ -108,7 +108,7 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
-        if ((payload.q == undefined && payload.pageSize == undefined) || payload.q) {
+        if ((payload.q === undefined && payload.pageSize === undefined) || payload.q) {
           const listData = yield call(query, { pageSize: data.total })
           if (listData.success) {
             yield put({

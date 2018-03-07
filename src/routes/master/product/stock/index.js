@@ -284,7 +284,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     onShowPDFModal () {
       dispatch({
-        type: `productstock/updateState`,
+        type: 'productstock/updateState',
         payload: {
           showPDFModal: true
         }
@@ -292,7 +292,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     onHidePDFModal () {
       dispatch({
-        type: `productstock/updateState`,
+        type: 'productstock/updateState',
         payload: {
           showPDFModal: false
         }
