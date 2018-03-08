@@ -65,7 +65,7 @@ const modal = ({
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
+        key: item.key
       }
       data.userRole = data.userRole.join(' ')
 
@@ -73,10 +73,10 @@ const modal = ({
     })
   }
 
-  const defaultValueRole = {key: roleItem.default}
+  // const defaultValueRole = { key: roleItem.default }
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: handleOk
   }
   const columns = [{
     title: 'Employee Id',
