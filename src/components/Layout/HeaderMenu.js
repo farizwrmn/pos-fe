@@ -4,7 +4,7 @@ import { Icon, Tooltip, Popover } from 'antd'
 import { Link } from 'dva/router'
 import styles from './HeaderMenu.less'
 
-const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent, visibleCalendar, total }) => {
+const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent, total, showPopOver, handleVisibleChange }) => {
   const content = (
     <div classNames={styles.menuContent}>
       {popContent}
@@ -15,16 +15,16 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
       <div className={separator ? styles.void : `${styles.button} ${styles[addClass || prompt]}`} onClick={onClick}>
         <Link to={clickRoute}>
           <Icon type={icon || prompt} />
-          {prompt === 'calendar' &&
+          {prompt === 'calendar' && total > 0 &&
             <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>
           }
-          {prompt === 'notification' &&
+          {prompt === 'notification' && total &&
             <span className={styles.badgeStyle}>{total}</span>}
         </Link>
       </div>
     </Tooltip>
   )
-  let parentComp = visibleCalendar ? (<div>{childComp}</div>) : (<Popover content={content} trigger="click">{childComp}</Popover>)
+  let parentComp = prompt === 'calendar' ? (<Popover visible={showPopOver} onVisibleChange={handleVisibleChange} content={content} trigger="click">{childComp}</Popover>) : (<Popover content={content} trigger="click">{childComp}</Popover>)
 
   return (
     <div>
@@ -40,8 +40,7 @@ HeaderMenu.propTypes = {
   separator: PropTypes.bool,
   onClick: PropTypes.func,
   clickRoute: PropTypes.string,
-  popContent: PropTypes.array,
-  visibleCalendar: PropTypes.bool
+  popContent: PropTypes.array
 }
 
 export default HeaderMenu

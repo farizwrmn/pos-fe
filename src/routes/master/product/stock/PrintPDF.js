@@ -3,18 +3,18 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ data, user, storeInfo, name }) => {
   let tableHeaders = {
     top: {
-      col_1: { text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_2: { text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_3: { text: 'MERK', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_4: { text: 'CATEGORY', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_5: { text: 'SELL PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_6: { text: 'COST PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_7: { text: 'DIST PRICE-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_8: { text: 'DIST PRICE-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_9: { text: 'OTHER PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 }
+      col_1: { text: 'NO', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_2: { text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_3: { text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_4: { text: 'MERK', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_5: { text: 'CATEGORY', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_6: { text: 'SELL PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_7: { text: 'COST PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_8: { text: 'DIST PRICE-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
+      col_9: { text: 'DIST PRICE-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 }
     }
   }
 
@@ -40,9 +40,11 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
   const createTableBody = (tableBody) => {
     let body = []
+    let counter = 1
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
+        row.push({ text: counter.toString(), alignment: 'center' })
         row.push({ text: (tableBody[key].productCode || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].productName || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].brandName || '').toString(), alignment: 'left' })
@@ -51,9 +53,9 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push({ text: (tableBody[key].costPrice || 0).toLocaleString(), alignment: 'right' })
         row.push({ text: (tableBody[key].distPrice01 || 0).toLocaleString(), alignment: 'right' })
         row.push({ text: (tableBody[key].distPrice02 || 0).toLocaleString(), alignment: 'right' })
-        row.push({ text: (tableBody[key].otherName01 || '').toString(), alignment: 'left' })
         body.push(row)
       }
+      counter += 1
     }
     return body
   }
@@ -80,11 +82,11 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
   const footer = (currentPage, pageCount) => {
     return {
-      margin: [40, 30, 40, 0],
+      margin: [15, 30, 15, 0],
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 790, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 970, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -115,19 +117,19 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   let tableHeader = []
   let tableBody = []
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(data)
     tableHeader = createTableHeader(tableHeaders)
   } catch (e) {
     console.log(e)
   }
 
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
     buttonSize: '',
-    name: 'PDF',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['10%', '20%', '8%', '12%', '8%', '8%', '8%', '8%', '18%'],
+    name,
+    className: '',
+    width: ['4%', '14%', '20%', '20%', '10%', '8%', '8%', '8%', '8%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [15, 80, 15, 60],
@@ -135,7 +137,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     layout: 'noBorder',
     tableHeader,
     tableBody,
-    data: dataSource,
+    data,
     header,
     footer
   }
@@ -148,7 +150,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 PrintPDF.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object,
-  dataSource: PropTypes.object
+  data: PropTypes.object
 }
 
 export default PrintPDF

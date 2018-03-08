@@ -91,12 +91,15 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let tableBodies = []
   let tableFooters = []
   for (let i = 0; i < arr.length; i += 1) {
-    let tableTitle = []
-    tableTitle.push({ value: 'PRODUCT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: `${arr[i][0].productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle })
-    tableTitle.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle })
-    tableTitle.push({ value: `${arr[i][0].productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle })
+    let tableTitle = [
+      [
+        { value: 'PRODUCT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${arr[i][0].productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
+        { value: `${arr[i][0].productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
+    ]
     tableTitles.push(tableTitle)
 
     let countQtyValue = 0
@@ -163,11 +166,9 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
 PrintXLS.propTypes = {
   location: PropTypes.object,
   listRekap: PropTypes.array,
-  //  dataSource: PropTypes.array,
   storeInfo: PropTypes.string,
   period: PropTypes.string,
   year: PropTypes.string
-  // app: PropTypes.object
 }
 
 export default PrintXLS

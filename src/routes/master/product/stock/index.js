@@ -5,9 +5,9 @@ import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, listDummy, listUpdateDummy, newItem, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, showModal, searchText, logo, showModalProduct, modalProductType, auto, dummy, updateDummy, period, listSticker,
-    selectedSticker, pagination } = productstock
+  const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, newItem, display, isChecked, modalType, currentItem, activeKey,
+    disable, show, showModal, searchText, logo, showModalProduct, modalProductType, period, listSticker,
+    selectedSticker, pagination, stockLoading } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
@@ -153,9 +153,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
 
   const modalProductProps = {
     showModalProduct,
-    auto,
-    dummy,
-    updateDummy,
+    listItem,
+    update,
     period,
     listSticker,
     modalProductType,
@@ -166,7 +165,6 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         payload: {
           showModalProduct: true,
           modalProductType: key,
-          auto: [],
           selectedSticker: {}
         }
       })
@@ -183,26 +181,27 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       dispatch({
         type: 'productstock/updateState',
         payload: {
+          update: false,
           showModalProduct: false,
-          modalProductType: ''
+          modalProductType: '',
+          listItem: [],
+          period: []
         }
       })
     },
     onAutoSearch (value) {
-      if (modalProductType === 'all') {
+      if (value.length < 1) {
         dispatch({
-          type: 'productstock/getAutoText',
+          type: 'productstock/updateState',
           payload: {
-            text: value,
-            data: listDummy
+            listItem: []
           }
         })
-      } else {
+      } else if (value.length > 0) {
         dispatch({
-          type: 'productstock/getAutoText',
+          type: 'productstock/queryItem',
           payload: {
-            text: value,
-            data: listUpdateDummy
+            q: value
           }
         })
       }
@@ -218,7 +217,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     onSearchUpdateSticker (value) {
       if (value.updatedAt.length !== 0) {
         dispatch({
-          type: 'productstock/queryUpdateAuto',
+          type: 'productstock/queryItem',
           payload: {
             ...value
           }
@@ -227,7 +226,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         dispatch({
           type: 'productstock/updateState',
           payload: {
-            listUpdateDummy: []
+            listItem: []
           }
         })
       }
@@ -245,9 +244,15 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     ...filterProps,
     ...listProps,
     ...modalProductProps,
+    list,
+    listPrintAllStock,
+    stockLoading,
+    changed,
     listCategory,
     listBrand,
     modalType,
+    showPDFModal,
+    mode,
     logo,
     item: modalType === 'add' ? {} : currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
@@ -257,6 +262,20 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         type: 'productstock/updateState',
         payload: {
           logo: url
+        }
+      })
+    },
+    getAllStock () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          changed: true
+        }
+      })
+      dispatch({
+        type: 'productstock/queryAllStock',
+        payload: {
+          type: 'all'
         }
       })
     },
@@ -277,6 +296,25 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     showCategories () {
       dispatch({
         type: 'productcategory/query'
+      })
+    },
+    onShowPDFModal (mode) {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          showPDFModal: true,
+          mode
+        }
+      })
+    },
+    onHidePDFModal () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllStock: []
+        }
       })
     }
   }

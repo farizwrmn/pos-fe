@@ -2,6 +2,7 @@
  * Created by Veirry on 04/10/2017.
  */
 import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
+import { queryInventoryTransferOut } from '../../services/report/inventory'
 
 export default {
   namespace: 'inventoryReport',
@@ -10,6 +11,8 @@ export default {
     list: [],
     listTrans: [],
     listDaily: [],
+    listInventoryTO: [],
+    period: '',
     fromDate: '',
     toDate: '',
     category: 'ALL CATEGORY',
@@ -110,6 +113,22 @@ export default {
           ...payload
         }
       })
+    },
+    * queryInventoryTransferOut ({ payload }, { call, put }) {
+      console.log(payload)
+      const data = yield call(queryInventoryTransferOut, payload)
+      console.log(data)
+      yield put({
+        type: 'querySuccessInventoryTO',
+        payload: {
+          listInventoryTO: data.data,
+          pagination: {
+            current: Number(data.page) || 1,
+            pageSize: Number(data.pageSize) || 10,
+            total: data.total
+          }
+        }
+      })
     }
   },
   reducers: {
@@ -120,6 +139,26 @@ export default {
         ...state,
         list,
         tmpList
+      }
+    },
+
+    updateState (state, { payload }) {
+      return {
+        ...state,
+        ...payload
+      }
+    },
+
+    querySuccessInventoryTO (state, { payload }) {
+      const { listInventoryTO, pagination } = payload
+
+      return {
+        ...state,
+        listInventoryTO,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
       }
     },
     querySuccessDaily (state, action) {
@@ -152,6 +191,7 @@ export default {
         list: [],
         listTrans: [],
         listDaily: [],
+        listInventoryTO: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

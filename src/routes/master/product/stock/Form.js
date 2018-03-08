@@ -4,6 +4,7 @@ import { Form, Input, InputNumber, Button, Tabs, Row, Col, Checkbox, Upload, Ico
 import List from './List'
 import Filter from './Filter'
 import Sticker from './Sticker'
+import Shelf from './Shelf'
 import PrintPDF from './PrintPDF'
 import PrintShelf from './PrintShelf'
 import PrintSticker from './PrintSticker'
@@ -15,57 +16,25 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 9
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    },
-    lg: {
-      span: 7
-    }
+    xs: { span: 9 },
+    sm: { span: 8 },
+    md: { span: 7 },
+    lg: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 15
-    },
-    sm: {
-      span: 11
-    },
-    md: {
-      span: 13
-    },
-    lg: {
-      span: 16
-    }
+    xs: { span: 15 },
+    sm: { span: 11 },
+    md: { span: 13 },
+    lg: { span: 16 }
   }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
-    xs: {
-      span: 7,
-      offset: 0,
-      push: 17
-    },
-    sm: {
-      span: 3,
-      offset: 0,
-      push: 16
-    },
-    md: {
-      span: 3,
-      offset: 0,
-      push: 17
-    },
-    lg: {
-      span: 2,
-      offset: 0,
-      push: 22
-    }
+    xs: { span: 7, offset: 0, push: 17 },
+    sm: { span: 3, offset: 0, push: 16 },
+    md: { span: 3, offset: 0, push: 17 },
+    lg: { span: 2, offset: 0, push: 22 }
   }
 }
 
@@ -87,7 +56,16 @@ const formProductCategory = ({
   listCategory,
   showCategories,
   listBrand,
+  changed,
+  getAllStock,
   showBrands,
+  showPDFModal,
+  mode,
+  onShowPDFModal,
+  onHidePDFModal,
+  list,
+  listPrintAllStock,
+  stockLoading,
   // logo,
   changeTab,
   ...listProps,
@@ -102,11 +80,13 @@ const formProductCategory = ({
     resetFields
   }
 }) => {
-  const { showModalProduct, auto, dummy, updateDummy, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
+  const { showModalProduct, listItem, update, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
     onAutoSearch, pushSticker, selectedSticker, onSelectSticker, onSearchUpdateSticker } = modalProductProps
   const { show } = filterProps
   const {
     onShowHideSearch,
+    // onCloseModal,
+    // showModal,
     changeQty
     // stickerQty
   } = tabProps
@@ -156,6 +136,11 @@ const formProductCategory = ({
     clickBrowse()
   }
 
+  const openPDFModal = (mode) => {
+    onShowPDFModal(mode)
+  }
+
+
   // const getDataUri = (url, callback) => {
   //   let image = new Image()
 
@@ -199,42 +184,62 @@ const formProductCategory = ({
 
   const menu = (
     <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="1"><Button onClick={() => openPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
       {/* <Menu.Item key="3"><Button {...btnSticker}><Icon type="tag-o" />Sticker</Button></Menu.Item> */}
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
-      <Menu.Item key="3"><PrintShelf {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => openPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
+      {/* <Menu.Item key="3"><PrintShelf {...printProps} /></Menu.Item> */}
     </Menu>
   )
 
   let moreButtonTab
   switch (activeKey) {
-    case '0':
-      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-      break
-    case '1':
-      moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-        <Button style={{ marginLeft: 8 }}>
-          <Icon type="printer" /> Print
-      </Button>
-      </Dropdown> </div>)
-      break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    default:
-      break
+  case '0':
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+    break
+  case '1':
+    moreButtonTab = (
+      <div>
+        <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+        <Dropdown overlay={menu}>
+          <Button style={{ marginLeft: 8 }} icon="printer">
+              Print
+          </Button>
+        </Dropdown>
+      </div>
+    )
+    break
+  case '2':
+    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+    break
+  case '3':
+    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+    break
+  default:
+    break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = listBrand.length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
 
+  // const modalProps = {
+  //   visible: showModal,
+  //   title: 'Sticker Qty',
+  //   width: 250,
+  //   footer: [
+  //     <Button key="back" onClick={onCloseModal}>Cancel</Button>
+  // <PrintSticker total={stickerQty} logo={logo} {...printProps} />
+  //   ],
+  //   onCancel () {
+  //     onCloseModal()
+  //   }
+  // }
+
   const stickerProps = {
     onShowModalProduct,
     onCloseModalProduct,
     showModalProduct,
-    auto,
-    dummy,
-    updateDummy,
+    listItem,
+    update,
     period,
     listSticker,
     modalProductType,
@@ -246,11 +251,43 @@ const formProductCategory = ({
     onSelectSticker
   }
 
+  const shelfProps = stickerProps
+
+  const PDFModalProps = {
+    visible: showPDFModal,
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+    width: 375,
+    onCancel () {
+      onHidePDFModal()
+    }
+  }
+
+
+  const changeButton = () => {
+    getAllStock()
+  }
+
+  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let notification = changed ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
+  let printmode
+  if (mode === 'pdf') {
+    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}> <PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  } else {
+    printmode = (<div>{buttonClickXLS}
+      <span style={{ padding: '0px 10px' }} />
+      <PrintXLS data={list} name="Print Current Page" {...printProps} /></div>)
+  }
+
   return (
     <div>
       {/* {showModal && <Modal {...modalProps}>
         <span style={{ padding: '10px 20px' }}>Qty: <InputNumber {...inputNumberProps} /></span>
       </Modal>} */}
+      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
+        {printmode}
+      </Modal>}
       <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           <Form layout="horizontal">
@@ -478,6 +515,9 @@ const formProductCategory = ({
         </TabPane>
         <TabPane tab="Sticker" key="2" >
           <Sticker {...stickerProps} />
+        </TabPane>
+        <TabPane tab="Shelf" key="3" >
+          <Shelf {...shelfProps} />
         </TabPane>
       </Tabs>
     </div>

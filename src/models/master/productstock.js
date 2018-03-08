@@ -26,14 +26,16 @@ export default modelExtend(pageModel, {
     logo: '',
     showModalProduct: false,
     modalProductType: '',
-    listDummy: [],
-    listUpdateDummy: [],
-    auto: [],
-    dummy: [],
-    updateDummy: [],
+    listPrintAllStock: [],
+    listItem: [],
     listSticker: [],
+    update: false,
     selectedSticker: {},
-    period: []
+    period: [],
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    stockLoading: false
   },
 
   subscriptions: {
@@ -44,49 +46,42 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
+              changed: false,
               activeKey: '0',
               listSticker: []
             }
           })
-          dispatch({ type: 'queryAuto' })
         }
       })
     }
   },
 
   effects: {
-    * queryAuto ({ payload = {} }, { call, put }) {
+    * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      console.log(data.data)
+      if (data.success) {
         yield put({
-          type: 'querySuccessAuto',
+          type: 'querySuccessItem',
           payload: data.data
         })
-        const dataDummy = data.data.map(x => x.productName)
+      }
+    },
+
+    * queryAllStock ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(query, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
-            dummy: dataDummy
+            listPrintAllStock: data.data
           }
         })
       }
     },
-    * queryUpdateAuto ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
-        yield put({
-          type: 'querySuccessUpdateAuto',
-          payload: data.data
-        })
-        const dataDummy = data.data.map(x => x.productName)
-        yield put({
-          type: 'updateState',
-          payload: {
-            updateDummy: dataDummy
-          }
-        })
-      }
-    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
@@ -142,17 +137,26 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    showLoading (state) {
+      return {
+        ...state,
+        stockLoading: true
+      }
+    },
+
+    hideLoading (state) {
+      return {
+        ...state,
+        stockLoading: false
+      }
+    },
+
+    querySuccessItem (state, { payload }) {
+      return { ...state, listItem: payload }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
-    },
-
-    querySuccessAuto (state, { payload }) {
-      return { ...state, listDummy: payload }
-    },
-
-    querySuccessUpdateAuto (state, { payload }) {
-      return { ...state, listUpdateDummy: payload }
     },
 
     changeTab (state, { payload }) {

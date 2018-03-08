@@ -21,7 +21,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu,
   selectedDate, selectedMonth, showBirthDayListModal, hideBirthDayListModal, changeCalendarMode, totalBirthdayInAMonth,
-  listTotalBirthdayPerDate, listTotalBirthdayPerMonth, listCustomerBirthday, calendarMode, listNotification
+  listTotalBirthdayPerDate, listCustomerBirthday, calendarMode, listNotification, showPopOver
 }) => {
   let handleClickMenu = (e) => {
     e.key === 'logout' && logout(lstorage.getSessionId())
@@ -108,34 +108,9 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     )
   }
 
-  const getMonthData = (value) => {
-    let monthlyData
-    for (let key in listTotalBirthdayPerMonth) {
-      switch (value.format('MM')) {
-      case listTotalBirthdayPerMonth[key].month:
-        monthlyData = [
-          { style: styles.badgeStyleMonth, content: listTotalBirthdayPerMonth[key].counter }
-        ]
-        break
-      default:
-      }
-    }
-    return monthlyData || []
-  }
-
-  const monthCellRender = (value) => {
-    const listData = getMonthData(value)
-    return (
-      listData.map(item => (
-        <span className={item.style}>{item.content}</span>
-      ))
-    )
-  }
-
   const calendarProps = {
     fullscreen: false,
     dateCellRender,
-    monthCellRender,
     onSelect (value) {
       showBirthDayListModal(value)
     },
@@ -165,6 +140,19 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     </Link>
   </li>)) : []
 
+  const headerMenuProps = {
+    showPopOver: visibleItem.showPopOver,
+    handleVisibleChange: showPopOver
+  }
+
+  let notificationPopContent
+  if (listNotification.length > 0) {
+    notificationPopContent = {
+      total: listNotification.length,
+      popContent: (<ul style={{ width: 150, borderBottom: '1px solid #444' }}>{notifications}</ul>)
+    }
+  }
+
   return (
     <div className={classnames(styles.header, styles.store1)}>
       {isNavbar
@@ -188,7 +176,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
         <HeaderMenu prompt="home" clickRoute="/dashboard" />
         <HeaderMenu prompt="setting" />
         <HeaderMenu prompt="calculator" />
-        <HeaderMenu prompt="calendar" total={totalBirthdayInAMonth} visibleCalendar={visibleItem.displayBirthdate} popContent={<Calendar {...calendarProps} />} />
+        <HeaderMenu prompt="calendar" {...headerMenuProps} total={totalBirthdayInAMonth} popContent={<Calendar {...calendarProps} />} />
         <HeaderMenu prompt="change theme"
           icon="bulb"
           popContent={
@@ -200,15 +188,10 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
           }
         />
         <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
-        {listNotification.length > 0 && <HeaderMenu prompt="notification"
-          total={listNotification.length}
+        <HeaderMenu prompt="notification"
           icon="bell"
-          popContent={
-            <ul style={{ width: 150, borderBottom: '1px solid #444' }}>
-              {notifications}
-            </ul>
-          }
-        />}
+          {...notificationPopContent}
+        />
         <HeaderMenu separator />
         <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
         <HeaderMenu prompt="profit" icon="like-o" />

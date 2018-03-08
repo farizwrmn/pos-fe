@@ -34,9 +34,9 @@ const cardStyle = {
 }
 
 const gridStyle = {
-  width: '25%',
-  padding: '10px 8px 5px 8px',
-  textAlign: 'center'
+  width: '33.3%',
+  height: '100px',
+  padding: '10px 8px 5px 8px'
 }
 
 const iconStyle = {
@@ -47,7 +47,46 @@ const iconStyle = {
   margin: '0 2.5px'
 }
 
-const Sticker = ({
+const tableStyle = {
+  width: 300,
+  height: 420,
+  overflowX: 'hidden',
+  border: '1px solid #ddd'
+}
+
+const labelStyle = {
+  fontSize: 15,
+  fontWeight: 1000
+}
+
+const productCodeStyle = {
+  fontSize: 11,
+  fontWeight: 1000
+}
+
+const priceStyle = {
+  fontSize: 12,
+  fontWeight: 'bold',
+  textAlign: 'left'
+}
+
+const sellPriceStyle = {
+  fontSize: 9,
+  lineHeight: 2.2,
+  textAlign: 'right'
+}
+
+const distPriceStyleLeft = {
+  fontSize: 9,
+  textAlign: 'left'
+}
+
+const distPriceStyleRight = {
+  fontSize: 9,
+  textAlign: 'right'
+}
+
+const Shelf = ({
   onShowModalProduct,
   showModalProduct,
   listSticker,
@@ -112,12 +151,7 @@ const Sticker = ({
     dataSource: listSticker || [],
     columns,
     pagination: false,
-    style: {
-      width: 300,
-      height: 420,
-      overflowX: 'hidden',
-      border: '1px solid #ddd'
-    }
+    style: tableStyle
   }
 
   const productProps = {
@@ -128,23 +162,27 @@ const Sticker = ({
     ...modalStickerProps
   }
 
-  const labelStyle = {
-    fontSize: 10,
-    fontWeight: 1000
-  }
-
-  const priceStyle = {
-    fontSize: 10,
-    textAlign: 'right',
-    marginTop: 10
-  }
-
   let stickers = []
   if (listSticker.length > 0) {
     stickers = listSticker.map((x) => {
       let count = []
       for (let i = 0; i < x.qty; i += 1) {
-        count.push(<Card.Grid style={gridStyle}><p style={labelStyle}>{x.name.substr(0, 20)}</p><p style={priceStyle}>Rp. {parseInt(x.info.sellPrice, 0).toLocaleString()}</p></Card.Grid>)
+        count.push(<Card.Grid style={gridStyle}>
+          <p style={labelStyle}>{x.name.substr(0, 20)}</p>
+          <Row>
+            <Col md={12}>
+              <p style={priceStyle}>Rp. {parseInt(x.info.sellPrice, 0).toLocaleString()}</p>
+              <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice01, 0).toLocaleString()}</p>
+              <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice02, 0).toLocaleString()}</p>
+            </Col>
+            <Col md={12}>
+              <p style={sellPriceStyle}>(Sellprice)</p>
+              <p style={distPriceStyleRight}>(Dist price 01)</p>
+              <p style={distPriceStyleRight}>(Dist price 02)</p>
+            </Col>
+          </Row>
+          <p style={productCodeStyle}>{x.info.productCode}</p>
+        </Card.Grid>)
       }
       return count
     })
@@ -173,4 +211,4 @@ const Sticker = ({
   )
 }
 
-export default Sticker
+export default Shelf

@@ -13,7 +13,9 @@ const Report = ({ dispatch, loading, posReport, app }) => {
   }
 
   const listData = _.map(listPOS, (item) => {
-    return Object.assign(item, { items: _.filter(listPOSDetail, { transNo: item.transNo }) })
+    return Object.assign(item, {
+      items: _.filter(listPOSDetail, { transNo: item.transNo })
+    })
   })
 
   const filterProps = {

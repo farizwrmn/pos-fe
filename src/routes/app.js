@@ -22,7 +22,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked,
     selectedDate, calendarMode, selectedMonth, totalBirthdayInAMonth, listTotalBirthdayPerDate,
-    listTotalBirthdayPerMonth, listCustomerBirthday, listNotification } = app
+    listCustomerBirthday, listNotification } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { logo } = config
@@ -54,7 +54,6 @@ const App = ({ children, dispatch, app, loading, location }) => {
     selectedMonth,
     totalBirthdayInAMonth,
     listTotalBirthdayPerDate,
-    listTotalBirthdayPerMonth,
     listCustomerBirthday,
     listNotification,
     switchMenuPopover () {
@@ -144,7 +143,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
         type: 'app/updateState',
         payload: {
           visibleItem: {
-            displayBirthdate: true
+            displayBirthdate: true,
+            showPopOver: false
           },
           selectedDate: moment(date).format('YYYY-MM-DD')
         }
@@ -172,13 +172,32 @@ const App = ({ children, dispatch, app, loading, location }) => {
         type: 'app/updateState',
         payload: {
           visibleItem: {
-            displayBirthdate: false
+            displayBirthdate: false,
+            showPopOver: true
           },
           selectedDate: '',
           listCustomerBirthday: [],
           calendarMode: 'month'
         }
       })
+    },
+    showPopOver () {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          visibleItem: {
+            showPopOver: !visibleItem.showPopOver
+          }
+        }
+      })
+      if (!visibleItem.showPopOver) {
+        dispatch({
+          type: 'app/queryTotalBirthdayPerDate',
+          payload: {
+            month: selectedMonth
+          }
+        })
+      }
     },
     changeCalendarMode (month, mode) {
       dispatch({

@@ -1,17 +1,17 @@
 import React from 'react'
-import { Form, Modal, AutoComplete, InputNumber, message, DatePicker } from 'antd'
+import { Form, Modal, AutoComplete, InputNumber, message, DatePicker, Select } from 'antd'
 import moment from 'moment'
 
 const { RangePicker } = DatePicker
+const Option = Select.Option
 
 const FormItem = Form.Item
 const ModalSticker = ({
   onCloseModalProduct,
   showModalProduct,
   listSticker,
-  auto,
-  dummy,
-  updateDummy,
+  listItem,
+  update,
   period,
   modalProductType,
   onAutoSearch,
@@ -25,11 +25,9 @@ const ModalSticker = ({
     getFieldsValue
   }
 }) => {
-  const name = auto.length > 0 ? auto.map(x => x.productName) : []
+  let listItemName = listItem.length > 0 ? listItem.map(x => x.productName) : []
 
-  const handleSearch = (value) => {
-    onAutoSearch(value)
-  }
+  let productNames = listItem.length > 0 ? listItem.map(x => (<Option key={x.productName}>{x.productName}</Option>)) : []
 
   const handleFields = (fields) => {
     const { updatedAt } = fields
@@ -48,15 +46,29 @@ const ModalSticker = ({
     onSearchUpdateSticker(fields)
   }
 
+  let timeout
   const autoCompleteProps = {
+    style: { width: '100%' },
     disabled: Object.keys(selectedSticker).length !== 0,
-    dataSource: name,
+    dataSource: listItemName,
     onSearch (value) {
-      handleSearch(value)
+      if (modalProductType === 'all') {
+        if (timeout) {
+          clearTimeout(timeout)
+          timeout = null
+        }
+
+        timeout = setTimeout(() => {
+          const last = getFieldsValue()
+          if (value === last.name) {
+            onAutoSearch(value)
+          }
+        }, 1000)
+      }
     }
   }
   const inputNumberProps = {
-    style: { width: '120px' },
+    style: { width: '100%' },
     min: 1,
     max: 100,
     defaultValue: 1,
@@ -67,34 +79,27 @@ const ModalSticker = ({
 
   const modalProps = {
     visible: showModalProduct,
-    title: modalProductType === 'all' ? 'All Product' : 'Update Product',
+    title: !update ? (modalProductType === 'all' ? 'All Product' : 'Update Product') : 'Edit Product',
     width: 250,
     onOk () {
       const data = {
         ...getFieldsValue()
       }
-      if (modalProductType === 'all') {
-        if (dummy.indexOf(data.name) === -1) {
-          message.warning('Please select the correct product!')
-          return false
-        }
-      }
-      if (updateDummy.indexOf(data.name) === -1) {
+      if (listItemName.indexOf(data.name) === -1 && !update) {
         message.warning('Please select the correct product!')
         return false
       }
-
       const check = listSticker.map(item => item.name).indexOf(data.name)
       if (check !== -1 && Object.keys(selectedSticker).length === 0) {
         message.warning('The Product has been selected!')
         return false
       }
       if (Object.keys(selectedSticker).length === 0) {
-        const price = auto.filter(x => x.productName === data.name).map(x => x.sellPrice)
-        data.price = price.toString()
+        const listProduct = listItem.filter(x => x.productName === data.name)[0]
+        data.info = listProduct
         getItem(data)
       } else {
-        data.price = selectedSticker.price
+        data.info = selectedSticker.info
         changeItem(selectedSticker, data)
       }
       onCloseModalProduct()
@@ -106,6 +111,22 @@ const ModalSticker = ({
 
   let currentPeriod = period.length > 0 ? [moment(period[0]), moment(period[1])] : []
 
+  let fieldName
+  if (modalProductType === 'all' || update) {
+    fieldName = (<AutoComplete {...autoCompleteProps} />)
+  } else if (modalProductType === 'update' && !update) {
+    fieldName = (<Select
+      showSearch
+      disabled={!!update}
+      style={{ width: '100%' }}
+      placeholder="Select product name"
+      optionFilterProp="children"
+      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+    >
+      {productNames}
+    </Select>)
+  }
+
   return (
     <Modal {...modalProps}>
       {modalProductType === 'update' &&
@@ -113,7 +134,7 @@ const ModalSticker = ({
           {getFieldDecorator('updatedAt', { initialValue: currentPeriod })(<RangePicker onChange={handleChange.bind(null, 'updatedAt')} />)}
         </FormItem>}
       <FormItem label="Name" >
-        {getFieldDecorator('name', { initialValue: selectedSticker.name })(<AutoComplete {...autoCompleteProps} style={{ width: '100%' }} />)}
+        {getFieldDecorator('name', { initialValue: selectedSticker.name })(fieldName)}
       </FormItem>
       <FormItem label="Qty" >
         {getFieldDecorator('qty', { initialValue: selectedSticker.qty })(<InputNumber {...inputNumberProps} />)}
