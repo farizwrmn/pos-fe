@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
-import { moment } from 'moment'
+import moment from 'moment'
 import { query, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
@@ -187,7 +187,7 @@ export default modelExtend(pageModel, {
         const time = yield call(getDateTime, {
           id: 'date'
         })
-        if (moment(time).format('YYYY-MM-DD') >= startPeriod) {
+        if (moment(time.data).format('YYYY-MM-DD') >= startPeriod) {
           const data = yield call(create, { id: transNo, data: payload, detail: arrayProd })
           if (data.success) {
             let transNoIncrease = {}

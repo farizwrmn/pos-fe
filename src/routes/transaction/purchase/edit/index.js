@@ -132,10 +132,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       let dataVoid = localStorage.getItem('purchase_void') ? JSON.parse(localStorage.getItem('purchase_void')) : []
       data.count = dataVoid.length + 1
       dispatch({ type: 'purchase/voidPurchaseList', payload: data })
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data, head: transNo } })
     },
     onRestoreVoid (e) {
-      dispatch({ type: 'purchase/editPurchaseList', payload: { data: e, head: transNo } })
+      transNo.taxType = localStorage.getItem('taxType')
       dispatch({ type: 'purchase/deleteVoidList', payload: e })
+      dispatch({ type: 'purchase/editPurchaseList', payload: { data: e, head: transNo } })
       dispatch({ type: 'purchase/hideProductModal' })
     },
     onDelete (data) {
