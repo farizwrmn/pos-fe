@@ -37,7 +37,7 @@ const Filter = ({
             )}
           </FilterItem>
         </Col>
-        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
+        <Col lg={14} md={24} style={{ textAlign: 'right' }}>
           <Button type="dashed"
             size="large"
             className="button-width02 button-extra-large bgcolor-lightgrey"

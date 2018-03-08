@@ -4,10 +4,6 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listAsset, storeInfo }) => {
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-
   const group = (data, key) => {
     return _.reduce(data, (group, item) => {
       (group[item[key]] = group[item[key]] || []).push(item)
@@ -87,7 +83,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - (2 * 40), y2: 5, lineWidth: 0.5 }]
           }
         ]
       }
@@ -184,11 +180,8 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
 }
 
 PrintPDF.propTypes = {
-  listRekap: PropTypes.array.isRequired,
-  dataSource: PropTypes.array.isRequired,
+  listAsset: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired,
-  period: PropTypes.string.isRequired,
-  year: PropTypes.string.isRequired,
   storeInfo: PropTypes.object
 }
 

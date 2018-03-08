@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { queryProductsBelowMinimum } from '../../services/master/productstock'
-import { query as queryAllPeriod } from '../../services/period'
+import { queryLastActive } from '../../services/period'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -24,19 +24,8 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryProductsBelowMinimum ({ payload = {} }, { call, put }) {
-      const data = yield call(queryProductsBelowMinimum, payload)
-      if (data) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listProductsBelowQty: data.data
-          }
-        })
-      }
-    },
     * queryPeriod (payload, { call, put }) {
-      const data = yield call(queryAllPeriod)
+      const data = yield call(queryLastActive)
       if (data.success) {
         const start = data.data[0].startPeriod
         yield put({
@@ -44,6 +33,17 @@ export default modelExtend(pageModel, {
           payload: {
             start,
             end: moment().format('YYYY-MM-DD')
+          }
+        })
+      }
+    },
+    * queryProductsBelowMinimum ({ payload = {} }, { call, put }) {
+      const data = yield call(queryProductsBelowMinimum, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listProductsBelowQty: data.data
           }
         })
       }

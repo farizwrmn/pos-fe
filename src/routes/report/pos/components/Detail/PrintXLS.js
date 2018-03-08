@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { RepeatReportMergeCell } from 'components'
+import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   const styles = {
@@ -60,8 +60,6 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   const tableHeader = [
     { value: 'NO', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'INVOICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'DATE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'PRODUCT CODE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -74,37 +72,41 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   let tableTitles = []
   let tableBodies = []
   let tableFooters = []
-  let tableMerge = []
-  let charCode = 65
-  let position = 9
-  let count = 1
   for (let i = 0; i < listData.length; i += 1) {
     let master = listData[i]
-    let tableTitle = []
-    tableTitle.push({ value: `${master.memberName}(${master.memberCode})`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: `${master.policeNo}(${master.merk} ${master.model})`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle })
+    let tableTitle = [
+      [
+        { value: 'INVOICE NO', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: 'MEMBER CODE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${master.memberCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ],
+      [
+        { value: 'DATE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${moment(master.transDate).format('DD-MM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: 'MEMBER NAME', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${master.memberName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
+    ]
     tableTitles.push(tableTitle)
 
-    let mergeField = {
-      no: `${String.fromCharCode(charCode)}${position}:${String.fromCharCode(charCode)}${position + (master.items.length - 1)}`,
-      space: `${String.fromCharCode(charCode + 1)}${position}:${String.fromCharCode(charCode + 1)}${position + (master.items.length - 1)}`,
-      transNo: `${String.fromCharCode(charCode + 2)}${position}:${String.fromCharCode(charCode + 2)}${position + (master.items.length - 1)}`,
-      date: `${String.fromCharCode(charCode + 3)}${position}:${String.fromCharCode(charCode + 3)}${position + (master.items.length - 1)}`
-    }
-    for (let key in mergeField) {
-      tableMerge.push(mergeField[key])
-    }
-    position += (master.items.length + 4)
-
     let group = []
+    let count = 1
     for (let n = 0; n < master.items.length; n += 1) {
       let data = master.items[n]
       let tableBody = []
       tableBody.push({ value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${data.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
@@ -113,9 +115,9 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       tableBody.push({ value: `${(parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${(parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
+      count += 1
     }
     tableBodies.push(group)
-    count += 1
 
     let totalQty = master.items.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
     let totalSubTotal = master.items.reduce((cnt, o) => cnt + (parseFloat(o.total) || 0), 0)
@@ -123,8 +125,6 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     let totalAfterDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
     let tableFooter = []
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
@@ -145,7 +145,6 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     title,
     tableTitle: tableTitles,
     tableHeader,
-    tableMerge,
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: listData,
@@ -153,12 +152,12 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   }
 
   return (
-    <RepeatReportMergeCell {...XLSProps} />
+    <RepeatExcelReport {...XLSProps} />
   )
 }
 
 PrintXLS.propTypes = {
-  location: PropTypes.object,
+  listData: PropTypes.object,
   storeInfo: PropTypes.string,
   fromDate: PropTypes.string,
   toDate: PropTypes.string

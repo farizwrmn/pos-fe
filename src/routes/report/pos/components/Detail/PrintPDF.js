@@ -54,50 +54,75 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     let totalSubTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.total) || 0), 0)
     let totalDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
-    const headers = [
-      [
-        { fontSize: 12, text: 'INVOICE', style: 'tableHeader' },
-        { fontSize: 12, text: 'DATE', style: 'tableHeader' },
-        { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader' },
-        { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader' },
-        { fontSize: 12, text: 'QTY', style: 'tableHeader' },
-        { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
-        { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
-        { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
-        { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
-      ]
-    ]
+
+    const diffData = tabledata.reduce((group, item) => {
+      (group[item.typeCode] = group[item.typeCode] || []).push(item)
+      return group
+    }, [])
 
     let body = []
-    for (let i = 0; i < headers.length; i += 1) {
-      body.push(headers[i])
-    }
-
-    let countQtyValue = 0
-    let countAmountValue = 0
-    const rows = tabledata
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let data = rows[key]
-        countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
-        countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
-        let row = []
-        row.push({ rowSpan: rows.length, text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ rowSpan: rows.length, text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.qty || 0), alignment: 'center', fontSize: 11 })
-        row.push({ text: (parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        body.push(row)
+    for (let key in diffData) {
+      let headers = []
+      switch (key) {
+      case 'P':
+        headers.push(
+          [
+            { fontSize: 12, text: 'NO', style: 'tableHeader' },
+            { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader' },
+            { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader' },
+            { fontSize: 12, text: 'QTY', style: 'tableHeader' },
+            { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
+            { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
+            { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
+            { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
+          ]
+        )
+        break
+      case 'S':
+        headers.push(
+          [
+            { fontSize: 12, text: 'NO', style: 'tableHeader' },
+            { fontSize: 12, text: 'SERVICE CODE', style: 'tableHeader' },
+            { fontSize: 12, text: 'SERVICE NAME', style: 'tableHeader' },
+            { fontSize: 12, text: 'QTY', style: 'tableHeader' },
+            { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
+            { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
+            { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
+            { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
+          ]
+        )
+        break
+      default:
+      }
+      for (let i = 0; i < headers.length; i += 1) {
+        body.push(headers[i])
+      }
+      let countQtyValue = 0
+      let countAmountValue = 0
+      const rows = diffData[key]
+      let counter = 1
+      for (let key in rows) {
+        if (rows.hasOwnProperty(key)) {
+          let data = rows[key]
+          countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
+          countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
+          let row = []
+          row.push({ text: counter, alignment: 'center', fontSize: 11 })
+          row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
+          row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+          row.push({ text: (data.qty || 0), alignment: 'center', fontSize: 11 })
+          row.push({ text: (parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+          row.push({ text: (parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+          row.push({ text: (parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+          row.push({ text: (parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+          body.push(row)
+        }
+        counter += 1
       }
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 4, style: 'rowTextFooter' })
-    totalRow.push({})
+    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
@@ -113,7 +138,21 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   let tableBody = []
   for (let i = 0; i < listData.length; i += 1) {
     try {
-      tableTitle.push({ text: `${listData[i].memberName}(${listData[i].memberCode}) - ${listData[i].policeNo}(${listData[i].merk} ${listData[i].model})`, style: 'tableTitle' })
+      tableTitle.push(
+        {
+          table: {
+            widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+            body: [
+              [{ text: 'Invoice No', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'Police No/KM', fontSize: 11 }, ':', { text: `${(listData[i].policeNo || '').toString()}${(listData[i].policeNo && listData[i].lastMeter) ? '/' : ''}${(listData[i].lastMeter || '').toString()}`, fontSize: 11 }],
+              [{ text: 'Invoice Date', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MM-YYYY') || moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'Merk/Model', fontSize: 11 }, ':', { text: `${(listData[i].merk || '').toString()}${(listData[i].merk && listData[i].model) ? '/' : ''}${(listData[i].model || '').toString()}`, fontSize: 11 }],
+              [{ text: 'Member Code', fontSize: 11 }, ':', { text: (listData[i].memberCode || '').toString(), fontSize: 11 }, {}, { text: 'Type/Year', fontSize: 11 }, ':', { text: `${(listData[i].type || '').toString()}${(listData[i].type && listData[i].year) ? '/' : ''}${(listData[i].year || '').toString()}`, fontSize: 11 }],
+              [{ text: 'Member Name', fontSize: 11 }, ':', { text: (listData[i].memberName || '').toString(), fontSize: 11 }, {}, { text: 'Mechanic', fontSize: 11 }, ':', { text: (listData[i].technicianName || '').toString(), fontSize: 11 }]
+            ]
+          },
+          layout: 'noBorders',
+          margin: [0, 20, 0, 0]
+        }
+      )
       tableBody.push(createTableBody(listData[i].items))
     } catch (e) {
       console.log(e)
@@ -132,12 +171,12 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1090, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },
@@ -162,7 +201,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 820 - (2 * 40), y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1090, y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -191,7 +230,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A3',
     pageOrientation: 'landscape',
-    width: ['10%', '9%', '14%', '24%', '7%', '9%', '9%', '9%', '9%'],
+    width: ['4%', '18%', '35%', '7%', '9%', '9%', '9%', '9%'],
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,
@@ -208,7 +247,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
 }
 
 PrintPDF.propTypes = {
-  listMechanic: PropTypes.array.isRequired,
+  listData: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
   toDate: PropTypes.string.isRequired,
