@@ -82,10 +82,14 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
   let tableBodies = []
   let tableFooters = []
   for (let i = 0; i < arr.length; i += 1) {
-    let tableTitle = []
-    tableTitle.push({ value: 'Employee Name:', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle })
-    tableTitle.push({ value: `${arr[i][0].employeeName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle })
+    let tableTitle = [
+      [
+        { value: 'Employee Name:', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${arr[i][0].employeeName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
+    ]
+
     tableTitles.push(tableTitle)
 
     let group = []

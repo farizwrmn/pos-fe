@@ -50,17 +50,21 @@ const RepeatReport = ({
     }
     let position = title.length + 4
     for (let i = 0; i < data.length; i += 1) {
-      for (let char = 65; char < 65 + tableTitle[i].length; char += 1) {
-        let tableTitleValue = char - 65
-        content.push({
-          value: sheet.getCell(`${String.fromCharCode(char)}${position}`).value = tableTitle[i][tableTitleValue].value,
-          alignment: sheet.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableTitle[i][tableTitleValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${position}`).font = tableTitle[i][tableTitleValue].font
-        })
+      for (let j = 0; j < tableTitle[i].length; j += 1) {
+        for (let char = 65; char < 65 + tableTitle[i][j].length; char += 1) {
+          let tableTitleValue = char - 65
+          content.push({
+            value: sheet.getCell(`${String.fromCharCode(char)}${position}`).value = tableTitle[i][j][tableTitleValue].value,
+            alignment: sheet.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableTitle[i][j][tableTitleValue].alignment,
+            font: sheet.getCell(`${String.fromCharCode(char)}${position}`).font = tableTitle[i][j][tableTitleValue].font
+          })
+        }
+        position += 1
       }
 
+
       for (let char = 65; char < 65 + tableHeader.length; char += 1) {
-        let tableHeaderPosition = position + 1
+        let tableHeaderPosition = position
         let tableHeaderValue = char - 65
         content.push({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).value = tableHeader[tableHeaderValue].value,
@@ -70,7 +74,7 @@ const RepeatReport = ({
         })
       }
 
-      let tableBodyPosition = position + 2
+      let tableBodyPosition = position + 1
       for (let n = 0; n < tableBody[i].length; n += 1) {
         for (let char = 65; char < 65 + tableBody[i][n].length; char += 1) {
           let tableBodyValue = char - 65
@@ -85,7 +89,7 @@ const RepeatReport = ({
       }
 
       for (let char = 65; char < 65 + tableFooter[i].length; char += 1) {
-        let tableFooterPosition = position + tableBody[i].length + 2
+        let tableFooterPosition = position + tableBody[i].length + 1
         let tableFooterValue = char - 65
         content.push({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
