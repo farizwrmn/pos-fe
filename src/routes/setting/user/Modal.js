@@ -58,6 +58,26 @@ const modal = ({
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
+  const handleOk = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue(),
+        key: item.key,
+      }
+      data.userRole = data.userRole.join(' ')
+
+      onOk(data)
+    })
+  }
+
+  const defaultValueRole = {key: roleItem.default}
+  const modalOpts = {
+    ...modalProps,
+    onOk: handleOk,
+  }
   const columns = [{
     title: 'Employee Id',
     dataIndex: 'employeeId',
@@ -258,7 +278,7 @@ const modal = ({
       })
   }
 
-  const modalOpts = {}
+  // const modalOpts = {}
 
   return (
     <Modal width="35vw"
