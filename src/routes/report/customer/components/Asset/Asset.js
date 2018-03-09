@@ -8,33 +8,56 @@ const History = ({ customerReport, customer, dispatch, app, loading }) => {
   const { modalVisible, listAsset, customerInfo } = customerReport
   const { list } = customer
   const { user, storeInfo } = app
-  const modalProps = {
+  const modalCustomerProps = {
     customer,
-    visible: modalVisible,
+    visible: modalVisible.showCustomer,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel () {
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: false
+          modalVisible: {
+            showCustomer: false
+          }
+        }
+      })
+    }
+  }
+
+  const modalChoiceProps = {
+    visible: modalVisible.showChoice,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'customerReport/updateState',
+        payload: {
+          modalVisible: {
+            showChoice: false
+          }
         }
       })
     }
   }
 
   const filterProps = {
+    customer,
     listAsset,
     user,
     storeInfo,
     customerInfo,
     modalVisible,
-    ...modalProps,
-    openModal () {
+    ...modalCustomerProps,
+    ...modalChoiceProps,
+    openModalCustomer () {
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: true
+          modalVisible: {
+            showCustomer: true,
+            showChoice: false
+          }
         }
       })
       dispatch({
@@ -44,14 +67,47 @@ const History = ({ customerReport, customer, dispatch, app, loading }) => {
         }
       })
     },
+    getAllCustomer () {
+      dispatch({ type: 'customerReport/queryCustomerAsset' })
+      dispatch({
+        type: 'customerReport/updateState',
+        payload: {
+          modalVisible: {
+            showChoice: false
+          },
+          customerInfo: {}
+        }
+      })
+    },
+    closeModal () {
+      dispatch({
+        type: 'customerReport/updateState',
+        payload: {
+          modalVisible: {
+            showCustomer: false,
+            showChoice: false
+          }
+        }
+      })
+    },
     onResetClick () {
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          customerInfo: {}
+          customerInfo: {},
+          listAsset: []
         }
       })
-      dispatch({ type: 'customerReport/queryCustomerAsset' })
+    },
+    onSearchClick () {
+      dispatch({
+        type: 'customerReport/updateState',
+        payload: {
+          modalVisible: {
+            showChoice: true
+          }
+        }
+      })
     }
   }
 

@@ -10,16 +10,19 @@ const History = ({ customerReport, customer, service, dispatch, app, loading }) 
   const { list } = customer
   const { listServiceType } = service
   const { user, storeInfo } = app
+  const { showCustomer } = modalVisible
   const modalProps = {
     customer,
-    visible: modalVisible,
+    visible: showCustomer,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel () {
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: false
+          modalVisible: {
+            showCustomer: false
+          }
         }
       })
     }
@@ -37,14 +40,16 @@ const History = ({ customerReport, customer, service, dispatch, app, loading }) 
     ...printProps,
     listPoliceNo,
     listServiceType,
-    modalVisible,
+    showCustomer,
     customerInfo,
     ...modalProps,
     openModal () {
       dispatch({
         type: 'customerReport/updateState',
         payload: {
-          modalVisible: true
+          modalVisible: {
+            showCustomer: true
+          }
         }
       })
       dispatch({
