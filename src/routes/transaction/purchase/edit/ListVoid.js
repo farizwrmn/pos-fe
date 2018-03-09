@@ -33,43 +33,50 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
       key: 'disc1',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
       key: 'discount',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
       key: 'ppn',
-      width: 50
+      width: 50,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      width: 100
+      width: 100,
+      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
       title: 'KET',

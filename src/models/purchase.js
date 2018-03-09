@@ -125,9 +125,7 @@ export default modelExtend(pageModel, {
           const total = (x[key].qty * x[key].price)
           const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-          console.log('discItem', discItem)
-          console.log('total', total)
-          console.log('totalPrice', totalPrice)
+          console.log('totalDpp', totalDpp)
           x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
           x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
           x[key].total = x[key].dpp + x[key].ppn
@@ -359,6 +357,7 @@ export default modelExtend(pageModel, {
       }
     },
     * getInvoiceDetail ({ payload }, { call, put }) {
+      localStorage.setItem('taxType', payload.taxType)
       const data = yield call(queryDetail, { transNo: payload.transNo })
       let arrayProd = []
       for (let n = 0; n < data.data.length; n += 1) {

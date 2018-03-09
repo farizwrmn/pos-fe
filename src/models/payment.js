@@ -586,9 +586,10 @@ export default {
         const docDefinition = {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
-          pageMargins: [40, 160, 40, 150],
+          pageMargins: [40, 170, 40, 150],
           header: {
             stack: [
+              { text: ' ', fontSize: headerFontSize, margin: [0, 0, 95, 0] },
               {
                 columns: [
                   {

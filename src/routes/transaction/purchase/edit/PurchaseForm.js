@@ -35,16 +35,17 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
     const grandTotal = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     return grandTotal
   }
-  const getNettoTotal = (g, totalDisc, e, totalPpn) => {
-    const nettoTotal = (g - totalDisc) + (parseFloat(e) || 0) + totalPpn
+  const getNettoTotal = (totalDpp, e, totalPpn) => {
+    const nettoTotal = totalDpp + (parseFloat(e) || 0) + totalPpn
     return nettoTotal
   }
   let dataPurchase = dataBrowse
   let g = dataPurchase
   let totalPpn = g.reduce((cnt, o) => cnt + o.ppn, 0)
+  let totalDpp = g.reduce((cnt, o) => cnt + o.dpp, 0)
   let totalDisc = getDiscTotal(g)
   let grandTotal = getGrandTotal(g)
-  let nettoTotal = getNettoTotal(grandTotal, totalDisc, rounding, totalPpn)
+  let nettoTotal = getNettoTotal(totalDpp, rounding, totalPpn)
   let dataVoid = localStorage.getItem('purchase_void') === null ? [] : JSON.parse(localStorage.getItem('purchase_void'))
   const hdlChangePercent = () => {
     console.log('change')
@@ -55,8 +56,12 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
     const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
     const x = dataProduct
     for (let key = 0; key < x.length; key += 1) {
-      x[key].dpp = parseFloat((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)) - x[key].discount)) * (1 - (data.discInvoicePercent / 100))) - (((x[key].qty * x[key].price) / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      x[key].ppn = parseFloat((ppnType === 'I' ? (x[key].dpp * 0.1) : 0))
+      const total = (x[key].qty * x[key].price)
+      const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
+      const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+      console.log('totalDpp', totalDpp)
+      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
+      x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
     localStorage.setItem('product_detail', JSON.stringify(x))
@@ -138,9 +143,10 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                     required: true,
                     message: 'Required'
                   }]
-                })(<Select onBlur={hdlChangePercent} disabled>
+                })(<Select onBlur={hdlChangePercent}>
                   <Option value="I">Include</Option>
-                  <Option value="E">Exclude</Option>
+                  <Option value="E">Exclude (0%)</Option>
+                  <Option value="S">Exclude (10%)</Option>
                 </Select>)}
               </FormItem>
             </Col>
@@ -167,7 +173,6 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   }]
                 })(<InputNumber
                   onBlur={hdlChangePercent}
-                  disabled
                   defaultValue={0}
                   step={500}
                   min={0}
@@ -183,7 +188,6 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
                   }]
                 })(<InputNumber
                   onBlur={hdlChangePercent}
-                  disabled
                   defaultValue={0}
                   step={500}
                   min={0}

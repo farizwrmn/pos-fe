@@ -23,8 +23,8 @@ const formItemLayout1 = {
   wrapperCol: { span: 11 }
 }
 const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
-                        modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-                        onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
+  modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
+  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -78,9 +78,7 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      console.log('discItem', discItem)
-      console.log('total', total)
-      console.log('totalPrice', totalPrice)
+      console.log('totalDPP', totalDpp)
       x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
