@@ -63,7 +63,7 @@ const ModalSticker = ({
           if (value === last.name) {
             onAutoSearch(value)
           }
-        }, 1000)
+        }, 500)
       }
     }
   }

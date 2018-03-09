@@ -4,39 +4,56 @@ import moment from 'moment'
 import { BasicReport } from 'components'
 
 const PrintPDF = ({ data, user, storeInfo, name }) => {
-  let tableHeaders = {
-    top: {
-      col_1: { text: 'NO', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_2: { text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_3: { text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_4: { text: 'MERK', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_5: { text: 'CATEGORY', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_6: { text: 'SELL PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_7: { text: 'COST PRICE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_8: { text: 'DIST PRICE-1', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_9: { text: 'DIST PRICE-2', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 }
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      alignment: 'center'
+    },
+    tableBody: {
+      fontSize: 11
     }
   }
 
-  const createTableHeader = (tableHeader) => {
-    let head = []
-    for (let key in tableHeader) {
-      if (tableHeader.hasOwnProperty(key)) {
-        let row = []
-        row.push(tableHeader[key].col_1)
-        row.push(tableHeader[key].col_2)
-        row.push(tableHeader[key].col_3)
-        row.push(tableHeader[key].col_4)
-        row.push(tableHeader[key].col_5)
-        row.push(tableHeader[key].col_6)
-        row.push(tableHeader[key].col_7)
-        row.push(tableHeader[key].col_8)
-        row.push(tableHeader[key].col_9)
-        head.push(row)
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN DAFTAR STOK BARANG',
+            style: 'header'
+          },
+          {
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 970, y2: 5, lineWidth: 0.5 }]
+          }
+        ]
       }
-    }
-    return head
+    ],
+    margin: [15, 12, 15, 30]
   }
+
+  const tableHeader = [
+    [
+      { text: 'NO', style: 'tableHeader' },
+      { text: 'PRODUCT CODE', style: 'tableHeader' },
+      { text: 'PRODUCT NAME', style: 'tableHeader' },
+      { text: 'MERK', style: 'tableHeader' },
+      { text: 'CATEGORY', style: 'tableHeader' },
+      { text: 'SELL PRICE', style: 'tableHeader' },
+      { text: 'COST PRICE', style: 'tableHeader' },
+      { text: 'DIST PRICE-1', style: 'tableHeader' },
+      { text: 'DIST PRICE-2', style: 'tableHeader' }
+    ]
+  ]
 
   const createTableBody = (tableBody) => {
     let body = []
@@ -59,26 +76,6 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     }
     return body
   }
-  const styles = {
-    tableHeader: {
-      bold: true,
-      fontSize: 13,
-      color: 'black'
-    },
-    headerStoreName: {
-      fontSize: 18,
-      margin: [45, 10, 0, 0]
-    },
-    headerTitle: {
-      fontSize: 16,
-      margin: [45, 2, 0, 0]
-    }
-  }
-
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' }
-  ]
 
   const footer = (currentPage, pageCount) => {
     return {
@@ -114,11 +111,9 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     }
   }
 
-  let tableHeader = []
   let tableBody = []
   try {
     tableBody = createTableBody(data)
-    tableHeader = createTableHeader(tableHeaders)
   } catch (e) {
     console.log(e)
   }
@@ -126,15 +121,14 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
   const pdfProps = {
     buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
+    buttonSize: 'large',
     name,
     className: '',
-    width: ['4%', '14%', '20%', '20%', '10%', '8%', '8%', '8%', '8%'],
+    width: ['3%', '14%', '25%', '16%', '10%', '8%', '8%', '8%', '8%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
-    pageMargins: [15, 80, 15, 60],
+    pageMargins: [15, 140, 15, 60],
     tableStyle: styles,
-    layout: 'noBorder',
     tableHeader,
     tableBody,
     data,
