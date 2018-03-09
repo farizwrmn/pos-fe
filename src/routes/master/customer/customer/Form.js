@@ -70,7 +70,17 @@ const formCustomer = ({
   }
 }) => {
   const { show } = filterProps
-  const { onShowHideSearch } = tabProps
+  const { onShowHideSearch,
+    list,
+    listPrintAllCustomer,
+    changed,
+    mode,
+    customerLoading,
+    showPDFModal,
+    onShowPDFModal,
+    onHidePDFModal,
+    getAllCustomer
+  } = tabProps
   const handleReset = () => {
     resetFields()
   }
@@ -115,7 +125,7 @@ const formCustomer = ({
           onOk () {
             onSubmit(data.memberCode, data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Member Code can't be null")
@@ -123,10 +133,39 @@ const formCustomer = ({
     })
   }
 
+  const PDFModalProps = {
+    visible: showPDFModal,
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+    width: 375,
+    onCancel () {
+      onHidePDFModal()
+    }
+  }
+
+  const changeButton = () => {
+    getAllCustomer()
+  }
+
+  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
+  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
+  let notification = changed ? "Click 'Print All Customer' to print!" : "Click 'Get All Customer' to get all data!"
+  let printmode
+  if (mode === 'pdf') {
+    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  } else {
+    printmode = (<Row><Col md={12}>{buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintXLS data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  }
+
+  const openPDFModal = (mode) => {
+    onShowPDFModal(mode)
+  }
+
   const menu = (
     <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+      <Menu.Item key="1"><Button onClick={() => openPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => openPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
     </Menu>
   )
 
@@ -153,229 +192,234 @@ const formCustomer = ({
   // </div>)
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
-      <TabPane tab="Form" key="0" >
-        <Form layout="horizontal">
-          <Row>
-            <Col {...column}>
-              <FormItem label="Member Code" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('memberCode', {
-                  initialValue: item.memberCode,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[a-z0-9_-]{3,16}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input disabled={disabled} maxLength={16} />)}
-              </FormItem>
-              <FormItem label="Member Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('memberName', {
-                  initialValue: item.memberName,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[a-z0-9_. ,-]{3,50}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={50} />)}
-              </FormItem>
-              <FormItem label="Member Group Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('memberGroupId', {
-                  initialValue: item.memberGroupId,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  optionFilterProp="children"
-                  onFocus={customerGroup}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{childrenGroup}
-                </Select>)}
-              </FormItem>
-              <FormItem label="Member Type Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('memberTypeId', {
-                  initialValue: item.memberTypeId,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  optionFilterProp="children"
-                  mode="default"
-                  onFocus={customerType}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{childrenType}
-                </Select>)}
-              </FormItem>
-              <FormItem label="ID Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('idType', {
-                  initialValue: item.idType,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  optionFilterProp="children"
-                  mode="default"
-                  onFocus={idType}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{childrenLov}
-                </Select>)}
-              </FormItem>
-              <FormItem label="ID No" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('idNo', {
-                  initialValue: item.idNo,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={30} />)}
-              </FormItem>
-              <FormItem label="Address 01" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('address01', {
-                  initialValue: item.address01,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={50} />)}
-              </FormItem>
-              <FormItem label="Address 02" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('address02', {
-                  initialValue: item.address02,
-                  rules: [
-                    {
-                      pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={50} />)}
-              </FormItem>
-              <FormItem label="City" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cityId', {
-                  initialValue: item.cityId,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  optionFilterProp="children"
-                  mode="default"
-                  onFocus={cities}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{childrenCity}
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col {...column} >
-              <FormItem label="State" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('state', {
-                  initialValue: item.state,
-                  rules: [
-                    {
-                      pattern: /^[a-z0-9_-]{3,20}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={20} />)}
-              </FormItem>
-              <FormItem label="Zip Code" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('zipCode', {
-                  initialValue: item.zipCode,
-                  rules: [
-                    {
-                      pattern: /^[a-z0-9_-]{3,20}$/i,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={20} />)}
-              </FormItem>
-              <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('phoneNumber', {
-                  initialValue: item.phoneNumber
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('mobileNumber', {
-                  initialValue: item.mobileNumber,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                      message: 'mobile number is not valid'
-                    }
-                  ]
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Email" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('email', {
-                  initialValue: item.email,
-                  rules: [
-                    {
-                      required: false,
-                      pattern: /^([a-zA-Z0-9._-a-zA-Z0-9])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-                      message: 'The input is not valid E-mail!'
-                    }
-                  ]
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('birthDate', {
-                  initialValue: moment(item.birthDate)
-                })(<DatePicker />)}
-              </FormItem>
-              <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('taxId', {
-                  initialValue: item.taxId,
-                  rules: [
-                    {
-                      pattern: /^[0-9]+$/,
-                      message: '0-9'
-                    }
-                  ]
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="Gender" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('gender', {
-                  initialValue: item.gender,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(
-                  <Radio.Group value={item.gender}>
-                    <Radio value="M">Male</Radio>
-                    <Radio value="F">Female</Radio>
-                  </Radio.Group>
-                )}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                <Button type="primary" onClick={handleSubmit}>{button}</Button>
-              </FormItem>
-            </Col>
-          </Row>
-        </Form>
-      </TabPane>
-      <TabPane tab="Browse" key="1" >
-        <Filter {...filterProps} />
-        <List {...listProps} />
-      </TabPane>
-    </Tabs>
+    <div>
+      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
+        {printmode}
+      </Modal>}
+      <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          <Form layout="horizontal">
+            <Row>
+              <Col {...column}>
+                <FormItem label="Member Code" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberCode', {
+                    initialValue: item.memberCode,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[a-z0-9_-]{3,16}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input disabled={disabled} maxLength={16} />)}
+                </FormItem>
+                <FormItem label="Member Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberName', {
+                    initialValue: item.memberName,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[a-z0-9_. ,-]{3,50}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={50} />)}
+                </FormItem>
+                <FormItem label="Member Group Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberGroupId', {
+                    initialValue: item.memberGroupId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    optionFilterProp="children"
+                    onFocus={customerGroup}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenGroup}
+                  </Select>)}
+                </FormItem>
+                <FormItem label="Member Type Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberTypeId', {
+                    initialValue: item.memberTypeId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    optionFilterProp="children"
+                    mode="default"
+                    onFocus={customerType}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenType}
+                  </Select>)}
+                </FormItem>
+                <FormItem label="ID Type" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('idType', {
+                    initialValue: item.idType,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    optionFilterProp="children"
+                    mode="default"
+                    onFocus={idType}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenLov}
+                  </Select>)}
+                </FormItem>
+                <FormItem label="ID No" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('idNo', {
+                    initialValue: item.idNo,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={30} />)}
+                </FormItem>
+                <FormItem label="Address 01" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('address01', {
+                    initialValue: item.address01,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={50} />)}
+                </FormItem>
+                <FormItem label="Address 02" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('address02', {
+                    initialValue: item.address02,
+                    rules: [
+                      {
+                        pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={50} />)}
+                </FormItem>
+                <FormItem label="City" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('cityId', {
+                    initialValue: item.cityId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    optionFilterProp="children"
+                    mode="default"
+                    onFocus={cities}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenCity}
+                  </Select>)}
+                </FormItem>
+              </Col>
+              <Col {...column} >
+                <FormItem label="State" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('state', {
+                    initialValue: item.state,
+                    rules: [
+                      {
+                        pattern: /^[a-z0-9_-]{3,20}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={20} />)}
+                </FormItem>
+                <FormItem label="Zip Code" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('zipCode', {
+                    initialValue: item.zipCode,
+                    rules: [
+                      {
+                        pattern: /^[a-z0-9_-]{3,20}$/i,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={20} />)}
+                </FormItem>
+                <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('phoneNumber', {
+                    initialValue: item.phoneNumber
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('mobileNumber', {
+                    initialValue: item.mobileNumber,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                        message: 'mobile number is not valid'
+                      }
+                    ]
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Email" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('email', {
+                    initialValue: item.email,
+                    rules: [
+                      {
+                        required: false,
+                        pattern: /^([a-zA-Z0-9._-a-zA-Z0-9])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+                        message: 'The input is not valid E-mail!'
+                      }
+                    ]
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('birthDate', {
+                    initialValue: moment(item.birthDate)
+                  })(<DatePicker />)}
+                </FormItem>
+                <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('taxId', {
+                    initialValue: item.taxId,
+                    rules: [
+                      {
+                        pattern: /^[0-9]+$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Gender" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('gender', {
+                    initialValue: item.gender,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(
+                    <Radio.Group value={item.gender}>
+                      <Radio value="M">Male</Radio>
+                      <Radio value="F">Female</Radio>
+                    </Radio.Group>
+                  )}
+                </FormItem>
+                <FormItem {...tailFormItemLayout}>
+                  <Button type="primary" onClick={handleSubmit}>{button}</Button>
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Filter {...filterProps} />
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
+    </div>
   )
 }
 

@@ -24,6 +24,11 @@ export default modelExtend(pageModel, {
     show: 1,
     modalVisible: false,
     newItem: false,
+    listPrintAllCustomer: [],
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    customerLoading: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -78,6 +83,19 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryAllCustomer ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(query, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPrintAllCustomer: data.data
+          }
+        })
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -146,6 +164,9 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    showLoading (state) { return { ...state, customerLoading: true } },
+
+    hideLoading (state) { return { ...state, customerLoading: false } },
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload

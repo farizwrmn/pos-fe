@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ data, storeInfo, name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -17,16 +17,6 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       family: 4,
       size: 12,
       underline: true
-    },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
     },
     tableHeader: {
       name: 'Courier New',
@@ -43,13 +33,9 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
   }
+
   const tableBody = (list) => {
     let body = []
     let start = 1
@@ -74,35 +60,36 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     return body
   }
   const title = [
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR KARYAWAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'LAPORAN DAFTAR KARYAWAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
   const header = [
     [
-      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'ID.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NAMA CUSTOMER', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TGL LAHIR', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'ALAMAT', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'KOTA', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO.TELP', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO.HP', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TIPE', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder }
+      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ID.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'BIRTHDATE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ADDRESS', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'CITY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'PHONE NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'MOBILE NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TYPE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+  const contentBody = data.length > 0 ? tableBody(data) : []
 
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    buttonSize: 'large',
+    name,
+    className: '',
+    buttonStyle: { background: 'transparent', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data,
     title,
     header,
     body: contentBody,
@@ -115,7 +102,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  dataSource: PropTypes.object,
+  data: PropTypes.object,
   storeInfo: PropTypes.object
 }
 
