@@ -1,140 +1,142 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { BasicExcelReport } from 'components'
+import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
-  let discountTotal = listTrans.reduce((cnt, o) => cnt + o.discount, 0)
-  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.dpp, 0)
-  let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
-
+const PrintXLS = ({ listInventoryTO, period, storeInfo }) => {
   const styles = {
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     title: {
-      name: 'Courier New',
+      name: 'Calibri',
       family: 4,
       size: 12,
       underline: true
     },
     merchant: {
-      name: 'Courier New',
+      name: 'Calibri',
       family: 4,
       size: 12
     },
-    date: {
-      name: 'Courier New',
+    period: {
+      name: 'Calibri',
       family: 4,
       size: 12
+    },
+    tableTitle: {
+      name: 'Calibri',
+      family: 4,
+      size: 12,
+      bold: true
     },
     tableHeader: {
-      name: 'Courier New',
+      name: 'Calibri',
+      family: 4,
+      size: 12,
+      bold: true
+    },
+    tableBody: {
+      name: 'Calibri',
       family: 4,
       size: 11
     },
-    tableBody: {
-      name: 'Times New Roman',
+    tableFooter: {
+      name: 'Calibri',
       family: 4,
-      size: 10
+      size: 11
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
-  }
-  const tableBody = (list) => {
-    let body = []
-    const rows = list
-    let start = 1
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let data = rows[key]
-        let row = []
-        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.transNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.dpp).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.discount).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.netto).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        body.push(row)
-      }
-      start += 1
-    }
-    return body
   }
 
-  let periode
-  if (fromDate !== '' && toDate !== '') {
-    periode = { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
-  } else {
-    periode = {}
-  }
+  const diffData = listInventoryTO.reduce((group, item) => {
+    (group[item.transNo] = group[item.transNo] || []).push(item)
+    return group
+  }, [])
 
   const title = [
-    { value: 'LAPORAN TRANSFER IN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN HISTORY POS DETAIL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    periode
+    { value: `PERIODE : ${moment(period).format('MMMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
-  const header = [
-    [
-      { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TRANSACTION NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TRANSACTION DATE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DPP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TOTAL DISCOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+
+  const tableHeader = [
+    { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'PRODUCT CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'UNIT PRICE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+  ]
+
+  let tableTitles = []
+  let tableBodies = []
+  let tableFooters = []
+  for (let key in diffData) {
+    let master = diffData[key]
+    let tableTitle = [
+      [
+        { value: 'Invoice No', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${key}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: 'Invoice Date', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${moment(master[0].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
     ]
-  ]
-  const contentBody = listTrans.length > 0 ? tableBody(listTrans) : []
-  const footer = [
-    [
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
-      { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: dppTotal.toString(), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
-    ]
-  ]
+    tableTitles.push(tableTitle)
+
+    let group = []
+    let count = 1
+    for (let n = 0; n < master.length; n += 1) {
+      let data = master[n]
+      let tableBody = []
+      tableBody.push({ value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      group.push(tableBody)
+      count += 1
+    }
+    tableBodies.push(group)
+
+    let totalQty = master.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
+    let total = master.reduce((cnt, o) => cnt + (parseFloat(o.nettoTotal) || 0), 0)
+
+    let tableFooter = []
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
+    tableFooter.push({ value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooters.push(tableFooter)
+  }
 
   // Declare additional Props
   const XLSProps = {
     className: 'button-width02 button-extra-large bgcolor-green',
     paperSize: 9,
-    orientation: 'landscape',
-    formatStyle: styles,
-    data: listTrans,
+    orientation: 'portrait',
     title,
-    header,
-    body: contentBody,
-    footer,
-    fileName: 'Transfer-Summary'
+    tableTitle: tableTitles,
+    tableHeader,
+    tableBody: tableBodies,
+    tableFooter: tableFooters,
+    data: Object.keys(diffData),
+    fileName: 'Inventory Transfer Out-Summary'
   }
 
   return (
-    <BasicExcelReport {...XLSProps} />
+    <RepeatExcelReport {...XLSProps} />
   )
 }
 

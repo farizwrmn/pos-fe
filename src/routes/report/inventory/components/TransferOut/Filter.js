@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
-// import PrintXLS from './PrintXLS'
+import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
@@ -54,7 +54,7 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
             <Icon type="rollback" className="icon-large" />
           </Button>
           <PrintPDF {...printProps} />
-          {/* <PrintXLS {...printProps} /> */}
+          <PrintXLS {...printProps} />
         </Col>
       </Row>
     </div>
