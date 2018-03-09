@@ -60,6 +60,7 @@ module.exports = {
     posreport: `${APIURL}${APIV1}/posreport`,
     posReport: `${APIURL}${APIV1}/report/pos`,
     purchasereport: `${APIURL}${APIV1}/report/purchase`,
+    inventoryreport: `${APIURL}${APIV1}/report/transfer`,
     adjustreport: `${APIURL}${APIV1}/report/adjust`,
     fiforeport: `${APIURL}${APIV1}/report/fifo`,
     servicereport: `${APIURL}${APIV1}/report/service`,
