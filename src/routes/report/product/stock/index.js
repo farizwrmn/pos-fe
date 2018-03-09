@@ -3,14 +3,23 @@ import { connect } from 'dva'
 import List from './List'
 import Filter from './Filter'
 
-const ProductStockReport = ({ productstockReport, loading, dispatch }) => {
+const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
   const { listProductsBelowQty } = productstockReport
+  const { user, storeInfo } = app
+
   const arrayList = []
   for (let key in listProductsBelowQty) {
     arrayList.push(listProductsBelowQty[key])
   }
 
+  const printProps = {
+    user,
+    storeInfo,
+    data: arrayList
+  }
+
   const filterProps = {
+    ...printProps,
     onFilterChange (value) {
       dispatch({
         type: 'productstockReport/queryProductsBelowMinimum',
@@ -38,5 +47,5 @@ const ProductStockReport = ({ productstockReport, loading, dispatch }) => {
   )
 }
 
-export default connect(({ productstockReport, loading }) => ({ productstockReport, loading }))(ProductStockReport)
+export default connect(({ productstockReport, app, loading }) => ({ productstockReport, app, loading }))(ProductStockReport)
 
