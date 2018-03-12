@@ -1,0 +1,82 @@
+import React from 'react'
+import { Table } from 'antd'
+import moment from 'moment'
+
+const Browse = ({ ...browseProps }) => {
+  const columns = [
+    {
+      title: 'Invoice',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: '175px'
+    },
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: '175px',
+      render: text => `${moment(text).format('LL ')}`
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: '200px'
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '250px'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: '50px'
+    },
+    {
+      title: 'Unit Price',
+      dataIndex: 'purchasePrice',
+      key: 'purchasePrice',
+      width: '100px',
+      render: text => text.toLocaleString()
+    },
+    {
+      title: 'Discount',
+      dataIndex: 'totalDiscount',
+      key: 'totalDiscount',
+      width: '100px',
+      render: text => Math.round(text).toLocaleString()
+    },
+    {
+      title: 'Total',
+      dataIndex: 'netto',
+      key: 'netto',
+      width: '100px',
+      render: text => Math.round(text).toLocaleString()
+    },
+    {
+      title: 'Grand Total',
+      dataIndex: 'grandtotal',
+      key: 'grandtotal',
+      width: '100px',
+      render: text => text.toLocaleString()
+    }
+  ]
+
+  return (
+    <div>
+      <Table
+        {...browseProps}
+        bordered
+        scroll={{ x: 1300, y: 300 }}
+        columns={columns}
+        simple
+        size="small"
+      />
+    </div>
+  )
+}
+
+export default Browse
