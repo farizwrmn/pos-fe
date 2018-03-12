@@ -3,95 +3,94 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ data, user, storeInfo, name }) => {
   const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
     tableHeader: {
       bold: true,
-      fontSize: 12,
-      color: 'black'
-    },
-    headerStoreName: {
-      fontSize: 16,
-      margin: [45, 10, 0, 0]
-    },
-    headerTitle: {
       fontSize: 13,
-      margin: [45, 2, 0, 0]
-    }
-  }
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR CUSTOMER', style: 'headerTitle' }
-  ]
-
-  let tableHeaders = {
-    top: {
-      col_1: { text: 'ID', style: 'tableHeader', alignment: 'center' },
-      col_2: { text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
-      col_3: { text: 'TGL LAHIR', style: 'tableHeader', alignment: 'center' },
-      col_4: { text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
-      col_5: { text: 'KOTA', style: 'tableHeader', alignment: 'center' },
-      col_6: { text: 'NO.TELP', style: 'tableHeader', alignment: 'center' },
-      col_7: { text: 'NO.HP', style: 'tableHeader', alignment: 'center' },
-      col_8: { text: 'TIPE', style: 'tableHeader', alignment: 'center' }
+      alignment: 'center'
+    },
+    tableBody: {
+      fontSize: 11
     }
   }
 
-  const createTableHeader = (tableHeader) => {
-    let head = []
-    for (let key in tableHeader) {
-      if (tableHeader.hasOwnProperty(key)) {
-        let data = tableHeader[key]
-        let row = []
-        row.push(data.col_1)
-        row.push(data.col_2)
-        row.push(data.col_3)
-        row.push(data.col_4)
-        row.push(data.col_5)
-        row.push(data.col_6)
-        row.push(data.col_7)
-        row.push(data.col_8)
-        head.push(row)
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN DAFTAR CUSTOMER',
+            style: 'header'
+          },
+          {
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 947, y2: 5, lineWidth: 0.5 }]
+          }
+        ]
       }
-    }
-    return head
+    ],
+    margin: [25, 12, 25, 30]
   }
+
+  const tableHeader = [
+    [
+      { text: 'NO', style: 'tableHeader' },
+      { text: 'ID', style: 'tableHeader' },
+      { text: 'NAME', style: 'tableHeader' },
+      { text: 'BIRTHDATE', style: 'tableHeader' },
+      { text: 'ADDRESS', style: 'tableHeader' },
+      { text: 'CITY', style: 'tableHeader' },
+      { text: 'PHONE NO', style: 'tableHeader' },
+      { text: 'MOBILE NO', style: 'tableHeader' },
+      { text: 'TYPE', style: 'tableHeader' }
+    ]
+  ]
 
   const createTableBody = (tableData) => {
     let body = []
+    let count = 1
     for (let key in tableData) {
       if (tableData.hasOwnProperty(key)) {
         let data = tableData[key]
         let row = []
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.birthDate || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: count, alignment: 'center', style: 'tableBody' })
+        row.push({ text: (data.memberCode || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.memberName || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: moment(data.birthDate).format('DD-MMM-YYYY'), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.address01 || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.cityName || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'left', style: 'tableBody' })
         body.push(row)
       }
+      count += 1
     }
     return body
   }
 
   let tableBody = []
-  let tableHeader = []
   try {
-    tableBody = createTableBody(dataSource)
-    tableHeader = createTableHeader(tableHeaders)
+    tableBody = createTableBody(data)
   } catch (e) {
     console.log(e)
   }
 
   const footer = (currentPage, pageCount) => {
     return {
-      margin: [40, 30, 40, 0],
+      margin: [25, 30, 25, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 947, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -120,20 +119,19 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   }
 
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    name: 'PDF',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['12%', '17%', '9%', '21%', '8%', '11%', '11%', '11%'],
-    pageSize: 'A4',
+    buttonSize: 'large',
+    className: '',
+    name,
+    buttonStyle: { background: 'transparent', padding: 0 },
+    width: ['4%', '10%', '15%', '8%', '24%', '7%', '10%', '10%', '11%'],
+    pageSize: { width: 1000, height: 700 },
     pageOrientation: 'landscape',
-    pageMargins: [40, 80, 40, 60],
+    pageMargins: [25, 140, 25, 60],
     tableStyle: styles,
-    layout: 'noBorder',
     tableHeader,
     tableBody,
-    data: dataSource,
     header,
     footer
   }
@@ -146,7 +144,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 PrintPDF.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object,
-  dataSource: PropTypes.object
+  data: PropTypes.object
 }
 
 export default PrintPDF

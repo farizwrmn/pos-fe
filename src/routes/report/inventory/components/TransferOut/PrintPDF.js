@@ -57,6 +57,7 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
       [
         { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
@@ -76,6 +77,7 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
         row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.netto || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -85,7 +87,8 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 2, style: 'rowTextFooter' })
+    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
+    totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: totalQty.toString(), style: 'rowNumberFooter' })
     totalRow.push({})
@@ -101,10 +104,9 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
       tableBody.push(createTableBody(listData[key]))
       tableTitle.push({
         table: {
+          widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'INVOICE' }, { text: ':' }, { text: listData[key][0].transNo }],
-            [{ text: 'DATE' }, { text: ':' }, { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }],
-            [{ text: 'TYPE' }, { text: ':' }, { text: listData[key][0].transType }]
+            [{ text: 'Invoice No' }, ':', { text: listData[key][0].transNo }, {}, { text: 'Invoice Date' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }]
           ]
         },
         style: 'tableTitle',
@@ -130,7 +132,7 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
             canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - (2 * 40), y2: 5, lineWidth: 0.5 }]
           },
           {
-            text: `\nPeriod: ${moment(period).format('MM/YYYY')}`,
+            text: `\nPeriod: ${moment(period).format('MMMM-YYYY')}`,
             fontSize: 10,
             alignment: 'left'
           }
@@ -177,7 +179,7 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A4',
     pageOrientation: 'landscape',
-    width: ['6%', '35%', '10%', '23%', '26%'],
+    width: ['6%', '27%', '30%', '8%', '13%', '16%'],
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,

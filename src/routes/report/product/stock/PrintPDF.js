@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ data, user, storeInfo }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -13,11 +13,16 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     },
     tableHeader: {
       bold: true,
-      fontSize: 13,
-      alignment: 'center'
+      fontSize: 12,
+      color: 'black'
     },
-    tableBody: {
-      fontSize: 11
+    headerStoreName: {
+      fontSize: 16,
+      margin: [45, 10, 0, 0]
+    },
+    headerTitle: {
+      fontSize: 13,
+      margin: [45, 2, 0, 0]
     }
   }
 
@@ -29,7 +34,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN DAFTAR KOTA',
+            text: 'LAPORAN STOK KUANTITAS MINIMUM',
             style: 'header'
           },
           {
@@ -43,21 +48,24 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
   const tableHeader = [
     [
-      { text: 'NO', style: 'tableHeader' },
-      { text: 'CITY CODE', style: 'tableHeader' },
-      { text: 'CITY NAME', style: 'tableHeader' }
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'QUANTITY', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'ALERT QUANTITY', style: 'tableHeader', alignment: 'center' }
     ]
   ]
 
-  const createTableBody = (tableBody) => {
+  const createTableBody = (tableData) => {
     let body = []
     let count = 1
-    for (let key in tableBody) {
-      if (tableBody.hasOwnProperty(key)) {
+    for (let key in tableData) {
+      if (tableData.hasOwnProperty(key)) {
+        let data = tableData[key]
         let row = []
-        row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key].cityCode || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].cityName || '').toString(), alignment: 'left' })
+        row.push({ text: count, alignment: 'center', fontSize: 11 })
+        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.sumQty || '').toString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.alertQty || '').toString(), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -65,10 +73,16 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     return body
   }
 
+  let tableBody = []
+  try {
+    tableBody = createTableBody(data)
+  } catch (e) {
+    console.log(e)
+  }
+
   const footer = (currentPage, pageCount) => {
     return {
       margin: [40, 30, 40, 0],
-
       stack: [
         {
           canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
@@ -99,21 +113,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     }
   }
 
-  let tableBody = []
-  try {
-    tableBody = createTableBody(dataSource)
-  } catch (e) {
-    console.log(e)
-  }
-
   const pdfProps = {
-    buttonType: '',
-    iconSize: '',
-    buttonSize: '',
-    name: 'PDF',
-    className: '',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['6%', '40%', '54%'],
+    width: ['6%', '40%', '25%', '29%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],
@@ -121,7 +122,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     layout: 'noBorder',
     tableHeader,
     tableBody,
-    data: dataSource,
     header,
     footer
   }
@@ -132,8 +132,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 }
 
 PrintPDF.propTypes = {
-  user: PropTypes.object.isRequired,
-  storeInfo: PropTypes.object.isRequired,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object,
   dataSource: PropTypes.object
 }
 

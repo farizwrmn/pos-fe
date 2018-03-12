@@ -6,7 +6,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 const BasicReport = ({
   name,
-  size = 'large',
+  buttonSize = 'large',
   buttonType = 'dashed',
   iconSize = 'icon-large',
   className = 'button-width02 button-extra-large bgcolor-blue',
@@ -85,7 +85,7 @@ const BasicReport = ({
   }
   return (
     <Button type={buttonType}
-      size={size}
+      size={buttonSize}
       className={className}
       onClick={() => printPdf()}
       style={buttonStyle}

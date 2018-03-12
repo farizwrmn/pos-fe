@@ -1,11 +1,8 @@
-/**
- * Created by Veirry on 09/09/2017.
- */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ data, storeInfo }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -17,6 +14,16 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       family: 4,
       size: 12,
       underline: true
+    },
+    header: {
+      fontSize: 11,
+      margin: [0, 0, 0, 10]
+    },
+    body: {
+      fontSize: 10
+    },
+    footer: {
+      fontSize: 10
     },
     tableHeader: {
       name: 'Courier New',
@@ -33,9 +40,13 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
+    },
+    tableFooter: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
     }
   }
-
   const tableBody = (list) => {
     let body = []
     let start = 1
@@ -45,8 +56,9 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.brandCode.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.brandName.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.productName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.sumQty || 0).toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.alertQty || 0).toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
@@ -55,7 +67,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN DAFTAR MEREK PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN STOK KUANTITAS MINIMUM', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
 
@@ -63,27 +75,22 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'BRAND CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'BRAND NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+      { value: 'PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'QUANTITY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ALERT QUANTITY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+  const contentBody = data.length > 0 ? tableBody(data) : []
 
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
-    iconSize: '',
-    buttonSize: '',
-    className: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data,
     title,
     header,
     body: contentBody,
-    fileName: 'ProductBrand-Summary'
+    fileName: 'Alert Quantity-Summary'
   }
 
   return (

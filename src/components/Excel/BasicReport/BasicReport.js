@@ -6,13 +6,13 @@ import { saveAs } from 'file-saver'
 import moment from 'moment'
 
 const BasicReport = ({
-  name = '',
-  className,
-  fileName,
+  name,
   buttonType = 'dashed',
-  buttonSize = 'large',
   iconSize = 'icon-large',
+  className = 'button-width02 button-extra-large bgcolor-green',
+  buttonSize = 'large',
   buttonStyle = {},
+  fileName,
   paperSize = 9,
   orientation = 'portrait',
   title = [],

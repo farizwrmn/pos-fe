@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ dataSource, dataCustomer, storeInfo }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -14,16 +14,6 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       family: 4,
       size: 12,
       underline: true
-    },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
     },
     tableHeader: {
       name: 'Courier New',
@@ -40,13 +30,9 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
   }
+
   const tableBody = (list) => {
     let body = []
     let start = 1
@@ -56,29 +42,31 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.memberCode.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.policeNo.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.merk.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.model.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.type || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.year || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.chassisNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.machineNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.policeNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.merk || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.model || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.type || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.year || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.chassisNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.machineNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
     }
     return body
   }
+
   const title = [
+    { value: 'LAPORAN DAFTAR TIPE PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR CUSTOMER UNIT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    {},
+    { value: `${dataCustomer.memberName}(${dataCustomer.memberCode})`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
+
   const header = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'POLICE NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MERK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MODEL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -95,6 +83,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     buttonType: '',
     iconSize: '',
     buttonSize: '',
+    className: '',
     name: 'Excel',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,

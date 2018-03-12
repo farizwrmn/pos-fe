@@ -1,22 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input } from 'antd'
+import { Form, Row, Col, Input, Button, Icon } from 'antd'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const Search = Input.Search
 
-const ColProps = {
-  xs: 24,
-  sm: 12,
-  style: {
-    marginBottom: 16
-  }
-}
-
 const Filter = ({
+  ...printProps,
   onFilterChange,
   form: {
     getFieldDecorator,
-    getFieldsValue
+    getFieldsValue,
+    resetFields
   }
 }) => {
   const handleSubmit = () => {
@@ -24,10 +20,25 @@ const Filter = ({
     onFilterChange(fields)
   }
 
+  const handleReset = () => {
+    resetFields()
+  }
+
   return (
-    <Row gutter={24}>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+    <Row>
+      <Col lg={10} md={24}>
         {getFieldDecorator('searchName')(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+      </Col>
+      <Col lg={14} md={24} style={{ textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
       </Col>
     </Row>
   )

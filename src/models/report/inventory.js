@@ -115,9 +115,7 @@ export default {
       })
     },
     * queryInventoryTransferOut ({ payload }, { call, put }) {
-      console.log(payload)
       const data = yield call(queryInventoryTransferOut, payload)
-      console.log(data)
       yield put({
         type: 'querySuccessInventoryTO',
         payload: {

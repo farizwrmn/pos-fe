@@ -84,6 +84,9 @@ const formCustomerType = ({
   }
 }) => {
   const { openModal } = modalProps
+
+  printProps.dataCustomer = dataCustomer
+
   const handleReset = () => {
     resetFields()
   }
@@ -109,7 +112,7 @@ const formCustomerType = ({
           onOk () {
             onSubmit(other)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Member Code can't be null")

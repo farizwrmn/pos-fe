@@ -1,34 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Row, Col, Form, Card, Icon } from 'antd'
+import { Button, Row, Col, Card, Icon, Modal } from 'antd'
 import ModalBrowse from './Modal'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
-
-const formItemLayout = {
-  labelCol: {
-    xs: {
-      span: 9
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
-  },
-  wrapperCol: {
-    xs: {
-      span: 15
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
-  }
-}
 
 const columnLeft = {
   sm: { span: 24 },
@@ -44,19 +19,18 @@ const columnRight = {
   xl: { span: 12 }
 }
 
-const FormItem = Form.Item
-
 const Filter = ({
+  customer,
   listAsset,
   user,
   storeInfo,
   modalVisible,
   customerInfo,
-  openModal,
+  openModalCustomer,
+  getAllCustomer,
+  closeModal,
   onResetClick,
-  resetHistory,
-  onSearchClick,
-  ...modalProps
+  onSearchClick
 }) => {
   const printProps = {
     listAsset,
@@ -82,16 +56,50 @@ const Filter = ({
 
   const { item } = cardProps
 
+  const { showChoice, showCustomer } = modalVisible
+
+  const modalChoiceProps = {
+    visible: showChoice,
+    footer: [],
+    width: 375,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      closeModal()
+    }
+  }
+
+  const modalCustomerProps = {
+    customer,
+    visible: showCustomer,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      closeModal()
+    }
+  }
+
   return (
     <Row>
       <Col {...columnLeft} >
-        <FormItem label="Member Code" {...formItemLayout}>
-          <Button type="primary" onClick={openModal} >Find Customer</Button>
-          {modalVisible && <ModalBrowse {...modalProps} />}
-        </FormItem>
+        {showChoice && <Modal {...modalChoiceProps}>
+          <Row style={{ marginTop: 30, textAlign: 'center' }}>
+            <Col md={12}><Button type="default" size="large" onClick={getAllCustomer}>Find All Customer</Button></Col>
+            <Col md={12}><Button type="default" size="large" onClick={openModalCustomer} >Find Customer</Button></Col></Row>
+        </Modal>}
+        {showCustomer && <ModalBrowse {...modalCustomerProps} />}
+
         {Object.keys(customerInfo).length > 0 && <Card {...cardProps}>{item}</Card>}
       </Col>
       <Col {...columnRight} style={{ textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          className="button-width02 button-extra-large"
+          onClick={onSearchClick}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
@@ -103,7 +111,7 @@ const Filter = ({
         <PrintXLS {...printProps} />
 
       </Col>
-    </Row>
+    </Row >
   )
 }
 
@@ -115,8 +123,7 @@ Filter.propTypes = {
   customerInfo: PropTypes.object,
   openModal: PropTypes.func,
   onResetClick: PropTypes.func,
-  resetHistory: PropTypes.func,
   onSearchClick: PropTypes.func
 }
 
-export default Form.create()(Filter)
+export default Filter
