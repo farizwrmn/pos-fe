@@ -49,17 +49,10 @@ const FormAdd = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue
-    // resetFields
   }
 }) => {
-  // const handleReset = () => {
-  //   resetItem()
-  //   resetFields()
-  // }
+  const { pagination, onChange, ...otherListProps } = listProps
   const { handleProductBrowse } = modalProductProps
-  // const change = (key) => {
-  //   changeTab(key)
-  // }
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -201,7 +194,7 @@ const FormAdd = ({
             </FormItem>
           </Col>
         </Row>
-        <ListItem {...listProps} style={{ marginTop: '10px' }} />
+        <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
         <FormItem>
           <Button size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>

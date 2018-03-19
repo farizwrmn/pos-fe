@@ -373,7 +373,7 @@ export default modelExtend(pageModel, {
           disc1: data.data[n].discPercent,
           dpp: data.data[n].dpp,
           ppn: data.data[n].ppn,
-          total: (((parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) * (1 - (parseFloat(data.data[n].discPercent) / 100))) - parseFloat(data.data[n].discNominal)) - parseFloat(data.data[n].ppn),
+          total: (((parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) * (1 - (parseFloat(data.data[n].discPercent) / 100))) - parseFloat(data.data[n].discNominal) - parseFloat(data.data[n].discInvoice)) + (payload.taxType === 'S' ? parseFloat(data.data[n].ppn) : 0),
           ket: 'edit'
         })
       }
