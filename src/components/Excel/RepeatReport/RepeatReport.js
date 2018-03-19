@@ -6,7 +6,12 @@ import { saveAs } from 'file-saver'
 import moment from 'moment'
 
 const RepeatReport = ({
-  className,
+  name,
+  buttonType = 'dashed',
+  iconSize = 'icon-large',
+  className = 'button-width02 button-extra-large bgcolor-green',
+  buttonSize = 'large',
+  buttonStyle = {},
   fileName,
   paperSize = 9,
   orientation = 'portrait',
@@ -117,12 +122,14 @@ const RepeatReport = ({
     }
   }
   return (
-    <Button type="dashed"
-      size="large"
+    <Button type={buttonType}
+      size={buttonSize}
       className={className}
       onClick={() => printXLS()}
+      style={buttonStyle}
     >
-      <Icon type="file-excel" className="icon-large" />
+      <Icon type="file-excel" className={iconSize} />
+      {name}
     </Button>
   )
 }

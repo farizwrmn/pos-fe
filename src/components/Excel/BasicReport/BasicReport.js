@@ -16,9 +16,9 @@ const BasicReport = ({
   paperSize = 9,
   orientation = 'portrait',
   title = [],
-  header = [],
-  body = [],
-  footer = [],
+  tableHeader = [],
+  tableBody = [],
+  tableFooter = [],
   data = []
 }) => {
   const workbook = new Excel.Workbook()
@@ -43,7 +43,7 @@ const BasicReport = ({
     let content = []
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
-        let code = Math.round((65 - 1) + (header[0].length / 2))
+        let code = Math.round((65 - 1) + (tableHeader[0].length / 2))
         let position = 2 + i
         content.push({
           value: sheet.getCell(`${String.fromCharCode(code)}${position}`).value = title[i].value,
@@ -52,50 +52,50 @@ const BasicReport = ({
         })
       }
     }
-    if (header.length > 0) {
+    if (tableHeader.length > 0) {
       let get = []
-      for (let i = 0; i < header.length; i += 1) {
-        for (let n = 65; n < 65 + header[i].length; n += 1) {
+      for (let i = 0; i < tableHeader.length; i += 1) {
+        for (let n = 65; n < 65 + tableHeader[i].length; n += 1) {
           let m = title.length + (4 + i)
           let a = n - 65
           get.push({
-            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = header[i][a].value,
-            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = header[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = header[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = header[i][a].border
+            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableHeader[i][a].value,
+            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableHeader[i][a].alignment,
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableHeader[i][a].font,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableHeader[i][a].border
           })
         }
         content.push(get[i])
       }
     }
 
-    if (body.length > 0) {
+    if (tableBody.length > 0) {
       let get = []
-      for (let i = 0; i < body.length; i += 1) {
-        for (let n = 65; n < 65 + body[i].length; n += 1) {
-          let m = (title.length + header.length) + (4 + i)
+      for (let i = 0; i < tableBody.length; i += 1) {
+        for (let n = 65; n < 65 + tableBody[i].length; n += 1) {
+          let m = (title.length + tableHeader.length) + (4 + i)
           let a = n - 65
           get.push({
-            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = body[i][a].value,
-            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = body[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = body[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = body[i][a].border
+            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableBody[i][a].value,
+            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableBody[i][a].alignment,
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableBody[i][a].font,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableBody[i][a].border
           })
         }
         content.push(get[i])
       }
     }
-    if (footer.length > 0) {
+    if (tableFooter.length > 0) {
       let get = []
-      for (let i = 0; i < footer.length; i += 1) {
-        for (let n = 65; n < 65 + footer[i].length; n += 1) {
-          let m = (title.length + header.length + data.length) + (4 + i)
+      for (let i = 0; i < tableFooter.length; i += 1) {
+        for (let n = 65; n < 65 + tableFooter[i].length; n += 1) {
+          let m = (title.length + tableHeader.length + data.length) + (4 + i)
           let a = n - 65
           get.push({
-            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = footer[i][a].value,
-            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = footer[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = footer[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = footer[i][a].border
+            value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableFooter[i][a].value,
+            alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableFooter[i][a].alignment,
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableFooter[i][a].font,
+            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableFooter[i][a].border
           })
         }
         content.push(get[i])
@@ -104,12 +104,12 @@ const BasicReport = ({
     return content
   }
   const printXLS = () => {
-    if (header.length === 0 && footer.length === 0) {
+    if (tableHeader.length === 0 && tableFooter.length === 0) {
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
       })
-    } else if (body.length === 0) {
+    } else if (tableBody.length === 0) {
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
@@ -142,9 +142,9 @@ BasicReport.propTypes = {
   iconSize: PropTypes.string,
   buttonStyle: PropTypes.object,
   title: PropTypes.array,
-  header: PropTypes.array,
-  body: PropTypes.array,
-  footer: PropTypes.array,
+  tableHeader: PropTypes.array,
+  tableBody: PropTypes.array,
+  tableFooter: PropTypes.array,
   data: PropTypes.array,
   className: PropTypes.string,
   fileName: PropTypes.string,

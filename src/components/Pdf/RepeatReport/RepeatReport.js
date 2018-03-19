@@ -36,22 +36,17 @@ const RepeatReport = ({
       })
     } else {
       let contentPdf = []
-      let content = []
       for (let i = 0; i < tableBody.length; i += 1) {
-        content.push(createPdfLineItems(tableBody[i]))
-      }
-      for (let i = 0; i < content.length; i += 1) {
+        contentPdf.push(tableTitle[i])
         contentPdf.push(
-          tableTitle[i],
           {
             writable: true,
             table: {
               widths: width,
-              headerRows: 1,
-              body: content[i]
-            },
-            layout: 'noBorder'
-          })
+              body: createPdfLineItems(tableBody[i])
+            }
+          }
+        )
       }
 
       let docDefinition = {
