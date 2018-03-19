@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
-import { Layout, Loader } from 'components'
+import { Layout, Loader, Notification } from 'components'
 import { classnames, config } from 'utils'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
@@ -22,7 +22,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked,
     selectedDate, calendarMode, selectedMonth, totalBirthdayInAMonth, listTotalBirthdayPerDate,
-    listCustomerBirthday, listNotification } = app
+    listCustomerBirthday, listNotification, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { logo } = config
@@ -246,6 +246,35 @@ const App = ({ children, dispatch, app, loading, location }) => {
     </div>)
   }
 
+  const homeNotification = {
+    title: 'dmiPOS',
+    options: {
+      body: 'Thankyou for subcribe us!',
+      icon: 'http://georgeosddev.github.io/react-web-notification/example/Notifications_button_24.png',
+      lang: 'en'
+    }
+  }
+
+  const notificationProps = {
+    homeTitle: homeNotification.title,
+    homeOptions: homeNotification.options,
+    ignore,
+    timeout: 5000,
+    askAgain: true,
+    onPermissionDenied () {
+      dispatch({ type: 'app/permissionDenied' })
+      console.log('permission denied!')
+    },
+    onPermissionGranted () {
+      dispatch({ type: 'app/permissionGranted' })
+      console.log('permission granted!')
+    },
+    notSupported () {
+      dispatch({ type: 'app/permissionDenied' })
+      console.log('Web Notification not Supported')
+    }
+  }
+
   return (
     <div>
       <Helmet>
@@ -269,6 +298,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
             <Footer />
           </div>
         </LocaleProvider>
+        <Notification {...notificationProps} />
       </div>
     </div>
   )

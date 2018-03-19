@@ -52,7 +52,10 @@ export default {
     listTotalBirthdayPerDate: [],
     listTotalBirthdayPerMonth: [],
     listCustomerBirthday: [],
-    listNotification: []
+    listNotification: [],
+    ignore: true,
+    title: '',
+    options: {}
   },
   subscriptions: {
 
@@ -298,6 +301,19 @@ export default {
         ...state,
         ...payload
       }
+    },
+
+    permissionDenied (state) {
+      return { ...state, ignore: true }
+    },
+
+    permissionGranted (state) {
+      return { ...state, ignore: false }
+    },
+
+    sendNotification (state) {
+      localStorage.setItem(`${prefix}subscribe`, state.notification)
+      return { ...state, notification: { subscribe: true, sendNotification: true } }
     },
 
     showTotalBirthdayInCurrentMonth (state, { payload }) {
