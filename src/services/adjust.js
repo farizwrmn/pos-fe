@@ -47,7 +47,8 @@ export async function createDetail (params) {
 }
 
 export async function edit (params) {
-  let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
+  // let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
+  let url = adjustDetail
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

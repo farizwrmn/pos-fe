@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Popover, Button, Table, Icon, DatePicker, Cascader } from 'antd'
+import { Form, Modal, Input, Button, DatePicker, Cascader } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
-const { Search } = Input
+// const { Search } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -15,92 +15,101 @@ const formItemLayout = {
 }
 
 const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-  popoverVisible, onHidePopover, onOk, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
+  popoverVisible, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
   if (item) {
     itemEmployee.employeeId = item.picId
     itemEmployee.employeeName = item.pic
   }
   const handleButtonSaveClick = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
+    Modal.confirm({
+      title: `Update ${item.transNo} ?`,
+      content: 'Action cannot be undone',
+      onOk () {
+        validateFields((errors) => {
+          if (errors) {
+            return
+          }
+          const data = {
+            ...getFieldsValue(),
+            transNo: item.transNo,
+            transType: item.transType,
+            pic: itemEmployee !== null ? itemEmployee.employeeName : '',
+            picId: itemEmployee !== null ? itemEmployee.employeeId : ''
+          }
+          data.transType = data.transType[0]
+          onEdit(data)
+        })
+      },
+      onCancel () {
+        console.log('cancel')
       }
-      const data = {
-        ...getFieldsValue(),
-        transNo: item.transNo,
-        transType: item.transType,
-        pic: itemEmployee !== null ? itemEmployee.employeeName : '',
-        picId: itemEmployee !== null ? itemEmployee.employeeId : ''
-      }
-      data.transType = data.transType[0]
-      onOk(data)
     })
   }
 
-  const hdlGetProduct = () => {
-    onGetProduct()
-  }
-
-  const handleButtonDeleteClick = () => {
-    localStorage.removeItem('adjust')
-    onResetAll()
-  }
-
-  // const handleGetEmployee = (e) => {
-  //   onGetEmployee(e)
+  // const hdlGetProduct = () => {
+  //   onGetProduct()
   // }
 
-  const hdlSearch = (e) => {
-    onSearchProduct(e, dataSource)
-  }
+  // const handleButtonDeleteClick = () => {
+  //   localStorage.removeItem('adjust')
+  //   onResetAll()
+  // }
 
-  const hidePopover = () => {
-    onHidePopover()
-  }
+  // const hdlSearch = (e) => {
+  //   onSearchProduct(e, dataSource)
+  // }
 
-  const handleChangeSearch = (e) => {
-    const { value } = e.target
-    onChangeSearch(value)
-  }
+  // const hidePopover = () => {
+  //   onHidePopover()
+  // }
 
-  const handleMenuClick = (item) => {
-    onChooseItem(item)
+  // const handleChangeSearch = (e) => {
+  //   const { value } = e.target
+  //   onChangeSearch(value)
+  // }
+
+  // const handleMenuClick = (item) => {
+  //   onChooseItem(item)
+  // }
+  // const columns = [
+  //   {
+  //     title: 'code',
+  //     dataIndex: 'productCode',
+  //     key: 'productCode',
+  //     width: '25%'
+  //   },
+  //   {
+  //     title: 'Product',
+  //     dataIndex: 'productName',
+  //     key: 'productName',
+  //     width: '55%'
+  //   },
+  //   {
+  //     title: 'Cost',
+  //     dataIndex: 'costPrice',
+  //     key: 'costPrice',
+  //     width: '20%'
+  //   }
+  // ]
+  // const contentPopover = (
+  //   <Table
+  //     pagination={{ total: dataSource.length, pageSize: 5 }}
+  //     scroll={{ x: 600, y: 150 }}
+  //     columns={columns}
+  //     simple
+  //     dataSource={dataSource}
+  //     // locale={{
+  //     //   emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
+  //     // }}
+  //     size="small"
+  //     rowKey={record => record.productCode}
+  //     onRowClick={record => handleMenuClick(record)}
+  //   />
+  // )
+  const adjustOpts = {
+    item,
+    ...adjustProps
   }
-  const columns = [
-    {
-      title: 'code',
-      dataIndex: 'productCode',
-      key: 'productCode',
-      width: '25%'
-    },
-    {
-      title: 'Product',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: '55%'
-    },
-    {
-      title: 'Cost',
-      dataIndex: 'costPrice',
-      key: 'costPrice',
-      width: '20%'
-    }
-  ]
-  const contentPopover = (
-    <Table
-      pagination={{ total: dataSource.length, pageSize: 5 }}
-      scroll={{ x: 600, y: 150 }}
-      columns={columns}
-      simple
-      dataSource={dataSource}
-      // locale={{
-      //   emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
-      // }}
-      size="small"
-      rowKey={record => record.productCode}
-      onRowClick={record => handleMenuClick(record)}
-    />
-  )
   return (
     <Form style={{ padding: 3 }}>
       <FormItem label="Trans No" {...formItemLayout}>
@@ -112,14 +121,12 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
           rules: [{
             required: true
           }]
-        })(
-          <Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={listType}
-            placeholder="Pick a Type"
-          />
-        )}
+        })(<Cascader
+          size="large"
+          style={{ width: '100%' }}
+          options={listType}
+          placeholder="Pick a Type"
+        />)}
       </FormItem>
       <FormItem label="Date" {...formItemLayout}>
         <DatePicker value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
@@ -136,8 +143,8 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
       <FormItem label="PIC ID" {...formItemLayout}>
         <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
       </FormItem>
-      <FormItem label="Search" {...formItemLayout}>
-        <Popover visible={popoverVisible} title={<a href={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
+      {/* <FormItem label="Search" {...formItemLayout}>
+        <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
           <Search prefix={<Icon type="barcode" />}
             autoFocus
             size="large"
@@ -149,13 +156,13 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
             onClick={() => hdlGetProduct()}
           />
         </Popover>
-      </FormItem>
+      </FormItem> */}
       <FormItem>
-        <Browse {...adjustProps} />
+        <Browse {...adjustOpts} />
       </FormItem>
       <FormItem {...formItemLayout}>
         <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
-        <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
+        {/* <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button> */}
       </FormItem>
     </Form>
   )

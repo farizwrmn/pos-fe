@@ -4,9 +4,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Form } from 'antd'
+import moment from 'moment'
 import { DropOption } from 'components'
 
-const History = ({ onGetAdjust, onEditItem, ...historyProps }) => {
+const History = ({ onGetAdjust, dataBrowse, onEditItem, ...historyProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -14,39 +15,41 @@ const History = ({ onGetAdjust, onEditItem, ...historyProps }) => {
   }
   const columns = [
     {
-      title: 'No',
+      title: 'Trans No',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: '15%'
+      width: '200'
     },
     {
       title: 'Type',
       dataIndex: 'transType',
       key: 'transType',
-      width: '15%'
+      width: '200'
     },
     {
       title: 'Reference',
       dataIndex: 'reference',
       key: 'reference',
-      width: '15%'
+      width: '200'
     },
     {
       title: 'PIC',
       dataIndex: 'pic',
       key: 'pic',
-      width: '15%'
+      width: '200'
     },
     {
-      title: 'Created At',
+      title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '30%'
+      width: '100',
+      render: text => moment(text).format('DD-MMM-YYYY')
     },
     {
       title: 'Operation',
       key: 'operation',
-      width: '10%',
+      width: '100',
+      fixed: 'right',
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
@@ -65,11 +68,11 @@ const History = ({ onGetAdjust, onEditItem, ...historyProps }) => {
   return (
     <Table
       {...historyProps}
-      scroll={{ x: '1200px', y: 500 }}
+      scroll={{ x: 1000, y: 500 }}
       columns={columns}
       simple
       bordered
-      width="1220px"
+      width="1000px"
       locale={{
         emptyText: <Button type="primary" onClick={() => handleGetAdjust()}>Reset</Button>
       }}

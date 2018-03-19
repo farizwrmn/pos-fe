@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, Modal, Row, Col } from 'antd'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import AdjustForm from './AdjustForm'
 import History from './History'
 import AdjustList from './AdjustList'
@@ -11,13 +12,13 @@ const TabPane = Tabs.TabPane
 
 const Adjust = ({ location, dispatch, adjust, loading }) => {
   const {
-    lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
+    activeKey, lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
   } = adjust
   const modalProps = {
     loading: loading.effects['adjust/query'],
     visible: modalVisible,
     maskClosable: false,
-    title: 'Add Adjustment',
+    title: 'Edit Adjustment',
     confirmLoading: loading.effects['adjust/edit'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -44,6 +45,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
   const editProps = {
     visible: modalEditVisible,
     item,
+    templistType,
     disabledItemIn,
     disabledItemOut,
     onOk (data) {
@@ -55,6 +57,17 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     onCancel () {
       dispatch({
         type: 'adjust/modalEditHide'
+      })
+    },
+    onHidePopover () {
+      dispatch({
+        type: 'adjust/hidePopover'
+      })
+    },
+    changeDisabledItem (e) {
+      dispatch({
+        type: 'adjust/onChangeDisabledItem',
+        payload: e
       })
     }
   }
@@ -91,6 +104,14 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
       dispatch({
         type: 'adjust/add',
         payload: data
+      })
+    },
+    onEdit (data) {
+      dispatch({
+        type: 'adjust/edit',
+        payload: {
+          data
+        }
       })
     },
     onResetAll () {
@@ -213,52 +234,34 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     }
   }
 
-  // const modalProductProps = {
-  //   location: location,
-  //   loading: loading,
-  //   adjust: adjust,
-  //   visible: modalProductVisible,
-  //   maskClosable: false,
-  //   wrapClassName: 'vertical-center-modal',
-  //   onCancel () { dispatch({ type: 'adjust/hideProductModal' }) },
-  //   onChooseItem (e) {
-  //     const listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [] )
-  //     let arrayProd
-  //     if (listByCode.length === 0) {
-  //       arrayProd = listByCode.slice()
-  //     }
-  //     arrayProd.push({
-  //       no: arrayProd.length + 1,
-  //       code: e.productCode,
-  //       name: e.productName,
-  //       qty: curQty,
-  //       price: e.costPrice,
-  //       total: curQty * e.sellPrice
-  //     })
-  //     localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-  //     dispatch({ type: 'adjust/querySuccessByCode', payload: { listByCode: item } })
-  //     dispatch({ type: 'adjust/hideProductModal' })
-  //   },
-  // }
+  const changeTab = (activeKey) => {
+    localStorage.removeItem('adjust')
+    dispatch(routerRedux.push({
+      pathname: location.pathname,
+      query: {
+        activeKey
+      }
+    }))
+  }
 
   return (
     <div className="content-inner">
-      <Tabs>
+      <Tabs defaultActiveKey={activeKey} onChange={activeKey => changeTab(activeKey)}>
         <TabPane tab="Adjustment" key="1">
           <AdjustForm {...adjustProps} />
-          <AdjustList {...editProps} />
         </TabPane>
         <TabPane tab="Archive" key="2">
           <History {...historyProps} />
           <Row>
             <Col xs={8} sm={8} md={18} lg={18} xl={18}>
-              <Modal footer={null} {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+              <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
                 <AdjustFormEdit {...adjustProps} />
               </Modal>
             </Col>
           </Row>
         </TabPane>
       </Tabs>
+      {modalEditVisible && <AdjustList {...editProps} />}
     </div>
   )
 }
