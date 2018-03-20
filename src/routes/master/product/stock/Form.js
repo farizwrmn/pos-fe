@@ -18,13 +18,13 @@ const formItemLayout = {
   labelCol: {
     xs: { span: 9 },
     sm: { span: 8 },
-    md: { span: 7 },
-    lg: { span: 7 }
+    md: { span: 8 },
+    lg: { span: 8 }
   },
   wrapperCol: {
     xs: { span: 15 },
-    sm: { span: 11 },
-    md: { span: 13 },
+    sm: { span: 16 },
+    md: { span: 16 },
     lg: { span: 16 }
   }
 }
@@ -77,7 +77,8 @@ const formProductCategory = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const { showModalProduct, listItem, update, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
@@ -110,7 +111,16 @@ const formProductCategory = ({
       data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
       data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      if (data.productCode) {
+      data.dayLifetime = data.dayLifetime || 0
+      data.kmLifetime = data.kmLifetime || 0
+      let valid = true
+      if (modalType === 'add') {
+        if (data.productCode !== data.dummyCode) {
+          valid = false
+          message.warning('Product Code does not match with Dummy Code!')
+        }
+      }
+      if (valid) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
@@ -118,8 +128,6 @@ const formProductCategory = ({
           },
           onCancel () { }
         })
-      } else {
-        message.warning("Product Code can't be null")
       }
     })
   }
@@ -193,29 +201,29 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-    case '0':
-      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-      break
-    case '1':
-      moreButtonTab = (
-        <div>
-          <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
-          <Dropdown overlay={menu}>
-            <Button style={{ marginLeft: 8 }} icon="printer">
+  case '0':
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+    break
+  case '1':
+    moreButtonTab = (
+      <div>
+        <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+        <Dropdown overlay={menu}>
+          <Button style={{ marginLeft: 8 }} icon="printer">
               Print
           </Button>
-          </Dropdown>
-        </div>
-      )
-      break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    case '3':
-      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-      break
-    default:
-      break
+        </Dropdown>
+      </div>
+    )
+    break
+  case '2':
+    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+    break
+  case '3':
+    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+    break
+  default:
+    break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -279,6 +287,11 @@ const formProductCategory = ({
       <Col md={12}><PrintXLS data={list} name="Print Current Page" {...printProps} /></Col></Row>)
   }
 
+  const changeProductCode = (e) => {
+    const { value } = e.target
+    setFieldsValue({ dummyCode: value })
+  }
+
   return (
     <div>
       {/* {showModal && <Modal {...modalProps}>
@@ -302,7 +315,7 @@ const formProductCategory = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={30} />)}
+                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} />)}
                 </FormItem>
                 <FormItem label="Product Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('productName', {
@@ -316,14 +329,14 @@ const formProductCategory = ({
                     ]
                   })(<Input maxLength={50} />)}
                 </FormItem>
-                <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('otherName01', {
-                    initialValue: item.otherName01
+                <FormItem label="Location 1" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('location01', {
+                    initialValue: item.location01
                   })(<Input />)}
                 </FormItem>
-                <FormItem label="Similar Name 2" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('otherName02', {
-                    initialValue: item.otherName02
+                <FormItem label="Location 2" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('location02', {
+                    initialValue: item.location02
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Category ID" hasFeedback {...formItemLayout}>
@@ -358,15 +371,25 @@ const formProductCategory = ({
                   >{productBrand}
                   </Select>)}
                 </FormItem>
-                <FormItem label="barCode 1" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('barCode01', {
-                    initialValue: item.barCode01
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="barCode 2" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('barCode02', {
-                    initialValue: item.barCode02
-                  })(<Input />)}
+                <FormItem label="Lifetime" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('dayLifetime', {
+                    initialValue: item.dayLifetime,
+                    rules: [
+                      {
+                        pattern: /^(?:0|[1-9][0-9]{0,10})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber min={0} maxLength={10} placeholder="day(s)" style={{ width: '36%' }} />)}
+                  {getFieldDecorator('kmLifetime', {
+                    initialValue: item.kmLifetime,
+                    rules: [
+                      {
+                        pattern: /^(?:0|[1-9][0-9]{0,15})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
                 </FormItem>
                 <FormItem label="Status" {...formItemLayout}>
                   {getFieldDecorator('active', {
@@ -474,14 +497,24 @@ const formProductCategory = ({
                     ]
                   })(<Input maxLength={50} />)}
                 </FormItem>
-                <FormItem label="Location 1" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location01', {
-                    initialValue: item.location01
+                <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('otherName01', {
+                    initialValue: item.otherName01
                   })(<Input />)}
                 </FormItem>
-                <FormItem label="Location 2" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location02', {
-                    initialValue: item.location02
+                <FormItem label="Similar Name 2" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('otherName02', {
+                    initialValue: item.otherName02
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="barCode 1" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('barCode01', {
+                    initialValue: item.barCode01
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="barCode 2" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('barCode02', {
+                    initialValue: item.barCode02
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Exception" {...formItemLayout}>

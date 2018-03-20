@@ -41,15 +41,20 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey, ...other } = location.query
         if (location.pathname === '/master/product/stock') {
           dispatch({
             type: 'updateState',
             payload: {
               newItem: false,
               changed: false,
-              activeKey: '0',
+              activeKey: activeKey || '0',
               listSticker: []
             }
+          })
+          dispatch({
+            type: 'query',
+            payload: other
           })
         }
       })
@@ -59,7 +64,6 @@ export default modelExtend(pageModel, {
   effects: {
     * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      console.log(data.data)
       if (data.success) {
         yield put({
           type: 'querySuccessItem',
