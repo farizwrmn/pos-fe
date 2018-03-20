@@ -96,15 +96,11 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       for (let i = 0; i < headers.length; i += 1) {
         body.push(headers[i])
       }
-      let countQtyValue = 0
-      let countAmountValue = 0
       const rows = diffData[key]
       let counter = 1
       for (let key in rows) {
         if (rows.hasOwnProperty(key)) {
           let data = rows[key]
-          countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
-          countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
           let row = []
           row.push({ text: counter, alignment: 'center', fontSize: 11 })
           row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })

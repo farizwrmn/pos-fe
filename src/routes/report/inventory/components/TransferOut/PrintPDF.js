@@ -76,8 +76,8 @@ const PrintPDF = ({ user, listInventoryTO, storeInfo, period }) => {
         let data = rows[key]
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.netto || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })

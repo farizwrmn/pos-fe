@@ -58,7 +58,7 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
       size: 10
     }
   }
-  const tableBody = (list) => {
+  const createTableBody = (list) => {
     let body = []
     const rows = list
     let start = 1
@@ -94,7 +94,8 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     periode
   ]
-  const header = [
+
+  const tableHeader = [
     [
       { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -107,8 +108,15 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
       { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = listHistory.length > 0 ? tableBody(listHistory) : []
-  const footer = [
+
+  let tableBody
+  try {
+    tableBody = createTableBody(listHistory)
+  } catch (e) {
+    console.log(e)
+  }
+
+  const tableFooter = [
     [
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
@@ -131,9 +139,9 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
     formatStyle: styles,
     data: listHistory,
     title,
-    header,
-    body: contentBody,
-    footer,
+    tableHeader,
+    tableBody,
+    tableFooter,
     fileName: 'Customer-Transaction-Summary'
   }
 

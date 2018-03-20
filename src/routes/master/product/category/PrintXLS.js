@@ -33,7 +33,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     }
   }
 
-  const tableBody = (list) => {
+  const createTableBody = (list) => {
     let body = []
     let start = 1
     for (let key in list) {
@@ -56,7 +56,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
 
-  const header = [
+  const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -64,7 +64,13 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       { value: 'CATEGORY NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+
+  let tableBody
+  try {
+    tableBody = createTableBody(dataSource)
+  } catch (e) {
+    console.log(e)
+  }
 
   // Declare additional Props
   const XLSProps = {
@@ -78,8 +84,8 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     orientation: 'portrait',
     data: dataSource,
     title,
-    header,
-    body: contentBody,
+    tableHeader,
+    tableBody,
     fileName: 'ProductCategory-Summary'
   }
 

@@ -46,10 +46,11 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     onResetClick () {
       const { query, pathname } = location
-      const { q, createdAt, ...other } = query
+      const { q, createdAt, page, ...other } = query
       dispatch(routerRedux.push({
         pathname,
         query: {
+          page: 1,
           ...other
         }
       }))
@@ -128,14 +129,24 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         }
       })
       const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          activeKey: key
-        }
-      }))
-      dispatch({ type: 'customer/resetCustomerList' })
+      switch (key) {
+      case 1:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            activeKey: key
+          }
+        }))
+        break
+      default:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: key
+          }
+        }))
+      }
     },
     onShowHideSearch () {
       dispatch({
