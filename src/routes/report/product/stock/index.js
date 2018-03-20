@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'dva'
+import moment from 'moment'
 import List from './List'
 import Filter from './Filter'
 
 const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
-  const { listProductsBelowQty } = productstockReport
+  const { listProductsBelowQty, listStockInTransit, start, end, showStockInTransit } = productstockReport
   const { user, storeInfo } = app
 
   const arrayList = []
@@ -20,13 +21,50 @@ const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
 
   const filterProps = {
     ...printProps,
-    onFilterChange (value) {
+    showStockInTransit,
+    listStockInTransit,
+    onSearchProduct (value) {
       dispatch({
         type: 'productstockReport/queryProductsBelowMinimum',
         payload: {
-          start: value.period[0],
-          end: value.period[1],
-          productName: value.searchName
+          ...value,
+          start,
+          end
+        }
+      })
+    },
+    onResetClick () {
+      dispatch({
+        type: 'productstockReport/queryProductsBelowMinimum',
+        payload: {
+          start,
+          end
+        }
+      })
+    },
+    onShowStockInTransit () {
+      dispatch({
+        type: 'productstockReport/queryTransferStockOut',
+        payload: {
+          // start,
+          // end
+          start: moment().startOf('month').format('YYYY-MM-DD'),
+          end: moment().endOf('month').format('YYYY-MM-DD')
+        }
+      })
+      dispatch({
+        type: 'productstockReport/updateState',
+        payload: {
+          showStockInTransit: true
+        }
+      })
+    },
+    onHideStockInTransit () {
+      dispatch({
+        type: 'productstockReport/updateState',
+        payload: {
+          showStockInTransit: false,
+          listStockInTransit: []
         }
       })
     }

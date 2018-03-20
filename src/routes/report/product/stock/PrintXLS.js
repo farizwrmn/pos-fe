@@ -47,7 +47,7 @@ const PrintXLS = ({ data, storeInfo }) => {
       size: 10
     }
   }
-  const tableBody = (list) => {
+  const createTableBody = (list) => {
     let body = []
     let start = 1
     for (let key in list) {
@@ -71,7 +71,7 @@ const PrintXLS = ({ data, storeInfo }) => {
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
 
-  const header = [
+  const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -80,16 +80,21 @@ const PrintXLS = ({ data, storeInfo }) => {
       { value: 'ALERT QUANTITY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = data.length > 0 ? tableBody(data) : []
 
+  let tableBody
+  try {
+    tableBody = createTableBody(data)
+  } catch (e) {
+    console.log(e)
+  }
   // Declare additional Props
   const XLSProps = {
     paperSize: 9,
     orientation: 'portrait',
     data,
     title,
-    header,
-    body: contentBody,
+    tableHeader,
+    tableBody,
     fileName: 'Alert Quantity-Summary'
   }
 
