@@ -4,10 +4,7 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-
+  listData = listData.filter(x => x.items.length > 0)
   const styles = {
     header: {
       alignment: 'center',
