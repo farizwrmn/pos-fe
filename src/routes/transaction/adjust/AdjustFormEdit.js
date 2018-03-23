@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Input, Popover, Button, Table, Icon, DatePicker, Cascader } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
+import styles from '../../../themes/index.less'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
@@ -83,7 +84,9 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
       title: 'Cost',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '20%'
+      width: '20%',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
   const contentPopover = (

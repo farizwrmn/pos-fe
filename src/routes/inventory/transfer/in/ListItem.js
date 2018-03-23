@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import styles from '../../../../themes/index.less'
 
 const ListItem = ({ ...tableProps }) => {
   const handleMenuClick = () => {
@@ -21,7 +22,9 @@ const ListItem = ({ ...tableProps }) => {
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Description',

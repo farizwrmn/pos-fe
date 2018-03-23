@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import styles from '../../../../../themes/index.less'
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -28,7 +29,9 @@ const List = ({ ...tableProps, dataSource }) => {
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Transaction No',
@@ -47,25 +50,22 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Netto Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 

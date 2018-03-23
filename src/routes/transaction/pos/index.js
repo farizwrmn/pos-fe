@@ -8,6 +8,7 @@ import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal,
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
+import styles from '../../../themes/index.less'
 
 const { prefix } = config
 const Panel = Collapse.Panel
@@ -119,8 +120,8 @@ const Pos = ({
   let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
   let dataPos = product.concat(service)
   let a = dataPos
-  let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
-  let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
+  let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0).toLocaleString()
+  let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0).toLocaleString()
   const getDate = (mode) => {
     let today = new Date()
     let dd = today.getDate()
@@ -1623,37 +1624,51 @@ const Pos = ({
                     {
                       title: 'Q',
                       dataIndex: 'qty',
-                      width: '40px'
+                      width: '40px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Price',
                       dataIndex: 'price',
-                      width: '100px'
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
-                      width: '90px'
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
-                      width: '90px'
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
-                      width: '90px'
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
-                      width: '100px'
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
-                      width: '100px'
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => text.toLocaleString()
                     }
                   ]}
                   onRowClick={record => modalEditPayment(record)}
@@ -1689,37 +1704,51 @@ const Pos = ({
                   {
                     title: 'Q',
                     dataIndex: 'qty',
-                    width: '40px'
+                    width: '40px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
-                    width: '100px'
+                    width: '100px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
-                    width: '90px'
+                    width: '90px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
-                    width: '90px'
+                    width: '90px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
-                    width: '90px'
+                    width: '90px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
-                    width: '100px'
+                    width: '100px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
-                    width: '100px'
+                    width: '100px',
+                    className: styles.alignRight,
+                    render: text => text.toLocaleString()
                   }
                 ]}
                 onRowClick={_record => modalEditService(_record)}

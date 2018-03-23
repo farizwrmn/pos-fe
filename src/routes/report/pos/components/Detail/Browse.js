@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table } from 'antd'
 import moment from 'moment'
+import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -33,13 +34,16 @@ const Browse = ({ ...browseProps }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      width: '50px'
+      width: '50px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Unit Price',
       dataIndex: 'sellingPrice',
       key: 'sellingPrice',
       width: '100px',
+      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -47,6 +51,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'total',
       key: 'total',
       width: '100px',
+      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -54,6 +59,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
       width: '100px',
+      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -61,6 +67,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'netto',
       key: 'netto',
       width: '100px',
+      className: styles.alignRight,
       render: text => text.toLocaleString()
     }
   ]

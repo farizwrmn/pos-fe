@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
+import styles from '../../../themes/index.less'
 
 // const gridStyle = {
 //   width: '60%',
@@ -26,17 +27,23 @@ const Browse = ({
     {
       title: 'Cost',
       dataIndex: 'price',
-      key: 'price'
+      key: 'price',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'In',
       dataIndex: 'In',
-      key: 'In'
+      key: 'In',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Out',
       dataIndex: 'Out',
-      key: 'Out'
+      key: 'Out',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 

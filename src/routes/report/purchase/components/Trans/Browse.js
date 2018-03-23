@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -25,31 +26,41 @@ const Browse = ({ ...browseProps }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Rounding',
       dataIndex: 'rounding',
       key: 'rounding',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 

@@ -4,6 +4,7 @@ import config from 'config'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
+import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
@@ -54,7 +55,9 @@ const BrowseGroup = ({
       dataIndex: 'lastMeter',
       key: 'lastMeter',
       width: 140,
-      sorter: (a, b) => a.lastMeter - b.lastMeter
+      className: styles.alignRight,
+      sorter: (a, b) => a.lastMeter - b.lastMeter,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Cashier',

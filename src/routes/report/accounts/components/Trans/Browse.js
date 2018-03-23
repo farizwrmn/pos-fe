@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import moment from 'moment'
+import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -26,21 +27,24 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
       width: '100px',
-      render: text => text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Paid',
       dataIndex: 'paid',
       key: 'paid',
       width: '100px',
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => parseFloat(text || 0).toLocaleString()
     },
     {
       title: 'Change',
       dataIndex: 'change',
       key: 'change',
       width: '100px',
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => parseFloat(text || 0).toLocaleString()
     },
     {
       title: 'Status',

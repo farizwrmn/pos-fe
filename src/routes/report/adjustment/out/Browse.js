@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import styles from '../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -29,19 +30,25 @@ const Browse = ({ ...browseProps }) => {
       title: 'QTY',
       dataIndex: 'qtyOut',
       key: 'qtyOut',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 
