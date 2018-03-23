@@ -57,7 +57,8 @@ const Filter = ({
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   if (listPoliceNo.length > 0) {
@@ -68,7 +69,23 @@ const Filter = ({
   }
 
   const clickReset = () => {
-    resetFields()
+    setFieldsValue({
+      serviceTypeId: {
+        option: []
+      },
+      policeNo: {
+        option: []
+      }
+    })
+    let timeout
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+
+    timeout = setTimeout(() => {
+      resetFields()
+    }, 200)
     onResetClick()
   }
 
