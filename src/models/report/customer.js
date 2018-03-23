@@ -6,7 +6,7 @@ export default modelExtend(pageModel, {
   namespace: 'customerReport',
 
   state: {
-    modalVisible: false,
+    modalVisible: { showChoice: false, showCustomer: false },
     listPoliceNo: [],
     listAsset: [],
     customerInfo: {},
@@ -19,9 +19,14 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey } = location.query
         if (location.pathname === '/report/customer/history') {
-          dispatch({ type: 'queryCustomerAsset', payload: other })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
         }
       })
     }

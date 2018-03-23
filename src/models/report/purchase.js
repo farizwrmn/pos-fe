@@ -2,6 +2,7 @@
  * Created by Veirry on 19/09/2017.
  */
 import { queryTrans, queryReturn, queryPurchaseDaily } from '../../services/report/purchase'
+import { query, queryDetail } from '../../services/purchase'
 
 export default {
   namespace: 'purchaseReport',
@@ -14,6 +15,8 @@ export default {
     brand: 'ALL BRAND',
     fromDate: '',
     toDate: '',
+    listPurchase: [],
+    listPurchaseDetail: [],
     productCode: 'ALL TYPE',
     pagination: {
       showSizeChanger: true,
@@ -86,9 +89,55 @@ export default {
           ...payload
         }
       })
+    },
+    * queryPurchase ({ payload }, { call, put }) {
+      let data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPurchase',
+          payload: {
+            listPurchase: data.data,
+            fromDate: payload.startPeriod,
+            toDate: payload.endPeriod
+          }
+        })
+      }
+    },
+    * queryPurchaseDetail ({ payload }, { call, put }) {
+      let data = yield call(queryDetail, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPurchaseDetail',
+          payload: {
+            listPurchaseDetail: data.data
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
   reducers: {
+    querySuccessPurchase (state, { payload }) {
+      const { listPurchase, fromDate, toDate } = payload
+
+      return {
+        ...state,
+        listPurchase,
+        fromDate,
+        toDate,
+        ...payload
+      }
+    },
+    querySuccessPurchaseDetail (state, { payload }) {
+      const { listPurchaseDetail } = payload
+
+      return {
+        ...state,
+        listPurchaseDetail,
+        ...payload
+      }
+    },
     querySuccessTrans (state, action) {
       const { listTrans } = action.payload
       return {
@@ -101,7 +150,15 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
     setListNull (state, action) {
-      return { ...state, list: [], listTrans: [], listDaily: [], ...action.payload }
+      return {
+        ...state,
+        list: [],
+        listTrans: [],
+        listDaily: [],
+        listPurchase: [],
+        listPurchaseDetail: [],
+        ...action.payload
+      }
     }
   }
 }

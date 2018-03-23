@@ -12,26 +12,46 @@ import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
-const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
-  // const handleChange = (value) => {
-  //   const from = value[0].format('YYYY-MM-DD')
-  //   const to = value[1].format('YYYY-MM-DD')
-  //   onDateChange(from, to)
-  // }
-
+const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, getFieldDecorator }, activeKey, ...otherProps }) => {
   const handleReset = () => {
     const { pathname } = location
     dispatch(routerRedux.push({
-      pathname
+      pathname,
+      query: {
+        activeKey
+      }
     }))
     resetFields()
     onListReset()
   }
 
   const onChange = (date, dateString) => {
-    let period = dateString ? moment(dateString).format('M') : null
-    let year = dateString ? moment(dateString).format('Y') : null
-    onChangePeriod(period, year)
+    if (date) {
+      let period = dateString ? moment(dateString).format('M') : null
+      let year = dateString ? moment(dateString).format('Y') : null
+      onChangePeriod(period, year)
+    } else {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey
+        }
+      }))
+      onListReset()
+    }
+  }
+
+  const params = location.search.substring(1)
+  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
+
+  if (!query.year && !query.period) {
+    resetFields(['rangePicker'])
+  }
+
+  const printProps = {
+    activeKey,
+    ...otherProps
   }
 
   return (
@@ -39,7 +59,7 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
       <Row>
         <Col lg={10} md={24}>
           <FilterItem label="Period">
-            {getFieldDecorator('rangePicker')(
+            {getFieldDecorator('rangePicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
               <MonthPicker onChange={onChange} placeholder="Select Period" />
             )}
           </FilterItem>

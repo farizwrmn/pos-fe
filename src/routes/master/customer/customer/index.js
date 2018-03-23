@@ -6,7 +6,8 @@ import Form from './Form'
 import { NewForm } from '../../../components'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = customer
+  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey,
+    disable, show, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -45,10 +46,11 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     onResetClick () {
       const { query, pathname } = location
-      const { q, createdAt, ...other } = query
+      const { q, createdAt, page, ...other } = query
       dispatch(routerRedux.push({
         pathname,
         query: {
+          page: 1,
           ...other
         }
       }))
@@ -110,6 +112,12 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
 
   const tabProps = {
     activeKey,
+    list,
+    listPrintAllCustomer,
+    changed,
+    mode,
+    customerLoading,
+    showPDFModal,
     changeTab (key) {
       dispatch({
         type: 'customer/updateState',
@@ -121,20 +129,63 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         }
       })
       const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          activeKey: key
-        }
-      }))
-      dispatch({ type: 'customer/resetCustomerList' })
+      switch (key) {
+      case 1:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            activeKey: key
+          }
+        }))
+        break
+      default:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: key
+          }
+        }))
+      }
     },
     onShowHideSearch () {
       dispatch({
         type: 'customer/updateState',
         payload: {
           show: !show
+        }
+      })
+    },
+    onShowPDFModal (mode) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          showPDFModal: true,
+          mode
+        }
+      })
+    },
+    onHidePDFModal () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllCustomer: []
+        }
+      })
+    },
+    getAllCustomer () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          changed: true
+        }
+      })
+      dispatch({
+        type: 'customer/queryAllCustomer',
+        payload: {
+          type: 'all'
         }
       })
     }

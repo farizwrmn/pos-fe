@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, newItem, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, showModal, searchText, logo, showModalProduct, modalProductType, period, listSticker,
+    disable, show, showModal, logo, showModalProduct, modalProductType, period, listSticker,
     selectedSticker, pagination, stockLoading } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -25,14 +26,15 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           searchText: value.q
         }
       })
-      dispatch({
-        type: 'productstock/query',
-        payload: {
-          q: value.q,
-          page: 1,
-          pageSize: pagination.pageSize
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
         }
-      })
+      }))
     },
     switchIsChecked () {
       dispatch({
@@ -41,7 +43,16 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       })
     },
     onResetClick () {
-      dispatch({ type: 'productstock/resetProductStockList' })
+      const { query, pathname } = location
+      const { q, createdAt, page, ...other } = query
+
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          ...other
+        }
+      }))
       dispatch({
         type: 'productstock/updateState',
         payload: {
@@ -58,15 +69,16 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     storeInfo,
     loading: loading.effects['productstock/query'],
     location,
-    onChange (e) {
-      dispatch({
-        type: 'productstock/query',
-        payload: {
-          q: searchText,
-          page: e.current,
-          pageSize: e.pageSize
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
         }
-      })
+      }))
     },
     editItem (item) {
       dispatch({
@@ -115,7 +127,27 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           disable: ''
         }
       })
-      dispatch({ type: 'productstock/resetProductStockList' })
+      const { query, pathname } = location
+      switch (key) {
+      case 1:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            activeKey: key
+          }
+        }))
+        break
+      default:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: key
+          }
+        }))
+      }
+
+      // dispatch({ type: 'productstock/resetProductStockList' })
     },
     clickBrowse () {
       dispatch({

@@ -3,85 +3,91 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, dataCustomer, user, storeInfo }) => {
   const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
+    title: {
+      fontSize: 12,
+      alignment: 'left',
+      margin: [0, 5, 0, 0]
+    },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black'
+      alignment: 'center'
     },
-    headerStoreName: {
-      fontSize: 18,
-      margin: [45, 10, 0, 0]
-    },
-    headerTitle: {
-      fontSize: 16,
-      margin: [45, 2, 0, 0]
-    }
-  }
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR CUSTOMER UNIT', style: 'headerTitle' }
-  ]
-
-  let tableHeaders = {
-    top: {
-      col_1: { text: 'CODE', style: 'tableHeader', alignment: 'center' },
-      col_2: { text: 'POLICE NO', style: 'tableHeader', alignment: 'center' },
-      col_3: { text: 'MERK', style: 'tableHeader', alignment: 'center' },
-      col_4: { text: 'MODEL', style: 'tableHeader', alignment: 'center' },
-      col_5: { text: 'TYPE', style: 'tableHeader', alignment: 'center' },
-      col_6: { text: 'YEAR', style: 'tableHeader', alignment: 'center' },
-      col_7: { text: 'CHASSIS NO', style: 'tableHeader', alignment: 'center' },
-      col_8: { text: 'MACHINE NO', style: 'tableHeader', alignment: 'center' }
+    tableBody: {
+      fontSize: 11
     }
   }
 
-  const createTableHeader = (tableHeader) => {
-    let head = []
-    for (let key in tableHeader) {
-      if (tableHeader.hasOwnProperty(key)) {
-        let data = tableHeader[key]
-        let row = []
-        row.push(data.col_1)
-        row.push(data.col_2)
-        row.push(data.col_3)
-        row.push(data.col_4)
-        row.push(data.col_5)
-        row.push(data.col_6)
-        row.push(data.col_7)
-        row.push(data.col_8)
-        head.push(row)
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN DAFTAR UNIT PELANGGAN',
+            style: 'header'
+          },
+          {
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 760, y2: 5, lineWidth: 0.5 }]
+          },
+          {
+            text: `${dataCustomer.memberName}(${dataCustomer.memberCode})`,
+            style: 'title'
+          }
+        ]
       }
-    }
-    return head
+    ],
+    margin: [40, 12, 40, 30]
   }
+
+  const tableHeader = [
+    [
+      { text: 'NO', style: 'tableHeader' },
+      { text: 'POLICE NO', style: 'tableHeader' },
+      { text: 'MERK', style: 'tableHeader' },
+      { text: 'MODEL', style: 'tableHeader' },
+      { text: 'TYPE', style: 'tableHeader' },
+      { text: 'YEAR', style: 'tableHeader' },
+      { text: 'CHASSIS NO', style: 'tableHeader' },
+      { text: 'MACHINE NO', style: 'tableHeader' }
+    ]
+  ]
 
   const createTableBody = (tableData) => {
     let body = []
+    let count = 1
     for (let key in tableData) {
       if (tableData.hasOwnProperty(key)) {
         let data = tableData[key]
         let row = []
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'center' })
-        row.push({ text: (data.policeNo || '').toString(), alignment: 'center' })
-        row.push({ text: (data.merk || '').toString(), alignment: 'center' })
-        row.push({ text: (data.model || '').toString(), alignment: 'center' })
-        row.push({ text: (data.type || '').toString(), alignment: 'center' })
-        row.push({ text: (data.year || '').toString(), alignment: 'center' })
-        row.push({ text: (data.chassisNo || '').toString(), alignment: 'center' })
-        row.push({ text: (data.machineNo || '').toString(), alignment: 'center' })
+        row.push({ text: count, alignment: 'center' })
+        row.push({ text: (data.policeNo || '').toString(), alignment: 'left' })
+        row.push({ text: (data.merk || '').toString(), alignment: 'left' })
+        row.push({ text: (data.model || '').toString(), alignment: 'left' })
+        row.push({ text: (data.type || '').toString(), alignment: 'left' })
+        row.push({ text: (data.year || '').toString(), alignment: 'left' })
+        row.push({ text: (data.chassisNo || '').toString(), alignment: 'left' })
+        row.push({ text: (data.machineNo || '').toString(), alignment: 'left' })
         body.push(row)
       }
+      count += 1
     }
     return body
   }
 
   let tableBody = []
-  let tableHeader = []
   try {
     tableBody = createTableBody(dataSource)
-    tableHeader = createTableHeader(tableHeaders)
   } catch (e) {
     console.log(e)
   }
@@ -91,7 +97,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       margin: [40, 30, 40, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -124,16 +130,15 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     iconSize: '',
     buttonSize: '',
     name: 'PDF',
+    className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['14%', '12%', '10%', '10%', '10%', '12%', '16%', '16%'],
-    pageSize: { width: 813, height: 530 },
+    width: ['6%', '14%', '12%', '12%', '12%', '12%', '16%', '16%'],
+    pageSize: 'A4',
     pageOrientation: 'landscape',
-    pageMargins: [40, 80, 40, 60],
+    pageMargins: [40, 130, 40, 60],
     tableStyle: styles,
-    layout: 'noBorder',
     tableHeader,
     tableBody,
-    data: dataSource,
     header,
     footer
   }

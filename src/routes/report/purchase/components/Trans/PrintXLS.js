@@ -63,7 +63,8 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       size: 10
     }
   }
-  const tableBody = (list) => {
+
+  const createTableBody = (list) => {
     let body = []
     const rows = list
     let start = 1
@@ -88,12 +89,14 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     }
     return body
   }
+
   const title = [
     { value: 'LAPORAN PEMBELIAN PER FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
-  const header = [
+
+  const tableHeader = [
     [
       { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -108,8 +111,15 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = listTrans.length > 0 ? tableBody(listTrans) : []
-  const footer = [
+
+  let tableBody
+  try {
+    tableBody = createTableBody(listTrans)
+  } catch (e) {
+    console.log(e)
+  }
+
+  const tableFooter = [
     [
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
@@ -133,9 +143,9 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     formatStyle: styles,
     data: listTrans,
     title,
-    header,
-    body: contentBody,
-    footer,
+    tableHeader,
+    tableBody,
+    tableFooter,
     fileName: 'Purchase-Summary'
   }
 

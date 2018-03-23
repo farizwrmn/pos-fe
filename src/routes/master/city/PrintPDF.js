@@ -4,58 +4,66 @@ import moment from 'moment'
 import { BasicReport } from 'components'
 
 const PrintPDF = ({ dataSource, user, storeInfo }) => {
-  let tableHeaders = {
-    top: {
-      col_1: { text: 'CITY CODE', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 },
-      col_2: { text: 'CITY NAME', style: 'tableHeader', alignment: 'center', bold: true, fontSize: 13 }
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      alignment: 'center'
+    },
+    tableBody: {
+      fontSize: 11
     }
   }
 
-  const createTableHeader = (tableHeader) => {
-    let head = []
-    for (let key in tableHeader) {
-      if (tableHeader.hasOwnProperty(key)) {
-        let row = []
-        row.push(tableHeader[key].col_1)
-        row.push(tableHeader[key].col_2)
-        head.push(row)
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN DAFTAR KOTA',
+            style: 'header'
+          },
+          {
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 760, y2: 5, lineWidth: 0.5 }]
+          }
+        ]
       }
-    }
-    return head
+    ],
+    margin: [40, 12, 40, 30]
   }
+
+  const tableHeader = [
+    [
+      { text: 'NO', style: 'tableHeader' },
+      { text: 'CITY CODE', style: 'tableHeader' },
+      { text: 'CITY NAME', style: 'tableHeader' }
+    ]
+  ]
 
   const createTableBody = (tableBody) => {
     let body = []
+    let count = 1
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
+        row.push({ text: count, alignment: 'center' })
         row.push({ text: (tableBody[key].cityCode || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].cityName || '').toString(), alignment: 'left' })
         body.push(row)
       }
+      count += 1
     }
     return body
   }
-  const styles = {
-    tableHeader: {
-      bold: true,
-      fontSize: 13,
-      color: 'black'
-    },
-    headerStoreName: {
-      fontSize: 18,
-      margin: [45, 10, 0, 0]
-    },
-    headerTitle: {
-      fontSize: 16,
-      margin: [45, 2, 0, 0]
-    }
-  }
-
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR KOTA', style: 'headerTitle' }
-  ]
 
   const footer = (currentPage, pageCount) => {
     return {
@@ -63,7 +71,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -91,11 +99,9 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     }
   }
 
-  let tableHeader = []
   let tableBody = []
   try {
     tableBody = createTableBody(dataSource)
-    tableHeader = createTableHeader(tableHeaders)
   } catch (e) {
     console.log(e)
   }
@@ -105,11 +111,12 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     iconSize: '',
     buttonSize: '',
     name: 'PDF',
+    className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['50%', '50%'],
-    pageSize: { width: 813, height: 530 },
+    width: ['6%', '40%', '54%'],
+    pageSize: 'A4',
     pageOrientation: 'landscape',
-    pageMargins: [40, 80, 40, 60],
+    pageMargins: [40, 130, 40, 60],
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,

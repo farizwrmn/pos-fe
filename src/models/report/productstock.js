@@ -1,14 +1,17 @@
-import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { queryProductsBelowMinimum } from '../../services/master/productstock'
+import { query as queryTransferStockOut } from '../../services/transferStockOut'
 import { queryLastActive } from '../../services/period'
-import { pageModel } from './../common'
 
-export default modelExtend(pageModel, {
+export default {
   namespace: 'productstockReport',
 
   state: {
-    listProductsBelowQty: []
+    listProductsBelowQty: [],
+    listStockInTransit: [],
+    start: '',
+    end: '',
+    showStockInTransit: false
   },
 
   subscriptions: {
@@ -35,6 +38,13 @@ export default modelExtend(pageModel, {
             end: moment().format('YYYY-MM-DD')
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            start,
+            end: moment().format('YYYY-MM-DD')
+          }
+        })
       }
     },
     * queryProductsBelowMinimum ({ payload = {} }, { call, put }) {
@@ -43,7 +53,20 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            listProductsBelowQty: data.data
+            listProductsBelowQty: data.data,
+            start: payload.start,
+            end: payload.end
+          }
+        })
+      }
+    },
+    * queryTransferStockOut ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTransferStockOut, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listStockInTransit: data.data
           }
         })
       }
@@ -51,16 +74,12 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    querySuccess (state, action) {
-      const { listProductsBelowQty, pagination } = action.payload
-      return {
-        ...state,
-        listProductsBelowQty,
-        pagination: {
-          ...state.pagination,
-          ...pagination
-        }
-      }
+    querySuccess (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     }
   }
-})
+}

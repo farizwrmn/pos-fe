@@ -15,16 +15,6 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       size: 12,
       underline: true
     },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     tableHeader: {
       name: 'Courier New',
       family: 4,
@@ -40,14 +30,10 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
   }
-  const tableBody = (list) => {
+
+  const createTableBody = (list) => {
     let body = []
     let start = 1
     for (let key in list) {
@@ -57,8 +43,8 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
         row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].serviceCode.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].serviceName.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].cost || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].serviceCost || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(list[key].cost || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(list[key].serviceCost || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].serviceTypeId || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
@@ -66,11 +52,13 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     }
     return body
   }
+
   const title = [
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR SERVIS', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'LAPORAN DAFTAR SERVIS', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
-  const header = [
+
+  const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -81,21 +69,28 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       { value: 'SERVICE TYPE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+
+  let tableBody
+  try {
+    tableBody = createTableBody(dataSource)
+  } catch (e) {
+    console.log(e)
+  }
 
   // Declare additional Props
   const XLSProps = {
     buttonType: '',
     iconSize: '',
     buttonSize: '',
+    className: '',
     name: 'Excel',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
     data: dataSource,
     title,
-    header,
-    body: contentBody,
+    tableHeader,
+    tableBody,
     fileName: 'Service-Summary'
   }
 

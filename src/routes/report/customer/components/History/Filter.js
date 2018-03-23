@@ -45,7 +45,7 @@ const { RangePicker } = DatePicker
 const Filter = ({
   listPoliceNo,
   listServiceType,
-  modalVisible,
+  showCustomer,
   customerInfo,
   openModal,
   onResetClick,
@@ -136,7 +136,7 @@ const Filter = ({
       <Col {...column} >
         <FormItem label="Member Code" {...formItemLayout}>
           <Button type="primary" onClick={openModal} >Find Customer</Button>
-          {modalVisible && <ModalBrowse {...modalProps} />}
+          {showCustomer && <ModalBrowse {...modalProps} />}
         </FormItem>
         <FormItem label="Period" {...formItemLayout}>
           {getFieldDecorator('period')(<RangePicker style={{ width: 195 }} />)}

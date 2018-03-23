@@ -5,7 +5,7 @@ const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.03.001',
+  version: '2018.03.001-rev2',
   prefix: 'dmiPos',
   footerText: 'Darkotech Mandiri Indonesia',
   footerSubText: 'Point of Sales © 2017-2018',
@@ -60,6 +60,7 @@ module.exports = {
     posreport: `${APIURL}${APIV1}/posreport`,
     posReport: `${APIURL}${APIV1}/report/pos`,
     purchasereport: `${APIURL}${APIV1}/report/purchase`,
+    inventoryreport: `${APIURL}${APIV1}/report/transfer`,
     adjustreport: `${APIURL}${APIV1}/report/adjust`,
     fiforeport: `${APIURL}${APIV1}/report/fifo`,
     servicereport: `${APIURL}${APIV1}/report/service`,

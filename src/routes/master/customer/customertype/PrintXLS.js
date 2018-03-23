@@ -18,16 +18,6 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       size: 12,
       underline: true
     },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     tableHeader: {
       name: 'Courier New',
       family: 4,
@@ -43,14 +33,10 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
   }
-  const tableBody = (list) => {
+
+  const createTableBody = (list) => {
     let body = []
     let start = 1
     for (let key in list) {
@@ -60,50 +46,59 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.typeCode.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.typeName.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.discPct01.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.discPct02.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.discPct03.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.discNominal.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: data.sellPrice.toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.typeName.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.discPct01 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.discPct02 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.discPct03 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.discNominal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.sellPrice.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
     }
     return body
   }
+
   const title = [
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: 'LAPORAN DAFTAR TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'LAPORAN DAFTAR TIPE PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
-  const header = [
+
+  const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'KODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TYPE CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TIPE NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC-1', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC-2', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC-3', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC(NOMINAL)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'KATEGORI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+      { value: 'CATEGORY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
-  const contentBody = dataSource.length > 0 ? tableBody(dataSource) : []
+
+  let tableBody
+  try {
+    tableBody = createTableBody(dataSource)
+  } catch (e) {
+    console.log(e)
+  }
 
   // Declare additional Props
   const XLSProps = {
     buttonType: '',
     iconSize: '',
     buttonSize: '',
+    className: '',
     name: 'Excel',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
     data: dataSource,
     title,
-    header,
-    body: contentBody,
+    tableHeader,
+    tableBody,
     fileName: 'CustomerType-Summary'
   }
 

@@ -63,6 +63,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
 
   const listProps = {
     dataSource: listUnit,
+    dataCustomer,
     user,
     loading: loading.effects['customerunit/query'],
     storeInfo,
