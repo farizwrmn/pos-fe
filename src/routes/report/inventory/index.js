@@ -1,22 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
-import { TransferOut } from './components'
+import { TransferOut, TransferIn } from './components'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch }) => {
-  const callback = () => {
+const Report = ({ inventoryReport, dispatch }) => {
+  const { activeKey } = inventoryReport
+
+  const onChangeTab = (key) => {
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        activeKey: key
+      }
+    }))
     dispatch({
       type: 'inventoryReport/setListNull'
     })
   }
   return (
     <div className="content-inner">
-      <Tabs onChange={callback} type="card">
-        <TabPane tab="Transfer In" key="1">Transfer In</TabPane>
-        <TabPane tab="Transfer Out" key="2"><TransferOut /></TabPane>
+      <Tabs activeKey={activeKey} onChange={key => onChangeTab(key)} type="card">
+        <TabPane tab="Transfer In" key="0"><TransferIn /></TabPane>
+        <TabPane tab="Transfer Out" key="1"><TransferOut /></TabPane>
       </Tabs>
     </div>
   )
@@ -26,4 +37,4 @@ Report.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ loading, posReport }) => ({ loading, posReport }))(Report)
+export default connect(({ inventoryReport }) => ({ inventoryReport }))(Report)

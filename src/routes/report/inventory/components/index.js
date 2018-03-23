@@ -1,3 +1,4 @@
 import TransferOut from './TransferOut'
+import TransferIn from './TransferIn'
 
-export default { TransferOut }
+export default { TransferOut, TransferIn }

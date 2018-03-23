@@ -18,7 +18,7 @@ const Report = ({ dispatch, inventoryReport, app, loading }) => {
 
   const browseProps = {
     dataSource: listInventoryTransfer,
-    loading: loading.effects['inventoryReport/queryInventoryTransferOut']
+    loading: loading.effects['inventoryReport/queryInventoryTransferIn']
   }
 
   const filterProps = {

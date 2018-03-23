@@ -86,6 +86,15 @@ const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
         { value: 'Invoice Date', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: `${moment(master[0].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ],
+      [
+        { value: 'Reference No', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: diffData[key][0].referenceTrans, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle }
       ]
     ]
     tableTitles.push(tableTitle)
@@ -100,7 +109,7 @@ const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
       tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: `${(parseFloat(data.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${(parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
       count += 1
