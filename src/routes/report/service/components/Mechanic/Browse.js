@@ -43,7 +43,8 @@ const Browse = ({ dataSource, ...browseProps }) => {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
   return (

@@ -38,13 +38,13 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
     listServiceType,
     listEmployee,
     listServices: services,
-    onSearchClick (from, to, serviceTypeId, technicianId) {
+    onSearchClick (from, to, serviceType, technicianId) {
       dispatch({
         type: 'serviceReport/queryService',
         payload: {
           from,
           to,
-          serviceTypeId,
+          serviceType,
           technicianId
         }
       })
@@ -53,18 +53,18 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
         payload: {
           from,
           to,
-          serviceTypeId,
+          serviceType,
           technicianId
         }
       })
     },
-    onSearchClickWithService (from, to, serviceTypeId, technicianId, serviceCode) {
+    onSearchClickWithService (from, to, serviceType, technicianId, serviceCode) {
       dispatch({
         type: 'serviceReport/queryMechanic',
         payload: {
           from,
           to,
-          serviceTypeId,
+          serviceType,
           technicianId,
           serviceCode
         }

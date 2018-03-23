@@ -23,13 +23,15 @@ const Browse = ({ ...browseProps }) => {
       title: 'Product',
       dataIndex: 'product',
       key: 'product',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Service',
       dataIndex: 'service',
       key: 'service',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

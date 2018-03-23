@@ -79,7 +79,7 @@ const Filter = ({
       }
       const data = { ...getFieldsValue() }
       data.policeNo = data.policeNo.option
-      data.serviceTypeId = data.serviceTypeId ? data.serviceTypeId.option : null
+      data.serviceType = data.serviceType ? data.serviceType.option : null
       const { memberCode } = customerInfo
       onSearchClick(memberCode, data)
     })
@@ -147,7 +147,7 @@ const Filter = ({
           })(<SelectItem {...policeNoProps} />)}
         </FormItem>
         <FormItem label="Service Type" {...formItemLayout}>
-          {getFieldDecorator('serviceTypeId')(
+          {getFieldDecorator('serviceType')(
             <SelectItem {...serviceTypeProps} />
           )}
         </FormItem>

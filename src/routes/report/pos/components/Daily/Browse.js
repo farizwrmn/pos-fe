@@ -17,25 +17,29 @@ const Browse = ({ ...browseProps }) => {
       title: 'qty',
       dataIndex: 'qty',
       key: 'qty',
-      width: '60px'
+      width: '60px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      width: '120px'
+      width: '120px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
-      width: '120px'
+      width: '120px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

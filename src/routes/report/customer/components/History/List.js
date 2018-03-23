@@ -47,25 +47,19 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-      }
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

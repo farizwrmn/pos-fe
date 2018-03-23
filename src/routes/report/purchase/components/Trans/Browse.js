@@ -25,31 +25,36 @@ const Browse = ({ ...browseProps }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Rounding',
       dataIndex: 'rounding',
       key: 'rounding',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

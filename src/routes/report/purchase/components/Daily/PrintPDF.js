@@ -19,7 +19,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.total) - parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: `${(parseFloat(data.DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.roundingItem)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
@@ -42,7 +42,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
     qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
     grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
     discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-    dppTotal = grandTotal - discountTotal
+    dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
     ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
     roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
     nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)

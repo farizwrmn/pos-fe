@@ -29,19 +29,22 @@ const Browse = ({ ...browseProps }) => {
       title: 'QTY',
       dataIndex: 'qtyIn',
       key: 'qtyIn',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
-      width: '100px'
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 
@@ -55,7 +58,7 @@ const Browse = ({ ...browseProps }) => {
         columns={columns}
         simple
         size="small"
-        // rowKey={record => record.productCode}
+      // rowKey={record => record.productCode}
       />
     </div>
   )

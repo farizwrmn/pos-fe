@@ -33,42 +33,42 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'pQty',
       key: 'pQty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Price',
       dataIndex: 'pPrice',
       key: 'pPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'pAmount',
       key: 'pAmount',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Out',
       dataIndex: 'sQty',
       key: 'sQty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Price',
       dataIndex: 'sPrice',
       key: 'sPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'sAmount',
       key: 'sAmount',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

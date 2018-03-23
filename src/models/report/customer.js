@@ -13,7 +13,7 @@ export default modelExtend(pageModel, {
     listHistory: [],
     from: '',
     to: '',
-    activeKey: 0
+    activeKey: '0'
   },
 
   subscriptions: {
@@ -22,12 +22,6 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         if (location.pathname === '/report/customer/history') {
           dispatch({ type: 'queryCustomerAsset', payload: other })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || 0
-            }
-          })
         }
       })
     }

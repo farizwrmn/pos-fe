@@ -14,7 +14,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-  let dppTotal = listDaily.reduce((cnt, o) => cnt + (parseFloat(o.total) - parseFloat(o.totalDiscount)), 0)
+  let dppTotal = listDaily.reduce((cnt, o) => cnt + (parseFloat(o.DPP)), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
   let roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
   let nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
@@ -121,7 +121,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`G${m}`).value = `${(parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listDaily[n].total) - parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).value = `${(parseFloat(listDaily[n].DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }

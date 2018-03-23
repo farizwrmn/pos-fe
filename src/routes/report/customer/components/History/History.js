@@ -91,7 +91,7 @@ const History = ({ customerReport, customer, service, dispatch, app, loading }) 
           policeNo: data.policeNo,
           from: fromDate,
           to: toDate,
-          serviceType: data.serviceTypeId,
+          serviceType: data.serviceType,
           mode: 'detail'
         }
       })

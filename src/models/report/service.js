@@ -25,12 +25,17 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-        case '/report/service/summary':
-          dispatch({
-            type: 'setListNull'
-          })
-          break
-        default:
+          case '/report/service/summary':
+            dispatch({
+              type: 'setListNull'
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'setListNull'
+            })
+            break
+          default:
         }
       })
     }
@@ -88,7 +93,8 @@ export default {
     querySuccess (state, action) {
       const { list, pagination, tmpList, fromDate, toDate } = action.payload
 
-      return { ...state,
+      return {
+        ...state,
         list,
         tmpList,
         fromDate,
@@ -102,7 +108,8 @@ export default {
     querySuccessMechanic (state, action) {
       const { list, listMechanic, pagination, fromDate, toDate } = action.payload
 
-      return { ...state,
+      return {
+        ...state,
         list,
         listMechanic,
         fromDate,
@@ -120,7 +127,7 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to }
     },
     setListNull (state) {
-      return { ...state, list: [] }
+      return { ...state, list: [], listMechanic: [] }
     }
   }
 }
