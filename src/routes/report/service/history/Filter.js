@@ -70,7 +70,6 @@ const Filter = ({
         return
       }
       const data = { ...getFieldsValue() }
-      console.log(data, 'datasubmit')
       let from = moment(data.period).startOf('month').format('YYYY-MM-DD')
       let to = moment(data.period).endOf('month').format('YYYY-MM-DD')
       if (data.serviceCode) {

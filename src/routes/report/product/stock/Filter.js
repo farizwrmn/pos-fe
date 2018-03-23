@@ -36,6 +36,7 @@ const Filter = ({
   }
 
   const modalProps = {
+    title: 'Stock in Transit',
     footer: [],
     visible: showStockInTransit,
     onCancel () {

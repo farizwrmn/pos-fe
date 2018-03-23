@@ -2,7 +2,7 @@
  * Created by Veirry on 04/10/2017.
  */
 import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
-import { queryInventoryTransferOut } from '../../services/report/inventory'
+import { queryInventoryTransferIn, queryInventoryTransferOut } from '../../services/report/inventory'
 
 export default {
   namespace: 'inventoryReport',
@@ -11,7 +11,8 @@ export default {
     list: [],
     listTrans: [],
     listDaily: [],
-    listInventoryTO: [],
+    listInventoryTransfer: [],
+    activeKey: '0',
     period: '',
     fromDate: '',
     toDate: '',
@@ -29,9 +30,46 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/inventory/transfer') {
+        const { activeKey } = location.query
+        if (location.pathname === '/report/inventory/transfer' && location.query.activeKey && location.query.period && location.query.year) {
+          switch (location.query.activeKey) {
+          case '0':
+            dispatch({
+              type: 'queryInventoryTransferIn',
+              payload: {
+                period: location.query.period,
+                year: location.query.year
+              }
+            })
+            break
+          case '1':
+            dispatch({
+              type: 'queryInventoryTransferOut',
+              payload: {
+                period: location.query.period,
+                year: location.query.year
+              }
+            })
+            break
+          default:
+          }
+          const period = `${location.query.year}-${location.query.period}`
+          dispatch({
+            type: 'updateState',
+            payload: {
+              period,
+              activeKey: activeKey || '0'
+            }
+          })
+        } else {
           dispatch({
             type: 'setListNull'
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
           })
         }
       })
@@ -114,12 +152,26 @@ export default {
         }
       })
     },
+    * queryInventoryTransferIn ({ payload }, { call, put }) {
+      const data = yield call(queryInventoryTransferIn, payload)
+      yield put({
+        type: 'querySuccessInventory',
+        payload: {
+          listInventoryTransfer: data.data,
+          pagination: {
+            current: Number(data.page) || 1,
+            pageSize: Number(data.pageSize) || 10,
+            total: data.total
+          }
+        }
+      })
+    },
     * queryInventoryTransferOut ({ payload }, { call, put }) {
       const data = yield call(queryInventoryTransferOut, payload)
       yield put({
-        type: 'querySuccessInventoryTO',
+        type: 'querySuccessInventory',
         payload: {
-          listInventoryTO: data.data,
+          listInventoryTransfer: data.data,
           pagination: {
             current: Number(data.page) || 1,
             pageSize: Number(data.pageSize) || 10,
@@ -147,12 +199,12 @@ export default {
       }
     },
 
-    querySuccessInventoryTO (state, { payload }) {
-      const { listInventoryTO, pagination } = payload
+    querySuccessInventory (state, { payload }) {
+      const { listInventoryTransfer, pagination } = payload
 
       return {
         ...state,
-        listInventoryTO,
+        listInventoryTransfer,
         pagination: {
           ...state.pagination,
           ...pagination
@@ -189,7 +241,7 @@ export default {
         list: [],
         listTrans: [],
         listDaily: [],
-        listInventoryTO: [],
+        listInventoryTransfer: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

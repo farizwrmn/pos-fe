@@ -371,9 +371,9 @@ const formProductCategory = ({
                   >{productBrand}
                   </Select>)}
                 </FormItem>
-                <FormItem label="Lifetime" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('dayLifetime', {
-                    initialValue: item.dayLifetime,
+                <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('usageTimePeriod', {
+                    initialValue: item.usageTimePeriod,
                     rules: [
                       {
                         pattern: /^(?:0|[1-9][0-9]{0,10})$/,
@@ -381,8 +381,8 @@ const formProductCategory = ({
                       }
                     ]
                   })(<InputNumber min={0} maxLength={10} placeholder="day(s)" style={{ width: '36%' }} />)}
-                  {getFieldDecorator('kmLifetime', {
-                    initialValue: item.kmLifetime,
+                  {getFieldDecorator('usageMileage', {
+                    initialValue: item.usageMileage,
                     rules: [
                       {
                         pattern: /^(?:0|[1-9][0-9]{0,15})$/,
