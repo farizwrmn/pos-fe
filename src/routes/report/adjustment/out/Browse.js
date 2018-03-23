@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table } from 'antd'
 
 const Browse = ({ ...browseProps }) => {
@@ -23,7 +24,8 @@ const Browse = ({ ...browseProps }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '175px'
+      width: '175px',
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'QTY',

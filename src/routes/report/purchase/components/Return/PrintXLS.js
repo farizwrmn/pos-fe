@@ -104,7 +104,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${listTrans[n].transNo}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
+        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MMM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = listTrans[n].productCode
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }

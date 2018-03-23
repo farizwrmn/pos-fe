@@ -18,7 +18,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 })
+        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.supplierName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.taxType || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -76,15 +76,14 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
-                alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`
+                alignment: 'left'
               },
               {
                 text: '',
@@ -108,7 +107,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 740, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [

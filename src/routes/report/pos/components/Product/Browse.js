@@ -13,7 +13,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
       title: 'Product',

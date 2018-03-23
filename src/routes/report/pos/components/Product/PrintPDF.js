@@ -77,7 +77,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate, productCode }) => {
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`
+                render: text => `${moment(text).format('DD-MMM-YYYY ')}`
               },
               {
                 text: '',

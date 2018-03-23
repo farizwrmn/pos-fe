@@ -106,7 +106,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${list[n].transNo}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(list[n].transDate).format('DD-MM-YYYY')}`
+        sheet.getCell(`D${m}`).value = `${moment(list[n].transDate).format('DD-MMM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = `${(parseFloat(list[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }

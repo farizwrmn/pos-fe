@@ -61,8 +61,7 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
       {
         text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`,
         fontSize: 12,
-        alignment: 'left',
-        render: text => `${moment(text).format('LL ')}`
+        alignment: 'left'
       },
       {
         text: '',

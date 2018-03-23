@@ -26,7 +26,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'transDate',
       key: 'transDate',
       width: '175px',
-      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('LL')}</p>
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'IN',

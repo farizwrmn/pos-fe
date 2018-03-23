@@ -37,7 +37,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       dataIndex: 'transDate',
       key: 'transDate',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Total',

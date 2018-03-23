@@ -82,15 +82,14 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 11,
-                alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`
+                alignment: 'left'
               },
               {
                 stack: [
@@ -118,7 +117,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [

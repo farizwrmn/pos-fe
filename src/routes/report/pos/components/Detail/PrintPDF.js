@@ -64,35 +64,35 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     for (let key in diffData) {
       let headers = []
       switch (key) {
-      case 'P':
-        headers.push(
-          [
-            { fontSize: 12, text: 'NO', style: 'tableHeader' },
-            { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader' },
-            { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader' },
-            { fontSize: 12, text: 'QTY', style: 'tableHeader' },
-            { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
-            { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
-            { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
-            { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      case 'S':
-        headers.push(
-          [
-            { fontSize: 12, text: 'NO', style: 'tableHeader' },
-            { fontSize: 12, text: 'SERVICE CODE', style: 'tableHeader' },
-            { fontSize: 12, text: 'SERVICE NAME', style: 'tableHeader' },
-            { fontSize: 12, text: 'QTY', style: 'tableHeader' },
-            { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
-            { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
-            { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
-            { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      default:
+        case 'P':
+          headers.push(
+            [
+              { fontSize: 12, text: 'NO', style: 'tableHeader' },
+              { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader' },
+              { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader' },
+              { fontSize: 12, text: 'QTY', style: 'tableHeader' },
+              { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
+              { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
+              { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
+              { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        case 'S':
+          headers.push(
+            [
+              { fontSize: 12, text: 'NO', style: 'tableHeader' },
+              { fontSize: 12, text: 'SERVICE CODE', style: 'tableHeader' },
+              { fontSize: 12, text: 'SERVICE NAME', style: 'tableHeader' },
+              { fontSize: 12, text: 'QTY', style: 'tableHeader' },
+              { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader' },
+              { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader' },
+              { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader' },
+              { fontSize: 12, text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        default:
       }
       for (let i = 0; i < headers.length; i += 1) {
         body.push(headers[i])
@@ -171,7 +171,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1090, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -201,7 +201,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1090, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1080, y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [

@@ -19,7 +19,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'invoiceDate',
       key: 'invoiceDate',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
       title: 'Total',

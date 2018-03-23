@@ -39,9 +39,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: (text) => {
-        return moment(text).format('MMMM, Do YYYY')
-      }
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Total',
