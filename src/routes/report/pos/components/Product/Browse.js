@@ -5,7 +5,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
-import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -14,7 +13,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
       title: 'Product',
@@ -32,32 +31,28 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'Qty',
       key: 'Qty',
       width: '60px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'Total',
       key: 'Total',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discountTotal',
       key: 'discountTotal',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto',
       dataIndex: 'Netto',
       key: 'Netto',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

@@ -3,8 +3,8 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table } from 'antd'
-import styles from '../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -18,23 +18,22 @@ const Browse = ({ ...browseProps }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '175px'
+      width: '175px',
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Product',
       dataIndex: 'product',
       key: 'product',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Service',
       dataIndex: 'service',
       key: 'service',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

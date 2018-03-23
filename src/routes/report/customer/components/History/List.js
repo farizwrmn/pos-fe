@@ -42,30 +42,25 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: (text) => {
-        return moment(text).format('MMMM, Do YYYY')
-      }
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

@@ -19,8 +19,8 @@ const Browse = ({
   const columns = [
     {
       title: 'store',
-      dataIndex: 'storeId',
-      key: 'storeId',
+      dataIndex: 'storeName',
+      key: 'storeName',
       width: 200
     },
     {

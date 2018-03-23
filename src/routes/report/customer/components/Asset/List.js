@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import styles from '../../../../../themes/index.less'
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -24,22 +23,19 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      className: styles.alignRight,
-      render: text => parseFloat(text || 0).toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      className: styles.alignRight,
-      render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      className: styles.alignRight,
-      render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

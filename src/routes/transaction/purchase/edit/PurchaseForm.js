@@ -214,6 +214,11 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
           </FormItem>
         </Row>
         <Row>
+          <FormItem label="Total Dpp" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={(parseFloat(totalDpp)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+          </FormItem>
+        </Row>
+        <Row>
           <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
             <Input disabled value={totalPpn.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
           </FormItem>

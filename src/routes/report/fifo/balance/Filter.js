@@ -58,8 +58,8 @@ const Filter = ({
 
   const onChange = (date, dateString) => {
     if (date) {
-      let period = moment(dateString).format('M')
-      let year = moment(dateString).format('Y')
+      let period = dateString ? moment(dateString).format('M') : null
+      let year = dateString ? moment(dateString).format('Y') : null
       onChangePeriod(period, year)
     } else {
       const { pathname } = location

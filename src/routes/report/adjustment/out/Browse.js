@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table } from 'antd'
 import styles from '../../../../themes/index.less'
 
@@ -24,7 +25,8 @@ const Browse = ({ ...browseProps }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '175px'
+      width: '175px',
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'QTY',
@@ -39,16 +41,14 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'costPrice',
       key: 'costPrice',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 
@@ -62,7 +62,7 @@ const Browse = ({ ...browseProps }) => {
         columns={columns}
         simple
         size="small"
-        // rowKey={record => record.productCode}
+      // rowKey={record => record.productCode}
       />
     </div>
   )

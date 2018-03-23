@@ -6,6 +6,7 @@ import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } 
 import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { pageModel } from './common'
+import { getDateTime } from '../services/setting/time'
 
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
@@ -207,35 +208,32 @@ export default modelExtend(pageModel, {
         seqCode: 'MUIN',
         type: lstorage.getCurrentUserStore() // diganti dengan StoreId
       }
-      const sequence = yield call(querySequence, sequenceData)
-      payload.transNo = sequence.data
-      let data = yield call(add, payload)
-      if (data.success) {
-        success()
-        let increase = yield call(increaseSequence, sequenceData)
-        if (!increase.success) {
-          error(increaseSequence)
-        }
-        yield put({
-          type: 'updateState',
-          payload: {
-            // modalAcceptVisible: false,
-            modalConfirmVisible: true,
-            showPrintModal: true
+      const date = yield call(getDateTime, {
+        id: 'timestamp'
+      })
+      if (date.success) {
+        payload.data.receiveDate = moment(date.data).format('YYYY-MM-DD hh:mm:ss')
+        const sequence = yield call(querySequence, sequenceData)
+        payload.transNo = sequence.data
+        let data = yield call(add, payload)
+        if (data.success) {
+          success()
+          let increase = yield call(increaseSequence, sequenceData)
+          if (!increase.success) {
+            error(increaseSequence)
           }
-        })
-        // setInterval(function () { location.reload() }, 1000)
-      } else {
-        error(data)
-        throw data
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalConfirmVisible: true,
+              showPrintModal: true
+            }
+          })
+        } else {
+          error(data)
+          throw data
+        }
       }
-      // const data = yield call(add, payload)
-      // if (data.success) {
-      //   yield put({ type: 'modalHide' })
-      //   yield put({ type: 'query' })
-      // } else {
-      //   throw data
-      // }
     },
     * queryProducts ({ payload = {} }, { call, put }) {
       const data = yield call(queryInDetail, payload)

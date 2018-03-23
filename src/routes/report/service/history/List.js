@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
-import styles from '../../../../themes/index.less'
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -10,9 +9,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: (text) => {
-        return moment(text).format('MMMM, Do YYYY')
-      }
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Transaction No',
@@ -38,29 +35,25 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Selling Price',
       dataIndex: 'sellingPrice',
       key: 'sellingPrice',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

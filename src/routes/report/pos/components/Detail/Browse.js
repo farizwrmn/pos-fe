@@ -1,7 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
 import moment from 'moment'
-import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -16,7 +15,7 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'transDate',
       key: 'transDate',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'Product Code',
@@ -35,40 +34,35 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'qty',
       key: 'qty',
       width: '50px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Unit Price',
       dataIndex: 'sellingPrice',
       key: 'sellingPrice',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Sub Total',
       dataIndex: 'total',
       key: 'total',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'netto',
       key: 'netto',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
 

@@ -73,9 +73,9 @@ const Filter = ({
       let from = moment(data.period).startOf('month').format('YYYY-MM-DD')
       let to = moment(data.period).endOf('month').format('YYYY-MM-DD')
       if (data.serviceCode) {
-        onSearchClickWithService(from, to, data.serviceTypeId.option, data.employeeId.option, data.serviceCode.option)
+        onSearchClickWithService(from, to, data.serviceType.option, data.employeeId.option, data.serviceCode.option)
       } else {
-        onSearchClick(from, to, data.serviceTypeId.option, data.employeeId.option)
+        onSearchClick(from, to, data.serviceType.option, data.employeeId.option)
       }
     })
   }
@@ -148,8 +148,7 @@ const Filter = ({
             })(<MonthPicker style={{ width: 195 }} />)}
           </FormItem>
           <FormItem label="Service Type" {...formItemLayout}>
-            {getFieldDecorator('serviceTypeId', {
-              valuePropName: 'value',
+            {getFieldDecorator('serviceType', {
               rules: [
                 {
                   required: true

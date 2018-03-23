@@ -5,7 +5,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import moment from 'moment'
-import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -20,31 +19,28 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'invoiceDate',
       key: 'invoiceDate',
       width: '175px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
       title: 'Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Paid',
       dataIndex: 'paid',
       key: 'paid',
       width: '100px',
-      className: styles.alignRight,
-      render: text => parseFloat(text || 0).toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Change',
       dataIndex: 'change',
       key: 'change',
       width: '100px',
-      className: styles.alignRight,
-      render: text => parseFloat(text || 0).toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Status',

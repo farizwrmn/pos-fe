@@ -100,7 +100,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`B${m}`).value = `${moment(listTrans[n].transDate).format('YYYY/MM/DD')}`
+        sheet.getCell(`B${m}`).value = `${moment(listTrans[n].transDate).format('DD-MMM-YYYY')}`
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = listTrans[n].transNo
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }

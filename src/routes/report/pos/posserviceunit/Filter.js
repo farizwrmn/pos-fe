@@ -51,8 +51,8 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
         counter
       } = result[key]
       formatSales.push({
-        transDate: moment(transDate).format('YYYY-MM-DD'), // 'DD/MM/YY'
-        title: moment(transDate).format('L'), // 'DD/MM/YY'
+        transDate: moment(transDate).format('DD-MMM-YYYY'), // 'DD/MM/YY'
+        title: moment(transDate).format('DD-MM-YYYY'), // 'DD/MM/YY'
         qtyUnit,
         counter,
         product,

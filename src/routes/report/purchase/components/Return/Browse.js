@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
-import styles from '../../../../../themes/index.less'
+
 
 const Browse = ({ dataSource, ...browseProps }) => {
   const columns = [
@@ -20,7 +20,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       dataIndex: 'transDate',
       key: 'transDate',
       width: '150px',
-      render: text => `${moment(text).format('LL ')}`
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
       title: 'CODE',
@@ -39,16 +39,14 @@ const Browse = ({ dataSource, ...browseProps }) => {
       dataIndex: 'qty',
       key: 'qty',
       width: '50px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
       width: '100px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'MEMO',

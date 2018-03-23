@@ -92,7 +92,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
                 table: {
                   widths: [50, 5, 120],
                   body: [
-                    [{ text: 'DATE', border: [false] }, { text: '', border: [false] }, { text: moment(invoiceInfo.transDate).format('DD/MM/YYYY'), alignment: 'center' }],
+                    [{ text: 'DATE', border: [false] }, { text: '', border: [false] }, { text: moment(invoiceInfo.transDate).format('DD-MMM-YYYY'), alignment: 'center' }],
                     [{ text: 'INVOICE', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.transNo || '').toString(), alignment: 'center' }]
                   ]
                 }

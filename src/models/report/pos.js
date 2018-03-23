@@ -44,7 +44,7 @@ export default {
             type: 'queryTransAll',
             payload: location.query
           })
-        } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit') {
+        } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit' || location.pathname === '/report/pos/summary') {
           dispatch({
             type: 'setListNull'
           })

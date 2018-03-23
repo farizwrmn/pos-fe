@@ -25,7 +25,7 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
   }
 
   return (
-    <Modal footer="" closable {...editProps}>
+    <Modal footer={null} closable {...editProps}>
       <Form>
         <FormItem {...formItemLayout} label="No">
           {getFieldDecorator('Record', {
@@ -52,10 +52,7 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
               required: true,
               message: 'Required'
             }]
-          })(
-            <Input />
-          )
-          }
+          })(<Input />)}
         </FormItem>
         <FormItem {...formItemLayout} label="In">
           {getFieldDecorator('InQty', {
@@ -64,10 +61,7 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
               required: true,
               message: 'Required'
             }]
-          })(
-            <Input disabled={disabledItemIn} />
-          )
-          }
+          })(<Input disabled={disabledItemIn} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Out">
           {getFieldDecorator('OutQty', {

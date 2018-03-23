@@ -19,7 +19,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.total) - parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: `${(parseFloat(data.DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.PPn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.roundingItem)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
@@ -42,7 +42,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
     qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
     grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
     discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
-    dppTotal = grandTotal - discountTotal
+    dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
     ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPn), 0)
     roundingTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.roundingItem), 0)
     nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
@@ -82,15 +82,14 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
               {
                 text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 11,
-                alignment: 'left',
-                render: text => `${moment(text).format('LL ')}`
+                alignment: 'left'
               },
               {
                 stack: [
@@ -118,7 +117,7 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1100, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [

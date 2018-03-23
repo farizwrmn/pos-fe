@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
-import { query, create, edit, remove } from '../services/adjust'
+import { query, queryDetail, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as queryTransType } from '../services/transType'
@@ -11,6 +11,10 @@ import { query as queryEmployee, queryByCode as queryEmployeeId } from '../servi
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
 import { getDateTime } from '../services/setting/time'
 import { queryLastActive } from '../services/period'
+
+const success = () => {
+  message.success('data has been saved')
+}
 
 export default modelExtend(pageModel, {
   namespace: 'adjust',
@@ -56,6 +60,12 @@ export default modelExtend(pageModel, {
           // dispatch({
           //   type: 'queryAdjust',
           // })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              ...location.query
+            }
+          })
           dispatch({
             type: 'queryLastAdjust'
           })
@@ -224,13 +234,34 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * edit ({ payload }, { select, call, put }) {
-      const stockCode = yield select(({ purchase }) => purchase.currentItem.transNo)
-      const newStock = { ...payload, stockCode }
-      const data = yield call(edit, newStock)
+    * edit ({ payload }, { call, put }) {
+      // const stockCode = yield select(({ purchase }) => purchase.currentItem.transNo)
+      const dataAdj = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
+      let arrayProd = []
+      for (let n = 0; n < dataAdj.length; n += 1) {
+        arrayProd.push({
+          storeId: lstorage.getCurrentUserStore(),
+          transNo: payload.data.transNo,
+          transType: payload.data.transType,
+          id: dataAdj[n].id,
+          productId: dataAdj[n].productId,
+          productCode: dataAdj[n].code,
+          productName: dataAdj[n].name,
+          adjInQty: dataAdj[n].In,
+          adjOutQty: dataAdj[n].Out,
+          sellingPrice: dataAdj[n].price
+        })
+      }
+      payload.data.storeId = lstorage.getCurrentUserStore()
+      const editBody = {
+        data: payload.data,
+        detail: arrayProd
+      }
+      const data = yield call(edit, editBody)
       if (data.success) {
+        success()
         yield put({ type: 'modalHide' })
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
       } else {
         throw data
       }
@@ -318,6 +349,38 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'setTransType',
         payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data }
+      })
+    },
+    * modalShow ({ payload = {} }, { call, put }) {
+      const params = {
+        transNo: payload.currentItem.transNo,
+        storeId: lstorage.getCurrentUserStore()
+      }
+      const data = yield call(queryDetail, params)
+      let detailData = []
+      for (let i = 0; i < data.data.length; i += 1) {
+        detailData.push({
+          no: i + 1,
+          id: data.data[i].id,
+          code: data.data[i].productCode,
+          name: data.data[i].productName,
+          productId: data.data[i].productId,
+          productName: data.data[i].productName,
+          In: data.data[i].adjInQty,
+          Out: data.data[i].adjOutQty,
+          price: data.data[i].sellingPrice,
+          type: 'edit'
+        })
+      }
+      localStorage.setItem('adjust', JSON.stringify(detailData))
+      yield put({
+        type: 'updateState',
+        payload: {
+          disabledItem: true,
+          modalVisible: true,
+          currentItem: payload.currentItem,
+          dataBrowse: detailData
+        }
       })
     }
   },
@@ -419,9 +482,9 @@ export default modelExtend(pageModel, {
       localStorage.removeItem('adjust')
       return { ...state, dataBrowse: [], item: [], listEmployee: [], lastTrans: '', itemEmployee: '' }
     },
-    modalShow (state, { payload }) {
-      return { ...state, ...payload, modalVisible: true, disableItem: true }
-    },
+    // modalShow (state, { payload }) {
+    //   return { ...state, ...payload, modalVisible: true, disableItem: true }
+    // },
     modalHide (state, { payload }) {
       return { ...state, ...payload, modalVisible: false, disableItem: false, modalProductVisible: true }
     },

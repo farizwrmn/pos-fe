@@ -15,6 +15,7 @@ export async function query (params) {
 
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${transfer}/in/detail`,
     method: 'get',
