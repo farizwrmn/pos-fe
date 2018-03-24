@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import styles from '../../../themes/index.less'
 
 const Browse = ({
   modalShow, ...purchaseProps }) => {
@@ -23,43 +24,51 @@ const Browse = ({
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
       key: 'disc1',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
       key: 'discount',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
       key: 'ppn',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Ket',

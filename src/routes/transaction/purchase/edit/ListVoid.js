@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { connect } from 'dva'
-
+import styles from '../../../../themes/index.less'
 
 const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
   const handleMenuClick = (record) => {
@@ -34,6 +34,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'qty',
       key: 'qty',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -41,6 +42,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'price',
       key: 'price',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -48,6 +50,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'disc1',
       key: 'disc1',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -55,6 +58,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'discount',
       key: 'discount',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -62,6 +66,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'dpp',
       key: 'dpp',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -69,6 +74,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'ppn',
       key: 'ppn',
       width: 50,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {
@@ -76,6 +82,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'total',
       key: 'total',
       width: 100,
+      className: styles.alignRight,
       render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
     },
     {

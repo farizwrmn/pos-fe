@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
+import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
@@ -52,33 +53,29 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      render: (text) => {
-        return text.toLocaleString()
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Cost Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      render: (text) => {
-        return text.toLocaleString()
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Dist 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
-      render: (text) => {
-        return text.toLocaleString()
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Dist 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
-      render: (text) => {
-        return text.toLocaleString()
-      }
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Track Qty',
@@ -91,7 +88,9 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Alert Qty',
       dataIndex: 'alertQty',
-      key: 'alertQty'
+      key: 'alertQty',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Exception',

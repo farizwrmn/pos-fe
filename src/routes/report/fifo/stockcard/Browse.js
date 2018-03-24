@@ -18,8 +18,7 @@ const Browse = ({ ...browseProps }) => {
       title: 'Type',
       dataIndex: 'transType',
       key: 'transType',
-      width: '50px',
-      render: text => <p style={{ textAlign: 'left' }}>{text}</p>
+      width: '50px'
     },
     {
       title: 'Date',

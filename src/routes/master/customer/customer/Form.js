@@ -378,7 +378,7 @@ const formCustomer = ({
                 </FormItem>
                 <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('birthDate', {
-                    initialValue: moment(item.birthDate)
+                    initialValue: item.birthDate ? moment(item.birthDate) : null
                   })(<DatePicker />)}
                 </FormItem>
                 <FormItem label="Tax ID" hasFeedback {...formItemLayout}>

@@ -9,26 +9,32 @@ const Browse = ({ ...browseProps }) => {
       title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: '220px'
+      width: '200px'
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
       width: '175px',
-      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
+      render: text => `${moment(text).format('LL ')}`
+    },
+    {
+      title: 'Reference',
+      dataIndex: 'referenceTrans',
+      key: 'referenceTrans',
+      width: '200px'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '155px'
+      width: '190px'
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '300px'
+      width: '350px'
     },
     {
       title: 'Qty',
@@ -38,16 +44,16 @@ const Browse = ({ ...browseProps }) => {
     },
     {
       title: 'Unit Price',
-      dataIndex: 'netto',
-      key: 'netto',
-      width: '100px',
+      dataIndex: 'purchasePrice',
+      key: 'purchasePrice',
+      width: '130px',
       render: text => Math.round(text).toLocaleString()
     },
     {
       title: 'Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      width: '100px',
+      width: '130px',
       render: text => Math.round(text).toLocaleString()
     },
     {
@@ -64,7 +70,7 @@ const Browse = ({ ...browseProps }) => {
         style={{ clear: 'both' }}
         {...browseProps}
         bordered
-        scroll={{ x: 730, y: 300 }}
+        scroll={{ x: 1200, y: 300 }}
         columns={columns}
         simple
         size="small"

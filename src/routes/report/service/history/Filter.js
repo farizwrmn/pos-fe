@@ -60,7 +60,8 @@ const Filter = ({
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const clickSearch = () => {
@@ -80,7 +81,26 @@ const Filter = ({
   }
 
   const clickReset = () => {
-    resetFields()
+    setFieldsValue({
+      serviceTypeId: {
+        option: []
+      },
+      employeeId: {
+        option: []
+      },
+      serviceCode: {
+        option: []
+      }
+    })
+    let timeout
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+
+    timeout = setTimeout(() => {
+      resetFields()
+    }, 200)
     onResetClick()
   }
 
@@ -113,6 +133,7 @@ const Filter = ({
     style: { width: 195, maxHeight: 80, overflow: 'scroll' },
     placeholder: 'Select service type'
   }
+
   return (
     <Row>
       <Form layout="horizontal">
@@ -138,6 +159,7 @@ const Filter = ({
           <FormItem label="Employee Name" {...formItemLayout}>
             {/* <SelectItem id="employeeId" {...employeeProps} /> */}
             {getFieldDecorator('employeeId', {
+              valuePropName: 'value',
               rules: [{ required: true }]
             })(<SelectItem {...employeeProps} />)}
           </FormItem>
@@ -145,6 +167,7 @@ const Filter = ({
         <Col {...column} >
           <FormItem label="Service Name" {...formItemLayout}>
             {getFieldDecorator('serviceCode', {
+              valuePropName: 'value',
               rules: [{ required: false }]
             })(<SelectItem {...serviceNameProps} />)}
           </FormItem>

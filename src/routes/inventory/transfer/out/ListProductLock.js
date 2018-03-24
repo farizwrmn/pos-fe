@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
+import styles from '../../../../themes/index.less'
 
 const FormItem = Form.Item
 
@@ -64,12 +65,16 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '100px'
+      width: '100px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }, {
       title: 'QTY',
       dataIndex: 'count',
       key: 'count',
-      width: '70px'
+      width: '70px',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 

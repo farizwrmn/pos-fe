@@ -40,7 +40,7 @@ class SelectItem extends React.Component {
     const { list, mode, size, style, componentKey, allowClear, componentValue, placeholder } = this.props
     const state = this.state
     let options = []
-    options.push(<Option value="-1">Select All</Option>)
+    if (list.length) options.push(<Option value="-1">Select All</Option>)
     for (let key = 0; key < list.length; key += 1) {
       options.push(<Option value={list[key][componentKey]}>{list[key][componentValue]}</Option>)
     }

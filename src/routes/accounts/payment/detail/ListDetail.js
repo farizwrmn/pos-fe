@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
+import styles from '../../../../themes/index.less'
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
@@ -45,21 +46,24 @@ const List = ({ ...tableProps, editList }) => {
       dataIndex: 'price',
       key: 'price',
       width: 72,
-      render: (text, record) => (<p style={{ textAlign: 'right' }}>{record.qty * record.sellingPrice}</p>)
+      className: styles.alignRight,
+      render: (text, record) => (record.qty * record.sellingPrice).toLocaleString()
     },
     {
       title: 'Total Disc',
       dataIndex: 'discount',
       key: 'discount',
       width: 72,
-      render: (text, record) => (<p style={{ textAlign: 'right' }}>{(record.qty * record.sellingPrice) - (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount)}</p>)
+      className: styles.alignRight,
+      render: (text, record) => ((record.qty * record.sellingPrice) - (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount)).toLocaleString()
     },
     {
       title: 'Netto',
       dataIndex: 'transNo',
       key: 'transNo',
       width: 72,
-      render: (text, record) => (<p style={{ textAlign: 'right' }}>{((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount}</p>)
+      className: styles.alignRight,
+      render: (text, record) => (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount).toLocaleString()
     }
 
   ]

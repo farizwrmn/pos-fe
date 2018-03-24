@@ -29,7 +29,8 @@ const Report = ({ dispatch, loading, posReport, app }) => {
         type: 'posReport/queryPOS',
         payload: {
           startPeriod: from,
-          endPeriod: to
+          endPeriod: to,
+          status: 'A'
         }
       })
       dispatch({

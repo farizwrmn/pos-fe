@@ -4,6 +4,7 @@ import moment from 'moment'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
+  console.log(listInventoryTransfer)
   const styles = {
     header: {
       fontSize: 18,
@@ -60,7 +61,8 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
         { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
+        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' }
       ]
     ]
 
@@ -79,8 +81,9 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
         row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.netto || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
       counter += 1
@@ -93,6 +96,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({})
     totalRow.push({ text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
+    totalRow.push({})
     body.push(totalRow)
     return body
   }
@@ -106,7 +110,10 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'Invoice No' }, ':', { text: listData[key][0].transNo }, {}, { text: 'Invoice Date' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }]
+            [{ text: 'Invoice No' }, ':', { text: listData[key][0].transNo }, {}, { text: 'Reference No' }, ':', { text: listData[key][0].referenceTrans }],
+            [{ text: 'Invoice Date' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }, {}, { text: 'Police No' }, ':', {}],
+            [{ text: 'From' }, ':', { text: listData[key][0].storeNameSender }, {}, { text: 'TOTAL COLLY' }, ':', {}],
+            [{ text: 'To' }, ':', { text: listData[key][0].storeName }, {}, {}, {}, {}]
           ]
         },
         style: 'tableTitle',
@@ -125,7 +132,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN INVENTORY TRANSFER OUT',
+            text: 'LAPORAN INVENTORY TRANSFER IN',
             style: 'header'
           },
           {
@@ -179,7 +186,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A4',
     pageOrientation: 'landscape',
-    width: ['6%', '27%', '30%', '8%', '13%', '16%'],
+    width: ['4%', '20%', '25%', '6%', '12%', '14%', '19%'],
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,

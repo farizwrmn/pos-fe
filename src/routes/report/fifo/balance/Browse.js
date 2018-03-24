@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
+import styles from '../../../../themes/index.less'
 
 const Browse = ({ dataSource, activeKey, ...browseProps }) => {
   let columns = []
@@ -21,57 +22,62 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
         title: 'Type',
         dataIndex: 'transType',
         key: 'transType',
-        width: '50px',
-        render: text => <p style={{ textAlign: 'left' }}>{text}</p>
+        width: '50px'
       },
       {
         title: 'Date',
         dataIndex: 'transDate',
         key: 'transDate',
         width: '175px',
-        render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('LL')}</p>
+        render: text => moment(text).format('LL')
       },
       {
         title: 'IN',
         dataIndex: 'pQty',
         key: 'pQty',
         width: '50px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0)}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString()
       },
       {
         title: 'Price',
         dataIndex: 'pPrice',
         key: 'pPrice',
         width: '100px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       },
       {
         title: 'Amount',
         dataIndex: 'pAmount',
         key: 'pAmount',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       },
       {
         title: 'Out',
         dataIndex: 'sQty',
         key: 'sQty',
         width: '50px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0)}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString()
       },
       {
         title: 'Price',
         dataIndex: 'sPrice',
         key: 'sPrice',
         width: '100px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       },
       {
         title: 'Amount',
         dataIndex: 'sAmount',
         key: 'sAmount',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        className: styles.alignRight,
+        render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       }
     )
     break
@@ -88,42 +94,48 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
         dataIndex: 'beginQty',
         key: 'beginQty',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       },
       {
         title: 'Purchase Qty',
         dataIndex: 'purchaseQty',
         key: 'purchaseQty',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       },
       {
         title: 'Adjust IN',
         dataIndex: 'adjInQty',
         key: 'adjInQty',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       },
       {
         title: 'POS Qty',
         dataIndex: 'posQty',
         key: 'posQty',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       },
       {
         title: 'Adjust OUT',
         dataIndex: 'adjOutQty',
         key: 'adjOutQty',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       },
       {
         title: 'Count',
         dataIndex: 'count',
         key: 'count',
         width: '150px',
-        render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+        className: styles.alignRight,
+        render: text => text.toLocaleString()
       }
     )
     break

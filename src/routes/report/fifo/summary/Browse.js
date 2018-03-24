@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import styles from '../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -18,42 +19,48 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'beginQty',
       key: 'beginQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Purchase Qty',
       dataIndex: 'purchaseQty',
       key: 'purchaseQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Adjust IN',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'POS Qty',
       dataIndex: 'posQty',
       key: 'posQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Adjust OUT',
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Count',
       dataIndex: 'count',
       key: 'count',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
 

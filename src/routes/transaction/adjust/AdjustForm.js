@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
 import Browse from './Browse'
+import styles from '../../../themes/index.less'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
@@ -105,7 +106,9 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
       title: 'Cost',
       dataIndex: 'costPrice',
       key: 'costPrice',
-      width: '20%'
+      width: '20%',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     }
   ]
   const contentPopover = (

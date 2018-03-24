@@ -15,8 +15,7 @@ export async function queryInventoryTransferIn (params) {
 
 export async function queryInventoryTransferOut (params) {
   const apiHeaderToken = crypt.apiheader()
-  // params.storeId = lstorage.getCurrentUserStore()
-  params.storeId = 3
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${inventoryreport}/out`,
     method: 'get',
