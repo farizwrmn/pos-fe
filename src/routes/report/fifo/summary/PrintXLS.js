@@ -69,126 +69,126 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
         let data = list[key]
         let row = []
         switch (activeKey) {
-          case '0':
-            row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.beginPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjInPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.posPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjOutPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.amount || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            tableBody.push(row)
-            break
-          case '1':
-            row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.amount || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            tableBody.push(row)
-            break
-          default:
+        case '0':
+          row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.beginPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.adjInPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.posPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.adjOutPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.amount || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          tableBody.push(row)
+          break
+        case '1':
+          row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: (data.amount || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+          tableBody.push(row)
+          break
+        default:
         }
       }
       start += 1
     }
     switch (activeKey) {
-      case '0':
-        tableFooter.push(
-          [
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
-          ]
-        )
-        tableHeader.push(
-          [
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'OPENING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'PURCHASE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'ADJUST IN + SALES RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'SALES', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'ADJUST OUT + PURCHASE RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-            { value: 'CLOSING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
-          ],
-          [
-            { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
-          ]
-        )
-        break
-      case '1':
-        tableFooter.push(
-          [
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-            { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
-          ]
-        )
-        tableHeader.push(
-          [
-            { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
-          ]
-        )
-        break
-      default:
+    case '0':
+      tableFooter.push(
+        [
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        ]
+      )
+      tableHeader.push(
+        [
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'OPENING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'PURCHASE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'ADJUST IN + SALES RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'SALES', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'ADJUST OUT + PURCHASE RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+          { value: 'CLOSING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        ],
+        [
+          { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        ]
+      )
+      break
+    case '1':
+      tableFooter.push(
+        [
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+          { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        ]
+      )
+      tableHeader.push(
+        [
+          { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        ]
+      )
+      break
+    default:
     }
     return tableBody
   }
@@ -196,13 +196,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
   const getTitle = (activeKey) => {
     let title
     switch (activeKey) {
-      case '0':
-        title = 'LAPORAN REKAP FIFO'
-        break
-      case '1':
-        title = 'LAPORAN SISA SALDO STOCK'
-        break
-      default:
+    case '0':
+      title = 'LAPORAN REKAP FIFO'
+      break
+    case '1':
+      title = 'LAPORAN SISA SALDO STOCK'
+      break
+    default:
     }
     return title
   }
