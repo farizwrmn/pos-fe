@@ -90,7 +90,7 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
               ]
             })(<MonthPicker style={{ width: '189px' }} onChange={onChange} placeholder="Select Period" />)}
           </FilterItem>
-          <FilterItem label="Category">
+          {/* <FilterItem label="Category">
             {getFieldDecorator('category')(<Select
               showSearch
               placeholder="Select category"
@@ -100,7 +100,7 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
               <Option value="lucy">Lucy</Option>
               <Option value="tom">Tom</Option>
             </Select>)}
-          </FilterItem>
+          </FilterItem> */}
           <Row>
             <Col lg={12} md={24} >
               <FilterItem label="Product Code">
