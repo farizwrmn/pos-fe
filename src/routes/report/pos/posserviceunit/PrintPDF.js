@@ -19,9 +19,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.qtyUnit) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.counter) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.product || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.service || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.product || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: (parseFloat(data.counter) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.product) + parseFloat(data.service) + parseFloat(data.counter)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
@@ -130,22 +130,13 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DATE', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'UNIT', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT', colSpan: 2, style: 'tableHeader', alignment: 'center' },
-      {},
-      { fontSize: 12, text: 'SERVICE', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TOTAL', rowSpan: 2, style: 'tableHeader', alignment: 'center' }
-    ],
-    [
-      {},
-      {},
-      {},
-      { fontSize: 12, text: 'COUNTER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'UNIT', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
-      {},
-      {}
+      { fontSize: 12, text: 'COUNTER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -161,9 +152,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: 'Grand Total', colSpan: 2, alignment: 'center', fontSize: 12 },
       {},
       { text: `${qtyUnit.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${counterTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${serviceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${counterTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${(parseFloat(productTotal) + parseFloat(serviceTotal) + parseFloat(counterTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
