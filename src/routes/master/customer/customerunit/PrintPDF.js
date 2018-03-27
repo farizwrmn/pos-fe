@@ -53,13 +53,13 @@ const PrintPDF = ({ dataSource, dataCustomer, user, storeInfo }) => {
   const tableHeader = [
     [
       { text: 'NO', style: 'tableHeader' },
-      { text: 'POLICE NO', style: 'tableHeader' },
-      { text: 'MERK', style: 'tableHeader' },
+      { text: 'NO PLAT', style: 'tableHeader' },
+      { text: 'MEREK', style: 'tableHeader' },
       { text: 'MODEL', style: 'tableHeader' },
-      { text: 'TYPE', style: 'tableHeader' },
-      { text: 'YEAR', style: 'tableHeader' },
-      { text: 'CHASSIS NO', style: 'tableHeader' },
-      { text: 'MACHINE NO', style: 'tableHeader' }
+      { text: 'TIPE', style: 'tableHeader' },
+      { text: 'TAHUN', style: 'tableHeader' },
+      { text: 'NO RANGKA', style: 'tableHeader' },
+      { text: 'NO MESIN', style: 'tableHeader' }
     ]
   ]
 

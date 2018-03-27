@@ -7,10 +7,6 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-
   let outJSON = listRekap
 
   let groupBy = (xs, key) => {
@@ -42,43 +38,27 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     let inAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pAmount) || 0), 0)
     let outQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sQty) || 0), 0)
     let outAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sAmount) || 0), 0)
-    const headers = {
-      top: {
-        col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'TRANS', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'TYPE', style: 'tableHeader', alignment: 'center' },
-        col_5: { fontSize: 12, text: 'IN', style: 'tableHeader', alignment: 'center' },
-        col_6: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'center' },
-        col_7: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
-        col_8: { fontSize: 12, text: 'OUT', style: 'tableHeader', alignment: 'center' },
-        col_9: { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'center' },
-        col_10: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
-        col_11: { fontSize: 12, text: 'COUNT', style: 'tableHeader', alignment: 'center' },
-        col_12: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
-      }
-    }
+    const headers = [
+      [
+        { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TIPE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'MASUK', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'KELUAR', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'JUMLAH', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
+      ]
+    ]
 
     const rows = tabledata
     let body = []
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        let header = headers[key]
-        let row = []
-        row.push(header.col_1)
-        row.push(header.col_2)
-        row.push(header.col_3)
-        row.push(header.col_4)
-        row.push(header.col_5)
-        row.push(header.col_6)
-        row.push(header.col_7)
-        row.push(header.col_8)
-        row.push(header.col_9)
-        row.push(header.col_10)
-        row.push(header.col_11)
-        row.push(header.col_12)
-        body.push(row)
-      }
+    for (let i = 0; i < headers.length; i += 1) {
+      body.push(headers[i])
     }
     let countQtyValue = 0
     let countAmountValue = 0
@@ -107,7 +87,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 })
+    totalRow.push({ text: 'Total', colSpan: 4, alignment: 'center', fontSize: 12 })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({})
@@ -128,7 +108,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   for (let i = 0; i < arr.length; i += 1) {
     try {
       tableBody.push(createTableBody(arr[i]))
-      tableTitle.push({ text: `Product : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
+      tableTitle.push({ text: `ProduK : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
     } catch (e) {
       console.log(e)
     }

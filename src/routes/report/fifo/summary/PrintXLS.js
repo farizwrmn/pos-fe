@@ -110,7 +110,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
@@ -132,35 +132,35 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'OPENING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'SALDO AWAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'PURCHASE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'ADJUST IN + SALES RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'ADJ IN + RETUR PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'SALES', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'ADJUST OUT + PURCHASE RETURN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'ADJ OUT + RETUR PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-          { value: 'CLOSING BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+          { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
         ],
         [
           { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
         ]
       )
       break
@@ -171,7 +171,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: 'GRAND TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
@@ -180,10 +180,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
         [
           { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'PRODUCT CODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'PRODUCT NAME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'COGS', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+          { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
           { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
         ]
       )

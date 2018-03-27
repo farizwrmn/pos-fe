@@ -101,14 +101,14 @@ const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, 
               <Option value="tom">Tom</Option>
             </Select>)}
           </FilterItem> */}
-          <Row>
+          <Row style={{ marginTop: 5 }}>
             <Col lg={12} md={24} >
               <FilterItem label="Product Code">
                 {getFieldDecorator('productCode', {
                 })(<Select
                   className=""
                   mode="multiple"
-                  style={{ width: '189px', marginTop: '5px' }}
+                  style={{ width: '189px' }}
                   placeholder="Select Code"
                   onFocus={selectChildren()}
                   onChange={() => resetSelected('productName')}

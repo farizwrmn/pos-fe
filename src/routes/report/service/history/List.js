@@ -6,13 +6,13 @@ import moment from 'moment'
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
     {
-      title: 'Transaction Date',
+      title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
       render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
-      title: 'Transaction No',
+      title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo'
     },
