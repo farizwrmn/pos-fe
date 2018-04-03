@@ -21,7 +21,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
+      title: 'ID',
       dataIndex: 'categoryCode',
       key: 'categoryCode'
     },

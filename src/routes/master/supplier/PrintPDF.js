@@ -45,11 +45,11 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     [
       { text: 'NO', style: 'tableHeader' },
       { text: 'ID', style: 'tableHeader' },
-      { text: 'NAME', style: 'tableHeader' },
-      { text: 'ADDRESS', style: 'tableHeader' },
-      { text: 'PHONE NO', style: 'tableHeader' },
-      { text: 'MOBILE NO', style: 'tableHeader' },
-      { text: 'TAX ID', style: 'tableHeader' }
+      { text: 'NAMA', style: 'tableHeader' },
+      { text: 'ALAMAT', style: 'tableHeader' },
+      { text: 'NO TELEPON', style: 'tableHeader' },
+      { text: 'NO PONSEL', style: 'tableHeader' },
+      { text: 'KODE PAJAK', style: 'tableHeader' }
     ]
   ]
 

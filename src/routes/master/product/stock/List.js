@@ -30,12 +30,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       }
     },
     {
-      title: 'Product Code',
+      title: 'ID',
       dataIndex: 'productCode',
       key: 'productCode'
     },
     {
-      title: 'Product Name',
+      title: 'Name',
       dataIndex: 'productName',
       key: 'productName'
     },

@@ -44,14 +44,14 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
   const tableHeader = [
     [
       { text: 'NO', style: 'tableHeader' },
-      { text: 'PRODUCT CODE', style: 'tableHeader' },
-      { text: 'PRODUCT NAME', style: 'tableHeader' },
-      { text: 'MERK', style: 'tableHeader' },
-      { text: 'CATEGORY', style: 'tableHeader' },
-      { text: 'SELL PRICE', style: 'tableHeader' },
-      { text: 'COST PRICE', style: 'tableHeader' },
-      { text: 'DIST PRICE-1', style: 'tableHeader' },
-      { text: 'DIST PRICE-2', style: 'tableHeader' }
+      { text: 'ID', style: 'tableHeader' },
+      { text: 'NAMA', style: 'tableHeader' },
+      { text: 'MEREK', style: 'tableHeader' },
+      { text: 'KATEGORI', style: 'tableHeader' },
+      { text: 'HARGA JUAL', style: 'tableHeader' },
+      { text: 'HARGA POKOK', style: 'tableHeader' },
+      { text: 'HARGA DIST-1', style: 'tableHeader' },
+      { text: 'HARGA DIST-2', style: 'tableHeader' }
     ]
   ]
 

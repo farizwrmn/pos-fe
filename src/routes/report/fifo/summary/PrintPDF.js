@@ -164,19 +164,19 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
     tableHeader.push(
       [
         { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'OPENING BALANCE', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'SALDO AWAL', colSpan: 2, alignment: 'center' },
         {},
-        { fontSize: 12, text: 'PURCHASE', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'PEMBELIAN', colSpan: 2, alignment: 'center' },
         {},
-        { fontSize: 12, text: 'ADJUST IN + SALES RETURN', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'ADJ IN + RETUR PENJUALAN', colSpan: 2, alignment: 'center' },
         {},
-        { fontSize: 12, text: 'SALES', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'PENJUALAN', colSpan: 2, alignment: 'center' },
         {},
-        { fontSize: 12, text: 'ADJUST OUT + PURHCASE RETURN', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'ADJ OUT + RETUR PEMBELIAN', colSpan: 2, alignment: 'center' },
         {},
-        { fontSize: 12, text: 'CLOSING BALANCE', colSpan: 2, alignment: 'center' },
+        { fontSize: 12, text: 'SALDO AKHIR', colSpan: 2, alignment: 'center' },
         {}
       ]
     )
@@ -186,26 +186,26 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
         {},
         {},
         { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' },
+        { fontSize: 12, text: 'HPP', alignment: 'center' },
         { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' },
+        { fontSize: 12, text: 'HPP', alignment: 'center' },
         { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' },
+        { fontSize: 12, text: 'HPP', alignment: 'center' },
         { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' },
+        { fontSize: 12, text: 'HPP', alignment: 'center' },
         { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' },
+        { fontSize: 12, text: 'HPP', alignment: 'center' },
         { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'COGS', alignment: 'center' }
+        { fontSize: 12, text: 'HPP', alignment: 'center' }
       ]
     )
     break
   case '1':
     tableHeader.push([
       { fontSize: 12, text: 'NO', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT CODE', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT NAME', alignment: 'center' },
-      { fontSize: 12, text: 'COGS', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', alignment: 'center' },
+      { fontSize: 12, text: 'HPP', alignment: 'center' },
       { fontSize: 12, text: 'SALDO', alignment: 'center' },
       { fontSize: 12, text: 'JUMLAH', alignment: 'center' }
     ])
@@ -225,7 +225,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
   case '0':
     tableFooter.push(
       [
-        { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+        { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
         {},
         {},
         { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
@@ -246,7 +246,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
   case '1':
     tableFooter.push(
       [
-        { text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 },
+        { text: 'Total', colSpan: 4, alignment: 'center', fontSize: 12 },
         {},
         {},
         {},
