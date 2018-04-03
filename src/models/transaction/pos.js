@@ -597,24 +597,23 @@ export default {
       }
     },
 
-    * getServices ({ payload }, { call, put }) {
+    * getServices ({ payload = {} }, { call, put }) {
       const data = yield call(queryService, payload)
-      let newData = payload ? data.service : data.data
       if (data.data !== null) {
         yield put({
           type: 'queryGetServicesSuccess',
           payload: {
-            serviceInformation: newData,
-            tmpServiceList: newData
+            serviceInformation: data.data,
+            tmpServiceList: data.data
           }
         })
         yield put({
           type: 'updateState',
           payload: {
             pagination: {
-              total: newData.length,
-              page: 1,
-              pageSize: 10
+              total: data.total,
+              page: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
             }
           }
         })
@@ -1250,7 +1249,6 @@ export default {
         for (let n = 0; n < 10; n += 1) {
           let tempQueue = `queue${n + 1}`
           if (queue.hasOwnProperty(tempQueue)) {
-            console.log(queue.queue2)
             console.log('this', `${tempQueue} already exists`)
           } else if (`${queue.hasOwnProperty(tempQueue)}`) {
             // set Object by string value
@@ -1461,9 +1459,7 @@ export default {
 
     queryGetServicesSuccess (state, action) {
       const { serviceInformation, tmpServiceList } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      let a = dataPos
-      let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+      let grandTotal = (JSON.parse(localStorage.getItem('cashier_trans')) || []).reduce((cnt, o) => { return cnt + o.total }, 0)
 
       return {
         ...state,

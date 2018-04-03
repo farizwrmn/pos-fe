@@ -7,7 +7,7 @@ import styles from '../../../themes/index.less'
 const FormItem = Form.Item
 
 const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
-  const { searchText, tmpServiceList } = pos
+  const { searchText } = pos
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -26,20 +26,25 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/onServiceSearch',
+      type: 'pos/getServices',
       payload: {
-        searchText,
-        tmpServiceList
+        q: searchText
       }
     })
   }
 
   const handleReset = () => {
+    // dispatch({
+    //   type: 'pos/onServiceReset',
+    //   payload: {
+    //     searchText: '',
+    //     tmpServiceList
+    //   }
+    // })
     dispatch({
-      type: 'pos/onServiceReset',
+      type: 'pos/getServices',
       payload: {
-        searchText: '',
-        tmpServiceList
+        page: 1
       }
     })
   }

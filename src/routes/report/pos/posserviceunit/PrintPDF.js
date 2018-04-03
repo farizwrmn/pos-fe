@@ -17,7 +17,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
+        row.push({ text: moment(data.transDate, 'DD-MMM-YYYY').format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.qtyUnit) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.service || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.product || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })

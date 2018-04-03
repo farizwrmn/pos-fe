@@ -75,10 +75,10 @@ const modal = ({
     let listData = []
     for (let key = 0; key < listBooking.length; key += 1) {
       switch (value.format('YYYY-MM-DD')) {
-      case listBooking[key].scheduleDate:
-        listData.push({ type: listBooking[key].status, content: listBooking[key].counter })
-        break
-      default:
+        case listBooking[key].scheduleDate:
+          listData.push({ type: listBooking[key].status, content: listBooking[key].counter })
+          break
+        default:
       }
     }
     return listData || []
@@ -92,10 +92,124 @@ const modal = ({
           listData.map((item) => {
             let badge
             switch (item.type) {
+              case 'Open':
+                badge = (<Badge dot
+                  style={{
+                    backgroundColor: color.wisteria,
+                    position: 'relative',
+                    display: 'inline-block',
+                    top: 0,
+                    transform: 'none'
+                  }}
+                  text={item.content}
+                />)
+                break
+              case 'Confirmed':
+                badge = (<Badge status="default"
+                  text={item.content}
+                />)
+                break
+              case 'Check-In':
+                badge = (<Badge status="processing"
+                  text={item.content}
+                />)
+                break
+              case 'Check-Out':
+                badge = (<Badge status="success"
+                  text={item.content}
+                />)
+                break
+              case 'Reschedule':
+                badge = (<Badge dot
+                  style={{
+                    backgroundColor: color.peach,
+                    position: 'relative',
+                    display: 'inline-block',
+                    top: 0,
+                    transform: 'none'
+                  }}
+                  text={item.content}
+                />)
+                break
+              case 'Cancel':
+                badge = (<Badge status="warning"
+                  text={item.content}
+                />)
+                break
+              case 'Reject':
+                badge = (<Badge status="error"
+                  text={item.content}
+                />)
+                break
+              default:
+            }
+            return (
+              <li>
+                {badge}
+              </li>
+            )
+          })
+        }
+      </ul>
+    )
+  }
+
+  let groupByMonth = (xs, key) => {
+    return (xs || []).reduce((rv, x) => {
+      (rv[moment(x[key]).format('YYYY-MM')] = rv[moment(x[key]).format('YYYY-MM')] || []).push(x)
+      return rv
+    }, {})
+  }
+
+  let groupByStatus = (xs, key) => {
+    return (xs || []).reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x)
+      return rv
+    }, {})
+  }
+
+  let month = groupByMonth(listBooking, 'scheduleDate')
+  let full = {}
+  for (let key = 0; key < month.length; key += 1) {
+    full[key] = groupByStatus(month[key], 'status')
+  }
+
+  const getMonthData = (value) => {
+    let monthlyData = []
+    for (let key = 0; key < full.length; key += 1) {
+      switch (value.format('YYYY-MM')) {
+        case key:
+          for (let status = 0; status < full[key].length; status += 1) {
+            switch (status) {
+              case status: {
+                let total = 0
+                for (let i = 0; i < full[key][status].length; i += 1) {
+                  total += full[key][status][i].counter
+                }
+                monthlyData.push({ type: status, content: total })
+                break
+              }
+              default:
+            }
+          }
+          break
+        default:
+      }
+    }
+    return monthlyData || []
+  }
+
+  const monthCellRender = (value) => {
+    const listData = getMonthData(value)
+    return listData ? (<ul className="events">
+      {
+        listData.map((item) => {
+          let badge
+          switch (item.type) {
             case 'Open':
               badge = (<Badge dot
                 style={{
-                  backgroundColor: color.purple,
+                  backgroundColor: color.wisteria,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -142,120 +256,6 @@ const modal = ({
               />)
               break
             default:
-            }
-            return (
-              <li>
-                {badge}
-              </li>
-            )
-          })
-        }
-      </ul>
-    )
-  }
-
-  let groupByMonth = (xs, key) => {
-    return xs.reduce((rv, x) => {
-      (rv[moment(x[key]).format('YYYY-MM')] = rv[moment(x[key]).format('YYYY-MM')] || []).push(x)
-      return rv
-    }, {})
-  }
-
-  let groupByStatus = (xs, key) => {
-    return xs.reduce((rv, x) => {
-      (rv[x[key]] = rv[x[key]] || []).push(x)
-      return rv
-    }, {})
-  }
-
-  let month = groupByMonth(listBooking, 'scheduleDate')
-  let full = {}
-  for (let key = 0; key < month.length; key += 1) {
-    full[key] = groupByStatus(month[key], 'status')
-  }
-
-  const getMonthData = (value) => {
-    let monthlyData = []
-    for (let key = 0; key < full.length; key += 1) {
-      switch (value.format('YYYY-MM')) {
-      case key:
-        for (let status = 0; status < full[key].length; status += 1) {
-          switch (status) {
-          case status: {
-            let total = 0
-            for (let i = 0; i < full[key][status].length; i += 1) {
-              total += full[key][status][i].counter
-            }
-            monthlyData.push({ type: status, content: total })
-            break
-          }
-          default:
-          }
-        }
-        break
-      default:
-      }
-    }
-    return monthlyData || []
-  }
-
-  const monthCellRender = (value) => {
-    const listData = getMonthData(value)
-    return listData ? (<ul className="events">
-      {
-        listData.map((item) => {
-          let badge
-          switch (item.type) {
-          case 'Open':
-            badge = (<Badge dot
-              style={{
-                backgroundColor: color.purple,
-                position: 'relative',
-                display: 'inline-block',
-                top: 0,
-                transform: 'none'
-              }}
-              text={item.content}
-            />)
-            break
-          case 'Confirmed':
-            badge = (<Badge status="default"
-              text={item.content}
-            />)
-            break
-          case 'Check-In':
-            badge = (<Badge status="processing"
-              text={item.content}
-            />)
-            break
-          case 'Check-Out':
-            badge = (<Badge status="success"
-              text={item.content}
-            />)
-            break
-          case 'Reschedule':
-            badge = (<Badge dot
-              style={{
-                backgroundColor: color.peach,
-                position: 'relative',
-                display: 'inline-block',
-                top: 0,
-                transform: 'none'
-              }}
-              text={item.content}
-            />)
-            break
-          case 'Cancel':
-            badge = (<Badge status="warning"
-              text={item.content}
-            />)
-            break
-          case 'Reject':
-            badge = (<Badge status="error"
-              text={item.content}
-            />)
-            break
-          default:
           }
           return (
             <li>
@@ -267,7 +267,6 @@ const modal = ({
     </ul>
     ) : []
   }
-
   const calendarProps = {
     dateCellRender,
     monthCellRender,

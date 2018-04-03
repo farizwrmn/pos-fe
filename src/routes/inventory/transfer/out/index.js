@@ -11,7 +11,7 @@ import FilterTransfer from './FilterTransferOut'
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { modalProductVisible, listProduct } = pos
   const { list } = employee
   let listEmployee = list
@@ -145,15 +145,39 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     location,
     loading,
     pos,
-    visible: modalProductVisible,
+    listInvoice,
+    tmpInvoiceList,
+    modalProductVisible,
+    visible: modalProductVisible || modalInvoiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
+    onCancel () {
+      dispatch({
+        type: 'pos/hideProductModal'
+      })
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalInvoiceVisible: false
+        }
+      })
+    },
     handleProductBrowse () {
       dispatch({
         type: 'pos/getProducts',
         payload: {
           outOfStock: 0
+        }
+      })
+    },
+    handleInvoiceBrowse () {
+      dispatch({
+        type: 'transferOut/getInvoice'
+      })
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalInvoiceVisible: true
         }
       })
     },
@@ -199,6 +223,20 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           content: 'Already Exists in list'
         })
       }
+    },
+    onInvoiceHeader (period) {
+      dispatch({
+        type: 'transferOut/getInvoice',
+        payload: {
+          ...period
+        }
+      })
+    },
+    onChooseInvoice (item) {
+      dispatch({
+        type: 'transferOut/getInvoiceDetailPurchase',
+        payload: item
+      })
     }
   }
 
@@ -328,6 +366,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     item: currentItem,
     modalProductProps,
     modalProductVisible,
+    modalInvoiceVisible,
     modalVisible,
     loading: loading.effects['transferOut/querySequence'],
     disabled: `${formType === 'edit' ? disable : ''}`,
@@ -357,6 +396,12 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       })
     },
     onModalVisible (record) {
+      dispatch({
+        type: 'pos/queryProducts',
+        payload: {
+          outOfStock: 0
+        }
+      })
       dispatch({
         type: 'transferOut/updateState',
         payload: {

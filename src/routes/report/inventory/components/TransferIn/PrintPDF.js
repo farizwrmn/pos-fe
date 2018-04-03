@@ -4,7 +4,6 @@ import moment from 'moment'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
-  console.log(listInventoryTransfer)
   const styles = {
     header: {
       fontSize: 18,

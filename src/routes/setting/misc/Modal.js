@@ -82,7 +82,7 @@ const modal = ({
         <FormItem label="Variable" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscVariable', {
             initialValue: item.miscVariable,
-            rules: [{ max: 200 }]
+            rules: [{ max: 300 }]
           })(<Input />)}
         </FormItem>
       </Form>

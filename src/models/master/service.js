@@ -26,8 +26,8 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        switch (location.pathname) {
-        case '/master/service':
+        const { activeKey, ...other } = location.query
+        if (location.pathname === '/master/service') {
           dispatch({
             type: 'queryServiceType'
           })
@@ -35,24 +35,26 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               newItem: false,
-              activeKey: '0'
+              changed: false,
+              activeKey: activeKey || '0',
+              listSticker: []
             }
           })
-          break
-        case '/report/service/history':
+          dispatch({
+            type: 'query',
+            payload: other
+          })
+        } else if (location.pathname === '/report/service/history') {
           dispatch({
             type: 'queryServiceType'
           })
           dispatch({
             type: 'query'
           })
-          break
-        case '/report/customer/history':
+        } else if (location.pathname === '/report/customer/history') {
           dispatch({
             type: 'queryServiceType'
           })
-          break
-        default:
         }
       })
     }

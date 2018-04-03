@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import Form from './Form'
 import { NewForm } from '../../components'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, newItem, listServiceType, modalType, currentItem, activeKey, disable, show } = service
+  const { list, newItem, pagination, listServiceType, modalType, currentItem, activeKey, disable, show } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -13,24 +14,63 @@ const Service = ({ service, loading, dispatch, location, app }) => {
       ...location.query
     },
     onFilterChange (value) {
+      // dispatch({
+      //   type: 'service/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
+    },
+    // onResetClick () {
+    // dispatch({ type: 'service/resetServiceList' })
+    // }
+    onResetClick () {
+      const { query, pathname } = location
+      const { activeKey } = query
+
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          activeKey: activeKey || '0'
+        }
+      }))
       dispatch({
-        type: 'service/query',
+        type: 'service/updateState',
         payload: {
-          ...value
+          searchText: null
         }
       })
-    },
-    onResetClick () {
-      dispatch({ type: 'service/resetServiceList' })
     }
   }
 
   const listProps = {
     dataSource: list,
     user,
+    pagination,
     storeInfo,
     loading: loading.effects['service/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'service/updateState',
@@ -62,7 +102,23 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           disable: ''
         }
       })
-      dispatch({ type: 'service/resetServiceList' })
+      const { query, pathname } = location
+      if (key === '1') {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            activeKey: key
+          }
+        }))
+      } else {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: key
+          }
+        }))
+      }
     },
     clickBrowse () {
       dispatch({

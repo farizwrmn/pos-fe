@@ -44,7 +44,7 @@ const FilterTransfer = ({
     <Row gutter={24}>
       <Col {...filterItemLayout} >
         <FormItem >
-          {getFieldDecorator('period', { initialValue: moment.utc(period, 'YYYY-MM') })(
+          {getFieldDecorator('period', { initialValue: period ? moment.utc(period, 'YYYY-MM') : null })(
             <MonthPicker onChange={handleChangeDate} placeholder="Select Period" />
           )}
         </FormItem>
