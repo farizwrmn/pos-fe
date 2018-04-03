@@ -21,8 +21,8 @@ let lastHref
 const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked,
-    selectedDate, calendarMode, selectedMonth, totalBirthdayInAMonth, listTotalBirthdayPerDate,
-    listCustomerBirthday, listNotification, ignore, title } = app
+    selectedDate, calendarMode, selectedMonth, listTotalBirthdayPerDate,
+    listCustomerBirthday, listNotification, listNotificationDetail, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { logo } = config
@@ -52,10 +52,10 @@ const App = ({ children, dispatch, app, loading, location }) => {
     selectedDate,
     calendarMode,
     selectedMonth,
-    totalBirthdayInAMonth,
     listTotalBirthdayPerDate,
     listCustomerBirthday,
     listNotification,
+    listNotificationDetail,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
     },
@@ -144,7 +144,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
         payload: {
           visibleItem: {
             displayBirthdate: true,
-            showPopOver: false
+            showPopOverCalendar: false
           },
           selectedDate: moment(date).format('YYYY-MM-DD')
         }
@@ -173,7 +173,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
         payload: {
           visibleItem: {
             displayBirthdate: false,
-            showPopOver: true
+            showPopOverCalendar: true
           },
           selectedDate: '',
           listCustomerBirthday: [],
@@ -181,16 +181,17 @@ const App = ({ children, dispatch, app, loading, location }) => {
         }
       })
     },
-    showPopOver () {
+    showPopOverCalendar () {
       dispatch({
         type: 'app/updateState',
         payload: {
           visibleItem: {
-            showPopOver: !visibleItem.showPopOver
+            showPopOverCalendar: !visibleItem.showPopOverCalendar,
+            showPopOverNotification: false
           }
         }
       })
-      if (!visibleItem.showPopOver) {
+      if (!visibleItem.showPopOverCalendar) {
         dispatch({
           type: 'app/queryTotalBirthdayPerDate',
           payload: {
@@ -198,6 +199,23 @@ const App = ({ children, dispatch, app, loading, location }) => {
           }
         })
       }
+    },
+    showPopOverNotification () {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          visibleItem: {
+            showPopOverNotification: !visibleItem.showPopOverNotification,
+            showPopOverCalendar: false
+          }
+        }
+      })
+      if (!visibleItem.showPopOverNotification) {
+        dispatch({ type: 'app/queryListNotifications' })
+      }
+    },
+    refreshNotifications () {
+      dispatch({ type: 'app/queryRefreshNotifications' })
     },
     changeCalendarMode (month, mode) {
       dispatch({

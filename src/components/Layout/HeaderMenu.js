@@ -24,7 +24,11 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
       </div>
     </Tooltip>
   )
-  let parentComp = prompt === 'calendar' ? (<Popover visible={showPopOver} onVisibleChange={handleVisibleChange} content={content} trigger="click">{childComp}</Popover>) : (<Popover content={content} trigger="click">{childComp}</Popover>)
+
+  let parentComp = <Popover content={content} trigger="click">{childComp}</Popover>
+  if (prompt === 'calendar' || prompt === 'notification') {
+    parentComp = <Popover visible={showPopOver} onVisibleChange={handleVisibleChange} content={content} trigger="click">{childComp}</Popover>
+  }
 
   return (
     <div>

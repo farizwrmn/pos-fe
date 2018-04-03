@@ -10,13 +10,12 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
+import { getNotifications, getListNotifications, refreshNotifications } from '../services/dashboard'
 import {
-  queryTotalBirthdayInAMonth,
   queryTotalBirthdayPerDate,
   queryShowCustomerBirthdayPerDate,
   queryShowCustomerBirthdayPerMonth
 } from '../services/customerBirthday'
-import { queryProductsBelowMinimum } from '../services/master/productstock'
 
 const { prefix } = config
 
@@ -38,7 +37,7 @@ export default {
       }
     ],
     menuPopoverVisible: false,
-    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOver: false },
+    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOverCalendar: false, showPopOverNotification: false },
     visiblePw: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -48,11 +47,11 @@ export default {
     selectedDate: moment().format('MMMM, Do YYYY'),
     calendarMode: 'month',
     selectedMonth: moment().format('MM'),
-    totalBirthdayInAMonth: 0,
     listTotalBirthdayPerDate: [],
     listTotalBirthdayPerMonth: [],
     listCustomerBirthday: [],
     listNotification: [],
+    listNotificationDetail: [],
     ignore: true,
     title: '',
     options: {}
@@ -75,13 +74,8 @@ export default {
     * query ({ payload }, { call, put }) {
       const { success, user } = yield call(query, payload)
       if (success && user) {
-        yield put({
-          type: 'queryTotalBirthdayInAMonth',
-          payload: {
-            month: moment().format('MM')
-          }
-        })
-        yield put({ type: 'queryLastPeriod' })
+        const notifications = yield call(getNotifications, payload)
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
 
         const { data } = yield call(menusService.query)
         const { permissions } = user
@@ -237,13 +231,6 @@ export default {
       })
     },
 
-    * queryTotalBirthdayInAMonth ({ payload = {} }, { call, put }) {
-      const data = yield call(queryTotalBirthdayInAMonth, payload)
-      if (data.success) {
-        yield put({ type: 'updateState', payload: { totalBirthdayInAMonth: data.data.counter } })
-      }
-    },
-
     * queryTotalBirthdayPerDate ({ payload = {} }, { call, put }) {
       const data = yield call(queryTotalBirthdayPerDate, payload)
       if (data.success) {
@@ -265,35 +252,31 @@ export default {
       }
     },
 
-    * queryLastPeriod (payload, { call, put }) {
-      const data = yield call(queryLastActive)
+    * queryListNotifications ({ payload = {} }, { call, put }) {
+      const data = yield call(getListNotifications, payload)
       if (data.success) {
-        const start = data.data[0].startPeriod
-        yield put({
-          type: 'queryNotifications',
-          payload: {
-            start,
-            end: moment().format('YYYY-MM-DD')
+        let listNotificationDetail = data.data
+        for (let key in listNotificationDetail) {
+          switch (listNotificationDetail[key].notificationCode) {
+          case 'SML':
+            Object.assign(listNotificationDetail[key], { route: '/report/product/stock/quantity-alerts' })
+            break
+          case 'SPC':
+            Object.assign(listNotificationDetail[key], { route: '/dashboard' })
+            break
+          default:
           }
-        })
+        }
+        yield put({ type: 'updateState', payload: { listNotificationDetail } })
       }
     },
 
-    * queryNotifications ({ payload = {} }, { call, put }) {
-      let allNotifications = []
-      const dataStocks = yield call(queryProductsBelowMinimum, payload)
-      if (dataStocks.success) {
-        const counter = Object.keys(dataStocks.data).length
-        if (counter > 0) {
-          allNotifications.push({ title: 'Quantity Alerts', route: '/report/product/stock/quantity-alerts', counter })
-        }
-      }
-
-      if (allNotifications.length > 0) {
-        yield put({ type: 'updateState', payload: { listNotification: allNotifications } })
+    * queryRefreshNotifications ({ payload = {} }, { call, put }) {
+      const data = yield call(refreshNotifications, payload)
+      if (data.success) {
+        yield put({ type: 'queryListNotifications' })
       }
     }
-
   },
   reducers: {
     updateState (state, { payload }) {
