@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { config, lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
 import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence, increase as increaseSequence } from '../services/sequence'
@@ -15,7 +15,7 @@ const success = () => {
 const error = (err) => {
   message.error(err.message)
 }
-const { prefix } = config
+const { prefix } = configMain
 
 const localDate = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 export default modelExtend(pageModel, {

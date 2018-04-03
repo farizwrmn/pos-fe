@@ -45,7 +45,8 @@ const Info = ({ ipAddress, dispatch, app }) => {
   const data = [
     { name: 'IP Address', value: `${ipAddress}`, status: 1 },
     { name: 'Version', value: `${config.version}`, status: 2 },
-    { name: 'Session', value: `${sessionId}`, status: 3 }
+    { name: 'Session', value: `${sessionId}`, status: 3 },
+    { name: 'Service', value: `${config.apiHost}`, status: 4 }
   ]
 
   return (<Table pagination={false}

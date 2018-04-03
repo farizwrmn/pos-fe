@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import config from 'config'
 import { message } from 'antd'
-import { lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import {
   query as querySequence,
@@ -13,7 +12,7 @@ import { pageModel } from './common'
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
-const { prefix } = config
+const { prefix } = configMain
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 const error = (err) => {

@@ -1,4 +1,5 @@
 import { request, config, crypt, lstorage } from 'utils'
+// import { rest } from '../utils/config.rest'
 
 const { apiUser, apiUsers, apiUserLogout, apiUserRole } = config.rest
 
