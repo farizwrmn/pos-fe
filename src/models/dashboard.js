@@ -261,15 +261,16 @@ export default {
         from: last7day,
         to: today
       }
-      const data = yield call(query, parse(payload))
+      // const data = yield call(query, parse(payload))
       const dataSales = yield call(queryAll, params)
       let formatWeekSales = construct(dataSales)
       // sort date
       formatWeekSales.sort((a, b) => {
         return new Date(a.title).getTime() - new Date(b.title).getTime()
       })
-      const ipAddr = yield call(getIpAddr)
-      yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
+      // const ipAddr = yield call(getIpAddr)
+      yield put({ type: 'querySuccess', payload: { data: formatWeekSales } })
+      // yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
       // yield put({ type: 'queryWeather', payload: { ...data } })
     }
     // * queryWeather ({

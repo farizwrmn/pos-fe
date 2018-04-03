@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { Layout, Loader, Notification } from 'components'
-import { classnames, config } from 'utils'
+import { classnames, configMain } from 'utils'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
@@ -13,7 +13,7 @@ import '../themes/index.less'
 import './app.less'
 import Error from './error'
 
-const { prefix, openPages } = config
+const { prefix, openPages, logo } = configMain
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
@@ -25,9 +25,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
     listCustomerBirthday, listNotification, listNotificationDetail, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
-  const { logo } = config
   const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
-  const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
+  // const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
   if (lastHref !== href) {
     NProgress.start()
@@ -296,7 +295,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
   return (
     <div>
       <Helmet>
-        <title>{config.name}</title>
+        <title>{configMain.name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
       </Helmet>
@@ -310,7 +309,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
             <Bread {...breadProps} />
             <div className={styles.container}>
               <div className={styles.content}>
-                {hasPermission ? children : <Error />}
+                { children }
+                {/*{hasPermission ? children : <Error />}*/}
               </div>
             </div>
             <Footer />

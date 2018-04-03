@@ -2,7 +2,7 @@
  * Created by boo on 12/22/17.
  */
 import moment from 'moment'
-import { prefix } from './config'
+import { prefix } from './config.rest'
 import { encrypt, decrypt } from './crypt'
 
 const putStorageKey = (key, value, norandom) => {
@@ -66,8 +66,12 @@ const getStorageKey = (key) => {
   return pair
 }
 
-// remove item or all
-const removeItemKey = () => {
+// remove item
+const removeItemKey = (key) => {
+  localStorage.removeItem(`${prefix}${key}`)
+}
+// remove items
+const removeItemKeys = () => {
   localStorage.removeItem(`${prefix}iKen`)
   localStorage.removeItem(`${prefix}udi`)
   localStorage.removeItem(`${prefix}uelor`)
@@ -150,11 +154,16 @@ const getCurrentUserStoreDetail = () => {
   return currentStoreName
 }
 
+const getDomainBE = () => { return getStorageKey('cdi')[1] }
+const getPortBE = () => { return getStorageKey('cdi')[2] }
+const getIdBE = () => { return getStorageKey('cdi')[3] }
+
 module.exports = {
   putStorageKey,
   getStorageKey,
   removeAllKey,
   removeItemKey,
+  removeItemKeys,
   getListUserRoles,
   getCurrentUserRole,
   getCompanyName,
@@ -165,5 +174,8 @@ module.exports = {
   getCurrentUserStoreName,
   getCurrentUserStoreCode,
   getCurrentUserStoreDetail,
-  getSessionId
+  getSessionId,
+  getDomainBE,
+  getPortBE,
+  getIdBE,
 }

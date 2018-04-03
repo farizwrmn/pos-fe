@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'config'
 import { DatePicker, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
 import moment from 'moment'
+import { configMain } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 
 const { TextArea, Search } = Input
 const Panel = Collapse.Panel
-const { prefix } = config
+const { prefix } = configMain
 const FormItem = Form.Item
 const Option = Select.Option
 const ButtonGroup = Button.Group

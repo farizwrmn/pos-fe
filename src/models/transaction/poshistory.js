@@ -1,8 +1,8 @@
 import moment from 'moment'
-import config from 'config'
+import { configMain } from 'utils'
 import { queryOut } from '../../services/poshistory'
 
-const { prefix } = config
+const { prefix } = configMain
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 export default {

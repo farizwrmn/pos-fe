@@ -1,11 +1,11 @@
 import { request, config, crypt } from 'utils'
 
-const { apicustomerbirthday } = config.rest
+const { apiMemberBirthday } = config.rest
 
 export async function queryTotalBirthdayInAMonth (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${apicustomerbirthday}/month`,
+    url: `${apiMemberBirthday}/month`,
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -15,7 +15,7 @@ export async function queryTotalBirthdayInAMonth (params) {
 export async function queryTotalBirthdayPerDate (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${apicustomerbirthday}/monthdate`,
+    url: `${apiMemberBirthday}/monthdate`,
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -25,7 +25,7 @@ export async function queryTotalBirthdayPerDate (params) {
 export async function queryShowCustomerBirthdayPerDate (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${apicustomerbirthday}/monthdatelist`,
+    url: `${apiMemberBirthday}/monthdatelist`,
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -35,7 +35,7 @@ export async function queryShowCustomerBirthdayPerDate (params) {
 export async function queryShowCustomerBirthdayPerMonth (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${apicustomerbirthday}/monthlist`,
+    url: `${apiMemberBirthday}/monthlist`,
     method: 'post',
     data: params,
     headers: apiHeaderToken

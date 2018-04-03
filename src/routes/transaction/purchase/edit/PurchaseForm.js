@@ -2,15 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
-import config from 'config'
-import { lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
 
 const FormItem = Form.Item
 const Option = Select.Option
-const { prefix } = config
+const { prefix } = configMain
 const formItemLayout = {
   labelCol: { span: 11 },
   wrapperCol: { span: 12 },

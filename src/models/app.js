@@ -1,8 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
-import config from 'config'
 import moment from 'moment'
-import { lstorage, messageInfo } from 'utils'
+import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
@@ -16,8 +15,6 @@ import {
   queryShowCustomerBirthdayPerDate,
   queryShowCustomerBirthdayPerMonth
 } from '../services/customerBirthday'
-
-const { prefix } = config
 
 export default {
   namespace: 'app',
@@ -39,10 +36,10 @@ export default {
     menuPopoverVisible: false,
     visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOverCalendar: false, showPopOverNotification: false },
     visiblePw: false,
-    siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
-    darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
+    siderFold: localStorage.getItem(`${configMain.prefix}siderFold`) === 'true',
+    darkTheme: localStorage.getItem(`${configMain.prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
-    navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
+    navOpenKeys: JSON.parse(localStorage.getItem(`${configMain.prefix}navOpenKeys`)) || [],
     ipAddr: '',
     selectedDate: moment().format('MMMM, Do YYYY'),
     calendarMode: 'month',
@@ -126,7 +123,7 @@ export default {
         }
 
         if (storeInfo !== []) {
-          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
+          localStorage.setItem(`${configMain.prefix}store`, JSON.stringify(storeInfo))
         } else {
           console.log('unexpected error misc')
         }
@@ -152,7 +149,7 @@ export default {
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
-      } else if (config.openPages && config.openPages.indexOf(location.pathname) < 0) {
+      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }
@@ -162,7 +159,7 @@ export default {
       payload
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
-      lstorage.removeItemKey()
+      lstorage.removeItemKeys()
 
       if (data.success) {
         messageInfo(data.profile.sessionid)
@@ -295,7 +292,7 @@ export default {
     },
 
     sendNotification (state) {
-      localStorage.setItem(`${prefix}subscribe`, state.notification)
+      localStorage.setItem(`${configMain.prefix}subscribe`, state.notification)
       return { ...state, notification: { subscribe: true, sendNotification: true } }
     },
 
@@ -307,7 +304,7 @@ export default {
     },
 
     foldSider (state) {
-      localStorage.setItem(`${prefix}siderFold`, true)
+      localStorage.setItem(`${configMain.prefix}siderFold`, true)
       return {
         ...state,
         siderFold: true
@@ -321,7 +318,7 @@ export default {
       }
     },
     switchSider (state) {
-      localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
+      localStorage.setItem(`${configMain.prefix}siderFold`, !state.siderFold)
       return {
         ...state,
         siderFold: !state.siderFold
@@ -349,7 +346,7 @@ export default {
       return { ...state, visibleItem: { changeTotp: false } }
     },
     switchTheme (state) {
-      localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)
+      localStorage.setItem(`${configMain.prefix}darkTheme`, !state.darkTheme)
       return {
         ...state,
         darkTheme: !state.darkTheme

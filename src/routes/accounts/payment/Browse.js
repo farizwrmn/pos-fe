@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'config'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
+import { configMain } from 'utils'
 import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = config
+const { prefix } = configMain
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
