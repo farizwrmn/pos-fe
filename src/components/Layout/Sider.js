@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Cascader, Tooltip } from 'antd'
-import { config, lstorage } from 'utils'
+import { lstorage } from 'utils'
 import styles from './Layout.less'
 import Menus from './Menu'
 import DateTime from './DateTime'
