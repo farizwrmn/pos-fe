@@ -17,7 +17,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: data.employeeName, alignment: 'left', fontSize: 11 })
         row.push({ text: data.serviceName, alignment: 'left', fontSize: 11 })
@@ -115,7 +115,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

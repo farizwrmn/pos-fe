@@ -50,8 +50,8 @@ const Report = ({ dispatch, fifoReport, app }) => {
         payload: {
           period: month,
           year: yearPeriod,
-          productCode: data.productCode.toString(),
-          productName: data.productName.toString()
+          productCode: (data.productCode || '').toString(),
+          productName: (data.productName || '').toString()
         }
       })
     },

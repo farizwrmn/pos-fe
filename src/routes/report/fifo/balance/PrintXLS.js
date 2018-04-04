@@ -114,7 +114,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: data.transNo.toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.transNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: data.transType.toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.pQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.sQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })

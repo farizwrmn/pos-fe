@@ -14,9 +14,9 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qty.toString(), alignment: 'center', fontSize: 11 })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.qty || '').toString(), alignment: 'center', fontSize: 11 })
         row.push({ text: (data.purchasePrice || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.ppn || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.dpp || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
@@ -159,7 +159,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
                 alignment: 'center'
               },
               {
-                text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                text: `page: ${(currentPage || 0).toString()} of ${pageCount}\n`,
                 fontSize: 9,
                 margin: [0, 10, 0, 10],
                 alignment: 'right'
@@ -198,7 +198,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
               alignment: 'center'
             },
             {
-              text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+              text: `page: ${(currentPage || 0).toString()} of ${pageCount}\n`,
               fontSize: 9,
               margin: [0, 20, 0, 40],
               alignment: 'right'

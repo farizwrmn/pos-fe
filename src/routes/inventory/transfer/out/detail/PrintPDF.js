@@ -133,7 +133,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
                 alignment: 'center'
               },
               {
-                text: `page: ${currentPage.toString()} of ${pageCount} \n`,
+                text: `page: ${(currentPage || 0).toString()} of ${pageCount} \n`,
                 fontSize: 9,
                 margin: [0, 10, 0, 10],
                 alignment: 'right'
@@ -172,7 +172,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
               alignment: 'center'
             },
             {
-              text: `page: ${currentPage.toString()} of ${pageCount} \n`,
+              text: `page: ${(currentPage || 0).toString()} of ${pageCount} \n`,
               fontSize: 9,
               margin: [0, 20, 0, 40],
               alignment: 'right'

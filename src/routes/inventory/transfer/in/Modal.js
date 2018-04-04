@@ -90,12 +90,12 @@ const modal = ({
 
   let childrenTransNo = []
   const selectTransNo = () => {
-    transNo.length > 0 ? transNo.map(no => childrenTransNo.push(<Option key={no.toString(36)}>{no.toString(36)}</Option>)) : []
+    transNo.length > 0 ? transNo.map(no => childrenTransNo.push(<Option key={(no || '').toString(36)}>{(no || '').toString(36)}</Option>)) : []
   }
 
   let childrenStoreId = []
   const selectStoreId = () => {
-    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={store.storeIdReceiver.toString(36)}>{store.storeNameReceiver.toString(36)}</Option>)) : []
+    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={(store.storeIdReceiver || '').toString(36)}>{(store.storeNameReceiver || '').toString(36)}</Option>)) : []
   }
 
   const resetSelectedField = (value) => {

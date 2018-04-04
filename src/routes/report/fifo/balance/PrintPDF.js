@@ -73,8 +73,8 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
         switch (activeKey) {
           case '0':
             row.push({ text: count, style: 'textCenter' })
-            row.push({ text: data.productCode.toString(), style: 'textLeft' })
-            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
+            row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
             row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
             row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
             row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
@@ -85,15 +85,15 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
             break
           case '1':
             row.push({ text: count, style: 'textCenter' })
-            row.push({ text: data.productCode.toString(), style: 'textLeft' })
-            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
+            row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
             row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
             body.push(row)
             break
           case '2':
             row.push({ text: count, style: 'textCenter' })
-            row.push({ text: data.productCode.toString(), style: 'textLeft' })
-            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
+            row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
             row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
             row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
             row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
@@ -106,7 +106,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           case '3':
             row.push({ text: count, style: 'textCenter' })
             row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), style: 'textLeft' })
-            row.push({ text: data.transNo.toString(), style: 'textLeft' })
+            row.push({ text: (data.transNo || '').toString(), style: 'textLeft' })
             row.push({ text: data.transType.toString(), style: 'textLeft' })
             row.push({ text: (parseFloat(data.pQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
             row.push({ text: (parseFloat(data.sQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
@@ -336,7 +336,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

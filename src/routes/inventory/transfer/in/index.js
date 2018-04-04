@@ -41,7 +41,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     dispatch({
       type: 'transferIn/updateState',
       payload: {
-        activeTabKey: key.toString()
+        activeTabKey: (key || '0').toString()
       }
     })
   }

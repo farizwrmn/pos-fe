@@ -19,8 +19,8 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
         switch (activeKey) {
           case '0':
             row.push({ text: count, alignment: 'center', fontSize: 11 })
-            row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-            row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+            row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+            row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
             row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
             row.push({ text: data.beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
             row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -37,8 +37,8 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
             break
           case '1':
             row.push({ text: count, alignment: 'center', fontSize: 11 })
-            row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-            row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+            row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+            row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
             row.push({ text: (parseFloat(data.amount) / parseFloat(data.count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
             row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
             row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -147,7 +147,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

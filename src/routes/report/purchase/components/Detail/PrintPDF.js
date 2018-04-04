@@ -68,8 +68,8 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
         let data = tabledata[key]
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || 0).toString(), alignment: 'center', fontSize: 11 })
         row.push({ text: (parseFloat(data.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.qty * data.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -184,7 +184,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               style: 'footer',
               alignment: 'right'
             }
