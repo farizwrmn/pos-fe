@@ -124,6 +124,25 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'brandId'
     },
     {
+      title: 'Usage Period',
+      children: [
+        {
+          title: 'Day(s)',
+          dataIndex: 'usageTimePeriod',
+          key: 'usageTimePeriod',
+          className: styles.alignRight,
+          render: text => text || 0
+        },
+        {
+          title: 'KM',
+          dataIndex: 'usageMileage',
+          key: 'usageMileage',
+          className: styles.alignRight,
+          render: text => (text || 0).toLocaleString()
+        }
+      ]
+    },
+    {
       title: 'Created',
       children: [
         {

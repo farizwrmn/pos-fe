@@ -111,8 +111,8 @@ const formProductCategory = ({
       data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
       data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      data.dayLifetime = data.dayLifetime || 0
-      data.kmLifetime = data.kmLifetime || 0
+      data.usageTimePeriod = data.usageTimePeriod || 0
+      data.usageMileage = data.usageMileage || 0
       let valid = true
       if (modalType === 'add') {
         if (data.productCode !== data.dummyCode) {
@@ -201,29 +201,29 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-  case '0':
-    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-    break
-  case '1':
-    moreButtonTab = (
-      <div>
-        <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
-        <Dropdown overlay={menu}>
-          <Button style={{ marginLeft: 8 }} icon="printer">
+    case '0':
+      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+      break
+    case '1':
+      moreButtonTab = (
+        <div>
+          <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+          <Dropdown overlay={menu}>
+            <Button style={{ marginLeft: 8 }} icon="printer">
               Print
           </Button>
-        </Dropdown>
-      </div>
-    )
-    break
-  case '2':
-    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-    break
-  case '3':
-    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-    break
-  default:
-    break
+          </Dropdown>
+        </div>
+      )
+      break
+    case '2':
+      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      break
+    case '3':
+      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+      break
+    default:
+      break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -315,7 +315,7 @@ const formProductCategory = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} />)}
+                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
                 </FormItem>
                 <FormItem label="Product Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('productName', {

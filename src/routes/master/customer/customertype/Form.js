@@ -107,7 +107,7 @@ const formCustomerType = ({
           onOk () {
             onSubmit(data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Type Code can't be null")
@@ -149,7 +149,7 @@ const formCustomerType = ({
                       message: 'a-z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={5} />)}
+                })(<Input disabled={disabled} maxLength={5} autoFocus />)}
               </FormItem>
               <FormItem label="Type Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('typeName', {

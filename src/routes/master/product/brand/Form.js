@@ -103,7 +103,7 @@ const formProductBrand = ({
           onOk () {
             onSubmit(data.brandCode, data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Product Brand Code can't be null")
@@ -122,7 +122,7 @@ const formProductBrand = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
     </Button>
@@ -144,7 +144,7 @@ const formProductBrand = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={10} />)}
+                })(<Input disabled={disabled} maxLength={10} autoFocus />)}
               </FormItem>
               <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('brandName', {

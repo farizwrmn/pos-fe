@@ -121,7 +121,7 @@ const formEmployee = ({
           onOk () {
             onSubmit(data.employeeId, data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Employee Id can't be null")
@@ -136,7 +136,7 @@ const formEmployee = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{ `${show ? 'Hide' : 'Show'} Search` }</Button> <Dropdown overlay={menu}>
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
     </Button>
@@ -171,7 +171,7 @@ const formEmployee = ({
                       required: true
                     }
                   ]
-                })(<Input />)}
+                })(<Input autoFocus />)}
               </FormItem>
               <FormItem label="Position" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('positionId', {
