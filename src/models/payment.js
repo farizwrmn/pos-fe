@@ -76,6 +76,9 @@ export default {
               itemPayment: {}
             }
           })
+          dispatch({
+            type: 'pos/setCurTotal'
+          })
         }
       })
     }
@@ -126,7 +129,16 @@ export default {
           const dataPos = product.concat(service)
           const trans = transNo.data
           const storeId = lstorage.getCurrentUserStore()
+          const companySetting = JSON.parse((payload.setting.Company || '{}')).taxType
           for (let key = 0; key < dataPos.length; key += 1) {
+            const totalPrice = ((
+              (dataPos[key].price * dataPos[key].qty) * // price * qty
+              (1 - (dataPos[key].disc1 / 100)) * // -disc1
+              (1 - (dataPos[key].disc2 / 100)) * // -disc2
+              (1 - (dataPos[key].disc3 / 100))) - // -disc3
+              dataPos[key].discount) // -discount
+            const dpp = totalPrice / (companySetting === 'I' ? 1.1 : 1)
+            const ppn = (companySetting === 'I' ? totalPrice / 11 : companySetting === 'S' ? totalPrice * 0.1 : 0)
             arrayProd.push({
               storeId,
               transNo: trans,
@@ -136,13 +148,14 @@ export default {
               qty: dataPos[key].qty,
               typeCode: dataPos[key].typeCode,
               sellingPrice: dataPos[key].price,
+              DPP: dpp,
+              PPN: ppn,
               discount: dataPos[key].discount,
               disc1: dataPos[key].disc1,
               disc2: dataPos[key].disc2,
               disc3: dataPos[key].disc3
             })
           }
-
           const detailPOS = {
             dataPos: arrayProd,
             transNo: trans,
@@ -241,6 +254,9 @@ export default {
                   posMessage: 'Data has been saved',
                   type: 'POS'
                 }
+              })
+              yield put({
+                type: 'pos/setAllNull'
               })
               const data_cashier_trans_update = yield call(updateCashierTrans, {
                 total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),

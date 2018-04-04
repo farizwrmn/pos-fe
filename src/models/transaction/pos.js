@@ -114,12 +114,6 @@ export default {
             }
           })
         }
-        // else if (location.pathname === '/transaction/pos/payment') {
-        //   dispatch({
-        //     type: 'sequenceQuery',
-        //     payload: 'WO'
-        //   })
-        // }
       })
     }
   },

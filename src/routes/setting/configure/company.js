@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Button, Input, DatePicker, Row, Col, Modal } from 'antd'
+import { Form, Select, Button, Input, DatePicker, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { lg: 14, md: 14, sm: 14, float: 'left' },
@@ -25,17 +26,17 @@ const Company = ({
       if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) return false
 
       switch (typeof (obj1[p])) {
-      // Deep compare objects
-      case 'object':
-        if (!Object.compare(obj1[p], obj2[p])) return false
-        break
+        // Deep compare objects
+        case 'object':
+          if (!Object.compare(obj1[p], obj2[p])) return false
+          break
         // Compare function code
-      case 'function':
-        if (typeof (obj2[p]) === 'undefined' || (p !== 'compare' && obj1[p].toString() !== obj2[p].toString())) return false
-        break
+        case 'function':
+          if (typeof (obj2[p]) === 'undefined' || (p !== 'compare' && obj1[p].toString() !== obj2[p].toString())) return false
+          break
         // Compare values
-      default:
-        if (obj1[p] !== obj2[p]) return false
+        default:
+          if (obj1[p] !== obj2[p]) return false
       }
     }
 
@@ -105,8 +106,6 @@ const Company = ({
               ]
             })(<Input />)}
           </FormItem>
-        </Col>
-        <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }}>
           <FormItem label="Email" {...formItemLayout}>
             {getFieldDecorator('email', {
               initialValue: config.email,
@@ -117,6 +116,22 @@ const Company = ({
                 }
               ]
             })(<Input />)}
+          </FormItem>
+        </Col>
+        <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }}>
+          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxType', {
+              initialValue: config.taxType,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select>
+              {/* onBlur={hdlChangePercent} */}
+              <Option value="I">Include</Option>
+              <Option value="E">Exclude (0%)</Option>
+              <Option value="S">Exclude (10%)</Option>
+            </Select>)}
           </FormItem>
           <FormItem label="TAX ID" {...formItemLayout}>
             {getFieldDecorator('taxID', {
@@ -132,7 +147,7 @@ const Company = ({
           </FormItem>
           <FormItem label="Taxable enterprise confirmation" {...formItemLayout}>
             {getFieldDecorator('taxConfirmDate', {
-              initialValue: moment.utc(config.taxConfirmDate, 'YYYY-MM-DD')
+              initialValue: config.taxConfirmDate ? moment.utc(config.taxConfirmDate, 'YYYY-MM-DD') : null
             })(<DatePicker />)}
           </FormItem>
         </Col>
