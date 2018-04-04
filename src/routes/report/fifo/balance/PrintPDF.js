@@ -71,49 +71,49 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
         countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
         let row = []
         switch (activeKey) {
-        case '0':
-          row.push({ text: count, style: 'textCenter' })
-          row.push({ text: data.productCode.toString(), style: 'textLeft' })
-          row.push({ text: data.productName.toString(), style: 'textLeft' })
-          row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          body.push(row)
-          break
-        case '1':
-          row.push({ text: count, style: 'textCenter' })
-          row.push({ text: data.productCode.toString(), style: 'textLeft' })
-          row.push({ text: data.productName.toString(), style: 'textLeft' })
-          row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
-          body.push(row)
-          break
-        case '2':
-          row.push({ text: count, style: 'textCenter' })
-          row.push({ text: data.productCode.toString(), style: 'textLeft' })
-          row.push({ text: data.productName.toString(), style: 'textLeft' })
-          row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          body.push(row)
-          break
-        case '3':
-          row.push({ text: count, style: 'textCenter' })
-          row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), style: 'textLeft' })
-          row.push({ text: data.transNo.toString(), style: 'textLeft' })
-          row.push({ text: data.transType.toString(), style: 'textLeft' })
-          row.push({ text: (parseFloat(data.pQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: (parseFloat(data.sQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
-          row.push({ text: countQtyValue.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-          body.push(row)
-          break
-        default:
+          case '0':
+            row.push({ text: count, style: 'textCenter' })
+            row.push({ text: data.productCode.toString(), style: 'textLeft' })
+            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            body.push(row)
+            break
+          case '1':
+            row.push({ text: count, style: 'textCenter' })
+            row.push({ text: data.productCode.toString(), style: 'textLeft' })
+            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
+            body.push(row)
+            break
+          case '2':
+            row.push({ text: count, style: 'textCenter' })
+            row.push({ text: data.productCode.toString(), style: 'textLeft' })
+            row.push({ text: data.productName.toString(), style: 'textLeft' })
+            row.push({ text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            body.push(row)
+            break
+          case '3':
+            row.push({ text: count, style: 'textCenter' })
+            row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), style: 'textLeft' })
+            row.push({ text: data.transNo.toString(), style: 'textLeft' })
+            row.push({ text: data.transType.toString(), style: 'textLeft' })
+            row.push({ text: (parseFloat(data.pQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: (parseFloat(data.sQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: countQtyValue.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            body.push(row)
+            break
+          default:
         }
       }
       count += 1
@@ -150,128 +150,128 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
   let underline
   let pageSize
   switch (activeKey) {
-  case '0':
-    headerTitle = 'LAPORAN REKAP FIFO'
-    underline = 1050
-    widths.push('4%', '20%', '28%', '8%', '8%', '8%', '8%', '8%', '8%')
-    pageSize = { width: 842, height: 1150 }
-    tableHeader.push(
-      [
-        { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
-        { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
-        { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
-        { fontSize: 12, text: 'SALES', alignment: 'center' },
-        { fontSize: 12, text: 'ADJUST OUT + PURHCASE RETURN', alignment: 'center' },
-        { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
-      ]
-    )
-    tableHeader.push(
-      [
-        {},
-        {},
-        {},
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' }
-      ]
-    )
-    tableFooter.push(
-      [
-        { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-        {},
-        {},
-        { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
-      ]
-    )
-    break
-  case '1':
-    headerTitle = 'LAPORAN SISA SALDO STOCK'
-    underline = 747
-    widths.push('6%', '30%', '50%', '15%')
-    pageSize = 'A4'
-    tableHeader.push(
-      [
-        { fontSize: 12, text: 'NO', alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT CODE', alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT NAME', alignment: 'center' },
-        { fontSize: 12, text: 'BALANCE', alignment: 'center' }
-      ]
-    )
-    tableFooter.push(
-      [
-        { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-        {},
-        {},
-        { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
-      ]
-    )
-    break
-  case '2':
-    headerTitle = 'LAPORAN NILAI PERSEDIAAN'
-    underline = 1330
-    widths.push('4%', '16%', '24%', '8%', '8%', '8%', '8%', '8%', '8%', '8%')
-    pageSize = { width: 842, height: 1430 }
-    tableHeader.push(
-      [
-        { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
-        { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
-        { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
-        { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
-        { fontSize: 12, text: 'SALES', colSpan: 2, alignment: 'center' },
-        {},
-        { fontSize: 12, text: 'ADJUST OUT + PURCHASE RETURN', alignment: 'center' },
-        { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
-      ]
-    )
-    tableHeader.push(
-      [
-        {},
-        {},
-        {},
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'NET SALES', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' },
-        { fontSize: 12, text: 'QTY', alignment: 'center' }
-      ]
-    )
-    tableFooter.push(
-      [
-        { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-        {},
-        {},
-        { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-        { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
-      ]
-    )
-    break
-  case '3':
-    headerTitle = 'LAPORAN KARTU STOK FIFO'
-    underline = 742
-    widths.push('6%', '20%', '30%', '14%', '10%', '10%', '10%')
-    pageSize = 'A4'
-    break
-  default:
+    case '0':
+      headerTitle = 'LAPORAN REKAP FIFO'
+      underline = 1050
+      widths.push('4%', '20%', '28%', '8%', '8%', '8%', '8%', '8%', '8%')
+      pageSize = { width: 842, height: 1150 }
+      tableHeader.push(
+        [
+          { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
+          { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
+          { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
+          { fontSize: 12, text: 'SALES', alignment: 'center' },
+          { fontSize: 12, text: 'ADJUST OUT + PURHCASE RETURN', alignment: 'center' },
+          { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
+        ]
+      )
+      tableHeader.push(
+        [
+          {},
+          {},
+          {},
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' }
+        ]
+      )
+      tableFooter.push(
+        [
+          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          {},
+          {},
+          { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
+        ]
+      )
+      break
+    case '1':
+      headerTitle = 'LAPORAN SISA SALDO STOCK'
+      underline = 747
+      widths.push('6%', '30%', '50%', '15%')
+      pageSize = 'A4'
+      tableHeader.push(
+        [
+          { fontSize: 12, text: 'NO', alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT CODE', alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT NAME', alignment: 'center' },
+          { fontSize: 12, text: 'BALANCE', alignment: 'center' }
+        ]
+      )
+      tableFooter.push(
+        [
+          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          {},
+          {},
+          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+        ]
+      )
+      break
+    case '2':
+      headerTitle = 'LAPORAN NILAI PERSEDIAAN'
+      underline = 1330
+      widths.push('4%', '16%', '24%', '8%', '8%', '8%', '8%', '8%', '8%', '8%')
+      pageSize = { width: 842, height: 1430 }
+      tableHeader.push(
+        [
+          { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
+          { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
+          { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
+          { fontSize: 12, text: 'SALES', colSpan: 2, alignment: 'center' },
+          {},
+          { fontSize: 12, text: 'ADJUST OUT + PURCHASE RETURN', alignment: 'center' },
+          { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
+        ]
+      )
+      tableHeader.push(
+        [
+          {},
+          {},
+          {},
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'NET SALES', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' },
+          { fontSize: 12, text: 'QTY', alignment: 'center' }
+        ]
+      )
+      tableFooter.push(
+        [
+          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          {},
+          {},
+          { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
+        ]
+      )
+      break
+    case '3':
+      headerTitle = 'LAPORAN KARTU STOK FIFO'
+      underline = 742
+      widths.push('6%', '20%', '30%', '14%', '10%', '10%', '10%')
+      pageSize = 'A4'
+      break
+    default:
   }
 
   const header = {

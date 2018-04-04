@@ -33,25 +33,25 @@ export default {
         const { activeKey } = location.query
         if (location.pathname === '/report/inventory/transfer' && location.query.activeKey && location.query.period && location.query.year) {
           switch (location.query.activeKey) {
-          case '0':
-            dispatch({
-              type: 'queryInventoryTransferIn',
-              payload: {
-                period: location.query.period,
-                year: location.query.year
-              }
-            })
-            break
-          case '1':
-            dispatch({
-              type: 'queryInventoryTransferOut',
-              payload: {
-                period: location.query.period,
-                year: location.query.year
-              }
-            })
-            break
-          default:
+            case '0':
+              dispatch({
+                type: 'queryInventoryTransferIn',
+                payload: {
+                  period: location.query.period,
+                  year: location.query.year
+                }
+              })
+              break
+            case '1':
+              dispatch({
+                type: 'queryInventoryTransferOut',
+                payload: {
+                  period: location.query.period,
+                  year: location.query.year
+                }
+              })
+              break
+            default:
           }
           const period = `${location.query.year}-${location.query.period}`
           dispatch({

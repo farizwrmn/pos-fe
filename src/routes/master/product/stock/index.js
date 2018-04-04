@@ -129,22 +129,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       })
       const { query, pathname } = location
       switch (key) {
-      case 1:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-        break
-      default:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
+        case 1:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          break
+        default:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: key
+            }
+          }))
       }
 
       // dispatch({ type: 'productstock/resetProductStockList' })

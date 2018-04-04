@@ -89,11 +89,11 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     let listData
     for (let key in listTotalBirthdayPerDate) {
       switch (value.format('MM-DD')) {
-      case `${selectedMonth}-${listTotalBirthdayPerDate[key].birthDate}`:
-        listData = [
-          { style: styles.badgeStyleDate, content: listTotalBirthdayPerDate[key].counter }
-        ]; break
-      default:
+        case `${selectedMonth}-${listTotalBirthdayPerDate[key].birthDate}`:
+          listData = [
+            { style: styles.badgeStyleDate, content: listTotalBirthdayPerDate[key].counter }
+          ]; break
+        default:
       }
     }
     return listData || []

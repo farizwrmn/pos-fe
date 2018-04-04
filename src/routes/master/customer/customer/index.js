@@ -130,22 +130,22 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       })
       const { query, pathname } = location
       switch (key) {
-      case 1:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-        break
-      default:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
+        case 1:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          break
+        default:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: key
+            }
+          }))
       }
     },
     onShowHideSearch () {

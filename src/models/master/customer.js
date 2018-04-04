@@ -41,42 +41,42 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         switch (location.pathname) {
-        case '/master/customerunit':
-          dispatch({
-            type: 'query'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
-          break
-        case '/report/customer/history':
-          dispatch({
-            type: 'query'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
-          break
-        case '/master/customer':
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: activeKey || '0'
-            }
-          })
-          dispatch({
-            type: 'query',
-            payload: other
-          })
-          break
-        default:
+          case '/master/customerunit':
+            dispatch({
+              type: 'query'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                searchText: ''
+              }
+            })
+            break
+          case '/report/customer/history':
+            dispatch({
+              type: 'query'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                searchText: ''
+              }
+            })
+            break
+          case '/master/customer':
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: activeKey || '0'
+              }
+            })
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+            break
+          default:
         }
       })
     }

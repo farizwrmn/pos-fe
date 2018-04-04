@@ -11,39 +11,39 @@ function terbilang (num) {
   function toWords (arr, index, decimal) {
     let number = arr[index]
     switch (number) {
-    case '.':
-      if (decimal) {
-        return 'koma '
-      }
-      break
-    case '0':
-      if (decimal) {
-        return 'nol '
-      }
-      return ''
-    case '1':
-      if (!decimal && (index === 1 || index === 2 || arr[index + 1] === '1' || (index % 3) === 1 || (index % 3) === 2)) {
-        return 'se'
-      }
-      return 'satu '
-    case '2':
-      return 'dua '
-    case '3':
-      return 'tiga '
-    case '4':
-      return 'empat '
-    case '5':
-      return 'lima '
-    case '6':
-      return 'enam '
-    case '7':
-      return 'tujuh '
-    case '8':
-      return 'delapan '
-    case '9':
-      return 'sembilan '
-    default:
-      return ''
+      case '.':
+        if (decimal) {
+          return 'koma '
+        }
+        break
+      case '0':
+        if (decimal) {
+          return 'nol '
+        }
+        return ''
+      case '1':
+        if (!decimal && (index === 1 || index === 2 || arr[index + 1] === '1' || (index % 3) === 1 || (index % 3) === 2)) {
+          return 'se'
+        }
+        return 'satu '
+      case '2':
+        return 'dua '
+      case '3':
+        return 'tiga '
+      case '4':
+        return 'empat '
+      case '5':
+        return 'lima '
+      case '6':
+        return 'enam '
+      case '7':
+        return 'tujuh '
+      case '8':
+        return 'delapan '
+      case '9':
+        return 'sembilan '
+      default:
+        return ''
     }
   }
   // handle decimal

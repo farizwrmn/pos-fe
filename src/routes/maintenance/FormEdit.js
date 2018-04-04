@@ -116,9 +116,9 @@ const FormEdit = ({
     }
     let memberId = ''
     switch (e) {
-    case 'unit': memberId = data.memberCode
-      break
-    default:
+      case 'unit': memberId = data.memberCode
+        break
+      default:
     }
     onShowModal(e, memberId)
   }

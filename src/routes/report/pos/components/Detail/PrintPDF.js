@@ -52,43 +52,43 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     for (let key in diffData) {
       let headers = []
       switch (key) {
-      case 'P':
-        headers.push(
-          [
-            { text: 'NO', style: 'tableHeader' },
-            { text: 'PRODUCT CODE', style: 'tableHeader' },
-            { text: 'PRODUCT NAME', style: 'tableHeader' },
-            { text: 'QTY', style: 'tableHeader' },
-            { text: 'UNIT PRICE', style: 'tableHeader' },
-            { text: 'SUB TOTAL', style: 'tableHeader' },
-            { text: 'DISC-1', style: 'tableHeader' },
-            { text: 'DISC-2', style: 'tableHeader' },
-            { text: 'DISC-3', style: 'tableHeader' },
-            { text: 'DISCOUNT', style: 'tableHeader' },
-            { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
-            { text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      case 'S':
-        headers.push(
-          [
-            { text: 'NO', style: 'tableHeader' },
-            { text: 'SERVICE CODE', style: 'tableHeader' },
-            { text: 'SERVICE NAME', style: 'tableHeader' },
-            { text: 'QTY', style: 'tableHeader' },
-            { text: 'UNIT PRICE', style: 'tableHeader' },
-            { text: 'SUB TOTAL', style: 'tableHeader' },
-            { text: 'DISC-1', style: 'tableHeader' },
-            { text: 'DISC-2', style: 'tableHeader' },
-            { text: 'DISC-3', style: 'tableHeader' },
-            { text: 'DISCOUNT', style: 'tableHeader' },
-            { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
-            { text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      default:
+        case 'P':
+          headers.push(
+            [
+              { text: 'NO', style: 'tableHeader' },
+              { text: 'PRODUCT CODE', style: 'tableHeader' },
+              { text: 'PRODUCT NAME', style: 'tableHeader' },
+              { text: 'QTY', style: 'tableHeader' },
+              { text: 'UNIT PRICE', style: 'tableHeader' },
+              { text: 'SUB TOTAL', style: 'tableHeader' },
+              { text: 'DISC-1', style: 'tableHeader' },
+              { text: 'DISC-2', style: 'tableHeader' },
+              { text: 'DISC-3', style: 'tableHeader' },
+              { text: 'DISCOUNT', style: 'tableHeader' },
+              { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
+              { text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        case 'S':
+          headers.push(
+            [
+              { text: 'NO', style: 'tableHeader' },
+              { text: 'SERVICE CODE', style: 'tableHeader' },
+              { text: 'SERVICE NAME', style: 'tableHeader' },
+              { text: 'QTY', style: 'tableHeader' },
+              { text: 'UNIT PRICE', style: 'tableHeader' },
+              { text: 'SUB TOTAL', style: 'tableHeader' },
+              { text: 'DISC-1', style: 'tableHeader' },
+              { text: 'DISC-2', style: 'tableHeader' },
+              { text: 'DISC-3', style: 'tableHeader' },
+              { text: 'DISCOUNT', style: 'tableHeader' },
+              { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
+              { text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        default:
       }
       for (let i = 0; i < headers.length; i += 1) {
         body.push(headers[i])

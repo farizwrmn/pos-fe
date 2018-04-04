@@ -31,24 +31,24 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         switch (location.pathname) {
-        case '/master/employee':
-          dispatch({
-            type: 'querySequenceEmployee'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: '0'
-            }
-          })
-          break
-        case '/report/service/history':
-          dispatch({
-            type: 'query'
-          })
-          break
-        default:
+          case '/master/employee':
+            dispatch({
+              type: 'querySequenceEmployee'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                newItem: false,
+                activeKey: '0'
+              }
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'query'
+            })
+            break
+          default:
         }
       })
     }
