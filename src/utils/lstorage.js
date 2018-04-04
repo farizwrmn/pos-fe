@@ -2,7 +2,7 @@
  * Created by boo on 12/22/17.
  */
 import moment from 'moment'
-import { prefix } from './config.rest'
+import { prefix } from './config.main'
 import { encrypt, decrypt } from './crypt'
 
 const putStorageKey = (key, value, norandom) => {

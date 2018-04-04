@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { config } from 'utils'
+import { configMain } from 'utils'
 
-const { disableMultiSelect } = config
+const { disableMultiSelect } = configMain
 
 const model = {
   reducers: {
