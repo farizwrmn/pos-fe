@@ -295,9 +295,9 @@ export default {
     * queryPosDetail ({ payload }, { call, put }) {
       const data = yield call(queryDetail, payload)
       const PosData = yield call(queryaPos, payload)
-      const member = yield call(queryMemberCode, { memberCode: payload.data.memberCode })
+      const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const mechanic = yield call(queryMechanicCode, payload.data.technicianId)
+      const mechanic = payload.data.technicianId ? yield call(queryMechanicCode, payload.data.technicianId) : {}
       if (data) {
         yield put({
           type: 'querySuccessPaymentDetail',
@@ -316,9 +316,9 @@ export default {
               chassisNo: PosData.pos.chassisNo,
               machineNo: PosData.pos.machineNo
             },
-            memberPrint: member.data, // data member
-            companyPrint: company.data, // data company
-            mechanicPrint: mechanic.mechanic // data mechanic
+            memberPrint: (member.data || ''), // data member
+            companyPrint: (company.data || ''), // data company
+            mechanicPrint: (mechanic.mechanic || '') // data mechanic
           }
         })
         let dataPos = []
