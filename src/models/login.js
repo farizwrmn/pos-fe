@@ -4,6 +4,8 @@ import { configMain, configCompany, config, queryURL, lstorage, messageInfo } fr
 import { login, getUserRole, getUserStore, getUserCompany } from '../services/login'
 
 const { prefix } = configMain
+const { apiCompanyHost, apiCompanyPort } = configCompany.rest
+
 
 export default {
   namespace: 'login',
@@ -20,7 +22,7 @@ export default {
     * getCompany ({ payload }, { put, call }) {
       const userCompany = yield call(getUserCompany, payload)
       // use below if network error
-      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort }}
+      //const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort }}
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: {cid: payload.cid || configCompany.idCompany, data: Object.values(userCompany.data)} })
       } else {
