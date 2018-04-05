@@ -21,8 +21,8 @@ const List = ({ ...tableProps, dataSource }) => {
     },
     {
       title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'grandTotal',
+      key: 'grandTotal',
       render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {

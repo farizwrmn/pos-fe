@@ -34,8 +34,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
   let discountTotal = listTrans.reduce((cnt, o) => cnt + o.discount, 0)
-  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
-  let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
+  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
+  let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
   const styles = {
     header: {

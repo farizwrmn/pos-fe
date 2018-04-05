@@ -11,10 +11,11 @@ import moment from 'moment'
 const warning = Modal.warning
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-  let grandTotal = listTrans.reduce((cnt, o) => { return cnt + o.total }, 0)
-  let discountTotal = listTrans.reduce((cnt, o) => { return cnt + o.discount }, 0)
-  let dppTotal = listTrans.reduce((cnt, o) => { return cnt + o.dpp }, 0)
-  let nettoTotal = listTrans.reduce((cnt, o) => { return cnt + o.netto }, 0)
+  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
+  let discountTotal = listTrans.reduce((cnt, o) => cnt + o.discount, 0)
+  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
+  let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
+  let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -85,6 +86,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
       for (let m = 65; m < (header.length + 65); m += 1) {
         let o = 7
@@ -112,14 +114,16 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].dpp)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].PPN)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = listTrans[n].memo
-        sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`J${m}`).value = listTrans[n].cashier
+        sheet.getCell(`I${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`J${m}`).value = listTrans[n].memo
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
+        sheet.getCell(`K${m}`).value = listTrans[n].cashier
+        sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
       }
 
       for (let m = 65; m < (footer.length + 65); m += 1) {

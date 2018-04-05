@@ -175,7 +175,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1151, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -205,7 +205,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       margin: [20, 30, 20, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1080, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1151, y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
