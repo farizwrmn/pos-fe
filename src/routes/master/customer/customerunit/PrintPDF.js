@@ -38,7 +38,7 @@ const PrintPDF = ({ dataSource, dataCustomer, user, storeInfo }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 760, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
           },
           {
             text: `${dataCustomer.memberName}(${dataCustomer.memberCode})`,
@@ -97,7 +97,7 @@ const PrintPDF = ({ dataSource, dataCustomer, user, storeInfo }) => {
       margin: [40, 30, 40, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 762, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
