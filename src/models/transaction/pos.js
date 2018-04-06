@@ -719,6 +719,9 @@ export default {
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
+        if (temp[0].exception01) {
+          return false
+        }
         return true
       }
       if (listProductData.data.length > 0) {
@@ -798,6 +801,9 @@ export default {
         console.log('price', price)
         console.log('cost', cost)
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
+          return false
+        }
+        if (temp[0].exception01) {
           return false
         }
         return true

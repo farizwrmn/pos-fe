@@ -1,8 +1,9 @@
 /**
  * Created by Veirry on 04/10/2017.
  */
+import { lstorage } from 'utils'
 import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
-import { queryInventoryTransferIn, queryInventoryTransferOut } from '../../services/report/inventory'
+import { queryInventoryTransferIn, queryInventoryTransferOut, queryInventoryInTransit } from '../../services/report/inventory'
 
 export default {
   namespace: 'inventoryReport',
@@ -51,6 +52,30 @@ export default {
                 }
               })
               break
+            case '2':
+              dispatch({
+                type: 'queryInventoryInTransit',
+                payload: {
+                  status: 0,
+                  active: 1,
+                  storeId: lstorage.getCurrentUserStore(),
+                  period: location.query.period,
+                  year: location.query.year
+                }
+              })
+              break
+            case '3':
+              dispatch({
+                type: 'queryInventoryInTransit',
+                payload: {
+                  status: 0,
+                  active: 1,
+                  storeIdReceiver: lstorage.getCurrentUserStore(),
+                  period: location.query.period,
+                  year: location.query.year
+                }
+              })
+              break
             default:
           }
           const period = `${location.query.year}-${location.query.period}`
@@ -58,6 +83,36 @@ export default {
             type: 'updateState',
             payload: {
               period,
+              activeKey: activeKey || '0'
+            }
+          })
+        } else if (location.pathname === '/report/inventory/transfer' && location.query.activeKey && !(location.query.period && location.query.year)) {
+          switch (location.query.activeKey) {
+            case '2':
+              dispatch({
+                type: 'queryInventoryInTransit',
+                payload: {
+                  status: 0,
+                  active: 1,
+                  storeId: lstorage.getCurrentUserStore()
+                }
+              })
+              break
+            case '3':
+              dispatch({
+                type: 'queryInventoryInTransit',
+                payload: {
+                  status: 0,
+                  active: 1,
+                  storeIdReceiver: lstorage.getCurrentUserStore()
+                }
+              })
+              break
+            default:
+          }
+          dispatch({
+            type: 'updateState',
+            payload: {
               activeKey: activeKey || '0'
             }
           })
@@ -168,6 +223,20 @@ export default {
     },
     * queryInventoryTransferOut ({ payload }, { call, put }) {
       const data = yield call(queryInventoryTransferOut, payload)
+      yield put({
+        type: 'querySuccessInventory',
+        payload: {
+          listInventoryTransfer: data.data,
+          pagination: {
+            current: Number(data.page) || 1,
+            pageSize: Number(data.pageSize) || 10,
+            total: data.total
+          }
+        }
+      })
+    },
+    * queryInventoryInTransit ({ payload }, { call, put }) {
+      const data = yield call(queryInventoryInTransit, payload)
       yield put({
         type: 'querySuccessInventory',
         payload: {
