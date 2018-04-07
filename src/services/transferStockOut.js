@@ -4,8 +4,7 @@ const { transfer } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  // params.storeIdReceiver = lstorage.getCurrentUserStore()
-  params.storeIdReceiver = 3
+  params.storeIdReceiver = lstorage.getCurrentUserStore()
   params.status = 0
   return request({
     url: `${transfer}/out`,
