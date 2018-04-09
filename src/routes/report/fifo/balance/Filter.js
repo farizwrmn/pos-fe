@@ -16,14 +16,20 @@ const Option = Select.Option
 const Filter = ({
   onOk,
   onChangePeriod,
-  productCode,
-  productName,
+  // productCode,
+  // productName,
+  listProduct,
+  listCategory,
+  listBrand,
   dispatch,
   onListReset,
+  onShowCategories,
+  onShowBrands,
   form: {
     validateFields,
     getFieldsValue,
     resetFields,
+    setFieldsValue,
     getFieldDecorator
   },
   activeKey,
@@ -98,8 +104,8 @@ const Filter = ({
         })
         return
       }
-      let period = moment(data.Period).format('M')
-      let year = moment(data.Period).format('Y')
+      let period = moment(data.rangePicker).format('M')
+      let year = moment(data.rangePicker).format('Y')
       onOk(period, year, data)
     })
   }
@@ -107,13 +113,13 @@ const Filter = ({
   let optionSelectCode = []
   let optionSelectName = []
   const selectChildren = () => {
-    for (let i = 0; i < productCode.length; i += 1) {
-      optionSelectCode.push(<Option key={productCode[i].toString(36)}>{productCode[i].toString(36)}</Option>)
+    for (let i = 0; i < listProduct.length; i += 1) {
+      optionSelectCode.push(<Option key={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
-    for (let i = 0; i < productCode.length; i += 1) {
-      optionSelectName.push(<Option key={productName[i].toString(36)}>{productName[i].toString(36)}</Option>)
+    for (let i = 0; i < listProduct.length; i += 1) {
+      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)}>{listProduct[i].productName.toString(36)}</Option>)
     }
   }
 
@@ -121,67 +127,98 @@ const Filter = ({
     resetFields([e])
   }
 
+  let categories = []
+  if (listCategory.length) {
+    categories.push(listCategory.map(x => (<Option key={x.id}>{x.categoryName}</Option>)))
+  }
+
+  let brands = []
+  if (listBrand.length) {
+    brands.push(listBrand.map(x => (<Option key={x.id}>{x.brandName}</Option>)))
+  }
+
+  const onSelectCategory = (value) => {
+    let selected = listProduct.filter(x => x.categoryId === parseInt(value, 10)).map(x => x.productCode)
+    setFieldsValue({
+      productCode: selected
+    })
+    resetFields(['brand', 'productName'])
+  }
+
+  const onSelectBrand = (value) => {
+    let selected = listProduct.filter(x => x.brandId === parseInt(value, 10)).map(x => x.productCode)
+    setFieldsValue({
+      productCode: selected
+    })
+    resetFields(['category', 'productName'])
+  }
+
   return (
     <Row>
       <Col lg={14} md={24}>
         <FilterItem label="Period">
           {getFieldDecorator('rangePicker', {
-            initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '',
-            rules: [
-              {
-                required: true
-              }
-            ]
+            initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : ''
           })(
             <MonthPicker onChange={onChange} placeholder="Select Period" />
           )}
         </FilterItem>
         {activeKey === '3' &&
-          <div>
-            {/* <FilterItem label="Category">
-              {getFieldDecorator('category')(<Select
-                showSearch
-                placeholder="Select category"
-                style={{ width: '189px', margin: '5px 0' }}
-              >
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="tom">Tom</Option>
-              </Select>)}
-            </FilterItem> */}
-            <Row style={{ marginTop: 5 }}>
-              <Col lg={12} md={24} >
-                <FilterItem label="Product Code">
-                  {getFieldDecorator('productCode', {
-                  })(<Select
-                    mode="multiple"
-                    style={{ width: '189px' }}
-                    placeholder="Select Code"
-                    onFocus={selectChildren()}
-                    onChange={() => resetSelected('productName')}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {optionSelectCode}
-                  </Select>)}
-                </FilterItem>
-              </Col>
-              <Col lg={12} md={24} >
-                <FilterItem label="Product Name">
-                  {getFieldDecorator('productName', {
-                  })(<Select
-                    mode="multiple"
-                    style={{ width: '189px' }}
-                    placeholder="Select Name"
-                    onFocus={selectChildrenName()}
-                    onChange={() => resetSelected('productCode')}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {optionSelectName}
-                  </Select>)}
-                </FilterItem>
-              </Col>
-            </Row>
-          </div>
+          <Row>
+            <Col lg={12} md={24} >
+              <FilterItem label="Category">
+                {getFieldDecorator('category')(<Select
+                  showSearch
+                  onFocus={onShowCategories}
+                  onSelect={onSelectCategory}
+                  placeholder="Select category"
+                  style={{ width: '189px', margin: '5px 0' }}
+                >
+                  {categories}
+                </Select>)}
+              </FilterItem>
+              <FilterItem label="Product Code">
+                {getFieldDecorator('productCode')(<Select
+                  mode="multiple"
+                  allowClear
+                  style={{ width: '189px' }}
+                  placeholder="Select Code"
+                  onFocus={selectChildren()}
+                  onChange={() => resetSelected('productName')}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {optionSelectCode}
+                </Select>)}
+              </FilterItem>
+            </Col>
+            <Col lg={12} md={24} >
+              <FilterItem label="Brand">
+                {getFieldDecorator('brand')(<Select
+                  showSearch
+                  onFocus={onShowBrands}
+                  onSelect={onSelectBrand}
+                  placeholder="Select Brand"
+                  style={{ width: '189px', margin: '5px 0' }}
+                >
+                  {brands}
+                </Select>)}
+              </FilterItem>
+              <FilterItem label="Product Name">
+                {getFieldDecorator('productName', {
+                })(<Select
+                  mode="multiple"
+                  allowClear
+                  style={{ width: '189px' }}
+                  placeholder="Select Name"
+                  onFocus={selectChildrenName()}
+                  onChange={() => resetSelected('productCode')}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {optionSelectName}
+                </Select>)}
+              </FilterItem>
+            </Col>
+          </Row>
         }
       </Col>
       <Col lg={10} md={24} style={{ margin: '10px 0', float: 'right', textAlign: 'right' }}>
