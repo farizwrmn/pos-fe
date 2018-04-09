@@ -47,8 +47,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const tableHeader = [
     [
       { text: 'NO', style: 'tableHeader' },
-      { text: 'GROUP CODE', style: 'tableHeader' },
-      { text: 'GROUP NAME', style: 'tableHeader' }
+      { text: 'ID', style: 'tableHeader' },
+      { text: 'NAMA', style: 'tableHeader' }
     ]
   ]
 

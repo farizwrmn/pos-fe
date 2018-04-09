@@ -38,7 +38,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       color: '#498bf4'
     },
     tableInfo: {
-      margin: [190, 0, 0, 0]
+      margin: [135, 0, 0, 0]
     },
     backgroundAndTextColorVendor: {
       bold: true,
@@ -86,14 +86,14 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
           },
           {
             stack: [
-              { text: 'PURCHASE INVOICE', style: 'reportTitle' },
+              { text: 'FAKTUR PENJUALAN', style: 'reportTitle' },
               {
                 style: 'tableInfo',
                 table: {
-                  widths: [50, 5, 120],
+                  widths: [70, 5, 150],
                   body: [
-                    [{ text: 'DATE', border: [false] }, { text: '', border: [false] }, { text: moment(invoiceInfo.transDate).format('DD-MMM-YYYY'), alignment: 'center' }],
-                    [{ text: 'INVOICE', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.transNo || '').toString(), alignment: 'center' }]
+                    [{ text: 'TANGGAL', border: [false] }, { text: '', border: [false] }, { text: moment(invoiceInfo.transDate).format('DD-MMM-YYYY'), alignment: 'center' }],
+                    [{ text: 'NO FAKTUR', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.transNo || '').toString(), alignment: 'center' }]
                   ]
                 }
               }
@@ -107,7 +107,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
         table: {
           widths: [180, 40, 180],
           body: [
-            [{ text: 'VENDOR', style: 'backgroundAndTextColorVendor' }, { text: '' }, { text: 'SHIP TO', style: 'backgroundAndTextColorShipTo' }],
+            [{ text: 'PEMASOK ', style: 'backgroundAndTextColorVendor' }, { text: '' }, { text: 'PENJUAL', style: 'backgroundAndTextColorShipTo' }],
             [{ text: (invoiceInfo.supplierName || '').toString(), style: 'vendorInfo' }, { text: '' }, { text: (storeInfo.name || '').toString() }],
             [{ text: '', style: 'vendorInfo' }, { text: '' }, { text: (storeInfo.address01 || '').toString() }],
             [{ text: '', style: 'vendorInfo' }, { text: '' }, { text: (storeInfo.address02 || '').toString() }]
@@ -120,7 +120,6 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
   }
 
   const footer = (currentPage, pageCount) => {
-    console.log(currentPage, ' ', pageCount)
     if (currentPage === pageCount) {
       return {
         margin: [10, 0, 10, 0],
@@ -211,11 +210,11 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TAX', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PAJAK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -236,11 +235,11 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: subTotal.toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
-      { text: 'Other Comments or Special Instructions', colSpan: 3 },
+      { text: 'Catatan', colSpan: 3 },
       {},
       {},
       { text: '', border: [false] },
-      { text: 'Purchase Tax', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
+      { text: 'Pajak', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
       { text: totalTax.toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
@@ -254,7 +253,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: (subTotal - totalTax).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
-      { text: `2. Total payment due in ${invoiceInfo.tempo} days`, colSpan: 3, border: [true, false, true, true] },
+      { text: `2. Total pembayaran jatuh tempo dalam ${invoiceInfo.tempo ? invoiceInfo.tempo : 0} hari`, colSpan: 3, border: [true, false, true, true] },
       {},
       {},
       { text: '', border: [false] },

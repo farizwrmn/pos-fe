@@ -56,16 +56,16 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           headers.push(
             [
               { text: 'NO', style: 'tableHeader' },
-              { text: 'PRODUCT CODE', style: 'tableHeader' },
-              { text: 'PRODUCT NAME', style: 'tableHeader' },
+              { text: 'KODE PRODUK', style: 'tableHeader' },
+              { text: 'NAMA PRODUK', style: 'tableHeader' },
               { text: 'QTY', style: 'tableHeader' },
-              { text: 'UNIT PRICE', style: 'tableHeader' },
+              { text: 'HARGA SATUAN', style: 'tableHeader' },
               { text: 'SUB TOTAL', style: 'tableHeader' },
-              { text: 'DISC-1', style: 'tableHeader' },
-              { text: 'DISC-2', style: 'tableHeader' },
-              { text: 'DISC-3', style: 'tableHeader' },
-              { text: 'DISCOUNT', style: 'tableHeader' },
-              { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
+              { text: 'DISK-1', style: 'tableHeader' },
+              { text: 'DISK-2', style: 'tableHeader' },
+              { text: 'DISK-3', style: 'tableHeader' },
+              { text: 'DISKON', style: 'tableHeader' },
+              { text: 'TOTAL DISKON', style: 'tableHeader' },
               { text: 'TOTAL', style: 'tableHeader' }
             ]
           )
@@ -74,16 +74,16 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           headers.push(
             [
               { text: 'NO', style: 'tableHeader' },
-              { text: 'SERVICE CODE', style: 'tableHeader' },
-              { text: 'SERVICE NAME', style: 'tableHeader' },
+              { text: 'KODE SERVIS', style: 'tableHeader' },
+              { text: 'NAMA SERVIS', style: 'tableHeader' },
               { text: 'QTY', style: 'tableHeader' },
-              { text: 'UNIT PRICE', style: 'tableHeader' },
+              { text: 'HARGA SATUAN', style: 'tableHeader' },
               { text: 'SUB TOTAL', style: 'tableHeader' },
-              { text: 'DISC-1', style: 'tableHeader' },
-              { text: 'DISC-2', style: 'tableHeader' },
-              { text: 'DISC-3', style: 'tableHeader' },
-              { text: 'DISCOUNT', style: 'tableHeader' },
-              { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
+              { text: 'DISK-1', style: 'tableHeader' },
+              { text: 'DISK-2', style: 'tableHeader' },
+              { text: 'DISK-3', style: 'tableHeader' },
+              { text: 'DISKON', style: 'tableHeader' },
+              { text: 'TOTAL DISKON', style: 'tableHeader' },
               { text: 'TOTAL', style: 'tableHeader' }
             ]
           )
@@ -118,7 +118,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
+    totalRow.push({ text: 'Total', colSpan: 3, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
@@ -148,10 +148,10 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
-              [{ text: 'Invoice No', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'Police No/KM', fontSize: 11 }, ':', { text: `${(listData[i].policeNo || '').toString()}${(listData[i].policeNo && listData[i].lastMeter) ? '/' : ''}${(listData[i].lastMeter || '').toString()}`, fontSize: 11 }],
-              [{ text: 'Invoice Date', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'Merk/Model', fontSize: 11 }, ':', { text: `${(listData[i].merk || '').toString()}${(listData[i].merk && listData[i].model) ? '/' : ''}${(listData[i].model || '').toString()}`, fontSize: 11 }],
-              [{ text: 'Member Code', fontSize: 11 }, ':', { text: (listData[i].memberCode || '').toString(), fontSize: 11 }, {}, { text: 'Type/Year', fontSize: 11 }, ':', { text: `${(listData[i].type || '').toString()}${(listData[i].type && listData[i].year) ? '/' : ''}${(listData[i].year || '').toString()}`, fontSize: 11 }],
-              [{ text: 'Member Name', fontSize: 11 }, ':', { text: (listData[i].memberName || '').toString(), fontSize: 11 }, {}, { text: 'Mechanic', fontSize: 11 }, ':', { text: (listData[i].technicianName || '').toString(), fontSize: 11 }]
+              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'NO PLAT/KM', fontSize: 11 }, ':', { text: `${(listData[i].policeNo || '').toString()}${(listData[i].policeNo && listData[i].lastMeter) ? '/' : ''}${(listData[i].lastMeter || '').toString()}`, fontSize: 11 }],
+              [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'MEREK/MODEL', fontSize: 11 }, ':', { text: `${(listData[i].merk || '').toString()}${(listData[i].merk && listData[i].model) ? '/' : ''}${(listData[i].model || '').toString()}`, fontSize: 11 }],
+              [{ text: 'ID ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberCode || '').toString(), fontSize: 11 }, {}, { text: 'TIPE/TAHUN', fontSize: 11 }, ':', { text: `${(listData[i].type || '').toString()}${(listData[i].type && listData[i].year) ? '/' : ''}${(listData[i].year || '').toString()}`, fontSize: 11 }],
+              [{ text: 'NAMA ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberName || '').toString(), fontSize: 11 }, {}, { text: 'MEKANIK', fontSize: 11 }, ':', { text: (listData[i].technicianName || '').toString(), fontSize: 11 }]
             ]
           },
           layout: 'noBorders'
@@ -180,7 +180,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  to  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  hingga  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

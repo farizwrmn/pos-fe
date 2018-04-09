@@ -56,12 +56,12 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     const headers = [
       [
         { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'KODE PRODUK', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' }
+        { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
       ]
     ]
 
@@ -89,7 +89,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
+    totalRow.push({ text: 'Total', colSpan: 3, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
@@ -109,10 +109,10 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'Invoice No' }, ':', { text: listData[key][0].transNo }, {}, { text: 'Reference No' }, ':', { text: listData[key][0].referenceTrans }],
-            [{ text: 'Invoice Date' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }, {}, { text: 'Police No' }, ':', {}],
-            [{ text: 'From' }, ':', { text: listData[key][0].storeNameSender }, {}, { text: 'TOTAL COLLY' }, ':', {}],
-            [{ text: 'To' }, ':', { text: listData[key][0].storeName }, {}, {}, {}, {}]
+            [{ text: 'NO TRANSAKSI' }, ':', { text: listData[key][0].transNo }, {}, { text: 'REF' }, ':', { text: listData[key][0].referenceTrans }],
+            [{ text: 'TANGGAL' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }, {}, { text: 'NO PLAT' }, ':', {}],
+            [{ text: 'DARI' }, ':', { text: listData[key][0].storeNameSender }, {}, { text: 'TOTAL COLLY' }, ':', {}],
+            [{ text: 'KEPADA' }, ':', { text: listData[key][0].storeName }, {}, {}, {}, {}]
           ]
         },
         style: 'tableTitle',
@@ -138,7 +138,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
             canvas: [{ type: 'line', x1: 0, y1: 5, x2: 820 - (2 * 40), y2: 5, lineWidth: 0.5 }]
           },
           {
-            text: `\nPeriod: ${moment(period).format('MMMM-YYYY')}`,
+            text: `\nPERIODE: ${moment(period).format('MMMM-YYYY')}`,
             fontSize: 10,
             alignment: 'left'
           }

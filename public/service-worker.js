@@ -1,0 +1,49 @@
+const filesToCache = [
+  '.',
+  'index.html'
+]
+const CACHE_NAME = 'dmiPOS'
+
+// self.addEventListener('activate', (event) => {
+//   event.waitUntil(
+//     caches.keys().then((keyList) => {
+//       return Promise.all(keyList.map((key) => {
+//         if (CACHE_NAME.indexOf(key) === -1) {
+//           return caches.delete(key)
+//         }
+//       }))
+//     })
+//   )
+// })
+
+self.addEventListener('install', (event) => {
+  console.log('Attempting to install service worker and cache static assets')
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(filesToCache)
+      })
+  )
+})
+
+self.addEventListener('fetch', (event) => {
+  console.log('Fetch event for ', event.request.url)
+  event.respondWith(
+    caches.match(event.request)
+      .then((res) => {
+        console.log('Found ', event.request.url, ' in cache')
+        console.log('Network request for ', event.request.url)
+        return res || fetch(event.request)
+        // if (res) {
+        //   console.log('Found ', event.request.url, ' in cache')
+        //   return res
+        // }
+        // console.log('Network request for ', event.request.url)
+        // return fetch(event.request)
+        // TODO 4 - Add fetched files to the cache
+      }).catch((error) => {
+        console.log('ERROR', error)
+        // TODO 6 - Respond with custom offline page
+      })
+  )
+})

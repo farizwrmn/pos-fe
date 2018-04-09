@@ -15,11 +15,16 @@ const Login = ({
   dispatch,
   form: {
     getFieldDecorator,
-    validateFieldsAndScroll
+    validateFieldsAndScroll,
+    getFieldsValue
   }
 }) => {
-  const { loginLoading, listUserRole, visibleItem/* , ipAddress */ } = login
+  const { loginLoading, listUserRole, visibleItem, logo } = login
 
+  const handleCompany = () => {
+    let fields = getFieldsValue()
+    fields.company && dispatch({ type: 'login/getCompany', payload: { cid: fields.company.toUpperCase() } })
+  }
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) { return }
@@ -35,9 +40,19 @@ const Login = ({
     <div className={styles.container}>
       <div className={styles.form}>
         <div className={styles.logo}>
-          <img alt={'logo'} src={config.logo} />
+          <img alt={'logo'} src={logo} />
         </div>
         <form>
+          <FormItem className={styles.formItem} hasFeedback>
+            {getFieldDecorator('company', {
+            })(<Input autoFocus
+              style={{ textTransform: 'uppercase' }}
+              size="large"
+              onBlur={handleCompany}
+              onPressEnter={handleCompany}
+              placeholder="Company"
+            />)}
+          </FormItem>
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator(`user${authBy}`, {
               rules: [{ required: true }]

@@ -1,7 +1,9 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
 import { message } from 'antd'
-import config from './config'
+import configCompany from './config.company'
+import configMain from './config.main'
+import config from './config.rest'
 import request from './request'
 import { color } from './theme'
 import crypt from './crypt'
@@ -113,6 +115,8 @@ const messageInfo = (info, type = 'info', duration = 3) => {
 }
 
 module.exports = {
+  configMain,
+  configCompany,
   config,
   request,
   color,

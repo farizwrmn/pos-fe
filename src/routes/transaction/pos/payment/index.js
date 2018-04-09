@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import config from 'config'
 import { routerRedux } from 'dva/router'
+import { configMain } from 'utils'
 import {
   Form,
   // Table,
@@ -15,7 +15,7 @@ import {
 import moment from 'moment'
 import FormPayment from './Form'
 
-const { prefix } = config
+const { prefix } = configMain
 const FormItem = Form.Item
 
 const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {

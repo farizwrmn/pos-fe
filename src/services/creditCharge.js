@@ -1,7 +1,8 @@
-import { request, config } from '../utils'
+import { request, configMain, config } from 'utils'
 
-const { apiURL, apiPrefix, api, prefix } = config
-const { creditCharge } = api
+const { prefix } = configMain
+const { apiURL, apiPrefix } = config.rest
+const { creditCharge } = config.api
 const idToken = localStorage.getItem(`${prefix}iKen`)
 
 export async function listCreditCharge (params) {

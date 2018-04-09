@@ -1,7 +1,8 @@
 /**
  * Created by boo on 7/14/17.
  */
-import { apiHeader, prefix } from './config'
+import { prefix } from './config.main'
+import { apiHeader } from './config.rest'
 
 const crypto = require('crypto')
 

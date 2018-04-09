@@ -21,12 +21,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Group Code',
+      title: 'ID',
       dataIndex: 'groupCode',
       key: 'groupCode'
     },
     {
-      title: 'Group Name',
+      title: 'Name',
       dataIndex: 'groupName',
       key: 'groupName'
     },

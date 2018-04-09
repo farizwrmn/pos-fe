@@ -1,9 +1,16 @@
 import { routerRedux } from 'dva/router'
-import { queryURL, config, lstorage, messageInfo } from 'utils'
 import moment from 'moment'
-import { login, getUserRole, getUserStore } from '../services/login'
+import {
+  configMain,
+  configCompany,
+  // config,
+  queryURL,
+  lstorage,
+  messageInfo
+} from 'utils'
+import { login, getUserRole, getUserStore, getUserCompany } from '../services/login'
 
-const { prefix } = config
+const { prefix } = configMain
 
 export default {
   namespace: 'login',
@@ -13,10 +20,20 @@ export default {
     listUserStore: [],
     requiredRole: false,
     visibleItem: { verificationCode: false },
-    ipAddress: ''
+    logo: '/logo.png'
   },
 
   effects: {
+    * getCompany ({ payload }, { put, call }) {
+      const userCompany = yield call(getUserCompany, payload)
+      // use below if network error
+      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort }}
+      if (userCompany.success) {
+        yield put({ type: 'getCompanySuccess', payload: { cid: payload.cid || configCompany.idCompany, data: Object.values(userCompany.data) } })
+      } else {
+        yield put({ type: 'getCompanyFailure' })
+      }
+    },
     * login ({ payload }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)
@@ -113,6 +130,22 @@ export default {
     }
   },
   reducers: {
+    getCompanySuccess (state, action) {
+      let cdi = action.payload.data
+      cdi.push(action.payload.cid)
+      lstorage.putStorageKey('cdi', cdi)
+      return {
+        ...state,
+        logo: `logo${action.payload.cid}.png`
+      }
+    },
+    getCompanyFailure (state) {
+      lstorage.removeItemKey('cdi')
+      return {
+        ...state,
+        logo: 'logo.png'
+      }
+    },
     showLoginLoading (state) {
       return {
         ...state,

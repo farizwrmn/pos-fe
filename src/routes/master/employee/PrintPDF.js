@@ -45,10 +45,10 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     [
       { text: 'NO', style: 'tableHeader' },
       { text: 'ID', style: 'tableHeader' },
-      { text: 'NAME', style: 'tableHeader' },
-      { text: 'POSITION', style: 'tableHeader' },
-      { text: 'ADDRESS', style: 'tableHeader' },
-      { text: 'PHONE NO', style: 'tableHeader' },
+      { text: 'NAMA', style: 'tableHeader' },
+      { text: 'POSISI', style: 'tableHeader' },
+      { text: 'ALAMAT', style: 'tableHeader' },
+      { text: 'NO HP', style: 'tableHeader' },
       { text: 'EMAIL', style: 'tableHeader' }
     ]
   ]

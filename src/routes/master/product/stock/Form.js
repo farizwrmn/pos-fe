@@ -111,8 +111,8 @@ const formProductCategory = ({
       data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
       data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      data.dayLifetime = data.dayLifetime || 0
-      data.kmLifetime = data.kmLifetime || 0
+      data.usageTimePeriod = data.usageTimePeriod || 0
+      data.usageMileage = data.usageMileage || 0
       let valid = true
       if (modalType === 'add') {
         if (data.productCode !== data.dummyCode) {
@@ -273,7 +273,7 @@ const formProductCategory = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} />)}
+                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
                 </FormItem>
                 <FormItem label="Product Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('productName', {

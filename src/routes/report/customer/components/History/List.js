@@ -34,12 +34,12 @@ const List = ({ ...tableProps, dataSource }) => {
       render: text => text.toLocaleString()
     },
     {
-      title: 'Transaction No',
+      title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo'
     },
     {
-      title: 'Transaction Date',
+      title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
       render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>

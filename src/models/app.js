@@ -1,8 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
-import config from 'config'
 import moment from 'moment'
-import { lstorage, messageInfo } from 'utils'
+import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
@@ -10,15 +9,12 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
+import { getNotifications, getListNotifications, refreshNotifications } from '../services/dashboard'
 import {
-  queryTotalBirthdayInAMonth,
   queryTotalBirthdayPerDate,
   queryShowCustomerBirthdayPerDate,
   queryShowCustomerBirthdayPerMonth
 } from '../services/customerBirthday'
-import { queryProductsBelowMinimum } from '../services/master/productstock'
-
-const { prefix } = config
 
 export default {
   namespace: 'app',
@@ -38,21 +34,21 @@ export default {
       }
     ],
     menuPopoverVisible: false,
-    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOver: false },
+    visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOverCalendar: false, showPopOverNotification: false },
     visiblePw: false,
-    siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
-    darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
+    siderFold: localStorage.getItem(`${configMain.prefix}siderFold`) === 'true',
+    darkTheme: localStorage.getItem(`${configMain.prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
-    navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
+    navOpenKeys: JSON.parse(localStorage.getItem(`${configMain.prefix}navOpenKeys`)) || [],
     ipAddr: '',
     selectedDate: moment().format('MMMM, Do YYYY'),
     calendarMode: 'month',
     selectedMonth: moment().format('MM'),
-    totalBirthdayInAMonth: 0,
     listTotalBirthdayPerDate: [],
     listTotalBirthdayPerMonth: [],
     listCustomerBirthday: [],
     listNotification: [],
+    listNotificationDetail: [],
     ignore: true,
     title: '',
     options: {}
@@ -75,13 +71,8 @@ export default {
     * query ({ payload }, { call, put }) {
       const { success, user } = yield call(query, payload)
       if (success && user) {
-        yield put({
-          type: 'queryTotalBirthdayInAMonth',
-          payload: {
-            month: moment().format('MM')
-          }
-        })
-        yield put({ type: 'queryLastPeriod' })
+        const notifications = yield call(getNotifications, payload)
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
 
         const { data } = yield call(menusService.query)
         const { permissions } = user
@@ -132,7 +123,7 @@ export default {
         }
 
         if (storeInfo !== []) {
-          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
+          localStorage.setItem(`${configMain.prefix}store`, JSON.stringify(storeInfo))
         } else {
           console.log('unexpected error misc')
         }
@@ -158,7 +149,7 @@ export default {
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
-      } else if (config.openPages && config.openPages.indexOf(location.pathname) < 0) {
+      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }
@@ -168,7 +159,7 @@ export default {
       payload
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
-      lstorage.removeItemKey()
+      lstorage.removeItemKeys()
 
       if (data.success) {
         messageInfo(data.profile.sessionid)
@@ -237,13 +228,6 @@ export default {
       })
     },
 
-    * queryTotalBirthdayInAMonth ({ payload = {} }, { call, put }) {
-      const data = yield call(queryTotalBirthdayInAMonth, payload)
-      if (data.success) {
-        yield put({ type: 'updateState', payload: { totalBirthdayInAMonth: data.data.counter } })
-      }
-    },
-
     * queryTotalBirthdayPerDate ({ payload = {} }, { call, put }) {
       const data = yield call(queryTotalBirthdayPerDate, payload)
       if (data.success) {
@@ -265,35 +249,31 @@ export default {
       }
     },
 
-    * queryLastPeriod (payload, { call, put }) {
-      const data = yield call(queryLastActive)
+    * queryListNotifications ({ payload = {} }, { call, put }) {
+      const data = yield call(getListNotifications, payload)
       if (data.success) {
-        const start = data.data[0].startPeriod
-        yield put({
-          type: 'queryNotifications',
-          payload: {
-            start,
-            end: moment().format('YYYY-MM-DD')
+        let listNotificationDetail = data.data
+        for (let key in listNotificationDetail) {
+          switch (listNotificationDetail[key].notificationCode) {
+            case 'SML':
+              Object.assign(listNotificationDetail[key], { route: '/report/product/stock/quantity-alerts' })
+              break
+            case 'SPC':
+              Object.assign(listNotificationDetail[key], { route: '/dashboard' })
+              break
+            default:
           }
-        })
+        }
+        yield put({ type: 'updateState', payload: { listNotificationDetail } })
       }
     },
 
-    * queryNotifications ({ payload = {} }, { call, put }) {
-      let allNotifications = []
-      const dataStocks = yield call(queryProductsBelowMinimum, payload)
-      if (dataStocks.success) {
-        const counter = Object.keys(dataStocks.data).length
-        if (counter > 0) {
-          allNotifications.push({ title: 'Quantity Alerts', route: '/report/product/stock/quantity-alerts', counter })
-        }
-      }
-
-      if (allNotifications.length > 0) {
-        yield put({ type: 'updateState', payload: { listNotification: allNotifications } })
+    * queryRefreshNotifications ({ payload = {} }, { call, put }) {
+      const data = yield call(refreshNotifications, payload)
+      if (data.success) {
+        yield put({ type: 'queryListNotifications' })
       }
     }
-
   },
   reducers: {
     updateState (state, { payload }) {
@@ -312,7 +292,7 @@ export default {
     },
 
     sendNotification (state) {
-      localStorage.setItem(`${prefix}subscribe`, state.notification)
+      localStorage.setItem(`${configMain.prefix}subscribe`, state.notification)
       return { ...state, notification: { subscribe: true, sendNotification: true } }
     },
 
@@ -324,7 +304,7 @@ export default {
     },
 
     foldSider (state) {
-      localStorage.setItem(`${prefix}siderFold`, true)
+      localStorage.setItem(`${configMain.prefix}siderFold`, true)
       return {
         ...state,
         siderFold: true
@@ -338,7 +318,7 @@ export default {
       }
     },
     switchSider (state) {
-      localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
+      localStorage.setItem(`${configMain.prefix}siderFold`, !state.siderFold)
       return {
         ...state,
         siderFold: !state.siderFold
@@ -366,7 +346,7 @@ export default {
       return { ...state, visibleItem: { changeTotp: false } }
     },
     switchTheme (state) {
-      localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)
+      localStorage.setItem(`${configMain.prefix}darkTheme`, !state.darkTheme)
       return {
         ...state,
         darkTheme: !state.darkTheme

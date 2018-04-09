@@ -44,13 +44,13 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const tableHeader = [
     [
       { text: 'NO', style: 'tableHeader' },
-      { text: 'TYPE CODE', style: 'tableHeader' },
-      { text: 'TYPE NAME', style: 'tableHeader' },
-      { text: 'DISC-1', style: 'tableHeader' },
-      { text: 'DISC-2', style: 'tableHeader' },
-      { text: 'DISC-3', style: 'tableHeader' },
-      { text: 'DISC(NOMINAL)', style: 'tableHeader' },
-      { text: 'CATEGORY', style: 'tableHeader' }
+      { text: 'ID', style: 'tableHeader' },
+      { text: 'NAMA', style: 'tableHeader' },
+      { text: 'DISK-1', style: 'tableHeader' },
+      { text: 'DISK-2', style: 'tableHeader' },
+      { text: 'DISK-3', style: 'tableHeader' },
+      { text: 'DISK(NOMINAL)', style: 'tableHeader' },
+      { text: 'KATEGORI', style: 'tableHeader' }
     ]
   ]
 

@@ -1,6 +1,9 @@
 import { request, config, crypt, lstorage } from 'utils'
+import { rest as restC } from '../utils/config.company'
+// import { rest } from '../utils/config.rest'
 
 const { apiUserLogin, apiUserRoles, apiUserStore } = config.rest
+const { apiUserCompany } = restC
 
 const lsUserId = lstorage.getStorageKey('udi')[1]
 
@@ -31,5 +34,15 @@ export async function getUserStore (params) {
     url,
     method: 'get',
     headers: apiHeaderToken
+  })
+}
+
+export async function getUserCompany (params) {
+  const url = apiUserCompany
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    usage: 'company'
   })
 }

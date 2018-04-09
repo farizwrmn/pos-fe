@@ -103,7 +103,7 @@ const formProductCategory = ({
           onOk () {
             onSubmit(data.categoryCode, data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Product Category Code can't be null")
@@ -144,7 +144,7 @@ const formProductCategory = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={10} />)}
+                })(<Input disabled={disabled} maxLength={10} autoFocus />)}
               </FormItem>
               <FormItem label="Category Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('categoryName', {

@@ -70,7 +70,7 @@ const Filter = ({
 
   const clickReset = () => {
     setFieldsValue({
-      serviceTypeId: {
+      serviceType: {
         option: []
       },
       policeNo: {

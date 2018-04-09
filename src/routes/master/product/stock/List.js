@@ -30,12 +30,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       }
     },
     {
-      title: 'Product Code',
+      title: 'ID',
       dataIndex: 'productCode',
       key: 'productCode'
     },
     {
-      title: 'Product Name',
+      title: 'Name',
       dataIndex: 'productName',
       key: 'productName'
     },
@@ -122,6 +122,25 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Brand ID',
       dataIndex: 'brandId',
       key: 'brandId'
+    },
+    {
+      title: 'Usage Period',
+      children: [
+        {
+          title: 'Day(s)',
+          dataIndex: 'usageTimePeriod',
+          key: 'usageTimePeriod',
+          className: styles.alignRight,
+          render: text => text || 0
+        },
+        {
+          title: 'KM',
+          dataIndex: 'usageMileage',
+          key: 'usageMileage',
+          className: styles.alignRight,
+          render: text => (text || 0).toLocaleString()
+        }
+      ]
     },
     {
       title: 'Created',

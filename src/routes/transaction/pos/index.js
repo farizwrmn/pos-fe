@@ -1,16 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'config'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
-// import ModalCustomer from '../../master/customer/customer/Modal'
+import { configMain } from 'utils'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
 
-const { prefix } = config
+const { prefix } = configMain
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item

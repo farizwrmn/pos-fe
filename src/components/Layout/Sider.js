@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Cascader, Tooltip } from 'antd'
-import { config, lstorage } from 'utils'
+import { lstorage } from 'utils'
 import styles from './Layout.less'
 import Menus from './Menu'
 import DateTime from './DateTime'
@@ -50,7 +50,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     let i
     let logo4 = []
     for (i = 0; i < 5; i += 1) {
-      logo4.push(<span key={i}><img alt={'logo'} src={config.logo} style={{ float: 'center' }} /></span>)
+      logo4.push(<span key={i}><img alt={'logo'} src={`logo${lstorage.getIdBE()}.png`} style={{ float: 'center' }} /></span>)
     }
     return (logo4)
   }
@@ -62,7 +62,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
           {siderFold
             ? <div>{loopLogo()}</div> :
             <div>
-              <span><img alt={'logo'} src={config.logo} style={{ float: 'center' }} /></span>
+              <span><img alt={'logo'} src={`logo${lstorage.getIdBE()}.png`} style={{ float: 'center' }} /></span>
               <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff} /></span>
               <span>{companyName}</span>
               <span>

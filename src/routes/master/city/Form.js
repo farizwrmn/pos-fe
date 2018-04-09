@@ -103,7 +103,7 @@ const formCity = ({
           onOk () {
             onSubmit(data)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("City Code can't be null")
@@ -144,7 +144,7 @@ const formCity = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={10} />)}
+                })(<Input disabled={disabled} maxLength={10} autoFocus />)}
               </FormItem>
               <FormItem label="City Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityName', {

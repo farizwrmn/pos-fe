@@ -1,7 +1,6 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import config from 'config'
-import { lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
 import * as cashierTransService from '../services/cashier'
@@ -16,7 +15,7 @@ const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-const { prefix } = config
+const { prefix } = configMain
 const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
 
 const { create, createDetail } = cashierService

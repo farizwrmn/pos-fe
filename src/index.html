@@ -7,13 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="shortcut icon" href="favicon.ico">
+  <!-- Tell the browser it's a PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- Tell iOS it's a PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <!-- Add to home screen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="React-PWA">
+  <meta name="theme-color" content="#317EFB" />
   <link rel="apple-touch-icon" href="favicon-144x144.png">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="/index.css" type="text/css"/>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/index.css" type="text/css" />
   <!--[if lte IE 10]>
       <script
         src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,media-match/2.0.2/media.match.min.js"></script>
@@ -25,18 +30,39 @@
   <!-- Prompt a message in the browser if users disabled JS -->
   <noscript>Your browser does not support JavaScript!</noscript>
   <script type="text/javascript">
-    (function() {
+    (function () {
       var __oldConsoleError = window.console.error.bind(console)
-      window.console.error = function(message, b) {
+      window.console.error = function (message, b) {
         if (message === "Warning: Accessing PropTypes via the main React package is deprecated. Use the prop-types package from npm instead." ||
           "Warning: A Component: React.createClass is deprecated and will be removed in version 16. Use plain JavaScript classes instead. If you're not yet ready to migrate, create-react-class is available on npm as a drop-in replacement.") {
           return false
         }
         __oldConsoleError(message)
       }
+      setTimeout(
+        console.log.bind(console, '%cHello, are you a software engineer?          ', 'color: #FF6600; font-size: 32px; font-weight: bold; background: url(http://' + window.location.host + '/logoDKT.png); background-size: 20px 32px; background-position: right center; background-repeat: no-repeat')
+        , 0)
+      setTimeout(
+        console.log.bind(console, '%clets join us to build this app even more cool. please send your resume to hrd@darkotech.id', 'color: #0099FF; font-size:16px;')
+        , 0)
     })()
   </script>
-  <!-- <script src="/index.js"></script> -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
+          console.log('Worker registration successful', registration.scope);
+        }, function (err) {
+          console.log('Worker registration failed', err);
+        }).catch(function (err) {
+          console.log(err);
+        });
+      });
+    } else {
+      console.log('Service Worker is not supported by browser.');
+    }
+  </script>
+  <!--script src="/index.js"></script-->
 </body>
 
 </html>

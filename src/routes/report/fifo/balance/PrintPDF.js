@@ -53,12 +53,12 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
       body.push(
         [
           { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'TRANS', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'TYPE', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'IN', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'OUT', style: 'tableHeader', alignment: 'center' },
-          { fontSize: 12, text: 'COUNT', style: 'tableHeader', alignment: 'center' }
+          { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'TIPE', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'MASUK', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'KELUAR', style: 'tableHeader', alignment: 'center' },
+          { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
         ]
       )
     }
@@ -121,7 +121,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
     if (activeKey === '3') {
       body.push(
         [
-          { text: 'Grand Total', colSpan: 4, style: 'textCenter' },
+          { text: 'Total', colSpan: 4, style: 'textCenter' },
           {},
           {},
           {},
@@ -153,19 +153,19 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
     case '0':
       headerTitle = 'LAPORAN REKAP FIFO'
       underline = 1050
-      widths.push('4%', '20%', '28%', '8%', '8%', '8%', '8%', '8%', '8%')
+      widths.push('4%', '16%', '24%', '8%', '8%', '12%', '8%', '12%', '8%')
       pageSize = { width: 842, height: 1150 }
       tableHeader.push(
         [
           { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
-          { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
-          { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
-          { fontSize: 12, text: 'SALES', alignment: 'center' },
-          { fontSize: 12, text: 'ADJUST OUT + PURHCASE RETURN', alignment: 'center' },
-          { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
+          { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'SALDO AWAL', alignment: 'center' },
+          { fontSize: 12, text: 'PEMBELIAN', alignment: 'center' },
+          { fontSize: 12, text: 'ADJ IN + RETUR PENJUALAN', alignment: 'center' },
+          { fontSize: 12, text: 'PENJUALAN', alignment: 'center' },
+          { fontSize: 12, text: 'ADJ OUT + RETUR PEMBELIAN', alignment: 'center' },
+          { fontSize: 12, text: 'SALDO AKHIR', alignment: 'center' }
         ]
       )
       tableHeader.push(
@@ -183,7 +183,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
       )
       tableFooter.push(
         [
-          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
           { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
@@ -203,14 +203,14 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
       tableHeader.push(
         [
           { fontSize: 12, text: 'NO', alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT CODE', alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT NAME', alignment: 'center' },
-          { fontSize: 12, text: 'BALANCE', alignment: 'center' }
+          { fontSize: 12, text: 'KODE PRODUK', alignment: 'center' },
+          { fontSize: 12, text: 'NAMA PRODUK', alignment: 'center' },
+          { fontSize: 12, text: 'SALDO', alignment: 'center' }
         ]
       )
       tableFooter.push(
         [
-          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
           { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
@@ -220,20 +220,20 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
     case '2':
       headerTitle = 'LAPORAN NILAI PERSEDIAAN'
       underline = 1330
-      widths.push('4%', '16%', '24%', '8%', '8%', '8%', '8%', '8%', '8%', '8%')
+      widths.push('4%', '13%', '21%', '8%', '8%', '11%', '8%', '8%', '11%', '8%')
       pageSize = { width: 842, height: 1430 }
       tableHeader.push(
         [
           { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT CODE', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'PRODUCT NAME', rowSpan: 2, alignment: 'center' },
-          { fontSize: 12, text: 'OPENING BALANCE', alignment: 'center' },
-          { fontSize: 12, text: 'PURCHASE', alignment: 'center' },
-          { fontSize: 12, text: 'ADJUST IN + SALES RETURN', alignment: 'center' },
-          { fontSize: 12, text: 'SALES', colSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, alignment: 'center' },
+          { fontSize: 12, text: 'SALDO AWAL', alignment: 'center' },
+          { fontSize: 12, text: 'PEMBELIAN', alignment: 'center' },
+          { fontSize: 12, text: 'ADJ IN + RETUR PENJUALAN', alignment: 'center' },
+          { fontSize: 12, text: 'PENJUALAN', colSpan: 2, alignment: 'center' },
           {},
-          { fontSize: 12, text: 'ADJUST OUT + PURCHASE RETURN', alignment: 'center' },
-          { fontSize: 12, text: 'CLOSING BALANCE', alignment: 'center' }
+          { fontSize: 12, text: 'ADJ OUT + RETUR PEMBELIAN', alignment: 'center' },
+          { fontSize: 12, text: 'SALDO AKHIR', alignment: 'center' }
         ]
       )
       tableHeader.push(
@@ -245,14 +245,14 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
           { fontSize: 12, text: 'QTY', alignment: 'center' },
           { fontSize: 12, text: 'QTY', alignment: 'center' },
-          { fontSize: 12, text: 'NET SALES', alignment: 'center' },
+          { fontSize: 12, text: 'PENJUALAN', alignment: 'center' },
           { fontSize: 12, text: 'QTY', alignment: 'center' },
           { fontSize: 12, text: 'QTY', alignment: 'center' }
         ]
       )
       tableFooter.push(
         [
-          { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+          { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
           { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
@@ -361,7 +361,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
       let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
       for (let i = 0; i < arr.length; i += 1) {
         tableBody.push(createTableBody(arr[i]))
-        tableTitle.push({ text: `Product : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
+        tableTitle.push({ text: `Produk : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
       }
     } else {
       tableBody = createTableBody(listRekap)

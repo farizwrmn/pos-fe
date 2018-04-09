@@ -1,13 +1,12 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import config from 'config'
-import { lstorage } from 'utils'
+import { lstorage, configMain } from 'utils'
 import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
 
-const { prefix } = config
+const { prefix } = configMain
 
 export default modelExtend(pageModel, {
   namespace: 'purchase',

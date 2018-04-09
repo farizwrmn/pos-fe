@@ -4,10 +4,6 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-
   let groupBy = (xs, key) => {
     return xs.reduce((rv, x) => {
       (rv[x[key]] = rv[x[key]] || []).push(x)
@@ -23,35 +19,24 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     let totalSellingPrice = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sellingPrice) || 0), 0)
     let totalDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discount) || 0), 0)
     let totalAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.amount) || 0), 0)
-    const headers = {
-      top: {
-        col_1: { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        col_2: { fontSize: 12, text: 'TRANSACTION NO', style: 'tableHeader', alignment: 'center' },
-        col_3: { fontSize: 12, text: 'TRANSACTION DATE', style: 'tableHeader', alignment: 'center' },
-        col_4: { fontSize: 12, text: 'SERVICE NAME', style: 'tableHeader', alignment: 'center' },
-        col_5: { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-        col_6: { fontSize: 12, text: 'SELLING PRICE', style: 'tableHeader', alignment: 'center' },
-        col_7: { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader', alignment: 'center' },
-        col_8: { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
-      }
-    }
+
+    const headers = [
+      [
+        { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NAMA SERVIS', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'HARGA JUAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
+      ]
+    ]
 
     const rows = tabledata
     let body = []
-    for (let key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        let header = headers[key]
-        let row = []
-        row.push(header.col_1)
-        row.push(header.col_2)
-        row.push(header.col_3)
-        row.push(header.col_4)
-        row.push(header.col_5)
-        row.push(header.col_6)
-        row.push(header.col_7)
-        row.push(header.col_8)
-        body.push(row)
-      }
+    for (let i = 0; i < headers.length; i += 1) {
+      body.push(headers[i])
     }
     let countQtyValue = 0
     let countAmountValue = 0
@@ -76,7 +61,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 })
+    totalRow.push({ text: 'Total', colSpan: 4, alignment: 'center', fontSize: 12 })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({})
@@ -93,7 +78,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
   for (let i = 0; i < arr.length; i += 1) {
     try {
       tableBody.push(createTableBody(arr[i]))
-      tableTitle.push({ text: `Employee Name : ${arr[i][0].employeeName}`, style: 'tableTitle' })
+      tableTitle.push({ text: `MEKANIK : ${arr[i][0].employeeName}`, style: 'tableTitle' })
     } catch (e) {
       console.log(e)
     }
@@ -118,7 +103,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  hingga  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

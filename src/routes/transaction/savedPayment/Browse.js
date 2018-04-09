@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'config'
 import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { configMain } from 'utils'
 import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = config
+const { prefix } = configMain
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,

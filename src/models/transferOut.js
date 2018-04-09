@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import config from 'config'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { lstorage, color } from 'utils'
+import { configMain, lstorage, color } from 'utils'
 import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
 import { query as queryInvoice, queryDetail as queryDetailInvoice } from '../services/purchase'
@@ -15,7 +14,7 @@ import { pageModel } from './common'
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
-const { prefix } = config
+const { prefix } = configMain
 
 const error = (err) => {
   message.error(err.message)

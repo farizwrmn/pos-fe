@@ -1,11 +1,11 @@
 const APIV1 = '/api/v1'
-const APIHOST = 'localhost' // '192.168.80.64'
-const APIPORT = 5558
+const APIHOST = 'demopos.darkotech.id' // '192.168.80.64'
+const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.03.001-rev2',
+  version: '2018.03.002',
   prefix: 'dmiPos',
   footerText: 'Darkotech Mandiri Indonesia',
   footerSubText: 'Point of Sales © 2017-2018',
@@ -48,6 +48,7 @@ module.exports = {
     ipaddr: `${APIURL}${APIV1}/utils/ipaddr`,
     posts: `${APIV1}/posts`, // mock js ===========
     dashboard: `${APIV1}/dashboard`, // mock js ===========
+    dashboards: `${APIURL}${APIV1}/dashboards`,
     // menus: `${APIV1}/menus`,
     menus: `${APIURL}${APIV1}/menus`,
     position: `${APIURL}${APIV1}/position`, // mock js ===========

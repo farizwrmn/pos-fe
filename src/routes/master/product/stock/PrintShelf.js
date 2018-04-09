@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReportCard } from 'components'
 
-const PrintShelf = ({ stickers, user, storeInfo }) => {
+const PrintShelf = ({ stickers, user }) => {
   const createTableBody = (tableBody) => {
     let body = []
     for (let key in tableBody) {
@@ -67,10 +67,10 @@ const PrintShelf = ({ stickers, user, storeInfo }) => {
     }
   }
 
-  const header = [
-    { text: `${storeInfo.name}`, style: 'headerStoreName' },
-    { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' }
-  ]
+  // const header = [
+  //   { text: `${storeInfo.name}`, style: 'headerStoreName' },
+  //   { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' }
+  // ]
 
   const footer = (currentPage, pageCount) => {
     return {
@@ -137,12 +137,12 @@ const PrintShelf = ({ stickers, user, storeInfo }) => {
   const pdfProps = {
     name: 'Shelf',
     width: [260, 260, 260],
-    pageSize: { width: 870, height: 560 },
+    pageSize: { width: 870, height: 590 },
     pageOrientation: 'landscape',
-    pageMargins: [25, 90, 25, 70],
+    pageMargins: [25, 10, 25, 70],
     tableStyle: styles,
     tableBody: getList,
-    header,
+    // header,
     footer
   }
 

@@ -4,6 +4,7 @@ import moment from 'moment'
 import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
+  listData = listData.filter(x => x.items.length)
   const styles = {
     title: {
       name: 'Calibri',
@@ -52,22 +53,22 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   }
 
   const title = [
-    { value: 'LAPORAN HISTORY PURCHASE DETAIL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
+    { value: 'LAPORAN RIWAYAT RINCIAN PEMBELIAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  hingga  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
 
   const tableHeader = [
     { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'PRODUCT CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'PRODUCT NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'UNIT PRICE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'HARGA SATUAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'DISC(%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'DISC(N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'TOTAL DISCOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'DISK(%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'DISK(N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+    { value: 'TOTAL DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
     { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
   ]
 
@@ -78,51 +79,51 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     let master = listData[i]
     let tableTitle = [
       [
-        { value: 'Invoice No', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: 'Supplier Code', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'ID PEMASOK', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: (master.supplierCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
       [
-        { value: 'Invoice Date', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: moment(master.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: 'Supplier Name', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'NAMA PEMASOK', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: (master.supplierName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
       [
-        { value: 'Tax Type', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'TIPE PAJAK', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: `${(master.taxType || '').toString()}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: 'Address', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'ALAMAT', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
       [
-        { value: 'Disc Invoice(%)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'DISKON(%)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: `${(master.discInvoicePercent || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: 'Memo', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'MEMO', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: (master.memo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
       [
-        { value: 'Disc Invoice(N)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'DISKON(N)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: `${(master.discInvoiceNominal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
@@ -165,7 +166,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: `${totalSubTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })

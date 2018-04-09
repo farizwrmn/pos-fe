@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import pathToRegexp from 'path-to-regexp'
+// import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { Layout, Loader, Notification } from 'components'
-import { classnames, config } from 'utils'
+import { classnames, configMain } from 'utils'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
@@ -11,23 +11,24 @@ import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
 import '../themes/index.less'
 import './app.less'
-import Error from './error'
+// import Error from './error'
 
-const { prefix, openPages } = config
+const { prefix, openPages, logo } = configMain
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
 const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
-    visibleItem, visiblePw, navOpenKeys, menu, permissions, totp, totpChecked,
-    selectedDate, calendarMode, selectedMonth, totalBirthdayInAMonth, listTotalBirthdayPerDate,
-    listCustomerBirthday, listNotification, ignore, title } = app
+    visibleItem, visiblePw, navOpenKeys, menu,
+    // permissions,
+    totp, totpChecked,
+    selectedDate, calendarMode, selectedMonth, listTotalBirthdayPerDate,
+    listCustomerBirthday, listNotification, listNotificationDetail, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
-  const { logo } = config
-  const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
-  const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
+  // const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
+  // const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
   if (lastHref !== href) {
     NProgress.start()
@@ -52,10 +53,10 @@ const App = ({ children, dispatch, app, loading, location }) => {
     selectedDate,
     calendarMode,
     selectedMonth,
-    totalBirthdayInAMonth,
     listTotalBirthdayPerDate,
     listCustomerBirthday,
     listNotification,
+    listNotificationDetail,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
     },
@@ -144,7 +145,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
         payload: {
           visibleItem: {
             displayBirthdate: true,
-            showPopOver: false
+            showPopOverCalendar: false
           },
           selectedDate: moment(date).format('YYYY-MM-DD')
         }
@@ -173,7 +174,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
         payload: {
           visibleItem: {
             displayBirthdate: false,
-            showPopOver: true
+            showPopOverCalendar: true
           },
           selectedDate: '',
           listCustomerBirthday: [],
@@ -181,16 +182,17 @@ const App = ({ children, dispatch, app, loading, location }) => {
         }
       })
     },
-    showPopOver () {
+    showPopOverCalendar () {
       dispatch({
         type: 'app/updateState',
         payload: {
           visibleItem: {
-            showPopOver: !visibleItem.showPopOver
+            showPopOverCalendar: !visibleItem.showPopOverCalendar,
+            showPopOverNotification: false
           }
         }
       })
-      if (!visibleItem.showPopOver) {
+      if (!visibleItem.showPopOverCalendar) {
         dispatch({
           type: 'app/queryTotalBirthdayPerDate',
           payload: {
@@ -198,6 +200,23 @@ const App = ({ children, dispatch, app, loading, location }) => {
           }
         })
       }
+    },
+    showPopOverNotification () {
+      dispatch({
+        type: 'app/updateState',
+        payload: {
+          visibleItem: {
+            showPopOverNotification: !visibleItem.showPopOverNotification,
+            showPopOverCalendar: false
+          }
+        }
+      })
+      if (!visibleItem.showPopOverNotification) {
+        dispatch({ type: 'app/queryListNotifications' })
+      }
+    },
+    refreshNotifications () {
+      dispatch({ type: 'app/queryRefreshNotifications' })
     },
     changeCalendarMode (month, mode) {
       dispatch({
@@ -278,7 +297,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
   return (
     <div>
       <Helmet>
-        <title>{config.name}</title>
+        <title>{configMain.name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
       </Helmet>
@@ -292,7 +311,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
             <Bread {...breadProps} />
             <div className={styles.container}>
               <div className={styles.content}>
-                {hasPermission ? children : <Error />}
+                {children}
+                {/* {hasPermission ? children : <Error />} */}
               </div>
             </div>
             <Footer />

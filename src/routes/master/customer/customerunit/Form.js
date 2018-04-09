@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
 import List from './List'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
@@ -195,7 +195,7 @@ const formCustomerType = ({
                         message: 'A-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={10} />)}
+                  })(<Input disabled={disabled} maxLength={10} autoFocus />)}
                 </FormItem>
                 <FormItem label="Merk" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('merk', {
@@ -205,7 +205,7 @@ const formCustomerType = ({
                         required: true
                       }
                     ]
-                  })(<Input />)}
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Model" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('model', {
@@ -220,7 +220,7 @@ const formCustomerType = ({
                 <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('type', {
                     initialValue: item.type
-                  })(<Input />)}
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Tahun" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('year', {
@@ -231,17 +231,17 @@ const formCustomerType = ({
                         message: 'year is not valid'
                       }
                     ]
-                  })(<Input />)}
+                  })(<InputNumber />)}
                 </FormItem>
                 <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('chassisNo', {
                     initialValue: item.chassisNo
-                  })(<Input />)}
+                  })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('machineNo', {
                     initialValue: item.machineNo
-                  })(<Input />)}
+                  })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>

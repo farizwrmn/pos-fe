@@ -20,9 +20,9 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
     const headers = [
       [
         { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'POLICE NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NO PLAT', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'SUB TOTAL', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
       ]
     ]
@@ -49,7 +49,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 2, style: 'rowTextFooter' })
+    totalRow.push({ text: 'Total', colSpan: 2, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({ text: `${subTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
@@ -77,7 +77,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN ASSET CUSTOMER',
+            text: 'LAPORAN ASET PELANGGAN',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

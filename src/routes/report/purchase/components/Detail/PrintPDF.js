@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
-  const pdfMake = require('pdfmake/build/pdfmake.js')
-  const pdfFonts = require('pdfmake/build/vfs_fonts.js')
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
+  listData = listData.filter(x => x.items.length)
 
   const styles = {
     header: {
@@ -45,14 +43,14 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     let headers = [
       [
         { text: 'NO', style: 'tableHeader' },
-        { text: 'PRODUCT CODE', style: 'tableHeader' },
-        { text: 'PRODUCT NAME', style: 'tableHeader' },
+        { text: 'KODE PRODUK', style: 'tableHeader' },
+        { text: 'NAMA PRODUK', style: 'tableHeader' },
         { text: 'QTY', style: 'tableHeader' },
-        { text: 'UNIT PRICE', style: 'tableHeader' },
+        { text: 'HARGA SATUAN', style: 'tableHeader' },
         { text: 'SUB TOTAL', style: 'tableHeader' },
-        { text: 'DISC(%)', style: 'tableHeader' },
-        { text: 'DISC(N)', style: 'tableHeader' },
-        { text: 'TOTAL DISCOUNT', style: 'tableHeader' },
+        { text: 'DISK(%)', style: 'tableHeader' },
+        { text: 'DISK(N)', style: 'tableHeader' },
+        { text: 'TOTAL DISKON', style: 'tableHeader' },
         { text: 'TOTAL', style: 'tableHeader' }
       ]
     ]
@@ -83,7 +81,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     }
 
     let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
+    totalRow.push({ text: 'Total', colSpan: 3, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({})
     totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
@@ -111,11 +109,11 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
-              [{ text: 'Invoice No', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'Supplier Code', fontSize: 11 }, ':', { text: (listData[i].supplierCode || '').toString(), fontSize: 11 }],
-              [{ text: 'Invoice Date', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'Supplier Name', fontSize: 11 }, ':', { text: (listData[i].supplierName || '').toString(), fontSize: 11 }],
-              [{ text: 'Tax Type', fontSize: 11 }, ':', { text: (listData[i].taxType || '').toString(), fontSize: 11 }, {}, { text: 'Address', fontSize: 11 }, ':', { text: '', fontSize: 11 }],
-              [{ text: 'Disc Invoice(%)', fontSize: 11 }, ':', { text: `${(listData[i].discInvoicePercent || 0).toString()}%`, fontSize: 11 }, {}, { text: 'Memo', fontSize: 11 }, ':', { text: (listData[i].memo || '').toString(), fontSize: 11 }],
-              [{ text: 'Disc Invoice(N)', fontSize: 11 }, ':', { text: (listData[i].discInvoiceNominal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize: 11 }, {}, {}, {}, {}]
+              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'ID PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierCode || '').toString(), fontSize: 11 }],
+              [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'NAMA PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierName || '').toString(), fontSize: 11 }],
+              [{ text: 'TIPE PAJAK', fontSize: 11 }, ':', { text: (listData[i].taxType || '').toString(), fontSize: 11 }, {}, { text: 'ALAMAT', fontSize: 11 }, ':', { text: '', fontSize: 11 }],
+              [{ text: 'DISKON(%)', fontSize: 11 }, ':', { text: `${(listData[i].discInvoicePercent || 0).toString()}%`, fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (listData[i].memo || '').toString(), fontSize: 11 }],
+              [{ text: 'DISKON(N)', fontSize: 11 }, ':', { text: (listData[i].discInvoiceNominal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize: 11 }, {}, {}, {}, {}]
             ]
           },
           layout: 'noBorders'
@@ -135,7 +133,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN HISTORY PURCHASE DETAIL',
+            text: 'LAPORAN RIWAYAT RINCIAN PEMBELIAN',
             style: 'header'
           },
           {
@@ -144,7 +142,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  to  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  hingga  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

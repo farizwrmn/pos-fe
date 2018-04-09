@@ -1,8 +1,7 @@
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
-import config from 'config'
-import { lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/master/customer'
@@ -11,7 +10,7 @@ import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProdu
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit } from '../../services/units'
 
-const { prefix } = config
+const { prefix } = configMain
 
 const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 

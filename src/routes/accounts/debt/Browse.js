@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'config'
+import { configMain } from 'utils'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import moment from 'moment'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = config
+const { prefix } = configMain
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
