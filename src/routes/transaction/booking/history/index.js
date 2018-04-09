@@ -8,11 +8,49 @@ const History = ({ bookinghistory }) => {
   const columns = [{
     title: 'Old Status',
     dataIndex: 'oldStatus',
-    key: 'oldStatus'
+    key: 'oldStatus',
+    render: (text) => {
+      switch (text) {
+      case 'OP':
+        return 'Open'
+      case 'CF':
+        return 'Confirmed'
+      case 'CI':
+        return 'Check-In'
+      case 'CO':
+        return 'Check-Out'
+      case 'RS':
+        return 'Reschedule'
+      case 'CC':
+        return 'Cancel'
+      case 'RJ':
+        return 'Reject'
+      default:
+      }
+    }
   }, {
     title: 'New Status',
     dataIndex: 'newStatus',
-    key: 'newStatus'
+    key: 'newStatus',
+    render: (text) => {
+      switch (text) {
+      case 'OP':
+        return 'Open'
+      case 'CF':
+        return 'Confirmed'
+      case 'CI':
+        return 'Check-In'
+      case 'CO':
+        return 'Check-Out'
+      case 'RS':
+        return 'Reschedule'
+      case 'CC':
+        return 'Cancel'
+      case 'RJ':
+        return 'Reject'
+      default:
+      }
+    }
   }, {
     title: 'Old Schedule',
     dataIndex: 'oldSchedule',

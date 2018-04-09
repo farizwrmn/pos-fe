@@ -67,7 +67,8 @@ const Booking = ({ booking, dispatch, app }) => {
     case 'OP':
       getBadge = (<Badge dot
         text="Open"
-        style={{ backgroundColor: color.purple,
+        style={{
+          backgroundColor: color.wisteria,
           position: 'relative',
           display: 'inline-block',
           top: 0,
@@ -87,7 +88,8 @@ const Booking = ({ booking, dispatch, app }) => {
     case 'RS':
       getBadge = (<Badge dot
         text="Reschedule"
-        style={{ backgroundColor: color.peach,
+        style={{
+          backgroundColor: color.lavenderrose,
           position: 'relative',
           display: 'inline-block',
           top: 0,
@@ -294,11 +296,12 @@ const Booking = ({ booking, dispatch, app }) => {
           style: { margin: '5px 5px' },
           extra: (
             <div>
-              { (list[key].bookingId === focusBookingId) && <span style={{ paddingRight: '2px' }}><Icon type="check" /></span>}
+              {(list[key].bookingId === focusBookingId) && <span style={{ paddingRight: '2px' }}><Icon type="check" /></span>}
               <Select placeholder="Update Status" style={{ width: 120 }} onChange={handleChange} >
                 <Option value={`OP#${list[key].bookingId}`}><Badge dot
                   text="Open"
-                  style={{ backgroundColor: color.wisteria,
+                  style={{
+                    backgroundColor: color.wisteria,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -311,7 +314,8 @@ const Booking = ({ booking, dispatch, app }) => {
                 <Option value={`CO#${list[key].bookingId}`}><Badge status="success" text="Check-Out" /></Option>
                 <Option value={`RS#${list[key].bookingId}`}><Badge dot
                   text="Reschedule"
-                  style={{ backgroundColor: color.lavenderrose,
+                  style={{
+                    backgroundColor: color.lavenderrose,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -325,19 +329,19 @@ const Booking = ({ booking, dispatch, app }) => {
           ),
           item: (
             <div>
-              { (list[key].bookingId === focusBookingId) && (newBookingStatus === 'RS') &&
-              <Row gutter={16}>
-                <Col span={6} >Schedule</Col>
-                <Col span={18}>: <DatePicker
-                  showTime
-                  style={{ width: '95%' }}
-                  size="small"
-                  onChange={rescheduleBooking}
-                  onOk={rescheduleBooking}
-                  format="YYYY-MM-DD HH:mm:ss"
-                  placeholder="Choose Reschedule Time"
-                /></Col>
-              </Row>
+              {(list[key].bookingId === focusBookingId) && (newBookingStatus === 'RS') &&
+                <Row gutter={16}>
+                  <Col span={6} >Schedule</Col>
+                  <Col span={18}>: <DatePicker
+                    showTime
+                    style={{ width: '95%' }}
+                    size="small"
+                    onChange={rescheduleBooking}
+                    onOk={rescheduleBooking}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="Choose Reschedule Time"
+                  /></Col>
+                </Row>
               }
               <Row gutter={16}>
                 <Col span={6} >Card Id</Col>
@@ -379,7 +383,7 @@ const Booking = ({ booking, dispatch, app }) => {
     }
     return (
       <div>
-        { card.length > 0 ? badgeStatus : '' }
+        {card.length > 0 ? badgeStatus : ''}
         <Row>{card}</Row>
       </div>
     )

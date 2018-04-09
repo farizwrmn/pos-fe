@@ -12,17 +12,33 @@ import PrintPDF from './PrintPDF'
 const Option = Select.Option
 const { MonthPicker } = DatePicker
 
-const Filter = ({ onOk, period, year, onChangePeriod, productCode, productName, dispatch, onListReset, form: { getFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
+const Filter = ({
+  onOk,
+  period,
+  year,
+  onChangePeriod,
+  // productCode,
+  // productName,
+  listProduct,
+  dispatch,
+  onListReset,
+  form: {
+    getFieldsValue,
+    resetFields,
+    getFieldDecorator,
+    validateFields
+  },
+  ...printProps }) => {
   let optionSelect = []
   let optionSelectName = []
   const selectChildren = () => {
-    for (let i = 0; i < productCode.length; i += 1) {
-      optionSelect.push(<Option key={productCode[i].toString(36)}>{productCode[i].toString(36)}</Option>)
+    for (let i = 0; i < listProduct.length; i += 1) {
+      optionSelect.push(<Option key={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
-    for (let i = 0; i < productCode.length; i += 1) {
-      optionSelectName.push(<Option key={productName[i].toString(36)}>{productName[i].toString(36)}</Option>)
+    for (let i = 0; i < listProduct.length; i += 1) {
+      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)}>{listProduct[i].productName.toString(36)}</Option>)
     }
   }
   const exportProps = {
