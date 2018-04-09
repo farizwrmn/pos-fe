@@ -83,10 +83,17 @@ const Filter = ({
     initialCreateTime[1] = moment(filter.createdAt[1])
   }
 
+  const params = location.search.substring(1)
+  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
+
+  if (query.q) query.q = query.q.replace(/\+/g, ' ')
+
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName')(<Search placeholder="Search" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('searchName', {
+          initialValue: query.q
+        })(<Search placeholder="Search" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} >
         <FilterItem label="Create At" >

@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import * as customerGroupService from '../../services/master/customergroup'
 import { pageModel } from './../common'
 
@@ -21,19 +22,18 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listGroup: [],
-    show: 1,
-    newItem: false
+    show: 1
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         if (location.pathname === '/master/customergroup') {
           dispatch({
             type: 'updateState',
             payload: {
-              newItem: false,
-              activeKey: '0'
+              activeKey: activeKey || '0'
             }
           })
         }
@@ -76,8 +76,20 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     },
@@ -89,8 +101,28 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     }
@@ -116,12 +148,14 @@ export default modelExtend(pageModel, {
 
     querySuccessGroup (state, action) {
       const { listGroup, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listGroup,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     }
 
   }

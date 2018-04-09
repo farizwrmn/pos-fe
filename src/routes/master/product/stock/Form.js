@@ -108,9 +108,9 @@ const formProductCategory = ({
       const data = {
         ...getFieldsValue()
       }
-      data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
-      data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
-      data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
+      data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
+      data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
+      data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
       data.usageTimePeriod = data.usageTimePeriod || 0
       data.usageMileage = data.usageMileage || 0
       let valid = true
@@ -125,6 +125,9 @@ const formProductCategory = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.productCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -201,29 +204,29 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-    case '0':
-      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-      break
-    case '1':
-      moreButtonTab = (
-        <div>
-          <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
-          <Dropdown overlay={menu}>
-            <Button style={{ marginLeft: 8 }} icon="printer">
+  case '0':
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+    break
+  case '1':
+    moreButtonTab = (
+      <div>
+        <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+        <Dropdown overlay={menu}>
+          <Button style={{ marginLeft: 8 }} icon="printer">
               Print
           </Button>
-          </Dropdown>
-        </div>
-      )
-      break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    case '3':
-      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-      break
-    default:
-      break
+        </Dropdown>
+      </div>
+    )
+    break
+  case '2':
+    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+    break
+  case '3':
+    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+    break
+  default:
+    break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []

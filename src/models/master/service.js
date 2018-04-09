@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import { query, queryServiceType, add, edit, remove } from '../../services/master/service'
 import { pageModel } from './../common'
 
@@ -19,13 +20,13 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listServiceType: [],
-    show: 1,
-    newItem: false
+    show: 1
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         switch (location.pathname) {
         case '/master/service':
           dispatch({
@@ -34,8 +35,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
-              newItem: false,
-              activeKey: '0'
+              activeKey: activeKey || '0'
             }
           })
           break
@@ -105,8 +105,21 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: current
+          }
+        })
         throw data
       }
     },
@@ -118,8 +131,29 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: current
+          }
+        })
         throw data
       }
     }

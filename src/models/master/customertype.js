@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import * as customerTypeService from '../../services/master/customertype'
 import { pageModel } from './../common'
 
@@ -22,13 +23,13 @@ export default modelExtend(pageModel, {
     disable: '',
     listType: [],
     listSellprice: [],
-    show: 1,
-    newItem: false
+    show: 1
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         if (location.pathname === '/master/customertype') {
           dispatch({
             type: 'querySellprice'
@@ -36,8 +37,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
-              newItem: false,
-              activeKey: '0'
+              activeKey: activeKey || '0'
             }
           })
         }
@@ -92,8 +92,20 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     },
@@ -105,8 +117,28 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     }
@@ -132,12 +164,14 @@ export default modelExtend(pageModel, {
 
     querySuccessType (state, action) {
       const { listType, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listType,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
 
     querySuccessSellprice (state, action) {

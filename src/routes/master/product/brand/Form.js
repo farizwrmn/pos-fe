@@ -102,6 +102,9 @@ const formProductBrand = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.brandCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })

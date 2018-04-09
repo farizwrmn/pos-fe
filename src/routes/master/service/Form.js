@@ -104,6 +104,9 @@ const formService = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.serviceCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
