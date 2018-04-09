@@ -48,15 +48,24 @@ export default {
       } else {
         data = yield call(queryReport)
       }
-      yield put({
-        type: 'querySuccess',
-        payload: {
-          list: data.data,
-          pagination: {
-            total: data.total
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              total: data.total
+            }
           }
-        }
-      })
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            fromDate: payload.from,
+            toDate: payload.to
+          }
+        })
+      }
     },
     * queryService ({ payload }, { call, put }) {
       let data = []
@@ -74,18 +83,27 @@ export default {
       let data = []
       if (payload) {
         data = yield call(queryMechanic, payload)
-        yield put({
-          type: 'querySuccessMechanic',
-          payload: {
-            list: data.data,
-            listMechanic: data.data,
-            fromDate: payload.from,
-            toDate: payload.to,
-            pagination: {
-              total: data.total
+        if (data.success) {
+          yield put({
+            type: 'querySuccessMechanic',
+            payload: {
+              list: data.data,
+              listMechanic: data.data,
+              fromDate: payload.from,
+              toDate: payload.to,
+              pagination: {
+                total: data.total
+              }
             }
-          }
-        })
+          })
+          yield put({
+            type: 'updateState',
+            payload: {
+              fromDate: payload.from,
+              toDate: payload.to
+            }
+          })
+        }
       }
     }
   },
