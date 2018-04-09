@@ -95,7 +95,7 @@ const modal = ({
             case 'Open':
               badge = (<Badge dot
                 style={{
-                  backgroundColor: color.purple,
+                  backgroundColor: color.wisteria,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -122,7 +122,7 @@ const modal = ({
             case 'Reschedule':
               badge = (<Badge dot
                 style={{
-                  backgroundColor: color.peach,
+                  backgroundColor: color.lavenderrose,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -170,23 +170,23 @@ const modal = ({
 
   let month = groupByMonth(listBooking, 'scheduleDate')
   let full = {}
-  for (let key = 0; key < month.length; key += 1) {
+  for (let key in month) {
     full[key] = groupByStatus(month[key], 'status')
   }
 
   const getMonthData = (value) => {
     let monthlyData = []
-    for (let key = 0; key < full.length; key += 1) {
+    for (let key in full) {
       switch (value.format('YYYY-MM')) {
       case key:
-        for (let status = 0; status < full[key].length; status += 1) {
-          switch (status) {
-          case status: {
+        for (let x in full[key]) {
+          switch (x) {
+          case x: {
             let total = 0
-            for (let i = 0; i < full[key][status].length; i += 1) {
-              total += full[key][status][i].counter
+            for (let i = 0; i < full[key][x].length; i += 1) {
+              total += full[key][x][i].counter
             }
-            monthlyData.push({ type: status, content: total })
+            monthlyData.push({ type: x, content: total })
             break
           }
           default:
@@ -209,7 +209,7 @@ const modal = ({
           case 'Open':
             badge = (<Badge dot
               style={{
-                backgroundColor: color.purple,
+                backgroundColor: color.wisteria,
                 position: 'relative',
                 display: 'inline-block',
                 top: 0,
@@ -236,7 +236,7 @@ const modal = ({
           case 'Reschedule':
             badge = (<Badge dot
               style={{
-                backgroundColor: color.peach,
+                backgroundColor: color.lavenderrose,
                 position: 'relative',
                 display: 'inline-block',
                 top: 0,
