@@ -17,7 +17,7 @@ const CACHE_NAME = 'dmiPOS'
 // })
 
 self.addEventListener('install', (event) => {
-  console.log('Attempting to install service worker and cache static assets')
+  // console.log('Attempting to install service worker and cache static assets')
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -27,12 +27,12 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
-  console.log('Fetch event for ', event.request.url)
+  // console.log('Fetch event for ', event.request.url)
   event.respondWith(
     caches.match(event.request)
       .then((res) => {
-        console.log('Found ', event.request.url, ' in cache')
-        console.log('Network request for ', event.request.url)
+        // console.log('Found ', event.request.url, ' in cache')
+        // console.log('Network request for ', event.request.url)
         return res || fetch(event.request)
         // if (res) {
         //   console.log('Found ', event.request.url, ' in cache')

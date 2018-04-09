@@ -6,5 +6,5 @@ module.exports = {
   footerSubText: 'Point of Sales © 2017-2018',
   logo: '/logo.png',
   openPages: ['/login'],
-  disableMultiSelect: true,
+  disableMultiSelect: true
 }

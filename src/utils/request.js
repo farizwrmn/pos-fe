@@ -1,6 +1,6 @@
 import axios from 'axios'
-import qs from 'qs'
-import jsonp from 'jsonp'
+// import qs from 'qs'
+// import jsonp from 'jsonp'
 import pathToRegexp from 'path-to-regexp'
 import lodash from 'lodash'
 import { message } from 'antd'
@@ -12,7 +12,7 @@ const fetch = (options) => {
   let {
     method = 'get',
     data,
-    fetchType,
+    // fetchType,
     url,
     headers
   } = options
@@ -100,12 +100,12 @@ const getAPIURL = () => {
 
 export default function request (options) {
   const APIURL = getAPIURL()
-  options.usage = options.usage|| 'store'
+  options.usage = options.usage || 'store'
   if (options.usage === 'store') {
     options.url = APIURL + apiPrefix + options.url
   }
   if (options.url && options.url.indexOf('//') > -1) {
-    const origin = `${options.url.split('//')[0]}//${options.url.split('//')[1].split('/')[0]}`
+    // const origin = `${options.url.split('//')[0]}//${options.url.split('//')[1].split('/')[0]}`
     // if (window.location.origin !== origin) {
     //   if (CORS && CORS.indexOf(origin) > -1) {
     //     options.fetchType = 'CORS'
@@ -139,7 +139,7 @@ export default function request (options) {
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      msg = data.message || statusText
+      msg = data.detail || statusText
     } else {
       statusCode = 600
       if (Object.prototype.hasOwnProperty.call(error, 'message')) {

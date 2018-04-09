@@ -74,8 +74,8 @@ const RepeatReport = ({
         content.push({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).value = tableHeader[tableHeaderValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).alignment = tableHeader[tableHeaderValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).font = tableHeader[tableHeaderValue].font,
-          border: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).border = tableHeader[tableHeaderValue].border
+          font: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).font = tableHeader[tableHeaderValue].font
+          // border: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).border = tableHeader[tableHeaderValue].border
         })
       }
 
@@ -86,8 +86,8 @@ const RepeatReport = ({
           content.push({
             value: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).value = tableBody[i][n][tableBodyValue].value,
             alignment: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).alignment = tableBody[i][n][tableBodyValue].alignment,
-            font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font,
-            border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
+            font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font
+            // border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
           })
         }
         tableBodyPosition += 1
@@ -99,8 +99,8 @@ const RepeatReport = ({
         content.push({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).alignment = tableFooter[i][tableFooterValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font,
-          border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
+          font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font
+          // border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
         })
       }
       position = position + 4 + tableBody[i].length

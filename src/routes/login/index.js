@@ -23,7 +23,7 @@ const Login = ({
 
   const handleCompany = () => {
     let fields = getFieldsValue()
-    fields.company && dispatch({type: 'login/getCompany', payload: { cid: fields.company.toUpperCase() }})
+    fields.company && dispatch({ type: 'login/getCompany', payload: { cid: fields.company.toUpperCase() } })
   }
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -44,12 +44,14 @@ const Login = ({
         </div>
         <form>
           <FormItem className={styles.formItem} hasFeedback>
-            {getFieldDecorator(`company`, {
+            {getFieldDecorator('company', {
             })(<Input autoFocus
-                      style={{ textTransform: 'uppercase' }}
-                      size="large"
-                      onBlur={handleCompany} onPressEnter={handleCompany}
-                      placeholder="Company" />)}
+              style={{ textTransform: 'uppercase' }}
+              size="large"
+              onBlur={handleCompany}
+              onPressEnter={handleCompany}
+              placeholder="Company"
+            />)}
           </FormItem>
           <FormItem className={styles.formItem} hasFeedback>
             {getFieldDecorator(`user${authBy}`, {

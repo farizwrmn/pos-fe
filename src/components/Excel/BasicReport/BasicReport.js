@@ -61,8 +61,8 @@ const BasicReport = ({
           get.push({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableHeader[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableHeader[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableHeader[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableHeader[i][a].border
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableHeader[i][a].font
+            // border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableHeader[i][a].border
           })
         }
         content.push(get[i])
@@ -78,8 +78,8 @@ const BasicReport = ({
           get.push({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableBody[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableBody[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableBody[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableBody[i][a].border
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableBody[i][a].font
+            // border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableBody[i][a].border
           })
         }
         content.push(get[i])
@@ -94,8 +94,8 @@ const BasicReport = ({
           get.push({
             value: sheet.getCell(`${String.fromCharCode(n)}${m}`).value = tableFooter[i][a].value,
             alignment: sheet.getCell(`${String.fromCharCode(n)}${m}`).alignment = tableFooter[i][a].alignment,
-            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableFooter[i][a].font,
-            border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableFooter[i][a].border
+            font: sheet.getCell(`${String.fromCharCode(n)}${m}`).font = tableFooter[i][a].font
+            // border: sheet.getCell(`${String.fromCharCode(n)}${m}`).border = tableFooter[i][a].border
           })
         }
         content.push(get[i])

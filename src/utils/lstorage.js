@@ -177,5 +177,5 @@ module.exports = {
   getSessionId,
   getDomainBE,
   getPortBE,
-  getIdBE,
+  getIdBE
 }

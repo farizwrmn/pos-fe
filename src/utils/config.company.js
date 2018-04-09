@@ -1,5 +1,5 @@
-const APICOMPANYHOST = 'localhost'
-const APICOMPANYPORT = 9091
+const APICOMPANYHOST = 'demopos.darkotech.id'
+const APICOMPANYPORT = 5557
 const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
 const APIV1 = '/api/v1'
 
@@ -10,6 +10,6 @@ module.exports = {
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,
     apiCompanyURI: `${APICOMPANYURL}${APIV1}`,
-    apiUserCompany: `${APICOMPANYURL}${APIV1}/users/company`,
-  },
+    apiUserCompany: `${APICOMPANYURL}${APIV1}/users/company`
+  }
 }

@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
+import { configMain } from 'utils'
 import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
-import { configMain } from 'utils'
 import styles from '../../../themes/index.less'
 
 const { prefix } = configMain
