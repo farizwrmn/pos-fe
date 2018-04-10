@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Tag } from 'antd'
-import { color, config, ip, lstorage } from 'utils'
+import { color, configMain, config, ip, lstorage } from 'utils'
 import styles from './Info.less'
 
 
@@ -44,7 +44,7 @@ const Info = ({ ipAddress, dispatch, app }) => {
 
   const data = [
     { name: 'IP Address', value: `${ipAddress}`, status: 1 },
-    { name: 'Version', value: `${config.version}`, status: 2 },
+    { name: 'Version', value: `${configMain.version}`, status: 2 },
     { name: 'Session', value: `${sessionId}`, status: 3 },
     { name: 'Service', value: `${config.apiHost}`, status: 4 }
   ]

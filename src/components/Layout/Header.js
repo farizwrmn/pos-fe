@@ -133,7 +133,6 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   }
 
   let notifications = []
-  console.log('zzz1', listNotification)
   if (listNotification.length) {
     notifications.push(listNotificationDetail.map(notification => (<li>
       <Link to={notification.route}
