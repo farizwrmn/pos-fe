@@ -32,7 +32,7 @@ const Report = ({ dispatch, serviceReport, app }) => {
         type: 'serviceReport/setListNull'
       })
     },
-    onDateChange (from, to) {
+    onDateChange (from, to, hasEmployee) {
       // dispatch(routerRedux.push({
       //   pathname: location.pathname,
       //   query: {
@@ -44,7 +44,8 @@ const Report = ({ dispatch, serviceReport, app }) => {
         type: 'serviceReport/queryMechanic',
         payload: {
           from,
-          to
+          to,
+          hasEmployee
         }
       })
       dispatch({
