@@ -12,8 +12,9 @@ export default {
     listRekap: [],
     period: moment().format('MM'),
     year: moment().format('YYYY'),
-    productCode: [],
-    productName: [],
+    listProduct: [],
+    // productCode: [],
+    // productName: [],
     activeKey: '0',
     pagination: {
       showSizeChanger: true,
@@ -39,24 +40,24 @@ export default {
           })
         } else if (location.pathname === '/report/fifo/balance' && location.query.activeKey && location.query.period && location.query.year) {
           switch (location.query.activeKey) {
-          case '2':
-            dispatch({
-              type: 'queryFifoValues',
-              payload: location.query
-            })
-            break
-          case '3':
-            dispatch({
-              type: 'queryProductCode',
-              payload: location.query
-            })
-            break
-          default:
-            dispatch({
-              type: 'queryInAdj',
-              payload: location.query
-            })
-            break
+            case '2':
+              dispatch({
+                type: 'queryFifoValues',
+                payload: location.query
+              })
+              break
+            case '3':
+              dispatch({
+                type: 'queryProductCode',
+                payload: location.query
+              })
+              break
+            default:
+              dispatch({
+                type: 'queryInAdj',
+                payload: location.query
+              })
+              break
           }
           dispatch({
             type: 'updateState',
@@ -223,14 +224,15 @@ export default {
         payload: date
       })
       const data = yield call(queryFifoValue, payload)
-      const productCode = data.data.map(n => n.productCode)
-      const productName = data.data.map(n => n.productName)
+      // const productCode = data.data.map(n => n.productCode)
+      // const productName = data.data.map(n => n.productName)
       if (data.data.length > 0) {
         yield put({
           type: 'queryProductCodeSuccess',
           payload: {
-            productCode,
-            productName,
+            // productCode,
+            // productName,
+            listProduct: data.data,
             ...payload
           }
         })
@@ -268,7 +270,7 @@ export default {
       return { ...state, listRekap: [] }
     },
     setNullProduct (state) {
-      return { ...state, listRekap: [], productCode: [] }
+      return { ...state, listRekap: [], productCode: [], listProduct: [] }
     },
     updateState (state, { payload }) {
       return { ...state, ...payload }

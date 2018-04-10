@@ -99,15 +99,18 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue()
       }
-      data.pendingPayment = data.pendingPayment === 0 || data.pendingPayment === false ? '0' : '1'
+      data.pendingPayment = data.pendingPayment === 0 || data.pendingPayment === false || !data.pendingPayment ? '0' : '1'
       console.log('Submit')
       if (data.typeCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Type Code can't be null")
@@ -132,7 +135,7 @@ const formCustomerType = ({
   </Dropdown> </div>)
 
   const children = listSellprice.length > 0 ? listSellprice.map(misc => <Option value={misc.miscName} key={misc.miscName}>{misc.miscName}</Option>) : []
-
+  console.log(item)
   return (
     <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
@@ -149,7 +152,7 @@ const formCustomerType = ({
                       message: 'a-z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={5} />)}
+                })(<Input disabled={disabled} maxLength={5} autoFocus />)}
               </FormItem>
               <FormItem label="Type Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('typeName', {

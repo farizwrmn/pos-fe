@@ -13,44 +13,16 @@ import {
   Modal
 } from 'antd'
 import moment from 'moment'
-// import ModalCredit from './ModalCreditCard'
 import FormPayment from './Form'
-// import PaymentMethod from './PaymentMethod'
 
 const { prefix } = configMain
 const FormItem = Form.Item
-// const dataTrans = () => {
-//   let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
-//   let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
-//   const cashier_trans = product.concat(service)
-//   let arrayProd = []
-//   for (let n = 0; n < cashier_trans.length; n += 1) {
-//     arrayProd.push({
-//       no: n + 1,
-//       code: cashier_trans[n].code,
-//       disc1: cashier_trans[n].disc1,
-//       disc2: cashier_trans[n].disc2,
-//       disc3: cashier_trans[n].disc3,
-//       discount: cashier_trans[n].discount,
-//       name: cashier_trans[n].name,
-//       price: cashier_trans[n].price,
-//       qty: cashier_trans[n].qty,
-//       typeCode: cashier_trans[n].typeCode,
-//       total: cashier_trans[n].total
-//     })
-//   }
-//   return (arrayProd)
-// }
 
 const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   const { totalPayment,
     totalChange,
-    // inputPayment,
     lastTransNo,
     listAmount,
-    // creditCardTotal,
-    // creditCharge,
-    // modalCreditVisible,
     modalType,
     typeTrans,
     itemPayment,
@@ -67,17 +39,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
    16 => Shift
    32 => Space
    */
-
-  // const modalCreditProps = {
-  //   visible: modalCreditVisible,
-  //   maskClosable: false,
-  //   wrapClassName: 'vertical-center-modal',
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'payment/hideCreditModal'
-  //     })
-  //   }
-  // }
 
   const getDate = (mode) => {
     let today = new Date()
@@ -115,28 +76,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     return `${h}:${m}:${s}`
   }
 
-  // const onChange = (e) => {
-  //   const { value } = e.target
-  //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-  //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-  //     dispatch({
-  //       type: 'payment/changePayment',
-  //       payload: {
-  //         netto: parseInt(curTotal, 10) + parseInt(curRounding, 10),
-  //         totalPayment: value
-  //       }
-  //     })
-  //   }
-  // }
-
-  // const onChangeCascader = (e) => {
-  //   dispatch({
-  //     type: 'payment/changeCascader',
-  //     payload: {
-  //       value: e
-  //     }
-  //   })
-  // }
   const confirmPayment = () => {
     Modal.confirm({
       title: 'Save Payment',
@@ -224,7 +163,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               woNumber: woNumber === '' ? null : woNumber
             }
           })
-          dispatch({ type: 'pos/setAllNull' })
           dispatch(routerRedux.push('/transaction/pos'))
         }
       },

@@ -48,9 +48,9 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
         countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.serviceName.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.serviceName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.discount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -147,7 +147,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

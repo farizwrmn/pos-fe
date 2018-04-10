@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../../components'
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, newItem, modalType, currentItem, activeKey, disable } = customerunit
+  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer } = customer
   const modalProps = {
@@ -78,6 +78,13 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (code, id) {
       dispatch({
@@ -91,11 +98,11 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
   }
 
   const formProps = {
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     listItem: listUnit,
-    dataCustomer,
+    customerInfo,
     filter: {
       ...location.query
     },
@@ -103,13 +110,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
       dispatch({
         type: `customerunit/${modalType}`,
         payload: data
-      })
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
-        }
       })
       dispatch({
         type: 'customer/updateState',
@@ -122,7 +122,8 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
       dispatch({
         type: 'customerunit/updateState',
         payload: {
-          activeKey: '1'
+          activeKey: '1',
+          customerInfo: {}
         }
       })
     }
@@ -145,11 +146,20 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           currentItem: {},
           disable: '',
           listUnit: [],
+          customerInfo: {},
           pagination: {
             total: 0
           }
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({
         type: 'customer/updateState',
         payload: {
@@ -159,29 +169,9 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     }
   }
 
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'customerunit/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...tabProps} />
-    }
-    return currentPage
-  }
-
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...tabProps} />
     </div>
   )
 }

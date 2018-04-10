@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
-import { TransferOut, TransferIn } from './components'
+import { TransferOut, TransferIn, InTransfer, InTransit } from './components'
 
 const TabPane = Tabs.TabPane
 
@@ -28,6 +28,8 @@ const Report = ({ inventoryReport, dispatch }) => {
       <Tabs activeKey={activeKey} onChange={key => onChangeTab(key)} type="card">
         <TabPane tab="Transfer In" key="0"><TransferIn /></TabPane>
         <TabPane tab="Transfer Out" key="1"><TransferOut /></TabPane>
+        <TabPane tab="In Transfer" key="2"><InTransfer /></TabPane>
+        <TabPane tab="In Transit" key="3"><InTransit /></TabPane>
       </Tabs>
     </div>
   )

@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { parse } from 'qs'
-import { query, getIpAddr } from '../services/dashboard'
+// import { parse } from 'qs'
+// import { query, getIpAddr } from '../services/dashboard'
 import { queryAll } from '../services/report/pos'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
@@ -200,7 +200,7 @@ export default {
     }
   },
   effects: {
-    * query ({ payload }, { call, put }) {
+    * query (payload, { call, put }) {
       const last7day = moment().add(-6, 'days').format('YYYY-MM-DD')
       const today = moment().format('YYYY-MM-DD')
       const start = moment().add(-6, 'days')
@@ -269,7 +269,7 @@ export default {
         return new Date(a.title).getTime() - new Date(b.title).getTime()
       })
       // const ipAddr = yield call(getIpAddr)
-      yield put({ type: 'querySuccess', payload: { data: formatWeekSales } })
+      yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...payload } })
       // yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
       // yield put({ type: 'queryWeather', payload: { ...data } })
     }

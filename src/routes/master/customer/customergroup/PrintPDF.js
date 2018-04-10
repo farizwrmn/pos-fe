@@ -36,7 +36,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 760, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
           }
         ]
       }
@@ -75,7 +75,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 762, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -92,7 +92,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

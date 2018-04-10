@@ -1,9 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import { lstorage } from 'utils'
+import { lstorage, configMain } from 'utils'
 import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail } from '../services/purchase'
 import { pageModel } from './common'
-import { configMain } from 'utils'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
 

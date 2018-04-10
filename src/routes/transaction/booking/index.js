@@ -64,44 +64,46 @@ const Booking = ({ booking, dispatch, app }) => {
   const badge = (status) => {
     let getBadge
     switch (status) {
-    case 'OP':
-      getBadge = (<Badge dot
-        text="Open"
-        style={{ backgroundColor: color.purple,
-          position: 'relative',
-          display: 'inline-block',
-          top: 0,
-          transform: 'none'
-        }}
-      />)
-      break
-    case 'CF':
-      getBadge = <Badge status="default" text="Confirmed" />
-      break
-    case 'CI':
-      getBadge = <Badge status="processing" text="Check-In" />
-      break
-    case 'CO':
-      getBadge = <Badge status="success" text="Check-Out" />
-      break
-    case 'RS':
-      getBadge = (<Badge dot
-        text="Reschedule"
-        style={{ backgroundColor: color.peach,
-          position: 'relative',
-          display: 'inline-block',
-          top: 0,
-          transform: 'none'
-        }}
-      />)
-      break
-    case 'CC':
-      getBadge = <Badge status="warning" text="Cancel" />
-      break
-    case 'RJ':
-      getBadge = <Badge status="error" text="Reject" />
-      break
-    default:
+      case 'OP':
+        getBadge = (<Badge dot
+          text="Open"
+          style={{
+            backgroundColor: color.wisteria,
+            position: 'relative',
+            display: 'inline-block',
+            top: 0,
+            transform: 'none'
+          }}
+        />)
+        break
+      case 'CF':
+        getBadge = <Badge status="default" text="Confirmed" />
+        break
+      case 'CI':
+        getBadge = <Badge status="processing" text="Check-In" />
+        break
+      case 'CO':
+        getBadge = <Badge status="success" text="Check-Out" />
+        break
+      case 'RS':
+        getBadge = (<Badge dot
+          text="Reschedule"
+          style={{
+            backgroundColor: color.lavenderrose,
+            position: 'relative',
+            display: 'inline-block',
+            top: 0,
+            transform: 'none'
+          }}
+        />)
+        break
+      case 'CC':
+        getBadge = <Badge status="warning" text="Cancel" />
+        break
+      case 'RJ':
+        getBadge = <Badge status="error" text="Reject" />
+        break
+      default:
     }
     return getBadge
   }
@@ -180,68 +182,68 @@ const Booking = ({ booking, dispatch, app }) => {
             return item.bookingId !== value
           })
           switch (oldBookingStatus) {
-          case 'CI':
-            switch (newBookingStatus) {
-            case 'CO':
-              dispatch({
-                type: 'booking/edit',
-                payload: {
-                  id: value,
-                  status: {
-                    oldStatus: oldBookingStatus,
-                    newStatus: newBookingStatus,
-                    updateBy: user.userid
-                  },
-                  leftOvers
-                }
-              })
-              break
-            default:
-              message.warning('This booking has been checked in!')
-              break
-            }
-            break
-          case 'CO':
-            message.warning('This booking has been checked out!')
-            break
-          default:
-            switch (newBookingStatus) {
-            case 'RS':
-              if (newScheduleDate !== '' && newScheduleTime !== '') {
-                dispatch({
-                  type: 'booking/edit',
-                  payload: {
-                    id: value,
-                    status: {
-                      oldStatus: oldBookingStatus,
-                      newStatus: newBookingStatus,
-                      newScheduleDate,
-                      newScheduleTime,
-                      updateBy: user.userid
-                    },
-                    leftOvers
-                  }
-                })
-              } else {
-                message.warning('Please choose your reschedule time!')
+            case 'CI':
+              switch (newBookingStatus) {
+                case 'CO':
+                  dispatch({
+                    type: 'booking/edit',
+                    payload: {
+                      id: value,
+                      status: {
+                        oldStatus: oldBookingStatus,
+                        newStatus: newBookingStatus,
+                        updateBy: user.userid
+                      },
+                      leftOvers
+                    }
+                  })
+                  break
+                default:
+                  message.warning('This booking has been checked in!')
+                  break
               }
               break
-            default:
-              dispatch({
-                type: 'booking/edit',
-                payload: {
-                  id: value,
-                  status: {
-                    oldStatus: oldBookingStatus,
-                    newStatus: newBookingStatus,
-                    updateBy: user.userid
-                  },
-                  leftOvers
-                }
-              })
+            case 'CO':
+              message.warning('This booking has been checked out!')
               break
-            }
-            break
+            default:
+              switch (newBookingStatus) {
+                case 'RS':
+                  if (newScheduleDate !== '' && newScheduleTime !== '') {
+                    dispatch({
+                      type: 'booking/edit',
+                      payload: {
+                        id: value,
+                        status: {
+                          oldStatus: oldBookingStatus,
+                          newStatus: newBookingStatus,
+                          newScheduleDate,
+                          newScheduleTime,
+                          updateBy: user.userid
+                        },
+                        leftOvers
+                      }
+                    })
+                  } else {
+                    message.warning('Please choose your reschedule time!')
+                  }
+                  break
+                default:
+                  dispatch({
+                    type: 'booking/edit',
+                    payload: {
+                      id: value,
+                      status: {
+                        oldStatus: oldBookingStatus,
+                        newStatus: newBookingStatus,
+                        updateBy: user.userid
+                      },
+                      leftOvers
+                    }
+                  })
+                  break
+              }
+              break
           }
         } else {
           message.warning('This is your latest status!')
@@ -294,11 +296,12 @@ const Booking = ({ booking, dispatch, app }) => {
           style: { margin: '5px 5px' },
           extra: (
             <div>
-              { (list[key].bookingId === focusBookingId) && <span style={{ paddingRight: '2px' }}><Icon type="check" /></span>}
+              {(list[key].bookingId === focusBookingId) && <span style={{ paddingRight: '2px' }}><Icon type="check" /></span>}
               <Select placeholder="Update Status" style={{ width: 120 }} onChange={handleChange} >
                 <Option value={`OP#${list[key].bookingId}`}><Badge dot
                   text="Open"
-                  style={{ backgroundColor: color.wisteria,
+                  style={{
+                    backgroundColor: color.wisteria,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -311,7 +314,8 @@ const Booking = ({ booking, dispatch, app }) => {
                 <Option value={`CO#${list[key].bookingId}`}><Badge status="success" text="Check-Out" /></Option>
                 <Option value={`RS#${list[key].bookingId}`}><Badge dot
                   text="Reschedule"
-                  style={{ backgroundColor: color.lavenderrose,
+                  style={{
+                    backgroundColor: color.lavenderrose,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -325,19 +329,19 @@ const Booking = ({ booking, dispatch, app }) => {
           ),
           item: (
             <div>
-              { (list[key].bookingId === focusBookingId) && (newBookingStatus === 'RS') &&
-              <Row gutter={16}>
-                <Col span={6} >Schedule</Col>
-                <Col span={18}>: <DatePicker
-                  showTime
-                  style={{ width: '95%' }}
-                  size="small"
-                  onChange={rescheduleBooking}
-                  onOk={rescheduleBooking}
-                  format="YYYY-MM-DD HH:mm:ss"
-                  placeholder="Choose Reschedule Time"
-                /></Col>
-              </Row>
+              {(list[key].bookingId === focusBookingId) && (newBookingStatus === 'RS') &&
+                <Row gutter={16}>
+                  <Col span={6} >Schedule</Col>
+                  <Col span={18}>: <DatePicker
+                    showTime
+                    style={{ width: '95%' }}
+                    size="small"
+                    onChange={rescheduleBooking}
+                    onOk={rescheduleBooking}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="Choose Reschedule Time"
+                  /></Col>
+                </Row>
               }
               <Row gutter={16}>
                 <Col span={6} >Card Id</Col>
@@ -379,7 +383,7 @@ const Booking = ({ booking, dispatch, app }) => {
     }
     return (
       <div>
-        { card.length > 0 ? badgeStatus : '' }
+        {card.length > 0 ? badgeStatus : ''}
         <Row>{card}</Row>
       </div>
     )

@@ -47,7 +47,7 @@ module.exports = {
     stockcategory: '/stocks/categories',
     stock: '/stocks',
     pos: '/pos',
-    posdetail: 'posdetail',
+    posdetail: '/posdetail',
     posreport: '/posreport',
     posReport: '/report/pos',
     purchasereport: '/report/purchase',

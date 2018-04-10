@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../../components'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, display, isChecked, modalType, currentItem, activeKey,
+  const { list, pagination, display, isChecked, modalType, currentItem, activeKey,
     disable, show, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
@@ -92,6 +91,13 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
       dispatch({
         type: 'customergroup/query'
       })
@@ -130,22 +136,22 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       })
       const { query, pathname } = location
       switch (key) {
-      case 1:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-        break
-      default:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
+        case 1:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          break
+        default:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: key
+            }
+          }))
       }
     },
     onShowHideSearch () {
@@ -199,7 +205,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     listType,
     listCity,
     listIdType,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -208,13 +214,6 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         payload: {
           id,
           data
-        }
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
         }
       })
     },
@@ -251,29 +250,9 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     }
   }
 
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'customer/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
-  }
-
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

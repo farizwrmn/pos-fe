@@ -24,3 +24,12 @@ export async function queryInventoryTransferOut (params) {
   })
 }
 
+export async function queryInventoryInTransit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${inventoryreport}/intransit`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

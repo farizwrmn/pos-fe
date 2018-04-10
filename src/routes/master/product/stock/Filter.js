@@ -78,7 +78,6 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { productCode } = filter
 
   let initialCreateTime = []
   if (filter.createTime && filter.createTime[0]) {
@@ -88,10 +87,15 @@ const Filter = ({
     initialCreateTime[1] = moment(filter.createTime[1])
   }
 
+  const params = location.search.substring(1)
+  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
+
+  if (query.q) query.q = query.q.replace(/\+/g, ' ')
+
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: productCode })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('searchName', { initialValue: query.q })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Createtime" >

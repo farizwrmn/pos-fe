@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { NewForm } from '../../../components'
 import Form from './Form'
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, newItem, display, isChecked, modalType, currentItem, activeKey,
+  const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, display, isChecked, modalType, currentItem, activeKey,
     disable, show, showModal, logo, showModalProduct, modalProductType, period, listSticker,
     selectedSticker, pagination, stockLoading } = productstock
   const { listCategory } = productcategory
@@ -90,12 +89,13 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           disable: 'disabled'
         }
       })
-      dispatch({
-        type: 'productcategory/query'
-      })
-      dispatch({
-        type: 'productbrand/query'
-      })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -129,22 +129,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       })
       const { query, pathname } = location
       switch (key) {
-      case 1:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-        break
-      default:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
+        case 1:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          break
+        default:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: key
+            }
+          }))
       }
 
       // dispatch({ type: 'productstock/resetProductStockList' })
@@ -286,7 +286,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     showPDFModal,
     mode,
     logo,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     convertImage (url) {
@@ -351,30 +351,10 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     }
   }
 
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'productstock/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
-  }
-
   return (
-    <div className="content-inner">
-      {page(newItem)}
-    </div>
+    <div className="content-inner" >
+      <Form {...formProps} />
+    </div >
   )
 }
 

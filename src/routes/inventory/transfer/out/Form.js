@@ -32,6 +32,7 @@ const FormAdd = ({
   // disabled,
   // resetItem,
   modalProductVisible,
+  modalInvoiceVisible,
   button,
   // handleCancel,
   listItem,
@@ -52,7 +53,7 @@ const FormAdd = ({
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse } = modalProductProps
+  const { handleProductBrowse, handleInvoiceBrowse } = modalProductProps
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -65,6 +66,7 @@ const FormAdd = ({
       data.employeeId = data.employeeId.key
       data.storeId = item.storeId
       data.storeIdReceiver = data.storeIdReceiver.key
+      data.reference = item.reference
       onSubmit(data, listItem)
       // handleReset()
     })
@@ -98,6 +100,14 @@ const FormAdd = ({
   // const resetFieldsOnly = (value) => {
   //   resetFields([value])
   // }
+  const modalPurchaseOpts = {
+    modalInvoiceVisible,
+    ...modalProductProps
+  }
+  const modalProductOpts = {
+    modalProductProps,
+    ...modalProductProps
+  }
   return (
     <div>
       <Form layout="horizontal">
@@ -114,14 +124,14 @@ const FormAdd = ({
               })(<Input disabled maxLength={20} />)}
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('reference', {
-                initialValue: item.reference,
+              {getFieldDecorator('referenceNo', {
+                initialValue: item.referenceNo,
                 rules: [
                   {
                     required: false
                   }
                 ]
-              })(<Input />)}
+              })(<Input disabled />)}
             </FormItem>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transType', {
@@ -144,8 +154,10 @@ const FormAdd = ({
                 ]
               })(<Select labelInValue onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
             </FormItem>
+            <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
-            {modalProductVisible && <Browse {...modalProductProps} />}
+            {modalProductVisible && <Browse {...modalProductOpts} />}
+            {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
           </Col>
           <Col {...col}>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>

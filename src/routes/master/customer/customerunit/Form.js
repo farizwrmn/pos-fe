@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
 import List from './List'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
@@ -62,13 +62,13 @@ const column = {
 }
 
 const formCustomerType = ({
-  item = {},
+  item,
   onSubmit,
   listItem,
   disabled,
   clickBrowse,
   activeKey,
-  dataCustomer,
+  customerInfo,
   button,
   modalVisible,
   ...tabProps,
@@ -84,8 +84,9 @@ const formCustomerType = ({
   }
 }) => {
   const { openModal } = modalProps
+  Object.assign(modalProps, { activeKey })
 
-  printProps.dataCustomer = dataCustomer
+  printProps.dataCustomer = customerInfo
 
   const handleReset = () => {
     resetFields()
@@ -104,13 +105,15 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue()
       }
-
       const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(other)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -134,39 +137,39 @@ const formCustomerType = ({
     <div>
       <FormItem label="Member Code" {...formItemLayout} >
         {getFieldDecorator('memberCode', {
-          initialValue: dataCustomer.memberCode
+          initialValue: customerInfo.memberCode
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Name" {...formItemLayout}>
         {getFieldDecorator('memberName', {
-          initialValue: dataCustomer.memberName
+          initialValue: customerInfo.memberName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="BirthDate" {...formItemLayout}>
         {getFieldDecorator('birthDate', {
-          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : ''
+          initialValue: customerInfo.birthDate ? moment(customerInfo.birthDate).format('MMMM Do YYYY') : ''
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="City" {...formItemLayout}>
         {getFieldDecorator('cityName', {
-          initialValue: dataCustomer.cityName
+          initialValue: customerInfo.cityName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Address" {...formItemLayout}>
         {getFieldDecorator('address01', {
-          initialValue: dataCustomer.address01
+          initialValue: customerInfo.address01
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Type" {...formItemLayout}>
         {getFieldDecorator('memberTypeName', {
-          initialValue: dataCustomer.memberTypeName
+          initialValue: customerInfo.memberTypeName
         })(<Input disabled />)}
       </FormItem>
     </div>
   )
 
   const collapseActiveKey = '1'
-  const collapseTitle = dataCustomer.memberCode ? `Customer Info(${dataCustomer.memberCode})` : 'Customer Info'
+  const collapseTitle = customerInfo.memberCode ? `Customer Info(${customerInfo.memberCode})` : 'Customer Info'
 
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
@@ -195,7 +198,7 @@ const formCustomerType = ({
                         message: 'A-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={10} />)}
+                  })(<Input disabled={disabled} maxLength={10} autoFocus />)}
                 </FormItem>
                 <FormItem label="Merk" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('merk', {
@@ -205,7 +208,7 @@ const formCustomerType = ({
                         required: true
                       }
                     ]
-                  })(<Input />)}
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Model" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('model', {
@@ -220,7 +223,7 @@ const formCustomerType = ({
                 <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('type', {
                     initialValue: item.type
-                  })(<Input />)}
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Tahun" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('year', {
@@ -231,17 +234,17 @@ const formCustomerType = ({
                         message: 'year is not valid'
                       }
                     ]
-                  })(<Input />)}
+                  })(<InputNumber />)}
                 </FormItem>
                 <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('chassisNo', {
                     initialValue: item.chassisNo
-                  })(<Input />)}
+                  })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('machineNo', {
                     initialValue: item.machineNo
-                  })(<Input />)}
+                  })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>
@@ -271,7 +274,7 @@ formCustomerType.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   listItem: PropTypes.object,
-  dataCustomer: PropTypes.object,
+  customerInfo: PropTypes.object,
   onSubmit: PropTypes.func,
   clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,

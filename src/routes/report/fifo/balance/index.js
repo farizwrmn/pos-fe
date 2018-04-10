@@ -11,8 +11,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, fifoReport, app }) => {
-  const { period, year, activeKey, productCode, productName } = fifoReport
+const Report = ({ dispatch, fifoReport, productcategory, productbrand, app }) => {
+  const { period, year, activeKey, listProduct } = fifoReport
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
   let { listRekap } = fifoReport
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
@@ -26,10 +28,13 @@ const Report = ({ dispatch, fifoReport, app }) => {
 
   const filterProps = {
     activeKey,
-    productCode,
-    productName,
+    // productCode,
+    // productName,
+    listProduct,
     listRekap,
     user,
+    listCategory,
+    listBrand,
     dispatch,
     storeInfo,
     period,
@@ -50,8 +55,8 @@ const Report = ({ dispatch, fifoReport, app }) => {
         payload: {
           period: month,
           year: yearPeriod,
-          productCode: data.productCode.toString(),
-          productName: data.productName.toString()
+          productCode: (data.productCode || '').toString(),
+          productName: (data.productName || '').toString()
         }
       })
     },
@@ -71,6 +76,12 @@ const Report = ({ dispatch, fifoReport, app }) => {
           activeKey
         }
       }))
+    },
+    onShowCategories () {
+      dispatch({ type: 'productcategory/query' })
+    },
+    onShowBrands () {
+      dispatch({ type: 'productbrand/query' })
     }
   }
 
@@ -121,7 +132,9 @@ const Report = ({ dispatch, fifoReport, app }) => {
 Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object.isRequired,
-  fifoReport: PropTypes.object.isRequired
+  fifoReport: PropTypes.object.isRequired,
+  productcategory: PropTypes.object.isRequired,
+  productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ fifoReport, app }) => ({ fifoReport, app }))(Report)
+export default connect(({ fifoReport, productcategory, productbrand, app }) => ({ fifoReport, productcategory, productbrand, app }))(Report)

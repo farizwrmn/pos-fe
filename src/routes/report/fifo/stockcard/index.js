@@ -9,7 +9,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, fifoReport, loading, app }) => {
-  const { listRekap, period, year, productCode, productName } = fifoReport
+  const { listRekap, period, year, listProduct } = fifoReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
@@ -17,8 +17,6 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     user,
     period,
     year,
-    productCode,
-    productName,
     onListReset () {
       dispatch({
         type: 'fifoReport/setNull'
@@ -34,8 +32,9 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     period,
     year,
     loading: loading.effects['fifoReport/queryProductCode'],
-    productCode,
-    productName,
+    // productCode,
+    // productName,
+    listProduct,
     onListReset () {
       dispatch({
         type: 'fifoReport/setNull'
@@ -47,8 +46,8 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
         payload: {
           period: month,
           year: yearPeriod,
-          productCode: data.productCode.toString(),
-          productName: data.productName.toString()
+          productCode: (data.productCode || '').toString(),
+          productName: (data.productName || '').toString()
         }
       })
     },

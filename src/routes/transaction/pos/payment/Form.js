@@ -105,22 +105,6 @@ const formPayment = ({
     })
   }
 
-  // const browse = () => {
-  //   clickBrowse()
-  // }
-
-  // const menu = (
-  //   <Menu>
-  //     <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-  //     <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
-  //   </Menu>
-  // )
-
-  // const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-  //   <Button style={{ marginLeft: 8 }}>
-  //     <Icon type="printer" /> Print
-  //   </Button>
-  // </Dropdown> </div>)
   const listProps = {
     dataSource: listAmount,
     editList (data) {
@@ -257,11 +241,7 @@ const formPayment = ({
             })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
           </FormItem>
         </Col>
-        <Col lg={8} md={12} sm={24}>
-          {/* <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total Cash" {...formItemLayout}>
-            <Input value={curNetto} style={{ width: '100%', fontSize: '17pt' }} size="large" />
-          </FormItem> */}
-        </Col>
+        <Col lg={8} md={12} sm={24} />
       </Row>
       <FormItem {...formItemLayout}>
         <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>

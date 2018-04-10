@@ -104,8 +104,11 @@ const formService = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.serviceCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
-          onCancel () {}
+          onCancel () { }
         })
       } else {
         message.warning("Service Code can't be null")
@@ -148,7 +151,7 @@ const formService = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={30} />)}
+                })(<Input disabled={disabled} maxLength={30} autoFocus />)}
               </FormItem>
               <FormItem label="Service" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('serviceName', {

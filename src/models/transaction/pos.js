@@ -113,12 +113,6 @@ export default {
             }
           })
         }
-        // else if (location.pathname === '/transaction/pos/payment') {
-        //   dispatch({
-        //     type: 'sequenceQuery',
-        //     payload: 'WO'
-        //   })
-        // }
       })
     }
   },
@@ -300,9 +294,9 @@ export default {
     * queryPosDetail ({ payload }, { call, put }) {
       const data = yield call(queryDetail, payload)
       const PosData = yield call(queryaPos, payload)
-      const member = yield call(queryMemberCode, { memberCode: payload.data.memberCode })
+      const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const mechanic = yield call(queryMechanicCode, payload.data.technicianId)
+      const mechanic = payload.data.technicianId ? yield call(queryMechanicCode, payload.data.technicianId) : {}
       if (data) {
         yield put({
           type: 'querySuccessPaymentDetail',
@@ -321,9 +315,9 @@ export default {
               chassisNo: PosData.pos.chassisNo,
               machineNo: PosData.pos.machineNo
             },
-            memberPrint: member.data, // data member
-            companyPrint: company.data, // data company
-            mechanicPrint: mechanic.mechanic // data mechanic
+            memberPrint: (member.data || ''), // data member
+            companyPrint: (company.data || ''), // data company
+            mechanicPrint: (mechanic.mechanic || '') // data mechanic
           }
         })
         let dataPos = []
@@ -596,24 +590,23 @@ export default {
       }
     },
 
-    * getServices ({ payload }, { call, put }) {
+    * getServices ({ payload = {} }, { call, put }) {
       const data = yield call(queryService, payload)
-      let newData = payload ? data.service : data.data
       if (data.data !== null) {
         yield put({
           type: 'queryGetServicesSuccess',
           payload: {
-            serviceInformation: newData,
-            tmpServiceList: newData
+            serviceInformation: data.data,
+            tmpServiceList: data.data
           }
         })
         yield put({
           type: 'updateState',
           payload: {
             pagination: {
-              total: newData.length,
-              page: 1,
-              pageSize: 10
+              total: data.total,
+              page: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
             }
           }
         })
@@ -725,6 +718,9 @@ export default {
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
+        if (temp[0].exception01) {
+          return false
+        }
         return true
       }
       if (listProductData.data.length > 0) {
@@ -804,6 +800,9 @@ export default {
         console.log('price', price)
         console.log('cost', cost)
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
+          return false
+        }
+        if (temp[0].exception01) {
           return false
         }
         return true
@@ -1249,7 +1248,6 @@ export default {
         for (let n = 0; n < 10; n += 1) {
           let tempQueue = `queue${n + 1}`
           if (queue.hasOwnProperty(tempQueue)) {
-            console.log(queue.queue2)
             console.log('this', `${tempQueue} already exists`)
           } else if (`${queue.hasOwnProperty(tempQueue)}`) {
             // set Object by string value
@@ -1460,9 +1458,7 @@ export default {
 
     queryGetServicesSuccess (state, action) {
       const { serviceInformation, tmpServiceList } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      let a = dataPos
-      let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+      let grandTotal = (JSON.parse(localStorage.getItem('cashier_trans')) || []).reduce((cnt, o) => { return cnt + o.total }, 0)
 
       return {
         ...state,

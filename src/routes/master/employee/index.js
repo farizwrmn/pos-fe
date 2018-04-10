@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../components'
 
 const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
-  const { list, newItem, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
+  const { list, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
   const { listLovJobPosition } = jobposition
   const { listCity } = city
   const { user, storeInfo } = app
@@ -67,6 +67,13 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
       dispatch({
         type: 'city/query'
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -80,34 +87,23 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     activeKey,
     loading: loading.effects['employee/querySequenceEmployee'],
     changeTab (key) {
-      if (key === '0') {
-        dispatch({
-          type: 'employee/querySequenceEmployee'
-        })
-        dispatch({
-          type: 'employee/updateState',
-          payload: {
-            activeKey: key,
-            modalType: 'add',
-            disable: ''
-          }
-        })
-      } else {
-        dispatch({
-          type: 'employee/updateState',
-          payload: {
-            activeKey: key,
-            modalType: 'add',
-            disable: '',
-            currentItem: {}
-          }
-        })
-      }
-      // if (key === '1') {
-      //   dispatch({
-      //     type: 'employee/query',
-      //   })
-      // }
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          activeKey: key,
+          modalType: 'add',
+          disable: '',
+          currentItem: {}
+        }
+      })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({
         type: 'employee/querySequence',
         payload: {
@@ -159,15 +155,12 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
           data
         }
       })
-      dispatch({
-        type: 'employee/updateState',
-        payload: {
-          modalType: 'add',
-          activeKey: '0',
-          currentItem: {},
-          disable: ''
-        }
-      })
+      // dispatch({
+      //   type: 'employee/updateState',
+      //   payload: {
+      //     disable: ''
+      //   }
+      // })
       dispatch({ type: 'employee/querySequenceEmployee' })
     },
     showPosition () {
@@ -182,29 +175,9 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     }
   }
 
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'employee/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
-  }
-
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

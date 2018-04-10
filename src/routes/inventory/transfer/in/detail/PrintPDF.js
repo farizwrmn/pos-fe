@@ -17,9 +17,9 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.productName).toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
@@ -133,7 +133,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
                 alignment: 'center'
               },
               {
-                text: `page: ${currentPage.toString()} of ${pageCount} \n`,
+                text: `page: ${(currentPage || 0).toString()} of ${pageCount} \n`,
                 fontSize: 9,
                 margin: [0, 10, 0, 10],
                 alignment: 'right'
@@ -172,7 +172,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
               alignment: 'center'
             },
             {
-              text: `page: ${currentPage.toString()} of ${pageCount} \n`,
+              text: `page: ${(currentPage || 0).toString()} of ${pageCount} \n`,
               fontSize: 9,
               margin: [0, 20, 0, 40],
               alignment: 'right'

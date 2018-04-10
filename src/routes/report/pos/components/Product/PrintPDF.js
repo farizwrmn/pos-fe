@@ -15,8 +15,8 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate, productCode }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.Qty.toString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.qty || '').toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: data.Total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.Total) - parseFloat(data.discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
@@ -118,7 +118,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate, productCode }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

@@ -37,7 +37,7 @@ const RepeatReport = ({
     } else {
       let contentPdf = []
       for (let i = 0; i < tableBody.length; i += 1) {
-        contentPdf.push(tableTitle[i])
+        if (tableTitle[i]) contentPdf.push(tableTitle[i])
         contentPdf.push(
           {
             writable: true,

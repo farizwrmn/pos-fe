@@ -108,11 +108,11 @@ const formProductCategory = ({
       const data = {
         ...getFieldsValue()
       }
-      data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
-      data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
-      data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      data.dayLifetime = data.dayLifetime || 0
-      data.kmLifetime = data.kmLifetime || 0
+      data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
+      data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
+      data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
+      data.usageTimePeriod = data.usageTimePeriod || 0
+      data.usageMileage = data.usageMileage || 0
       let valid = true
       if (modalType === 'add') {
         if (data.productCode !== data.dummyCode) {
@@ -125,6 +125,9 @@ const formProductCategory = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.productCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -148,48 +151,6 @@ const formProductCategory = ({
     onShowPDFModal(mode)
   }
 
-
-  // const getDataUri = (url, callback) => {
-  //   let image = new Image()
-
-  //   image.onload = function () {
-  //     let canvas = document.createElement('canvas')
-  //     canvas.width = this.naturalWidth
-  //     canvas.height = this.naturalHeight
-
-  //     canvas.getContext('2d').drawImage(this, 0, 0)
-
-  //     // Get raw image data
-  //     callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''))
-
-  //     // ... or get as Data URI
-  //     callback(canvas.toDataURL('image/png'))
-  //   }
-
-  //   image.src = url
-  // }
-
-  // const getLogo = () => {
-  //   getDataUri(config.logo, (dataUri) => {
-  //     convertImage(dataUri)
-  //   })
-  // }
-
-  // const btnSticker = {
-  //   style: { backgroundColor: 'transparent', border: 'none', padding: 0 },
-  //   onClick () {
-  //     if (dataSource.length === 0) {
-  //       Modal.warning({
-  //         title: 'Empty Data',
-  //         content: 'No Data in Storage'
-  //       })
-  //     } else {
-  //       onShowModal()
-  //       getLogo()
-  //     }
-  //   }
-  // }
-
   const menu = (
     <Menu>
       <Menu.Item key="1"><Button onClick={() => openPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
@@ -201,29 +162,29 @@ const formProductCategory = ({
 
   let moreButtonTab
   switch (activeKey) {
-  case '0':
-    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
-    break
-  case '1':
-    moreButtonTab = (
-      <div>
-        <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
-        <Dropdown overlay={menu}>
-          <Button style={{ marginLeft: 8 }} icon="printer">
+    case '0':
+      moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+      break
+    case '1':
+      moreButtonTab = (
+        <div>
+          <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+          <Dropdown overlay={menu}>
+            <Button style={{ marginLeft: 8 }} icon="printer">
               Print
-          </Button>
-        </Dropdown>
-      </div>
-    )
-    break
-  case '2':
-    moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-    break
-  case '3':
-    moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-    break
-  default:
-    break
+            </Button>
+          </Dropdown>
+        </div>
+      )
+      break
+    case '2':
+      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      break
+    case '3':
+      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+      break
+    default:
+      break
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -315,7 +276,7 @@ const formProductCategory = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} />)}
+                  })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
                 </FormItem>
                 <FormItem label="Product Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('productName', {

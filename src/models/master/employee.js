@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { routerRedux } from 'dva/router'
 import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
@@ -23,32 +24,31 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     sequence: '',
     disable: '',
-    show: 1,
-    newItem: false
+    show: 1
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         switch (location.pathname) {
-        case '/master/employee':
-          dispatch({
-            type: 'querySequenceEmployee'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              activeKey: '0'
-            }
-          })
-          break
-        case '/report/service/history':
-          dispatch({
-            type: 'query'
-          })
-          break
-        default:
+          case '/master/employee':
+            dispatch({
+              type: 'querySequenceEmployee'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'query'
+            })
+            break
+          default:
         }
       })
     }
@@ -80,6 +80,7 @@ export default modelExtend(pageModel, {
       }
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
+        console.log(sequence)
         yield put({ type: 'updateState', payload: { sequence: sequence.data, ...payload } })
       }
     },
@@ -120,8 +121,21 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'querySequenceEmployee'
           })
-          yield put({ type: 'updateState', payload: { newItem: true } })
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {}
+            }
+          })
         } else {
+          let current = Object.assign({}, payload.id, payload.data)
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: current
+            }
+          })
           throw data
         }
       } else {
@@ -137,8 +151,29 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success(id)
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: current
+          }
+        })
         throw data
       }
     },

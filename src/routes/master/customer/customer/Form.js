@@ -16,7 +16,7 @@ const formItemLayout = {
   labelCol: {
     xs: { span: 13 },
     sm: { span: 8 },
-    md: { span: 7 }
+    md: { span: 8 }
   },
   wrapperCol: {
     xs: { span: 11 },
@@ -124,6 +124,9 @@ const formCustomer = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.memberCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -201,6 +204,42 @@ const formCustomer = ({
           <Form layout="horizontal">
             <Row>
               <Col {...column}>
+                <FormItem label="Member Group Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberGroupId', {
+                    initialValue: item.memberGroupId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    autoFocus
+                    placeholder="Select Member Group Name"
+                    optionFilterProp="children"
+                    onFocus={customerGroup}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenGroup}
+                  </Select>)}
+                </FormItem>
+                <FormItem label="Member Type Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('memberTypeId', {
+                    initialValue: item.memberTypeId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    placeholder="Select Member Type Name"
+                    optionFilterProp="children"
+                    mode="default"
+                    onFocus={customerType}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{childrenType}
+                  </Select>)}
+                </FormItem>
                 <FormItem label="Member Code" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberCode', {
                     initialValue: item.memberCode,
@@ -224,37 +263,6 @@ const formCustomer = ({
                       }
                     ]
                   })(<Input maxLength={50} />)}
-                </FormItem>
-                <FormItem label="Member Group Name" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('memberGroupId', {
-                    initialValue: item.memberGroupId,
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    optionFilterProp="children"
-                    onFocus={customerGroup}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >{childrenGroup}
-                  </Select>)}
-                </FormItem>
-                <FormItem label="Member Type Name" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('memberTypeId', {
-                    initialValue: item.memberTypeId,
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    optionFilterProp="children"
-                    mode="default"
-                    onFocus={customerType}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >{childrenType}
-                  </Select>)}
                 </FormItem>
                 <FormItem label="ID Type" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idType', {

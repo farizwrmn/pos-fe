@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../../components'
 
 const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
-  const { listType, newItem, listSellprice, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
+  const { listType, listSellprice, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -56,6 +56,13 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -85,6 +92,14 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
           disable: ''
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({ type: 'customertype/resetCustomerTypeList' })
     },
     onShowHideSearch () {
@@ -102,7 +117,7 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     ...tabProps,
     ...filterProps,
     listSellprice,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
@@ -110,44 +125,12 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
         type: `customertype/${modalType}`,
         payload: data
       })
-      dispatch({
-        type: 'customertype/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
-        }
-      })
-      // if (key === '1') {
-      //   dispatch({
-      //     type: 'customertype/query',
-      //   })
-      // }
     }
-  }
-
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'customertype/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
   }
 
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

@@ -255,13 +255,13 @@ export default {
         let listNotificationDetail = data.data
         for (let key in listNotificationDetail) {
           switch (listNotificationDetail[key].notificationCode) {
-          case 'SML':
-            Object.assign(listNotificationDetail[key], { route: '/report/product/stock/quantity-alerts' })
-            break
-          case 'SPC':
-            Object.assign(listNotificationDetail[key], { route: '/dashboard' })
-            break
-          default:
+            case 'SML':
+              Object.assign(listNotificationDetail[key], { route: '/report/product/stock/quantity-alerts' })
+              break
+            case 'SPC':
+              Object.assign(listNotificationDetail[key], { route: '/dashboard' })
+              break
+            default:
           }
         }
         yield put({ type: 'updateState', payload: { listNotificationDetail } })

@@ -60,7 +60,7 @@ const Filter = ({
 
   const modalChoiceProps = {
     visible: showChoice,
-    footer: [],
+    footer: null,
     width: 375,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',

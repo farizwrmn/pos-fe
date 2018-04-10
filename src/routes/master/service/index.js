@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
+// import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../components'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, newItem, listServiceType, modalType, currentItem, activeKey, disable, show } = service
+  const { list, pagination, listServiceType, modalType, currentItem, activeKey, disable, show } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -13,24 +14,63 @@ const Service = ({ service, loading, dispatch, location, app }) => {
       ...location.query
     },
     onFilterChange (value) {
+      // dispatch({
+      //   type: 'service/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
+    },
+    // onResetClick () {
+    // dispatch({ type: 'service/resetServiceList' })
+    // }
+    onResetClick () {
+      const { query, pathname } = location
+      const { activeKey } = query
+
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          activeKey: activeKey || '0'
+        }
+      }))
       dispatch({
-        type: 'service/query',
+        type: 'service/updateState',
         payload: {
-          ...value
+          searchText: null
         }
       })
-    },
-    onResetClick () {
-      dispatch({ type: 'service/resetServiceList' })
     }
   }
 
   const listProps = {
     dataSource: list,
     user,
+    pagination,
     storeInfo,
     loading: loading.effects['service/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'service/updateState',
@@ -41,6 +81,13 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -62,6 +109,14 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           disable: ''
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({ type: 'service/resetServiceList' })
     },
     clickBrowse () {
@@ -87,7 +142,7 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     ...filterProps,
     ...listProps,
     listServiceType,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -98,39 +153,12 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           data
         }
       })
-      dispatch({
-        type: 'service/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
-        }
-      })
     }
-  }
-
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'service/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
   }
 
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

@@ -106,11 +106,11 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
 
 const messageInfo = (info, type = 'info', duration = 3) => {
   switch (type) {
-  case 'success':
-    message.success(info, duration)
-    break
-  default:
-    message.info(info, duration)
+    case 'success':
+      message.success(info, duration)
+      break
+    default:
+      message.info(info, duration)
   }
 }
 

@@ -17,18 +17,18 @@ const ModalBrowse = ({
 }) => {
   const getDataSource = () => {
     switch (modalType) {
-    case 'unit': return listUnit
-    case 'member': return listMember
-    case 'mechanic': return listMechanic
-    default:
+      case 'unit': return listUnit
+      case 'member': return listMember
+      case 'mechanic': return listMechanic
+      default:
     }
   }
   const getItem = (e) => {
     switch (modalType) {
-    case 'unit': return { policeNo: e.policeNo, policeNoId: e.id }
-    case 'member': return { memberId: e.id, memberCode: e.memberCode, memberName: e.memberName, policeNo: null, policeNoId: null, lastMeter: null }
-    case 'mechanic': return { technicianId: e.employeeId, technicianName: e.employeeName }
-    default:
+      case 'unit': return { policeNo: e.policeNo, policeNoId: e.id }
+      case 'member': return { memberId: e.id, memberCode: e.memberCode, memberName: e.memberName, policeNo: null, policeNoId: null, lastMeter: null }
+      case 'mechanic': return { technicianId: e.employeeId, technicianName: e.employeeName }
+      default:
     }
   }
   const modalOpts = {
@@ -43,10 +43,10 @@ const ModalBrowse = ({
 
   const getComponent = () => {
     switch (modalType) {
-    case 'unit': return <ListUnit {...modalOpts} />
-    case 'member': return <ListMember {...modalOpts} />
-    case 'mechanic': return <ListMechanic {...modalOpts} />
-    default:
+      case 'unit': return <ListUnit {...modalOpts} />
+      case 'member': return <ListMember {...modalOpts} />
+      case 'mechanic': return <ListMechanic {...modalOpts} />
+      default:
     }
   }
   return (
