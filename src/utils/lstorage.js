@@ -44,11 +44,11 @@ const getStorageKey = (key) => {
     const rdmText = encrypt(localIds[0])
     pair[0] = localIds[0]
     switch (key) {
-    case 'uelor':
-      pair[1] = JSON.parse(decrypt(localIds[1], rdmText) || '')
-      break
-    default:
-      pair[1] = decrypt(localIds[1], rdmText) || ''
+      case 'uelor':
+        pair[1] = JSON.parse(decrypt(localIds[1], rdmText) || '')
+        break
+      default:
+        pair[1] = decrypt(localIds[1], rdmText) || ''
     }
     pair[2] = decrypt(localIds[2], rdmText) || ''
     pair[3] = decrypt(localIds[3], rdmText) || ''
