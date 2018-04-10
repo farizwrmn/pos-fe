@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -20,7 +21,6 @@ export default modelExtend(pageModel, {
     disable: '',
     searchText: '',
     show: 1,
-    newItem: false,
     showModal: false,
     stickerQty: 1,
     logo: '',
@@ -42,16 +42,15 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
-        if (location.pathname === '/master/product/stock') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              newItem: false,
-              changed: false,
-              activeKey: activeKey || '0',
-              listSticker: []
-            }
-          })
+        dispatch({
+          type: 'updateState',
+          payload: {
+            changed: false,
+            activeKey: activeKey || '0',
+            listSticker: []
+          }
+        })
+        if (location.pathname === '/master/product/stock' && activeKey === '1') {
           dispatch({
             type: 'query',
             payload: other
@@ -119,8 +118,21 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: current
+          }
+        })
         throw data
       }
     },
@@ -132,9 +144,29 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true, modalType: 'add', currentItem: {} } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
-        yield put({ type: 'updateState', payload: { modalType: 'edit' } })
+        let current = Object.assign({}, payload.id, payload.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: current
+          }
+        })
         throw data
       }
     }

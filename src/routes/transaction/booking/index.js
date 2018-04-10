@@ -89,7 +89,7 @@ const Booking = ({ booking, dispatch, app }) => {
         getBadge = (<Badge dot
           text="Reschedule"
           style={{
-            backgroundColor: color.peach,
+            backgroundColor: color.lavenderrose,
             position: 'relative',
             display: 'inline-block',
             top: 0,

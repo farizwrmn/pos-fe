@@ -37,7 +37,7 @@ export async function edit (params) {
 }
 
 export async function remove (params) {
-  const url = params.id.groupCode ? `${city}/${encodeURIComponent(params.id.groupCode)}` : city
+  const url = params.id ? `${city}/${encodeURIComponent(params.id)}` : city
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

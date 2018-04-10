@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
+// import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../components'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, newItem, pagination, listServiceType, modalType, currentItem, activeKey, disable, show } = service
+  const { list, pagination, listServiceType, modalType, currentItem, activeKey, disable, show } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -81,6 +81,13 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -103,22 +110,14 @@ const Service = ({ service, loading, dispatch, location, app }) => {
         }
       })
       const { query, pathname } = location
-      if (key === '1') {
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-      } else {
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
-      }
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
+      dispatch({ type: 'service/resetServiceList' })
     },
     clickBrowse () {
       dispatch({
@@ -143,7 +142,7 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     ...filterProps,
     ...listProps,
     listServiceType,
-    item: modalType === 'add' ? {} : currentItem,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -154,39 +153,12 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           data
         }
       })
-      dispatch({
-        type: 'service/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
-        }
-      })
     }
-  }
-
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'service/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
   }
 
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

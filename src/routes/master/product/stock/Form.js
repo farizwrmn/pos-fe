@@ -108,9 +108,9 @@ const formProductCategory = ({
       const data = {
         ...getFieldsValue()
       }
-      data.active = data.active === undefined || data.active === 0 || data.active === false ? 0 : 1
-      data.trackQty = data.trackQty === undefined || data.trackQty === 0 || data.trackQty === false ? 0 : 1
-      data.exception01 = data.exception01 === undefined || data.exception01 === 0 || data.exception01 === false ? 0 : 1
+      data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
+      data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
+      data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
       data.usageTimePeriod = data.usageTimePeriod || 0
       data.usageMileage = data.usageMileage || 0
       let valid = true
@@ -125,6 +125,9 @@ const formProductCategory = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.productCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })

@@ -162,6 +162,24 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       console.log(e)
     }
   }
+  // tableBody.push(
+  //   [
+  //     [
+  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
+  //       {},
+  //       {},
+  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
+  //       {},
+  //       {},
+  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
+  //       {},
+  //       {},
+  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
+  //       {},
+  //       {}
+  //     ]
+  //   ]
+  // )
 
   const header = {
     stack: [
@@ -197,7 +215,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
         ]
       }
     ],
-    margin: [20, 12, 20, 30]
+    margin: [20, 40, 20, 30]
   }
 
   const footer = (currentPage, pageCount) => {

@@ -139,7 +139,7 @@ export default function request (options) {
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      msg = data.message || statusText
+      msg = data.detail || statusText
     } else {
       statusCode = 600
       if (Object.prototype.hasOwnProperty.call(error, 'message')) {

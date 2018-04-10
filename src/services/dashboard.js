@@ -1,7 +1,7 @@
-import { request, config } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
 const { api } = config
-const { dashboard, ipaddr } = api
+const { dashboard, ipaddr, dashboards } = api
 
 // export async function myCity (params) {
 //   return request({
@@ -29,5 +29,35 @@ export async function getIpAddr (params) {
     url: ipaddr,
     method: 'get',
     data: params
+  })
+}
+
+export async function getNotifications () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${dashboards}/header`,
+    method: 'post',
+    data: { store: lstorage.getCurrentUserStore() },
+    headers: apiHeaderToken
+  })
+}
+
+export async function getListNotifications () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${dashboards}/notification`,
+    method: 'post',
+    data: { store: lstorage.getCurrentUserStore() },
+    headers: apiHeaderToken
+  })
+}
+
+export async function refreshNotifications () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${dashboards}/notification/refresh`,
+    method: 'post',
+    data: { store: lstorage.getCurrentUserStore() },
+    headers: apiHeaderToken
   })
 }

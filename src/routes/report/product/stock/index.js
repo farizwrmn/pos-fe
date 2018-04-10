@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'dva'
-import moment from 'moment'
 import List from './List'
 import Filter from './Filter'
 
@@ -44,13 +43,13 @@ const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
     },
     onShowStockInTransit () {
       dispatch({
-        type: 'productstockReport/queryTransferStockOut',
-        payload: {
-          // start,
-          // end
-          start: moment().startOf('month').format('YYYY-MM-DD'),
-          end: moment().endOf('month').format('YYYY-MM-DD')
-        }
+        type: 'productstockReport/queryTransferStockOut'
+        // payload: {
+        //   // start,
+        //   // end
+        //   start: moment().startOf('month').format('YYYY-MM-DD'),
+        //   end: moment().endOf('month').format('YYYY-MM-DD')
+        // }
       })
       dispatch({
         type: 'productstockReport/updateState',

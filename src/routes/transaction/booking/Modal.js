@@ -122,7 +122,7 @@ const modal = ({
               case 'Reschedule':
                 badge = (<Badge dot
                   style={{
-                    backgroundColor: color.peach,
+                    backgroundColor: color.lavenderrose,
                     position: 'relative',
                     display: 'inline-block',
                     top: 0,
@@ -236,7 +236,7 @@ const modal = ({
             case 'Reschedule':
               badge = (<Badge dot
                 style={{
-                  backgroundColor: color.peach,
+                  backgroundColor: color.lavenderrose,
                   position: 'relative',
                   display: 'inline-block',
                   top: 0,
@@ -256,6 +256,7 @@ const modal = ({
               />)
               break
             default:
+              break
           }
           return (
             <li>
@@ -267,6 +268,11 @@ const modal = ({
     </ul>
     ) : []
   }
+
+  for (let key in month) {
+    full[key] = groupByStatus(month[key], 'status')
+  }
+
   const calendarProps = {
     dateCellRender,
     monthCellRender,

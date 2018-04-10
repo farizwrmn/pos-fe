@@ -102,6 +102,9 @@ const formCity = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })

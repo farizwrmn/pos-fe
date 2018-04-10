@@ -120,6 +120,9 @@ const formEmployee = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.employeeId, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -153,7 +156,7 @@ const formEmployee = ({
             <Col {...column}>
               <FormItem label="Employee ID" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeId', {
-                  initialValue: sequence,
+                  initialValue: item.employeeId || sequence,
                   rules: [
                     {
                       required: true,

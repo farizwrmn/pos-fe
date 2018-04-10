@@ -109,6 +109,9 @@ const formSupplier = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.supplierCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })

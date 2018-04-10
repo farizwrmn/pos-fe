@@ -200,7 +200,7 @@ export default {
     }
   },
   effects: {
-    * query ({ payload = {} }, { call, put }) {
+    * query (payload, { call, put }) {
       const last7day = moment().add(-6, 'days').format('YYYY-MM-DD')
       const today = moment().format('YYYY-MM-DD')
       const start = moment().add(-6, 'days')

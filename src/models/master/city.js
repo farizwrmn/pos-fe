@@ -1,4 +1,5 @@
 import modelExtend from 'dva-model-extend'
+import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from '../../services/city'
 import { pageModel } from './../common'
@@ -19,19 +20,18 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listCity: [],
-    show: 1,
-    newItem: false
+    show: 1
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         if (location.pathname === '/master/city') {
           dispatch({
             type: 'updateState',
             payload: {
-              newItem: false,
-              activeKey: '0'
+              activeKey: activeKey || '0'
             }
           })
         }
@@ -74,8 +74,20 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     },
@@ -87,8 +99,29 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'query' })
         success()
-        yield put({ type: 'updateState', payload: { newItem: true } })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
+        // window.location = `${location.origin}/master/city?activeKey=1`
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
         throw data
       }
     }
@@ -113,12 +146,14 @@ export default modelExtend(pageModel, {
 
     querySuccessCity (state, action) {
       const { listCity, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listCity,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     }
 
   }

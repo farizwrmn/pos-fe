@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import { Modal, Select } from 'antd'
 import { configMain } from 'utils'
+import { Modal, Select } from 'antd'
 import { query as queryPos, updatePosHeader } from '../services/payment'
 import { pageModel } from './common'
 

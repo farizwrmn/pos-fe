@@ -62,13 +62,13 @@ const column = {
 }
 
 const formCustomerType = ({
-  item = {},
+  item,
   onSubmit,
   listItem,
   disabled,
   clickBrowse,
   activeKey,
-  dataCustomer,
+  customerInfo,
   button,
   modalVisible,
   ...tabProps,
@@ -84,8 +84,9 @@ const formCustomerType = ({
   }
 }) => {
   const { openModal } = modalProps
+  Object.assign(modalProps, { activeKey })
 
-  printProps.dataCustomer = dataCustomer
+  printProps.dataCustomer = customerInfo
 
   const handleReset = () => {
     resetFields()
@@ -104,13 +105,15 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue()
       }
-
       const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(other)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })
@@ -134,39 +137,39 @@ const formCustomerType = ({
     <div>
       <FormItem label="Member Code" {...formItemLayout} >
         {getFieldDecorator('memberCode', {
-          initialValue: dataCustomer.memberCode
+          initialValue: customerInfo.memberCode
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Name" {...formItemLayout}>
         {getFieldDecorator('memberName', {
-          initialValue: dataCustomer.memberName
+          initialValue: customerInfo.memberName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="BirthDate" {...formItemLayout}>
         {getFieldDecorator('birthDate', {
-          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : ''
+          initialValue: customerInfo.birthDate ? moment(customerInfo.birthDate).format('MMMM Do YYYY') : ''
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="City" {...formItemLayout}>
         {getFieldDecorator('cityName', {
-          initialValue: dataCustomer.cityName
+          initialValue: customerInfo.cityName
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Address" {...formItemLayout}>
         {getFieldDecorator('address01', {
-          initialValue: dataCustomer.address01
+          initialValue: customerInfo.address01
         })(<Input disabled />)}
       </FormItem>
       <FormItem label="Member Type" {...formItemLayout}>
         {getFieldDecorator('memberTypeName', {
-          initialValue: dataCustomer.memberTypeName
+          initialValue: customerInfo.memberTypeName
         })(<Input disabled />)}
       </FormItem>
     </div>
   )
 
   const collapseActiveKey = '1'
-  const collapseTitle = dataCustomer.memberCode ? `Customer Info(${dataCustomer.memberCode})` : 'Customer Info'
+  const collapseTitle = customerInfo.memberCode ? `Customer Info(${customerInfo.memberCode})` : 'Customer Info'
 
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
@@ -271,7 +274,7 @@ formCustomerType.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   listItem: PropTypes.object,
-  dataCustomer: PropTypes.object,
+  customerInfo: PropTypes.object,
   onSubmit: PropTypes.func,
   clickBrowse: PropTypes.func,
   changeTab: PropTypes.func,

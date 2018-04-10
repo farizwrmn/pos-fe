@@ -5,7 +5,7 @@ import { Modal } from 'antd'
 import { ModalList } from '../../../components'
 
 
-const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
+const ModalBrowse = ({ ...modalProps, activeKey, customer, loading, dispatch }) => {
   const { listCustomer, searchText, pagination } = customer
   const width = '80%'
   const modalOpts = {
@@ -70,10 +70,18 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
       })
     },
     onClickRow (record) {
+      if (activeKey === '1') {
+        dispatch({
+          type: 'customerunit/query',
+          payload: {
+            code: record.memberCode
+          }
+        })
+      }
       dispatch({
-        type: 'customerunit/query',
+        type: 'customerunit/updateState',
         payload: {
-          code: record.memberCode
+          customerInfo: record
         }
       })
       dispatch({

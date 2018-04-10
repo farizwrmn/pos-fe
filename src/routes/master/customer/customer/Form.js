@@ -124,6 +124,9 @@ const formCustomer = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.memberCode, data)
+            setTimeout(() => {
+              resetFields()
+            }, 500)
           },
           onCancel () { }
         })

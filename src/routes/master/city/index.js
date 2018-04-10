@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
-import { NewForm } from '../../components'
 
 const City = ({ city, loading, dispatch, location, app }) => {
-  const { listCity, newItem, modalType, currentItem, activeKey, disable, show } = city
+  const { listCity, modalType, currentItem, activeKey, disable, show } = city
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -42,6 +42,13 @@ const City = ({ city, loading, dispatch, location, app }) => {
           disable: 'disabled'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
       dispatch({
         type: 'city/query'
       })
@@ -66,6 +73,14 @@ const City = ({ city, loading, dispatch, location, app }) => {
           disable: ''
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
       dispatch({ type: 'city/resetCityList' })
     },
     clickBrowse () {
@@ -91,20 +106,14 @@ const City = ({ city, loading, dispatch, location, app }) => {
     ...filterProps,
     ...listProps,
     listCity,
-    item: modalType === 'add' ? {} : currentItem,
+    dispatch,
+    item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
         type: `city/${modalType}`,
         payload: data
-      })
-      dispatch({
-        type: 'city/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
-        }
       })
     },
     showCities () {
@@ -114,29 +123,9 @@ const City = ({ city, loading, dispatch, location, app }) => {
     }
   }
 
-  const page = (boolean) => {
-    let currentPage
-    if (boolean) {
-      const newFormProps = {
-        onClickNew () {
-          dispatch({
-            type: 'city/updateState',
-            payload: {
-              newItem: false
-            }
-          })
-        }
-      }
-      currentPage = <NewForm {...newFormProps} />
-    } else {
-      currentPage = <Form {...formProps} />
-    }
-    return currentPage
-  }
-
   return (
     <div className="content-inner">
-      {page(newItem)}
+      <Form {...formProps} />
     </div>
   )
 }

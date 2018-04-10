@@ -14,7 +14,6 @@ export async function query (params) {
 
 export async function queryByCode (params) {
   const url = params.memberCode ? `${customers}/${encodeURIComponent(params.memberCode)}` : `${customers}/${encodeURIComponent(params.data.memberCode)}`
-  console.log(url)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -80,7 +79,6 @@ export async function removeUnit (params) {
 }
 
 export async function edit (params) {
-  console.log(params, 'params')
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${customers}/${params.id}` : customers
   return request({
@@ -92,7 +90,6 @@ export async function edit (params) {
 }
 
 export async function editUnit (params) {
-  console.log(params, 'params')
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${customers}/${params.code}/units/${params.id}` : customers
   return request({
