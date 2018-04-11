@@ -219,6 +219,12 @@ export default modelExtend(pageModel, {
               yield put({ type: 'hidePopover' })
               yield put({ type: 'modalHide' })
             }
+          } else {
+            Modal.warning({
+              title: 'Something went wrong with transaction',
+              content: data.message
+            })
+            throw data
           }
         } else {
           Modal.warning({
