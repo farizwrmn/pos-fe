@@ -12,7 +12,7 @@ import enUS from 'antd/lib/locale-provider/en_US'
 import '../themes/index.less'
 import './app.less'
 import Error from './error'
-import ButtonIcon from '../../public/Notifications_button_24.png'
+import ButtonIcon from '../../public/icons/Notifications_button_24.svg'
 
 const { prefix, openPages, logo } = configMain
 
