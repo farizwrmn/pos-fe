@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import pathToRegexp from 'path-to-regexp'
+import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { Layout, Loader, Notification } from 'components'
 import { classnames, configMain } from 'utils'
@@ -11,7 +11,8 @@ import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
 import '../themes/index.less'
 import './app.less'
-// import Error from './error'
+import Error from './error'
+import ButtonIcon from '../../public/icons/Notifications_button_24.svg'
 
 const { prefix, openPages, logo } = configMain
 
@@ -21,14 +22,14 @@ let lastHref
 const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu,
-    // permissions,
+    permissions,
     totp, totpChecked,
     selectedDate, calendarMode, selectedMonth, listTotalBirthdayPerDate,
     listCustomerBirthday, listNotification, listNotificationDetail, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
-  // const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
-  // const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
+  const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
+  const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
   if (lastHref !== href) {
     NProgress.start()
@@ -269,7 +270,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     title: 'dmiPOS',
     options: {
       body: 'Thankyou for subcribe us!',
-      icon: 'http://georgeosddev.github.io/react-web-notification/example/Notifications_button_24.png',
+      icon: <ButtonIcon />,
       lang: 'en'
     }
   }
@@ -311,8 +312,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
             <Bread {...breadProps} />
             <div className={styles.container}>
               <div className={styles.content}>
-                {children}
-                {/* {hasPermission ? children : <Error />} */}
+                {loading.effects['app/query'] ? <Loader spinning={loading.effects['app/query']} /> :
+                  hasPermission ? children : <Error />}
               </div>
             </div>
             <Footer />
