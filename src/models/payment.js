@@ -16,7 +16,7 @@ const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 const { prefix } = configMain
-const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
+const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
 
 const { create, createDetail } = cashierService
 const { updateCashierTrans } = cashierTransService
@@ -296,13 +296,27 @@ export default {
         payload: transNo.data
       })
       if (company.success) {
-        let json = company.data[0]
-        let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
-        const data = JSON.parse(jsondata)
+        // let json = company.data[0]
+        // let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
+        // const data = JSON.parse(jsondata)
+        const tempCompany = lstorage.getCurrentUserStoreDetail()
+        // console.log('company', data)
+        // console.log('tempCompany', tempCompany)
+        const companyInfo = {
+          companyAddress: tempCompany.companyAddress01,
+          companyAddress02: tempCompany.companyAddress02,
+          companyName: tempCompany.companyName, // perlu store
+          contact: tempCompany.companyMobileNumber,
+          email: tempCompany.companyEmail, // perlu store
+          taxConfirmDate: tempCompany.taxConfirmDate, // perlu store
+          taxID: tempCompany.taxID, // perlu store
+          taxType: tempCompany.taxType // perlu store
+        }
+
         yield put({
           type: 'updateState',
           payload: {
-            companyInfo: data
+            companyInfo
           }
         })
       }
@@ -601,8 +615,9 @@ export default {
         const docDefinition = {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
-          pageMargins: [40, 170, 40, 150],
+          pageMargins: [40, 170, 40, 160],
           header: {
+            margin: [40, 12, 40, 30],
             stack: [
               { text: ' ', fontSize: headerFontSize, margin: [0, 0, 95, 0] },
               {
@@ -615,7 +630,7 @@ export default {
                         alignment: 'left'
                       },
                       {
-                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 65) : '',
+                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? `${(companyInfo.companyAddress || '').substring(0, 65)}-${(companyInfo.companyAddress02 || '').substring(0, 65)}` : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       },
@@ -656,7 +671,7 @@ export default {
               },
               {
                 table: {
-                  widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+                  widths: ['15%', '1%', '32%', '10%', '15%', '1%', '26%'],
                   body: [
                     [{ text: 'No Faktur', fontSize: headerFontSize }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: headerFontSize }, {}, { text: 'No Polisi/KM', fontSize: headerFontSize }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: headerFontSize }],
 
@@ -669,8 +684,7 @@ export default {
                 },
                 layout: 'noBorders'
               }
-            ],
-            margin: [30, 12, 12, 30]
+            ]
           },
           content: [
             dataPos.length > 0 ? table1 : {},
