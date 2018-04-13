@@ -12,6 +12,7 @@ import enUS from 'antd/lib/locale-provider/en_US'
 import '../themes/index.less'
 import './app.less'
 import Error from './error'
+import ButtonIcon from '../../public/Notifications_button_24.png'
 
 const { prefix, openPages, logo } = configMain
 
@@ -269,7 +270,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     title: 'dmiPOS',
     options: {
       body: 'Thankyou for subcribe us!',
-      icon: 'http://georgeosddev.github.io/react-web-notification/example/Notifications_button_24.png',
+      icon: <ButtonIcon />,
       lang: 'en'
     }
   }
@@ -311,7 +312,8 @@ const App = ({ children, dispatch, app, loading, location }) => {
             <Bread {...breadProps} />
             <div className={styles.container}>
               <div className={styles.content}>
-                {hasPermission ? children : <Error />}
+                {loading.effects['app/query'] ? <Loader spinning={loading.effects['app/query']} /> :
+                  hasPermission ? children : <Error />}
               </div>
             </div>
             <Footer />
