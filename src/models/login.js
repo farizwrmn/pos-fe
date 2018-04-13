@@ -4,7 +4,7 @@ import { configMain, configCompany, queryURL, lstorage, messageInfo } from 'util
 import { login, getUserRole, getUserStore, getUserCompany } from '../services/login'
 
 const { prefix } = configMain
-const { apiCompanyHost, apiCompanyPort } = configCompany.rest
+// const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 
 export default {
