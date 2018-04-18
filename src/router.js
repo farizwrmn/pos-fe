@@ -38,6 +38,14 @@ const Routers = function ({ history, app }) {
             }, 'login')
           }
         }, {
+          path: 'nps',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
           path: 'userprofile',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -343,8 +351,16 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/productstock'))
-              cb(null, require('./routes/report/product/stock'))
+              cb(null, require('./routes/report/notification/stockquantityalert'))
             }, 'report-product-stock-qty-alerts')
+          }
+        }, {
+          path: 'report/product/stock-in-transit',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/productstock'))
+              cb(null, require('./routes/report/notification/stockintransit'))
+            }, 'report-product-stock-in-transit')
           }
         }, {
           path: 'report/inventory/transfer',

@@ -4,7 +4,7 @@ import List from './List'
 import Filter from './Filter'
 
 const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
-  const { listProductsBelowQty, listStockInTransit, start, end, showStockInTransit } = productstockReport
+  const { listProductsBelowQty, start, end } = productstockReport
   const { user, storeInfo } = app
 
   const arrayList = []
@@ -20,8 +20,6 @@ const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
 
   const filterProps = {
     ...printProps,
-    showStockInTransit,
-    listStockInTransit,
     onSearchProduct (value) {
       dispatch({
         type: 'productstockReport/queryProductsBelowMinimum',
@@ -38,32 +36,6 @@ const ProductStockReport = ({ productstockReport, loading, dispatch, app }) => {
         payload: {
           start,
           end
-        }
-      })
-    },
-    onShowStockInTransit () {
-      dispatch({
-        type: 'productstockReport/queryTransferStockOut'
-        // payload: {
-        //   // start,
-        //   // end
-        //   start: moment().startOf('month').format('YYYY-MM-DD'),
-        //   end: moment().endOf('month').format('YYYY-MM-DD')
-        // }
-      })
-      dispatch({
-        type: 'productstockReport/updateState',
-        payload: {
-          showStockInTransit: true
-        }
-      })
-    },
-    onHideStockInTransit () {
-      dispatch({
-        type: 'productstockReport/updateState',
-        payload: {
-          showStockInTransit: false,
-          listStockInTransit: []
         }
       })
     }

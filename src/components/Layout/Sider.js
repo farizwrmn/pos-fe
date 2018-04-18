@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Cascader, Tooltip } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import styles from './Layout.less'
 import Menus from './Menu'
 import DateTime from './DateTime'
@@ -41,7 +42,8 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
 
   const handleChangeStore = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], localId[5], localId[6]], localId[0])
+    const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
     changeRole(value.toString())
     setInterval(() => { window.location.reload() }, 1000)
   }

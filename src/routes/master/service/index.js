@@ -6,7 +6,8 @@ import { connect } from 'dva'
 import Form from './Form'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, pagination, listServiceType, modalType, currentItem, activeKey, disable, show } = service
+  const { list, listServiceType, modalType, currentItem, activeKey, disable, show, pagination,
+    listPrintAllService, showPDFModal, mode, changed, serviceLoading } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -99,6 +100,12 @@ const Service = ({ service, loading, dispatch, location, app }) => {
 
   const tabProps = {
     activeKey,
+    list,
+    listPrintAllService,
+    showPDFModal,
+    mode,
+    changed,
+    serviceLoading,
     changeTab (key) {
       dispatch({
         type: 'service/updateState',
@@ -134,6 +141,41 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           show: !show
         }
       })
+    },
+    onShowPDFModal (mode) {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          showPDFModal: true,
+          mode
+        }
+      })
+    },
+    onHidePDFModal () {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllService: []
+        }
+      })
+    },
+    getAllService () {
+      dispatch({
+        type: 'service/queryAllService',
+        payload: {
+          type: 'all'
+        }
+      })
+      setTimeout(() => {
+        dispatch({
+          type: 'service/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     }
   }
 

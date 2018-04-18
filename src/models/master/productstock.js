@@ -42,18 +42,29 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
-        dispatch({
-          type: 'updateState',
-          payload: {
-            changed: false,
-            activeKey: activeKey || '0',
-            listSticker: []
+        const { pathname } = location
+        if (pathname === '/master/product/stock') {
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
           }
-        })
-        if (location.pathname === '/master/product/stock' && activeKey === '1') {
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+          }
           dispatch({
-            type: 'query',
-            payload: other
+            type: 'updateState',
+            payload: {
+              changed: false,
+              activeKey: activeKey || '0',
+              listSticker: []
+            }
           })
         }
       })

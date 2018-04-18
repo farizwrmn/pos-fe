@@ -72,8 +72,6 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const notifications = yield call(getNotifications, payload)
-        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
-
         const { data } = yield call(menusService.query)
         const { permissions } = user
 
@@ -152,7 +150,9 @@ export default {
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
-      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data, visibleItem: { showPopOverNotification: true } } })
+        yield put({ type: 'queryListNotifications' })
+      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0 && location.pathname !== '/nps') {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }

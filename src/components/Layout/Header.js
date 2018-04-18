@@ -170,7 +170,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   }
 
   let notificationPopContent
-  if (listNotification.length > 0) {
+  if (totalNotification) {
     notificationPopContent = {
       ...notificationPopOver,
       total: totalNotification,

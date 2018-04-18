@@ -183,17 +183,19 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     getAllCustomer () {
       dispatch({
-        type: 'customer/updateState',
-        payload: {
-          changed: true
-        }
-      })
-      dispatch({
         type: 'customer/queryAllCustomer',
         payload: {
           type: 'all'
         }
       })
+      setTimeout(() => {
+        dispatch({
+          type: 'customer/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     }
   }
 

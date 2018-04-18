@@ -30,10 +30,17 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        if (location.pathname === '/master/customertype') {
-          dispatch({
-            type: 'querySellprice'
-          })
+        const { pathname } = location
+        if (pathname === '/master/customertype') {
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
+          if (activeKey === '0') dispatch({ type: 'querySellprice' })
           dispatch({
             type: 'updateState',
             payload: {

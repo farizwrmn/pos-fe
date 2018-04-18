@@ -42,13 +42,7 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.q = fields.searchName
-    delete fields.searchName
-    // if (fields.q === undefined || fields.q === '') {
-    //   delete fields.q
-    // }
     fields = handleFields(fields)
-    console.log('fields', fields)
     onFilterChange(fields)
   }
 
@@ -91,7 +85,7 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', {
+        {getFieldDecorator('q', {
           initialValue: query.q
         })(<Search placeholder="Search" size="large" onSearch={handleSubmit} />)}
       </Col>

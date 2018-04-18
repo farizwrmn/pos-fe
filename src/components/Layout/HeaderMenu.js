@@ -19,7 +19,7 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
             <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>
           }
           {prompt === 'notification' && total &&
-            <span className={styles.badgeStyle}>{total}</span>}
+            <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>}
         </Link>
       </div>
     </Tooltip>
