@@ -40,24 +40,24 @@ export default {
           })
         } else if (location.pathname === '/report/fifo/balance' && location.query.activeKey && location.query.period && location.query.year) {
           switch (location.query.activeKey) {
-          case '2':
-            dispatch({
-              type: 'queryFifoValues',
-              payload: location.query
-            })
-            break
-          case '3':
-            dispatch({
-              type: 'queryProductCode',
-              payload: location.query
-            })
-            break
-          default:
-            dispatch({
-              type: 'queryInAdj',
-              payload: location.query
-            })
-            break
+            case '2':
+              dispatch({
+                type: 'queryFifoValues',
+                payload: location.query
+              })
+              break
+            case '3':
+              dispatch({
+                type: 'queryProductCode',
+                payload: location.query
+              })
+              break
+            default:
+              dispatch({
+                type: 'queryInAdj',
+                payload: location.query
+              })
+              break
           }
           dispatch({
             type: 'updateState',

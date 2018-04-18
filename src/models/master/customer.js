@@ -42,49 +42,49 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         switch (pathname) {
-        case '/master/customerunit':
-          if (activeKey === '0') dispatch({ type: 'query' })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
-          break
-        case '/report/customer/history':
-          dispatch({
-            type: 'query'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
-          break
-        case '/master/customer':
-          if (!activeKey) {
-            dispatch(routerRedux.push({
-              pathname,
-              query: {
-                activeKey: '0'
-              }
-            }))
-          }
-          if (activeKey === '1') {
+          case '/master/customerunit':
+            if (activeKey === '0') dispatch({ type: 'query' })
             dispatch({
-              type: 'query',
-              payload: other
+              type: 'updateState',
+              payload: {
+                searchText: ''
+              }
             })
-          }
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
+            break
+          case '/report/customer/history':
+            dispatch({
+              type: 'query'
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                searchText: ''
+              }
+            })
+            break
+          case '/master/customer':
+            if (!activeKey) {
+              dispatch(routerRedux.push({
+                pathname,
+                query: {
+                  activeKey: '0'
+                }
+              }))
             }
-          })
-          break
-        default:
+            if (activeKey === '1') {
+              dispatch({
+                type: 'query',
+                payload: other
+              })
+            }
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+            break
+          default:
         }
       })
     }

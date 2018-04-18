@@ -33,29 +33,29 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         switch (pathname) {
-        case '/master/employee':
-          if (!activeKey) {
-            dispatch(routerRedux.push({
-              pathname,
-              query: {
-                activeKey: '0'
-              }
-            }))
-          }
-          if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
+          case '/master/employee':
+            if (!activeKey) {
+              dispatch(routerRedux.push({
+                pathname,
+                query: {
+                  activeKey: '0'
+                }
+              }))
             }
-          })
-          break
-        case '/report/service/history':
-          dispatch({
-            type: 'query'
-          })
-          break
-        default:
+            if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'query'
+            })
+            break
+          default:
         }
       })
     }

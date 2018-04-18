@@ -39,7 +39,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
         let data = rows[key]
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.policeNo.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.grandTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -113,7 +113,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

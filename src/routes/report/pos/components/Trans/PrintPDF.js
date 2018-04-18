@@ -17,11 +17,12 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.discount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.dpp.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.DPP.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.PPN.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: data.netto.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
@@ -33,7 +34,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
   let discountTotal = listTrans.reduce((cnt, o) => cnt + o.discount, 0)
-  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.dpp, 0)
+  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
+  let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
   const styles = {
     header: {
@@ -118,7 +120,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'
@@ -136,6 +138,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -153,6 +156,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
@@ -160,7 +164,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '17%', '16%', '16%', '15%', '15%', '15%'],
+    width: ['6%', '17%', '13%', '13%', '13%', '13%', '12%', '13%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',

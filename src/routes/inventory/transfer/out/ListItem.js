@@ -12,29 +12,69 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no'
+      key: 'no',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{text}</div>
+        }
+      }
     },
     {
       title: 'Code',
       dataIndex: 'productCode',
-      key: 'productCode'
+      key: 'productCode',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{text}</div>
+        }
+      }
     },
     {
       title: 'Name',
       dataIndex: 'productName',
-      key: 'productName'
+      key: 'productName',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{text}</div>
+        }
+      }
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      // render: text => text.toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{text.toLocaleString()}</div>
+        }
+      }
     },
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{text}</div>
+        }
+      }
     }
   ]
 

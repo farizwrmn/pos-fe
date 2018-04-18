@@ -19,35 +19,35 @@ const Browse = ({ dataSource, ...browseProps }) => {
       dataIndex: 'transDate',
       key: 'transDate',
       width: '175px',
-      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
+      render: text => <p style={{ textAlign: 'left' }}>{text ? moment(text).format('DD-MMM-YYYY') : null}</p>
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },
     {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     }
   ]
   return (

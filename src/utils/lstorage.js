@@ -76,6 +76,8 @@ const removeItemKeys = () => {
   localStorage.removeItem(`${prefix}udi`)
   localStorage.removeItem(`${prefix}uelor`)
   localStorage.removeItem(`${prefix}utores`)
+  localStorage.removeItem(`${prefix}cdi`)
+  localStorage.removeItem(`${prefix}store`)
 }
 
 const removeAllKey = () => {

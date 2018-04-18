@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { connect } from 'dva'
+// import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
@@ -14,10 +15,40 @@ const Service = ({ service, loading, dispatch, location, app }) => {
       ...location.query
     },
     onFilterChange (value) {
+      // dispatch({
+      //   type: 'service/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
+    },
+    // onResetClick () {
+    // dispatch({ type: 'service/resetServiceList' })
+    // }
+    onResetClick () {
+      const { query, pathname } = location
+      const { activeKey } = query
+
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          activeKey: activeKey || '0'
+        }
+      }))
       dispatch({
-        type: 'service/query',
+        type: 'service/updateState',
         payload: {
-          ...value
+          searchText: null
         }
       })
       const { query, pathname } = location

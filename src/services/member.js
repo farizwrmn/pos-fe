@@ -1,6 +1,6 @@
-import { request, config } from '../utils'
+import { request, config, prefix } from 'utils'
 
-const { apiURL, apiPrefix, api, prefix } = config
+const { apiURL, apiPrefix, api } = config
 const { member } = api
 const idToken = localStorage.getItem(`${prefix}iKen`)
 

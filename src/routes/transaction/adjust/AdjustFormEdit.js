@@ -123,13 +123,14 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
           }]
         })(<Cascader
           size="large"
+          disabled
           style={{ width: '100%' }}
           options={listType}
           placeholder="Pick a Type"
         />)}
       </FormItem>
       <FormItem label="Date" {...formItemLayout}>
-        <DatePicker value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
+        <DatePicker disabled value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
       </FormItem>
       <FormItem label="Reference" {...formItemLayout}>
         <Input maxLength={40} value={item.reference} />

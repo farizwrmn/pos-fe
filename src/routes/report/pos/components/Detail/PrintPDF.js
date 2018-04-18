@@ -52,43 +52,43 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     for (let key in diffData) {
       let headers = []
       switch (key) {
-      case 'P':
-        headers.push(
-          [
-            { text: 'NO', style: 'tableHeader' },
-            { text: 'KODE PRODUK', style: 'tableHeader' },
-            { text: 'NAMA PRODUK', style: 'tableHeader' },
-            { text: 'QTY', style: 'tableHeader' },
-            { text: 'HARGA SATUAN', style: 'tableHeader' },
-            { text: 'SUB TOTAL', style: 'tableHeader' },
-            { text: 'DISK-1', style: 'tableHeader' },
-            { text: 'DISK-2', style: 'tableHeader' },
-            { text: 'DISK-3', style: 'tableHeader' },
-            { text: 'DISKON', style: 'tableHeader' },
-            { text: 'TOTAL DISKON', style: 'tableHeader' },
-            { text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      case 'S':
-        headers.push(
-          [
-            { text: 'NO', style: 'tableHeader' },
-            { text: 'KODE SERVIS', style: 'tableHeader' },
-            { text: 'NAMA SERVIS', style: 'tableHeader' },
-            { text: 'QTY', style: 'tableHeader' },
-            { text: 'HARGA SATUAN', style: 'tableHeader' },
-            { text: 'SUB TOTAL', style: 'tableHeader' },
-            { text: 'DISK-1', style: 'tableHeader' },
-            { text: 'DISK-2', style: 'tableHeader' },
-            { text: 'DISK-3', style: 'tableHeader' },
-            { text: 'DISKON', style: 'tableHeader' },
-            { text: 'TOTAL DISKON', style: 'tableHeader' },
-            { text: 'TOTAL', style: 'tableHeader' }
-          ]
-        )
-        break
-      default:
+        case 'P':
+          headers.push(
+            [
+              { text: 'NO', style: 'tableHeader' },
+              { text: 'KODE PRODUK', style: 'tableHeader' },
+              { text: 'NAMA PRODUK', style: 'tableHeader' },
+              { text: 'QTY', style: 'tableHeader' },
+              { text: 'HARGA SATUAN', style: 'tableHeader' },
+              { text: 'SUB TOTAL', style: 'tableHeader' },
+              { text: 'DISK-1', style: 'tableHeader' },
+              { text: 'DISK-2', style: 'tableHeader' },
+              { text: 'DISK-3', style: 'tableHeader' },
+              { text: 'DISKON', style: 'tableHeader' },
+              { text: 'TOTAL DISKON', style: 'tableHeader' },
+              { text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        case 'S':
+          headers.push(
+            [
+              { text: 'NO', style: 'tableHeader' },
+              { text: 'KODE SERVIS', style: 'tableHeader' },
+              { text: 'NAMA SERVIS', style: 'tableHeader' },
+              { text: 'QTY', style: 'tableHeader' },
+              { text: 'HARGA SATUAN', style: 'tableHeader' },
+              { text: 'SUB TOTAL', style: 'tableHeader' },
+              { text: 'DISK-1', style: 'tableHeader' },
+              { text: 'DISK-2', style: 'tableHeader' },
+              { text: 'DISK-3', style: 'tableHeader' },
+              { text: 'DISKON', style: 'tableHeader' },
+              { text: 'TOTAL DISKON', style: 'tableHeader' },
+              { text: 'TOTAL', style: 'tableHeader' }
+            ]
+          )
+          break
+        default:
       }
       for (let i = 0; i < headers.length; i += 1) {
         body.push(headers[i])
@@ -100,8 +100,8 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           let data = rows[key]
           let row = []
           row.push({ text: counter, alignment: 'center', fontSize: 11 })
-          row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
-          row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
+          row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+          row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
           row.push({ text: (data.qty || 0), alignment: 'center', fontSize: 11 })
           row.push({ text: (parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
           row.push({ text: (parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -238,7 +238,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               style: 'footer',
               alignment: 'right'
             }

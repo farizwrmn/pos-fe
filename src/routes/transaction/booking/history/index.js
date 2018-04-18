@@ -11,21 +11,21 @@ const History = ({ bookinghistory }) => {
     key: 'oldStatus',
     render: (text) => {
       switch (text) {
-      case 'OP':
-        return 'Open'
-      case 'CF':
-        return 'Confirmed'
-      case 'CI':
-        return 'Check-In'
-      case 'CO':
-        return 'Check-Out'
-      case 'RS':
-        return 'Reschedule'
-      case 'CC':
-        return 'Cancel'
-      case 'RJ':
-        return 'Reject'
-      default:
+        case 'OP':
+          return 'Open'
+        case 'CF':
+          return 'Confirmed'
+        case 'CI':
+          return 'Check-In'
+        case 'CO':
+          return 'Check-Out'
+        case 'RS':
+          return 'Reschedule'
+        case 'CC':
+          return 'Cancel'
+        case 'RJ':
+          return 'Reject'
+        default:
       }
     }
   }, {
@@ -34,21 +34,21 @@ const History = ({ bookinghistory }) => {
     key: 'newStatus',
     render: (text) => {
       switch (text) {
-      case 'OP':
-        return 'Open'
-      case 'CF':
-        return 'Confirmed'
-      case 'CI':
-        return 'Check-In'
-      case 'CO':
-        return 'Check-Out'
-      case 'RS':
-        return 'Reschedule'
-      case 'CC':
-        return 'Cancel'
-      case 'RJ':
-        return 'Reject'
-      default:
+        case 'OP':
+          return 'Open'
+        case 'CF':
+          return 'Confirmed'
+        case 'CI':
+          return 'Check-In'
+        case 'CO':
+          return 'Check-Out'
+        case 'RS':
+          return 'Reschedule'
+        case 'CC':
+          return 'Cancel'
+        case 'RJ':
+          return 'Reject'
+        default:
       }
     }
   }, {

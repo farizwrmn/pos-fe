@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import { message } from 'antd'
-import { configMain, lstorage } from 'utils'
+import { Modal, message } from 'antd'
+import { configMain, lstorage, color } from 'utils'
 import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
+import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
+import { query as queryInvoice, queryDetail as queryDetailInvoice } from '../services/purchase'
 import {
   query as querySequence,
   increase as increaseSequence
@@ -13,7 +15,6 @@ const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
 const { prefix } = configMain
-const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 const error = (err) => {
   message.error(err.message)
@@ -28,12 +29,15 @@ export default modelExtend(pageModel, {
     currentItemList: {},
     modalVisible: false,
     modalConfirmVisible: false,
+    modalInvoiceVisible: false, // purchase modal visible
     searchVisible: false,
+    listInvoice: [], // purchase data invoice
+    tmpInvoiceList: [], // purchase search index list
     formType: 'add',
     display: 'none',
     activeKey: '0',
     disable: '',
-    period: moment(infoStore.startPeriod).format('YYYY-MM'),
+    period: null,
     filter: null,
     sort: null,
     listProducts: [],
@@ -110,30 +114,50 @@ export default modelExtend(pageModel, {
         seqCode: 'MUOUT',
         type: lstorage.getCurrentUserStore() // diganti dengan StoreId
       }
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
-      let data = {}
-      try {
-        data = yield call(add, payload)
-      } catch (error) {
-        error(error)
-        throw error
-      }
-      if (data.success) {
-        success()
-        let increase = yield call(increaseSequence, sequenceData)
-        if (!increase.success) {
-          error(increaseSequence)
+      const product = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      let checkQty = true
+      let underQtyProduct = []
+      for (let key = 0; key < payload.detail.length; key += 1) {
+        if (payload.detail[key].qty > product.data.filter(el => el.productId === payload.detail[key].productId)[0].count) {
+          checkQty = false
+          underQtyProduct.push(payload.detail[key])
         }
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalConfirmVisible: true
+      }
+      if (checkQty) {
+        let data = {}
+        try {
+          data = yield call(add, payload)
+        } catch (error) {
+          error(error)
+          throw error
+        }
+        if (data.success) {
+          success()
+          let increase = yield call(increaseSequence, sequenceData)
+          if (!increase.success) {
+            error(increaseSequence)
           }
-        })
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalConfirmVisible: true
+            }
+          })
+        } else {
+          error(data)
+          throw data
+        }
       } else {
-        error(data)
-        throw data
+        Modal.warning({
+          title: 'Qty is not available',
+          content: `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length > 1 ?
+            `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length} items` :
+            `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length} item`} is underQty = \n
+      ${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).toString()}`
+        })
       }
     },
     * deleteListState ({ payload }, { put }) {
@@ -190,6 +214,96 @@ export default modelExtend(pageModel, {
           payload: data.mutasi
         })
       }
+    },
+    // Get purchase invoice
+    * getInvoice ({ payload = {} }, { call, put }) {
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const period = {
+        startPeriod: storeInfo.startPeriod,
+        endPeriod: storeInfo.endPeriod,
+        ...payload
+      }
+      let dataDetail = yield call(queryInvoice, period)
+      if (dataDetail && dataDetail.success) {
+        let dataInvoice = dataDetail.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            listInvoice: dataInvoice,
+            tmpInvoiceList: dataInvoice
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'No Data',
+          content: 'No data inside storage'
+        })
+      }
+    },
+    // Get Purchase Detail
+    * getInvoiceDetailPurchase ({ payload }, { call, put }) {
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      let product = []
+      product = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      yield put({
+        type: 'showProductModal',
+        payload: {
+          modalType: 'browseProductFree'
+        }
+      })
+      const data = yield call(queryDetailInvoice, { transNo: payload.transNo })
+      let arrayProd = []
+      for (let n = 0; n < data.data.length; n += 1) {
+        const productCheck = product.data.filter(el => el.productId === data.data[n].productId)
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          id: data.data[n].id,
+          productId: data.data[n].productId,
+          productCode: data.data[n].productCode,
+          productName: data.data[n].productName,
+          qty: data.data[n].qty <= productCheck[0].count ? data.data[n].qty : productCheck[0].count,
+          color: data.data[n].qty <= productCheck[0].count ? color.borderBase : color.wewak,
+          transType: 'MUOUT',
+          description: data.data[n].description,
+          ket: 'edit'
+        })
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalInvoiceVisible: false,
+          listItem: arrayProd
+        }
+      })
+      yield put({
+        type: 'updateItem',
+        payload: {
+          reference: payload.id,
+          referenceNo: payload.transNo
+        }
+      })
+    },
+    * getInvoiceDetail ({ payload }, { call, put }) {
+      const data = yield call(queryDetailInvoice, { transNo: payload.transNo })
+      let arrayProd = []
+      for (let n = 0; n < data.data.length; n += 1) {
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          id: data.data[n].id,
+          code: data.data[n].productId,
+          productCode: data.data[n].productCode,
+          name: data.data[n].productName,
+          qty: data.data[n].qty,
+          ket: 'add'
+        })
+      }
+      yield put({
+        type: 'hideProductModal'
+      })
+      yield put({
+        type: 'setTransNo',
+        payload
+      })
     }
   },
 
@@ -233,6 +347,15 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         ...payload
+      }
+    },
+    updateItem (state, { payload }) {
+      return {
+        ...state,
+        currentItem: {
+          ...state.currentItem,
+          ...payload
+        }
       }
     },
     resetState (state) {

@@ -37,8 +37,15 @@ const Browse = ({ ...browseProps }) => {
     },
     {
       title: 'DPP',
-      dataIndex: 'dpp',
-      key: 'dpp',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+    },
+    {
+      title: 'PPN',
+      dataIndex: 'PPN',
+      key: 'PPN',
       width: '100px',
       render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
     },

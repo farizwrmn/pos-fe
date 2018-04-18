@@ -16,7 +16,7 @@ const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 const { prefix } = configMain
-const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader02 : []
+const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
 
 const { create, createDetail } = cashierService
 const { updateCashierTrans } = cashierTransService
@@ -75,6 +75,9 @@ export default {
               itemPayment: {}
             }
           })
+          dispatch({
+            type: 'pos/setCurTotal'
+          })
         }
       })
     }
@@ -125,7 +128,16 @@ export default {
           const dataPos = product.concat(service)
           const trans = transNo.data
           const storeId = lstorage.getCurrentUserStore()
+          const companySetting = JSON.parse((payload.setting.Company || '{}')).taxType
           for (let key = 0; key < dataPos.length; key += 1) {
+            const totalPrice = ((
+              (dataPos[key].price * dataPos[key].qty) * // price * qty
+              (1 - (dataPos[key].disc1 / 100)) * // -disc1
+              (1 - (dataPos[key].disc2 / 100)) * // -disc2
+              (1 - (dataPos[key].disc3 / 100))) - // -disc3
+              dataPos[key].discount) // -discount
+            const dpp = totalPrice / (companySetting === 'I' ? 1.1 : 1)
+            const ppn = (companySetting === 'I' ? totalPrice / 11 : companySetting === 'S' ? totalPrice * 0.1 : 0)
             arrayProd.push({
               storeId,
               transNo: trans,
@@ -135,13 +147,14 @@ export default {
               qty: dataPos[key].qty,
               typeCode: dataPos[key].typeCode,
               sellingPrice: dataPos[key].price,
+              DPP: dpp,
+              PPN: ppn,
               discount: dataPos[key].discount,
               disc1: dataPos[key].disc1,
               disc2: dataPos[key].disc2,
               disc3: dataPos[key].disc3
             })
           }
-
           const detailPOS = {
             dataPos: arrayProd,
             transNo: trans,
@@ -241,6 +254,9 @@ export default {
                   type: 'POS'
                 }
               })
+              yield put({
+                type: 'pos/setAllNull'
+              })
               const data_cashier_trans_update = yield call(updateCashierTrans, {
                 total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
                 totalCreditCard: payload.totalCreditCard,
@@ -280,13 +296,27 @@ export default {
         payload: transNo.data
       })
       if (company.success) {
-        let json = company.data[0]
-        let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
-        const data = JSON.parse(jsondata)
+        // let json = company.data[0]
+        // let jsondata = JSON.stringify(eval(`(${json.settingValue})`))
+        // const data = JSON.parse(jsondata)
+        const tempCompany = lstorage.getCurrentUserStoreDetail()
+        // console.log('company', data)
+        // console.log('tempCompany', tempCompany)
+        const companyInfo = {
+          companyAddress: tempCompany.companyAddress01,
+          companyAddress02: tempCompany.companyAddress02,
+          companyName: tempCompany.companyName, // perlu store
+          contact: tempCompany.companyMobileNumber,
+          email: tempCompany.companyEmail, // perlu store
+          taxConfirmDate: tempCompany.taxConfirmDate, // perlu store
+          taxID: tempCompany.taxID, // perlu store
+          taxType: tempCompany.taxType // perlu store
+        }
+
         yield put({
           type: 'updateState',
           payload: {
-            companyInfo: data
+            companyInfo
           }
         })
       }
@@ -513,13 +543,13 @@ export default {
               let data = rows[key]
               let totalDisc = (data.price * data.qty) - data.total
               let row = []
-              row.push({ text: data.no.toString(), alignment: 'center', fontSize: tableContentFontSize })
-              row.push({ text: data.code.toString(), alignment: 'left', fontSize: tableContentFontSize })
-              row.push({ text: data.name.toString(), alignment: 'left', fontSize: tableContentFontSize })
-              row.push({ text: data.qty.toString(), alignment: 'center', fontSize: tableContentFontSize })
-              row.push({ text: `${data.price.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
-              row.push({ text: `${totalDisc.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
-              row.push({ text: `${data.total.toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: (data.no || '').toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: (data.code || '').toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: (data.name || '').toString(), alignment: 'left', fontSize: tableContentFontSize })
+              row.push({ text: (data.qty || 0).toString(), alignment: 'center', fontSize: tableContentFontSize })
+              row.push({ text: `${(data.price || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${(totalDisc || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              row.push({ text: `${(data.total || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
               body.push(row)
             }
           }
@@ -575,7 +605,7 @@ export default {
           }
         }
         let salutation = ''
-        if (payload.memberId.toString().substring(0, 3) === 'mdn' || payload.memberId.toString().substring(0, 3) === 'MDN') {
+        if ((payload.memberId || '').toString().substring(0, 3) === 'mdn' || (payload.memberId || '').toString().substring(0, 3) === 'MDN') {
           if (payload.gender === 'M') {
             salutation = 'TN. '
           } else if (payload.gender === 'F') {
@@ -585,8 +615,9 @@ export default {
         const docDefinition = {
           pageSize: { width: 813, height: 530 },
           pageOrientation: 'landscape',
-          pageMargins: [40, 170, 40, 150],
+          pageMargins: [40, 170, 40, 160],
           header: {
+            margin: [40, 12, 40, 30],
             stack: [
               { text: ' ', fontSize: headerFontSize, margin: [0, 0, 95, 0] },
               {
@@ -599,7 +630,7 @@ export default {
                         alignment: 'left'
                       },
                       {
-                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? (companyInfo.companyAddress || '').substring(0, 65) : '',
+                        text: companyInfo.companyAddress !== '' && companyInfo.companyAddress !== null ? `${(companyInfo.companyAddress || '').substring(0, 65)}-${(companyInfo.companyAddress02 || '').substring(0, 65)}` : '',
                         fontSize: companyFontSize,
                         alignment: 'left'
                       },
@@ -640,7 +671,7 @@ export default {
               },
               {
                 table: {
-                  widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+                  widths: ['15%', '1%', '32%', '10%', '15%', '1%', '26%'],
                   body: [
                     [{ text: 'No Faktur', fontSize: headerFontSize }, ':', { text: (payload.lastTransNo || '').toString(), fontSize: headerFontSize }, {}, { text: 'No Polisi/KM', fontSize: headerFontSize }, ':', { text: `${(payload.policeNo || '').toString().toUpperCase()}/${(payload.lastMeter || 0).toString().toUpperCase()}`, fontSize: headerFontSize }],
 
@@ -653,8 +684,7 @@ export default {
                 },
                 layout: 'noBorders'
               }
-            ],
-            margin: [30, 12, 12, 30]
+            ]
           },
           content: [
             dataPos.length > 0 ? table1 : {},
@@ -689,8 +719,8 @@ export default {
                   },
                   {
                     columns: [
-                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${payload.userName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] },
-                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${payload.memberName.toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
+                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(payload.userName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] },
+                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
                     ]
                   },
                   {
@@ -714,7 +744,7 @@ export default {
                         alignment: 'center'
                       },
                       {
-                        text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                        text: `page: ${(currentPage || '').toString()} of ${pageCount}\n`,
                         fontSize: additionalFontSize,
                         margin: additionalMargin1,
                         alignment: 'right'
@@ -753,7 +783,7 @@ export default {
                       alignment: 'center'
                     },
                     {
-                      text: `page: ${currentPage.toString()} of ${pageCount}\n`,
+                      text: `page: ${(currentPage || '').toString()} of ${pageCount}\n`,
                       margin: additionalMargin2,
                       fontSize: additionalFontSize,
                       alignment: 'right'

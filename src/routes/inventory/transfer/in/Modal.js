@@ -25,7 +25,6 @@ const formItemLayout = {
 const modal = ({
   item,
   transNo,
-  period,
   storeId,
   ...modalProps,
   changeDate,
@@ -52,6 +51,7 @@ const modal = ({
         ...getFieldsValue()
       }
 
+      data.period = data.period ? data.period : []
       data.transNo = data.transNo ? data.transNo : []
       data.storeIdReceiver = data.storeIdReceiver ? data.storeIdReceiver : []
 
@@ -62,7 +62,6 @@ const modal = ({
         })
         return
       }
-
       for (let key in data) {
         if (data[key].length === 0) {
           delete data[key]
@@ -71,8 +70,8 @@ const modal = ({
       // let startDate = moment(data.period[0]).format('YYYY-MM-DD')
       // let endDate = moment(data.period[1]).format('YYYY-MM-DD')
       const { period, ...other } = data
-      let startDate = moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss')
-      let endDate = moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss')
+      let startDate = period ? moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss') : null
+      let endDate = period ? moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss') : null
       onSearch(startDate, endDate, other)
     })
   }
@@ -91,12 +90,12 @@ const modal = ({
 
   let childrenTransNo = []
   const selectTransNo = () => {
-    transNo.length > 0 ? transNo.map(no => childrenTransNo.push(<Option key={no.toString(36)}>{no.toString(36)}</Option>)) : []
+    transNo.length > 0 ? transNo.map(no => childrenTransNo.push(<Option key={(no || '').toString(36)}>{(no || '').toString(36)}</Option>)) : []
   }
 
   let childrenStoreId = []
   const selectStoreId = () => {
-    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={store.storeIdReceiver.toString(36)}>{store.storeNameReceiver.toString(36)}</Option>)) : []
+    storeId.length > 0 ? storeId.map(store => childrenStoreId.push(<Option key={(store.storeIdReceiver || '').toString(36)}>{(store.storeNameReceiver || '').toString(36)}</Option>)) : []
   }
 
   const resetSelectedField = (value) => {
@@ -107,14 +106,9 @@ const modal = ({
     <Modal {...modalOpts}>
       <FormItem label="Period" hasFeedback {...formItemLayout}>
         {getFieldDecorator('period', {
-          initialValue: moment.utc(period, 'YYYY-MM'),
-          rules: [
-            {
-              required: true
-            }
-          ]
+          initialValue: null
         })(
-        // <RangePicker onChange={filterDate} />
+          // <RangePicker onChange={filterDate} />
           <MonthPicker onChange={filterDate} placeholder="Select Period" />
         )}
       </FormItem>

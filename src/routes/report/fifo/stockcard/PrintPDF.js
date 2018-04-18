@@ -71,7 +71,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.transNo.toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.transType.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (parseFloat(data.pQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: (parseFloat(data.pPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
@@ -177,7 +177,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
               alignment: 'center'
             },
             {
-              text: `Halaman: ${currentPage.toString()} dari ${pageCount}`,
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
               margin: [0, 0, 0, 0],
               alignment: 'right'

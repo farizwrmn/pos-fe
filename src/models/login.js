@@ -6,6 +6,7 @@ import { login, getUserRole, getUserStore } from '../services/login'
 const { prefix } = configMain
 const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 
+
 export default {
   namespace: 'login',
   state: {

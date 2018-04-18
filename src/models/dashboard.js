@@ -269,7 +269,7 @@ export default {
         return new Date(a.title).getTime() - new Date(b.title).getTime()
       })
       // const ipAddr = yield call(getIpAddr)
-      yield put({ type: 'querySuccess', payload: { data: formatWeekSales } })
+      yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...payload } })
       // yield put({ type: 'querySuccess', payload: { data: formatWeekSales, ...data, ...ipAddr } })
       // yield put({ type: 'queryWeather', payload: { ...data } })
     }

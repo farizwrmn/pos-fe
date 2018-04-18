@@ -57,24 +57,24 @@ const fetch = (options) => {
   // }
 
   switch (method.toLowerCase()) {
-  case 'get':
-    return axios.get(url, {
-      params: cloneData,
-      headers
-    })
-  case 'delete':
-    return axios.delete(url, {
-      data: cloneData,
-      headers
-    })
-  case 'post':
-    return axios.post(url, cloneData, { headers })
-  case 'put':
-    return axios.put(url, cloneData, { headers })
-  case 'patch':
-    return axios.patch(url, cloneData, { headers })
-  default:
-    return axios(options)
+    case 'get':
+      return axios.get(url, {
+        params: cloneData,
+        headers
+      })
+    case 'delete':
+      return axios.delete(url, {
+        data: cloneData,
+        headers
+      })
+    case 'post':
+      return axios.post(url, cloneData, { headers })
+    case 'put':
+      return axios.put(url, cloneData, { headers })
+    case 'patch':
+      return axios.patch(url, cloneData, { headers })
+    default:
+      return axios(options)
   }
 }
 

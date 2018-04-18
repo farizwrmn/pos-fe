@@ -108,17 +108,20 @@ export default {
           { text: (storeInfoData.address01 || '') },
           { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
         ]
-        storeInfo.stackHeader02 = storeInfo.stackHeader01
-        for (let index of storeInfo.stackHeader01) {
-          index.fontSize = 11
-          index.alignment = 'right'
-        }
-        storeInfo.stackHeader02.push({ text: ' ' })
-        storeInfo.stackHeader02 = storeInfo.stackHeader01
         for (let index of storeInfo.stackHeader01) {
           index.fontSize = 11
           index.alignment = 'left'
         }
+        storeInfo.stackHeader03 = [
+          { text: (name || '') },
+          { text: (storeInfoData.address01 || '') },
+          { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
+        ]
+        for (let index of storeInfo.stackHeader03) {
+          index.fontSize = 11
+          index.alignment = 'right'
+        }
+        storeInfo.stackHeader02 = storeInfo.stackHeader03
 
         if (storeInfo !== []) {
           localStorage.setItem(`${configMain.prefix}store`, JSON.stringify(storeInfo))

@@ -57,6 +57,19 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/inventory/transfer/in') {
+          dispatch({
+            type: 'queryCode',
+            payload: {
+              active: 1,
+              status: 0
+            }
+          })
+        }
+      })
+    }
   },
 
   effects: {
@@ -107,7 +120,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            period,
             storeId,
             transNo
           }

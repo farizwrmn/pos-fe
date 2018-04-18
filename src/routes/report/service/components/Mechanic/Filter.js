@@ -4,17 +4,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Radio } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
+const RadioGroup = Radio.Group
 const { RangePicker } = DatePicker
 
 const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
+  const handleChange = () => {
+    const data = getFieldsValue()
+    if (data.rangePicker || !((data.rangePicker || []).length === 0)) {
+      const from = data.rangePicker[0].format('YYYY-MM-DD')
+      const to = data.rangePicker[1].format('YYYY-MM-DD')
+      const hasEmployee = Number(data.hasEmployee)
+      onDateChange(from, to, hasEmployee)
+    }
   }
 
   const handleReset = () => {
@@ -35,15 +40,24 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
 
   return (
     <div>
-      <Row style={{ display: 'flex' }}>
-        <Col span={10} >
+      <Row>
+        <Col lg={10} md={24}>
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+              <RangePicker size="large" format="DD-MMM-YYYY" />
             )}
           </FilterItem>
         </Col>
-        <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
+        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
+          <Button
+            type="dashed"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            className="button-width02 button-extra-large"
+            onClick={handleChange}
+          >
+            <Icon type="search" className="icon-large" />
+          </Button>
           <Button type="dashed"
             size="large"
             className="button-width02 button-extra-large bgcolor-lightgrey"
@@ -55,7 +69,23 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
           {<PrintXLS {...printProps} />}
         </Col>
       </Row>
-    </div>
+      <Row>
+        <Col lg={10} md={24}>
+          <FilterItem label="Has Employee ?">
+            {getFieldDecorator('hasEmployee', { initialValue: 1 })(
+              <RadioGroup>
+                <Radio value={0}>
+                  No Employee
+                </Radio>
+                <Radio value={1}>
+                  Employee
+                </Radio>
+              </RadioGroup>
+            )}
+          </FilterItem>
+        </Col>
+      </Row>
+    </div >
   )
 }
 
