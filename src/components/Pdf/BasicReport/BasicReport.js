@@ -23,25 +23,6 @@ const BasicReport = ({
   header = {},
   footer = {}
 }) => {
-  const createPdfLineItems = () => {
-    let body = []
-    if (tableHeader.length > 0) {
-      for (let c = 0; c < tableHeader.length; c += 1) {
-        body.push(tableHeader[c])
-      }
-    }
-    if (tableBody.length > 0) {
-      for (let c = 0; c < tableBody.length; c += 1) {
-        body.push(tableBody[c])
-      }
-    }
-    if (tableFooter.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
-        body.push(tableFooter[c])
-      }
-    }
-    return body
-  }
   const printPdf = () => {
     if (tableHeader.length === 0 && tableFooter.length === 0) {
       console.log('no header/footer')
@@ -56,7 +37,7 @@ const BasicReport = ({
         content: 'No Data in Storage'
       })
     } else {
-      const content = createPdfLineItems()
+      const content = tableHeader.concat(tableBody).concat(tableFooter)
       let docDefinition = {
         pageSize,
         pageOrientation,

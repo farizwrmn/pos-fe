@@ -359,6 +359,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounts'))
+              registerModel(app, require('./models/master/customergroup'))
               cb(null, require('./routes/report/accounts/summary'))
             }, 'report-account-summary')
           }

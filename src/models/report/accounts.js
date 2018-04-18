@@ -1,8 +1,9 @@
 /**
  * Created by Veirry on 04/10/2017.
  */
-import { query as queryReport, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
-import { queryPaymentWithPOS } from '../../services/payment/payment'
+// import { queryPaymentWithPOS } from '../../services/payment/payment'
+import { Modal } from 'antd'
+import { queryPaymentWithPOS, queryPaymentAR } from '../../services/report/payment'
 
 export default {
   namespace: 'accountsReport',
@@ -13,6 +14,8 @@ export default {
     listDaily: [],
     from: '',
     to: '',
+    date: null,
+    activeKey: '1',
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
@@ -36,51 +39,6 @@ export default {
     }
   },
   effects: {
-    * queryPart ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryReport, payload)
-      } else {
-        data = yield call(queryReport)
-      }
-      yield put({
-        type: 'querySuccessPart',
-        payload: {
-          list: data.data,
-          pagination: {
-            total: data.total
-          }
-        }
-      })
-    },
-    * queryTransAll ({ payload }, { call, put }) {
-      const data = yield call(queryAll, payload)
-      yield put({
-        type: 'querySuccessTrans',
-        payload: {
-          listTrans: data.data,
-          from: payload.from,
-          to: payload.to,
-          pagination: {
-            total: data.total
-          }
-        }
-      })
-    },
-    * queryTransCancel ({ payload }, { call, put }) {
-      const data = yield call(queryTransCancel, payload)
-      yield put({
-        type: 'querySuccessTrans',
-        payload: {
-          listTrans: data.data,
-          from: payload.from,
-          to: payload.to,
-          pagination: {
-            total: data.total
-          }
-        }
-      })
-    },
     * queryTrans ({ payload }, { call, put }) {
       let data = []
       if (payload) {
@@ -100,35 +58,28 @@ export default {
         }
       })
     },
-    * queryDaily ({ payload }, { call, put }) {
-      let data = yield call(queryPosDaily, payload)
-      yield put({
-        type: 'querySuccessDaily',
-        payload: {
-          listDaily: data.data,
-          from: payload.from,
-          to: payload.to,
-          ...payload
-        }
-      })
+    * queryAR ({ payload }, { call, put }) {
+      const data = yield call(queryPaymentAR, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'No Data',
+          content: 'Cannot get data from storage'
+        })
+        throw data
+      }
     }
   },
   reducers: {
-    querySuccessPart (state, action) {
-      const { list, tmpList } = action.payload
-
-      return {
-        ...state,
-        list,
-        tmpList
-      }
-    },
-    querySuccessDaily (state, action) {
-      return {
-        ...state,
-        ...action.payload
-      }
-    },
     querySuccessTrans (state, action) {
       const { listTrans, pagination, tmpList, from, to } = action.payload
 
@@ -143,6 +94,9 @@ export default {
           ...pagination
         }
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
     setDate (state, action) {
       return { ...state, from: action.payload.from, to: action.payload.to, ...action.payload }
