@@ -51,26 +51,6 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           searchText: null
         }
       })
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          ...value,
-          page: 1
-        }
-      }))
-    },
-    onResetClick () {
-      const { query, pathname } = location
-      const { q, createdAt, page, ...other } = query
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          page: 1,
-          ...other
-        }
-      }))
     }
   }
 

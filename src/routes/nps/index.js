@@ -15,24 +15,50 @@ const Nps = ({
   }
 }) => {
   const { npsData } = nps
+  let memberName = ''
+  if (npsData.member) memberName = npsData.member.memberName
   const setRate = (score) => {
-    let rate = Object.assign({}, { score })
-    dispatch({
-      type: 'nps/updateState',
-      payload: {
-        npsData: rate
-      }
-    })
+    if (npsData.member) {
+      let rate = Object.assign(npsData, { score })
+      dispatch({
+        type: 'nps/updateState',
+        payload: {
+          npsData: rate
+        }
+      })
+    } else {
+      message.warning('Please entry the member id')
+    }
   }
 
   let buttons = []
   for (let i = 0; i <= 10; i += 1) {
-    buttons.push(<Button
-      onClick={() => setRate(i)}
-      shape="circle"
-      size="large"
-      type={npsData ? (npsData.score === i ? 'primary' : 'default') : 'default'}
-    >{i}</Button>)
+    if (i >= 0 && i <= 6) {
+      buttons.push(<Button
+        onClick={() => setRate(i)}
+        shape="circle"
+        size="large"
+        style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#f94036') : '#f94036' }}
+      // type={npsData ? (npsData.score === i ? 'primary' : 'default') : 'default'}
+      >{i}</Button>)
+    } else if (i >= 7 && i <= 8) {
+      buttons.push(<Button
+        onClick={() => setRate(i)}
+        shape="circle"
+        size="large"
+        style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#f9cb57') : '#f9cb57' }}
+      // type={npsData ? (npsData.score === i ? 'primary' : 'default') : 'default'}
+      >{i}</Button>)
+    } else if (i >= 9 && i <= 10) {
+      buttons.push(<Button
+        onClick={() => setRate(i)}
+        shape="circle"
+        size="large"
+        style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#67e559') : '#67e559' }}
+      // type={npsData ? (npsData.score === i ? 'primary' : 'default') : 'default'}
+      >{i}</Button>)
+    }
+
   }
 
   const sendNPS = () => {
@@ -64,7 +90,7 @@ const Nps = ({
           }
         })
       }
-    }, 1000)
+    }, 300)
   }
 
   return (
@@ -76,6 +102,7 @@ const Nps = ({
       <div className={styles.body}>
         <p>ID :
         {getFieldDecorator('memberId')(<Input onChange={e => findName(e)} />)}
+          <span className={styles.name}>{memberName}</span>
         </p>
         <p>How likely is it that you would recommend our service to a friend or colleague?</p>
         <div>

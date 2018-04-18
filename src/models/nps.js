@@ -46,6 +46,12 @@ export default {
             }
           })
         } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              npsData: {}
+            }
+          })
           message.warning('Member is not available')
         }
       }
