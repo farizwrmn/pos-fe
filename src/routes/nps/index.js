@@ -85,7 +85,7 @@ const Nps = ({
     const { value } = e.target
     setTimeout(() => {
       const { memberId } = getFieldsValue()
-      if (value === memberId) {
+      if (value === memberId && value !== '') {
         dispatch({
           type: 'nps/getMember',
           payload: {
