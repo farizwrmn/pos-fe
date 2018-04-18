@@ -38,7 +38,23 @@ const Routers = function ({ history, app }) {
             }, 'login')
           }
         }, {
-          path: 'nps',
+          path: 'nps/01',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/02',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/03',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/nps'))
