@@ -15,7 +15,6 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      console.log('zzz1', location.pathname)
       history.listen((location) => {
         if (location.pathname.slice(0,-3) === '/nps') {
           dispatch({ type: 'getCompany', payload: { cid:location.pathname.slice(-2) } })
@@ -26,7 +25,6 @@ export default {
 
   effects: {
     * getCompany ({ payload }, { put, call }) {
-      console.log('zzz3', payload)
       const userCompany = yield call(getUserCompany, payload)
       // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
