@@ -135,7 +135,7 @@ const formCustomerType = ({
   </Dropdown> </div>)
 
   const children = listSellprice.length > 0 ? listSellprice.map(misc => <Option value={misc.miscName} key={misc.miscName}>{misc.miscName}</Option>) : []
-  console.log(item)
+
   return (
     <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >

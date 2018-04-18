@@ -129,22 +129,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       })
       const { query, pathname } = location
       switch (key) {
-      case 1:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            activeKey: key
-          }
-        }))
-        break
-      default:
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: key
-          }
-        }))
+        case 1:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          break
+        default:
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: key
+            }
+          }))
       }
 
       // dispatch({ type: 'productstock/resetProductStockList' })
@@ -299,17 +299,19 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     getAllStock () {
       dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          changed: true
-        }
-      })
-      dispatch({
         type: 'productstock/queryAllStock',
         payload: {
           type: 'all'
         }
       })
+      setTimeout(() => {
+        dispatch({
+          type: 'productstock/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     },
     onSubmit (id, data) {
       dispatch({

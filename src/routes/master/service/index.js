@@ -5,7 +5,8 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, listServiceType, modalType, currentItem, activeKey, disable, show } = service
+  const { list, listServiceType, modalType, currentItem, activeKey, disable, show, pagination,
+    listPrintAllService, showPDFModal, mode, changed, serviceLoading } = service
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -19,18 +20,47 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           ...value
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
     },
     onResetClick () {
-      dispatch({ type: 'service/resetServiceList' })
+      const { query, pathname } = location
+      const { q, createdAt, page, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          ...other
+        }
+      }))
     }
   }
 
   const listProps = {
     dataSource: list,
     user,
+    pagination,
     storeInfo,
     loading: loading.effects['service/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'service/updateState',
@@ -59,6 +89,12 @@ const Service = ({ service, loading, dispatch, location, app }) => {
 
   const tabProps = {
     activeKey,
+    list,
+    listPrintAllService,
+    showPDFModal,
+    mode,
+    changed,
+    serviceLoading,
     changeTab (key) {
       dispatch({
         type: 'service/updateState',
@@ -94,6 +130,41 @@ const Service = ({ service, loading, dispatch, location, app }) => {
           show: !show
         }
       })
+    },
+    onShowPDFModal (mode) {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          showPDFModal: true,
+          mode
+        }
+      })
+    },
+    onHidePDFModal () {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllService: []
+        }
+      })
+    },
+    getAllService () {
+      dispatch({
+        type: 'service/queryAllService',
+        payload: {
+          type: 'all'
+        }
+      })
+      setTimeout(() => {
+        dispatch({
+          type: 'service/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     }
   }
 

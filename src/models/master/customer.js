@@ -40,11 +40,10 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
-        switch (location.pathname) {
+        const { pathname } = location
+        switch (pathname) {
         case '/master/customerunit':
-          dispatch({
-            type: 'query'
-          })
+          if (activeKey === '0') dispatch({ type: 'query' })
           dispatch({
             type: 'updateState',
             payload: {
@@ -64,18 +63,26 @@ export default modelExtend(pageModel, {
           })
           break
         case '/master/customer':
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+          }
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (location.query.activeKey === '1') {
-            dispatch({
-              type: 'query',
-              payload: other
-            })
-          }
           break
         default:
         }

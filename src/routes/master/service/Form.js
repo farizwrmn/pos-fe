@@ -81,7 +81,16 @@ const formService = ({
   }
 }) => {
   const { show } = filterProps
-  const { onShowHideSearch } = tabProps
+  const { onShowHideSearch,
+    list,
+    listPrintAllService,
+    changed,
+    mode,
+    serviceLoading,
+    showPDFModal,
+    onShowPDFModal,
+    onHidePDFModal,
+    getAllService } = tabProps
   const handleReset = () => {
     resetFields()
   }
@@ -120,10 +129,39 @@ const formService = ({
     clickBrowse()
   }
 
+  const PDFModalProps = {
+    visible: showPDFModal,
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+    width: 375,
+    onCancel () {
+      onHidePDFModal()
+    }
+  }
+
+  const changeButton = () => {
+    getAllService()
+  }
+
+  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
+  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
+  let notification = changed ? "Click 'Print All Service' to print!" : "Click 'Get All Service' to get all data!"
+  let printmode
+  if (mode === 'pdf') {
+    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  } else {
+    printmode = (<Row><Col md={12}>{buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintXLS data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  }
+
+  const openPDFModal = (mode) => {
+    onShowPDFModal(mode)
+  }
+
   const menu = (
     <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+      <Menu.Item key="1"><Button onClick={() => openPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => openPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
     </Menu>
   )
 
@@ -136,85 +174,90 @@ const formService = ({
   const serviceType = listServiceType.length > 0 ? listServiceType.map(service => <Option value={service.miscName} key={service.miscName}>{service.miscName}</Option>) : []
 
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
-      <TabPane tab="Form" key="0" >
-        <Form layout="horizontal">
-          <Row>
-            <Col {...column}>
-              <FormItem label="Code" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('serviceCode', {
-                  initialValue: item.serviceCode,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[a-zA-Z0-9_]+$/,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input disabled={disabled} maxLength={30} autoFocus />)}
-              </FormItem>
-              <FormItem label="Service" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('serviceName', {
-                  initialValue: item.serviceName,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[a-zA-Z0-9 _-]+$/,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input maxLength={50} />)}
-              </FormItem>
-              <FormItem label="Cost" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cost', {
-                  initialValue: item.cost,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9'
-                    }
-                  ]
-                })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
-              </FormItem>
-              <FormItem label="Service Cost" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('serviceCost', {
-                  initialValue: item.serviceCost,
-                  rules: [
-                    {
-                      pattern: /^(?:0|[1-9][0-9]{0,})$/,
-                      message: '0-9'
-                    }
-                  ]
-                })(<Input maxLength={20} />)}
-              </FormItem>
-              <FormItem label="Service Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('serviceTypeId', {
-                  initialValue: item.serviceTypeId,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  optionFilterProp="children"
-                  mode="default"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{serviceType}
-                </Select>)}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                <Button type="primary" onClick={handleSubmit}>{button}</Button>
-              </FormItem>
-            </Col>
-          </Row>
-        </Form>
-      </TabPane>
-      <TabPane tab="Browse" key="1" >
-        <Filter {...filterProps} />
-        <List {...listProps} />
-      </TabPane>
-    </Tabs>
+    <div>
+      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
+        {printmode}
+      </Modal>}
+      <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          <Form layout="horizontal">
+            <Row>
+              <Col {...column}>
+                <FormItem label="Code" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('serviceCode', {
+                    initialValue: item.serviceCode,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[a-zA-Z0-9_]+$/,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input disabled={disabled} maxLength={30} autoFocus />)}
+                </FormItem>
+                <FormItem label="Service" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('serviceName', {
+                    initialValue: item.serviceName,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^[a-zA-Z0-9 _-]+$/,
+                        message: 'a-Z & 0-9'
+                      }
+                    ]
+                  })(<Input maxLength={50} />)}
+                </FormItem>
+                <FormItem label="Cost" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('cost', {
+                    initialValue: item.cost,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^(?:0|[1-9][0-9]{0,})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
+                </FormItem>
+                <FormItem label="Service Cost" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('serviceCost', {
+                    initialValue: item.serviceCost,
+                    rules: [
+                      {
+                        pattern: /^(?:0|[1-9][0-9]{0,})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<Input maxLength={20} />)}
+                </FormItem>
+                <FormItem label="Service Type" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('serviceTypeId', {
+                    initialValue: item.serviceTypeId,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    optionFilterProp="children"
+                    mode="default"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >{serviceType}
+                  </Select>)}
+                </FormItem>
+                <FormItem {...tailFormItemLayout}>
+                  <Button type="primary" onClick={handleSubmit}>{button}</Button>
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Filter {...filterProps} />
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
+    </div>
   )
 }
 

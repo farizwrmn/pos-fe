@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ data, storeInfo, name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -72,22 +72,22 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
   let tableBody
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(data)
   } catch (e) {
     console.log(e)
   }
 
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
+    buttonSize: 'large',
+    name,
     className: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    buttonStyle: { background: 'transparent', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data,
     title,
     tableHeader,
     tableBody,
@@ -100,7 +100,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 }
 
 PrintXLS.propTypes = {
-  dataSource: PropTypes.object,
+  data: PropTypes.object,
   storeInfo: PropTypes.object
 }
 

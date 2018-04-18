@@ -353,11 +353,18 @@ const formCustomer = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input maxLength={20} />)}
+                  })(<Input />)}
                 </FormItem>
                 <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('phoneNumber', {
-                    initialValue: item.phoneNumber
+                    initialValue: item.phoneNumber,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                        message: 'Input a Phone No.[xxxx xxxx xxxx]'
+                      }
+                    ]
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>

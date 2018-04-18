@@ -31,11 +31,18 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        switch (location.pathname) {
+        const { pathname } = location
+        switch (pathname) {
         case '/master/employee':
-          dispatch({
-            type: 'querySequenceEmployee'
-          })
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
+          if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
           dispatch({
             type: 'updateState',
             payload: {
