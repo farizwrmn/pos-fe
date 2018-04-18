@@ -1,7 +1,8 @@
 import { Modal, message } from 'antd'
-import { configMain, configCompany, lstorage } from 'utils'
+import { configMain, configCompany, lstorage, messageInfo } from 'utils'
 import { getNPS, postNPS, getTempToken } from '../services/nps'
 import { queryByCode } from '../services/master/customer'
+import { getUserCompany } from '../services/login'
 
 const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 const { prefix } = configMain
@@ -15,16 +16,17 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/nps') {
-          dispatch({ type: 'getCompany' })
+        if (location.pathname.slice(0,-3) === '/nps') {
+          dispatch({ type: 'getCompany', payload: { cid:location.pathname.slice(-2) } })
         }
       })
     }
   },
 
   effects: {
-    * getCompany ({ payload }, { put }) {
-      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
+    * getCompany ({ payload }, { put, call }) {
+      const userCompany = yield call(getUserCompany, payload)
+      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
@@ -74,9 +76,16 @@ export default {
           }
         })
         const modal = Modal.success({
-          title: 'Thankyou for your feedback'
+          title: 'Thank you for your feedback',
+          content: (
+            <div>
+              <p>{data.message}</p>
+            </div>
+          )
         })
-        setTimeout(() => modal.destroy(), 1000)
+        setTimeout(() => modal.destroy(), 5000)
+      } else {
+        throw data
       }
     }
   },

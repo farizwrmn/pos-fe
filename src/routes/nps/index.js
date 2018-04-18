@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'dva'
 import moment from 'moment'
-import { Button, Input, Form, message } from 'antd'
+import { LocaleProvider, Button, Input, Form, message } from 'antd'
+import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 
 const { TextArea } = Input
@@ -65,7 +66,9 @@ const Nps = ({
     let { memberId, memo } = getFieldsValue()
     memo = memo || ''
     if (!memberId || !npsData) {
-      message.warning('You forget to entry ID or hit the rate button')
+      message.warning('You forget to entry ID')
+    } else if (!npsData.hasOwnProperty('score')) {
+      message.warning('You forget to hit the rate button')
     } else {
       let data = Object.assign(npsData, { memo, date: moment(new Date()).format('YYYY-MM-DD') })
       dispatch({
@@ -94,6 +97,7 @@ const Nps = ({
   }
 
   return (
+    <LocaleProvider locale={enUS}>
     <div className={styles.container}>
       <h2>
         <span>We`d love your help. </span>
@@ -110,11 +114,12 @@ const Nps = ({
         </div>
         <p>
           Message
-          {getFieldDecorator('memo')(<TextArea />)}
+          {getFieldDecorator('memo')(<TextArea style={{ height: '50px' }} />)}
         </p>
         <Button onClick={sendNPS} type="primary" size="large">Send</Button>
       </div>
     </div>
+    </LocaleProvider>
   )
 }
 
