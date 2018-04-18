@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Row, Col, Button, Tabs } from 'antd'
 import moment from 'moment'
+import { lstorage } from 'utils'
 import CardIn from './CardIn'
 import Filter from './Filter'
 import Modal from './Modal'
@@ -113,7 +114,8 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     dispatch({
       type: 'transferIn/queryOutDetail',
       payload: {
-        transNo: value
+        transNo: value,
+        storeIdReceiver: lstorage.getCurrentUserStore()
       }
     })
   }

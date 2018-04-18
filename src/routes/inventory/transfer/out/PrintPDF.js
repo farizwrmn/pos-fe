@@ -55,7 +55,10 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       {
         columns: [
           {
-            stack: storeInfo.stackHeader02
+            text: ' ',
+            style: 'header',
+            fontSize: 18,
+            alignment: 'right'
           },
           {
             text: 'SURAT PENGANTAR',
@@ -64,10 +67,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'center'
           },
           {
-            text: ' ',
-            style: 'header',
-            fontSize: 18,
-            alignment: 'right'
+            stack: storeInfo.stackHeader02
           }
         ]
       },
