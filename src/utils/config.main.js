@@ -5,6 +5,6 @@ module.exports = {
   footerText: 'Darkotech Mandiri Indonesia',
   footerSubText: 'Point of Sales © 2017-2018',
   logo: '/logo.png',
-  openPages: ['/login'],
+  openPages: ['/login', '/nps'],
   disableMultiSelect: true
 }
