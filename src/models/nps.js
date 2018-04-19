@@ -11,7 +11,7 @@ export default {
   namespace: 'nps',
   state: {
     npsData: {},
-    searchBy: { value: 'id', label: 'ID' },
+    searchBy: { value: 'id', label: 'Member ID' },
     membersOfPlat: []
   },
 
@@ -99,7 +99,7 @@ export default {
           payload: {
             npsData: {},
             membersOfPlat: {},
-            searchBy: { value: 'id', label: 'ID' }
+            searchBy: { value: 'id', label: 'Member ID' }
           }
         })
         const modal = Modal.success({
@@ -117,7 +117,7 @@ export default {
           payload: {
             npsData: {},
             membersOfPlat: {},
-            searchBy: { value: 'id', label: 'ID' }
+            searchBy: { value: 'id', label: 'Member ID' }
           }
         })
         throw data

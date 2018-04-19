@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import moment from 'moment'
-import { LocaleProvider, Button, Input, Form, message, Cascader, Select } from 'antd'
+import { LocaleProvider, Button, Input, Form, message, Cascader, Select, Tooltip } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 
@@ -9,13 +9,13 @@ const { TextArea } = Input
 const Option = Select.Option
 
 const Nps = ({
-  nps,
-  dispatch,
-  form: {
-    getFieldDecorator,
-    getFieldsValue,
-    resetFields
-  }
+ nps,
+ dispatch,
+ form: {
+   getFieldDecorator,
+   getFieldsValue,
+   resetFields
+ }
 }) => {
   const { npsData, searchBy, membersOfPlat } = nps
   let memberName = ''
@@ -116,7 +116,7 @@ const Nps = ({
   const options = [
     {
       value: 'id',
-      label: 'ID'
+      label: 'Member ID'
     },
     {
       value: 'pn',
@@ -133,6 +133,8 @@ const Nps = ({
       dispatch({
         type: 'nps/updateState',
         payload: {
+          npsData: {},
+          membersOfPlat: [],
           searchBy
         }
       })
@@ -154,7 +156,7 @@ const Nps = ({
       })
     },
     size: 'large',
-    style: { width: 200, marginLeft: 10 }
+    style: { fontSize: '18px', width: '27vw', marginLeft: 10 }
   }
 
   return (
@@ -163,15 +165,20 @@ const Nps = ({
         <h2>
           <span>We`d love your help. </span>
           Please give us 30 seconds of your time for feedback on our website
-      </h2>
+        </h2>
         <div className={styles.body}>
-          <p><Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
-            {getFieldDecorator('memberId')(<Input size="large" style={{ width: searchBy.value === 'pn' ? '20%' : '50%' }} onChange={e => findName(e)} />)}
+          <p>
+            <Tooltip title='click to change'
+                     defaultVisible={true} visible={true} placement='topLeft'
+            >
+              <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
+            </Tooltip>
+            {getFieldDecorator('memberId')(<Input size='large' onChange={e => findName(e)} />)}
             {searchBy.value === 'id' && <span className={styles.name}>{memberName}</span>}
             {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
-              <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
-                {memberPlats}
-              </Select>}
+            <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
+              {memberPlats}
+            </Select>}
           </p>
           <p>How likely is it that you would recommend our service to a friend or colleague?</p>
           <div>
@@ -179,7 +186,7 @@ const Nps = ({
           </div>
           <p>
             Message
-          {getFieldDecorator('memo')(<TextArea style={{ height: '50px' }} />)}
+            {getFieldDecorator('memo')(<TextArea style={{ height: '100px' }} />)}
           </p>
           <Button onClick={sendNPS} type="primary" size="large">Send</Button>
         </div>
