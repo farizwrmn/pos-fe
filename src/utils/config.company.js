@@ -4,7 +4,7 @@ const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
 const APIV1 = '/api/v1'
 
 module.exports = {
-  idCompany: 'TMI',
+  idCompany: 'DMI',
   rest: {
     apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,

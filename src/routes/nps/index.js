@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import moment from 'moment'
-import { LocaleProvider, Button, Input, Form, message, Cascader, Select, Tooltip } from 'antd'
+import { LocaleProvider, Button, Input, Form, message, Cascader, Select, Tooltip, Row, Col } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 
@@ -138,7 +138,7 @@ const Nps = ({
           searchBy
         }
       })
-    }
+    },
   }
 
   let memberPlats
@@ -156,7 +156,7 @@ const Nps = ({
       })
     },
     size: 'large',
-    style: { fontSize: '18px', width: '27vw', marginLeft: 10 }
+    style: { fontSize: '18px', marginLeft: '15px', width: '240px' }
   }
 
   return (
@@ -168,17 +168,37 @@ const Nps = ({
         </h2>
         <div className={styles.body}>
           <p>
+            <Row type="flex" justify="start" className={styles.antrowflex}>
             <Tooltip title='click to change'
-                     defaultVisible={true} visible={true} placement='topLeft'
+                     defaultVisible={true} visible={(!npsData.member)} placement='topLeft'
             >
-              <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
+              <Col span={8}>
+                <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
+              </Col>
             </Tooltip>
-            {getFieldDecorator('memberId')(<Input size='large' onChange={e => findName(e)} />)}
-            {searchBy.value === 'id' && <span className={styles.name}>{memberName}</span>}
+              <Col span={12}>
+                {getFieldDecorator('memberId')(<Input size='large' style={{ width: '200px' }} onChange={e => findName(e)} />)}
+              </Col>
+            </Row>
+            {searchBy.value === 'id' &&
+            <Row type="flex" justify="end" className={styles.antrowflex}>
+              <Col span={24}>
+                <span style={{float: 'right'}}>{memberName}</span>
+              </Col>
+            </Row>
+            }
+
             {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
-            <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
-              {memberPlats}
-            </Select>}
+            <Row type="flex" justify="start" className={styles.antrowflex}>
+              <Col span={5}>
+                <span>Member</span>
+              </Col>
+              <Col span={7}>
+                <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
+                  {memberPlats}
+                </Select>
+              </Col>
+            </Row>}
           </p>
           <p>How likely is it that you would recommend our service to a friend or colleague?</p>
           <div>
@@ -186,7 +206,7 @@ const Nps = ({
           </div>
           <p>
             Message
-            {getFieldDecorator('memo')(<TextArea style={{ height: '100px' }} />)}
+            {getFieldDecorator('memo')(<TextArea style={{ height: '80px' }} />)}
           </p>
           <Button onClick={sendNPS} type="primary" size="large">Send</Button>
         </div>
