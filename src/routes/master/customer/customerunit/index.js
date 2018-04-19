@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo, listBrand, listModel, listType } = customerunit
+  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer } = customer
   const modalProps = {

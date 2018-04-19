@@ -9,13 +9,13 @@ const { TextArea } = Input
 const Option = Select.Option
 
 const Nps = ({
- nps,
- dispatch,
- form: {
-   getFieldDecorator,
-   getFieldsValue,
-   resetFields
- }
+  nps,
+  dispatch,
+  form: {
+    getFieldDecorator,
+    getFieldsValue,
+    resetFields
+  }
 }) => {
   const { npsData, searchBy, membersOfPlat } = nps
   let memberName = ''
@@ -138,7 +138,7 @@ const Nps = ({
           searchBy
         }
       })
-    },
+    }
   }
 
   let memberPlats
@@ -169,21 +169,23 @@ const Nps = ({
         <div className={styles.body}>
           <p>
             <Row type="flex" justify="start" className={styles.antrowflex}>
-            <Tooltip title='click to change'
-                     defaultVisible={true} visible={(!npsData.member)} placement='topLeft'
-            >
-              <Col span={8}>
-                <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
-              </Col>
-            </Tooltip>
+              <Tooltip title="click to change"
+                defaultVisible
+                visible={(!npsData.member)}
+                placement="topLeft"
+              >
+                <Col span={8}>
+                  <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
+                </Col>
+              </Tooltip>
               <Col span={12}>
-                {getFieldDecorator('memberId')(<Input size='large' style={{ width: '200px' }} onChange={e => findName(e)} />)}
+                {getFieldDecorator('memberId')(<Input size="large" style={{ width: '200px' }} onChange={e => findName(e)} />)}
               </Col>
             </Row>
             {searchBy.value === 'id' &&
             <Row type="flex" justify="end" className={styles.antrowflex}>
               <Col span={24}>
-                <span style={{float: 'right'}}>{memberName}</span>
+                <span style={{ float: 'right' }}>{memberName}</span>
               </Col>
             </Row>
             }
