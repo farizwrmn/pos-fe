@@ -27,8 +27,8 @@ export default {
 
   effects: {
     * getCompany ({ payload }, { put, call }) {
-      // const userCompany = yield call(getUserCompany, payload)
-      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
+      const userCompany = yield call(getUserCompany, payload)
+      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
