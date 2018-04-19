@@ -154,7 +154,7 @@ const Nps = ({
       })
     },
     size: 'large',
-    style: { width: 200, marginLeft: 10 }
+    style: { width: '27vw', marginLeft: 10 }
   }
 
   return (
@@ -165,8 +165,8 @@ const Nps = ({
           Please give us 30 seconds of your time for feedback on our website
       </h2>
         <div className={styles.body}>
-          <p><Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
-            {getFieldDecorator('memberId')(<Input size="large" style={{ width: searchBy.value === 'pn' ? '20%' : '50%' }} onChange={e => findName(e)} />)}
+          <p><Cascader {...cascaderProps}><a className={styles.label}>{searchBy.label}</a></Cascader>
+            {getFieldDecorator('memberId')(<Input size="large" style={{ width: searchBy.value === 'pn' ? '40%' : '50%' }} onChange={e => findName(e)} />)}
             {searchBy.value === 'id' && <span className={styles.name}>{memberName}</span>}
             {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
               <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
