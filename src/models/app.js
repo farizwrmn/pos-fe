@@ -152,7 +152,7 @@ export default {
         }
         if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data, visibleItem: { showPopOverNotification: true } } })
         yield put({ type: 'queryListNotifications' })
-      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0 && location.pathname !== '/nps') {
+      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }
