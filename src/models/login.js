@@ -1,10 +1,10 @@
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import { configMain, configCompany, queryURL, lstorage, messageInfo } from 'utils'
-import { login, getUserRole, getUserStore } from '../services/login'
+import { login, getUserRole, getUserStore, getUserCompany } from '../services/login'
 
 const { prefix } = configMain
-const { apiCompanyHost, apiCompanyPort } = configCompany.rest
+// const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 
 export default {
@@ -19,7 +19,7 @@ export default {
   },
 
   effects: {
-    * getCompany ({ payload }, { put }) {
+    * getCompany ({ payload }, { put, call }) {
       const userCompany = yield call(getUserCompany, payload)
       // use below if network error
       // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
