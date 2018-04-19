@@ -59,7 +59,7 @@
   "scripts": {
     "dev": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server",
     "dev8888": "set BROWSER=none&&set HOST=0.0.0.0&&PORT=8888 roadhog server",
-    "commentonrelease-precommit-msg": "echo 'Pre-commit checks...' && exit 0",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "lint": "eslint --fix --ext .js src",
     "build": "set NODE_ENV=production && roadhog build",
     "babel-build": "babel src -d dist",
