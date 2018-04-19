@@ -70,7 +70,8 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
     dispatch({
       type: 'transferOut/queryProducts',
       payload: {
-        transNo
+        transNo,
+        storeId: lstorage.getCurrentUserStore()
       }
     })
   }
