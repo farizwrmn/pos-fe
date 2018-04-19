@@ -20,9 +20,9 @@ export default {
 
   effects: {
     * getCompany ({ payload }, { put }) {
-      // const userCompany = yield call(getUserCompany, payload)
+      const userCompany = yield call(getUserCompany, payload)
       // use below if network error
-      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
+      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: { cid: payload.cid || configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
