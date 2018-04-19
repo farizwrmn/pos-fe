@@ -140,3 +140,13 @@ export async function queryTypes (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function querySearchByPlat (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/units/search`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
