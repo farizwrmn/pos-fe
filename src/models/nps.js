@@ -1,7 +1,7 @@
 import { Modal, message } from 'antd'
 import { configMain, configCompany, lstorage, messageInfo } from 'utils'
 import { getNPS, postNPS, getTempToken } from '../services/nps'
-import { queryByCode } from '../services/master/customer'
+import { queryByCode, querySearchByPlat } from '../services/master/customer'
 import { getUserCompany } from '../services/login'
 
 const { apiCompanyHost, apiCompanyPort } = configCompany.rest
@@ -10,14 +10,16 @@ const { prefix } = configMain
 export default {
   namespace: 'nps',
   state: {
-    npsData: {}
+    npsData: {},
+    searchBy: { value: 'id', label: 'ID' },
+    membersOfPlat: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname.slice(0,-3) === '/nps') {
-          dispatch({ type: 'getCompany', payload: { cid:location.pathname.slice(-2) } })
+        if (location.pathname.slice(0, -3) === '/nps') {
+          dispatch({ type: 'getCompany', payload: { cid: location.pathname.slice(-2) } })
         }
       })
     }
@@ -25,8 +27,8 @@ export default {
 
   effects: {
     * getCompany ({ payload }, { put, call }) {
-      const userCompany = yield call(getUserCompany, payload)
-      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
+      // const userCompany = yield call(getUserCompany, payload)
+      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
@@ -39,22 +41,45 @@ export default {
       const token = data.id_token
       if (token) {
         localStorage.setItem(`${prefix}iKen`, token)
-        const data = yield call(queryByCode, { memberCode: payload.memberId })
-        if (data.success && data.data) {
-          yield put({
-            type: 'updateState',
-            payload: {
-              npsData: { member: data.data }
-            }
-          })
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              npsData: {}
-            }
-          })
-          message.warning('Member is not available')
+        let data
+        if (payload.searchBy.value === 'id') {
+          data = yield call(queryByCode, { memberCode: payload.memberId })
+          if (data.success && data.data) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                npsData: { member: data.data }
+              }
+            })
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                npsData: {}
+              }
+            })
+            message.warning('Member is not available')
+          }
+        } else if (payload.searchBy.value === 'pn') {
+          data = yield call(querySearchByPlat, { license: payload.memberId })
+          if (data.success && data.data.length) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                membersOfPlat: data.data,
+                npsData: { member: data.data[0] }
+              }
+            })
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                npsData: {},
+                membersOfPlat: []
+              }
+            })
+            message.warning('Member is not available')
+          }
         }
       }
     },
@@ -72,7 +97,9 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            npsData: {}
+            npsData: {},
+            membersOfPlat: {},
+            searchBy: { value: 'id', label: 'ID' }
           }
         })
         const modal = Modal.success({
@@ -85,6 +112,14 @@ export default {
         })
         setTimeout(() => modal.destroy(), 5000)
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            npsData: {},
+            membersOfPlat: {},
+            searchBy: { value: 'id', label: 'ID' }
+          }
+        })
         throw data
       }
     }
