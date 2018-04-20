@@ -9,9 +9,10 @@ import ListService from './ListService'
 import ListQueue from './ListQueue'
 import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
+import ListAsset from './ListAsset'
 
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listMember, pagination, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
+  const { listMember, listAsset, pagination, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
   const width = modalType === 'modalPayment' || modalType === 'modalService' ? '45%' : '80%'
   const modalOpts = {
     ...modalProps
@@ -21,10 +22,11 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
   const listProps = {
     dataSource: (
       modalType === 'browseMember' ? listMember :
-        modalType === 'browseMechanic' ? listMechanic :
-          modalType === 'browseProductLock' ? listProductLock :
-            modalType === 'browseProductFree' ? listProductFree :
-              modalType === 'browseService' ? listService : listMember
+        modalType === 'browseAsset' ? listAsset :
+          modalType === 'browseMechanic' ? listMechanic :
+            modalType === 'browseProductLock' ? listProductLock :
+              modalType === 'browseProductFree' ? listProductFree :
+                modalType === 'browseService' ? listService : listMember
     ),
     // loading: loading.effects[(modalType==='browse' ? 'pos/query' : (modalType==='browseMechanic' ? 'pos/queryMechanic' : (modalType==='browseService' ? 'pos/queryService' : '')))],
     loading: loading.effects[(
@@ -52,9 +54,11 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
       onChangeTotalItem(e)
     }
   }
+  console.log(modalType)
   return (
     <Modal {...modalOpts} width={width} height="80%" footer={[]}>
       {(modalType === 'browse') && <List {...listProps} />}
+      {(modalType === 'browseAsset') && <ListAsset {...listProps} />}
       {(modalType === 'browseMember') && <ListMember {...listProps} />}
       {(modalType === 'browseMechanic') && <ListMechanic {...listProps} />}
       {(modalType === 'browseProductLock') && <ListProductLock {...listProps} />}

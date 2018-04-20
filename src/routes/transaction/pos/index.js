@@ -52,6 +52,7 @@ const Pos = ({
   const {
     modalServiceVisible,
     modalMemberVisible,
+    modalAssetVisible,
     modalMechanicVisible,
     modalProductVisible,
     modalPaymentVisible,
@@ -266,15 +267,27 @@ const Pos = ({
     })
   }
 
-  const handleAddMember = () => {
-    // dispatch({
-    //   type: 'customer/modalShow',
-    //   payload: {
-    //     modalType: type,
-    //   },
-    // })
-    // dispatch({ type: 'pos/modalPopoverClose' })
+  const handleAssetBrowse = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalAssetVisible: true,
+        modalType: 'browseAsset',
+        pagination: {},
+        searchText: ''
+      }
+    })
   }
+
+  // const handleAddMember = () => {
+  // dispatch({
+  //   type: 'customer/modalShow',
+  //   payload: {
+  //     modalType: type,
+  //   },
+  // })
+  // dispatch({ type: 'pos/modalPopoverClose' })
+  // }
 
   const handleSuspend = () => {
     document.getElementById('KM').value = 0
@@ -531,6 +544,74 @@ const Pos = ({
       })
     }
   }
+
+  const modalAssetProps = {
+    loading,
+    dispatch,
+    pos,
+    visible: modalAssetVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAssetVisible: false,
+          listAsset: []
+        }
+      })
+    },
+    onChange (e) {
+      dispatch({
+        type: 'pos/getMemberAssets',
+        payload: {
+          license: searchText === '' ? null : searchText,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
+        }
+      })
+    },
+    onChooseItem (item) {
+      localStorage.removeItem('member', [])
+      localStorage.removeItem('memberUnit')
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+
+      let arrayProd
+      if (JSON.stringify(listByCode) === '[]') {
+        arrayProd = listByCode.slice()
+      } else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      arrayProd.push({
+        memberCode: item.memberCode,
+        memberName: item.memberName,
+        address01: item.address01,
+        point: item.point ? item.point : 0,
+        id: item.id,
+        memberTypeId: item.memberTypeId,
+        memberSellPrice: item.memberSellPrice,
+        memberPendingPayment: item.memberPendingPayment,
+        gender: item.gender,
+        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
+      })
+
+      localStorage.setItem('member', JSON.stringify(arrayProd))
+      dispatch({
+        type: 'pos/queryGetMemberSuccess',
+        payload: { memberInformation: item }
+      })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAssetVisible: false,
+          listAsset: []
+        }
+      })
+    }
+  }
+
   const modalMemberProps = {
     location,
     loading,
@@ -1310,13 +1391,15 @@ const Pos = ({
               />
             </Form>
 
-            <ButtonGroup>
-              <Button type="primary" size="large" icon="down-square-o" onClick={handleMemberBrowse}>Member</Button>
-              <Tooltip title="add Member">
+            <ButtonGroup style={{ marginRight: 10 }}>
+              <Button type="primary" size="large" onClick={handleMemberBrowse}>Member</Button>
+              {/* <Tooltip title="add Member">
                 <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-              </Tooltip>
+              </Tooltip> */}
+              <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
             </ButtonGroup>
             {modalMemberVisible && <Browse {...modalMemberProps} />}
+            {modalAssetVisible && <Browse {...modalAssetProps} />}
 
             <Button type="primary"
               size="large"
