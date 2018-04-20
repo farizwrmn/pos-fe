@@ -175,7 +175,6 @@ export default modelExtend(pageModel, {
       const newCustomer = { ...payload, id }
       const data = yield call(edit, newCustomer)
       if (data.success) {
-        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -192,6 +191,7 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({

@@ -81,7 +81,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -107,7 +107,6 @@ export default modelExtend(pageModel, {
       const newProductBrand = { ...payload, id }
       const data = yield call(edit, newProductBrand)
       if (data.success) {
-        yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -124,6 +123,7 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal, Select } from 'antd'
+import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
 import List from './List'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'

@@ -1,8 +1,8 @@
 import { Modal, message } from 'antd'
-import { configMain, configCompany, lstorage, messageInfo } from 'utils'
+import { configMain, configCompany, lstorage } from 'utils'
 import { getNPS, postNPS, getTempToken } from '../services/nps'
 import { queryByCode, querySearchByPlat } from '../services/master/customer'
-import { getUserCompany } from '../services/login'
+// import { getUserCompany } from '../services/login'
 
 const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 const { prefix } = configMain
@@ -11,7 +11,7 @@ export default {
   namespace: 'nps',
   state: {
     npsData: {},
-    searchBy: { value: 'id', label: 'ID' },
+    searchBy: { value: 'id', label: 'Member ID' },
     membersOfPlat: []
   },
 
@@ -26,7 +26,7 @@ export default {
   },
 
   effects: {
-    * getCompany ({ payload }, { put, call }) {
+    * getCompany ({ put }) {
       // const userCompany = yield call(getUserCompany, payload)
       const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort } }
       if (userCompany.success) {
@@ -84,10 +84,10 @@ export default {
       }
     },
 
-    * getNPS ({ payload = {} }, { call, put }) {
+    * getNPS ({ payload = {} }, { call }) {
       const data = yield call(getNPS, payload)
       if (data.success) {
-
+        console.log('do nothing')
       }
     },
 
@@ -99,7 +99,7 @@ export default {
           payload: {
             npsData: {},
             membersOfPlat: {},
-            searchBy: { value: 'id', label: 'ID' }
+            searchBy: { value: 'id', label: 'Member ID' }
           }
         })
         const modal = Modal.success({
@@ -117,7 +117,7 @@ export default {
           payload: {
             npsData: {},
             membersOfPlat: {},
-            searchBy: { value: 'id', label: 'ID' }
+            searchBy: { value: 'id', label: 'Member ID' }
           }
         })
         throw data
