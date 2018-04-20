@@ -10,12 +10,11 @@ import ModalBrowse from './Modal'
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
 const Panel = Collapse.Panel
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13
+      span: 10
     },
     sm: {
       span: 8
@@ -26,31 +25,13 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 11
+      span: 14
     },
     sm: {
       span: 14
     },
     md: {
       span: 14
-    }
-  }
-}
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    span: 24,
-    xs: {
-      offset: 17
-    },
-    sm: {
-      offset: 19
-    },
-    md: {
-      offset: 18
-    },
-    lg: {
-      offset: 17
     }
   }
 }
@@ -65,6 +46,8 @@ const column = {
 const formCustomerType = ({
   item,
   onSubmit,
+  onCancelUpdate,
+  modalType,
   listItem,
   disabled,
   clickBrowse,
@@ -77,7 +60,6 @@ const formCustomerType = ({
   ...printProps,
   ...modalProps,
   changeTab,
-  onFocusBrand,
   form: {
     getFieldDecorator,
     validateFields,
@@ -85,6 +67,24 @@ const formCustomerType = ({
     resetFields
   }
 }) => {
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 18
+      },
+      sm: {
+        offset: modalType === 'edit' ? 15 : 20
+      },
+      md: {
+        offset: modalType === 'edit' ? 15 : 19
+      },
+      lg: {
+        offset: modalType === 'edit' ? 13 : 18
+      }
+    }
+  }
+
   const { openModal } = modalProps
   Object.assign(modalProps, { activeKey })
 
@@ -97,6 +97,11 @@ const formCustomerType = ({
   const change = (key) => {
     changeTab(key)
     handleReset()
+  }
+
+  const handleCancel = () => {
+    onCancelUpdate()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -173,6 +178,10 @@ const formCustomerType = ({
   const collapseActiveKey = '1'
   const collapseTitle = customerInfo.memberCode ? `Customer Info(${customerInfo.memberCode})` : 'Customer Info'
 
+  let y = moment(new Date()).format('YYYY').split('')
+  let pattern = `^(1769|18\\d\\d|19\\d\\d|[2-${y[0]}][0-${y[1]}][0-${y[2]}][0-${y[3]}])$`
+  let yearPattern = new RegExp(pattern)
+
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
@@ -232,11 +241,11 @@ const formCustomerType = ({
                     initialValue: item.year,
                     rules: [
                       {
-                        pattern: /^[12][0-9]{3}$/,
+                        pattern: yearPattern,
                         message: 'year is not valid'
                       }
                     ]
-                  })(<InputNumber />)}
+                  })(<InputNumber maxLength={4} />)}
                 </FormItem>
                 <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('chassisNo', {
@@ -249,6 +258,7 @@ const formCustomerType = ({
                   })(<Input maxLength={20} />)}
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
+                  {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>
                 </FormItem>
               </Col>

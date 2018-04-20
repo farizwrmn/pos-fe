@@ -85,7 +85,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(addUnit, payload)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -123,7 +123,7 @@ export default modelExtend(pageModel, {
       const newCustomerUnit = { ...payload, id, code }
       const data = yield call(editUnit, newCustomerUnit)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
