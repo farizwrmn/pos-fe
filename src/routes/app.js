@@ -257,7 +257,10 @@ const App = ({ children, dispatch, app, loading, location }) => {
   }
 
   const breadProps = {
-    menu
+    menu,
+    changeRole (roleCode) {
+      dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
+    },
   }
   if (openPages && openPages.includes(pathname)) {
     return (<div>

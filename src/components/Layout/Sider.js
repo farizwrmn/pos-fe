@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Cascader, Tooltip } from 'antd'
 import { lstorage } from 'utils'
-import moment from 'moment'
+// import moment from 'moment'
 import styles from './Layout.less'
 import Menus from './Menu'
 import DateTime from './DateTime'
@@ -29,8 +29,8 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
   const loginTimeDiff = lstorage.getLoginTimeDiff()
   // const todayDateTime = new Date(moment.utc(loginTime).format('DD-MMM-YYYY hh:mm:ss'))
   // user store
-  const listUserStores = lstorage.getListUserStores()
-  const defaultStore = lstorage.getCurrentUserStore()
+  // const listUserStores = lstorage.getListUserStores()
+  // const defaultStore = lstorage.getCurrentUserStore()
   const defaultStoreName = lstorage.getCurrentUserStoreName()
   const defaultStoreColor = (defaultStoreName === '>> No Store <<') ? { color: styles.colorred, backgroundColor: styles.colorgrey } : { backgroundColor: styles.colorgrey }
 
@@ -40,13 +40,13 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     changeRole(value.toString())
   }
 
-  const handleChangeStore = (value) => {
-    const localId = lstorage.getStorageKey('udi')
-    const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
-    changeRole(value.toString())
-    setInterval(() => { window.location.reload() }, 1000)
-  }
+  // const handleChangeStore = (value) => {
+  //   const localId = lstorage.getStorageKey('udi')
+  //   const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+  //   lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
+  //   changeRole(value.toString())
+  //   setInterval(() => { window.location.reload() }, 1000)
+  // }
 
   const loopLogo = () => {
     let i
@@ -67,7 +67,8 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
               <span><img alt={'logo'} src={`/logo${lstorage.getIdBE()}.png`} style={{ float: 'center' }} /></span>
               <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff} /></span>
               <span>{companyName}</span>
-              <span>
+              <span style={defaultStoreColor}>{defaultStoreName}</span>
+              {/* <span>
                 <Tooltip placement="right" title={`click to switch current store: \n ${defaultStoreName}`} >
                   <Cascader style={{ width: '100%' }}
                     options={listUserStores}
@@ -80,7 +81,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
                     <a href="/" style={defaultStoreColor}>{defaultStoreName}</a>
                   </Cascader>
                 </Tooltip>
-              </span>
+              </span> */}
             </div>
           }
         </div>
