@@ -35,24 +35,6 @@ const formItemLayout = {
   }
 }
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    span: 24,
-    xs: {
-      offset: 17
-    },
-    sm: {
-      offset: 19
-    },
-    md: {
-      offset: 18
-    },
-    lg: {
-      offset: 17
-    }
-  }
-}
-
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -63,6 +45,8 @@ const column = {
 const formSupplier = ({
   item = {},
   onSubmit,
+  onCancel,
+  modalType,
   disabled,
   activeKey,
   button,
@@ -81,6 +65,24 @@ const formSupplier = ({
     resetFields
   }
 }) => {
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 18
+      },
+      sm: {
+        offset: modalType === 'edit' ? 15 : 20
+      },
+      md: {
+        offset: modalType === 'edit' ? 15 : 19
+      },
+      lg: {
+        offset: modalType === 'edit' ? 13 : 18
+      }
+    }
+  }
+
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
@@ -94,6 +96,11 @@ const formSupplier = ({
 
   const city = () => {
     showCities()
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -280,6 +287,7 @@ const formSupplier = ({
                 })(<Input maxLength={15} />)}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
+                {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>

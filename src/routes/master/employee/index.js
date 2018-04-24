@@ -145,6 +145,7 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     item: currentItem,
     sequence,
     disabled: true,
+    modalType,
     loading: loading.effects['employee/querySequenceEmployee'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -162,6 +163,21 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
       //   }
       // })
       dispatch({ type: 'employee/querySequenceEmployee' })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
     },
     showPosition () {
       dispatch({

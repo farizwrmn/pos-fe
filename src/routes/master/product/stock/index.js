@@ -322,6 +322,21 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         }
       })
     },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'productbrand/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+    },
     showBrands () {
       dispatch({
         type: 'productbrand/query'

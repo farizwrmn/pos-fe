@@ -115,6 +115,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
     ...listProps,
     listCity,
     item: currentItem,
+    modalType,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -123,6 +124,21 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'supplier/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     },

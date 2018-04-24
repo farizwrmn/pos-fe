@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-// import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 const Service = ({ service, loading, dispatch, location, app }) => {
@@ -184,6 +183,7 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     ...filterProps,
     ...listProps,
     listServiceType,
+    modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -193,6 +193,21 @@ const Service = ({ service, loading, dispatch, location, app }) => {
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     }

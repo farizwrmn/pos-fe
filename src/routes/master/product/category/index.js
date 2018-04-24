@@ -114,6 +114,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
     ...filterProps,
     ...listProps,
     item: currentItem,
+    modalType,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -122,6 +123,21 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'productcategory/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     }
