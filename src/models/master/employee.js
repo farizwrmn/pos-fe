@@ -1,6 +1,5 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
 import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
@@ -76,7 +75,7 @@ export default modelExtend(pageModel, {
     * querySequenceEmployee ({ payload = {} }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: lstorage.getCurrentUserStore()
+        type: 1
       }
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
@@ -99,7 +98,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const seqDetail = {
         seqCode: 'EMP',
-        type: lstorage.getCurrentUserStore() // storeId
+        type: 1 // storeId
       }
       const sequence = yield call(querySequence, seqDetail)
       const employeeData = {
