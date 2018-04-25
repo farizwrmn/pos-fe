@@ -55,7 +55,12 @@ export default {
   },
   subscriptions: {
 
-    setup ({ dispatch }) {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/user_profile') {
+          dispatch({ type: 'checkTotpStatus' })
+        }
+      })
       dispatch({ type: 'query' })
       let tid
       window.onresize = () => {
@@ -275,6 +280,13 @@ export default {
       const data = yield call(refreshNotifications, payload)
       if (data.success) {
         yield put({ type: 'queryListNotifications' })
+      }
+    },
+
+    * checkTotpStatus ({ payload }, { call, put }) {
+      const { user } = yield call(query, payload)
+      if (user) {
+        yield put({ type: 'updateState', payload: { totpChecked: user.totp } })
       }
     }
   },

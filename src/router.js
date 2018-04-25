@@ -30,6 +30,13 @@ const Routers = function ({ history, app }) {
             }, 'dashboard')
           }
         }, {
+          path: 'user_profile',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/profile/'))
+            }, 'user_profile')
+          }
+        }, {
           path: 'login',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
