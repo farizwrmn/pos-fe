@@ -130,6 +130,12 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
     },
     queryEditItem (categoryCode, id) {
       dispatch({
+        type: 'productcategory/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+      dispatch({
         type: 'productcategory/queryEditItem',
         payload: {
           id,

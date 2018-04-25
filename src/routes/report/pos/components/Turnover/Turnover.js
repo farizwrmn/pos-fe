@@ -17,7 +17,7 @@ const Report = ({ dispatch, loading, posReport, service, productcategory, app })
     dataSource: listTrans,
     listTrans,
     storeInfo,
-    loading: loading.effects['posReport/query'],
+    loading: loading.effects['posReport/queryTurnOver'],
     productCode,
     onListReset () {
       dispatch({

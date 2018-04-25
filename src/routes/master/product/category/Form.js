@@ -141,8 +141,17 @@ const formProductCategory = ({
   // }
 
   const handleClickTree = (event, id) => {
-    queryEditItem(event, id)
-    resetFields()
+    Modal.confirm({
+      title: 'Edit item ?',
+      content: `You're gonna edit item ${event}`,
+      onOk () {
+        resetFields()
+        queryEditItem(event, id)
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
   }
 
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
