@@ -4,6 +4,7 @@ import {
   Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
   Tabs, Transfer, Tree, Switch, Icon, Card, Select
 } from 'antd'
+import styles from './Modal.less'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
@@ -280,6 +281,7 @@ const modal = ({
   return (
     <Modal width="35vw"
       height="70vh"
+      className={styles.modal}
       {...modalOpts}
       footer={[
         <Button key="back" onClick={() => hdlButtonCancelClick()} >Cancel</Button>,

@@ -112,12 +112,28 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
     ...filterProps,
     ...listProps,
     item: currentItem,
+    modalType,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
         type: `customergroup/${modalType}`,
         payload: data
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'customergroup/updateState',
+        payload: {
+          currentItem: {}
+        }
       })
     }
   }

@@ -17,10 +17,19 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/product/stock/quantity-alerts') {
-          dispatch({
-            type: 'queryPeriod'
-          })
+        switch (location.pathname) {
+          case '/report/product/stock/quantity-alerts':
+            dispatch({
+              type: 'queryPeriod'
+            })
+            break
+          case '/report/product/stock-in-transit':
+            dispatch({
+              type: 'queryTransferStockOut'
+            })
+            break
+          default:
+            break
         }
       })
     }

@@ -4,7 +4,7 @@ import moment from 'moment'
 import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
-import { query as queryMembers, queryByCode as queryMemberCode } from '../../services/master/customer'
+import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
@@ -25,6 +25,7 @@ export default {
     listPayment: [],
     listPaymentDetail: [],
     listMember: [],
+    listAsset: [],
     listUnit: [],
     listMechanic: [],
     listProduct: [],
@@ -37,6 +38,7 @@ export default {
     companyPrint: [],
     curQueue: 1,
     currentItem: {},
+    modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
     modalServiceListVisible: false,
@@ -541,6 +543,24 @@ export default {
           }
         })
         // throw data
+      }
+    },
+
+    * getMemberAssets ({ payload }, { call, put }) {
+      const data = yield call(querySearchByPlat, payload)
+      if (data.success && data.data.length) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAsset: data.data
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
       }
     },
 

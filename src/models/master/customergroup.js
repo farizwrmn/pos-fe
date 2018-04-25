@@ -29,7 +29,16 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        if (location.pathname === '/master/customergroup') {
+        const { pathname } = location
+        if (pathname === '/master/customergroup') {
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
           dispatch({
             type: 'updateState',
             payload: {
@@ -74,7 +83,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -99,7 +108,6 @@ export default modelExtend(pageModel, {
       const newCustomerGroup = { ...payload, id }
       const data = yield call(edit, newCustomerGroup)
       if (data.success) {
-        yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -116,6 +124,7 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',

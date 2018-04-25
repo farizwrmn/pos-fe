@@ -30,12 +30,43 @@ const Routers = function ({ history, app }) {
             }, 'dashboard')
           }
         }, {
+          path: 'user_profile',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/profile/'))
+            }, 'user_profile')
+          }
+        }, {
           path: 'login',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/login'))
               cb(null, require('./routes/login/'))
             }, 'login')
+          }
+        }, {
+          path: 'nps/01',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/02',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/03',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
           }
         }, {
           path: 'userprofile',
@@ -353,8 +384,16 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/productstock'))
-              cb(null, require('./routes/report/product/stock'))
+              cb(null, require('./routes/report/notification/stockquantityalert'))
             }, 'report-product-stock-qty-alerts')
+          }
+        }, {
+          path: 'report/product/stock-in-transit',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/productstock'))
+              cb(null, require('./routes/report/notification/stockintransit'))
+            }, 'report-product-stock-in-transit')
           }
         }, {
           path: 'report/inventory/transfer',

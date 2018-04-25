@@ -21,13 +21,25 @@ const RepeatReport = ({
   tableTitle = []
 }) => {
   const createPdfLineItems = (listData) => {
-    let body = []
-    if (listData.length > 0) {
-      for (let c = 0; c < listData.length; c += 1) {
-        body.push(listData[c])
+    let contentPdf = []
+    for (let i = 0; i < listData.length; i += 1) {
+      if (tableTitle[i]) contentPdf.push(tableTitle[i])
+      let body = []
+      for (let j = 0; j < listData[i].length; j += 1) {
+        body.push(listData[i][j])
       }
+      contentPdf.push(
+        {
+          writable: true,
+          margin: tableMargin,
+          table: {
+            widths: width[i],
+            body
+          }
+        }
+      )
     }
-    return body
+    return contentPdf
   }
   const printPdf = () => {
     if (data.length === 0) {
@@ -36,20 +48,7 @@ const RepeatReport = ({
         content: 'No Data in Storage'
       })
     } else {
-      let contentPdf = []
-      for (let i = 0; i < tableBody.length; i += 1) {
-        if (tableTitle[i]) contentPdf.push(tableTitle[i])
-        contentPdf.push(
-          {
-            writable: true,
-            margin: tableMargin,
-            table: {
-              widths: width[i],
-              body: createPdfLineItems(tableBody[i])
-            }
-          }
-        )
-      }
+      let contentPdf = createPdfLineItems(tableBody)
 
       let docDefinition = {
         pageSize,

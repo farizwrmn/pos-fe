@@ -30,11 +30,18 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        switch (location.pathname) {
+        const { pathname } = location
+        switch (pathname) {
           case '/master/employee':
-            dispatch({
-              type: 'querySequenceEmployee'
-            })
+            if (!activeKey) {
+              dispatch(routerRedux.push({
+                pathname,
+                query: {
+                  activeKey: '0'
+                }
+              }))
+            }
+            if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
             dispatch({
               type: 'updateState',
               payload: {
@@ -109,7 +116,7 @@ export default modelExtend(pageModel, {
       if (sequence.data !== null) {
         data = yield call(add, { id: sequence.data, data: employeeData })
         if (data.success) {
-          yield put({ type: 'query' })
+          // yield put({ type: 'query' })
           const employeeIncrease = yield call(increaseSequence, seqDetail)
           if (employeeIncrease.success) {
             success(sequence.data)
@@ -148,7 +155,6 @@ export default modelExtend(pageModel, {
       const newEmployee = { ...payload, id }
       const data = yield call(edit, newEmployee)
       if (data.success) {
-        yield put({ type: 'query' })
         success(id)
         yield put({
           type: 'updateState',
@@ -165,6 +171,7 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({

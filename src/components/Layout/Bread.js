@@ -1,14 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
+import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon } from 'antd'
+import { Breadcrumb, Icon, Tooltip, Cascader } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
-const Bread = ({ menu }) => {
+const Bread = ({ menu, changeRole }) => {
   // user store
   const currentStoreName = lstorage.getCurrentUserStoreName()
+  const listUserStores = lstorage.getListUserStores()
+  const defaultStore = lstorage.getCurrentUserStore()
+
+  const loginTimeDiff = lstorage.getLoginTimeDiff()
 
   // 匹配当前路由
   let pathArray = []
@@ -59,10 +64,32 @@ const Bread = ({ menu }) => {
     )
   })
 
+  const handleChangeStore = (value) => {
+    const localId = lstorage.getStorageKey('udi')
+    const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
+    changeRole(value.toString())
+    setInterval(() => { window.location.reload() }, 1000)
+  }
+
   return (
     <div className={styles.bread}>
       <Breadcrumb>
-        <div className={styles.currentStore}>{currentStoreName}</div>
+        {/* <div className={styles.currentStore}>{currentStoreName}</div> */}
+        <div className={styles.currentStore}>
+          <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
+            <Cascader style={{ width: '100%' }}
+              options={listUserStores}
+              onChange={handleChangeStore}
+              changeOnSelect
+              allowClear={false}
+              defaultValue={[defaultStore]}
+              placeholder="Switch Store"
+            >
+              <a href="/">{currentStoreName}</a>
+            </Cascader>
+          </Tooltip>
+        </div>
         {breads}
       </Breadcrumb>
     </div>

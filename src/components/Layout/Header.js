@@ -170,7 +170,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   }
 
   let notificationPopContent
-  if (listNotification.length > 0) {
+  if (totalNotification) {
     notificationPopContent = {
       ...notificationPopOver,
       total: totalNotification,
@@ -238,14 +238,14 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
           >
             <Menu.Item key="myProfile">
               My Profile
-              <Link to="/userprofile" />
+              <Link to="/user_profile" />
             </Menu.Item>
-            <Menu.Item key="password">
+            {/* <Menu.Item key="password">
               Change Password
             </Menu.Item>
             <Menu.Item key="totp">
               {`${user.totp ? 'Change' : 'Enable'} TOTP`}
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Divider />
             <Menu.Item key="logout">
               Sign out

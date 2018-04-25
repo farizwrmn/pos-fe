@@ -1,7 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { queryUnits, addUnit, removeUnit, editUnit } from '../../services/master/customer'
+import {
+  queryUnits,
+  addUnit,
+  removeUnit,
+  editUnit,
+  queryBrands,
+  queryModels,
+  queryTypes
+} from '../../services/master/customer'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -20,14 +28,26 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listUnit: [],
-    customerInfo: {}
+    customerInfo: {},
+    listBrand: [],
+    listModel: [],
+    listType: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        if (location.pathname === '/master/customerunit') {
+        const { pathname } = location
+        if (pathname === '/master/customerunit') {
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
           dispatch({
             type: 'updateState',
             payload: {
@@ -65,7 +85,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(addUnit, payload)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -103,7 +123,7 @@ export default modelExtend(pageModel, {
       const newCustomerUnit = { ...payload, id, code }
       const data = yield call(editUnit, newCustomerUnit)
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -129,6 +149,42 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+
+    * queryBrands ({ payload = {} }, { call, put }) {
+      const data = yield call(queryBrands, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBrand: data.data
+          }
+        })
+      }
+    },
+
+    * queryModels ({ payload = {} }, { call, put }) {
+      const data = yield call(queryModels, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listModel: data.data
+          }
+        })
+      }
+    },
+
+    * queryTypes ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTypes, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listType: data.data
+          }
+        })
       }
     }
 

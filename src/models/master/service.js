@@ -20,44 +20,76 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listServiceType: [],
-    show: 1
+    show: 1,
+    listPrintAllService: [],
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    serviceLoading: false
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
-        if (location.pathname === '/master/service') {
-          dispatch({
-            type: 'queryServiceType'
-          })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
+        const { pathname } = location
+        switch (pathname) {
+          case '/master/service':
+            if (!activeKey) {
+              dispatch(routerRedux.push({
+                pathname,
+                query: {
+                  activeKey: '0'
+                }
+              }))
             }
-          })
-          dispatch({
-            type: 'query',
-            payload: other
-          })
-        } else if (location.pathname === '/report/service/history') {
-          dispatch({
-            type: 'queryServiceType'
-          })
-          dispatch({
-            type: 'query'
-          })
-        } else if (location.pathname === '/report/customer/history' || location.pathname === '/report/pos/analyst') {
-          dispatch({
-            type: 'queryServiceType'
-          })
+            if (activeKey === '1') {
+              dispatch({
+                type: 'query',
+                payload: other
+              })
+            }
+            if (activeKey === '0') dispatch({ type: 'queryServiceType' })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+            break
+          case '/report/service/history':
+            dispatch({
+              type: 'queryServiceType'
+            })
+            dispatch({
+              type: 'query'
+            })
+            break
+          case '/report/customer/history' || '/report/pos/analyst':
+            dispatch({
+              type: 'queryServiceType'
+            })
+            break
+          default:
         }
       })
     }
   },
 
   effects: {
+    * queryAllService ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(query, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPrintAllService: data.data
+          }
+        })
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -102,7 +134,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -128,7 +160,6 @@ export default modelExtend(pageModel, {
       const newService = { ...payload, id }
       const data = yield call(edit, newService)
       if (data.success) {
-        yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -145,6 +176,7 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -159,6 +191,9 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    showLoading (state) { return { ...state, serviceLoading: true } },
+
+    hideLoading (state) { return { ...state, serviceLoading: false } },
 
     resetServiceList (state) {
       return { ...state, list: [], pagination: { total: 0 } }

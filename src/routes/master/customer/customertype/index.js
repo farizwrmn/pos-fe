@@ -117,6 +117,7 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     ...tabProps,
     ...filterProps,
     listSellprice,
+    modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -124,6 +125,21 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
       dispatch({
         type: `customertype/${modalType}`,
         payload: data
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'customertype/updateState',
+        payload: {
+          currentItem: {}
+        }
       })
     }
   }

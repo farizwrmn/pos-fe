@@ -29,15 +29,6 @@ const formItemLayout = {
   }
 }
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: { span: 7, offset: 0, push: 17 },
-    sm: { span: 3, offset: 0, push: 16 },
-    md: { span: 3, offset: 0, push: 17 },
-    lg: { span: 2, offset: 0, push: 22 }
-  }
-}
-
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -48,6 +39,7 @@ const column = {
 const formProductCategory = ({
   item = {},
   onSubmit,
+  onCancel,
   disabled,
   clickBrowse,
   modalType,
@@ -81,6 +73,24 @@ const formProductCategory = ({
     setFieldsValue
   }
 }) => {
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 18
+      },
+      sm: {
+        offset: modalType === 'edit' ? 17 : 22
+      },
+      md: {
+        offset: modalType === 'edit' ? 18 : 22
+      },
+      lg: {
+        offset: modalType === 'edit' ? 11 : 19
+      }
+    }
+  }
+
   const { showModalProduct, listItem, update, period, listSticker, modalProductType, onShowModalProduct, onCloseModalProduct,
     onAutoSearch, pushSticker, selectedSticker, onSelectSticker, onSearchUpdateSticker } = modalProductProps
   const { show } = filterProps
@@ -98,6 +108,11 @@ const formProductCategory = ({
   const change = (key) => {
     changeTab(key)
     handleReset()
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -495,11 +510,12 @@ const formProductCategory = ({
                     </Upload>
                   )}
                 </FormItem>
+                <FormItem {...tailFormItemLayout}>
+                  {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+                  <Button type="primary" onClick={handleSubmit}>{button}</Button>
+                </FormItem>
               </Col>
             </Row>
-            <FormItem {...tailFormItemLayout}>
-              <Button type="primary" onClick={handleSubmit}>{button}</Button>
-            </FormItem>
           </Form>
         </TabPane>
         <TabPane tab="Browse" key="1" >

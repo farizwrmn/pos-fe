@@ -47,11 +47,6 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.q = fields.searchName
-    delete fields.searchName
-    if (fields.q === undefined || fields.q === '') {
-      delete fields.q
-    }
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -77,7 +72,6 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { serviceCode } = filter
 
   let initialCreateTime = []
   if (filter.createdAt && filter.createdAt[0]) {
@@ -87,10 +81,15 @@ const Filter = ({
     initialCreateTime[1] = moment(filter.createdAt[1])
   }
 
+  const params = location.search.substring(1)
+  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
+
+  if (query.q) query.q = query.q.replace(/\+/g, ' ')
+
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: serviceCode })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('q', { initialValue: query.q })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Create At" >

@@ -102,6 +102,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     listItem: listUnit,
+    modalType,
     customerInfo,
     filter: {
       ...location.query
@@ -118,6 +119,21 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         }
       })
     },
+    onCancelUpdate () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+    },
     clickBrowse () {
       dispatch({
         type: 'customerunit/updateState',
@@ -126,6 +142,9 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
           customerInfo: {}
         }
       })
+    },
+    onFocusBrand () {
+      dispatch({ type: 'customerunit/queryBrands' })
     }
   }
 

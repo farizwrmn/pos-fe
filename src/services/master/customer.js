@@ -18,7 +18,7 @@ export async function queryByCode (params) {
   return request({
     url,
     method: 'get',
-    data: params,
+    body: params,
     headers: apiHeaderToken
   })
 }
@@ -106,6 +106,46 @@ export async function editPoint (params) {
   return request({
     url,
     method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryBrands () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/units/brands`,
+    method: 'get',
+    // data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryModels (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/units/models/${params.code}`,
+    method: 'get',
+    // data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryTypes (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/units/types/${params.code}`,
+    method: 'get',
+    // data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function querySearchByPlat (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/units/search`,
+    method: 'get',
     data: params,
     headers: apiHeaderToken
   })

@@ -299,17 +299,19 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     },
     getAllStock () {
       dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          changed: true
-        }
-      })
-      dispatch({
         type: 'productstock/queryAllStock',
         payload: {
           type: 'all'
         }
       })
+      setTimeout(() => {
+        dispatch({
+          type: 'productstock/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     },
     onSubmit (id, data) {
       dispatch({
@@ -317,6 +319,21 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'productbrand/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     },

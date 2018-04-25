@@ -8,7 +8,8 @@ class DateTime extends React.Component {
     super(props)
     const { setDate, setDateDiff } = props
     this.state = {
-      date: setDate ? new Date(setDate) : new Date(),
+      // date: setDate ? new Date(setDate) : new Date(),
+      date: new Date(),
       setDateDiff,
       diffDate: setDateDiff || moment(new Date()).diff(moment(new Date(setDate)))
     }

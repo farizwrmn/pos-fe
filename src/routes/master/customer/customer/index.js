@@ -183,17 +183,19 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
     getAllCustomer () {
       dispatch({
-        type: 'customer/updateState',
-        payload: {
-          changed: true
-        }
-      })
-      dispatch({
         type: 'customer/queryAllCustomer',
         payload: {
           type: 'all'
         }
       })
+      setTimeout(() => {
+        dispatch({
+          type: 'customer/updateState',
+          payload: {
+            changed: true
+          }
+        })
+      }, 1000)
     }
   }
 
@@ -205,6 +207,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     listType,
     listCity,
     listIdType,
+    modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -214,6 +217,21 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     },

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ data, user, storeInfo, name }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -107,18 +107,18 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 
   let tableBody = []
   try {
-    tableBody = createTableBody(dataSource)
+    tableBody = createTableBody(data)
   } catch (e) {
     console.log(e)
   }
 
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    name: 'PDF',
+    buttonSize: 'large',
     className: '',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    name,
+    buttonStyle: { background: 'transparent', padding: 0 },
     width: ['6%', '16%', '32%', '13%', '19%', '14%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
@@ -138,7 +138,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
 PrintPDF.propTypes = {
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired,
-  dataSource: PropTypes.object
+  data: PropTypes.object
 }
 
 export default PrintPDF

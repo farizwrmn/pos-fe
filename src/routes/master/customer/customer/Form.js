@@ -25,16 +25,6 @@ const formItemLayout = {
   }
 }
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    span: 24,
-    xs: { offset: 17 },
-    sm: { offset: 19 },
-    md: { offset: 18 },
-    lg: { offset: 17 }
-  }
-}
-
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -45,10 +35,12 @@ const column = {
 const formCustomer = ({
   item = {},
   onSubmit,
+  onCancel,
   disabled,
   clickBrowse,
   activeKey,
   listGroup,
+  modalType,
   listType,
   listCity,
   listIdType,
@@ -69,6 +61,24 @@ const formCustomer = ({
     resetFields
   }
 }) => {
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 18
+      },
+      sm: {
+        offset: modalType === 'edit' ? 16 : 20
+      },
+      md: {
+        offset: modalType === 'edit' ? 16 : 20
+      },
+      lg: {
+        offset: modalType === 'edit' ? 14 : 19
+      }
+    }
+  }
+
   const { show } = filterProps
   const { onShowHideSearch,
     list,
@@ -108,6 +118,11 @@ const formCustomer = ({
 
   const browse = () => {
     clickBrowse()
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -353,11 +368,18 @@ const formCustomer = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input maxLength={20} />)}
+                  })(<Input />)}
                 </FormItem>
                 <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('phoneNumber', {
-                    initialValue: item.phoneNumber
+                    initialValue: item.phoneNumber,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                        message: 'Input a Phone No.[xxxx xxxx xxxx]'
+                      }
+                    ]
                   })(<Input />)}
                 </FormItem>
                 <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
@@ -416,6 +438,7 @@ const formCustomer = ({
                   )}
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
+                  {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>
                 </FormItem>
               </Col>

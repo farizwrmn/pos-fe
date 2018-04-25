@@ -38,7 +38,7 @@ const Info = ({ ipAddress, dispatch, app }) => {
       title: 'value',
       dataIndex: 'value',
       className: styles.value,
-      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color}>{text}</Tag></div>
+      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color} style={{ fontSize: 8 }}>{text}</Tag></div>
     }
   ]
 

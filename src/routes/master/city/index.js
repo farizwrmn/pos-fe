@@ -107,6 +107,7 @@ const City = ({ city, loading, dispatch, location, app }) => {
     ...listProps,
     listCity,
     dispatch,
+    modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -114,6 +115,21 @@ const City = ({ city, loading, dispatch, location, app }) => {
       dispatch({
         type: `city/${modalType}`,
         payload: data
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'city/updateState',
+        payload: {
+          currentItem: {}
+        }
       })
     },
     showCities () {

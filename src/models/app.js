@@ -55,7 +55,12 @@ export default {
   },
   subscriptions: {
 
-    setup ({ dispatch }) {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/user_profile') {
+          dispatch({ type: 'checkTotpStatus' })
+        }
+      })
       dispatch({ type: 'query' })
       let tid
       window.onresize = () => {
@@ -72,8 +77,6 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const notifications = yield call(getNotifications, payload)
-        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
-
         const { data } = yield call(menusService.query)
         const { permissions } = user
 
@@ -152,6 +155,8 @@ export default {
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data, visibleItem: { showPopOverNotification: true } } })
+        yield put({ type: 'queryListNotifications' })
       } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
@@ -275,6 +280,13 @@ export default {
       const data = yield call(refreshNotifications, payload)
       if (data.success) {
         yield put({ type: 'queryListNotifications' })
+      }
+    },
+
+    * checkTotpStatus ({ payload }, { call, put }) {
+      const { user } = yield call(query, payload)
+      if (user) {
+        yield put({ type: 'updateState', payload: { totpChecked: user.totp } })
       }
     }
   },

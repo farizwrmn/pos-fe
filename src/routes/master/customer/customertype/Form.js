@@ -13,7 +13,7 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13
+      span: 11
     },
     sm: {
       span: 8
@@ -24,31 +24,13 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 11
+      span: 13
     },
     sm: {
       span: 14
     },
     md: {
       span: 14
-    }
-  }
-}
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    span: 24,
-    xs: {
-      offset: 17
-    },
-    sm: {
-      offset: 19
-    },
-    md: {
-      offset: 18
-    },
-    lg: {
-      offset: 17
     }
   }
 }
@@ -63,6 +45,8 @@ const column = {
 const formCustomerType = ({
   item = {},
   onSubmit,
+  onCancel,
+  modalType,
   disabled,
   clickBrowse,
   activeKey,
@@ -80,6 +64,24 @@ const formCustomerType = ({
     resetFields
   }
 }) => {
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 19
+      },
+      sm: {
+        offset: modalType === 'edit' ? 16 : 20
+      },
+      md: {
+        offset: modalType === 'edit' ? 15 : 19
+      },
+      lg: {
+        offset: modalType === 'edit' ? 13 : 18
+      }
+    }
+  }
+
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
@@ -89,6 +91,11 @@ const formCustomerType = ({
   const change = (key) => {
     changeTab(key)
     handleReset()
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -135,7 +142,7 @@ const formCustomerType = ({
   </Dropdown> </div>)
 
   const children = listSellprice.length > 0 ? listSellprice.map(misc => <Option value={misc.miscName} key={misc.miscName}>{misc.miscName}</Option>) : []
-  console.log(item)
+
   return (
     <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
       <TabPane tab="Form" key="0" >
@@ -234,6 +241,7 @@ const formCustomerType = ({
                 })(<Checkbox />)}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
+                {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>

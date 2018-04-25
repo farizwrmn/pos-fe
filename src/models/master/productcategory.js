@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import { query, queryCode, add, edit, remove } from '../../services/master/productcategory'
 import { pageModel } from './../common'
 
@@ -27,8 +28,16 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        if (location.pathname === '/master/product/category') {
-          dispatch({ type: 'queryLov' })
+        const { pathname } = location
+        if (pathname === '/master/product/category') {
+          if (!activeKey) {
+            dispatch(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '0'
+              }
+            }))
+          }
           dispatch({
             type: 'updateState',
             payload: {
@@ -124,6 +133,14 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
+        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({

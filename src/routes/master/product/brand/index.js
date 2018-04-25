@@ -112,6 +112,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
     ...tabProps,
     ...filterProps,
     ...listProps,
+    modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -121,6 +122,21 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
         payload: {
           id,
           data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'productbrand/updateState',
+        payload: {
+          currentItem: {}
         }
       })
     }

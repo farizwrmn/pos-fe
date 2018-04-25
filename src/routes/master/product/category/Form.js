@@ -15,7 +15,7 @@ const TreeNode = Tree.TreeNode
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 13
+      span: 9
     },
     sm: {
       span: 8
@@ -26,31 +26,13 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 11
+      span: 15
     },
     sm: {
       span: 14
     },
     md: {
       span: 14
-    }
-  }
-}
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    span: 24,
-    xs: {
-      offset: 17
-    },
-    sm: {
-      offset: 19
-    },
-    md: {
-      offset: 18
-    },
-    lg: {
-      offset: 17
     }
   }
 }
@@ -65,6 +47,8 @@ const column = {
 const formProductCategory = ({
   item = {},
   onSubmit,
+  onCancel,
+  modalType,
   disabled,
   activeKey,
   button,
@@ -86,6 +70,25 @@ const formProductCategory = ({
   }
 }) => {
   const productCategory = (listCategory || []).length > 0 ? (listCategory || []).map(c => <Option key={c.id}>{c.categoryName} ({c.categoryCode})</Option>) : []
+
+  const tailFormItemLayout = {
+    wrapperCol: {
+      span: 24,
+      xs: {
+        offset: modalType === 'edit' ? 10 : 18
+      },
+      sm: {
+        offset: modalType === 'edit' ? 15 : 20
+      },
+      md: {
+        offset: modalType === 'edit' ? 15 : 19
+      },
+      lg: {
+        offset: modalType === 'edit' ? 13 : 18
+      }
+    }
+  }
+
   const { show } = filterProps
   const { onShowHideSearch } = tabProps
   const handleReset = () => {
@@ -95,6 +98,11 @@ const formProductCategory = ({
   const change = (key) => {
     changeTab(key)
     handleReset()
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleSubmit = () => {
@@ -231,6 +239,7 @@ const formProductCategory = ({
                 </Select>)}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
+                {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
