@@ -218,7 +218,7 @@ const formCustomerType = ({
                         required: true
                       }
                     ]
-                  })(<Input />)}
+                  })(<Input maxLength={30} />)}
                 </FormItem>
                 <FormItem label="Tipe" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('type', {

@@ -394,11 +394,11 @@ const formCustomer = ({
                     initialValue: item.taxId,
                     rules: [
                       {
-                        pattern: /^[0-9]+$/,
+                        pattern: /^[0-9]{3,15}$/,
                         message: '0-9'
                       }
                     ]
-                  })(<Input />)}
+                  })(<Input maxLength={15} />)}
                 </FormItem>
                 <FormItem label="Gender" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('gender', {

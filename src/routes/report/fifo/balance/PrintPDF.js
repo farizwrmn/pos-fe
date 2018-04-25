@@ -268,7 +268,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
     case '3':
       headerTitle = 'LAPORAN KARTU STOK FIFO'
       underline = 742
-      widths.push('6%', '20%', '30%', '14%', '10%', '10%', '10%')
+      widths.push(['6%', '20%', '30%', '14%', '10%', '10%', '10%'])
       pageSize = 'A4'
       break
     default:

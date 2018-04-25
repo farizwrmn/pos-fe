@@ -5,7 +5,7 @@ import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   listData = listData.filter(x => x.items.length)
-
+  let width = []
   const styles = {
     header: {
       alignment: 'center',
@@ -92,6 +92,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({ text: `${totalAfterDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     body.push(totalRow)
+    width.push(['4%', '16%', '24%', '6%', '8%', '8%', '7%', '7%', '10%', '10%'])
     return body
   }
 
@@ -196,7 +197,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A3',
     pageOrientation: 'landscape',
-    width: ['4%', '16%', '24%', '6%', '8%', '8%', '7%', '7%', '10%', '10%'],
+    width,
     pageMargins: [20, 130, 20, 60],
     header,
     tableTitle,

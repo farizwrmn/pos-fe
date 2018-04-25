@@ -1,5 +1,5 @@
 /**
- * Created by Veirry on 04/10/2017.
+ * Created by Veirry on 25/04/2018.
  */
 import {
   query as queryReport,
@@ -8,7 +8,8 @@ import {
   queryTransCancel,
   queryPosDaily,
   queryPOS,
-  queryPOSDetail
+  queryPOSDetail,
+  queryTurnOver
 } from '../../services/report/pos'
 
 export default {
@@ -44,7 +45,7 @@ export default {
             type: 'queryTransAll',
             payload: location.query
           })
-        } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit' || location.pathname === '/report/pos/summary') {
+        } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit' || location.pathname === '/report/pos/summary' || location.pathname === '/report/pos/turnover') {
           dispatch({
             type: 'setListNull'
           })
@@ -158,6 +159,67 @@ export default {
       } else {
         throw data
       }
+    },
+    * queryTurnOver ({ payload }, { call, put }) {
+      const data = yield call(queryTurnOver, payload)
+      if (data.success) {
+        let listTrans = []
+        const comparer = (otherArray) => {
+          return function (current) {
+            return otherArray.filter((other) => {
+              return other.sort === current.sort && other.categoryName === current.categoryName
+            }).length === 0
+          }
+        }
+        let onlyInB = data.dataNext.filter(comparer(data.data))
+        for (let key in data.data) {
+          const next = data.dataNext.find(o => (o.categoryName === data.data[key].categoryName && o.sort === data.data[key].sort))
+          listTrans.push({
+            sort: data.data[key].sort,
+            categoryId: data.data[key].categoryId,
+            categoryParentId: data.data[key].categoryParentId,
+            categoryName: data.data[key].categoryName,
+            qty: data.data[key].qty,
+            DPP: data.data[key].DPP,
+            netto: data.data[key].netto,
+            costPrice: next ? data.data[key].costPrice : 0,
+            qtyNext: next ? next.qty : 0,
+            DPPNext: next ? next.DPP : 0,
+            nettoNext: next ? next.netto : 0,
+            costPriceNext: next ? next.costPrice : 0,
+            qtyNextEvo: next ? (((data.data[key].qty - next.qty) / (next.qty > 0 ? next.qty : 1)) * 100) : 0,
+            DPPNextEvo: next ? (((data.data[key].DPP - next.DPP) / (next.DPP > 0 ? next.DPP : 1)) * 100) : 0,
+            nettoNextEvo: next ? (((data.data[key].netto - next.netto) / (next.netto ? next.netto : 1)) * 100) : 0,
+            costPriceNextEvo: next ? (((data.data[key].costPrice - next.costPrice) / (next.costPrice ? next.costPrice : 1)) * 100) : 0
+          })
+        }
+        for (let key in onlyInB) {
+          listTrans.push({
+            sort: onlyInB[key].sort,
+            categoryId: onlyInB[key].categoryId,
+            categoryParentId: onlyInB[key].categoryParentId,
+            categoryName: onlyInB[key].categoryName,
+            qty: 0,
+            DPP: 0,
+            netto: 0,
+            costPrice: 0,
+            qtyNext: onlyInB[key].qty,
+            DPPNext: onlyInB[key].DPP,
+            nettoNext: onlyInB[key].netto,
+            costPriceNext: onlyInB[key].costPrice
+          })
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans,
+            fromDate: `${payload.period}-${payload.year}`,
+            toDate: `${payload.periodNext}-${payload.yearNext}`
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
   reducers: {
@@ -208,6 +270,9 @@ export default {
           ...pagination
         }
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
     setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }

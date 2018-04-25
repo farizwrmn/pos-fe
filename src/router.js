@@ -245,6 +245,16 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-service')
           }
         }, {
+          path: 'report/pos/analyst',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/pos'))
+              registerModel(app, require('./models/master/service'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/report/pos/analyst'))
+            }, 'report-pos-analyst')
+          }
+        }, {
           path: 'report/purchase/summary',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

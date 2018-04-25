@@ -9,6 +9,7 @@ const RepeatReport = ({
   name,
   className,
   width = [],
+  tableMargin = [0, 0],
   pageMargins = [0, 0, 0, 0],
   pageOrientation = 'portrait',
   tableStyle,
@@ -41,8 +42,9 @@ const RepeatReport = ({
         contentPdf.push(
           {
             writable: true,
+            margin: tableMargin,
             table: {
-              widths: width,
+              widths: width[i],
               body: createPdfLineItems(tableBody[i])
             }
           }

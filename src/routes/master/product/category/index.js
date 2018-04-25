@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 const ProductCategory = ({ productcategory, loading, dispatch, location, app }) => {
-  const { listCategory, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
+  const { listCategory, listCategoryCurrent, expandedTree, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
   const { storeInfo, user } = app
   const filterProps = {
     display,
@@ -113,6 +113,9 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
     ...tabProps,
     ...filterProps,
     ...listProps,
+    listCategory,
+    listCategoryCurrent,
+    expandedTree,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -122,6 +125,24 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
         payload: {
           id,
           data
+        }
+      })
+    },
+    queryEditItem (categoryCode, id) {
+      dispatch({
+        type: 'productcategory/queryEditItem',
+        payload: {
+          id,
+          categoryCode
+        }
+      })
+    },
+    showCategoriesParent () {
+      dispatch({
+        type: 'productcategory/query',
+        payload: {
+          type: 'lov',
+          id: currentItem.id
         }
       })
     }

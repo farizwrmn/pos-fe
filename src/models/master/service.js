@@ -48,7 +48,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query'
           })
-        } else if (location.pathname === '/report/customer/history') {
+        } else if (location.pathname === '/report/customer/history' || location.pathname === '/report/pos/analyst') {
           dispatch({
             type: 'queryServiceType'
           })

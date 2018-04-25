@@ -37,8 +37,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     },
     {
       title: 'Parent Category',
-      dataIndex: 'categoryParentId',
-      key: 'categoryParentId'
+      dataIndex: 'categoryParentName',
+      key: 'categoryParentName'
     },
     {
       title: 'Created',

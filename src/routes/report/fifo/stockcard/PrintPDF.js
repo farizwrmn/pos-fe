@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
+  let width = []
   let outJSON = listRekap
 
   let groupBy = (xs, key) => {
@@ -56,10 +57,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     ]
 
     const rows = tabledata
-    let body = []
-    for (let i = 0; i < headers.length; i += 1) {
-      body.push(headers[i])
-    }
+    let body = headers
     let countQtyValue = 0
     let countAmountValue = 0
     let counter = 1
@@ -100,6 +98,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     totalRow.push({})
     totalRow.push({ text: `${(inAmount - outAmount).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
+    width.push(['4%', '8%', '12%', '5%', '6%', '10%', '10%', '6%', '10%', '10%', '7%', '12%'])
     return body
   }
 
@@ -108,7 +107,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   for (let i = 0; i < arr.length; i += 1) {
     try {
       tableBody.push(createTableBody(arr[i]))
-      tableTitle.push({ text: `ProduK : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
+      tableTitle.push({ text: `Produk : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
     } catch (e) {
       console.log(e)
     }
@@ -217,7 +216,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A3',
     pageOrientation: 'landscape',
-    width: ['4%', '8%', '12%', '5%', '6%', '10%', '10%', '6%', '10%', '10%', '7%', '12%'],
+    width,
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,

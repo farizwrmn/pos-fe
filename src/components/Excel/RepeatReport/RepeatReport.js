@@ -20,6 +20,7 @@ const RepeatReport = ({
   tableHeader = [],
   tableBody = [],
   tableFooter = [],
+  tableTotal = [],
   data = []
 }) => {
   const workbook = new Excel.Workbook()
@@ -104,6 +105,18 @@ const RepeatReport = ({
         })
       }
       position = position + 4 + tableBody[i].length
+      if (tableTotal.length > 0) {
+        for (let char = 65; char < 65 + tableTotal[i].length; char += 1) {
+          let tableTotalPosition = position + 1
+          let tableTotalValue = char - 65
+          content.push({
+            value: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).value = tableTotal[i][tableTotalValue].value,
+            alignment: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).alignment = tableTotal[i][tableTotalValue].alignment,
+            font: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).font = tableTotal[i][tableTotalValue].font
+            // border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
+          })
+        }
+      }
     }
     return content
   }

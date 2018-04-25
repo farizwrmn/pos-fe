@@ -108,3 +108,14 @@ export async function queryPOSDetail (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryTurnOver (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${posReport}/turnover`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
