@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import ModalMobile from './ModalMobile'
 import Form from './Form'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey,
+  const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
     disable, show, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
@@ -112,6 +113,24 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       dispatch({
         type: 'customer/delete',
         payload: id
+      })
+    }
+  }
+
+  const modalMobileProps = {
+    visible: modalMobile,
+    onSearch (data) {
+      dispatch({
+        type: 'customer/queryMember',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalMobile: false
+        }
       })
     }
   }
@@ -235,6 +254,45 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         }
       })
     },
+    updateCurrentItem (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {
+            ...data
+          }
+        }
+      })
+    },
+    onCancelMobile () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+    },
+    defaultMember (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {
+            memberCodeDisable: true,
+            memberGetDefault: true,
+            ...data
+          }
+        }
+      })
+    },
+    showMobileModal (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalMobile: true,
+          currentItem: data
+        }
+      })
+    },
     showCustomerGroup () {
       dispatch({
         type: 'customergroup/query'
@@ -271,6 +329,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
   return (
     <div className="content-inner">
       <Form {...formProps} />
+      <ModalMobile {...modalMobileProps} />
     </div>
   )
 }

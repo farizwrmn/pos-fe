@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon, Tooltip, Cascader } from 'antd'
+import { Breadcrumb, Icon, Tooltip, Badge, Cascader } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
@@ -68,6 +68,7 @@ const Bread = ({ menu, changeRole }) => {
     const localId = lstorage.getStorageKey('udi')
     const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
     lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
+    localStorage.setItem('newItem', JSON.stringify({ store: false }))
     changeRole(value.toString())
     setInterval(() => { window.location.reload() }, 1000)
   }
@@ -77,18 +78,21 @@ const Bread = ({ menu, changeRole }) => {
       <Breadcrumb>
         {/* <div className={styles.currentStore}>{currentStoreName}</div> */}
         <div className={styles.currentStore}>
-          <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
-            <Cascader style={{ width: '100%' }}
-              options={listUserStores}
-              onChange={handleChangeStore}
-              changeOnSelect
-              allowClear={false}
-              defaultValue={[defaultStore]}
-              placeholder="Switch Store"
-            >
-              <a href="/">{currentStoreName}</a>
-            </Cascader>
-          </Tooltip>
+          <Badge dot={localStorage.getItem('newItem') ? JSON.parse(localStorage.getItem('newItem')).store : true}>
+            <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
+              <Cascader style={{ width: '100%' }}
+                options={listUserStores}
+                onChange={handleChangeStore}
+                changeOnSelect
+                allowClear={false}
+                defaultValue={[defaultStore]}
+                placeholder="Switch Store"
+              >
+                <a href="/">{currentStoreName}</a>
+              </Cascader>
+              <Icon type="down" />
+            </Tooltip>
+          </Badge>
         </div>
         {breads}
       </Breadcrumb>

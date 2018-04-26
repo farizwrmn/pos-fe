@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button, Tabs, Select, message, DatePicker, Radio, Row, Col, Icon, Dropdown, Menu } from 'antd'
+import { Form, Input, Modal, Button, Tabs, Select, DatePicker, Radio, Row, Col, Icon, Dropdown, Menu, Tooltip } from 'antd'
 import moment from 'moment'
 import List from './List'
 import Filter from './Filter'
@@ -50,6 +50,10 @@ const formCustomer = ({
   showCity,
   button,
   changeTab,
+  showMobileModal,
+  defaultMember,
+  updateCurrentItem,
+  onCancelMobile,
   ...listProps,
   ...filterProps,
   ...printProps,
@@ -65,16 +69,16 @@ const formCustomer = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 18
+        offset: modalType === 'edit' || item.memberCodeDisable ? 10 : 18
       },
       sm: {
-        offset: modalType === 'edit' ? 16 : 20
+        offset: modalType === 'edit' || item.memberCodeDisable ? 16 : 20
       },
       md: {
-        offset: modalType === 'edit' ? 16 : 20
+        offset: modalType === 'edit' || item.memberCodeDisable ? 16 : 20
       },
       lg: {
-        offset: modalType === 'edit' ? 14 : 19
+        offset: modalType === 'edit' || item.memberCodeDisable ? 14 : 19
       }
     }
   }
@@ -125,29 +129,31 @@ const formCustomer = ({
     resetFields()
   }
 
+  const handleCancelMobile = () => {
+    onCancelMobile()
+    resetFields()
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
+        ...item,
         ...getFieldsValue()
       }
 
-      if (data.memberCode) {
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onSubmit(data.memberCode, data)
-            setTimeout(() => {
-              resetFields()
-            }, 500)
-          },
-          onCancel () { }
-        })
-      } else {
-        message.warning("Member Code can't be null")
-      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          onSubmit(data.memberCode, data)
+          setTimeout(() => {
+            resetFields()
+          }, 500)
+        },
+        onCancel () { }
+      })
     })
   }
 
@@ -198,16 +204,20 @@ const formCustomer = ({
   const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
   const childrenCity = listCity.length > 0 ? listCity.map(city => <Option value={city.id} key={city.id}>{city.cityName}</Option>) : []
 
-  // const tabOperations = (<div>
-  //   <ButtonGroup size="small">
-  //     <Button type="primary">
-  //       <Icon type="printer" /> Print
-  //     </Button>
-  //     <Button >
-  //       <Icon type="search" /> Search
-  //     </Button>
-  //   </ButtonGroup>
-  // </div>)
+  const OpenMobileModal = () => {
+    showMobileModal(getFieldsValue())
+    resetFields()
+  }
+  const GetDefaultMember = () => {
+    if (!item.memberGetDefault) {
+      const { memberCode, ...other } = getFieldsValue()
+      defaultMember(other)
+      resetFields()
+    } else {
+      updateCurrentItem(getFieldsValue())
+      resetFields()
+    }
+  }
 
   return (
     <div>
@@ -255,17 +265,30 @@ const formCustomer = ({
                   >{childrenType}
                   </Select>)}
                 </FormItem>
+
                 <FormItem label="Member Code" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('memberCode', {
-                    initialValue: item.memberCode,
-                    rules: [
-                      {
-                        required: true,
-                        pattern: /^[a-z0-9_-]{3,16}$/i,
-                        message: 'a-Z & 0-9'
-                      }
-                    ]
-                  })(<Input disabled={disabled} maxLength={16} />)}
+                  <Row style={{ padding: '0px' }}>
+                    <Col lg={18} md={24}>
+                      {getFieldDecorator('memberCode', {
+                        initialValue: item.memberCode,
+                        rules: [
+                          {
+                            required: item.memberGetDefault ? !item.memberGetDefault : true,
+                            pattern: /^[a-z0-9_-]{3,16}$/i,
+                            message: 'a-Z & 0-9'
+                          }
+                        ]
+                      })(<Input placeholder={item.memberGetDefault ? 'Code generate by system' : ''} disabled={item.memberCodeDisable ? item.memberCodeDisable : disabled} style={{ height: '32px' }} maxLength={16} />)}
+                    </Col>
+                    <Col lg={6} md={24}>
+                      <Tooltip placement="bottomLeft" title="Get member from mobile user">
+                        <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="primary" icon="mobile" onClick={OpenMobileModal} />
+                      </Tooltip>
+                      <Tooltip placement="bottomLeft" title="Get Default Code">
+                        <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
+                      </Tooltip>
+                    </Col>
+                  </Row>
                 </FormItem>
                 <FormItem label="Member Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('memberName', {
@@ -277,7 +300,7 @@ const formCustomer = ({
                         message: 'a-Z & 0-9'
                       }
                     ]
-                  })(<Input maxLength={50} />)}
+                  })(<Input disabled={item.memberNameDisable || false} maxLength={50} />)}
                 </FormItem>
                 <FormItem label="ID Type" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('idType', {
@@ -404,7 +427,7 @@ const formCustomer = ({
                         message: 'The input is not valid E-mail!'
                       }
                     ]
-                  })(<Input />)}
+                  })(<Input disabled={item.emailDisable || false} />)}
                 </FormItem>
                 <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('birthDate', {
@@ -439,6 +462,7 @@ const formCustomer = ({
                 </FormItem>
                 <FormItem {...tailFormItemLayout}>
                   {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+                  {item.memberCodeDisable && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancelMobile}>Cancel</Button>}
                   <Button type="primary" onClick={handleSubmit}>{button}</Button>
                 </FormItem>
               </Col>
@@ -450,7 +474,7 @@ const formCustomer = ({
           <List {...listProps} />
         </TabPane>
       </Tabs>
-    </div>
+    </div >
   )
 }
 
