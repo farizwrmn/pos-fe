@@ -217,6 +217,7 @@ export default modelExtend(pageModel, {
             dataCustomer: {}
           }
         })
+        success()
       } else {
         throw data
       }
