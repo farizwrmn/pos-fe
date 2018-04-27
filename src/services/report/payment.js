@@ -1,4 +1,4 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
 const { paymentOpts } = config.api
 
@@ -14,6 +14,7 @@ export async function queryPaymentWithPOS (params) {
 
 export async function queryPaymentAR (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${paymentOpts}/report/ar/time`,
     method: 'get',
