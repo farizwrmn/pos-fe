@@ -1,6 +1,6 @@
 import { request, config, crypt } from '../../utils'
 
-const { customers } = config.api
+const { customers, assets } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -111,30 +111,30 @@ export async function editPoint (params) {
   })
 }
 
-export async function queryBrands () {
+export async function queryCarBrands () {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${customers}/units/brands`,
+    url: `${assets}/cars/brands`,
     method: 'get',
     // data: params,
     headers: apiHeaderToken
   })
 }
 
-export async function queryModels (params) {
+export async function queryCarModels (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${customers}/units/models/${params.code}`,
+    url: `${assets}/cars/brands/${params.code}/models`,
     method: 'get',
     // data: params,
     headers: apiHeaderToken
   })
 }
 
-export async function queryTypes (params) {
+export async function queryCarTypes (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${customers}/units/types/${params.code}`,
+    url: `${assets}/cars/models/${params.code}/types`,
     method: 'get',
     // data: params,
     headers: apiHeaderToken

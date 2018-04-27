@@ -43,7 +43,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/customerunit':
-            if (activeKey === '0') dispatch({ type: 'query' })
+            dispatch({ type: 'query' })
             dispatch({
               type: 'updateState',
               payload: {
