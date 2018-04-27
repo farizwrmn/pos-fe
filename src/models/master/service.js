@@ -70,6 +70,11 @@ export default modelExtend(pageModel, {
               type: 'queryServiceType'
             })
             break
+          case '/report/pos/analyst':
+            dispatch({
+              type: 'queryServiceType'
+            })
+            break
           default:
         }
       })

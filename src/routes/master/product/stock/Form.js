@@ -287,7 +287,7 @@ const formProductCategory = ({
                     rules: [
                       {
                         required: true,
-                        pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i,
+                        pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
                         message: 'a-Z & 0-9'
                       }
                     ]

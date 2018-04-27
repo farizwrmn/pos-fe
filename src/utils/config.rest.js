@@ -21,7 +21,8 @@ module.exports = {
     apiUserTotpr: '/users/:id/totp/:mode',
     apiStores: '/stores',
     apiTime: '/time',
-    apiMemberBirthday: '/members/bday'
+    apiMemberBirthday: '/members/bday',
+    apiMobile: '/mobile'
   },
   api: {
     getIpAddress: '/utils/ipaddr',
@@ -30,6 +31,7 @@ module.exports = {
     employees: '/employees',
     jobposition: '/employees/positions',
     customers: '/members',
+    assets: '/assets',
     customergroup: '/members/groups',
     customertype: '/members/types',
     suppliers: '/suppliers',

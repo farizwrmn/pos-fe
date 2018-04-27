@@ -10,6 +10,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
       return rv
     }, {})
   }
+  let width = []
 
   let groupByTeam = groupBy(listMechanic, 'employeeName')
   let arr = Object.keys(groupByTeam).map(index => groupByTeam[index])
@@ -70,6 +71,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
     totalRow.push({ text: `${totalAmount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 })
     body.push(totalRow)
+    width.push(['5%', '16%', '16%', '24%', '8%', '9%', '9%', '9%'])
     return body
   }
 
@@ -187,7 +189,7 @@ const PrintPDF = ({ user, listMechanic, storeInfo, fromDate, toDate }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A3',
     pageOrientation: 'landscape',
-    width: ['5%', '16%', '16%', '24%', '8%', '9%', '9%', '9%'],
+    width,
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,

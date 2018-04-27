@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/master/productcategory'
+import { query, queryCode, add, edit, remove } from '../../services/master/productcategory'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     listCategory: [],
+    listCategoryCurrent: [],
     show: 1
   },
 
@@ -51,8 +52,8 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
+      let data = yield call(query, payload)
+      if (data.success) {
         yield put({
           type: 'querySuccessCategory',
           payload: {
@@ -62,6 +63,20 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryLov ({ payload = {} }, { call, put }) {
+      let dataCurrent = []
+      if (!(Object.assign(payload || {}).length > 0)) {
+        dataCurrent = yield call(query)
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCategoryCurrent: dataCurrent.data
           }
         })
       }
@@ -81,7 +96,8 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        // yield put({ type: 'query' })
+        yield put({ type: 'queryLov' })
+        yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -107,13 +123,14 @@ export default modelExtend(pageModel, {
       const newProductCategory = { ...payload, id }
       const data = yield call(edit, newProductCategory)
       if (data.success) {
+        yield put({ type: 'queryLov' })
+        yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
+            currentItem: {}
           }
         })
         const { pathname } = location
@@ -134,6 +151,25 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+
+    * queryEditItem ({ payload = {} }, { call, put }) {
+      const dataLov = yield call(query, { type: 'lov', id: payload.id })
+      const data = yield call(queryCode, payload)
+      if (data.success && dataLov.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data.data,
+            listCategory: dataLov.data,
+            disable: 'disabled',
+            modalType: 'edit',
+            activeKey: '0'
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
 
@@ -141,6 +177,10 @@ export default modelExtend(pageModel, {
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     changeTab (state, { payload }) {

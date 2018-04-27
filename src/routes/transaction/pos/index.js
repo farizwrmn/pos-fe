@@ -527,6 +527,11 @@ const Pos = ({
     dispatch,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    getCashier () {
+      dispatch({
+        type: 'pos/loadDataPos'
+      })
+    },
     onBack () {
       dispatch({ type: 'pos/backPrevious' })
     },
@@ -1428,6 +1433,7 @@ const Pos = ({
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             <Badge count={objectSize()}>
               <Button type="primary"
+                style={{ marginBottom: '4px' }}
                 size="large"
                 icon="down-square-o"
                 className="button-width01"
@@ -1701,7 +1707,7 @@ const Pos = ({
           </Row>
         </Card>
       </Row>
-    </div>
+    </div >
   )
 }
 

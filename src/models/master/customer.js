@@ -2,6 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/customer'
+import { query as queryMobile, activate } from '../../services/mobile/member'
+import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -21,6 +23,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     searchText: '',
+    modalMobile: false,
     listCustomer: [],
     show: 1,
     modalVisible: false,
@@ -105,6 +108,28 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryMember ({ payload = {} }, { call, put }) {
+      const data = yield call(queryMobile, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateCurrentItem',
+          payload: {
+            currentItem: {
+              memberCode: data.data.memberCardId,
+              memberName: data.data.memberName,
+              email: data.data.memberEmail,
+              memberCodeDisable: true,
+              memberNameDisable: true,
+              emailDisable: true
+            },
+            modalMobile: false
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
@@ -147,6 +172,16 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      const seqDetail = {
+        seqCode: 'CUST',
+        type: 1 // storeId
+      }
+      if (payload.data.memberGetDefault) {
+        const sequence = yield call(querySequence, seqDetail)
+        payload.id = sequence.data
+        payload.data.memberCode = sequence.data
+        if (!sequence.success) throw sequence
+      }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         // yield put({ type: 'query' })
@@ -158,14 +193,32 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        const increase = yield call(increaseSequence, seqDetail)
+        if (!increase.success) throw increase
       } else {
-        let current = Object.assign({}, payload.id, payload.data)
+        const { memberCode, ...other } = payload.data
+        let current = Object.assign({}, payload.id, other)
         yield put({
           type: 'updateState',
           payload: {
             currentItem: current
           }
         })
+        throw data
+      }
+    },
+
+    * activate ({ payload }, { call, put }) {
+      const data = yield call(activate, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataCustomer: {}
+          }
+        })
+        success()
+      } else {
         throw data
       }
     },
@@ -221,6 +274,16 @@ export default modelExtend(pageModel, {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    updateCurrentItem (state, { payload }) {
+      const current = {
+        ...state.currentItem,
+        ...payload.currentItem
+      }
+      return {
+        ...state, currentItem: current
       }
     },
 

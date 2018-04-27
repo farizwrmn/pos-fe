@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Menu, Icon, Dropdown, Modal, message } from 'antd'
+import { Form, Input, Button, Tree, Select, Tabs, Row, Col, Menu, Icon, Dropdown, Modal, message } from 'antd'
+import { arrayToTree } from 'utils'
 import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
@@ -8,6 +9,8 @@ import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
+const Option = Select.Option
+const TreeNode = Tree.TreeNode
 
 const formItemLayout = {
   labelCol: {
@@ -50,7 +53,11 @@ const formProductCategory = ({
   activeKey,
   button,
   changeTab,
+  queryEditItem,
   clickBrowse,
+  showCategoriesParent,
+  listCategory,
+  listCategoryCurrent,
   ...listProps,
   ...filterProps,
   ...printProps,
@@ -62,6 +69,8 @@ const formProductCategory = ({
     resetFields
   }
 }) => {
+  const productCategory = (listCategory || []).length > 0 ? (listCategory || []).map(c => <Option key={c.id}>{c.categoryName} ({c.categoryCode})</Option>) : []
+
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -120,7 +129,9 @@ const formProductCategory = ({
       }
     })
   }
-
+  const category = () => {
+    showCategoriesParent()
+  }
   const browse = () => {
     clickBrowse()
   }
@@ -132,11 +143,52 @@ const formProductCategory = ({
     </Menu>
   )
 
+  // const handleChooseTree = (e) => {
+  //   const { eventKey } = e.node.props
+  //   queryEditItem(eventKey)
+  // }
+
+  const handleClickTree = (event, id) => {
+    Modal.confirm({
+      title: 'Edit item ?',
+      content: `You're gonna edit item ${event}`,
+      onOk () {
+        resetFields()
+        queryEditItem(event, id)
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
+  }
+
   const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
     <Button style={{ marginLeft: 8 }}>
       <Icon type="printer" /> Print
     </Button>
   </Dropdown> </div>)
+  const menuTree = arrayToTree((listCategoryCurrent || []).filter(_ => _.id !== null), 'id', 'categoryParentId')
+  const levelMap = {}
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children) {
+        if (item.categoryParentId) {
+          levelMap[item.id] = item.categoryParentId
+        }
+        return (
+          <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+            {getMenus(item.children)}
+          </TreeNode>
+        )
+      }
+      return (
+        <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+          {(!menuTree.includes(item)) && item.name}
+        </TreeNode>
+      )
+    })
+  }
+  const categoryVisual = getMenus(menuTree)
 
   return (
     <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -150,7 +202,7 @@ const formProductCategory = ({
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-zA-Z0-9_]{3,}$/,
+                      pattern: /^[a-zA-Z0-9_]{2,10}$/,
                       message: 'a-Z & 0-9'
                     }
                   ]
@@ -168,11 +220,46 @@ const formProductCategory = ({
                   ]
                 })(<Input />)}
               </FormItem>
+              <FormItem label="Category Parent" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('categoryParentId', {
+                  initialValue: item.categoryParentId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  placeholder="Parent of category"
+                  onFocus={category}
+                  filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
               <FormItem {...tailFormItemLayout}>
                 {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
               </FormItem>
             </Col>
+            {(listCategoryCurrent || []).length > 0 &&
+              <div>
+                <strong style={{ fontSize: '15' }}> Current Category </strong>
+                <br />
+                <br />
+                <Col {...column}>
+                  <div style={{ margin: '0px', width: '100 %', overflowY: 'auto', height: '300px' }}>
+                    <Tree
+                      showLine
+                      // onRightClick={handleChooseTree}
+                      defaultExpandAll
+                    >
+                      {categoryVisual}
+                    </Tree>
+                  </div>
+                </Col>
+              </div>}
           </Row>
         </Form>
       </TabPane>
@@ -180,7 +267,7 @@ const formProductCategory = ({
         <Filter {...filterProps} />
         <List {...listProps} />
       </TabPane>
-    </Tabs>
+    </Tabs >
   )
 }
 
@@ -189,6 +276,7 @@ formProductCategory.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
+  showCategoriesParent: PropTypes.func.isRequired,
   changeTab: PropTypes.func,
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,

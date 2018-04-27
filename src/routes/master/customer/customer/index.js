@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Form from './Form'
+import ModalMobile from './ModalMobile'
+import Tab from './Tab'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
-  const { list, pagination, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
+  const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
+    disable, show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -116,6 +117,24 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     }
   }
 
+  const modalMobileProps = {
+    visible: modalMobile,
+    onSearch (data) {
+      dispatch({
+        type: 'customer/queryMember',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalMobile: false
+        }
+      })
+    }
+  }
+
   const tabProps = {
     activeKey,
     list,
@@ -198,16 +217,51 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       }, 1000)
     }
   }
+  const modalProps = {
+    customer,
+    location,
+    visible: modalVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalVisible: false
+        }
+      })
+    }
+  }
+
+  const mobileProps = {
+    customer,
+    location,
+    modalVisible,
+    visible: modalVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalVisible: false
+        }
+      })
+    }
+  }
 
   const formProps = {
     ...tabProps,
     ...filterProps,
+    ...modalProps,
     ...listProps,
+    ...mobileProps,
     listGroup,
     listType,
     listCity,
     listIdType,
     modalType,
+    dataCustomer,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -218,6 +272,17 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           id,
           data
         }
+      })
+    },
+    openModal () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalVisible: true
+        }
+      })
+      dispatch({
+        type: 'customer/query'
       })
     },
     onCancel () {
@@ -232,6 +297,53 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         type: 'customer/updateState',
         payload: {
           currentItem: {}
+        }
+      })
+    },
+    onActivate (data) {
+      dispatch({
+        type: 'customer/activate',
+        payload: {
+          ...data
+        }
+      })
+    },
+    updateCurrentItem (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {
+            ...data
+          }
+        }
+      })
+    },
+    onCancelMobile () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+    },
+    defaultMember (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          currentItem: {
+            memberCodeDisable: true,
+            memberGetDefault: true,
+            ...data
+          }
+        }
+      })
+    },
+    showMobileModal (data) {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalMobile: true,
+          currentItem: data
         }
       })
     },
@@ -270,7 +382,8 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
 
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      <Tab {...formProps} />
+      <ModalMobile {...modalMobileProps} />
     </div>
   )
 }

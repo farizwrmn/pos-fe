@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listAsset, storeInfo }) => {
+  let width = []
   const group = (data, key) => {
     return _.reduce(data, (group, item) => {
       (group[item[key]] = group[item[key]] || []).push(item)
@@ -55,6 +56,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
     totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({ text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     body.push(totalRow)
+    width.push(['5%', '20%', '25%', '25%', '25%'])
     return body
   }
 
@@ -163,7 +165,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A4',
     pageOrientation: 'landscape',
-    width: ['5%', '20%', '25%', '25%', '25%'],
+    width,
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,

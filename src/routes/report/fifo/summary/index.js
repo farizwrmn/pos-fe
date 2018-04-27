@@ -38,7 +38,7 @@ const Report = ({ dispatch, fifoReport, app }) => {
     },
     onChangePeriod (month, yearPeriod) {
       dispatch({
-        type: 'setPeriod',
+        type: 'fifoReport/setPeriod',
         payload: {
           month,
           yearPeriod

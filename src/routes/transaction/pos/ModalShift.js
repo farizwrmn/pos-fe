@@ -53,7 +53,7 @@ const getDate = (mode) => {
   return today
 }
 
-const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
@@ -93,7 +93,7 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
-        Confirm
+          Confirm
         </Button>
       ]}
       closable={false}
@@ -108,6 +108,7 @@ const ModalShift = ({ item, dispatch, listCashier, cashierId, onBack, onOk, form
               }
             ]
           })(<Cascader
+            onFocus={getCashier}
             size="large"
             style={{ width: '100%' }}
             options={listCashier}

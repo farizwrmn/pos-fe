@@ -5,6 +5,7 @@ import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   listData = listData.filter(x => x.items.length > 0)
+  let width = []
   const styles = {
     header: {
       alignment: 'center',
@@ -131,6 +132,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({ text: `${totalAfterDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     body.push(totalRow)
+    width.push(['2%', '12%', '24%', '4%', '8%', '8%', '6%', '6%', '6%', '8%', '8%', '8%'])
     return body
   }
 
@@ -162,25 +164,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       console.log(e)
     }
   }
-  // tableBody.push(
-  //   [
-  //     [
-  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
-  //       {},
-  //       {},
-  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
-  //       {},
-  //       {},
-  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
-  //       {},
-  //       {},
-  //       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
-  //       {},
-  //       {}
-  //     ]
-  //   ]
-  // )
-
   const header = {
     stack: [
       {
@@ -252,7 +235,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A3',
     pageOrientation: 'landscape',
-    width: ['2%', '12%', '24%', '4%', '8%', '8%', '6%', '6%', '6%', '8%', '8%', '8%'],
+    width,
     pageMargins: [20, 130, 20, 60],
     header,
     tableTitle,

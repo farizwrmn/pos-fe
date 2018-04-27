@@ -4,6 +4,7 @@ import moment from 'moment'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
+  let width = []
   const styles = {
     header: {
       fontSize: 18,
@@ -97,6 +98,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     totalRow.push({ text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
     totalRow.push({})
     body.push(totalRow)
+    width.push(['4%', '20%', '25%', '6%', '12%', '14%', '19%'])
     return body
   }
 
@@ -185,7 +187,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     pageSize: 'A4',
     pageOrientation: 'landscape',
-    width: ['4%', '20%', '25%', '6%', '12%', '14%', '19%'],
+    width,
     pageMargins: [50, 130, 50, 60],
     header,
     tableTitle,
