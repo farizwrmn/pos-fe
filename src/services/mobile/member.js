@@ -12,11 +12,11 @@ export async function query (params) {
   })
 }
 
-export async function queryActive (params) {
+export async function activate (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${apiMobile}/members/${params.id}`,
-    method: 'get',
+    method: 'put',
     data: params,
     headers: apiHeaderToken
   })

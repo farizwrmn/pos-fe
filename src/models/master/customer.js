@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/customer'
-import { query as queryMobile } from '../../services/mobile/member'
+import { query as queryMobile, activate } from '../../services/mobile/member'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
@@ -204,6 +204,20 @@ export default modelExtend(pageModel, {
             currentItem: current
           }
         })
+        throw data
+      }
+    },
+
+    * activate ({ payload }, { call, put }) {
+      const data = yield call(activate, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataCustomer: {}
+          }
+        })
+      } else {
         throw data
       }
     },
