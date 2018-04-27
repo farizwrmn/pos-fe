@@ -65,7 +65,12 @@ export default modelExtend(pageModel, {
               type: 'query'
             })
             break
-          case '/report/customer/history' || '/report/pos/analyst':
+          case '/report/customer/history':
+            dispatch({
+              type: 'queryServiceType'
+            })
+            break
+          case '/report/pos/analyst':
             dispatch({
               type: 'queryServiceType'
             })
