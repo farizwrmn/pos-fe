@@ -106,7 +106,7 @@ const Filter = ({ onDateChange, listGroup, showCustomerGroup, onListReset, form:
             {getFieldDecorator('memberGroupId', {
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
             })(
