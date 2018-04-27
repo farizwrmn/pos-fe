@@ -90,7 +90,6 @@ const Bread = ({ menu, changeRole }) => {
               >
                 <a href="/">{currentStoreName}</a>
               </Cascader>
-              <Icon type="down" />
             </Tooltip>
           </Badge>
         </div>
