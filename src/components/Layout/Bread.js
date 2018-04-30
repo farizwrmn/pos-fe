@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon, Tooltip, Badge, Cascader, Row, Col } from 'antd'
+import { Breadcrumb, Icon, Tooltip, Cascader, Row, Col } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
@@ -94,9 +94,12 @@ const Bread = ({ menu, changeRole }) => {
                   allowClear={false}
                   defaultValue={[defaultStore]}
                   placeholder="Switch Store"
-                ><a href="#">
+                >
+                  <a href="#">
                     <Icon type="shop" />
-                  </a></Cascader></Tooltip>
+                  </a>
+                </Cascader>
+              </Tooltip>
             </Col>
           </div>
         </Col>
