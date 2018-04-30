@@ -78,6 +78,7 @@ const removeItemKeys = () => {
   localStorage.removeItem(`${prefix}utores`)
   localStorage.removeItem(`${prefix}cdi`)
   localStorage.removeItem(`${prefix}store`)
+  localStorage.removeItem('sidebarColor')
 }
 
 const removeAllKey = () => {

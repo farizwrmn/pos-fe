@@ -30,7 +30,6 @@ export default {
       }
     },
     * login ({ payload }, { put, call }) {
-      lstorage.removeItemKeys()
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
@@ -130,6 +129,7 @@ export default {
     getCompanySuccess (state, action) {
       let cdi = action.payload.data
       cdi.push(action.payload.cid)
+      lstorage.removeItemKeys() // remove items in local storage
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state,
