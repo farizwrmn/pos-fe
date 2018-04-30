@@ -129,7 +129,7 @@ export default {
     getCompanySuccess (state, action) {
       let cdi = action.payload.data
       cdi.push(action.payload.cid)
-      lstorage.removeAllKey() // reset all local storage
+      lstorage.removeItemKeys() // remove items in local storage
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state,
