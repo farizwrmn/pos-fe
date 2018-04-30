@@ -1,6 +1,6 @@
 import { request, config, crypt } from 'utils'
 
-const { customers } = config.api
+const { customers, services } = config.api
 
 export async function query (params) {
   const url = params ? `${customers}/${encodeURIComponent(params.id)}/units` : null
@@ -55,6 +55,15 @@ export async function remove (params) {
     url,
     method: 'delete',
     data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
+export async function getServiceReminder () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${services}/checks`,
+    method: 'get',
     headers: apiHeaderToken
   })
 }

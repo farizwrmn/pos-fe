@@ -83,21 +83,21 @@ const Bread = ({ menu, changeRole }) => {
         </Col>
         <Col xs={20} sm={18} md={16} lg={14} xl={12}>
           <div className={styles.currentStore}>
-              <Col span={22}>
-                <span>{currentStoreName}</span>
-              </Col>
-              <Col span={2}>
-                <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
+            <Col span={22}>
+              <span>{currentStoreName}</span>
+            </Col>
+            <Col span={2}>
+              <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
                 <Cascader options={listUserStores}
-                          onChange={handleChangeStore}
-                          changeOnSelect
-                          allowClear={false}
-                          defaultValue={[defaultStore]}
-                          placeholder="Switch Store"
+                  onChange={handleChangeStore}
+                  changeOnSelect
+                  allowClear={false}
+                  defaultValue={[defaultStore]}
+                  placeholder="Switch Store"
                 ><a href="#">
-                  <Icon type="shop"></Icon>
-                </a></Cascader></Tooltip>
-              </Col>
+                    <Icon type="shop" />
+                  </a></Cascader></Tooltip>
+            </Col>
           </div>
         </Col>
       </Row>

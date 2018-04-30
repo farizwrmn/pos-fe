@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar, Switch, Button } from 'antd'
+import { Menu, Icon, Popover, Calendar, Switch, Button, Row, Col } from 'antd'
 import { classnames, lstorage } from 'utils'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -22,7 +22,7 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu,
   selectedDate, selectedMonth, showBirthDayListModal, hideBirthDayListModal, changeCalendarMode,
   listTotalBirthdayPerDate, listCustomerBirthday, calendarMode, listNotification, listNotificationDetail, showPopOverCalendar, showPopOverNotification,
-  refreshNotifications
+  refreshNotifications, defaultSidebarColor, changeSiderColor
 }) => {
   let handleClickMenu = (e) => {
     e.key === 'logout' && logout(lstorage.getSessionId())
@@ -178,6 +178,10 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     }
   }
 
+  const changeColor = (color) => {
+    changeSiderColor(color)
+  }
+
   return (
     <div className={classnames(styles.header, styles.store1)}>
       {isNavbar
@@ -205,11 +209,22 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
         <HeaderMenu prompt="change theme"
           icon="bulb"
           popContent={
-            <Switch onChange={changeTheme}
-              defaultChecked={darkTheme}
-              checkedChildren={<Icon type="bulb" />}
-              unCheckedChildren={<Icon type="eye" style={{ color: '#000' }} />}
-            />
+            // <Switch onChange={changeTheme}
+            //   defaultChecked={darkTheme}
+            //   checkedChildren={<Icon type="bulb" />}
+            //   unCheckedChildren={<Icon type="eye" style={{ color: '#000' }} />}
+            // />
+            <Row style={{ width: 100, textAlign: 'center' }}>
+              <Col span={8}>
+                <Button onClick={() => changeColor('#FFFFFF')} size="small" style={{ backgroundColor: '#FFFFFF', width: 20, borderColor: defaultSidebarColor === '#FFFFFF' ? '#108ee9' : '' }} />
+              </Col>
+              <Col span={8}>
+                <Button onClick={() => changeColor('#3E3E3E')} size="small" style={{ backgroundColor: '#3E3E3E', width: 20, borderColor: defaultSidebarColor === '#3E3E3E' ? '#108ee9' : '' }} />
+              </Col>
+              <Col span={8}>
+                <Button onClick={() => changeColor('#5A87b5')} size="small" style={{ backgroundColor: '#5A87b5', width: 20, borderColor: defaultSidebarColor === '#5A87b5' ? '#108ee9' : '' }} />
+              </Col>
+            </Row>
           }
         />
         <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
