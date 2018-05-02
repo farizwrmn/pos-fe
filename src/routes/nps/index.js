@@ -162,6 +162,9 @@ const Nps = ({
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.container}>
+        <h1>
+          <span>{npsData.cname}</span>
+        </h1>
         <h2>
           <span>We`d love your help. </span>
           Please give us 30 seconds of your time for feedback on our website
