@@ -1,12 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
 import { Modal } from 'antd'
 import { ModalList } from '../../../components'
 
 
-const ModalBrowse = ({ ...modalProps, activeKey, customer, loading, dispatch }) => {
-  const { listCustomer, searchText, pagination } = customer
+const ModalBrowse = ({
+  ...modalProps,
+  listCustomer,
+  searchText,
+  pagination,
+  loading,
+  onSearch,
+  onReset,
+  onClickRow,
+  changeText,
+  onChange
+}) => {
   const width = '80%'
   const modalOpts = {
     ...modalProps
@@ -49,67 +58,11 @@ const ModalBrowse = ({ ...modalProps, activeKey, customer, loading, dispatch }) 
     pagination,
     dataSource: listCustomer,
     loading: loading.effects['customer/query'],
-    onSearch () {
-      dispatch({
-        type: 'customer/query',
-        payload: {
-          page: 1,
-          q: searchText
-        }
-      })
-    },
-    onReset () {
-      dispatch({
-        type: 'customer/query'
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          searchText: ''
-        }
-      })
-    },
-    onClickRow (record) {
-      if (activeKey === '1') {
-        dispatch({
-          type: 'customerunit/query',
-          payload: {
-            code: record.memberCode
-          }
-        })
-      }
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          customerInfo: record
-        }
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          modalVisible: false,
-          activeKey: '1',
-          dataCustomer: record
-        }
-      })
-    },
-    changeText (text) {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          searchText: text
-        }
-      })
-    },
-    onChange (page) {
-      dispatch({
-        type: 'customer/query',
-        payload: {
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    }
+    onSearch,
+    onReset,
+    onClickRow,
+    changeText,
+    onChange
   }
 
   return (
@@ -120,10 +73,8 @@ const ModalBrowse = ({ ...modalProps, activeKey, customer, loading, dispatch }) 
 }
 
 ModalBrowse.propTypes = {
-  customer: PropTypes.object,
-  loading: PropTypes.object,
-  dispatch: PropTypes.func
+  loading: PropTypes.object
 }
 
-export default connect(({ customer, loading }) => ({ customer, loading }))(ModalBrowse)
+export default ModalBrowse
 

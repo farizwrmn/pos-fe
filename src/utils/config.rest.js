@@ -31,6 +31,7 @@ module.exports = {
     employees: '/employees',
     jobposition: '/employees/positions',
     customers: '/members',
+    assets: '/assets',
     customergroup: '/members/groups',
     customertype: '/members/types',
     suppliers: '/suppliers',

@@ -51,7 +51,8 @@ export default {
     listNotificationDetail: [],
     ignore: true,
     title: '',
-    options: {}
+    options: {},
+    defaultSidebarColor: localStorage.getItem('sidebarColor')
   },
   subscriptions: {
 

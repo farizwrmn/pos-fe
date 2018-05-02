@@ -1,38 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, InputNumber, Button, Tabs, Row, Col, Dropdown, Menu, Icon, Collapse, message, Modal } from 'antd'
-import List from './List'
-import PrintPDF from './PrintPDF'
-import PrintXLS from './PrintXLS'
-import ModalBrowse from './Modal'
+import { Form, Input, InputNumber, Button, Row, Col, Collapse, message, Modal, Select } from 'antd'
 
 const FormItem = Form.Item
-const TabPane = Tabs.TabPane
 const Panel = Collapse.Panel
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 10
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
+    xs: { span: 10 },
+    sm: { span: 8 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 14
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
+    xs: { span: 14 },
+    sm: { span: 14 },
+    md: { span: 14 }
   }
 }
 
@@ -48,23 +32,26 @@ const formCustomerType = ({
   onSubmit,
   onCancelUpdate,
   modalType,
-  listItem,
+  openModal,
   disabled,
-  clickBrowse,
-  activeKey,
   customerInfo,
+  onFocusBrand,
+  onSelectBrand,
+  onFocusModel,
+  onSelectModel,
+  onFocusType,
+  onSelectType,
+  listBrand,
+  listModel,
+  listType,
+  resetCars,
   button,
-  modalVisible,
-  ...tabProps,
-  ...listProps,
-  ...printProps,
-  ...modalProps,
-  changeTab,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const tailFormItemLayout = {
@@ -85,20 +72,6 @@ const formCustomerType = ({
     }
   }
 
-  const { openModal } = modalProps
-  Object.assign(modalProps, { activeKey })
-
-  printProps.dataCustomer = customerInfo
-
-  const handleReset = () => {
-    resetFields()
-  }
-
-  const change = (key) => {
-    changeTab(key)
-    handleReset()
-  }
-
   const handleCancel = () => {
     onCancelUpdate()
     resetFields()
@@ -114,13 +87,15 @@ const formCustomerType = ({
       }
       const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
       if (data.memberCode) {
+        other.merk = other.merk.label
+        other.model = other.model.label
+        if (other.type) other.type = other.type.label
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(other)
-            setTimeout(() => {
-              resetFields()
-            }, 500)
+            resetFields()
+            resetCars()
           },
           onCancel () { }
         })
@@ -130,16 +105,13 @@ const formCustomerType = ({
     })
   }
 
-  const browse = () => {
-    clickBrowse()
-  }
+  let brands = []
+  let models = []
+  let types = []
+  if (listBrand) brands = listBrand.map(x => (<Option title={x.brandName} key={x.id}>{x.brandName}</Option>))
+  if (listModel) models = listModel.map(x => (<Option title={x.modelName} key={x.id}>{x.modelName}</Option>))
+  if (listType) types = listType.map(x => (<Option title={x.typeName} key={x.id}>{x.typeName}</Option>))
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
-    </Menu>
-  )
   const info = (
     <div>
       <FormItem label="Member Code" {...formItemLayout} >
@@ -182,102 +154,140 @@ const formCustomerType = ({
   let pattern = `^(1769|18\\d\\d|19\\d\\d|[2-${y[0]}][0-${y[1]}][0-${y[2]}][0-${y[3]}])$`
   let yearPattern = new RegExp(pattern)
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (listItem.length > 0 ? (<Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown>) : '')
+  const chooseBrand = (value) => {
+    onSelectBrand(value)
+    if (modalType === 'edit') {
+      item.model = undefined
+      item.type = undefined
+    }
+    resetFields(['model', 'type'])
+  }
+
+  const chooseModel = (value) => {
+    onSelectModel(value)
+    resetFields(['type'])
+  }
+
+  const chooseType = (value) => {
+    onSelectType(value)
+  }
+
+  const getMerk = { key: item.merk, label: item.merk }
+  const getModel = { key: item.model, label: item.model }
+  const getType = { key: item.type, label: item.type }
 
   return (
-    <div>
-      {modalVisible && <ModalBrowse {...modalProps} />}
-      <Tabs activeKey={activeKey} {...tabProps} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          <Form layout="horizontal">
-            <Row>
-              <Col {...column}>
-                <FormItem label="Member Code" hasFeedback {...formItemLayout}>
-                  <Button disabled={disabled} type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
-                </FormItem>
-                <FormItem label="Police No" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('policeNo', {
-                    initialValue: item.policeNo,
-                    rules: [
-                      {
-                        required: true,
-                        pattern: /^[A-Z0-9]{1,10}\S+$/,
-                        message: 'A-Z & 0-9'
-                      }
-                    ]
-                  })(<Input disabled={disabled} maxLength={10} autoFocus />)}
-                </FormItem>
-                <FormItem label="Merk" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('merk', {
-                    initialValue: item.merk,
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="Model" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('model', {
-                    initialValue: item.model,
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Input maxLength={30} />)}
-                </FormItem>
-                <FormItem label="Tipe" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('type', {
-                    initialValue: item.type
-                  })(<Input maxLength={30} />)}
-                </FormItem>
-                <FormItem label="Tahun" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('year', {
-                    initialValue: item.year,
-                    rules: [
-                      {
-                        pattern: yearPattern,
-                        message: 'year is not valid'
-                      }
-                    ]
-                  })(<InputNumber maxLength={4} />)}
-                </FormItem>
-                <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('chassisNo', {
-                    initialValue: item.chassisNo
-                  })(<Input maxLength={20} />)}
-                </FormItem>
-                <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('machineNo', {
-                    initialValue: item.machineNo
-                  })(<Input maxLength={20} />)}
-                </FormItem>
-                <FormItem {...tailFormItemLayout}>
-                  {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-                  <Button type="primary" onClick={handleSubmit}>{button}</Button>
-                </FormItem>
-              </Col>
-              <Col {...column}>
-                <Collapse defaultActiveKey={collapseActiveKey} >
-                  <Panel header={collapseTitle} key="1">
-                    {info}
-                  </Panel>
-                </Collapse>
-              </Col>
-            </Row>
-          </Form>
-        </TabPane>
-        <TabPane tab="Browse" key="1" >
-          <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
-          <List {...listProps} />
-        </TabPane>
-      </Tabs>
-    </div>
+    <Form layout="horizontal">
+      <Row>
+        <Col {...column}>
+          <FormItem label="Member Code" hasFeedback {...formItemLayout}>
+            <Button disabled={disabled} type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
+          </FormItem>
+          <FormItem label="Police No" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('policeNo', {
+              initialValue: item.policeNo,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^[A-Z0-9]{1,10}\S+$/,
+                  message: 'A-Z & 0-9'
+                }
+              ]
+            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
+          </FormItem>
+          <FormItem label="Merk" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('merk', {
+              initialValue: item.merk ? getMerk : item.merk,
+              valuePropName: 'value',
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              mode="combobox"
+              size="large"
+              labelInValue
+              optionLabelProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onFocus={onFocusBrand}
+              onChange={value => chooseBrand(value)}
+            >
+              {brands}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Model" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('model', {
+              initialValue: item.model ? getModel : item.model,
+              valuePropName: 'value',
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              mode="combobox"
+              size="large"
+              labelInValue
+              optionLabelProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onFocus={onFocusModel}
+              onChange={value => chooseModel(value)}
+            >
+              {models}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Tipe" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('type', {
+              initialValue: item.type ? getType : item.type,
+              valuePropName: 'value'
+            })(<Select
+              mode="combobox"
+              size="large"
+              labelInValue
+              optionLabelProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onFocus={onFocusType}
+              onChange={value => chooseType(value)}
+            >
+              {types}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Tahun" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('year', {
+              initialValue: item.year,
+              rules: [
+                {
+                  pattern: yearPattern,
+                  message: 'year is not valid'
+                }
+              ]
+            })(<InputNumber maxLength={4} />)}
+          </FormItem>
+          <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('chassisNo', {
+              initialValue: item.chassisNo
+            })(<Input maxLength={20} />)}
+          </FormItem>
+          <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('machineNo', {
+              initialValue: item.machineNo
+            })(<Input maxLength={20} />)}
+          </FormItem>
+          <FormItem {...tailFormItemLayout}>
+            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          </FormItem>
+        </Col>
+        <Col {...column}>
+          <Collapse defaultActiveKey={collapseActiveKey} >
+            <Panel header={collapseTitle} key="1">
+              {info}
+            </Panel>
+          </Collapse>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 
