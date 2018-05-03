@@ -2,7 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Button, Tabs, Dropdown, Menu, Icon } from 'antd'
 import Form from './Form'
+import List from './List'
+import Filter from './Filter'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
+
+const TabPane = Tabs.TabPane
 
 const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
   const { listType, listSellprice, display, isChecked, modalType, currentItem, activeKey, disable, show } = customertype
@@ -14,16 +21,6 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     filter: {
       ...location.query
     },
-    // onFilterChange (value) {
-    //   dispatch(routerRedux.push({
-    //     pathname: location.pathname,
-    //     query: {
-    //       ...value,
-    //       page: 1,
-    //       pageSize,
-    //     },
-    //   }))
-    // },
     onFilterChange (value) {
       dispatch({
         type: 'customertype/query',
@@ -69,53 +66,10 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
         type: 'customertype/delete',
         payload: id
       })
-    },
-    clickBrowse () {
-      dispatch({
-        type: 'customertype/updateState',
-        payload: {
-          activeKey: '1'
-        }
-      })
-    }
-  }
-
-  const tabProps = {
-    activeKey,
-    changeTab (key) {
-      dispatch({
-        type: 'customertype/updateState',
-        payload: {
-          activeKey: key,
-          modalType: 'add',
-          currentItem: {},
-          disable: ''
-        }
-      })
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          activeKey: key
-        }
-      }))
-      dispatch({ type: 'customertype/resetCustomerTypeList' })
-    },
-    onShowHideSearch () {
-      dispatch({
-        type: 'customertype/updateState',
-        payload: {
-          show: !show
-        }
-      })
     }
   }
 
   const formProps = {
-    ...listProps,
-    ...tabProps,
-    ...filterProps,
     listSellprice,
     modalType,
     item: currentItem,
@@ -144,9 +98,76 @@ const CustomerType = ({ customertype, loading, dispatch, location, app }) => {
     }
   }
 
+  const changeTab = (key) => {
+    dispatch({
+      type: 'customertype/updateState',
+      payload: {
+        activeKey: key,
+        modalType: 'add',
+        currentItem: {},
+        disable: ''
+      }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        activeKey: key
+      }
+    }))
+    dispatch({ type: 'customertype/resetCustomerTypeList' })
+  }
+
+  const onShowHideSearch = () => {
+    dispatch({
+      type: 'customertype/updateState',
+      payload: {
+        show: !show
+      }
+    })
+  }
+
+  const clickBrowse = () => {
+    dispatch({
+      type: 'customertype/updateState',
+      payload: {
+        activeKey: '1'
+      }
+    })
+  }
+
+  const printProps = {
+    dataSource: listType,
+    user,
+    storeInfo
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => clickBrowse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown> </div>)
+
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          {activeKey === '0' && <Form {...formProps} />}
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Filter {...filterProps} />
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
+
     </div>
   )
 }

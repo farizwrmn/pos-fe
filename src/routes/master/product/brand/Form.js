@@ -1,36 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tabs, Row, Col, Menu, Icon, Dropdown, message, Modal } from 'antd'
-import List from './List'
-import Filter from './Filter'
-import PrintPDF from './PrintPDF'
-import PrintXLS from './PrintXLS'
+import { Form, Input, Button, Row, Col, message, Modal } from 'antd'
 
 const FormItem = Form.Item
-const TabPane = Tabs.TabPane
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 9
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
+    xs: { span: 9 },
+    sm: { span: 8 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 15
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
+    xs: { span: 15 },
+    sm: { span: 14 },
+    md: { span: 14 }
   }
 }
 
@@ -47,14 +30,7 @@ const formProductBrand = ({
   disabled,
   modalType,
   onCancel,
-  activeKey,
-  clickBrowse,
   button,
-  changeTab,
-  ...listProps,
-  ...filterProps,
-  ...printProps,
-  ...tabProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -80,17 +56,6 @@ const formProductBrand = ({
     }
   }
 
-  const { onShowHideSearch } = tabProps
-  const { show } = filterProps
-  const handleReset = () => {
-    resetFields()
-  }
-
-  const change = (key) => {
-    changeTab(key)
-    handleReset()
-  }
-
   const handleCancel = () => {
     onCancel()
     resetFields()
@@ -109,9 +74,9 @@ const formProductBrand = ({
           title: 'Do you want to save this item?',
           onOk () {
             onSubmit(data.brandCode, data)
-            setTimeout(() => {
-              resetFields()
-            }, 500)
+            // setTimeout(() => {
+            resetFields()
+            // }, 500)
           },
           onCancel () { }
         })
@@ -121,66 +86,41 @@ const formProductBrand = ({
     })
   }
 
-  const browse = () => {
-    clickBrowse()
-  }
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
-    </Menu>
-  )
-
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown> </div>)
-
   return (
-    <Tabs activeKey={activeKey} onChange={key => change(key)} tabBarExtraContent={moreButtonTab} type="card">
-      <TabPane tab="Form" key="0" >
-        <Form layout="horizontal">
-          <Row>
-            <Col {...column}>
-              <FormItem label="Code" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('brandCode', {
-                  initialValue: item.brandCode,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^[a-zA-Z0-9_]{3,}$/,
-                      message: 'a-Z & 0-9'
-                    }
-                  ]
-                })(<Input disabled={disabled} maxLength={10} autoFocus />)}
-              </FormItem>
-              <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('brandName', {
-                  initialValue: item.brandName,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^.{3,20}$/,
-                      message: 'Brand Name must be between 3 and 20 characters'
-                    }
-                  ]
-                })(<Input />)}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-                <Button type="primary" onClick={handleSubmit}>{button}</Button>
-              </FormItem>
-            </Col>
-          </Row>
-        </Form>
-      </TabPane>
-      <TabPane tab="Browse" key="1" >
-        <Filter {...filterProps} />
-        <List {...listProps} />
-      </TabPane>
-    </Tabs>
+    <Form layout="horizontal">
+      <Row>
+        <Col {...column}>
+          <FormItem label="Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('brandCode', {
+              initialValue: item.brandCode,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^[a-zA-Z0-9_]{3,}$/,
+                  message: 'a-Z & 0-9'
+                }
+              ]
+            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
+          </FormItem>
+          <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('brandName', {
+              initialValue: item.brandName,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^.{3,20}$/,
+                  message: 'Brand Name must be between 3 and 20 characters'
+                }
+              ]
+            })(<Input />)}
+          </FormItem>
+          <FormItem {...tailFormItemLayout}>
+            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          </FormItem>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 
@@ -189,9 +129,6 @@ formProductBrand.propTypes = {
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
-  clickBrowse: PropTypes.func,
-  changeTab: PropTypes.func,
-  activeKey: PropTypes.string,
   button: PropTypes.string
 }
 

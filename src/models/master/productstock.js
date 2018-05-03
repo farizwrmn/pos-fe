@@ -22,8 +22,6 @@ export default modelExtend(pageModel, {
     searchText: '',
     show: 1,
     showModal: false,
-    stickerQty: 1,
-    logo: '',
     showModalProduct: false,
     modalProductType: '',
     listPrintAllStock: [],

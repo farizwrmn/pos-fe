@@ -50,7 +50,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, { userName: payload.supplierName })
+      const data = yield call(query, payload)
       if (data) {
         yield put({
           type: 'querySuccess',

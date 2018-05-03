@@ -98,11 +98,16 @@ const formCustomer = ({
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => browse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown> </div>)
+  let moreButtonTab
+  if (activeKey === '0') {
+    moreButtonTab = (<Button onClick={() => browse()}>Browse</Button>)
+  } else if (activeKey === '1') {
+    moreButtonTab = (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button> <Dropdown overlay={menu}>
+      <Button style={{ marginLeft: 8 }}>
+        <Icon type="printer" /> Print
+      </Button>
+    </Dropdown> </div>)
+  }
 
   const formMobileProps = {
     onActivate,
