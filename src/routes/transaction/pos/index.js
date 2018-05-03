@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { configMain } from 'utils'
-import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover, Alert, Icon } from 'antd'
+import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover, Alert } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
@@ -1417,16 +1417,23 @@ const Pos = ({
     }, 500)
   }
 
-  let reminders = []
-  if (alertReminder.length) {
-    reminders = alertReminder.map(x => (<li><Icon type="setting" style={{ marginRight: 5 }} />{x.checkName}</li>))
-  }
+  const columnAlert = [{
+    title: 'Name',
+    dataIndex: 'checkName',
+    key: 'checkName'
+  }, {
+    title: 'KM',
+    dataIndex: 'checkMileage',
+    key: 'checkMileage',
+    render: text => text.toLocaleString()
+  }, {
+    title: 'Period',
+    dataIndex: 'checkTimePeriod',
+    key: 'checkTimePeriod',
+    render: text => `${text.toLocaleString()} days`
+  }]
 
-  let alertDescription = (<div style={{ padding: '8px 0' }}>
-    <ul>
-      {reminders}
-    </ul>
-  </div>)
+  let alertDescription = (<Table pagination={false} style={{ padding: '8px 0' }} dataSource={alertReminder} columns={columnAlert} />)
 
   return (
     <div className="content-inner">

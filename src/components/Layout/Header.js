@@ -118,6 +118,9 @@ const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, 
     onPanelChange (value, mode) {
       const month = moment(value).format('MM')
       changeCalendarMode(month, mode)
+    },
+    disabledDate (current) {
+      return current < moment().endOf('day')
     }
   }
   const date = calendarMode === 'month' ? moment(new Date(selectedDate)).format('MMMM, Do YYYY') : moment(new Date(selectedDate)).format('MMMM, YYYY')

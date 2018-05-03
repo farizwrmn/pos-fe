@@ -16,6 +16,7 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
 
   let textColor = sidebarColor === '#FFFFFF' ? '#444' : '#f4f5f7'
   let selectedMenu = '#ecf6fd'
+  let hoverColor = '#108ee9'
   switch (sidebarColor) {
     case '#FFFFFF':
       selectedMenu = '#ecf6fd'
@@ -25,6 +26,7 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
       break
     case '#5A87b5':
       selectedMenu = '#83a4c6'
+      hoverColor = '#444'
       break
     default:
   }
@@ -35,6 +37,10 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
                             background-color: ${sidebarColor};
                             color: ${textColor};
                           }
+                          .parent > div:hover,
+                          .child > div:hover {
+                            color: ${hoverColor};
+                          }
                           .child {
                             background-color: ${sidebarColor};
                             color: ${textColor};
@@ -44,6 +50,9 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
                           }
                           .ant-menu-item > a {
                             color: ${textColor};
+                          }
+                          .ant-menu-item > a:hover {
+                            color: ${hoverColor};
                           }`
   document.head.appendChild(menuStyle)
 
