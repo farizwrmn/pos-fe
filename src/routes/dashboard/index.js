@@ -13,7 +13,7 @@ function Dashboard ({ dashboard }) {
   return (
     <Row gutter={24}>
       {numberCards}
-      <Col lg={18} md={24}>
+      <Col lg={24} md={24}>
         <Card bordered={false}
           bodyStyle={{
             padding: '24px 36px 24px 0'

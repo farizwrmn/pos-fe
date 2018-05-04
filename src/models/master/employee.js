@@ -86,7 +86,6 @@ export default modelExtend(pageModel, {
       }
       const sequence = yield call(querySequence, seqDetail)
       if (sequence.success) {
-        console.log(sequence)
         yield put({ type: 'updateState', payload: { sequence: sequence.data, ...payload } })
       }
     },

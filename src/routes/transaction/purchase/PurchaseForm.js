@@ -22,7 +22,7 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
+const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
   modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
   onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
@@ -333,7 +333,7 @@ const PurchaseForm = ({ onDiscPercent, rounding, onChangeRounding, dataBrowse, o
         </Row>
       </div>
       <div style={{ marginBottom: '150px' }}>
-        <Button type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
+        <Button type="primary" size="large" onClick={confirmPurchase} disabled={disableButton || false} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
       </div>
     </Form>
   )

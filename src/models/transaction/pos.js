@@ -128,14 +128,14 @@ export default {
     },
 
     * serviceEdit ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       dataPos[payload.no - 1] = payload
       localStorage.setItem('service_detail', JSON.stringify(dataPos))
       yield put({ type: 'hideServiceModal' })
     },
 
     * paymentDelete ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
         let what
@@ -190,7 +190,7 @@ export default {
     },
 
     * serviceDelete ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
         let what
@@ -1715,8 +1715,8 @@ export default {
     },
 
     setCurTotal (state) {
-      let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+      let product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       let dataPos = product.concat(service)
       let a = dataPos
       let curRecord = a.reduce((cnt) => { return cnt + 1 }, 0)

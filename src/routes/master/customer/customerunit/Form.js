@@ -50,8 +50,7 @@ const formCustomerType = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields,
-    setFieldsValue
+    resetFields
   }
 }) => {
   const tailFormItemLayout = {

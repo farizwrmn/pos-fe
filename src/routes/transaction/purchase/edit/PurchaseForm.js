@@ -20,7 +20,7 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 }
 }
 
-const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = { ...getFieldsValue() }
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
@@ -246,7 +246,7 @@ const PurchaseForm = ({ onDiscPercent, dataBrowse, rounding, onOk, onChangeRound
         </Row>
       </div>
       <div style={{ marginBottom: '150px' }}>
-        <Button disabled={transNo === null ? false : transNo.readOnly} type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
+        <Button disabled={(disableButton || false) || (transNo === null ? false : transNo.readOnly)} type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
       </div>
     </Form>
   )
