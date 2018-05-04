@@ -3,7 +3,7 @@
  */
 // import { queryPaymentWithPOS } from '../../services/payment/payment'
 import { Modal } from 'antd'
-import { queryPaymentWithPOS, queryPaymentAR } from '../../services/report/payment'
+import { queryPaymentWithPOS, queryPaymentAR, queryPaymentARGroup } from '../../services/report/payment'
 
 export default {
   namespace: 'accountsReport',
@@ -60,6 +60,26 @@ export default {
     },
     * queryAR ({ payload }, { call, put }) {
       const data = yield call(queryPaymentAR, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'No Data',
+          content: 'Cannot get data from storage'
+        })
+        throw data
+      }
+    },
+    * queryARGroup ({ payload }, { call, put }) {
+      const data = yield call(queryPaymentARGroup, payload)
       if (data.success) {
         yield put({
           type: 'updateState',

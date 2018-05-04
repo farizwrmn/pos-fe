@@ -1,0 +1,6 @@
+{
+  "name": "receivable",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ReceivableGroup.js"
+}
