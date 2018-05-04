@@ -372,7 +372,7 @@ export default modelExtend(pageModel, {
           disc1: data.data[n].discPercent,
           dpp: data.data[n].dpp,
           ppn: data.data[n].ppn,
-          total: (((parseFloat(data.data[n].qty) * parseFloat(data.data[n].purchasePrice)) * (1 - (parseFloat(data.data[n].discPercent) / 100))) - parseFloat(data.data[n].discNominal) - parseFloat(data.data[n].discInvoice)) + (payload.taxType === 'S' ? parseFloat(data.data[n].ppn) : 0),
+          total: data.data[n].dpp + data.data[n].ppn,
           ket: 'edit'
         })
       }
@@ -385,112 +385,6 @@ export default modelExtend(pageModel, {
         type: 'setTransNo',
         payload
       })
-    },
-    * editPurchase ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
-      let taxType = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
-      let ppnTempValue = taxType === 'I' ? 0.1 : 0
-      if (taxType === 'E') {
-        ppnTempValue = 0
-      } else if (taxType === 'I') {
-        ppnTempValue = 0.1
-      }
-      let arrayProd = dataPos.slice()
-      let price = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].price
-      let qty = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].qty
-      let discount = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].discount
-      let disc1 = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].disc1
-      let ppn = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].ppn
-      let dpp = payload.effectedRecord === 0 ? '' : arrayProd[payload.effectedRecord - 1].dpp
-      let ppnValue
-      if (payload.kodeUtil === 'price') {
-        price = payload.value
-        arrayProd[payload.effectedRecord - 1].price = price
-        arrayProd[payload.effectedRecord - 1].discount = discount
-        arrayProd[payload.effectedRecord - 1].disc1 = disc1
-        arrayProd[payload.effectedRecord - 1].qty = qty
-        ppn = ((ppnTempValue * price) * qty)
-        dpp = ((qty * price) - ppn)
-        arrayProd[payload.effectedRecord - 1].ppn = ppn
-        const total = (price * qty) - ((qty * ((price * disc1) / 100))) - (qty * discount)
-        arrayProd[payload.effectedRecord - 1].dpp = total
-        arrayProd[payload.effectedRecord - 1].total = total + ppn
-      } else if (payload.kodeUtil === 'discount') {
-        discount = payload.value
-        arrayProd[payload.effectedRecord - 1].price = price
-        arrayProd[payload.effectedRecord - 1].discount = discount
-        arrayProd[payload.effectedRecord - 1].disc1 = disc1
-        arrayProd[payload.effectedRecord - 1].qty = qty
-        ppn = ((ppnTempValue * price) * qty)
-        dpp = ((qty * price) - ppn)
-        arrayProd[payload.effectedRecord - 1].ppn = ppn
-        const total = (price * qty) - ((qty * ((price * disc1) / 100))) - (qty * discount)
-        arrayProd[payload.effectedRecord - 1].dpp = total
-        arrayProd[payload.effectedRecord - 1].total = total + ppn
-      } else if (payload.kodeUtil === 'disc1') {
-        disc1 = payload.value
-        arrayProd[payload.effectedRecord - 1].price = price
-        arrayProd[payload.effectedRecord - 1].discount = discount
-        arrayProd[payload.effectedRecord - 1].disc1 = disc1
-        arrayProd[payload.effectedRecord - 1].qty = qty
-        ppn = ((ppnTempValue * price) * qty)
-        dpp = ((qty * price) - ppn)
-        arrayProd[payload.effectedRecord - 1].ppn = ppn
-        const total = (price * qty) - ((qty * ((price * disc1) / 100))) - (qty * discount)
-        arrayProd[payload.effectedRecord - 1].dpp = total
-        arrayProd[payload.effectedRecord - 1].total = total + ppn
-      } else if (payload.kodeUtil === 'qty') {
-        qty = payload.value
-        arrayProd[payload.effectedRecord - 1].price = price
-        arrayProd[payload.effectedRecord - 1].discount = discount
-        arrayProd[payload.effectedRecord - 1].disc1 = disc1
-        arrayProd[payload.effectedRecord - 1].qty = qty
-        ppn = ((ppnTempValue * price) * qty)
-        dpp = ((qty * price) - ppn)
-        arrayProd[payload.effectedRecord - 1].ppn = ppn
-        const total = (price * qty) - ((qty * ((price * disc1) / 100))) - (qty * discount)
-        arrayProd[payload.effectedRecord - 1].dpp = total
-        arrayProd[payload.effectedRecord - 1].total = total + ppn
-      } else if (payload.kodeUtil === 'I') {
-        ppnValue = 0.1
-        for (let n = 1; n <= arrayProd.length; n += 1) {
-          ppn = (ppnValue * arrayProd[n - 1].price)
-          dpp = (arrayProd[n - 1].price * arrayProd[n - 1].qty) - (arrayProd[n - 1].price * arrayProd[n - 1].qty * (arrayProd[n - 1].disc1 / 100)) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount)
-          qty = arrayProd[n - 1].qty
-          arrayProd[n - 1].dpp = dpp
-          arrayProd[n - 1].ppn = ppnTempValue * dpp
-          arrayProd[n - 1].total = dpp + (ppnTempValue * dpp)
-        }
-      } else if (payload.kodeUtil === 'E') {
-        ppnValue = 0
-        for (let n = 1; n <= arrayProd.length; n += 1) {
-          ppn = (ppnValue * arrayProd[n - 1].price)
-          dpp = (arrayProd[n - 1].price * arrayProd[n - 1].qty) - (arrayProd[n - 1].price * arrayProd[n - 1].qty * (arrayProd[n - 1].disc1 / 100)) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount)
-          qty = arrayProd[n - 1].qty
-          arrayProd[n - 1].dpp = dpp
-          arrayProd[n - 1].ppn = ppnTempValue * dpp
-          arrayProd[n - 1].total = dpp + (ppnTempValue * dpp)
-        }
-      } else if (payload.kodeUtil === 'discountPercent') {
-        for (let n = 1; n <= arrayProd.length; n += 1) {
-          arrayProd[n - 1].disc1 = parseFloat(payload.value)
-          arrayProd[n - 1].dpp = (arrayProd[n - 1].price * arrayProd[n - 1].qty) - (arrayProd[n - 1].price * arrayProd[n - 1].qty * (arrayProd[n - 1].disc1 / 100)) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount)
-          arrayProd[n - 1].ppn = ppnTempValue * arrayProd[n - 1].dpp
-          arrayProd[n - 1].total = arrayProd[n - 1].dpp + arrayProd[n - 1].ppn
-          yield put({ type: 'setDiscountPerc', payload: payload.value })
-        }
-      } else if (payload.kodeUtil === 'discountNominal') {
-        for (let n = 1; n <= arrayProd.length; n += 1) {
-          arrayProd[n - 1].discount = parseFloat(payload.value)
-          arrayProd[n - 1].dpp = (arrayProd[n - 1].price * arrayProd[n - 1].qty) - (arrayProd[n - 1].price * arrayProd[n - 1].qty * (arrayProd[n - 1].disc1 / 100)) - (arrayProd[n - 1].qty * arrayProd[n - 1].discount)
-          arrayProd[n - 1].ppn = ppnTempValue * arrayProd[n - 1].dpp
-          arrayProd[n - 1].total = arrayProd[n - 1].dpp + arrayProd[n - 1].ppn
-        }
-        yield put({ type: 'setDiscountNominal', payload: payload.value })
-      }
-      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-      yield put({ type: 'setAllNull' })
-      yield put({ type: 'modalEditHide' })
     },
     * deleteList ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
