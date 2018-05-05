@@ -162,13 +162,13 @@ const Nps = ({
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.container}>
-        <h1>
+        <h1 style={{ textAlign: 'center' }}>
           <span>{npsData.cname}</span>
         </h1>
-        <h2>
-          <span>We`d love your help. </span>
+        <h3 style={{ textAlign: 'center' }}>
+          <span>{"We'd love your help."} </span>
           Please give us 30 seconds of your time for feedback on our website
-        </h2>
+        </h3>
         <div className={styles.body}>
           <p>
             <Row type="flex" justify="start" className={styles.antrowflex}>
@@ -186,26 +186,27 @@ const Nps = ({
               </Col>
             </Row>
             {searchBy.value === 'id' &&
-            <Row type="flex" justify="end" className={styles.antrowflex}>
-              <Col span={24}>
-                <span style={{ float: 'right' }}>{memberName}</span>
-              </Col>
-            </Row>
+              <Row type="flex" justify="end" className={styles.antrowflex}>
+                <Col span={24}>
+                  <span style={{ float: 'right' }}>{memberName}</span>
+                </Col>
+              </Row>
             }
 
             {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
-            <Row type="flex" justify="start" className={styles.antrowflex}>
-              <Col span={5}>
-                <span>Member</span>
-              </Col>
-              <Col span={7}>
-                <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
-                  {memberPlats}
-                </Select>
-              </Col>
-            </Row>}
+              <Row type="flex" justify="start" className={styles.antrowflex}>
+                <Col span={5}>
+                  <span>Member</span>
+                </Col>
+                <Col span={7}>
+                  <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
+                    {memberPlats}
+                  </Select>
+                </Col>
+              </Row>}
           </p>
-          <p>How likely is it that you would recommend our service to a friend or colleague?</p>
+          <strong><h2 style={{ textAlign: 'center', color: 'blue' }}>Dari Skala 1-10, Apakah anda akan merekomendasikan layanan kami kepada saudara/teman/kerabat anda?</h2></strong>
+          <strong><h3 style={{ textAlign: 'center', color: 'blue' }}>From Scale 1-10, How likely will you recommend our service to your family/friends/colleaugues?</h3></strong>
           <div>
             {buttons}
           </div>
@@ -213,7 +214,7 @@ const Nps = ({
             Message
             {getFieldDecorator('memo')(<TextArea style={{ height: '80px' }} />)}
           </p>
-          <Button onClick={sendNPS} type="primary" size="large">Send</Button>
+          <Button style={{ textAlign: 'center' }} onClick={sendNPS} type="primary" size="large">Send</Button>
         </div>
       </div>
     </LocaleProvider >

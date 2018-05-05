@@ -26,11 +26,11 @@ export default {
   },
 
   effects: {
-    * getCompany ({}, { put }) {
+    * getCompany (payload, { put }) {
       // const userCompany = yield call(getUserCompany, payload)
       const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, companyName: configCompany.companyName } }
       if (userCompany.success) {
-        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName} } })
+        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName } } })
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
         yield put({ type: 'getCompanyFailure' })
