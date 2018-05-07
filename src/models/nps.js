@@ -30,7 +30,7 @@ export default {
       // const userCompany = yield call(getUserCompany, payload)
       const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, companyName: configCompany.companyName } }
       if (userCompany.success) {
-        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName } } })
+        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName || configCompany.companyName } } })
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
         yield put({ type: 'getCompanyFailure' })
@@ -153,8 +153,8 @@ export default {
     },
 
     getCompanySuccess (state, { payload }) {
-      let cdi = payload.data
-      cdi.push(payload.cid)
+      let cdi = [payload.cid]
+      cdi.push(...payload.data)
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state, ...payload

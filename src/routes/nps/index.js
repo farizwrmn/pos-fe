@@ -206,7 +206,8 @@ const Nps = ({
               <div>
                 {buttons}
               </div>
-              Message
+
+              <p>Message</p>
               <Row>
                 <Col lg={12} md={24}>
                   <div style={{ alignItems: 'center' }}>
