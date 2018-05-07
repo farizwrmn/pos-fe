@@ -47,35 +47,33 @@ export default {
           data = yield call(queryByCode, { memberCode: payload.memberId })
           if (data.success && data.data) {
             yield put({
-              type: 'updateState',
+              type: 'successGetData',
               payload: {
                 npsData: { member: data.data }
               }
             })
           } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                npsData: {}
-              }
-            })
             message.warning('Member is not available')
           }
         } else if (payload.searchBy.value === 'pn') {
           data = yield call(querySearchByPlat, { license: payload.memberId })
           if (data.success && data.data.length) {
             yield put({
+              type: 'successGetData',
+              payload: {
+                npsData: { member: data.data[0] }
+              }
+            })
+            yield put({
               type: 'updateState',
               payload: {
-                membersOfPlat: data.data,
-                npsData: { member: data.data[0] }
+                membersOfPlat: data.data
               }
             })
           } else {
             yield put({
               type: 'updateState',
               payload: {
-                npsData: {},
                 membersOfPlat: []
               }
             })
@@ -98,10 +96,12 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            npsData: {},
             membersOfPlat: {},
             searchBy: { value: 'id', label: 'Member ID' }
           }
+        })
+        yield put({
+          type: 'successPost'
         })
         const modal = Modal.success({
           title: 'Thank you for your feedback',
@@ -116,7 +116,6 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            npsData: {},
             membersOfPlat: {},
             searchBy: { value: 'id', label: 'Member ID' }
           }
@@ -130,6 +129,26 @@ export default {
       return {
         ...state,
         ...payload
+      }
+    },
+    successPost (state) {
+      const data = {
+        cname: state.npsData.cname
+      }
+      return {
+        ...state,
+        npsData: data
+      }
+    },
+    successGetData (state, { payload }) {
+      const { npsData } = payload
+      const data = {
+        ...state.npsData,
+        ...npsData
+      }
+      return {
+        ...state,
+        npsData: data
       }
     },
 
