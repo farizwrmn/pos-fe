@@ -157,9 +157,9 @@ const getCurrentUserStoreDetail = () => {
   return currentStoreName
 }
 
-const getDomainBE = () => { return getStorageKey('cdi')[1] }
-const getPortBE = () => { return getStorageKey('cdi')[2] }
-const getIdBE = () => { return getStorageKey('cdi')[3] }
+const getIdBE = () => { return getStorageKey('cdi')[1] }
+const getDomainBE = () => {return getStorageKey('cdi')[2] }
+const getPortBE = () => { return getStorageKey('cdi')[3] }
 
 module.exports = {
   putStorageKey,
