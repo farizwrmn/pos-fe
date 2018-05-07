@@ -2,9 +2,9 @@ import { Modal, message } from 'antd'
 import { configMain, configCompany, lstorage } from 'utils'
 import { getNPS, postNPS, getTempToken } from '../services/nps'
 import { queryByCode, querySearchByPlat } from '../services/master/customer'
-import { getUserCompany } from '../services/login'
+// import { getUserCompany } from '../services/login'
 
-// const { apiCompanyHost, apiCompanyPort } = configCompany.rest
+const { apiCompanyHost, apiCompanyPort } = configCompany.rest
 const { prefix } = configMain
 
 export default {
@@ -26,9 +26,9 @@ export default {
   },
 
   effects: {
-    * getCompany ({ payload }, { put, call }) {
-      const userCompany = yield call(getUserCompany, payload)
-      // const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, companyName: configCompany.companyName } }
+    * getCompany ({}, { put }) {
+      // const userCompany = yield call(getUserCompany, payload)
+      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, companyName: configCompany.companyName } }
       if (userCompany.success) {
         yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName || configCompany.companyName } } })
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
@@ -52,6 +52,8 @@ export default {
                 npsData: { member: data.data }
               }
             })
+          } else {
+            message.warning('Member is not available')
           }
         } else if (payload.searchBy.value === 'pn') {
           data = yield call(querySearchByPlat, { license: payload.memberId })
