@@ -21,9 +21,6 @@ const TwoColProps = {
 }
 
 const Filter = ({
-  // isChecked,
-  // display,
-  // switchIsChecked,
   onFilterChange,
   filter,
   onResetClick,
@@ -34,9 +31,6 @@ const Filter = ({
     setFieldsValue
   }
 }) => {
-  // const switchFilter = () => {
-  //   switchIsChecked()
-  // }
   const handleFields = (fields) => {
     const { createTime } = fields
     if (createTime.length) {
@@ -47,11 +41,7 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.brandName = fields.searchName
-    delete fields.searchName
-    if (fields.brandName === undefined || fields.brandName === '') {
-      delete fields.brandName
-    }
+    if (fields.brandName === undefined || fields.brandName === '') delete fields.brandName
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -91,7 +81,7 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: brandName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('brandName', { initialValue: brandName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Createtime" >

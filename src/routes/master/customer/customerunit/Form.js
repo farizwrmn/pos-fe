@@ -174,6 +174,7 @@ const formCustomerType = ({
   const getMerk = { key: item.merk, label: item.merk }
   const getModel = { key: item.model, label: item.model }
   const getType = { key: item.type, label: item.type }
+  const getTypeNull = undefined
 
   return (
     <Form layout="horizontal">
@@ -238,7 +239,7 @@ const formCustomerType = ({
           </FormItem>
           <FormItem label="Tipe" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {
-              initialValue: item.type ? getType : item.type,
+              initialValue: item.type ? getType : getTypeNull,
               valuePropName: 'value'
             })(<Select
               mode="combobox"

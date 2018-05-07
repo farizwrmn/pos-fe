@@ -2,11 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
 import Form from './Form'
+import List from './List'
+import Filter from './Filter'
+import Sticker from './Sticker'
+import Shelf from './Shelf'
+import PrintPDF from './PrintPDF'
+import PrintShelf from './PrintShelf'
+import PrintSticker from './PrintSticker'
+import PrintXLS from './PrintXLS'
+
+const TabPane = Tabs.TabPane
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, showModal, logo, showModalProduct, modalProductType, period, listSticker,
+    disable, show, showModalProduct, modalProductType, period, listSticker,
     selectedSticker, pagination, stockLoading } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -105,92 +116,202 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     }
   }
 
-  const tabProps = {
-    activeKey,
-    showModal,
-    // stickerQty,
-    changeQty (qty) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          stickerQty: qty || 1
-        }
-      })
-    },
-    changeTab (key) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          activeKey: key,
-          modalType: 'add',
-          currentItem: {},
-          disable: ''
-        }
-      })
-      const { query, pathname } = location
-      switch (key) {
-        case 1:
-          dispatch(routerRedux.push({
-            pathname,
-            query: {
-              ...query,
-              activeKey: key
-            }
-          }))
-          break
-        default:
-          dispatch(routerRedux.push({
-            pathname,
-            query: {
-              activeKey: key
-            }
-          }))
+  const changeTab = (key) => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        activeKey: key,
+        modalType: 'add',
+        currentItem: {},
+        disable: '',
+        listSticker: []
       }
+    })
+    const { query, pathname } = location
+    switch (key) {
+      case 1:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            activeKey: key
+          }
+        }))
+        break
+      default:
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: key
+          }
+        }))
+    }
+  }
 
-      // dispatch({ type: 'productstock/resetProductStockList' })
-    },
-    clickBrowse () {
+  const clickBrowse = () => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        activeKey: '1'
+      }
+    })
+  }
+
+  const onShowHideSearch = () => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        show: !show
+      }
+    })
+  }
+
+  const formProps = {
+    listCategory,
+    listBrand,
+    modalType,
+    mode,
+    item: currentItem,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
       dispatch({
-        type: 'productstock/updateState',
+        type: `productstock/${modalType}`,
         payload: {
+          id,
+          data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
           activeKey: '1'
         }
-      })
-    },
-    onShowHideSearch () {
+      }))
       dispatch({
-        type: 'productstock/updateState',
+        type: 'productbrand/updateState',
         payload: {
-          show: !show
+          currentItem: {}
         }
       })
     },
-    onShowModal () {
+    showBrands () {
       dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          showModal: true
-        }
+        type: 'productbrand/query'
       })
     },
-    onCloseModal () {
+    showCategories () {
+      dispatch({
+        type: 'productcategory/query'
+      })
+    }
+  }
+
+  const getAllStock = () => {
+    dispatch({
+      type: 'productstock/queryAllStock',
+      payload: {
+        type: 'all'
+      }
+    })
+    setTimeout(() => {
       dispatch({
         type: 'productstock/updateState',
         payload: {
-          showModal: false
+          changed: true
+        }
+      })
+    }, 1000)
+  }
+
+  const onShowPDFModal = (mode) => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        showPDFModal: true,
+        mode
+      }
+    })
+  }
+
+  const PDFModalProps = {
+    visible: showPDFModal,
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+    width: 375,
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllStock: []
         }
       })
     }
   }
 
-  const modalProductProps = {
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><Button onClick={() => onShowPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => onShowPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
+    </Menu>
+  )
+
+  const printProps = {
+    user,
+    storeInfo
+  }
+
+  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let notification = changed ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
+  let printmode
+  if (mode === 'pdf') {
+    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  } else {
+    printmode = (<Row><Col md={12}>{buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
+      <Col md={12}><PrintXLS data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+  }
+
+  let moreButtonTab
+  switch (activeKey) {
+    case '0':
+      moreButtonTab = (<Button onClick={() => clickBrowse()}>Browse</Button>)
+      break
+    case '1':
+      moreButtonTab = (
+        <div>
+          <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button>
+          <Dropdown overlay={menu}>
+            <Button style={{ marginLeft: 8 }} icon="printer">
+              Print
+            </Button>
+          </Dropdown>
+        </div>
+      )
+      break
+    case '2':
+      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      break
+    case '3':
+      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+      break
+    default:
+      break
+  }
+
+  const stickerProps = {
     showModalProduct,
     listItem,
     update,
     period,
     listSticker,
     modalProductType,
-    selectedSticker: selectedSticker || {},
+    selectedSticker,
     onShowModalProduct (key) {
       dispatch({
         type: 'productstock/updateState',
@@ -271,106 +392,26 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     }
   }
 
-  const formProps = {
-    ...tabProps,
-    ...filterProps,
-    ...listProps,
-    ...modalProductProps,
-    list,
-    listPrintAllStock,
-    stockLoading,
-    changed,
-    listCategory,
-    listBrand,
-    modalType,
-    showPDFModal,
-    mode,
-    logo,
-    item: currentItem,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    convertImage (url) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          logo: url
-        }
-      })
-    },
-    getAllStock () {
-      dispatch({
-        type: 'productstock/queryAllStock',
-        payload: {
-          type: 'all'
-        }
-      })
-      setTimeout(() => {
-        dispatch({
-          type: 'productstock/updateState',
-          payload: {
-            changed: true
-          }
-        })
-      }, 1000)
-    },
-    onSubmit (id, data) {
-      dispatch({
-        type: `productstock/${modalType}`,
-        payload: {
-          id,
-          data
-        }
-      })
-    },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'productbrand/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    },
-    showBrands () {
-      dispatch({
-        type: 'productbrand/query'
-      })
-    },
-    showCategories () {
-      dispatch({
-        type: 'productcategory/query'
-      })
-    },
-    onShowPDFModal (mode) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          showPDFModal: true,
-          mode
-        }
-      })
-    },
-    onHidePDFModal () {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          showPDFModal: false,
-          changed: false,
-          listPrintAllStock: []
-        }
-      })
-    }
-  }
-
   return (
     <div className="content-inner" >
-      <Form {...formProps} />
+      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
+        {printmode}
+      </Modal>}
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          <Form {...formProps} />
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Filter {...filterProps} />
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="Sticker" key="2" >
+          <Sticker {...stickerProps} />
+        </TabPane>
+        <TabPane tab="Shelf" key="3" >
+          <Shelf {...stickerProps} />
+        </TabPane>
+      </Tabs>
     </div >
   )
 }

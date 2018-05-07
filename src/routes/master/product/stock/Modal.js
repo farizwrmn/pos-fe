@@ -17,7 +17,6 @@ const ModalSticker = ({
   onAutoSearch,
   getItem,
   changeItem,
-  changeQty,
   selectedSticker,
   onSearchUpdateSticker,
   form: {
@@ -71,10 +70,7 @@ const ModalSticker = ({
     style: { width: '100%' },
     min: 1,
     max: 100,
-    defaultValue: 1,
-    onChange (value) {
-      changeQty(value)
-    }
+    defaultValue: 1
   }
 
   const modalProps = {
@@ -97,6 +93,7 @@ const ModalSticker = ({
       if (Object.keys(selectedSticker).length === 0) {
         const listProduct = listItem.filter(x => x.productName === data.name)[0]
         data.info = listProduct
+        console.log(data)
         getItem(data)
       } else {
         data.info = selectedSticker.info

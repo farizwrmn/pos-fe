@@ -65,13 +65,6 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     loading: loading.effects['customer/query'],
     location,
     onChange (page) {
-      // dispatch({
-      //   type: 'customer/query',
-      //   payload: {
-      //     pageSize: Number(e.pageSize),
-      //     page: Number(e.current)
-      //   }
-      // })
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,

@@ -5,7 +5,7 @@ import { Link } from 'dva/router'
 import { arrayToTree, queryArray, lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
-const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
+const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
   const noStoreMessage = (type) => {
     if (type === 'info') {
       message.info('There is no store selected.\nPlease contact your IT.')
@@ -13,6 +13,48 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
       message.warning('There is no store selected.\nPlease contact your IT.')
     }
   }
+
+  let textColor = sidebarColor === '#FFFFFF' ? '#444' : '#f4f5f7'
+  let selectedMenu = '#ecf6fd'
+  let hoverColor = '#108ee9'
+  switch (sidebarColor) {
+    case '#FFFFFF':
+      selectedMenu = '#ecf6fd'
+      break
+    case '#3E3E3E':
+      selectedMenu = '#494949'
+      break
+    case '#5A87b5':
+      selectedMenu = '#83a4c6'
+      hoverColor = '#444'
+      break
+    default:
+  }
+
+  let menuStyle = document.createElement('style')
+  menuStyle.innerHTML = `.parent-wrapper,
+                          .parent {
+                            background-color: ${sidebarColor};
+                            color: ${textColor};
+                          }
+                          .parent > div:hover,
+                          .child > div:hover {
+                            color: ${hoverColor};
+                          }
+                          .child {
+                            background-color: ${sidebarColor};
+                            color: ${textColor};
+                          }
+                          .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+                            background-color: ${selectedMenu};
+                          }
+                          .ant-menu-item > a {
+                            color: ${textColor};
+                          }
+                          .ant-menu-item > a:hover {
+                            color: ${hoverColor};
+                          }`
+  document.head.appendChild(menuStyle)
 
   // 生成树状 - Generate a tree
   const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
@@ -26,7 +68,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
           levelMap[item.menuId] = item.mpid
         }
         return (
-          <Menu.SubMenu
+          <Menu.SubMenu className={!item.bpid ? 'parent' : 'child'}
             key={item.menuId}
             title={<span>
               {item.icon && <Icon type={item.icon} />}
@@ -38,7 +80,7 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
         )
       }
       return (
-        <Menu.Item key={item.menuId}>
+        <Menu.Item key={item.menuId} className={!item.bpid ? 'parent' : 'child'}>
           <Link to={item.route}>
             {item.icon && <Icon type={item.icon} />}
             {(!siderFoldN || !menuTree.includes(item)) && item.name}
@@ -131,10 +173,10 @@ const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOp
   }
 
   return (
-    <Menu
+    <Menu className="parent-wrapper"
       {...menuProps}
       mode={siderFold ? 'vertical' : 'inline'}
-      theme={darkTheme ? 'dark' : 'light'}
+      theme={darkTheme ? 'dark' : 'primary'}
       onClick={handleClickNavMenu}
       inlineCollapsed={siderFold}
       defaultSelectedKeys={defaultSelectedKeys}

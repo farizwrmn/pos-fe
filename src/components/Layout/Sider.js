@@ -7,8 +7,9 @@ import styles from './Layout.less'
 import Menus from './Menu'
 import DateTime from './DateTime'
 
-const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switchSider, changeOpenKeys, menu }) => {
+const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOpenKeys, switchSider, changeOpenKeys, menu }) => {
   const menusProps = {
+    sidebarColor,
     menu,
     siderFold,
     darkTheme,
@@ -16,7 +17,6 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
     navOpenKeys,
     changeOpenKeys
   }
-
 
   // user role
   const listUserRoles = lstorage.getListUserRoles()
@@ -88,7 +88,7 @@ const Sider = ({ siderFold, darkTheme, location, changeRole, navOpenKeys, switch
       </div>
       <Menus {...menusProps} />
       {!siderFold ?
-        <div className={styles.switchrole}>
+        <div className={styles.switchrole} style={{ backgroundColor: sidebarColor, borderTop: `1px solid ${sidebarColor}` }}>
           <Tooltip placement="top" title="click to switch role">
             <Cascader options={listUserRoles}
               onChange={handleChangeRole}

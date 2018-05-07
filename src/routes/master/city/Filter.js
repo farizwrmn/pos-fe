@@ -41,11 +41,7 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields.cityName = fields.searchName
-    delete fields.searchName
-    if (fields.cityName === undefined || fields.cityName === '') {
-      delete fields.cityName
-    }
+    if (fields.cityName === undefined || fields.cityName === '') delete fields.cityName
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -85,7 +81,7 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: cityName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('cityName', { initialValue: cityName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="Createtime" >

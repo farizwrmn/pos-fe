@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { configMain } from 'utils'
-import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
+import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover, Alert } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
@@ -77,7 +77,10 @@ const Pos = ({
     dataCashierTrans,
     curCashierNo,
     curShift,
-    modalQueueVisible
+    modalQueueVisible,
+    showAlert,
+    alertReminder,
+    listServiceReminder
   } = pos
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
@@ -288,10 +291,20 @@ const Pos = ({
   // })
   // dispatch({ type: 'pos/modalPopoverClose' })
   // }
+  const closeAlert = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        alertReminder: [],
+        showAlert: false
+      }
+    })
+  }
 
   const handleSuspend = () => {
     document.getElementById('KM').value = 0
     dispatch({ type: 'pos/insertQueueCache' })
+    closeAlert()
   }
 
   const modalEditPayment = (record) => {
@@ -303,6 +316,7 @@ const Pos = ({
       }
     })
   }
+
   const modalEditService = (record) => {
     dispatch({
       type: 'pos/showServiceListModal',
@@ -1357,6 +1371,7 @@ const Pos = ({
       />
     </div>
   )
+
   const onChangeLastMeter = (e) => {
     const { value } = e.target
     let lastMeter = value.replace(/^\D+/g, '')
@@ -1367,7 +1382,51 @@ const Pos = ({
         lastMeter
       }
     })
+
+    let groupReminder = []
+    let reminders = []
+    setTimeout(() => {
+      if (listServiceReminder.length) {
+        groupReminder = listServiceReminder.sort((x, y) => x.checkMileage - y.checkMileage)
+          .filter(x => x.checkMileage <= value)
+        if (groupReminder.length) {
+          reminders = _.chain(groupReminder)
+            .groupBy(x => x.checkMileage)
+            .map((info, km) => ({ info, km }))
+            .map(x => x.info)
+            .value()
+          // reminders = _.groupBy(groupReminder, reminder => reminder.checkMileage)
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              alertReminder: reminders[reminders.length - 1],
+              showAlert: true
+            }
+          })
+        } else {
+          closeAlert()
+        }
+      }
+    }, 500)
   }
+
+  const columnAlert = [{
+    title: 'Name',
+    dataIndex: 'checkName',
+    key: 'checkName'
+  }, {
+    title: 'KM',
+    dataIndex: 'checkMileage',
+    key: 'checkMileage',
+    render: text => text.toLocaleString()
+  }, {
+    title: 'Period',
+    dataIndex: 'checkTimePeriod',
+    key: 'checkTimePeriod',
+    render: text => `${text.toLocaleString()} days`
+  }]
+
+  let alertDescription = (<Table pagination={false} style={{ padding: '8px 0' }} dataSource={alertReminder} columns={columnAlert} />)
 
   return (
     <div className="content-inner">
@@ -1700,6 +1759,24 @@ const Pos = ({
           </Row>
         </Card>
       </Row>
+      {showAlert &&
+        <Alert
+          message="Services"
+          delat={300}
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            right: 0,
+            width: '350px',
+            zIndex: 1
+          }}
+          description={alertDescription}
+          type="warning"
+          closable
+          showIcon
+          onClose={closeAlert}
+        />
+      }
     </div >
   )
 }

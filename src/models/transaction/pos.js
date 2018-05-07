@@ -8,7 +8,7 @@ import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPla
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
-import { query as queryUnit } from '../../services/units'
+import { query as queryUnit, getServiceReminder } from '../../services/units'
 
 const { prefix } = configMain
 
@@ -90,7 +90,10 @@ export default {
     curCashierNo: localStorage.getItem('cashierNo'),
     curShift: '',
     invoiceCancel: '',
-    dataCashierTrans: {}
+    dataCashierTrans: {},
+    listServiceReminder: [],
+    showAlert: false,
+    alertReminder: []
   },
 
   subscriptions: {
@@ -104,6 +107,9 @@ export default {
           })
           dispatch({
             type: 'loadDataPos'
+          })
+          dispatch({
+            type: 'getServiceReminder'
           })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
@@ -1329,6 +1335,20 @@ export default {
 
     * backPrevious ({ payload = {} }, { put }) {
       yield put({ type: 'hideModalShift', payload })
+    },
+
+    * getServiceReminder ({ payload = {} }, { call, put }) {
+      const data = yield call(getServiceReminder, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listServiceReminder: data.data
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
 
