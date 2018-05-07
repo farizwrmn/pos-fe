@@ -101,11 +101,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: `${soaTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
       {},
       { text: `${qtyNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
+      { text: `${(qtyNextTotal !== 0 ? (((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
       { text: `${dppNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
+      { text: `${(dppNextTotal !== 0 ? (((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
       { text: `${costPriceNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} `, alignment: 'right', fontSize: 12 },
-      { text: `${(((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 }
+      { text: `${(costPriceNextTotal !== 0 ? ((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100 : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 }
     ]
     body.push(tableFooter)
     width.push([
@@ -243,11 +243,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         { fontSize: 12, text: '100 %', style: 'tableHeader', alignment: 'right' },
         {},
         { fontSize: 12, text: `${(allQtyNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${((((allQtyTotal - allQtyNextTotal) / (allQtyNextTotal > 0 ? allQtyNextTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: `${(allQtyNextTotal !== 0 ? (((allQtyTotal - allQtyNextTotal) / (allQtyNextTotal > 0 ? allQtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
         { fontSize: 12, text: `${(allDppNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${((((allDppTotal - allDppNextTotal) / (allDppNextTotal > 0 ? allDppNextTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: `${(allDppNextTotal !== 0 ? (((allDppTotal - allDppNextTotal) / (allDppNextTotal > 0 ? allDppNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
         { fontSize: 12, text: `${(allCostPriceNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${((((allCostPriceTotal - allCostPriceNextTotal) / (allCostPriceNextTotal > 0 ? allCostPriceNextTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' }
+        { fontSize: 12, text: `${(allCostPriceNextTotal !== 0 ? (((allCostPriceTotal - allCostPriceNextTotal) / (allCostPriceNextTotal > 0 ? allCostPriceNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' }
       ]
     ]
     body.push(extra)
