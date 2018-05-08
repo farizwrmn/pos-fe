@@ -45,6 +45,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     menu,
     user,
     siderFold,
+    sidebarColor,
     defaultSidebarColor,
     darkTheme,
     isNavbar,
