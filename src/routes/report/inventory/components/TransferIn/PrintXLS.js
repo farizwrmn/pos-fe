@@ -3,7 +3,13 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
+const PrintXLS = ({
+  listInventoryTransfer,
+  period,
+  storeInfo,
+  qtyTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.qty || 0), 0),
+  nettoTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.nettoTotal || 0), 0)
+}) => {
   const styles = {
     title: {
       name: 'Courier New',
@@ -121,14 +127,15 @@ const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
     let count = 1
     for (let n = 0; n < master.length; n += 1) {
       let data = master[n]
-      let tableBody = []
-      tableBody.push({ value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(data.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      let tableBody = [
+        { value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${(parseFloat(data.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${(parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+      ]
       group.push(tableBody)
       count += 1
     }
@@ -137,16 +144,28 @@ const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
     let totalQty = master.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
     let total = master.reduce((cnt, o) => cnt + (parseFloat(o.nettoTotal) || 0), 0)
 
-    let tableFooter = []
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    let tableFooter = [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
     tableFooters.push(tableFooter)
   }
+  let tableTotals = []
+  let grandTotal = [
+    { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+    { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+    { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+    { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+    { value: (qtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+    { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+    { value: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+  ]
+  tableTotals.push(grandTotal)
 
   // Declare additional Props
   const XLSProps = {
@@ -155,6 +174,7 @@ const PrintXLS = ({ listInventoryTransfer, period, storeInfo }) => {
     orientation: 'portrait',
     title,
     tableTitle: tableTitles,
+    tableTotal: tableTotals,
     tableHeader,
     tableBody: tableBodies,
     tableFooter: tableFooters,

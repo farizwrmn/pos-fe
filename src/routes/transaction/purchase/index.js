@@ -29,6 +29,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     tmpSupplierData,
     dataSource: listProduct,
     location,
+    disableButton: loading.effects['purchase/add'],
     loading,
     purchase,
     visible: modalProductVisible,

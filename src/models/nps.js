@@ -26,11 +26,11 @@ export default {
   },
 
   effects: {
-    * getCompany ({}, { put }) {
+    * getCompany (payload, { put }) {
       // const userCompany = yield call(getUserCompany, payload)
       const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, companyName: configCompany.companyName } }
       if (userCompany.success) {
-        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName} } })
+        yield put({ type: 'updateState', payload: { npsData: { cname: userCompany.data.companyName || configCompany.companyName } } })
         yield put({ type: 'getCompanySuccess', payload: { cid: configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
         yield put({ type: 'getCompanyFailure' })
@@ -47,35 +47,33 @@ export default {
           data = yield call(queryByCode, { memberCode: payload.memberId })
           if (data.success && data.data) {
             yield put({
-              type: 'updateState',
+              type: 'successGetData',
               payload: {
                 npsData: { member: data.data }
               }
             })
           } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                npsData: {}
-              }
-            })
             message.warning('Member is not available')
           }
         } else if (payload.searchBy.value === 'pn') {
           data = yield call(querySearchByPlat, { license: payload.memberId })
           if (data.success && data.data.length) {
             yield put({
+              type: 'successGetData',
+              payload: {
+                npsData: { member: data.data[0] }
+              }
+            })
+            yield put({
               type: 'updateState',
               payload: {
-                membersOfPlat: data.data,
-                npsData: { member: data.data[0] }
+                membersOfPlat: data.data
               }
             })
           } else {
             yield put({
               type: 'updateState',
               payload: {
-                npsData: {},
                 membersOfPlat: []
               }
             })
@@ -98,10 +96,12 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            npsData: {},
             membersOfPlat: {},
             searchBy: { value: 'id', label: 'Member ID' }
           }
+        })
+        yield put({
+          type: 'successPost'
         })
         const modal = Modal.success({
           title: 'Thank you for your feedback',
@@ -116,7 +116,6 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            npsData: {},
             membersOfPlat: {},
             searchBy: { value: 'id', label: 'Member ID' }
           }
@@ -132,10 +131,30 @@ export default {
         ...payload
       }
     },
+    successPost (state) {
+      const data = {
+        cname: state.npsData.cname
+      }
+      return {
+        ...state,
+        npsData: data
+      }
+    },
+    successGetData (state, { payload }) {
+      const { npsData } = payload
+      const data = {
+        ...state.npsData,
+        ...npsData
+      }
+      return {
+        ...state,
+        npsData: data
+      }
+    },
 
     getCompanySuccess (state, { payload }) {
-      let cdi = payload.data
-      cdi.push(payload.cid)
+      let cdi = [payload.cid]
+      cdi.push(...payload.data)
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state, ...payload

@@ -4,6 +4,8 @@ import moment from 'moment'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
+  let qtyTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.qty || 0), 0)
+  let nettoTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.nettoTotal || 0), 0)
   let width = []
   const styles = {
     header: {
@@ -75,25 +77,27 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        let row = []
-        row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        let row = [
+          { text: counter, alignment: 'center', fontSize: 11 },
+          { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+        ]
         body.push(row)
       }
       counter += 1
     }
 
-    let totalRow = []
-    totalRow.push({ text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' })
-    totalRow.push({})
-    totalRow.push({})
-    totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({})
-    totalRow.push({ text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
+    let totalRow = [
+      { text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' },
+      {},
+      {},
+      { text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' },
+      {},
+      { text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' }
+    ]
     body.push(totalRow)
     width.push(['6%', '27%', '30%', '8%', '13%', '16%'])
     return body
@@ -178,6 +182,32 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
       ]
     }
   }
+
+  const extra = [
+    [
+      { text: 'Grand Total', colSpan: 3, style: 'tableHeader', alignment: 'center' },
+      {},
+      {},
+      { text: (qtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+      {},
+      { text: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+    ]
+  ]
+  tableTitle.push({
+    table: {
+      widths: ['100%'],
+      body: [
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    style: 'tableTitle',
+    layout: 'noBorders'
+  })
+  tableBody.push(extra)
+  width.push(['6%', '27%', '30%', '8%', '13%', '16%'])
 
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',

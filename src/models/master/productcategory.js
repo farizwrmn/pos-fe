@@ -38,6 +38,7 @@ export default modelExtend(pageModel, {
               }
             }))
           }
+          dispatch({ type: 'queryLov' })
           dispatch({
             type: 'updateState',
             payload: {

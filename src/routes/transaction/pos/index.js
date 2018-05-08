@@ -71,7 +71,7 @@ const Pos = ({
     modalServiceListVisible,
     mechanicInformation,
     curRecord,
-    effectedRecord,
+    // effectedRecord,
     modalShiftVisible,
     listCashier,
     dataCashierTrans,
@@ -119,8 +119,8 @@ const Pos = ({
   73 => I
   85 => U
    */
-  let product = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-  let service = (localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail')))
+  let product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+  let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
   let dataPos = product.concat(service)
   let a = dataPos
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0).toLocaleString()
@@ -804,15 +804,15 @@ const Pos = ({
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
       if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
-        let listByCode = (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans'))
-        let arrayProd
+        let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        let arrayProd = listByCode
         const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
         if (checkExists.length === 0) {
-          if (listByCode.length === 0) {
-            arrayProd = listByCode.slice()
-          } else {
-            arrayProd = JSON.parse(listByCode.slice())
-          }
+          // if (listByCode.length === 0) {
+          //   arrayProd = listByCode.slice()
+          // } else {
+          //   arrayProd = JSON.parse(listByCode.slice())
+          // }
 
           const data = {
             no: arrayProd.length + 1,
@@ -921,17 +921,10 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
-      let listByCode = (localStorage.getItem('service_detail') === null ? [] : localStorage.getItem('service_detail'))
-      let arrayProd
+      let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      let arrayProd = listByCode
       const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
       if (checkExists.length === 0) {
-        if (JSON.stringify(listByCode) === '[]') {
-          arrayProd = listByCode.slice()
-        } else {
-          arrayProd = JSON.parse(listByCode.slice())
-        }
-
-
         arrayProd.push({
           no: arrayProd.length + 1,
           code: item.serviceCode,
@@ -1050,14 +1043,14 @@ const Pos = ({
         }
       } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
         if (value) {
-          dispatch({
-            type: 'pos/editPayment',
-            payload: {
-              value,
-              effectedRecord,
-              kodeUtil
-            }
-          })
+          // dispatch({
+          //   type: 'pos/editPayment',
+          //   payload: {
+          //     value,
+          //     effectedRecord,
+          //     kodeUtil
+          //   }
+          // })
         }
         dispatch({
           type: 'pos/setUtil',
@@ -1300,7 +1293,7 @@ const Pos = ({
   }
 
   const dataService = () => {
-    let service = localStorage.getItem('service_detail') === null ? [] : JSON.parse(localStorage.getItem('service_detail'))
+    let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
     return (service)
   }
 
@@ -1548,49 +1541,49 @@ const Pos = ({
                       dataIndex: 'qty',
                       width: '40px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Price',
                       dataIndex: 'price',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => text.toLocaleString()
+                      render: text => (text || '').toLocaleString()
                     }
                   ]}
                   onRowClick={record => modalEditPayment(record)}
@@ -1628,49 +1621,49 @@ const Pos = ({
                     dataIndex: 'qty',
                     width: '40px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => text.toLocaleString()
+                    render: text => (text || '').toLocaleString()
                   }
                 ]}
                 onRowClick={_record => modalEditService(_record)}

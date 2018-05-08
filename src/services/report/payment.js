@@ -22,3 +22,15 @@ export async function queryPaymentAR (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryPaymentARGroup (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.sort_by = '+invoiceDate,-paid,+memberName'
+  return request({
+    url: `${paymentOpts}/report/ar/group`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

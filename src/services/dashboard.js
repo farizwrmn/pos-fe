@@ -32,6 +32,17 @@ export async function getIpAddr (params) {
   })
 }
 
+export async function getDashboards (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${dashboards}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function getNotifications () {
   const apiHeaderToken = crypt.apiheader()
   return request({

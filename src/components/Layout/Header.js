@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Calendar, Switch, Button, Row, Col } from 'antd'
+import { Menu, Icon, Popover, Calendar, Button, Row, Col } from 'antd'
 import { classnames, lstorage } from 'utils'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -14,7 +14,7 @@ import BirthdayList from './BirthdayList'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, changeTheme, darkTheme, switchSider, siderFold, isNavbar,
+const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
   handleShortcutKeyHide, handleMyProfileShow, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
   handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,

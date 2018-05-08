@@ -40,21 +40,21 @@ const Nps = ({
       buttons.push(<Button
         onClick={() => setRate(i)}
         shape="circle"
-        size="large"
-        style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#f94036') : '#f94036' }}
+        size="small"
+        style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#f24036') : '#f24036' }}
       >{i}</Button>)
     } else if (i >= 7 && i <= 8) {
       buttons.push(<Button
         onClick={() => setRate(i)}
         shape="circle"
-        size="large"
+        size="small"
         style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#f9cb57') : '#f9cb57' }}
       >{i}</Button>)
     } else if (i >= 9 && i <= 10) {
       buttons.push(<Button
         onClick={() => setRate(i)}
         shape="circle"
-        size="large"
+        size="small"
         style={{ background: npsData ? (npsData.score === i ? '#96999e' : '#67e559') : '#67e559' }}
       >{i}</Button>)
     }
@@ -93,6 +93,7 @@ const Nps = ({
   const findName = (e) => {
     const { value } = e.target
     setTimeout(() => {
+      resetFields(['memberOpts'])
       const { memberId } = getFieldsValue()
       if (value === memberId && value !== '') {
         dispatch({
@@ -100,13 +101,6 @@ const Nps = ({
           payload: {
             memberId: value,
             searchBy
-          }
-        })
-      } else {
-        dispatch({
-          type: 'nps/updateState',
-          payload: {
-            npsData: {}
           }
         })
       }
@@ -133,7 +127,6 @@ const Nps = ({
       dispatch({
         type: 'nps/updateState',
         payload: {
-          npsData: {},
           membersOfPlat: [],
           searchBy
         }
@@ -149,73 +142,84 @@ const Nps = ({
   const selectProps = {
     onChange (value) {
       dispatch({
-        type: 'nps/updateState',
+        type: 'nps/successGetData',
         payload: {
           npsData: { member: { memberCode: value } }
         }
       })
     },
     size: 'large',
-    style: { fontSize: '18px', marginLeft: '15px', width: '240px' }
+    style: { fontSize: '15px', marginLeft: '15px', width: '240px' }
   }
 
   return (
     <LocaleProvider locale={enUS}>
-      <div className={styles.container}>
-        <h1>
-          <span>{npsData.cname}</span>
-        </h1>
-        <h2>
-          <span>We`d love your help. </span>
-          Please give us 30 seconds of your time for feedback on our website
-        </h2>
-        <div className={styles.body}>
-          <p>
-            <Row type="flex" justify="start" className={styles.antrowflex}>
-              <Tooltip title="click to change"
-                defaultVisible
-                visible={(!npsData.member)}
-                placement="topLeft"
-              >
-                <Col span={8}>
-                  <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
-                </Col>
-              </Tooltip>
-              <Col span={12}>
-                {getFieldDecorator('memberId')(<Input size="large" style={{ width: '200px' }} onChange={e => findName(e)} />)}
-              </Col>
-            </Row>
-            {searchBy.value === 'id' &&
-            <Row type="flex" justify="end" className={styles.antrowflex}>
-              <Col span={24}>
-                <span style={{ float: 'right' }}>{memberName}</span>
-              </Col>
-            </Row>
-            }
+      <Row type="flex" justify="space-around" align="middle">
+        <Col lg={22} md={24}>
+          <div className={styles.container}>
+            <h1 style={{ textAlign: 'center' }}>
+              <span>{npsData.cname}</span>
+            </h1>
+            <h3 style={{ textAlign: 'center' }}>
+              <span>Dear {`${npsData.cname}'s`} Customer  </span>
+            </h3>
+            <div className={styles.body}>
+              <p>
+                <Row type="flex" justify="start" className={styles.antrowflex}>
+                  <Tooltip title="click to change"
+                    defaultVisible
+                    visible={(!npsData.member)}
+                    placement="topLeft"
+                  >
+                    <Col span={5}>
+                      <Cascader {...cascaderProps}><a>{searchBy.label}</a></Cascader>
+                    </Col>
+                  </Tooltip>
+                  <Col span={12}>
+                    {getFieldDecorator('memberId')(<Input.Search size="large" style={{ width: '200px' }} onChange={e => findName(e)} />)}
+                  </Col>
+                </Row>
+                {searchBy.value === 'id' &&
+                  <Row type="flex" justify="start" className={styles.antrowflex}>
+                    <Col span={24}>
+                      <span>{memberName ? `Selamat datang, ${memberName}` : null}</span>
+                    </Col>
+                  </Row>
+                }
 
-            {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
-            <Row type="flex" justify="start" className={styles.antrowflex}>
-              <Col span={5}>
-                <span>Member</span>
-              </Col>
-              <Col span={7}>
-                <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
-                  {memberPlats}
-                </Select>
-              </Col>
-            </Row>}
-          </p>
-          <p>How likely is it that you would recommend our service to a friend or colleague?</p>
-          <div>
-            {buttons}
+                {(searchBy.value === 'pn' && membersOfPlat.length > 0) &&
+                  <Row type="flex" justify="start" className={styles.antrowflex}>
+                    <Col span={5}>
+                      <span>Member</span>
+                    </Col>
+                    <Col span={7}>
+                      {getFieldDecorator('memberOpts')(
+                        <Select defaultValue={membersOfPlat[0].memberCode} {...selectProps}>
+                          {memberPlats}
+                        </Select>
+                      )}
+                    </Col>
+                  </Row>}
+              </p>
+              <strong><h2 style={{ textAlign: 'center', color: 'blue' }}>Dari Skala 1-10, Apakah anda akan merekomendasikan layanan kami kepada saudara/teman/kerabat anda?</h2></strong>
+              <strong><h3 style={{ textAlign: 'center', color: 'blue' }}>From Scale 1-10, How likely will you recommend our service to your family/friends/colleaugues?</h3></strong>
+              <div>
+                {buttons}
+              </div>
+
+              <p>Message</p>
+              <Row>
+                <Col lg={12} md={24}>
+                  <div style={{ alignItems: 'center' }}>
+                    {getFieldDecorator('memo')(<TextArea style={{ height: '80px' }} />)}
+                  </div>
+                </Col>
+              </Row>
+              <Button style={{ textAlign: 'center' }} onClick={sendNPS} type="primary" size="large">Send</Button>
+            </div>
           </div>
-          <p>
-            Message
-            {getFieldDecorator('memo')(<TextArea style={{ height: '80px' }} />)}
-          </p>
-          <Button onClick={sendNPS} type="primary" size="large">Send</Button>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </LocaleProvider >
   )
 }
