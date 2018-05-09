@@ -49,8 +49,9 @@ const Filter = ({
   customerInfo,
   openModal,
   onResetClick,
-  resetHistory,
+  // resetHistory,
   onSearchClick,
+  // memberInfo,
   ...modalProps,
   ...printProps,
   form: {
@@ -61,13 +62,6 @@ const Filter = ({
     setFieldsValue
   }
 }) => {
-  if (listPoliceNo.length > 0) {
-    if (customerInfo.memberCode !== listPoliceNo[0].memberCode) {
-      resetFields()
-      resetHistory()
-    }
-  }
-
   const clickReset = () => {
     setFieldsValue({
       serviceType: {
@@ -119,6 +113,28 @@ const Filter = ({
     )
   }
 
+  const hdlOpenModal = () => {
+    setFieldsValue({
+      serviceType: {
+        option: []
+      },
+      policeNo: {
+        option: []
+      }
+    })
+    let timeout
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+
+    timeout = setTimeout(() => {
+      resetFields()
+    }, 200)
+    onResetClick()
+    openModal()
+  }
+
   const { item } = cardProps
 
   const getPoliceNoId = (list) => {
@@ -152,7 +168,7 @@ const Filter = ({
     <Row>
       <Col {...column} >
         <FormItem label="Member Code" {...formItemLayout}>
-          <Button type="primary" onClick={openModal} >Find Customer</Button>
+          <Button type="primary" onClick={hdlOpenModal} >Find Customer</Button>
           {showCustomer && <ModalBrowse {...modalProps} />}
         </FormItem>
         <FormItem label="Period" {...formItemLayout}>

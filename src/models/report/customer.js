@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { queryCustomerHistory, queryCustomerAsset } from '../../services/report/pos'
+import { queryUnits } from '../../services/master/customer'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -51,7 +52,8 @@ export default modelExtend(pageModel, {
       }
     },
     * queryPoliceNo ({ payload = {} }, { call, put }) {
-      const data = yield call(queryCustomerHistory, payload)
+      // const data = yield call(queryCustomerHistory, payload)
+      const data = yield call(queryUnits, payload)
       if (data) {
         yield put({
           type: 'updateState',
@@ -59,6 +61,8 @@ export default modelExtend(pageModel, {
             listPoliceNo: data.data
           }
         })
+      } else {
+        throw data
       }
     },
     * queryCustomerAsset ({ payload = {} }, { call, put }) {
