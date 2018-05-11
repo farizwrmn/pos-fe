@@ -38,7 +38,12 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        setInterval(() => window.location.reload(), 500)
+        yield put({
+          type: 'query'
+        })
+        yield put({
+          type: 'app/query'
+        })
       } else {
         const current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -69,28 +74,55 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * edit ({ payload }, { call }) {
+    * edit ({ payload }, { call, put }) {
       const data = yield call(edit, payload)
       if (data.success) {
-        setInterval(() => window.location.reload(), 500)
+        yield put({
+          type: 'query'
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {}
+          }
+        })
+        yield put({
+          type: 'app/query'
+        })
       } else {
         throw data
       }
     },
 
-    * editDraggable ({ payload }, { call }) {
+    * editDraggable ({ payload }, { call, put }) {
       const data = yield call(edit, payload)
       if (data.success) {
-        setInterval(() => window.location.reload(), 500)
+        yield put({
+          type: 'query'
+        })
+        yield put({
+          type: 'app/query'
+        })
       } else {
         throw data
       }
     },
 
-    * delete ({ payload }, { call }) {
+    * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        setInterval(() => window.location.reload(), 500)
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEdit: { visible: false, key: '', title: '' }
+          }
+        })
+        yield put({
+          type: 'query'
+        })
+        yield put({
+          type: 'app/query'
+        })
       } else {
         throw data
       }

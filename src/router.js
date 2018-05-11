@@ -533,6 +533,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-menu')
           }
         }, {
+          path: 'setting/role',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/role'))
+              cb(null, require('./routes/setting/role/'))
+            }, 'setting-role')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
