@@ -66,14 +66,14 @@ export default modelExtend(pageModel, {
             })
             break
           case '/master/customer':
-            if (!activeKey) {
-              dispatch(routerRedux.push({
-                pathname,
-                query: {
-                  activeKey: '0'
-                }
-              }))
-            }
+            // if (!activeKey) {
+            //   dispatch(routerRedux.push({
+            //     pathname,
+            //     query: {
+            //       activeKey: '0'
+            //     }
+            //   }))
+            // }
             if (activeKey === '1') {
               dispatch({
                 type: 'query',
