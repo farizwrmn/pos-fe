@@ -95,7 +95,7 @@ const Bread = ({ menu, changeRole }) => {
                   defaultValue={[defaultStore]}
                   placeholder="Switch Store"
                 >
-                  <a href="#">
+                  <a>
                     <Icon type="shop" />
                   </a>
                 </Cascader>

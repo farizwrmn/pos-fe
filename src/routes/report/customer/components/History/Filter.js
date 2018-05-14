@@ -140,7 +140,7 @@ const Filter = ({
   const getPoliceNoId = (list) => {
     list = list.filter((thing, index, self) =>
       index === self.findIndex(t => (
-        t.policeNoId === thing.policeNoId
+        t.id === thing.id
       ))
     )
     return list

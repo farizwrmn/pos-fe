@@ -170,7 +170,9 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
           <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('reference', {
               rules: [{
-                required: true
+                pattern: /^[a-z0-9/_-]{6,40}$/i,
+                required: true,
+                message: 'not a valid pattern'
               }]
             })(<Input maxLength={40} />)}
           </FormItem>

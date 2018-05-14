@@ -3,7 +3,7 @@
  */
 import { Modal } from 'antd'
 import moment from 'moment'
-import { queryFifo, queryFifoValue, queryFifoCard } from '../../services/report/fifo'
+import { queryFifo, queryFifoValue, queryFifoCard, queryFifoTransfer } from '../../services/report/fifo'
 
 export default {
   namespace: 'fifoReport',
@@ -28,10 +28,17 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
-          dispatch({
-            type: 'queryInAdj',
-            payload: location.query
-          })
+          if (location.query.activeKey ? location.query.activeKey === '0' || location.query.activeKey === '1' : false) {
+            dispatch({
+              type: 'queryInAdj',
+              payload: location.query
+            })
+          } else if (location.query.activeKey === '2') {
+            dispatch({
+              type: 'queryTransferFlow',
+              payload: location.query
+            })
+          }
           dispatch({
             type: 'updateState',
             payload: {
@@ -133,6 +140,21 @@ export default {
           content: 'No data inside storage'
         })
         yield put({ type: 'setNull' })
+        throw data
+      }
+    },
+    * queryTransferFlow ({ payload = {} }, { call, put }) {
+      const data = yield call(queryFifoTransfer, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listRekap: data.data,
+            ...payload
+          }
+        })
+      } else {
+        throw data
       }
     },
     * queryFifoValues ({ payload = {} }, { call, put }) {
