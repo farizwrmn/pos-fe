@@ -21,7 +21,8 @@ const RepeatReport = ({
   tableBody = [],
   tableFooter = [],
   tableTotal = [],
-  data = []
+  data = [],
+  tableFilter = []
 }) => {
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -41,7 +42,13 @@ const RepeatReport = ({
   const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize, orientation } })
 
-  const createXLSLineItems = () => {
+  let sheet1
+  if (tableFilter.length) {
+    sheet1 = workbook.addWorksheet('POS 2',
+      { pageSetup: { paperSize, orientation } })
+  }
+
+  const createXLSLineItems0 = () => {
     let content = []
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
@@ -120,6 +127,37 @@ const RepeatReport = ({
     }
     return content
   }
+
+  const createXLSLineItems1 = () => {
+    let content = []
+    if (title.length > 0) {
+      for (let i = 0; i < title.length; i += 1) {
+        let code = Math.round((65 - 1) + (tableBody[0][0].length / 2))
+        let headerPosition = 2 + i
+        content.push({
+          value: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).value = title[i].value,
+          alignment: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).alignment = title[i].alignment,
+          font: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).font = title[i].font
+        })
+      }
+    }
+    let position = title.length + 4
+    for (let i = 0; i < tableFilter.length; i += 1) {
+      for (let j = 0; j < tableFilter[i].length; j += 1) {
+        for (let char = 65; char < 65 + tableFilter[i][j].length; char += 1) {
+          let tableFilterValue = char - 65
+          content.push({
+            value: sheet1.getCell(`${String.fromCharCode(char)}${position}`).value = tableFilter[i][j][tableFilterValue].value,
+            alignment: sheet1.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableFilter[i][j][tableFilterValue].alignment,
+            font: sheet1.getCell(`${String.fromCharCode(char)}${position}`).font = tableFilter[i][j][tableFilterValue].font
+          })
+        }
+        position += 1
+      }
+    }
+    return content
+  }
+
   const printXLS = () => {
     if (tableBody.length === 0) {
       Modal.warning({
@@ -127,7 +165,8 @@ const RepeatReport = ({
         content: 'No Data in Storage'
       })
     } else {
-      createXLSLineItems()
+      createXLSLineItems0()
+      if (tableFilter.length) createXLSLineItems1()
       workbook.xlsx.writeBuffer().then((e) => {
         let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
