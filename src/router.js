@@ -525,6 +525,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-misc')
           }
         }, {
+          path: 'setting/menu',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/menu'))
+              cb(null, require('./routes/setting/menu/'))
+            }, 'setting-menu')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
