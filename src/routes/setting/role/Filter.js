@@ -14,7 +14,7 @@ const Filter = ({
         <Button type="dashed"
           size="large"
           onClick={onAddRole}
-          disabled={editRole ? true : false}
+          disabled={!!editRole}
           className="button-width02 button-extra-large"
         >
           <Icon type="plus" className="icon-large" />
@@ -22,7 +22,7 @@ const Filter = ({
         <Button type="dashed"
           size="large"
           onClick={saveRole}
-          disabled={editRole ? false : true}
+          disabled={!editRole}
           className="button-width02 button-extra-large bgcolor-blue"
         >
           <Icon type="save" className="icon-large" />
@@ -30,7 +30,7 @@ const Filter = ({
         <Button type="dashed"
           size="large"
           onClick={onCancel}
-          disabled={editRole ? false : true}
+          disabled={!editRole}
           className="button-width02 button-extra-large bgcolor-lightgrey"
         >
           <Icon type="rollback" className="icon-large" />

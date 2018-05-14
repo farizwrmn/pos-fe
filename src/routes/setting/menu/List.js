@@ -69,8 +69,8 @@ const List = ({ menuTree, onChangeTree, onEditItem, onDeleteItem, modalEdit, onS
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     footer: [
-      <Button type="primary" onClick={() => onEditItem(modalEdit.key)}>Edit</Button>,
-      <Button type="danger" onClick={() => onDeleteItem(modalEdit.key)}>Delete</Button>
+      <Button type="primary" onClick={() => onEditItem(modalEdit.key)}>Edit</Button>
+      // <Button type="danger" onClick={() => onDeleteItem(modalEdit.key)}>Delete</Button>
     ],
     onCancel () {
       onCancelSelect()

@@ -93,7 +93,7 @@ export default {
     dataCashierTrans: {},
     listServiceReminder: [],
     showAlert: false,
-    alertReminder: []
+    showListReminder: false
   },
 
   subscriptions: {

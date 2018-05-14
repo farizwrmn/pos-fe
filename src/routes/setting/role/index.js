@@ -49,14 +49,14 @@ const Role = ({ role, dispatch }) => {
       let checkVariable = roles[key].miscVariable.split(',')
       columns.push(
         {
-          title: (<div><Button disabled={editRole === roles[key].miscName ? true : false} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole === roles[key].miscName ? false : true} onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
+          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
           children: [
             {
               title: roles[key].miscDesc,
               dataIndex: roles[key].miscDesc,
               key: roles[key].miscDesc,
               className: styles.alignCenter,
-              render: x => (<Checkbox disabled={editRole === roles[key].miscName ? false : true} checked={checkVariable.indexOf(x) > -1} value={{ name: roles[key].miscDesc, value: x }} onChange={changeRole} />)
+              render: x => (<Checkbox disabled={editRole !== roles[key].miscName} checked={checkVariable.indexOf(x) > -1} value={{ name: roles[key].miscDesc, value: x }} onChange={changeRole} />)
             }
           ]
         }

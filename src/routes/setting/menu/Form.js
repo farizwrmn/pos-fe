@@ -104,7 +104,7 @@ const FormInput = ({
             {getFieldDecorator('menuId', {
               initialValue: item.menuId,
               rules: [{ required: true }]
-            })(<InputNumber disabled={item.menuId ? true : false} min={0} maxLength={10} style={{ width: '100%' }} />)}
+            })(<InputNumber disabled={!!item.menuId} min={0} maxLength={10} style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="Icon" hasFeedback {...formItemLayout}>
             {getFieldDecorator('icon', {

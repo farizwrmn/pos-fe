@@ -128,7 +128,7 @@ export default {
   reducers: {
     getCompanySuccess (state, action) {
       let cdi = [action.payload.cid]
-      cdi.push.apply(cdi,action.payload.data)
+      cdi.push(...action.payload.data)
       lstorage.removeItemKeys() // remove items in local storage
       lstorage.putStorageKey('cdi', cdi)
       return {
