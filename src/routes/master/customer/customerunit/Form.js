@@ -149,9 +149,7 @@ const formCustomerType = ({
   const collapseActiveKey = '1'
   const collapseTitle = customerInfo.memberCode ? `Customer Info(${customerInfo.memberCode})` : 'Customer Info'
 
-  // let y = moment(new Date()).format('YYYY').split('')
-  // let pattern = `^(1769|18\\d\\d|19\\d\\d|[2-${y[0]}][0-${y[1]}][0-${y[2]}][0-${y[3]}])$`
-  // let yearPattern = new RegExp(pattern)
+  let y = moment().format('YYYY')
 
   const chooseBrand = (value) => {
     onSelectBrand(value)
@@ -256,7 +254,7 @@ const formCustomerType = ({
           <FormItem label="Tahun" hasFeedback {...formItemLayout}>
             {getFieldDecorator('year', {
               initialValue: item.year
-            })(<InputNumber maxLength={4} min={1769} max={moment(new Date()).format('YYYY')} />)}
+            })(<InputNumber maxLength={4} min={1769} max={y} />)}
           </FormItem>
           <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
             {getFieldDecorator('chassisNo', {

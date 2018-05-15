@@ -16,10 +16,7 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
   const handleReset = () => {
     const { pathname } = location
     dispatch(routerRedux.push({
-      pathname,
-      query: {
-        activeKey
-      }
+      pathname
     }))
     resetFields()
     onListReset()
@@ -30,15 +27,6 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
       let period = dateString ? moment(dateString).format('M') : null
       let year = dateString ? moment(dateString).format('Y') : null
       onChangePeriod(period, year)
-    } else {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey
-        }
-      }))
-      onListReset()
     }
   }
 

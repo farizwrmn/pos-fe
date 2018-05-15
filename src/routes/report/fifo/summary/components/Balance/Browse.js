@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import styles from '../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -19,7 +18,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'beginQty',
       key: 'beginQty',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -27,7 +25,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'purchaseQty',
       key: 'purchaseQty',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -35,7 +32,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'adjInQty',
       key: 'adjInQty',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -43,7 +39,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'posQty',
       key: 'posQty',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -51,7 +46,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
@@ -59,7 +53,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'count',
       key: 'count',
       width: '150px',
-      className: styles.alignRight,
       render: text => text.toLocaleString()
     }
   ]

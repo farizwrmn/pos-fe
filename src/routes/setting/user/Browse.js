@@ -141,22 +141,22 @@ const Browse = ({
           <Button onClick={hdlButtonSearchClick}>
             <Icon type="search" /> Search
           </Button>
-          { selectedRowKeysLen > 1 &&
-          <Popconfirm title={'Are you sure delete these items?'} onConfirm={() => hdlButtonDeleteClick(selectedRowKeys)}>
-            <Button type="danger">
-              <Icon type="delete" /> Batch Delete
-            </Button>
-          </Popconfirm>
+          {selectedRowKeysLen > 1 &&
+            <Popconfirm title={'Are you sure delete these items?'} onConfirm={() => hdlButtonDeleteClick(selectedRowKeys)}>
+              <Button type="danger">
+                <Icon type="delete" /> Batch Delete
+              </Button>
+            </Popconfirm>
           }
         </ButtonGroup>
         <span style={{ marginLeft: 8 }}>
-          { selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
+          {selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
         </span>
       </div>
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '200%', y: 240 }}
+        scroll={{ x: '1440px', y: 240 }}
         columns={columns}
         simple
         rowKey={record => record.userId}
