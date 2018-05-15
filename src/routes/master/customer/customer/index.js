@@ -197,17 +197,18 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
       dispatch({
         type: 'customer/queryAllCustomer',
         payload: {
-          type: 'all'
+          type: 'all',
+          mode
         }
       })
-      setTimeout(() => {
-        dispatch({
-          type: 'customer/updateState',
-          payload: {
-            changed: true
-          }
-        })
-      }, 1000)
+      // setTimeout(() => {
+      //   dispatch({
+      //     type: 'customer/updateState',
+      //     payload: {
+      //       changed: true
+      //     }
+      //   })
+      // }, 1000)
     }
   }
   const modalProps = {

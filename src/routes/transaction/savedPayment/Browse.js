@@ -146,6 +146,10 @@ const BrowseGroup = ({
     onChangePeriod(dateFormat, lastDate)
   }
 
+  const disabledDate = (current) => {
+    return current > moment().endOf('month')
+  }
+
   return (
     <Form>
       <Row style={{ marginBottom: '10px' }}>
@@ -156,7 +160,7 @@ const BrowseGroup = ({
               rules: [{
                 required: true
               }]
-            })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
+            })(<MonthPicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
         <Col xl={12} lg={12} md={12} style={{ float: 'center' }}>

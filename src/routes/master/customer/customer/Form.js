@@ -138,6 +138,10 @@ const formCustomer = ({
     }
   }
 
+  const disabledDate = (current) => {
+    return current > moment(new Date())
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -346,7 +350,7 @@ const formCustomer = ({
             <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('birthDate', {
                 initialValue: item.birthDate ? moment(item.birthDate) : null
-              })(<DatePicker />)}
+              })(<DatePicker disabledDate={disabledDate} />)}
             </FormItem>
             <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
               {getFieldDecorator('taxId', {
