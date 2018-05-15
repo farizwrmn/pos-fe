@@ -27,6 +27,51 @@ body {
 }
 
 :global {
+    .wrapper-switcher {
+        position: fixed;
+        width: 340px;
+        bottom: 0;
+        right: -340px; 
+        left: inherit;   
+        z-index: 1;
+        -webkit-transition: all 0.3s cubic-bezier(0.215,0.61,0.355,1);
+        transition: all 0.3s cubic-bezier(0.215,0.61,0.355,1);
+    }
+    .wrapper-switcher.active {
+        right: 0;
+        left: inherit;
+    }
+    .wrapper-switcher.active .service-reminders{
+        background-color: rgb(31, 71, 136);
+        padding-bottom: 8px;
+    }
+    .wrapper-switcher .componentTitleWrapper {
+        background-color: rgb(31, 71, 136);
+        padding: 15px 15px;
+        height: 50px;
+    }
+    .wrapper-switcher .componentTitleWrapper .componentTitle{
+        font-size: 21px;
+        font-weight: 700;
+        color: #fff; 
+        line-height: 1;
+        width: 100%;
+        text-align: center;
+    }
+    .wrapper-switcher .btn-switcher {
+        background-color: @laserlemon;
+        color: @charcoal; 
+        width: 50px;
+        font-size: 18px;
+        height: 50px;
+        border: 0;
+        position: absolute;
+        text-align: center;
+        top: 200px;
+        left: -50px;
+        right: inherit;
+        border-radius: 3px 0 0 3px;
+    }
     .ant-breadcrumb {
         &>span {
             &:last-child {
@@ -214,8 +259,35 @@ body {
     }
 }
 
+@media (min-width: 1024px) and (max-width: 1024px) {
+    :global {
+        .wrapper-switcher {
+            bottom: 450px;
+        }
+        .wrapper-switcher .btn-switcher {
+            background-color: @laserlemon;
+            color: @charcoal; 
+            width: 50px;
+            font-size: 18px;
+            height: 50px;
+            border: 0;
+            position: absolute;
+            text-align: center;
+            top: 200px;
+            left: -50px;
+            right: inherit;
+            border-radius: 3px 0 0 3px;
+        }
+    }
+}
+
 @media (max-width: 767px) {
      :global {
+        .wrapper-switcher {
+            width: 300px;
+            bottom: 0;
+            right: -300px;
+        }
         .ant-card {
             .ant-card-head {
                 padding: 0 12px;

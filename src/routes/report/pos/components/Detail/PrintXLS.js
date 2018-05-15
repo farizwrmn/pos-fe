@@ -207,6 +207,49 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableFooters.push(tableFooter)
   }
 
+  let tableFilters = []
+  for (let i = 0; i < listData.length; i += 1) {
+    let master = listData[i]
+    let tableFilter = [
+      [
+        { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'ID ANGGOTA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'HARGA SATUAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISK-1', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISK-2', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISK-3', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'TOTAL DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
+      ]
+    ]
+    for (let key in master.items) {
+      let item = master.items[key]
+      tableFilter.push([
+        { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: (master.memberCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+        { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.qty) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.disc1) || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.disc2) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.disc3) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.discount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
+      ])
+    }
+    tableFilters.push(tableFilter)
+  }
+
   // Declare additional Props
   const XLSProps = {
     className: 'button-width02 button-extra-large bgcolor-green',
@@ -217,6 +260,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: listData,
+    tableFilter: tableFilters,
     fileName: 'POS-Detail-Summary'
   }
 

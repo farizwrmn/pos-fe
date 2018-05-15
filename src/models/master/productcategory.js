@@ -30,14 +30,14 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/master/product/category') {
-          if (!activeKey) {
-            dispatch(routerRedux.push({
-              pathname,
-              query: {
-                activeKey: '0'
-              }
-            }))
-          }
+          // if (!activeKey) {
+          //   dispatch(routerRedux.push({
+          //     pathname,
+          //     query: {
+          //       activeKey: '0'
+          //     }
+          //   }))
+          // }
           dispatch({ type: 'queryLov' })
           dispatch({
             type: 'updateState',

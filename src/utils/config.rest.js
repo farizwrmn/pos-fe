@@ -44,6 +44,7 @@ module.exports = {
     dashboards: '/dashboards',
     menus: '/menus',
     position: '/position',
+    userrole: '/misc/code/USERROLE',
     sellprice: '/misc/code/SELLPRICE',
     brand: '/stocks/brands',
     stockcategory: '/stocks/categories',

@@ -35,14 +35,14 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/service':
-            if (!activeKey) {
-              dispatch(routerRedux.push({
-                pathname,
-                query: {
-                  activeKey: '0'
-                }
-              }))
-            }
+            // if (!activeKey) {
+            //   dispatch(routerRedux.push({
+            //     pathname,
+            //     query: {
+            //       activeKey: '0'
+            //     }
+            //   }))
+            // }
             if (activeKey === '1') {
               dispatch({
                 type: 'query',

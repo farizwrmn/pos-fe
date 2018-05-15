@@ -177,6 +177,46 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableFooters.push(tableFooter)
   }
 
+  let tableFilters = []
+  for (let i = 0; i < listData.length; i += 1) {
+    let master = listData[i]
+    let tableFilter = [
+      [
+        { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'ID PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'HARGA SATUAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISK(%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'DISK(N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'TOTAL DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+        { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
+      ]
+    ]
+    for (let key in master.items) {
+      let item = master.items[key]
+      tableFilter.push([
+        { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: (master.supplierCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+        { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.qty) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.qty * item.purchasePrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.discPercent) || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.discNominal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: `${(parseFloat(item.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
+      ])
+    }
+    tableFilters.push(tableFilter)
+  }
+
+
   // Declare additional Props
   const XLSProps = {
     className: 'button-width02 button-extra-large bgcolor-green',
@@ -187,6 +227,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableTitle: tableTitles,
     tableBody: tableBodies,
     tableFooter: tableFooters,
+    tableFilter: tableFilters,
     data: listData,
     fileName: 'Purchase-Detail-Summary'
   }

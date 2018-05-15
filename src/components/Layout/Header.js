@@ -22,7 +22,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu,
   selectedDate, selectedMonth, showBirthDayListModal, hideBirthDayListModal, changeCalendarMode,
   listTotalBirthdayPerDate, listCustomerBirthday, calendarMode, listNotification, listNotificationDetail, showPopOverCalendar, showPopOverNotification,
-  refreshNotifications, defaultSidebarColor, changeSiderColor
+  refreshNotifications, defaultSidebarColor, changeSiderColor, sidebarColor
 }) => {
   let handleClickMenu = (e) => {
     e.key === 'logout' && logout(lstorage.getSessionId())
@@ -34,6 +34,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   // menu prop
   const menusProps = {
     menu,
+    sidebarColor,
     siderFold: false,
     darkTheme: false,
     isNavbar,

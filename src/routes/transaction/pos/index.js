@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { configMain } from 'utils'
-import { Badge, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover, Alert } from 'antd'
+import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
@@ -79,7 +79,7 @@ const Pos = ({
     curShift,
     modalQueueVisible,
     showAlert,
-    alertReminder,
+    showListReminder,
     listServiceReminder
   } = pos
   const { listLovMemberUnit, listUnit } = unit
@@ -149,6 +149,16 @@ const Pos = ({
 
     return today
   }
+
+  const onShowReminder = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        showListReminder: !showListReminder
+      }
+    })
+  }
+
   const formWoProps = {
     usingWo,
     woNumber,
@@ -295,7 +305,6 @@ const Pos = ({
     dispatch({
       type: 'pos/updateState',
       payload: {
-        alertReminder: [],
         showAlert: false
       }
     })
@@ -1382,51 +1391,46 @@ const Pos = ({
         lastMeter
       }
     })
-
-    let groupReminder = []
-    let reminders = []
-    setTimeout(() => {
-      if (listServiceReminder.length) {
-        groupReminder = listServiceReminder.sort((x, y) => x.checkMileage - y.checkMileage)
-          .filter(x => x.checkMileage <= value)
-        if (groupReminder.length) {
-          reminders = _.chain(groupReminder)
-            .groupBy(x => x.checkMileage)
-            .map((info, km) => ({ info, km }))
-            .map(x => x.info)
-            .value()
-          // reminders = _.groupBy(groupReminder, reminder => reminder.checkMileage)
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              alertReminder: reminders[reminders.length - 1],
-              showAlert: true
-            }
-          })
-        } else {
-          closeAlert()
-        }
+    if (value !== '' && value) {
+      if (!showAlert) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            showAlert: true
+          }
+        })
       }
-    }, 500)
+    } else {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showAlert: false,
+          showListReminder: false
+        }
+      })
+    }
   }
 
   const columnAlert = [{
     title: 'Name',
     dataIndex: 'checkName',
-    key: 'checkName'
+    key: 'checkName',
+    width: 250
   }, {
     title: 'KM',
     dataIndex: 'checkMileage',
     key: 'checkMileage',
+    width: 110,
     render: text => text.toLocaleString()
   }, {
     title: 'Period',
     dataIndex: 'checkTimePeriod',
     key: 'checkTimePeriod',
+    width: 130,
     render: text => `${text.toLocaleString()} days`
   }]
 
-  let alertDescription = (<Table pagination={false} style={{ padding: '8px 0' }} dataSource={alertReminder} columns={columnAlert} />)
+  let alertDescription = (<Table bordered pagination={false} scroll={{ y: 350 }} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listServiceReminder} columns={columnAlert} />)
 
   return (
     <div className="content-inner">
@@ -1760,22 +1764,15 @@ const Pos = ({
         </Card>
       </Row>
       {showAlert &&
-        <Alert
-          message="Services"
-          delat={300}
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            right: 0,
-            width: '350px',
-            zIndex: 1
-          }}
-          description={alertDescription}
-          type="warning"
-          closable
-          showIcon
-          onClose={closeAlert}
-        />
+        <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
+          <div className="componentTitleWrapper">
+            <h3 className="componentTitle">
+              <span>Services</span>
+            </h3>
+          </div>
+          <div className="service-reminders">{alertDescription}</div>
+          <Button className="btn-switcher" onClick={onShowReminder}><Icon type="sound" /></Button>
+        </div>
       }
     </div >
   )

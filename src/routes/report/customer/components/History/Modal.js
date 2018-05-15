@@ -104,7 +104,7 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
   }
 
   return (
-    <Modal {...modalOpts} width={width} height="80%" footer={[]}>
+    <Modal {...modalOpts} width={width} height="80%" footer={null}>
       <ModalList {...listProps} />
     </Modal>
   )

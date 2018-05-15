@@ -33,14 +33,14 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/employee':
-            if (!activeKey) {
-              dispatch(routerRedux.push({
-                pathname,
-                query: {
-                  activeKey: '0'
-                }
-              }))
-            }
+            // if (!activeKey) {
+            //   dispatch(routerRedux.push({
+            //     pathname,
+            //     query: {
+            //       activeKey: '0'
+            //     }
+            //   }))
+            // }
             if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
             dispatch({
               type: 'updateState',
