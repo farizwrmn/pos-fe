@@ -12,7 +12,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
     let body = []
     const rows = tabledata
     let count = 1
-    for (let key = 0; key < rows.length; key += 1) {
+    for (let key = 0; key < (rows || []).length; key += 1) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = [

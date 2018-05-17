@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Table, Checkbox, Button } from 'antd'
+import { Checkbox, Button } from 'antd'
 import ModalFrom from './Modal'
 import Filter from './Filter'
 import List from './List'
@@ -10,7 +10,13 @@ import styles from '../../../themes/index.less'
 const Role = ({ role, dispatch }) => {
   const { listRole, roles, originalMenus, originalRoles, editRole, addRole } = role
 
-  let columns = [{ title: 'Menu', dataIndex: 'name', key: 'name', width: screen.width < 400 ? 180 : 250, fixed: 'left' }]
+  let columns = [{
+    title: 'Menu',
+    dataIndex: 'name',
+    key: 'name',
+    // width: screen.width < 400 ? 180 : 250,
+    fixed: 'left'
+  }]
 
   const changeRole = (e) => {
     const { name, value } = e.target.value
