@@ -67,3 +67,13 @@ export async function getServiceReminder () {
     headers: apiHeaderToken
   })
 }
+
+export async function getServiceUsageReminder (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${services}/checks/usage`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

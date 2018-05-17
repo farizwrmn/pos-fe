@@ -8,7 +8,7 @@ import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPla
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
-import { query as queryUnit, getServiceReminder } from '../../services/units'
+import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 
 const { prefix } = configMain
 
@@ -30,6 +30,7 @@ export default {
     listMechanic: [],
     listProduct: [],
     listSequence: {},
+    listUnitUsage: [],
     posData: [],
     listByCode: [],
     listQueue: localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')),
@@ -1335,6 +1336,25 @@ export default {
 
     * backPrevious ({ payload = {} }, { put }) {
       yield put({ type: 'hideModalShift', payload })
+    },
+
+    * getServiceUsageReminder ({ payload = {} }, { call, put }) {
+      const data = yield call(getServiceUsageReminder, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listUnitUsage: data.data || []
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listUnitUsage: []
+          }
+        })
+      }
     },
 
     * getServiceReminder ({ payload = {} }, { call, put }) {
