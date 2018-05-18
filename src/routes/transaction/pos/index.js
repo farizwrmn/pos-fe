@@ -1391,46 +1391,89 @@ const Pos = ({
         lastMeter
       }
     })
-    if (value !== '' && value) {
-      if (!showAlert) {
+    setTimeout(() => {
+      if (value !== '' && value) {
+        if (!showAlert) {
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              showAlert: true
+            }
+          })
+        }
+      } else {
         dispatch({
           type: 'pos/updateState',
           payload: {
-            showAlert: true
+            showAlert: false,
+            showListReminder: false
           }
         })
       }
-    } else {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showAlert: false,
-          showListReminder: false
-        }
-      })
-    }
+    }, 1000)
   }
 
   const columnAlert = [{
     title: 'Name',
     dataIndex: 'checkName',
     key: 'checkName',
-    width: 250
+    width: 250,
+    render: (text, record) => {
+      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
+        return {
+          props: {
+            style: { backgroundColor: '#eee' }
+          },
+          children: <div>{text}</div>
+        }
+      }
+      return <div>{text}</div>
+    }
   }, {
     title: 'KM',
     dataIndex: 'checkMileage',
     key: 'checkMileage',
     width: 110,
-    render: text => text.toLocaleString()
+    render: (text, record) => {
+      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
+        return {
+          props: {
+            style: { backgroundColor: '#eee' }
+          },
+          children: <div>{text.toLocaleString()}</div>
+        }
+      }
+      return <div>{text.toLocaleString()}</div>
+    }
   }, {
     title: 'Period',
     dataIndex: 'checkTimePeriod',
     key: 'checkTimePeriod',
     width: 130,
-    render: text => `${text.toLocaleString()} days`
+    render: (text, record) => {
+      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
+        return {
+          props: {
+            style: { backgroundColor: '#eee' }
+          },
+          children: <div>{text.toLocaleString()} days</div>
+        }
+      }
+      return <div>{text.toLocaleString()} days</div>
+    }
   }]
 
-  let alertDescription = (<Table bordered pagination={false} scroll={{ y: 350 }} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listServiceReminder} columns={columnAlert} />)
+  if (listServiceReminder && listServiceReminder.length) {
+    listServiceReminder.sort((x, y) => x.checkMileage - y.checkMileage)
+  }
+  let alertDescription = (<Table
+    bordered
+    pagination={false}
+    scroll={{ y: 350 }}
+    style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
+    dataSource={listServiceReminder}
+    columns={columnAlert}
+  />)
 
   return (
     <div className="content-inner">

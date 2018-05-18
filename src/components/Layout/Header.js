@@ -146,8 +146,8 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         <span>{notification.notificationName}</span>
       </Link>
     </li>)))
-    notifications.push(<li style={{ borderTop: '1px solid #d0d0d0' }}><Button size="small" className={styles.refresh} onClick={refreshNotifications}>Refresh</Button></li>)
   }
+  notifications.push(<li style={{ borderTop: '1px solid #d0d0d0' }}><Button size="small" className={styles.refresh} onClick={refreshNotifications}>Refresh</Button></li>)
 
   const calendarPopOver = {
     showPopOver: visibleItem.showPopOverCalendar,
@@ -174,13 +174,13 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   }
 
   let notificationPopContent
-  if (totalNotification) {
-    notificationPopContent = {
-      ...notificationPopOver,
-      total: totalNotification,
-      popContent: (<ul style={{ width: 150, maxHeight: 200, overflowX: 'hidden' }}>{notifications}</ul>)
-    }
+  // if (totalNotification) {
+  notificationPopContent = {
+    ...notificationPopOver,
+    total: totalNotification,
+    popContent: (<ul style={{ width: 200, maxHeight: 200, overflowX: 'hidden' }}>{notifications}</ul>)
   }
+  // }
 
   const changeColor = (color) => {
     changeSiderColor(color)
