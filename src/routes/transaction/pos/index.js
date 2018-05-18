@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { configMain } from 'utils'
+import moment from 'moment'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
@@ -78,6 +79,7 @@ const Pos = ({
     curCashierNo,
     curShift,
     modalQueueVisible,
+    listUnitUsage,
     showAlert,
     showListReminder,
     listServiceReminder
@@ -155,6 +157,12 @@ const Pos = ({
       type: 'pos/updateState',
       payload: {
         showListReminder: !showListReminder
+      }
+    })
+    dispatch({
+      type: 'pos/getServiceUsageReminder',
+      payload: {
+        policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null
       }
     })
   }
@@ -634,6 +642,7 @@ const Pos = ({
         type: 'pos/updateState',
         payload: {
           modalAssetVisible: false,
+          showListReminder: false,
           listAsset: []
         }
       })
@@ -692,6 +701,12 @@ const Pos = ({
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
       dispatch({
         type: 'pos/hideMemberModal'
+      })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showListReminder: false
+        }
       })
 
       setCurBarcode('', 1)
@@ -1315,6 +1330,12 @@ const Pos = ({
   const hdlTableRowClick = (record) => {
     const { id, policeNo, merk, model, type, year, chassisNo, machineNo } = record
     dispatch({
+      type: 'pos/getServiceUsageReminder',
+      payload: {
+        policeNo: id
+      }
+    })
+    dispatch({
       type: 'pos/chooseMemberUnit',
       payload: {
         policeNo: {
@@ -1333,6 +1354,12 @@ const Pos = ({
     dispatch({
       type: 'payment/setLastMeter',
       payload: { policeNo: record.policeNo }
+    })
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        showListReminder: false
+      }
     })
   }
 
@@ -1418,63 +1445,217 @@ const Pos = ({
     dataIndex: 'checkName',
     key: 'checkName',
     width: 250,
-    render: (text, record) => {
-      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
-        return {
-          props: {
-            style: { backgroundColor: '#eee' }
-          },
-          children: <div>{text}</div>
-        }
+    render (text, record) {
+      return {
+        props: {
+          style: {
+            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
+            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
+          }
+        },
+        children: <div>{text}</div>
       }
-      return <div>{text}</div>
     }
   }, {
     title: 'KM',
     dataIndex: 'checkMileage',
     key: 'checkMileage',
     width: 110,
-    render: (text, record) => {
-      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
-        return {
-          props: {
-            style: { backgroundColor: '#eee' }
-          },
-          children: <div>{text.toLocaleString()}</div>
-        }
+    render (text, record) {
+      return {
+        props: {
+          style: {
+            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
+            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
+          }
+        },
+        children: <div>{text.toLocaleString()}</div>
       }
-      return <div>{text.toLocaleString()}</div>
     }
   }, {
     title: 'Period',
     dataIndex: 'checkTimePeriod',
     key: 'checkTimePeriod',
     width: 130,
-    render: (text, record) => {
-      if (record.checkMileage.toString() === localStorage.getItem('lastMeter')) {
-        return {
-          props: {
-            style: { backgroundColor: '#eee' }
-          },
-          children: <div>{text.toLocaleString()} days</div>
-        }
+    render (text, record) {
+      return {
+        props: {
+          style: {
+            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
+            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
+          }
+        },
+        children: <div>{text.toLocaleString()} days</div>
       }
-      return <div>{text.toLocaleString()} days</div>
     }
   }]
+
+  const columnUsage = [
+    {
+      title: 'Police No',
+      dataIndex: 'policeNo',
+      key: 'policeNo',
+      width: 110,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text}</div>
+        }
+      }
+    },
+    {
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: 200,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text}</div>
+        }
+      }
+    },
+    {
+      title: 'Last Meter',
+      dataIndex: 'lastMeter',
+      key: 'lastMeter',
+      width: 100,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text}</div>
+        }
+      }
+    },
+    {
+      title: 'Next Service',
+      dataIndex: 'nextServiceMeter',
+      key: 'nextServiceMeter',
+      width: 100,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text}</div>
+        }
+      }
+    },
+    {
+      title: 'Last Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 110,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
+        }
+      }
+    },
+    {
+      title: 'Avg By KM',
+      dataIndex: 'nextServiceKM',
+      key: 'nextServiceKM',
+      width: 110,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
+        }
+      }
+    },
+    {
+      title: 'Avg By Date',
+      dataIndex: 'nextServiceDate',
+      key: 'nextServiceDate',
+      width: 110,
+      render (text, record) {
+        return {
+          props: {
+            style: {
+              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#FF4D49' : '#ffffff',
+              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
+                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
+                '#ffffff' : '#666'
+            }
+          },
+          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
+        }
+      }
+    }
+  ]
 
   if (listServiceReminder && listServiceReminder.length) {
     listServiceReminder.sort((x, y) => x.checkMileage - y.checkMileage)
   }
-  let alertDescription = (<Table
-    bordered
-    pagination={false}
-    scroll={{ y: 350 }}
-    style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
-    dataSource={listServiceReminder}
-    columns={columnAlert}
-  />)
 
+  let alertDescription = (<Table bordered pagination={false} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listServiceReminder} columns={columnAlert} />)
+  let alertUsage = (<Table bordered pagination={false} scroll={{ x: '840px', y: 350 }} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listUnitUsage || []} columns={columnUsage} />)
+  const handleChangeReminder = (key) => {
+    if (key === '2') {
+      dispatch({
+        type: 'pos/getServiceUsageReminder',
+        payload: {
+          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null
+        }
+      })
+    }
+  }
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1588,49 +1769,49 @@ const Pos = ({
                       dataIndex: 'qty',
                       width: '40px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Price',
                       dataIndex: 'price',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
                       width: '90px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => (text || '').toLocaleString()
+                      render: text => (text || 0).toLocaleString()
                     }
                   ]}
                   onRowClick={record => modalEditPayment(record)}
@@ -1668,49 +1849,49 @@ const Pos = ({
                     dataIndex: 'qty',
                     width: '40px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Price',
                     dataIndex: 'price',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Disc1(%)',
                     dataIndex: 'disc1',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Disc2(%)',
                     dataIndex: 'disc2',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Disc3(%)',
                     dataIndex: 'disc3',
                     width: '90px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Disc',
                     dataIndex: 'discount',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   },
                   {
                     title: 'Total',
                     dataIndex: 'total',
                     width: '100px',
                     className: styles.alignRight,
-                    render: text => (text || '').toLocaleString()
+                    render: text => (text || 0).toLocaleString()
                   }
                 ]}
                 onRowClick={_record => modalEditService(_record)}
@@ -1806,15 +1987,27 @@ const Pos = ({
           </Row>
         </Card>
       </Row>
-      {showAlert &&
+      {(localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
-          <div className="componentTitleWrapper">
-            <h3 className="componentTitle">
-              <span>Services</span>
-            </h3>
-          </div>
-          <div className="service-reminders">{alertDescription}</div>
           <Button className="btn-switcher" onClick={onShowReminder}><Icon type="sound" /></Button>
+          <Tabs type="card" onChange={handleChangeReminder}>
+            <TabPane tab="Usage" key="1">
+              <div className="componentTitleWrapper">
+                <h3 className="componentTitle">
+                  <span>Usage</span>
+                </h3>
+              </div>
+              <div className="service-reminders">{alertUsage}</div>
+            </TabPane>
+            <TabPane tab="Services" key="2">
+              <div className="componentTitleWrapper">
+                <h3 className="componentTitle">
+                  <span>Services</span>
+                </h3>
+              </div>
+              <div className="service-reminders">{alertDescription}</div>
+            </TabPane>
+          </Tabs>
         </div>
       }
     </div >
