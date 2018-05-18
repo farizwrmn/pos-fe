@@ -154,7 +154,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: 'TR OUT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'IN TRANSIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'TRANSIT + IN TRANSIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: 'IN TRANSFER', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader }

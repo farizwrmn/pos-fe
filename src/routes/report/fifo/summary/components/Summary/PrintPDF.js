@@ -12,7 +12,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
     let body = []
     const rows = tabledata
     let count = 1
-    for (let key = 0; key < rows.length; key += 1) {
+    for (let key = 0; key < (rows || []).length; key += 1) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = [
@@ -183,7 +183,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       {},
       { fontSize: 12, text: 'SALDO AKHIR', colSpan: 2, alignment: 'center' },
       {},
-      { fontSize: 12, text: 'IN TRANSIT', colSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'TRANSIT + IN TRANSIT', colSpan: 2, alignment: 'center' },
       {},
       { fontSize: 12, text: 'IN TRANSFER', colSpan: 2, alignment: 'center' },
       {}
@@ -270,7 +270,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: widths,
     pageMargins: [50, 130, 50, 60],
-    pageSize: { width: 842, height: 1650 },
+    pageSize: { width: 1165, height: 1650 },
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',

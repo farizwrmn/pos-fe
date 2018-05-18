@@ -275,7 +275,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
 
 
   let widths = [
-    '3%', '6%', '13%',
+    '3%', '6%', '11%',
     '4%', '6%',
     '4%', '6%',
     '4%', '6%',
