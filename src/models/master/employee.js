@@ -41,7 +41,7 @@ export default modelExtend(pageModel, {
             //     }
             //   }))
             // }
-            if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
+            dispatch({ type: 'querySequenceEmployee' })
             dispatch({
               type: 'updateState',
               payload: {
