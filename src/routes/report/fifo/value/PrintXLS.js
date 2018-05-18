@@ -22,12 +22,12 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
   let valuePrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.valuePrice), 0)
   let adjOutQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutQty), 0)
   let adjOutPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutPrice), 0)
+  let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   let transferInQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferInQty || 0), 0)
   let transferInPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferInPrice || 0), 0)
   let transferOutQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferOutQty || 0), 0)
   let transferOutPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferOutPrice || 0), 0)
-  let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   let inTransitQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransitQty || 0), 0)
   let inTransitPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransitPrice || 0), 0)
   let inTransferQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransferQty || 0), 0)
@@ -83,12 +83,24 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         family: 4,
         size: 10
       }
-      const header = ['', '', '', '', '', 'SALDO AWAL', '', 'PEMBELIAN', '', 'ADJ IN + RTR JUAL', '', 'PENJUALAN', '', '', 'ADJ OUT + RTR BELI', '', 'SALDO AKHIR', 'LABA-RUGI KOTOR', 'IN TRANSIT + TRANSIT', '', 'IN TRANSFER', '']
+      const header = [
+        '', '',
+        '', '',
+        '', 'SALDO AWAL',
+        '', 'PEMBELIAN',
+        '', 'ADJ IN + RTR JUAL',
+        '', 'TR IN',
+        '', 'PENJUALAN', '',
+        '', 'ADJ OUT + RTR BELI',
+        '', 'TR OUT',
+        '', 'SALDO AKHIR',
+        'LABA-RUGI KOTOR',
+        '', 'IN TRANSIT + TRANSIT',
+        '', 'IN TRANSFER'
+      ]
       const header2 = [
-        'NO.',
-        '',
-        'PRODUCT CODE',
-        'PRODUCT NAME',
+        'NO.', '',
+        'PRODUCT CODE', 'PRODUCT NAME',
         'QTY', 'AMOUNT',
         'QTY', 'AMOUNT',
         'QTY', 'AMOUNT',
@@ -207,16 +219,15 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`U${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`V${m}`).value = `${(parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`V${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`W${m}`).value = `${(parseFloat(listRekap[n].transferOutQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`W${m}`).value = `${(parseFloat(listRekap[n].inTransitQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`W${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`X${m}`).value = `${(parseFloat(listRekap[n].transferOutPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`X${m}`).value = `${(parseFloat(listRekap[n].inTransitPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`X${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Y${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`Y${m}`).value = `${(parseFloat(listRekap[n].inTransferQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`Y${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Z${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`Z${m}`).value = `${(parseFloat(listRekap[n].inTransferPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         sheet.getCell(`Z${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
-
       for (let m = 65; m < (65 + footer.length); m += 1) {
         let n = listRekap.length + 10
         let counter = m - 65
@@ -225,13 +236,13 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
           family: 4,
           size: 11
         }
-        sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).font = {
           name: 'Times New Roman',
           family: 4,
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[counter]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[counter] || ''}`
       }
 
       sheet.getCell('L2').alignment = { vertical: 'middle', horizontal: 'center' }
@@ -243,7 +254,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
       sheet.getCell('L5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then((data) => {
         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `REPORT-FIFO-VALUE${moment().format('YYYYMMDD')}.xlsx`)
+        saveAs(blob, `REPORT - FIFO - VALUE${moment().format('YYYYMMDD')}.xlsx`)
       })
     }
   }
