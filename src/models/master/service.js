@@ -49,7 +49,7 @@ export default modelExtend(pageModel, {
                 payload: other
               })
             }
-            if (activeKey === '0') dispatch({ type: 'queryServiceType' })
+            dispatch({ type: 'queryServiceType' })
             dispatch({
               type: 'updateState',
               payload: {
