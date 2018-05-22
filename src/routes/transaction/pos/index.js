@@ -82,7 +82,8 @@ const Pos = ({
     listUnitUsage,
     showAlert,
     showListReminder,
-    listServiceReminder
+    listServiceReminder,
+    paymentListActiveKey
   } = pos
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
@@ -444,6 +445,15 @@ const Pos = ({
       type: 'pos/setNullUnit',
       payload: {
         memberUnit
+      }
+    })
+  }
+
+  const changePaymentListTab = (key) => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        paymentListActiveKey: key
       }
     })
   }
@@ -875,6 +885,12 @@ const Pos = ({
               setting
             }
           })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '1'
+            }
+          })
         } else {
           Modal.warning({
             title: 'Cannot add product',
@@ -974,8 +990,22 @@ const Pos = ({
           }
         })
 
+        let successModal = Modal.info({
+          title: 'Success add service',
+          content: 'Service has been added in Service`s Tab'
+        })
+
         dispatch({
           type: 'pos/hideServiceModal'
+        })
+
+        setTimeout(() => successModal.destroy(), 1000)
+
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            paymentListActiveKey: '2'
+          }
         })
 
         setCurBarcode('', 1)
@@ -1656,6 +1686,7 @@ const Pos = ({
       })
     }
   }
+
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1738,7 +1769,7 @@ const Pos = ({
                 </Col>
               </Row>
             </Form>
-            <Tabs defaultActiveKey="1">
+            <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
               <TabPane tab="Product" key="1">
                 <Table
                   rowKey={(record, key) => key}
@@ -1989,7 +2020,7 @@ const Pos = ({
       </Row>
       {(localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
-          <Button className="btn-switcher" onClick={onShowReminder}><Icon type="sound" /></Button>
+          <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service</a>
           <Tabs type="card" onChange={handleChangeReminder}>
             <TabPane tab="Usage" key="1">
               <div className="componentTitleWrapper">

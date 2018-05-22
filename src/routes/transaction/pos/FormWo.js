@@ -64,7 +64,7 @@ const PurchaseList = ({
             <Button onClick={() => onGenerate()} type="primary" style={{ width: '100%', height: '32px' }}>Auto</Button>
           </Col> */}
           <Col span={4}>
-            <Button icon="close" onClick={() => disableUsingWo()} type="dashed" style={{ width: '100%', height: '32px' }} className="bgcolor-red" />
+            <Button icon="close" onClick={() => disableUsingWo()} type="danger" size="large" style={{ width: '100%' }} />
           </Col>
         </Row>
       </FormItem>
