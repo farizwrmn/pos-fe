@@ -119,3 +119,14 @@ export async function queryTurnOver (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryPOSCompareSvsI (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${posReport}/compare`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

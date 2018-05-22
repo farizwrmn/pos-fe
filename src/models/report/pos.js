@@ -9,7 +9,8 @@ import {
   queryPosDaily,
   queryPOS,
   queryPOSDetail,
-  queryTurnOver
+  queryTurnOver,
+  queryPOSCompareSvsI
 } from '../../services/report/pos'
 
 export default {
@@ -21,6 +22,7 @@ export default {
     listDaily: [],
     listPOS: [],
     listPOSDetail: [],
+    listPOSCompareSvsI: [],
     fromDate: '',
     toDate: '',
     category: 'ALL CATEGORY',
@@ -220,7 +222,20 @@ export default {
       } else {
         throw data
       }
-    }
+    },
+    * queryCompareSalesInventory ({ payload }, { call, put }) {
+      let data = yield call(queryPOSCompareSvsI, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPOSCompareSvsI',
+          payload: {
+            listPOSCompareSvsI: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
   },
   reducers: {
     querySuccessPOS (state, { payload }) {
@@ -269,6 +284,15 @@ export default {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+    querySuccessPOSCompareSvsI (state, { payload }) {
+      const { listPOSCompareSvsI } = payload
+
+      return {
+        ...state,
+        listPOSCompareSvsI,
+        ...payload
       }
     },
     updateState (state, { payload }) {

@@ -118,7 +118,7 @@ export default {
         payload: date
       })
       const data = yield call(queryFifo, payload)
-      if (data.data.length > 0) {
+      if (data.success) {
         yield put({
           type: 'querySuccessTrans',
           payload: {
@@ -134,12 +134,6 @@ export default {
           }
         })
       } else {
-        console.log('no Data')
-        Modal.warning({
-          title: 'No Data',
-          content: 'No data inside storage'
-        })
-        yield put({ type: 'setNull' })
         throw data
       }
     },
@@ -168,30 +162,29 @@ export default {
         payload: date
       })
       const data = yield call(queryFifoValue, payload)
-      if (data.data) {
-        if (data.data.length > 0) {
-          yield put({
-            type: 'querySuccessTrans',
-            payload: {
-              listRekap: data.data,
-              period: payload.period,
-              year: payload.year,
-              pagination: {
-                current: Number(payload.page) || 1,
-                pageSize: Number(payload.pageSize) || 5,
-                total: data.total
-              },
-              date
-            }
-          })
-        } else {
-          console.log('no Data')
-          Modal.warning({
-            title: 'No Data',
-            content: 'No data inside storage'
-          })
-          yield put({ type: 'setNull' })
-        }
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listRekap: data.data,
+            period: payload.period,
+            year: payload.year,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            },
+            date
+          }
+        })
+      } else {
+        // console.log('no Data')
+        // Modal.warning({
+        //   title: 'No Data',
+        //   content: 'No data inside storage'
+        // })
+        yield put({ type: 'setNull' })
+        throw data
       }
     },
     * queryCard ({ payload = {} }, { call, put }) {
@@ -250,23 +243,18 @@ export default {
       const data = yield call(queryFifoValue, payload)
       // const productCode = data.data.map(n => n.productCode)
       // const productName = data.data.map(n => n.productName)
-      if (data.data) {
-        if (data.data.length > 0) {
-          yield put({
-            type: 'queryProductCodeSuccess',
-            payload: {
-              // productCode,
-              // productName,
-              listProduct: data.data,
-              ...payload
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'No Data',
-            content: 'No data inside storage'
-          })
-        }
+      if (data.success) {
+        yield put({
+          type: 'queryProductCodeSuccess',
+          payload: {
+            // productCode,
+            // productName,
+            listProduct: data.data || [],
+            ...payload
+          }
+        })
+      } else {
+        throw data
       }
     }
   },

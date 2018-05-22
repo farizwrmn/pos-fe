@@ -28,24 +28,24 @@ const column = {
 }
 
 const formProductCategory = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  disabled,
-  modalType,
-  button,
-  listCategory,
-  showCategories,
-  listBrand,
-  showBrands,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields,
-    setFieldsValue
-  }
-}) => {
+                               item = {},
+                               onSubmit,
+                               onCancel,
+                               disabled,
+                               modalType,
+                               button,
+                               listCategory,
+                               showCategories,
+                               listBrand,
+                               showBrands,
+                               form: {
+                                 getFieldDecorator,
+                                 validateFields,
+                                 getFieldsValue,
+                                 resetFields,
+                                 setFieldsValue
+                               }
+                             }) => {
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -216,6 +216,11 @@ const formProductCategory = ({
               initialValue: item.active
             })(<Checkbox>Active</Checkbox>)}
           </FormItem>
+          <FormItem label="Section Width" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('sectionWidth', {
+              initialValue: item.sectionWidth
+            })(<Input />)}
+          </FormItem>
         </Col>
         <Col {...column} >
           <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
@@ -290,6 +295,12 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
+          <FormItem></FormItem>
+          <FormItem label="Aspect Ratio" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('aspectRatio', {
+              initialValue: item.aspectRatio
+            })(<Input />)}
+          </FormItem>
         </Col>
         <Col {...column} >
           <FormItem label="Dummy Code" hasFeedback {...formItemLayout}>
@@ -353,10 +364,26 @@ const formProductCategory = ({
               </Upload>
             )}
           </FormItem>
+          <FormItem label="Rim Diameter" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('rimDiameter', {
+              initialValue: item.rimDiameter
+            })(<Input />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...column} >
+          a
+        </Col>
+        <Col {...column} >
+          b
+        </Col>
+        <Col {...column} >
+          c
         </Col>
       </Row>
     </Form>
