@@ -111,7 +111,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-        { value: `PERIODE : ${fromDate ? moment(fromDate, 'M-YYYY').format('MMM-YYYY') : ''}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
+        { value: `PERIODE : ${toDate ? moment(toDate, 'M-YYYY').format('MMM-YYYY') : ''}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle }
@@ -160,9 +160,9 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
       { value: `${weightTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${soaTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${qtyNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${qtyNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${(qtyNextTotal !== 0 ? (((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${dppNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${dppNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${(dppNextTotal !== 0 ? ((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100 : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${costPriceNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} `, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: `${(costPriceNextTotal !== 0 ? (((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter }
