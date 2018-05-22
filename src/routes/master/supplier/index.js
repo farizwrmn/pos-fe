@@ -146,7 +146,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'supplier/resetSupplierList' })
+    // dispatch({ type: 'supplier/resetSupplierList' })
   }
 
   const onShowHideSearch = () => {

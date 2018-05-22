@@ -107,12 +107,14 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { listSuppliers, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listSuppliers,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     updateState (state, { payload }) {
       return {
@@ -148,7 +150,8 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: false }
     },
     modalIsEmployeeChange (state, action) {
-      return { ...state,
+      return {
+        ...state,
         ...action.payload,
         disabledItem: {
           userId: (state.modalType !== 'add' ? !state.disabledItem.userId : state.disabledItem.userId),
