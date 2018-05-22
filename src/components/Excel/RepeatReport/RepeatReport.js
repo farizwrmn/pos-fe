@@ -174,15 +174,13 @@ const RepeatReport = ({
     let position = title.length + 4
     for (let i = 0; i < tableFilter.length; i += 1) {
       for (let j = 0; j < tableFilter[i].length; j += 1) {
-        for (let k = 0; k < tableFilter[i][j].length; k += 1) {
-          content.push({
-            value: sheet1.getCell(`${getPosition(k)}${position}`).value = tableFilter[i][j][k].value,
-            alignment: sheet1.getCell(`${getPosition(k)}${position}`).alignment = tableFilter[i][j][k].alignment,
-            font: sheet1.getCell(`${getPosition(k)}${position}`).font = tableFilter[i][j][k].font
-          })
-        }
-        position += 1
+        content.push({
+          value: sheet1.getCell(`${getPosition(j)}${position}`).value = tableFilter[i][j].value,
+          alignment: sheet1.getCell(`${getPosition(j)}${position}`).alignment = tableFilter[i][j].alignment,
+          font: sheet1.getCell(`${getPosition(j)}${position}`).font = tableFilter[i][j].font
+        })
       }
+      position += 1
     }
     return content
   }

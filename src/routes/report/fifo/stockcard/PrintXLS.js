@@ -20,42 +20,42 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
 
   const styles = {
     title: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       underline: true
     },
     merchant: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     period: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     tableTitle: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
     },
     tableHeader: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
     },
     tableBody: {
-      name: 'Calibri',
+      name: 'Times New Roman',
       family: 4,
-      size: 11
+      size: 10
     },
     tableFooter: {
-      name: 'Calibri',
+      name: 'Times New Roman',
       family: 4,
-      size: 11
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
@@ -66,7 +66,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN KARTU STOK FIFO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.header },
+    { value: 'LAPORAN KARTU STOK FIFO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]

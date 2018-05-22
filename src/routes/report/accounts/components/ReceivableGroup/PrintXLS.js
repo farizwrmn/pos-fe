@@ -28,7 +28,7 @@ const PrintXLS = ({
       underline: true
     },
     tableTitle: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
