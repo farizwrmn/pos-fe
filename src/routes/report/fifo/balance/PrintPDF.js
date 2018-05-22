@@ -268,7 +268,6 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
     case '3':
       headerTitle = 'LAPORAN KARTU STOK FIFO'
       underline = 742
-      widths.push(['6%', '20%', '30%', '14%', '10%', '10%', '10%'])
       pageSize = 'A4'
       break
     default:
@@ -361,6 +360,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
       let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
       for (let i = 0; i < arr.length; i += 1) {
         tableBody.push(createTableBody(arr[i]))
+        widths.push(['6%', '20%', '30%', '14%', '10%', '10%', '10%'])
         tableTitle.push({ text: `Produk : ${arr[i][0].productCode} - ${arr[i][0].productName}`, style: 'tableTitle' })
       }
     } else {
