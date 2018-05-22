@@ -84,13 +84,13 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
 
   let periode
   if (from !== '' && to !== '') {
-    periode = { value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  hingga  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    periode = { value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   } else {
     periode = {}
   }
 
   const title = [
-    { value: 'LAPORAN TRANSAKSI PER PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN TRANSAKSI PER CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     periode
   ]

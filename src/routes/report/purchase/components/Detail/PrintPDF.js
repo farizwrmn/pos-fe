@@ -134,7 +134,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN RIWAYAT RINCIAN PEMBELIAN',
+            text: 'LAPORAN HISTORY RINCIAN PEMBELIAN',
             style: 'header'
           },
           {
@@ -143,7 +143,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  hingga  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPeriode: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

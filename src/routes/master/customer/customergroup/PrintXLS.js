@@ -55,7 +55,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN DAFTAR GRUP PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN DAFTAR GRUP CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
 

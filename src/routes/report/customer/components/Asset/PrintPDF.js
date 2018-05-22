@@ -79,7 +79,7 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN ASET PELANGGAN',
+            text: 'LAPORAN ASET CUSTOMER',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

@@ -32,7 +32,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN DAFTAR GRUP PELANGGAN',
+            text: 'LAPORAN DAFTAR GRUP CUSTOMER',
             style: 'header'
           },
           {

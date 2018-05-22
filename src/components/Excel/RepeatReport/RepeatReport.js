@@ -48,79 +48,109 @@ const RepeatReport = ({
       { pageSetup: { paperSize, orientation } })
   }
 
+  const getPositionTitle = (length) => {
+    let alphabet = ''
+    let totalAlphabet = 26
+    let startAlphabet = 65
+    let moreAlphabet = 0
+    if (length > totalAlphabet) {
+      length -= totalAlphabet
+      alphabet = String.fromCharCode(startAlphabet + moreAlphabet)
+      moreAlphabet += 1
+      getPositionTitle(length)
+    }
+    alphabet += String.fromCharCode(startAlphabet + length)
+    return alphabet
+  }
+
+  const getPosition = (position) => {
+    let alphabet = ''
+    let totalAlphabet = 26
+    let startAlphabet = 65
+    let moreAlphabet = 0
+    if (position + 1 > totalAlphabet) {
+      position -= totalAlphabet
+      alphabet = String.fromCharCode(startAlphabet + moreAlphabet)
+      moreAlphabet += 1
+      getPositionTitle(position)
+    }
+    alphabet += String.fromCharCode(startAlphabet + position)
+    return alphabet
+  }
+
   const createXLSLineItems0 = () => {
     let content = []
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
-        let code = Math.round((65 - 1) + (tableBody[0][0].length / 2))
-        let headerPosition = 2 + i
+        let line = 2 + i
+        let position = getPositionTitle(Math.round(tableBody[0][0].length / 2))
+        if (tableHeader && tableHeader.length) {
+          position = getPositionTitle(Math.round(tableHeader[0].length / 2))
+        }
         content.push({
-          value: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).value = title[i].value,
-          alignment: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).alignment = title[i].alignment,
-          font: sheet.getCell(`${String.fromCharCode(code)}${headerPosition}`).font = title[i].font
+          value: sheet.getCell(`${position}${line}`).value = title[i].value,
+          alignment: sheet.getCell(`${position}${line}`).alignment = title[i].alignment,
+          font: sheet.getCell(`${position}${line}`).font = title[i].font
         })
       }
     }
+
     let position = title.length + 4
     for (let i = 0; i < data.length; i += 1) {
       for (let j = 0; j < tableTitle[i].length; j += 1) {
-        for (let char = 65; char < 65 + tableTitle[i][j].length; char += 1) {
-          let tableTitleValue = char - 65
+        for (let k = 0; k < tableTitle[i][j].length; k += 1) {
           content.push({
-            value: sheet.getCell(`${String.fromCharCode(char)}${position}`).value = tableTitle[i][j][tableTitleValue].value,
-            alignment: sheet.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableTitle[i][j][tableTitleValue].alignment,
-            font: sheet.getCell(`${String.fromCharCode(char)}${position}`).font = tableTitle[i][j][tableTitleValue].font
+            value: sheet.getCell(`${getPosition(k)}${position}`).value = tableTitle[i][j][k].value,
+            alignment: sheet.getCell(`${getPosition(k)}${position}`).alignment = tableTitle[i][j][k].alignment,
+            font: sheet.getCell(`${getPosition(k)}${position}`).font = tableTitle[i][j][k].font
           })
         }
         position += 1
       }
 
-
-      for (let char = 65; char < 65 + tableHeader.length; char += 1) {
-        let tableHeaderPosition = position
-        let tableHeaderValue = char - 65
-        content.push({
-          value: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).value = tableHeader[tableHeaderValue].value,
-          alignment: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).alignment = tableHeader[tableHeaderValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).font = tableHeader[tableHeaderValue].font
-          // border: sheet.getCell(`${String.fromCharCode(char)}${tableHeaderPosition}`).border = tableHeader[tableHeaderValue].border
-        })
+      for (let header in tableHeader) {
+        for (let i = 0; i < tableHeader[header].length; i += 1) {
+          content.push({
+            value: sheet.getCell(`${getPosition(i)}${position}`).value = tableHeader[header][i].value,
+            alignment: sheet.getCell(`${getPosition(i)}${position}`).alignment = tableHeader[header][i].alignment,
+            font: sheet.getCell(`${getPosition(i)}${position}`).font = tableHeader[header][i].font
+            // border: sheet.getCell(`${getPosition(i)}${position}`).border = tableHeader[header][i].border
+          })
+        }
       }
 
       let tableBodyPosition = position + 1
       for (let n = 0; n < tableBody[i].length; n += 1) {
-        for (let char = 65; char < 65 + tableBody[i][n].length; char += 1) {
-          let tableBodyValue = char - 65
+        for (let o = 0; o < tableBody[i][n].length; o += 1) {
           content.push({
-            value: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).value = tableBody[i][n][tableBodyValue].value,
-            alignment: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).alignment = tableBody[i][n][tableBodyValue].alignment,
-            font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font
-            // border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
+            value: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).value = tableBody[i][n][o].value,
+            alignment: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).alignment = tableBody[i][n][o].alignment,
+            font: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).font = tableBody[i][n][o].font
+            // border: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).border = tableBody[i][n][o].border
           })
         }
         tableBodyPosition += 1
       }
 
-      for (let char = 65; char < 65 + tableFooter[i].length; char += 1) {
+      for (let j = 0; j < tableFooter[i].length; j += 1) {
         let tableFooterPosition = position + tableBody[i].length + 1
-        let tableFooterValue = char - 65
         content.push({
-          value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
-          alignment: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).alignment = tableFooter[i][tableFooterValue].alignment,
-          font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font
-          // border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
+          value: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).value = tableFooter[i][j].value,
+          alignment: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).alignment = tableFooter[i][j].alignment,
+          font: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).font = tableFooter[i][j].font
+          // border: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).border = tableFooter[i][j].border
         })
       }
+
       position = position + 4 + tableBody[i].length
       if (tableTotal.length > 0) {
-        for (let char = 65; char < 65 + tableTotal[0].length; char += 1) {
-          let tableTotalPosition = position + 1
-          let tableTotalValue = char - 65
+        for (let i = 0; i < tableTotal[0].length; i += 1) {
+          let line = position + 1
           content.push({
-            value: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).value = tableTotal[0][tableTotalValue].value,
-            alignment: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).alignment = tableTotal[0][tableTotalValue].alignment,
-            font: sheet.getCell(`${String.fromCharCode(char)}${tableTotalPosition}`).font = tableTotal[0][tableTotalValue].font
-            // border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
+            value: sheet.getCell(`${getPosition(i)}${line}`).value = tableTotal[0][i].value,
+            alignment: sheet.getCell(`${getPosition(i)}${line}`).alignment = tableTotal[0][i].alignment,
+            font: sheet.getCell(`${getPosition(i)}${line}`).font = tableTotal[0][i].font
+            // border: sheet.getCell(`${getPosition(i)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
           })
         }
       }
@@ -132,24 +162,23 @@ const RepeatReport = ({
     let content = []
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
-        let code = Math.round((65 - 1) + (tableBody[0][0].length / 2))
-        let headerPosition = 2 + i
+        let line = 2 + i
+        let position = getPositionTitle(Math.round(tableBody[0][0].length / 2))
         content.push({
-          value: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).value = title[i].value,
-          alignment: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).alignment = title[i].alignment,
-          font: sheet1.getCell(`${String.fromCharCode(code)}${headerPosition}`).font = title[i].font
+          value: sheet1.getCell(`${position}${line}`).value = title[i].value,
+          alignment: sheet1.getCell(`${position}${line}`).alignment = title[i].alignment,
+          font: sheet1.getCell(`${position}${line}`).font = title[i].font
         })
       }
     }
     let position = title.length + 4
     for (let i = 0; i < tableFilter.length; i += 1) {
       for (let j = 0; j < tableFilter[i].length; j += 1) {
-        for (let char = 65; char < 65 + tableFilter[i][j].length; char += 1) {
-          let tableFilterValue = char - 65
+        for (let k = 0; k < tableFilter[i][j].length; k += 1) {
           content.push({
-            value: sheet1.getCell(`${String.fromCharCode(char)}${position}`).value = tableFilter[i][j][tableFilterValue].value,
-            alignment: sheet1.getCell(`${String.fromCharCode(char)}${position}`).alignment = tableFilter[i][j][tableFilterValue].alignment,
-            font: sheet1.getCell(`${String.fromCharCode(char)}${position}`).font = tableFilter[i][j][tableFilterValue].font
+            value: sheet1.getCell(`${getPosition(k)}${position}`).value = tableFilter[i][j][k].value,
+            alignment: sheet1.getCell(`${getPosition(k)}${position}`).alignment = tableFilter[i][j][k].alignment,
+            font: sheet1.getCell(`${getPosition(k)}${position}`).font = tableFilter[i][j][k].font
           })
         }
         position += 1
