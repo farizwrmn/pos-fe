@@ -305,11 +305,11 @@ const formCustomer = ({
                 initialValue: item.zipCode,
                 rules: [
                   {
-                    pattern: /^[a-z0-9_-]{3,20}$/i,
-                    message: 'a-Z & 0-9'
+                    pattern: /^[0-9]{5}$/i,
+                    message: '0-9'
                   }
                 ]
-              })(<Input />)}
+              })(<Input maxLength={5} />)}
             </FormItem>
             <FormItem label="Phone Number" hasFeedback {...formItemLayout}>
               {getFieldDecorator('phoneNumber', {
