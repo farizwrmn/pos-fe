@@ -15,16 +15,6 @@ const PrintXLS = ({ data, storeInfo }) => {
       size: 12,
       underline: true
     },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     tableHeader: {
       name: 'Courier New',
       family: 4,

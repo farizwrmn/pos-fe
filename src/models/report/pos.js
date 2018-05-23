@@ -290,7 +290,6 @@ export default {
       }
     },
     querySuccessPOSCompareSvsI (state, { payload }) {
-      console.log('zzz6', state)
       const { listPOSCompareSvsI } = payload
 
       return {
@@ -306,7 +305,6 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
     setValue (state, action) {
-      console.log('zzz3', action)
       return { ...state,
         fromDate: action.payload.from,
         toDate: action.payload.to,
@@ -315,7 +313,6 @@ export default {
         ...action.payload }
     },
     setListNull (state) {
-      console.log('aaa2')
       return {
         ...state,
         list: [],

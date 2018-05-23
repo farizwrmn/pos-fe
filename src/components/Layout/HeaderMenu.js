@@ -18,7 +18,7 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
           {prompt === 'calendar' && total > 0 &&
             <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>
           }
-          {prompt === 'notification' && total &&
+          {prompt === 'notification' && total > 0 &&
             <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>}
         </Link>
       </div>

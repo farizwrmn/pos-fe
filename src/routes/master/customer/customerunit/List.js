@@ -111,6 +111,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         bordered
         columns={columns}
         simple
+        locale={{ emptyText: 'Find the customer first!' }}
         scroll={{ x: 1400 }}
         rowKey={record => record.id}
       />

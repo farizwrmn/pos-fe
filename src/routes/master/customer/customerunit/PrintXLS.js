@@ -57,7 +57,7 @@ const PrintXLS = ({ dataSource, dataCustomer, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN DAFTAR TIPE PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN DAFTAR TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     {},
     { value: `${dataCustomer.memberName}(${dataCustomer.memberCode})`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }

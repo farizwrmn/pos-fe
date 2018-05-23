@@ -115,6 +115,7 @@ export default modelExtend(pageModel, {
 
     * queryServiceType ({ payload = {} }, { call, put }) {
       const data = yield call(queryServiceType, payload)
+      console.log(data)
       if (data) {
         yield put({
           type: 'querySuccessServiceType',

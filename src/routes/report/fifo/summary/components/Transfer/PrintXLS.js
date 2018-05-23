@@ -36,6 +36,11 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       size: 12,
       underline: true
     },
+    period: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
+    },
     tableHeader: {
       name: 'Courier New',
       family: 4,
@@ -222,7 +227,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   const title = [
     { value: 'LAPORAN TRANSFER STOCK', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
-    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: styles.alignmentCenter, font: styles.title }
+    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: styles.alignmentCenter, font: styles.period }
   ]
 
   let tableBody
