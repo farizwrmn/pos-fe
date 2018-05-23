@@ -8,10 +8,11 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => {
-  const { listPOSCompareSvsI, fromDate, toDate, productCode, category, brand } = posReport
+  const { listPOSCompareSvsI, fromDate, toDate, productCode, category, brand, paramDate, diffDay } = posReport
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
+
   const browseProps = {
     dataSource: listPOSCompareSvsI,
     listPOSCompareSvsI,
@@ -19,6 +20,8 @@ const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => 
     user,
     fromDate,
     toDate,
+    paramDate,
+    diffDay,
     productCode
   }
 
@@ -28,41 +31,32 @@ const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => 
     listBrand,
     user,
     storeInfo,
-    fromDate,
-    toDate,
+    // fromDate,
+    // toDate,
+    paramDate,
+    diffDay,
     productCode,
     category,
     brand,
     onListReset () {
+      console.log('aaa1')
       dispatch({
         type: 'posReport/setListNull'
       })
     },
     onDateChange (from, to) {
-    //   dispatch({
-    //     type: 'posReport/queryCompareSalesInventory',
-    //     payload: {
-    //       from,
-    //       to
-    //     }
-    //   })
       dispatch({
-        type: 'posReport/setDate',
+        type: 'posReport/setValue',
         payload: {
           from,
-          to
+          to,
+          listPOSCompareSvsI
         }
       })
     },
-    onFilterChange (data) {
+    onSearch (data) {
       dispatch({
         type: 'posReport/queryCompareSalesInventory',
-        payload: {
-          ...data
-        }
-      })
-      dispatch({
-        type: 'posReport/setDate',
         payload: {
           ...data
         }

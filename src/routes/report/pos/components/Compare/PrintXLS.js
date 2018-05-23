@@ -10,7 +10,7 @@ import moment from 'moment'
 
 const warning = Modal.warning
 
-const PrintXLS = ({ listPOSCompareSvsI, dataSource, fromDate, toDate, storeInfo, category, brand }) => {
+const PrintXLS = ({ listPOSCompareSvsI, dataSource, fromDate, toDate, diffDay, storeInfo, category, brand }) => {
   let qtySoldTotal = 0
   let qtyMonthlyTOTotal = 0
   let qtyBSTotal = 0
@@ -88,7 +88,7 @@ const PrintXLS = ({ listPOSCompareSvsI, dataSource, fromDate, toDate, storeInfo,
           }
         }
       }
-      const header = ['NO.', 'Section Width', 'Aspect Ratio', 'Rim Diameter', 'Sold', 'Monthly TO', 'BS', 'DL', 'GT', 'MI', 'Total']
+      const header = ['NO.', 'Section Width', 'Aspect Ratio', 'Rim Diameter', `Sold in ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`, 'Monthly TO', 'BS', 'DL', 'GT', 'MI', 'Total']
       const footer = [
         '',
         '',

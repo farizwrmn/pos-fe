@@ -4,7 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Select, Row, Col, Icon, Form, Tooltip } from 'antd'
+import { Button, DatePicker, Select, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
@@ -14,14 +14,17 @@ const { MonthPicker } = DatePicker
 const { RangePicker } = DatePicker
 const Option = Select.Option
 
-const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
+const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
                   listCategory,
                   showCategories,
                   listBrand,
                   showBrands,
+                  paramDate,
+                  diffDay,
                   form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator },
                   ...printProps }) => {
-  const handleChange = () => {
+
+  const handleSearch = () => {
     const data = getFieldsValue()
     let param={}
     if (data) {
@@ -38,7 +41,15 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
       // param.brand = data.brand
     }
 
-    onFilterChange(param)
+    onSearch(param)
+  }
+
+  const handleChangeDate = (value) => {
+    handleReset()
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+
+    onDateChange(from, to)
   }
 
   const handleReset = () => {
@@ -57,13 +68,6 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
     onListReset()
   }
 
-  const handleChangeDate = (value) => {
-    handleReset()
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
-  }
-
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -73,7 +77,7 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
         span: 8
       },
       md: {
-        span: 8
+        span: 7
       }
     },
     wrapperCol: {
@@ -81,10 +85,10 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
         span: 16
       },
       sm: {
-        span: 14
+        span: 16
       },
       md: {
-        span: 14
+        span: 17
       }
     }
   }
@@ -102,33 +106,31 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
 
   const printOpts = {
     listPOSCompareSvsI,
+    diffDay,
     ...printProps
   }
-  const toDay = new Date()
-  const firstDay = new Date(toDay.getFullYear(), toDay.getMonth(), 1)
+
   return (
     <div>
       <Row>
-        <Col lg={10} md={24}>
-          <FormItem label="Sales Range Date" {...formItemLayout}>
-            {getFieldDecorator('rangePicker')(
-              <RangePicker size="large"
-                // defaultValue={[moment(firstDay, 'YYYY/MM/DD'), moment(toDay, 'YYYY/MM/DD')]}
+        <Col lg={12} md={24}>
+          <FormItem label="Sales Range Date" {...formItemLayout} >
+            {getFieldDecorator('rangePicker', {
+              rules: [ { required: true } ]
+            })(<RangePicker size="large" style={{ width: '60%' }}
+                // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
                 onChange={value => handleChangeDate(value)}
                 format="DD-MMM-YYYY"
               />
             )}
+            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>{diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}</span>
           </FormItem>
           <FormItem label="Inventory Period" {...formItemLayout}>
             {getFieldDecorator('period', {
-              rules: [
-                {
-                  required: true
-                }
-              ]
+              rules: [ { required: true } ]
             })(<MonthPicker
               // defaultValue={moment(toDay, 'YYYY/MM/DD')}
-              style={{ width: 195 }} />)}
+              style={{ width: '60%' }} />)}
           </FormItem>
           <FormItem label="Category" {...formItemLayout}>
             {getFieldDecorator('category',
@@ -140,7 +142,6 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
                 disabled
                 labelInValue
                 onFocus={() => category()}
-                onBlur={() => handleChange()}
                 style={{ width: '100%', height: '32px', marginTop: '5px' }}
               >
                 {productCategory}
@@ -161,13 +162,13 @@ const Filter = ({ onDateChange, onFilterChange, listPOSCompareSvsI, onListReset,
             )}
           </FormItem>
         </Col>
-        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
+        <Col lg={12} md={24} style={{ float: 'right', textAlign: 'right' }}>
           <Button
             size="large"
             style={{ marginLeft: '5px' }}
             type="primary"
             className="button-width02 button-extra-large"
-            onClick={() => handleChange()}
+            onClick={() => handleSearch()}
           >
             <Icon type="search" className="icon-large" />
           </Button>

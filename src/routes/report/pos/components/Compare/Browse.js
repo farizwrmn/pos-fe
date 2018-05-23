@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
-const Browse = ({ ...browseProps }) => {
+const Browse = ({ diffDay, ...browseProps }) => {
   const columns = [
     {
       title: 'Section Width',
@@ -26,7 +26,7 @@ const Browse = ({ ...browseProps }) => {
       width: '55px'
     },
     {
-      title: 'Sold',
+      title: `Sold in ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`,
       dataIndex: 'salesQty',
       key: 'salesQty',
       width: '60px'
