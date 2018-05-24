@@ -15,6 +15,7 @@ export default {
     brand: 'ALL BRAND',
     fromDate: '',
     toDate: '',
+    activeKey: '1',
     listPurchase: [],
     listPurchaseDetail: [],
     productCode: 'ALL TYPE',
@@ -148,6 +149,9 @@ export default {
     },
     setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
     setListNull (state, action) {
       return {

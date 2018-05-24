@@ -9,26 +9,43 @@ import { Return, Trans, Daily, Detail } from '../components'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch }) => {
-  const callback = () => {
+const Report = ({ dispatch, purchaseReport }) => {
+  const { activeKey } = purchaseReport
+  const callback = (key) => {
     dispatch({
       type: 'purchaseReport/setListNull'
+    })
+    dispatch({
+      type: 'purchaseReport/updateState',
+      payload: {
+        activeKey: key
+      }
     })
   }
   return (
     <div className="content-inner">
-      <Tabs onChange={callback} type="card">
-        <TabPane tab="By Trans" key="1"><Trans /></TabPane>
-        <TabPane tab="Return" key="2"><Return /></TabPane>
-        <TabPane tab="Daily" key="3"><Daily /></TabPane>
-        <TabPane tab="Detail" key="4"><Detail /></TabPane>
+      <Tabs activeKey={activeKey} onChange={key => callback(key)} type="card">
+        <TabPane tab="By Trans" key="1">
+          {activeKey === '1' && <Trans />}
+        </TabPane>
+        <TabPane tab="Return" key="2">
+          {activeKey === '2' && <Return />}
+        </TabPane>
+        <TabPane tab="Daily" key="3">
+          {activeKey === '3' && <Daily />}
+        </TabPane>
+        <TabPane tab="Detail" key="4">
+          {activeKey === '4' && <Detail />}
+        </TabPane>
+
       </Tabs>
     </div>
   )
 }
 
 Report.propTypes = {
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  purchaseReport: PropTypes.object
 }
 
 export default connect(({ loading, purchaseReport }) => ({ loading, purchaseReport }))(Report)
