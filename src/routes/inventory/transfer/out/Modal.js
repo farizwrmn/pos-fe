@@ -81,7 +81,7 @@ const modal = ({
             rules: [{
               required: true
             }]
-          })(<InputNumber min={0} />)}
+          })(<InputNumber autoFocus min={0} />)}
         </FormItem>
         <FormItem label="Description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
