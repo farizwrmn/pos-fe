@@ -32,6 +32,8 @@ export default modelExtend(pageModel, {
     mode: '',
     changed: false,
     customerLoading: false,
+    modalAddUnit: false,
+    addUnit: { modal: false, info: {} },
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -46,6 +48,15 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/customerunit':
+            dispatch({ type: 'query' })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                searchText: ''
+              }
+            })
+            break
+          case '/service/history':
             dispatch({ type: 'query' })
             dispatch({
               type: 'updateState',
@@ -207,7 +218,12 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            modalAddUnit: true,
+            addUnit: {
+              modal: false,
+              info: { id: payload.id, name: payload.data.memberName }
+            }
           }
         })
         const increase = yield call(increaseSequence, seqDetail)
@@ -276,9 +292,17 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    confirmAddUnit (state) { return { ...state, modalAddUnit: true } },
+
     showLoading (state) { return { ...state, customerLoading: true } },
 
     hideLoading (state) { return { ...state, customerLoading: false } },
+
+    cancelSendUnit (state) {
+      return {
+        ...state, modalAddUnit: false, addUnit: { modal: false, info: {} }
+      }
+    },
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload
