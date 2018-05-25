@@ -9,7 +9,8 @@ import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
-import ModalAsset from './ModalAsset'
+import ModalUnit from './ModalUnit'
+import ModalMember from './ModalMember'
 
 const { prefix } = configMain
 const Panel = Collapse.Panel
@@ -30,13 +31,12 @@ const formItemLayout = {
 
 const Pos = ({
   location,
-  // customer,
+  customer,
   // city,
   // customergroup,
   // customertype,
   loading,
   dispatch,
-  customerunit,
   pos,
   unit,
   app,
@@ -86,9 +86,9 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     paymentListActiveKey,
-    modalAddUnit,
-    modalAddMember
+    modalAddUnit
   } = pos
+  const { modalAddMember } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
@@ -320,6 +320,16 @@ const Pos = ({
           modalAddUnit: true
         }
       })
+      let member = JSON.parse(localStorage.getItem('member'))[0]
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: member.memberCode, name: member.memberName }
+          }
+        }
+      })
     } else {
       Modal.warning({
         title: 'Member Information is not found',
@@ -330,38 +340,42 @@ const Pos = ({
 
   const handleAddMember = () => {
     dispatch({
-      type: 'pos/updateState',
+      type: 'customer/updateState',
       payload: {
         modalAddMember: true
       }
     })
   }
 
-  const modalAddAssetProps = {
-    customerunit,
-    dispatch,
-    memberInformation,
+  const modalAddUnitProps = {
     modalAddUnit,
     confirmSendUnit (data) {
       dispatch({
         type: 'customerunit/add',
         payload: data
       })
-      dispatch({
-        type: 'pos/chooseMemberUnit',
-        payload: {
-          policeNo: {
-            id: null,
-            policeNo: data.policeNo,
-            merk: data.merk,
-            model: data.model,
-            type: data.type,
-            year: data.year,
-            chassisNo: data.chassisNo,
-            machineNo: data.machineNo
-          }
-        }
-      })
+      // let getData = {
+      //   id: null,
+      //   policeNo: data.policeNo,
+      //   merk: data.merk,
+      //   model: data.model,
+      //   type: data.type,
+      //   year: data.year,
+      //   chassisNo: data.chassisNo,
+      //   machineNo: data.machineNo
+      // }
+      // dispatch({
+      //   type: 'pos/chooseMemberUnit',
+      //   payload: {
+      //     policeNo: getData
+      //   }
+      // })
+      // dispatch({
+      //   type: 'payment/setPoliceNo',
+      //   payload: {
+      //     policeNo: getData
+      //   }
+      // })
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -374,6 +388,18 @@ const Pos = ({
         type: 'pos/updateState',
         payload: {
           modalAddUnit: false
+        }
+      })
+    }
+  }
+
+  const modaladdMemberProps = {
+    modalAddMember,
+    cancelMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: false
         }
       })
     }
@@ -785,6 +811,15 @@ const Pos = ({
         type: 'pos/updateState',
         payload: {
           showListReminder: false
+        }
+      })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: item.id, name: item.memberName }
+          }
         }
       })
 
@@ -1560,17 +1595,17 @@ const Pos = ({
             </Form>
 
             <ButtonGroup style={{ marginRight: 10 }}>
-              {/* <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" />
-              </Tooltip> */}
+              <Tooltip title="add Member">
+                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} />
+              </Tooltip>
               <Button type="primary" size="large" onClick={handleMemberBrowse}>Member</Button>
               <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
-              {/* <Tooltip title="add Asset">
+              <Tooltip title="add Asset">
                 <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
-              </Tooltip> */}
+              </Tooltip>
             </ButtonGroup>
-            {modalAddUnit && <ModalAsset {...modalAddAssetProps} />}
-            {/* {modalAddMember && <ModalMember {...modaladdMemberProps} />} */}
+            {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
+            {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
 
@@ -1877,7 +1912,7 @@ const Pos = ({
       </Row>
       {(localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
-          <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service</a>
+          <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
           <Reminder {...reminderProps} />
         </div>
       }
