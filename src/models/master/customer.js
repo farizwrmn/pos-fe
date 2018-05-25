@@ -33,6 +33,7 @@ export default modelExtend(pageModel, {
     changed: false,
     customerLoading: false,
     modalAddUnit: false,
+    modalAddMember: false,
     addUnit: { modal: false, info: {} },
     pagination: {
       showSizeChanger: true,
@@ -214,18 +215,29 @@ export default modelExtend(pageModel, {
       if (data.success) {
         // yield put({ type: 'query' })
         success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            modalAddUnit: true,
-            addUnit: {
-              modal: false,
-              info: { id: payload.id, name: payload.data.memberName }
+        if (payload.modalType === 'add') {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {},
+              modalAddUnit: true,
+              addUnit: {
+                modal: false,
+                info: { id: payload.id, name: payload.data.memberName }
+              }
             }
-          }
-        })
+          })
+        } else if (payload.modalType === 'addMember') {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {},
+              modalAddMember: false
+            }
+          })
+        }
         const increase = yield call(increaseSequence, seqDetail)
         if (!increase.success) throw increase
       } else {
