@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffDay, category, brand }) => {
+const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, paramDate, diffDay, category, brand }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -91,7 +91,7 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${moment(paramDate[0]).format('DD-MMM-YYYY')}  TO  ${moment(paramDate[1]).format('DD-MMM-YYYY')}`,
                 fontSize: 11,
                 alignment: 'left'
               },

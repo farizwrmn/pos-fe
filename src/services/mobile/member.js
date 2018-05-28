@@ -21,3 +21,13 @@ export async function activate (params) {
     headers: apiHeaderToken
   })
 }
+
+
+export async function getMemberStatus (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiMobile}/members/${params.memberCardId}/status?detail=1`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}

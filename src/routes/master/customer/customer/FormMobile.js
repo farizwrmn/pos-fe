@@ -1,17 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Button, Collapse } from 'antd'
+import { Form, Input, Button, Collapse, Row, Col, Checkbox, Tabs, Table, notification, Modal } from 'antd'
 import ModalBrowse from './Modal'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
+const TabPane = Tabs.TabPane
+const warning = Modal.warning
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 13 },
-    sm: { span: 8 },
-    md: { span: 8 }
+    xs: { span: 12 },
+    sm: { span: 4 },
+    md: { span: 4 }
   },
   wrapperCol: {
     xs: { span: 11 },
@@ -29,10 +31,41 @@ const ModalMobile = ({
   },
   onActivate,
   dataCustomer,
-  openModal,
+  checkMemberCardId,
+  checkMember,
+  resetMemberStatus,
   modalVisible,
   ...modalMobileProps
 }) => {
+  console.log('zzz7', checkMember)
+  console.log('zzz71', checkMember.hasOwnProperty("dataMember"))
+  console.log('zzz72', checkMember.dataMember)
+  console.log('zzz73', (checkMember.hasOwnProperty("dataMember") && (checkMember.dataMember)))
+
+  const dataMember= (checkMember.dataMember) ? {
+    email: checkMember.dataMember.memberEmail,
+    name: checkMember.dataMember.memberName,
+    point: checkMember.dataMember.memberPoint,
+    valid: checkMember.dataMember.validThrough
+  } : { email: "", name: "", point: "", valid: "" }
+
+  const columnAsset = [
+    { title: 'Police No', dataIndex: 'policeNo', key: 'policeNo' },
+    { title: 'Merk', dataIndex: 'merk', key: 'merk' },
+    { title: 'Model', dataIndex: 'model', key: 'model' },
+    { title: 'Type', dataIndex: 'type', key: 'type' },
+    { title: 'Year', dataIndex: 'year', key: 'year'},
+    { title: 'Chassis No', dataIndex: 'chassisNo', key: 'chassisNo'},
+    { title: 'Machine No', dataIndex: 'machineNo', key: 'machineNo'}]
+  const dataAsset = (checkMember.dataAsset) ? checkMember.dataAsset : []
+
+  const columnBooking = [
+    { title: 'Booking ID', dataIndex: 'bookingId', key: 'bookingId' },
+    { title: 'Date', dataIndex: 'scheduleDate', key: 'scheduleDate' },
+    { title: 'Time', dataIndex: 'scheduleTime', key: 'scheduleTime' },
+    { title: 'Store', dataIndex: 'store', key: 'store' }]
+  const dataBooking = (checkMember.dataBooking) ? checkMember.dataBooking : []
+
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -54,72 +87,118 @@ const ModalMobile = ({
     ...modalMobileProps
   }
 
-  const info = (
-    <div>
-      <FormItem label="Member Code" {...formItemLayout} >
-        {getFieldDecorator('memberCode', {
-          initialValue: dataCustomer.memberCode
-        })(<Input disabled />)}
-      </FormItem>
-      <FormItem label="Member Name" {...formItemLayout}>
-        {getFieldDecorator('memberName', {
-          initialValue: dataCustomer.memberName
-        })(<Input disabled />)}
-      </FormItem>
-      <FormItem label="BirthDate" {...formItemLayout}>
-        {getFieldDecorator('birthDate', {
-          initialValue: dataCustomer.birthDate ? moment(dataCustomer.birthDate).format('MMMM Do YYYY') : ''
-        })(<Input disabled />)}
-      </FormItem>
-      <FormItem label="City" {...formItemLayout}>
-        {getFieldDecorator('cityName', {
-          initialValue: dataCustomer.cityName
-        })(<Input disabled />)}
-      </FormItem>
-      <FormItem label="Address" {...formItemLayout}>
-        {getFieldDecorator('address01', {
-          initialValue: dataCustomer.address01
-        })(<Input disabled />)}
-      </FormItem>
-      <FormItem label="Member Type" {...formItemLayout}>
-        {getFieldDecorator('memberTypeName', {
-          initialValue: dataCustomer.memberTypeName
-        })(<Input disabled />)}
-      </FormItem>
-    </div>
-  )
+  const handleCheckMemberCardId = () => {
+    // console.log('zzz71',checkMember.info.memberStatus)
+    checkMemberCardId(getFieldsValue().memberCardId)
+  }
+  const handleResetMemberStatus = () => {
+    console.log('zzz72',checkMember.info.memberStatus)
+    // if (checkMember.info.memberStatus)
+      resetMemberStatus()
+  }
 
   return (
     <div>
-      {modalVisible && <ModalBrowse {...modalMobileProps} />}
+      {console.log('zzz88', checkMember)}
+      {console.log('zzz99', dataMember)}
+
+      <Modal
+        title={'Member Card ID : ' + getFieldsValue().memberCardId}
+        visible={checkMember.visibleModal}
+        onOk={handleResetMemberStatus}
+        onCancel={handleResetMemberStatus}
+      >
+        <p>{ 'status : ' + (checkMember.hasOwnProperty('info') && checkMember.info.memberStatus.split("|")[1] ) }</p>
+      </Modal>
+      
       <Form layout="horizontal" {...mobileOpts}>
-        <FormItem label="MEMBER CODE" hasFeedback {...formItemLayout}>
-          <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
-        </FormItem>
-        <FormItem label="MOBILE ID" hasFeedback {...formItemLayout}>
+        <FormItem label="Member Card ID" hasFeedback {...formItemLayout}>
+          <Col span="8" offset={2}>
           {getFieldDecorator('memberCardId', {
             rules: [
               {
                 required: true
               }
             ]
-          })(<Input />)}
+          })(<Input />
+          )}
+          </Col>
+          <Col span="6" offset={1}>
+          <Button className="button-line-height1" type="primary" onClick={() => handleCheckMemberCardId()}>Check</Button>
+          </Col>
         </FormItem>
-        <FormItem>
-          <Button type="primary" onClick={handleOk}>Activate</Button>
+        <FormItem label="Existing Member" hasFeedback {...formItemLayout}>
+          <Col span="1" offset={1}>
+            <Checkbox disabled={checkMember.disabledExisting}></Checkbox>
+          </Col>
+          <Col span="8">
+            {getFieldDecorator('memberCode', {
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input disabled/>
+            )}
+          </Col>
+          <Col span="6" offset={1}>
+            <Button className="button-line-height1" disabled>Search</Button>
+          </Col>
         </FormItem>
-        <Collapse defaultActiveKey="1" >
-          <Panel header="Member Info" key="1">
-            {info}
-          </Panel>
-        </Collapse>
+
+        <section className="tab-card-box">
+          <div className="tab-card-container">
+            <Tabs defaultActiveKey="1" type="card">
+              <TabPane tab="data Member" key="1">
+                <Row className="ant-form-item">
+                  <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
+                    <Input addonBefore="Email" placeholder="member email" value={dataMember.email}/>
+                  </Col>
+                </Row>
+                <Row className="ant-form-item">
+                  <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
+                    <Input addonBefore="Name" placeholder="member names" value={dataMember.name}/>
+                  </Col>
+                </Row>
+                <Row className="ant-form-item">
+                  <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
+                    <Input addonBefore="Point   " placeholder="member point" value={dataMember.point}/>
+                  </Col>
+                </Row>
+                <Row className="ant-form-item">
+                  <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
+                    <Input addonBefore="Valid   " placeholder="member valid through" value={dataMember.valid}/>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab="data Asset" key="2">
+                <Table columns={columnAsset} dataSource={dataAsset} />
+              </TabPane>
+              <TabPane tab="data Booking" key="3">
+                <Table columns={columnBooking} dataSource={dataBooking} />
+              </TabPane>
+              <TabPane tab="data Existing" key="4" disabled>
+              </TabPane>
+            </Tabs>
+          </div>
+        </section>
+
+        <FormItem label="" hasFeedback {...formItemLayout}>
+          <Col span="16" offset={1}>
+            <Checkbox disabled>have user confirmed mobile data to customer?</Checkbox>
+          </Col>
+          <Col span="6" offset={1}>
+            <Button className="button-line-height1" disabled>Activate</Button>
+          </Col>
+        </FormItem>
       </Form>
     </div>
   )
 }
 
 ModalMobile.propTypes = {
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  checkMember: PropTypes.object
 }
 
 export default Form.create()(ModalMobile)

@@ -7,7 +7,10 @@ import Tab from './Tab'
 
 const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
   const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
-    disable, show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
+    disable, show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading,
+    checkMember
+  } = customer
+  console.log('zzz5', checkMember)
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -201,14 +204,6 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           mode
         }
       })
-      // setTimeout(() => {
-      //   dispatch({
-      //     type: 'customer/updateState',
-      //     payload: {
-      //       changed: true
-      //     }
-      //   })
-      // }, 1000)
     }
   }
   const modalProps = {
@@ -234,12 +229,32 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     visible: modalVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    checkMember,
     onCancel () {
       dispatch({
         type: 'customer/updateState',
         payload: {
           modalVisible: false
         }
+      })
+    },
+
+    checkMemberCardId (payload) {
+      console.log('zzz1', payload)
+      dispatch({
+        type: 'customer/queryMemberStatus',
+        payload: {
+          memberCardId: payload
+        }
+      })
+      // dispatch({
+      //   type: 'customer/resetMemberStatus'
+      // })
+    },
+    resetMemberStatus () {
+      console.log('zzz11')
+      dispatch({
+        type: 'customer/resetMemberStatus'
       })
     }
   }
@@ -250,6 +265,7 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     ...modalProps,
     ...listProps,
     ...mobileProps,
+    checkMember,
     listGroup,
     listType,
     listCity,

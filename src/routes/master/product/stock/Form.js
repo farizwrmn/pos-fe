@@ -375,17 +375,6 @@ const formProductCategory = ({
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col {...column} >
-          a
-        </Col>
-        <Col {...column} >
-          b
-        </Col>
-        <Col {...column} >
-          c
-        </Col>
-      </Row>
     </Form>
   )
 }

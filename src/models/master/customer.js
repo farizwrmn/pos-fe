@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/customer'
-import { query as queryMobile, activate } from '../../services/mobile/member'
+import { query as queryMobile, activate, getMemberStatus } from '../../services/mobile/member'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
@@ -31,6 +31,10 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
+    checkMember: {
+      visibleModal: false,
+      disabledExisting : true,
+      memberStatus: '' },
     customerLoading: false,
     pagination: {
       showSizeChanger: true,
@@ -175,6 +179,40 @@ export default modelExtend(pageModel, {
           }
         })
       }
+    },
+
+    * queryMemberStatus ({ payload = {} }, { call, put }) {
+      const result = yield call(getMemberStatus, payload)
+      let disabledExisting = true
+      if (result.success) {
+        if (result.info) {
+          console.log('aaa',result.info)
+          disabledExisting = (result.info.memberStatus.split("|")[0] === '1') ? false : true
+          console.log('aaa1',disabledExisting)
+        } else {
+          disabledExisting = true
+        }
+
+        yield put({
+          type: 'responseMemberStatus',
+          payload: {
+            checkMember: {
+              visibleModal: true,
+              disabledExisting: disabledExisting,
+              info: result.data.info,
+              dataMember: result.data.member,
+              dataAsset: result.data.asset,
+              dataBooking: result.data.booking
+            }
+          }
+        })
+      }
+    },
+    * resetMemberStatus ({ payload = {} }, { put }) {
+      console.log('zzz666')
+      yield put({
+        type: 'responseResetMemberStatus'
+      })
     },
 
     * delete ({ payload }, { call, put, select }) {
@@ -338,7 +376,26 @@ export default modelExtend(pageModel, {
         customerData = []
       }
       return { ...state, listCustomer: customerData }
-    }
+    },
+
+    responseMemberStatus (state, action) {
+      const { checkMember } = action.payload
+      return {
+        ...state,
+        checkMember
+      }
+    },
+    responseResetMemberStatus (state, action) {
+      console.log('aaa', state.checkMember)
+      const resetCheckMember = state.checkMember
+      resetCheckMember.visibleModal = false
+      console.log('zzz667', resetCheckMember)
+      return {
+        ...state,
+        checkMember: resetCheckMember
+      }
+      console.log('bbb', state.checkMember)
+    },
 
   }
 })
