@@ -191,6 +191,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))

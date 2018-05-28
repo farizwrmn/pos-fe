@@ -88,7 +88,7 @@ const Pos = ({
     paymentListActiveKey,
     modalAddUnit
   } = pos
-  const { modalAddMember } = customer
+  const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
@@ -394,6 +394,7 @@ const Pos = ({
   }
 
   const modaladdMemberProps = {
+    item: currentItem,
     modalAddMember,
     cancelMember () {
       dispatch({
