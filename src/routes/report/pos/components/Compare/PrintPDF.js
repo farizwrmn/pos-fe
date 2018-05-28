@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, category, brand }) => {
+const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffDay, category, brand }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -154,7 +154,7 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, categ
       { fontSize: 12, text: 'Section \n Width', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Aspect \n Ratio', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Rim \n Diameter', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
-      { fontSize: 12, text: 'Sold in days', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: `Sold in \n ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`, style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Monthly \n TurnOver', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Stock in month', style: 'tableHeader', colSpan: 5, alignment: 'center' },
       {},
