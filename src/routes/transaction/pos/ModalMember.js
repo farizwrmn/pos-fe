@@ -3,6 +3,7 @@ import { Modal } from 'antd'
 import { FormCustomer } from '../../master/customer/components'
 
 const Member = ({
+  item,
   modalAddMember,
   cancelMember
 }) => {
@@ -17,7 +18,7 @@ const Member = ({
   }
 
   const formCustomerProps = {
-    item: {},
+    item,
     modalType: 'addMember',
     cancelMember
   }

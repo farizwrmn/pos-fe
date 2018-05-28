@@ -191,6 +191,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
@@ -198,7 +199,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/sequence'))
-              registerModel(app, require('./models/misc'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           }
