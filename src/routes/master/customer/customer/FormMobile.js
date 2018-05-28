@@ -34,14 +34,10 @@ const ModalMobile = ({
   checkMemberCardId,
   checkMember,
   resetMemberStatus,
+  enabledItem,
   modalVisible,
   ...modalMobileProps
 }) => {
-  console.log('zzz7', checkMember)
-  console.log('zzz71', checkMember.hasOwnProperty("dataMember"))
-  console.log('zzz72', checkMember.dataMember)
-  console.log('zzz73', (checkMember.hasOwnProperty("dataMember") && (checkMember.dataMember)))
-
   const dataMember= (checkMember.dataMember) ? {
     email: checkMember.dataMember.memberEmail,
     name: checkMember.dataMember.memberName,
@@ -88,20 +84,20 @@ const ModalMobile = ({
   }
 
   const handleCheckMemberCardId = () => {
-    // console.log('zzz71',checkMember.info.memberStatus)
     checkMemberCardId(getFieldsValue().memberCardId)
   }
   const handleResetMemberStatus = () => {
-    console.log('zzz72',checkMember.info.memberStatus)
-    // if (checkMember.info.memberStatus)
-      resetMemberStatus()
+    resetMemberStatus()
   }
+  const handleCheckExisting = (checked) => {
+    console.log('zzz11', checked)
+    enabledItem('existing', !checked)
+  }
+  console.log('zzz7', checkMember)
+
 
   return (
     <div>
-      {console.log('zzz88', checkMember)}
-      {console.log('zzz99', dataMember)}
-
       <Modal
         title={'Member Card ID : ' + getFieldsValue().memberCardId}
         visible={checkMember.visibleModal}
@@ -129,7 +125,7 @@ const ModalMobile = ({
         </FormItem>
         <FormItem label="Existing Member" hasFeedback {...formItemLayout}>
           <Col span="1" offset={1}>
-            <Checkbox disabled={checkMember.disabledExisting}></Checkbox>
+            <Checkbox disabled={checkMember.existingCheckBoxDisable} onChange={(e) => handleCheckExisting(e.target.checked)}></Checkbox>
           </Col>
           <Col span="8">
             {getFieldDecorator('memberCode', {
@@ -138,11 +134,11 @@ const ModalMobile = ({
                   required: true
                 }
               ]
-            })(<Input disabled/>
+            })(<Input disabled={checkMember.existingInputBoxDisable}/>
             )}
           </Col>
           <Col span="6" offset={1}>
-            <Button className="button-line-height1" disabled>Search</Button>
+            <Button className="button-line-height1" disabled={checkMember.existingSearchButtonDisable}>Search</Button>
           </Col>
         </FormItem>
 

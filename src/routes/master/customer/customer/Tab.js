@@ -117,8 +117,6 @@ const formCustomer = ({
     // memberStatus,
     ...mobileProps
   }
-  console.log('zzz61',mobileProps)
-  console.log('zzz6',formMobileProps)
   const formOpts = {
     modalType,
     item,

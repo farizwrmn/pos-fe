@@ -10,7 +10,6 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     disable, show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading,
     checkMember
   } = customer
-  console.log('zzz5', checkMember)
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -240,23 +239,27 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     },
 
     checkMemberCardId (payload) {
-      console.log('zzz1', payload)
       dispatch({
         type: 'customer/queryMemberStatus',
         payload: {
           memberCardId: payload
         }
       })
-      // dispatch({
-      //   type: 'customer/resetMemberStatus'
-      // })
     },
     resetMemberStatus () {
-      console.log('zzz11')
       dispatch({
         type: 'customer/resetMemberStatus'
       })
-    }
+    },
+    enabledItem (mode, state) {
+      dispatch({
+        type: 'customer/enabledItem',
+        payload: {
+          mode,
+          state
+        }
+      })
+    },
   }
 
   const formProps = {

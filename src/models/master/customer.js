@@ -33,7 +33,9 @@ export default modelExtend(pageModel, {
     changed: false,
     checkMember: {
       visibleModal: false,
-      disabledExisting : true,
+      existingCheckBoxDisable: true,
+      existingInputBoxDisable: true,
+      existingSearchButtonDisable: true,
       memberStatus: '' },
     customerLoading: false,
     pagination: {
@@ -183,14 +185,12 @@ export default modelExtend(pageModel, {
 
     * queryMemberStatus ({ payload = {} }, { call, put }) {
       const result = yield call(getMemberStatus, payload)
-      let disabledExisting = true
+      let existingCheckBoxDisable = true
       if (result.success) {
-        if (result.info) {
-          console.log('aaa',result.info)
-          disabledExisting = (result.info.memberStatus.split("|")[0] === '1') ? false : true
-          console.log('aaa1',disabledExisting)
+        if (result.data) {
+          existingCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
         } else {
-          disabledExisting = true
+          existingCheckBoxDisable = true
         }
 
         yield put({
@@ -198,7 +198,7 @@ export default modelExtend(pageModel, {
           payload: {
             checkMember: {
               visibleModal: true,
-              disabledExisting: disabledExisting,
+              existingCheckBoxDisable,
               info: result.data.info,
               dataMember: result.data.member,
               dataAsset: result.data.asset,
@@ -208,10 +208,16 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * resetMemberStatus ({ payload = {} }, { put }) {
-      console.log('zzz666')
+    * resetMemberStatus ({}, { put }) {
       yield put({
         type: 'responseResetMemberStatus'
+      })
+    },
+    * enabledItem ({ payload = {} }, { put }) {
+      console.log('zzz2', payload)
+      yield put({
+        type: 'responseEnabledItem',
+        payload
       })
     },
 
@@ -380,21 +386,36 @@ export default modelExtend(pageModel, {
 
     responseMemberStatus (state, action) {
       const { checkMember } = action.payload
+      // console.log('zzz5', checkMember)
+      // console.log('zzz6', state)
+      checkMember.existingInputBoxDisable=state.checkMember.existingInputBoxDisable
+      checkMember.existingSearchButtonDisable=state.checkMember.existingSearchButtonDisable
+      // console.log('zzz51', checkMember)
       return {
         ...state,
         checkMember
       }
     },
     responseResetMemberStatus (state, action) {
-      console.log('aaa', state.checkMember)
       const resetCheckMember = state.checkMember
       resetCheckMember.visibleModal = false
-      console.log('zzz667', resetCheckMember)
+      // console.log('zzz6', resetCheckMember)
       return {
         ...state,
         checkMember: resetCheckMember
       }
-      console.log('bbb', state.checkMember)
+    },
+    responseEnabledItem (state, action) {
+      console.log('zzz3', state)
+      console.log('zzz4', action.payload)
+      if (action.payload.mode==='existing') {
+        state.checkMember.existingInputBoxDisable=action.payload.state
+        state.checkMember.existingSearchButtonDisable=action.payload.state
+      }
+      console.log('zzz312', state)
+      return {
+        ...state,
+      }
     },
 
   }
