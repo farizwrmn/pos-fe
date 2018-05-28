@@ -95,7 +95,9 @@ export default {
     listServiceReminder: [],
     showAlert: false,
     showListReminder: false,
-    paymentListActiveKey: '1'
+    paymentListActiveKey: '1',
+    modalAddUnit: false,
+    modalAddMember: false
   },
 
   subscriptions: {
@@ -121,6 +123,10 @@ export default {
               startPeriod: infoStore.startPeriod,
               endPeriod: infoStore.endPeriod
             }
+          })
+        } else if (location.pathname === '/service/history') {
+          dispatch({
+            type: 'getServiceReminder'
           })
         }
       })

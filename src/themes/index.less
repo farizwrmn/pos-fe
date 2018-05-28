@@ -38,8 +38,8 @@ body {
         -webkit-transition: all 0.8s cubic-bezier(0.215,0.61,0.355,1);
         transition: all 0.8s cubic-bezier(0.215,0.61,0.355,1);
         .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-            background-color: rgb(31, 71, 136);
-            color: #ffffff;
+            background-color: @lightgrey;
+            color: #000;
         };
         // .ant-table .ant-table-thead > tr > th {
         //     background-color: #FF423C;
@@ -61,10 +61,21 @@ body {
         right: 0;
         left: inherit;
     }
-    .wrapper-switcher.active .service-reminders{
-        background-color: rgb(31, 71, 136);
+    .reminder .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+        background-color: @lightgrey;
+        color: #000;
     }
-    .wrapper-switcher .service-reminders{
+    .reminder .ant-tabs-bar {
+        margin-bottom: 0 !important;        
+    }
+    .reminder .service-reminders {
+        background-color: @lightgrey;
+        padding: 12px 8px;
+    }
+    .wrapper-switcher.active .service-reminders {
+        background-color: @lightgrey;
+    }
+    .wrapper-switcher .service-reminders {
         padding: 12px 8px;
     }
     .service-reminders ::-webkit-scrollbar {
@@ -77,15 +88,17 @@ body {
       background-color: darkgrey;
       outline: 1px solid slategrey;
     }
-    .wrapper-switcher .componentTitleWrapper {
-        background-color: rgb(31, 71, 136);
+    .wrapper-switcher .componentTitleWrapper,
+    .reminder .componentTitleWrapper {
+        background-color: @lightgrey;
         padding: 15px 15px;
         height: 50px;
     }
-    .wrapper-switcher .componentTitleWrapper .componentTitle{
+    .wrapper-switcher .componentTitleWrapper .componentTitle,
+    .reminder .componentTitleWrapper .componentTitle{
         font-size: 21px;
         font-weight: 700;
-        color: #fff; 
+        color: #000; 
         line-height: 1;
         width: 100%;
         text-align: center;
@@ -95,7 +108,7 @@ body {
         color: @charcoal; 
         width: 50px;
         font-size: 10px;
-        height: 50px;
+        height: 60px;
         border: 0;
         position: absolute;
         text-align: center;
@@ -107,6 +120,9 @@ body {
     .wrapper-switcher .btn-switcher i{
         margin-top: 7px;
         font-size: 18px;
+    }
+    .collapse-form-reminder {
+        margin-bottom: 25px;
     }
     .ant-table-info .ant-table-tbody>tr>td {
             padding: 0 8px!important;
@@ -321,6 +337,9 @@ body {
                 padding: 0;
                 margin: 0;
             }
+        }
+        .collapse-form-reminder {
+            margin-top: 90px;
         }
     }
 }

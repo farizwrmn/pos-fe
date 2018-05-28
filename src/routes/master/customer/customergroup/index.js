@@ -167,8 +167,12 @@ const CustomerGroup = ({ customergroup, loading, dispatch, location, app }) => {
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
-          <Filter {...filterProps} />
-          <List {...listProps} />
+          {activeKey === '1' &&
+            <div>
+              <Filter {...filterProps} />
+              <List {...listProps} />
+            </div>
+          }
         </TabPane>
       </Tabs>
     </div>

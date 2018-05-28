@@ -5,14 +5,10 @@ import { routerRedux } from 'dva/router'
 import ModalMobile from './ModalMobile'
 import Tab from './Tab'
 
-const Customer = ({ customer, customergroup, customertype, city, misc, loading, dispatch, location, app }) => {
+const Customer = ({ customer, loading, dispatch, location, app }) => {
   const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
-    disable, show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed, customerLoading } = customer
-  const { listGroup } = customergroup
-  const { listType } = customertype
-  const { listCity } = city
-  const { listLov, code } = misc
-  const listIdType = listLov && listLov[code] ? listLov[code] : []
+    show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed,
+    customerLoading, modalAddUnit, addUnit } = customer
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -250,24 +246,11 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
     ...modalProps,
     ...listProps,
     ...mobileProps,
-    listGroup,
-    listType,
-    listCity,
-    listIdType,
     modalType,
+    modalAddUnit,
+    addUnit,
     dataCustomer,
     item: currentItem,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (id, data) {
-      dispatch({
-        type: `customer/${modalType}`,
-        payload: {
-          id,
-          data
-        }
-      })
-    },
     openModal () {
       dispatch({
         type: 'customer/updateState',
@@ -279,89 +262,12 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         type: 'customer/query'
       })
     },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    },
     onActivate (data) {
       dispatch({
         type: 'customer/activate',
         payload: {
           ...data
         }
-      })
-    },
-    updateCurrentItem (data) {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          currentItem: {
-            ...data
-          }
-        }
-      })
-    },
-    onCancelMobile () {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    },
-    defaultMember (data) {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          currentItem: {
-            memberCodeDisable: true,
-            memberGetDefault: true,
-            ...data
-          }
-        }
-      })
-    },
-    showMobileModal (data) {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          modalMobile: true,
-          currentItem: data
-        }
-      })
-    },
-    showCustomerGroup () {
-      dispatch({
-        type: 'customergroup/query'
-      })
-    },
-    showCustomerType () {
-      dispatch({
-        type: 'customertype/query'
-      })
-    },
-    showIdType () {
-      dispatch({
-        type: 'misc/lov',
-        payload: {
-          code: 'IDTYPE'
-        }
-      })
-    },
-    showCity () {
-      dispatch({
-        type: 'city/query'
       })
     },
     clickBrowse () {
@@ -371,7 +277,36 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
           activeKey: '1'
         }
       })
-    }
+    },
+    confirmAddUnit () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddUnit: false,
+          addUnit: {
+            modal: true,
+            info: addUnit.info
+          }
+        }
+      })
+    },
+    confirmSendUnit (data) {
+      dispatch({
+        type: 'customerunit/add',
+        payload: data
+      })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddUnit: true,
+          addUnit: {
+            modal: false,
+            info: addUnit.info
+          }
+        }
+      })
+    },
+    cancelUnit () { dispatch({ type: 'customer/cancelSendUnit' }) }
   }
 
   return (
@@ -385,13 +320,9 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
 Customer.propTypes = {
   customer: PropTypes.object,
   app: PropTypes.object,
-  customergroup: PropTypes.object,
-  customertype: PropTypes.object,
-  misc: PropTypes.object,
-  city: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ customer, customergroup, customertype, city, misc, loading, app }) => ({ customer, customergroup, customertype, city, misc, loading, app }))(Customer)
+export default connect(({ customer, customerunit, loading, app }) => ({ customer, customerunit, loading, app }))(Customer)

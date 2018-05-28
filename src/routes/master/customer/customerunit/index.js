@@ -12,7 +12,7 @@ import ModalBrowse from './Modal'
 const TabPane = Tabs.TabPane
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, modalType, selected, currentItem, activeKey, disable, customerInfo, listBrand, listModel, listType } = customerunit
+  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer, searchText, pagination } = customer
   const modalProps = {
@@ -143,6 +143,8 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
   }
 
   const formProps = {
+    customerunit,
+    dispatch,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -150,9 +152,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     modalType,
     customerInfo,
     openModal,
-    listModel,
-    listBrand,
-    listType,
     filter: {
       ...location.query
     },
@@ -165,80 +164,6 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         type: 'customer/updateState',
         payload: {
           dataCustomer: {}
-        }
-      })
-    },
-    onCancelUpdate () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    },
-    onFocusBrand () {
-      dispatch({ type: 'customerunit/queryCarBrands' })
-    },
-    onFocusModel () {
-      if (Object.keys(selected.brand).length) {
-        dispatch({ type: 'customerunit/queryCarModels', payload: { code: selected.brand.key } })
-      }
-    },
-    onFocusType () {
-      if (Object.keys(selected.model).length) {
-        dispatch({ type: 'customerunit/queryCarTypes', payload: { code: selected.model.key } })
-      }
-    },
-    onSelectBrand (brand) {
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          selected: {
-            brand,
-            model: selected.model,
-            type: selected.type
-          }
-        }
-      })
-    },
-    onSelectModel (model) {
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          selected: {
-            brand: selected.brand,
-            model,
-            type: selected.type
-          }
-        }
-      })
-    },
-    onSelectType (type) {
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          selected: {
-            brand: selected.brand,
-            model: selected.model,
-            type
-          }
-        }
-      })
-    },
-    resetCars () {
-      dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          listBrand: [],
-          listModel: [],
-          listType: []
         }
       })
     }
