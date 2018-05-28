@@ -123,9 +123,9 @@ const FormUnit = ({
       }
 
       const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
-      data.memberCode = customerInfo.memberCode
 
-      if (data.memberCode) {
+      if (customerInfo.memberCode) {
+        other.memberCode = customerInfo.memberCode
         other.merk = other.merk.label
         other.model = other.model.label
         if (other.type) other.type = other.type.label
