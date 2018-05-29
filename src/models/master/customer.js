@@ -188,6 +188,7 @@ export default modelExtend(pageModel, {
       let existingCheckBoxDisable = true
       if (result.success) {
         if (result.data) {
+          console.log('zzz1', result.data)
           existingCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
         } else {
           existingCheckBoxDisable = true
@@ -409,7 +410,7 @@ export default modelExtend(pageModel, {
       console.log('zzz3', state)
       console.log('zzz4', action.payload)
       if (action.payload.mode==='existing') {
-        state.checkMember.existingInputBoxDisable=action.payload.state
+        // state.checkMember.existingInputBoxDisable=action.payload.state
         state.checkMember.existingSearchButtonDisable=action.payload.state
       }
       console.log('zzz312', state)

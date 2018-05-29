@@ -11,14 +11,14 @@ const warning = Modal.warning
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 12 },
+    xs: { span: 4 },
     sm: { span: 4 },
     md: { span: 4 }
   },
   wrapperCol: {
-    xs: { span: 11 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    xs: { span: 20 },
+    sm: { span: 20 },
+    md: { span: 20 }
   }
 }
 
@@ -35,6 +35,7 @@ const ModalMobile = ({
   checkMember,
   resetMemberStatus,
   enabledItem,
+  openModal,
   modalVisible,
   ...modalMobileProps
 }) => {
@@ -93,7 +94,10 @@ const ModalMobile = ({
     console.log('zzz11', checked)
     enabledItem('existing', !checked)
   }
-  console.log('zzz7', checkMember)
+  const handleSearchMember = () => {
+    openModal()
+  }
+  console.log('zzz7', dataCustomer.memberCode)
 
 
   return (
@@ -106,39 +110,38 @@ const ModalMobile = ({
       >
         <p>{ 'status : ' + (checkMember.hasOwnProperty('info') && checkMember.info.memberStatus.split("|")[1] ) }</p>
       </Modal>
-      
+
+      {modalVisible && <ModalBrowse {...modalMobileProps} />}
       <Form layout="horizontal" {...mobileOpts}>
-        <FormItem label="Member Card ID" hasFeedback {...formItemLayout}>
-          <Col span="8" offset={2}>
+        <FormItem label="Member Card ID" {...formItemLayout}>
+          <Col xs={{ span:10, offset: 2}} sm={{ span:9, offset: 3}} md={{ span: 6, offset: 2 }}>
           {getFieldDecorator('memberCardId', {
-            rules: [
-              {
-                required: true
-              }
-            ]
-          })(<Input />
+            rules: [{ required: true }]
+          })(<Input placeholder="input member card id to check" />
           )}
           </Col>
-          <Col span="6" offset={1}>
-          <Button className="button-line-height1" type="primary" onClick={() => handleCheckMemberCardId()}>Check</Button>
+          <Col xs={{ span:3, offset: 2}} md={{ span: 3, offset: 13 }}>
+            <Button className="button-line-height1" type="primary"
+                    onClick={() => handleCheckMemberCardId()}
+            >Check</Button>
           </Col>
         </FormItem>
+
         <FormItem label="Existing Member" hasFeedback {...formItemLayout}>
           <Col span="1" offset={1}>
-            <Checkbox disabled={checkMember.existingCheckBoxDisable} onChange={(e) => handleCheckExisting(e.target.checked)}></Checkbox>
+            <Checkbox disabled={checkMember.existingCheckBoxDisable}
+                      onChange={(e) => handleCheckExisting(e.target.checked)}></Checkbox>
           </Col>
           <Col span="8">
-            {getFieldDecorator('memberCode', {
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input disabled={checkMember.existingInputBoxDisable}/>
-            )}
+            <Input disabled={true}
+                   placeholder="existing member code"
+                   value={dataCustomer.memberCode}/>
           </Col>
           <Col span="6" offset={1}>
-            <Button className="button-line-height1" disabled={checkMember.existingSearchButtonDisable}>Search</Button>
+            <Button className="button-line-height1"
+                    disabled={checkMember.existingSearchButtonDisable}
+                    onClick={() => handleSearchMember()}
+            >Search</Button>
           </Col>
         </FormItem>
 
