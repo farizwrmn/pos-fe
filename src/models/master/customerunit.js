@@ -6,9 +6,9 @@ import {
   addUnit,
   removeUnit,
   editUnit,
-  queryBrands,
-  queryModels,
-  queryTypes
+  queryCarBrands,
+  queryCarModels,
+  queryCarTypes
 } from '../../services/master/customer'
 import { pageModel } from './../common'
 
@@ -31,7 +31,8 @@ export default modelExtend(pageModel, {
     customerInfo: {},
     listBrand: [],
     listModel: [],
-    listType: []
+    listType: [],
+    selected: { brand: {}, model: {}, type: {} }
   },
 
   subscriptions: {
@@ -123,14 +124,13 @@ export default modelExtend(pageModel, {
       const newCustomerUnit = { ...payload, id, code }
       const data = yield call(editUnit, newCustomerUnit)
       if (data.success) {
-        // yield put({ type: 'query' })
+        yield put({ type: 'query', payload: { code } })
         success()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
             currentItem: {},
-            customerInfo: {},
             activeKey: '1'
           }
         })
@@ -152,33 +152,49 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryBrands ({ payload = {} }, { call, put }) {
-      const data = yield call(queryBrands, payload)
-      if (data) {
+    * queryCarBrands ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCarBrands, payload)
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
             listBrand: data.data
           }
         })
+      } else {
+        throw data
       }
     },
 
-    * queryModels ({ payload = {} }, { call, put }) {
-      const data = yield call(queryModels, payload)
-      if (data) {
+    * queryCarModels ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCarModels, payload)
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
             listModel: data.data
           }
         })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listModel: []
+          }
+        })
       }
     },
 
-    * queryTypes ({ payload = {} }, { call, put }) {
-      const data = yield call(queryTypes, payload)
-      if (data) {
+    * queryCarTypes ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCarTypes, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listType: data.data
+          }
+        })
+      } else {
         yield put({
           type: 'updateState',
           payload: {

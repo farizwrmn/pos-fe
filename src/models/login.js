@@ -111,6 +111,7 @@ export default {
     * loginSuccess ({ payload }, { put }) {
       const { data } = payload
       const from = queryURL('from')
+      localStorage.setItem('sidebarColor', '#FFFFFF')
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
@@ -129,6 +130,7 @@ export default {
     getCompanySuccess (state, action) {
       let cdi = action.payload.data
       cdi.push(action.payload.cid)
+      lstorage.removeAllKey() // reset all local storage
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state,

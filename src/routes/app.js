@@ -21,7 +21,7 @@ let lastHref
 
 const App = ({ children, dispatch, app, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
-    visibleItem, visiblePw, navOpenKeys, menu,
+    visibleItem, visiblePw, navOpenKeys, menu, defaultSidebarColor,
     permissions,
     totp, totpChecked,
     selectedDate, calendarMode, selectedMonth, listTotalBirthdayPerDate,
@@ -39,10 +39,13 @@ const App = ({ children, dispatch, app, loading, location }) => {
     }
   }
 
+  const sidebarColor = localStorage.getItem('sidebarColor')
+
   const headerProps = {
     menu,
     user,
     siderFold,
+    defaultSidebarColor,
     darkTheme,
     isNavbar,
     menuPopoverVisible,
@@ -69,6 +72,13 @@ const App = ({ children, dispatch, app, loading, location }) => {
     },
     changeTheme () {
       dispatch({ type: 'app/switchTheme' })
+    },
+    changeSiderColor (color) {
+      dispatch({
+        type: 'app/updateState',
+        payload: { defaultSidebarColor: color }
+      })
+      localStorage.setItem('sidebarColor', color)
     },
     changeOpenKeys (openKeys) {
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
@@ -242,6 +252,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     menu,
     location,
     siderFold,
+    sidebarColor,
     darkTheme,
     navOpenKeys,
     changeRole (roleCode) {
@@ -306,7 +317,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
         <link rel="icon" href={logo} type="image/x-icon" />
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
-        {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
+        {!isNavbar ? <aside style={{ backgroundColor: sidebarColor }} className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
           <Sider {...siderProps} />
         </aside> : ''}
         <LocaleProvider locale={enUS}>

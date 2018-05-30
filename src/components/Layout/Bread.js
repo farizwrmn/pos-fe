@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon, Tooltip, Badge, Cascader } from 'antd'
+import { Breadcrumb, Icon, Tooltip, Badge, Cascader, Row, Col } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
@@ -75,26 +75,32 @@ const Bread = ({ menu, changeRole }) => {
 
   return (
     <div className={styles.bread}>
-      <Breadcrumb>
-        {/* <div className={styles.currentStore}>{currentStoreName}</div> */}
-        <div className={styles.currentStore}>
-          <Badge dot={localStorage.getItem('newItem') ? JSON.parse(localStorage.getItem('newItem')).store : true}>
-            <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
-              <Cascader style={{ width: '100%' }}
-                options={listUserStores}
-                onChange={handleChangeStore}
-                changeOnSelect
-                allowClear={false}
-                defaultValue={[defaultStore]}
-                placeholder="Switch Store"
-              >
-                <a href="/">{currentStoreName}</a>
-              </Cascader>
-            </Tooltip>
-          </Badge>
-        </div>
-        {breads}
-      </Breadcrumb>
+      <Row>
+        <Col xs={4} sm={6} md={8} lg={10} xl={12}>
+          <Breadcrumb>
+            {breads}
+          </Breadcrumb>
+        </Col>
+        <Col xs={20} sm={18} md={16} lg={14} xl={12}>
+          <div className={styles.currentStore}>
+              <Col span={22}>
+                <span>{currentStoreName}</span>
+              </Col>
+              <Col span={2}>
+                <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
+                <Cascader options={listUserStores}
+                          onChange={handleChangeStore}
+                          changeOnSelect
+                          allowClear={false}
+                          defaultValue={[defaultStore]}
+                          placeholder="Switch Store"
+                ><a href="#">
+                  <Icon type="shop"></Icon>
+                </a></Cascader></Tooltip>
+              </Col>
+          </div>
+        </Col>
+      </Row>
     </div>
   )
 }

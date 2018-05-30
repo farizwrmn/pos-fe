@@ -2,15 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Button, Tabs, Dropdown, Menu, Icon } from 'antd'
 import Form from './Form'
+import List from './List'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
+import ModalBrowse from './Modal'
+
+const TabPane = Tabs.TabPane
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
+  const { listUnit, modalType, selected, currentItem, activeKey, disable, customerInfo, listBrand, listModel, listType } = customerunit
   const { user, storeInfo } = app
-  const { list, listCustomer, modalVisible, dataCustomer } = customer
+  const { list, listCustomer, modalVisible, dataCustomer, searchText, pagination } = customer
   const modalProps = {
-    customer,
-    location,
+    listCustomer,
+    searchText,
+    pagination,
+    loading,
     modalVisible,
     visible: modalVisible,
     maskClosable: false,
@@ -23,39 +32,65 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         }
       })
     },
-    openModal () {
+    onSearch () {
+      dispatch({
+        type: 'customer/query',
+        payload: {
+          page: 1,
+          q: searchText
+        }
+      })
+    },
+    onReset () {
+      dispatch({
+        type: 'customer/query'
+      })
       dispatch({
         type: 'customer/updateState',
         payload: {
-          modalVisible: true,
-          listCustomer: list
-        }
-      })
-    }
-  }
-
-  const inputSearchProps = {
-    listCustomer,
-    disableInputSearch: `${modalType === 'edit' ? disable : ''}`,
-    findItem (value) {
-      dispatch({
-        type: 'customer/onSearch',
-        payload: {
-          search: value,
-          data: list
+          searchText: ''
         }
       })
     },
-    resetUnit () {
+    onClickRow (record) {
+      if (activeKey === '1') {
+        dispatch({
+          type: 'customerunit/query',
+          payload: {
+            code: record.memberCode
+          }
+        })
+      }
       dispatch({
-        type: 'customerunit/resetUnit'
+        type: 'customerunit/updateState',
+        payload: {
+          customerInfo: record
+        }
+      })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalVisible: false,
+          activeKey: '1',
+          dataCustomer: record
+        }
       })
     },
-    showItem (value) {
+    changeText (text) {
       dispatch({
-        type: 'customerunit/query',
+        type: 'customer/updateState',
         payload: {
-          code: value
+          searchText: text
+        }
+      })
+    },
+    onChange (page) {
+      dispatch({
+        type: 'customer/query',
+        payload: {
+          q: searchText,
+          page: page.current,
+          pageSize: page.pageSize
         }
       })
     }
@@ -97,6 +132,16 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     }
   }
 
+  const openModal = () => {
+    dispatch({
+      type: 'customer/updateState',
+      payload: {
+        modalVisible: true,
+        listCustomer: list
+      }
+    })
+  }
+
   const formProps = {
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
@@ -104,6 +149,10 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
     listItem: listUnit,
     modalType,
     customerInfo,
+    openModal,
+    listModel,
+    listBrand,
+    listType,
     filter: {
       ...location.query
     },
@@ -134,63 +183,140 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         }
       })
     },
-    clickBrowse () {
+    onFocusBrand () {
+      dispatch({ type: 'customerunit/queryCarBrands' })
+    },
+    onFocusModel () {
+      if (Object.keys(selected.brand).length) {
+        dispatch({ type: 'customerunit/queryCarModels', payload: { code: selected.brand.key } })
+      }
+    },
+    onFocusType () {
+      if (Object.keys(selected.model).length) {
+        dispatch({ type: 'customerunit/queryCarTypes', payload: { code: selected.model.key } })
+      }
+    },
+    onSelectBrand (brand) {
       dispatch({
         type: 'customerunit/updateState',
         payload: {
-          activeKey: '1',
-          customerInfo: {}
-        }
-      })
-    },
-    onFocusBrand () {
-      dispatch({ type: 'customerunit/queryBrands' })
-    }
-  }
-
-  const tabProps = {
-    ...listProps,
-    ...formProps,
-    ...inputSearchProps,
-    ...modalProps,
-    modalVisible,
-    activeKey,
-    listCustomer,
-    changeTab (key) {
-      dispatch({
-        type: 'customerunit/changeTab',
-        payload: {
-          activeKey: key,
-          modalType: 'add',
-          currentItem: {},
-          disable: '',
-          listUnit: [],
-          customerInfo: {},
-          pagination: {
-            total: 0
+          selected: {
+            brand,
+            model: selected.model,
+            type: selected.type
           }
         }
       })
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          activeKey: key
-        }
-      }))
+    },
+    onSelectModel (model) {
       dispatch({
-        type: 'customer/updateState',
+        type: 'customerunit/updateState',
         payload: {
-          dataCustomer: {}
+          selected: {
+            brand: selected.brand,
+            model,
+            type: selected.type
+          }
+        }
+      })
+    },
+    onSelectType (type) {
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          selected: {
+            brand: selected.brand,
+            model: selected.model,
+            type
+          }
+        }
+      })
+    },
+    resetCars () {
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          listBrand: [],
+          listModel: [],
+          listType: []
         }
       })
     }
   }
 
+  const changeTab = (key) => {
+    dispatch({
+      type: 'customerunit/changeTab',
+      payload: {
+        activeKey: key,
+        modalType: 'add',
+        currentItem: {},
+        disable: '',
+        listUnit: [],
+        customerInfo: {},
+        pagination: {
+          total: 0
+        }
+      }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        activeKey: key
+      }
+    }))
+    dispatch({
+      type: 'customer/updateState',
+      payload: {
+        dataCustomer: {}
+      }
+    })
+  }
+
+  const clickBrowse = () => {
+    dispatch({
+      type: 'customerunit/updateState',
+      payload: {
+        activeKey: '1',
+        customerInfo: {}
+      }
+    })
+  }
+
+  const printProps = {
+    dataSource: listUnit,
+    dataCustomer,
+    user,
+    storeInfo
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = activeKey === '0' ? <Button onClick={() => clickBrowse()}>Browse</Button> : (listUnit.length > 0 ? (<Dropdown overlay={menu}>
+    <Button style={{ marginLeft: 8 }}>
+      <Icon type="printer" /> Print
+    </Button>
+  </Dropdown>) : '')
+
   return (
     <div className="content-inner">
-      <Form {...tabProps} />
+      {modalVisible && <ModalBrowse {...modalProps} />}
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+        <TabPane tab="Form" key="0" >
+          {activeKey === '0' && <Form {...formProps} />}
+        </TabPane>
+        <TabPane tab="Browse" key="1" >
+          <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15 }}>Find Customer</Button>
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
     </div>
   )
 }
