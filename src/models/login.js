@@ -30,6 +30,7 @@ export default {
       }
     },
     * login ({ payload }, { put, call }) {
+      lstorage.removeItemKeys()
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
