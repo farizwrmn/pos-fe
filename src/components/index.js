@@ -10,6 +10,7 @@ import { BasicReport, RepeatReport, BasicInvoice, BasicReportCard } from './Pdf/
 import { BasicReport as BasicExcelReport, RepeatReport as RepeatExcelReport, RepeatReportMergeCell } from './Excel/index.js'
 import layer from './layer'
 import Notification from './Notification'
+import Reminder from './Reminder'
 
 export {
   Layout,
@@ -28,5 +29,6 @@ export {
   BasicExcelReport,
   RepeatExcelReport,
   RepeatReportMergeCell,
-  Notification
+  Notification,
+  Reminder
 }

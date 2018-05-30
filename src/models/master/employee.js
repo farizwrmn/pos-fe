@@ -41,13 +41,14 @@ export default modelExtend(pageModel, {
             //     }
             //   }))
             // }
-            if (activeKey === '0') dispatch({ type: 'querySequenceEmployee' })
+            dispatch({ type: 'querySequenceEmployee' })
             dispatch({
               type: 'updateState',
               payload: {
                 activeKey: activeKey || '0'
               }
             })
+            if (activeKey === '1') dispatch({ type: 'query' })
             break
           case '/report/service/history':
             dispatch({

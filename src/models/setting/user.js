@@ -96,7 +96,6 @@ export default modelExtend(pageModel, {
       const data = yield call(edit, newUser)
       yield put({ type: 'activeTab', payload: { activeTab: payload.activeTab } })
       if (data.success) {
-        console.log('edituser', data)
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
         yield put({ type: 'app/query' })

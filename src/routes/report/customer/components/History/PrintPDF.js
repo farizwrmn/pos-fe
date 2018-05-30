@@ -59,7 +59,7 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
   if (from !== '' && to !== '') {
     periode = [
       {
-        text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  hingga  ${moment(to).format('DD-MMM-YYYY')}`,
+        text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`,
         fontSize: 12,
         alignment: 'left'
       },
@@ -84,7 +84,7 @@ const PrintPDF = ({ listHistory, user, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN TRANSAKSI PER PELANGGAN',
+            text: 'LAPORAN TRANSAKSI PER CUSTOMER',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

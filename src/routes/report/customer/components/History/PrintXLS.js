@@ -10,16 +10,6 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
   let nettoTotal = listHistory.reduce((cnt, o) => cnt + parseFloat(o.nettoTotal), 0)
 
   const styles = {
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     title: {
       name: 'Courier New',
       family: 4,
@@ -84,13 +74,13 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
 
   let periode
   if (from !== '' && to !== '') {
-    periode = { value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  hingga  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    periode = { value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   } else {
     periode = {}
   }
 
   const title = [
-    { value: 'LAPORAN TRANSAKSI PER PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN TRANSAKSI PER CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     periode
   ]

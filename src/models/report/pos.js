@@ -9,7 +9,8 @@ import {
   queryPosDaily,
   queryPOS,
   queryPOSDetail,
-  queryTurnOver
+  queryTurnOver,
+  queryPOSCompareSvsI
 } from '../../services/report/pos'
 
 export default {
@@ -21,8 +22,11 @@ export default {
     listDaily: [],
     listPOS: [],
     listPOSDetail: [],
+    listPOSCompareSvsI: [],
     fromDate: '',
     toDate: '',
+    paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
+    diffDay: 0,
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
@@ -220,6 +224,19 @@ export default {
       } else {
         throw data
       }
+    },
+    * queryCompareSalesInventory ({ payload }, { call, put }) {
+      let data = yield call(queryPOSCompareSvsI, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessPOSCompareSvsI',
+          payload: {
+            listPOSCompareSvsI: data.data
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
   reducers: {
@@ -271,11 +288,30 @@ export default {
         }
       }
     },
+    querySuccessPOSCompareSvsI (state, { payload }) {
+      const { listPOSCompareSvsI } = payload
+
+      return {
+        ...state,
+        listPOSCompareSvsI,
+        ...payload
+      }
+    },
     updateState (state, { payload }) {
       return { ...state, ...payload }
     },
     setDate (state, action) {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
+    },
+    setValue (state, action) {
+      return {
+        ...state,
+        fromDate: action.payload.from,
+        toDate: action.payload.to,
+        paramDate: [action.payload.from, action.payload.to],
+        diffDay: Math.round(((new Date(action.payload.to) - new Date(action.payload.from)) / (1000 * 60 * 60 * 24)) + 1),
+        ...action.payload
+      }
     },
     setListNull (state) {
       return {
@@ -285,6 +321,8 @@ export default {
         listDaily: [],
         listPOS: [],
         listPOSDetail: [],
+        listPOSCompareSvsI: [],
+        diffDay: 0,
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

@@ -42,6 +42,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
+          if (activeKey === '1') dispatch({ type: 'query' })
         }
       })
     }

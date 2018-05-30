@@ -29,16 +29,17 @@ body {
 :global {
     .wrapper-switcher {
         position: fixed;
-        width: 500px;
-        bottom: 0;
-        right: -500px; 
+        width: 92%;
+        top: 100px;
+        right: -92%; 
+        height: 100%;
         left: inherit;   
         z-index: 1;
-        -webkit-transition: all 0.3s cubic-bezier(0.215,0.61,0.355,1);
-        transition: all 0.3s cubic-bezier(0.215,0.61,0.355,1);
+        -webkit-transition: all 0.8s cubic-bezier(0.215,0.61,0.355,1);
+        transition: all 0.8s cubic-bezier(0.215,0.61,0.355,1);
         .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-            background-color: rgb(31, 71, 136);
-            color: #ffffff;
+            background-color: @lightgrey;
+            color: #000;
         };
         // .ant-table .ant-table-thead > tr > th {
         //     background-color: #FF423C;
@@ -60,19 +61,44 @@ body {
         right: 0;
         left: inherit;
     }
-    .wrapper-switcher.active .service-reminders{
-        background-color: rgb(31, 71, 136);
-        padding-bottom: 8px;
+    .reminder .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+        background-color: @lightgrey;
+        color: #000;
     }
-    .wrapper-switcher .componentTitleWrapper {
-        background-color: rgb(31, 71, 136);
+    .reminder .ant-tabs-bar {
+        margin-bottom: 0 !important;        
+    }
+    .reminder .service-reminders {
+        background-color: @lightgrey;
+        padding: 12px 8px;
+    }
+    .wrapper-switcher.active .service-reminders {
+        background-color: @lightgrey;
+    }
+    .wrapper-switcher .service-reminders {
+        padding: 12px 8px;
+    }
+    .service-reminders ::-webkit-scrollbar {
+        width: 12px !important;
+    }
+    .service-reminders ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+    .service-reminders ::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
+    .wrapper-switcher .componentTitleWrapper,
+    .reminder .componentTitleWrapper {
+        background-color: @lightgrey;
         padding: 15px 15px;
         height: 50px;
     }
-    .wrapper-switcher .componentTitleWrapper .componentTitle{
+    .wrapper-switcher .componentTitleWrapper .componentTitle,
+    .reminder .componentTitleWrapper .componentTitle{
         font-size: 21px;
         font-weight: 700;
-        color: #fff; 
+        color: #000; 
         line-height: 1;
         width: 100%;
         text-align: center;
@@ -81,15 +107,25 @@ body {
         background-color: @laserlemon;
         color: @charcoal; 
         width: 50px;
-        font-size: 18px;
-        height: 50px;
+        font-size: 10px;
+        height: 60px;
         border: 0;
         position: absolute;
         text-align: center;
-        // top: 200px;
+        top: 32px;
         left: -50px;
         right: inherit;
         border-radius: 3px 0 0 3px;
+    }
+    .wrapper-switcher .btn-switcher i{
+        margin-top: 7px;
+        font-size: 18px;
+    }
+    .collapse-form-reminder {
+        margin-bottom: 25px;
+    }
+    .ant-table-info .ant-table-tbody>tr>td {
+            padding: 0 8px!important;
     }
     .ant-breadcrumb {
         &>span {
@@ -281,21 +317,8 @@ body {
 @media (min-width: 1024px) and (max-width: 1024px) {
     :global {
         .wrapper-switcher {
-            bottom: 450px;
-        }
-        .wrapper-switcher .btn-switcher {
-            background-color: @laserlemon;
-            color: @charcoal; 
-            width: 50px;
-            font-size: 18px;
-            height: 50px;
-            border: 0;
-            position: absolute;
-            text-align: center;
-            // top: 200px;
-            left: -50px;
-            right: inherit;
-            border-radius: 3px 0 0 3px;
+            width: 90%;
+            right: -90%;
         }
     }
 }
@@ -303,9 +326,8 @@ body {
 @media (max-width: 767px) {
      :global {
         .wrapper-switcher {
-            width: 300px;
-            bottom: 0;
-            right: -300px;
+            width: 85%;
+            right: -85%;
         }
         .ant-card {
             .ant-card-head {
@@ -315,6 +337,9 @@ body {
                 padding: 0;
                 margin: 0;
             }
+        }
+        .collapse-form-reminder {
+            margin-top: 90px;
         }
     }
 }

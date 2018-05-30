@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { configMain } from 'utils'
-import moment from 'moment'
+import { Reminder } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
+import ModalUnit from './ModalUnit'
+import ModalMember from './ModalMember'
 
 const { prefix } = configMain
 const Panel = Collapse.Panel
@@ -29,7 +31,7 @@ const formItemLayout = {
 
 const Pos = ({
   location,
-  // customer,
+  customer,
   // city,
   // customergroup,
   // customertype,
@@ -82,8 +84,11 @@ const Pos = ({
     listUnitUsage,
     showAlert,
     showListReminder,
-    listServiceReminder
+    listServiceReminder,
+    paymentListActiveKey,
+    modalAddUnit
   } = pos
+  const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
@@ -300,15 +305,107 @@ const Pos = ({
     })
   }
 
-  // const handleAddMember = () => {
-  // dispatch({
-  //   type: 'customer/modalShow',
-  //   payload: {
-  //     modalType: type,
-  //   },
-  // })
-  // dispatch({ type: 'pos/modalPopoverClose' })
-  // }
+  const reminderProps = {
+    unitPoliceNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+    unitId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
+    listServiceReminder,
+    listUnitUsage
+  }
+
+  const handleAddAsset = () => {
+    if (memberInformation.length !== 0) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAddUnit: true
+        }
+      })
+      let member = JSON.parse(localStorage.getItem('member'))[0]
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: member.memberCode, name: member.memberName }
+          }
+        }
+      })
+    } else {
+      Modal.warning({
+        title: 'Member Information is not found',
+        content: 'Insert Member'
+      })
+    }
+  }
+
+  const handleAddMember = () => {
+    dispatch({
+      type: 'customer/updateState',
+      payload: {
+        modalAddMember: true
+      }
+    })
+  }
+
+  const modalAddUnitProps = {
+    modalAddUnit,
+    confirmSendUnit (data) {
+      dispatch({
+        type: 'customerunit/add',
+        payload: data
+      })
+      // let getData = {
+      //   id: null,
+      //   policeNo: data.policeNo,
+      //   merk: data.merk,
+      //   model: data.model,
+      //   type: data.type,
+      //   year: data.year,
+      //   chassisNo: data.chassisNo,
+      //   machineNo: data.machineNo
+      // }
+      // dispatch({
+      //   type: 'pos/chooseMemberUnit',
+      //   payload: {
+      //     policeNo: getData
+      //   }
+      // })
+      // dispatch({
+      //   type: 'payment/setPoliceNo',
+      //   payload: {
+      //     policeNo: getData
+      //   }
+      // })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAddUnit: false
+        }
+      })
+    },
+    cancelUnit () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAddUnit: false
+        }
+      })
+    }
+  }
+
+  const modaladdMemberProps = {
+    item: currentItem,
+    modalAddMember,
+    cancelMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: false
+        }
+      })
+    }
+  }
+
   const closeAlert = () => {
     dispatch({
       type: 'pos/updateState',
@@ -444,6 +541,15 @@ const Pos = ({
       type: 'pos/setNullUnit',
       payload: {
         memberUnit
+      }
+    })
+  }
+
+  const changePaymentListTab = (key) => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        paymentListActiveKey: key
       }
     })
   }
@@ -708,6 +814,15 @@ const Pos = ({
           showListReminder: false
         }
       })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: item.id, name: item.memberName }
+          }
+        }
+      })
 
       setCurBarcode('', 1)
     }
@@ -875,6 +990,12 @@ const Pos = ({
               setting
             }
           })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '1'
+            }
+          })
         } else {
           Modal.warning({
             title: 'Cannot add product',
@@ -974,8 +1095,22 @@ const Pos = ({
           }
         })
 
+        let successModal = Modal.info({
+          title: 'Success add service',
+          content: 'Service has been added in Service`s Tab'
+        })
+
         dispatch({
           type: 'pos/hideServiceModal'
+        })
+
+        setTimeout(() => successModal.destroy(), 1000)
+
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            paymentListActiveKey: '2'
+          }
         })
 
         setCurBarcode('', 1)
@@ -1418,238 +1553,28 @@ const Pos = ({
         lastMeter
       }
     })
-    if (value !== '' && value) {
-      if (!showAlert) {
+    setTimeout(() => {
+      if (value !== '' && value) {
+        if (!showAlert) {
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              showAlert: true
+            }
+          })
+        }
+      } else {
         dispatch({
           type: 'pos/updateState',
           payload: {
-            showAlert: true
+            showAlert: false,
+            showListReminder: false
           }
         })
       }
-    } else {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showAlert: false,
-          showListReminder: false
-        }
-      })
-    }
+    }, 1000)
   }
 
-  const columnAlert = [{
-    title: 'Name',
-    dataIndex: 'checkName',
-    key: 'checkName',
-    width: 250,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text}</div>
-      }
-    }
-  }, {
-    title: 'KM',
-    dataIndex: 'checkMileage',
-    key: 'checkMileage',
-    width: 110,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text.toLocaleString()}</div>
-      }
-    }
-  }, {
-    title: 'Period',
-    dataIndex: 'checkTimePeriod',
-    key: 'checkTimePeriod',
-    width: 130,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text.toLocaleString()} days</div>
-      }
-    }
-  }]
-
-  const columnUsage = [
-    {
-      title: 'Police No',
-      dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Product',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: 200,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Last Meter',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 100,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Next Service',
-      dataIndex: 'nextServiceMeter',
-      key: 'nextServiceMeter',
-      width: 100,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Last Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    },
-    {
-      title: 'Avg By KM',
-      dataIndex: 'nextServiceKM',
-      key: 'nextServiceKM',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    },
-    {
-      title: 'Avg By Date',
-      dataIndex: 'nextServiceDate',
-      key: 'nextServiceDate',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    }
-  ]
-
-  let alertDescription = (<Table bordered pagination={false} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listServiceReminder} columns={columnAlert} />)
-  let alertUsage = (<Table bordered pagination={false} scroll={{ x: '840px', y: 350 }} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listUnitUsage || []} columns={columnUsage} />)
-  const handleChangeReminder = (key) => {
-    if (key === '2') {
-      dispatch({
-        type: 'pos/getServiceUsageReminder',
-        payload: {
-          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null
-        }
-      })
-    }
-  }
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1671,12 +1596,17 @@ const Pos = ({
             </Form>
 
             <ButtonGroup style={{ marginRight: 10 }}>
+              <Tooltip title="add Member">
+                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} />
+              </Tooltip>
               <Button type="primary" size="large" onClick={handleMemberBrowse}>Member</Button>
-              {/* <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-              </Tooltip> */}
               <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
+              <Tooltip title="add Asset">
+                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
+              </Tooltip>
             </ButtonGroup>
+            {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
+            {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
 
@@ -1732,7 +1662,7 @@ const Pos = ({
                 </Col>
               </Row>
             </Form>
-            <Tabs defaultActiveKey="1">
+            <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
               <TabPane tab="Product" key="1">
                 <Table
                   rowKey={(record, key) => key}
@@ -1983,25 +1913,8 @@ const Pos = ({
       </Row>
       {(localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
-          <Button className="btn-switcher" onClick={onShowReminder}><Icon type="sound" /></Button>
-          <Tabs type="card" onChange={handleChangeReminder}>
-            <TabPane tab="Usage" key="1">
-              <div className="componentTitleWrapper">
-                <h3 className="componentTitle">
-                  <span>Usage</span>
-                </h3>
-              </div>
-              <div className="service-reminders">{alertUsage}</div>
-            </TabPane>
-            <TabPane tab="Services" key="2">
-              <div className="componentTitleWrapper">
-                <h3 className="componentTitle">
-                  <span>Services</span>
-                </h3>
-              </div>
-              <div className="service-reminders">{alertDescription}</div>
-            </TabPane>
-          </Tabs>
+          <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
+          <Reminder {...reminderProps} />
         </div>
       }
     </div >
@@ -2012,6 +1925,7 @@ Pos.propTypes = {
   pos: PropTypes.object.isRequired,
   payment: PropTypes.object.isRequired,
   customer: PropTypes.object.isRequired,
+  customerunit: PropTypes.object.isRequired,
   unit: PropTypes.object.isRequired,
   app: PropTypes.object.isRequired,
   position: PropTypes.object.isRequired,
@@ -2022,4 +1936,4 @@ Pos.propTypes = {
   customergroup: PropTypes.object.isRequired
 }
 
-export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading, payment }))(Pos)
+export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)

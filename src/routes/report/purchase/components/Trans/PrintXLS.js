@@ -15,16 +15,6 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const styles = {
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     title: {
       name: 'Courier New',
       family: 4,

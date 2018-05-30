@@ -55,7 +55,8 @@ const Role = ({ role, dispatch }) => {
       let checkVariable = roles[key].miscVariable.split(',')
       columns.push(
         {
-          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
+          // title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
+          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
           children: [
             {
               title: roles[key].miscDesc,

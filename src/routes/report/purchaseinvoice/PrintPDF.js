@@ -86,7 +86,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
           },
           {
             stack: [
-              { text: 'FAKTUR PENJUALAN', style: 'reportTitle' },
+              { text: 'FAKTUR PEMBELIAN', style: 'reportTitle' },
               {
                 style: 'tableInfo',
                 table: {

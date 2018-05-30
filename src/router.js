@@ -45,6 +45,16 @@ const Routers = function ({ history, app }) {
             }, 'login')
           }
         }, {
+          path: 'service/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customerunit'))
+              cb(null, require('./routes/service/history'))
+            }, 'service-history')
+          }
+        }, {
           path: 'nps/01',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -93,6 +103,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/city'))
               cb(null, require('./routes/master/customer/customer/'))
@@ -180,6 +191,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
               registerModel(app, require('./models/payment'))
@@ -256,6 +269,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
               cb(null, require('./routes/report/pos/summary/'))
             }, 'report-pos-summary')
           }

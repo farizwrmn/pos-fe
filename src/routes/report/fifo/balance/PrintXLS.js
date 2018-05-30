@@ -11,9 +11,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
   let beginQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.beginQty), 0)
   let purchaseQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.purchaseQty), 0)
   let adjInQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjInQty), 0)
+  let transferInQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferInQty || 0), 0)
   let posQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.posQty), 0)
   let valuePrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.valuePrice), 0)
   let adjOutQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.adjOutQty), 0)
+  let transferOutQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transferOutQty || 0), 0)
+  let inTransitQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransitQty || 0), 0)
+  let inTransferQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransferQty || 0), 0)
 
   const styles = {
     merchant: {
@@ -28,7 +32,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
       underline: true
     },
     tableTitle: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
@@ -80,12 +84,16 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.beginQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.purchaseQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.adjInQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.transferInQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.posQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.adjOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.transferOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.inTransitQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.inTransferQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             tableBody.push(row)
             break
           case '1':
@@ -93,7 +101,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             tableBody.push(row)
             break
           case '2':
@@ -101,13 +109,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.valuePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.beginQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.purchaseQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.adjInQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.posQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.valuePrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.adjOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             tableBody.push(row)
             break
           case '3':
@@ -116,9 +124,9 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             row.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: (data.transNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
             row.push({ value: data.transType.toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.pQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: (data.sQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-            row.push({ value: countQtyValue.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.pQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: (data.sQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+            row.push({ value: countQtyValue, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
             tableBody.push(row)
             break
           default:
@@ -136,16 +144,24 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
             { value: 'SALDO AWAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PENYESUAIAN(IN) + RETUR PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'ADJ IN + RETUR PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'TR IN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'SALES', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PENYESUAIAN(OUT) + RETUR PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+            { value: 'ADJ OUT + RETUR PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'TR OUT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'IN TRANSIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'IN TRANSFER', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
           ],
           [
             { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
@@ -163,9 +179,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             { value: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
             { value: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
             { value: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+            { value: `${transferInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
             { value: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
             { value: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-            { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+            { value: `${transferOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+            { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+            { value: `${inTransitQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+            { value: `${inTransferQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
           ]
         )
         break
@@ -198,10 +218,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
             { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
             { value: 'SALDO AWAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PENYESUAIAN(IN) + RETUR PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'ADJ IN + RETUR PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
             { value: 'PENJUALAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-            { value: 'PENYESUAIAN(OUT) + RETUR PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'ADJ OUT + RETUR PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
             { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
           ],
           [
@@ -245,14 +265,16 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
           ]
         ])
         tableHeader = [
-          { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'TANGGAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'NO_FAKTUR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'TIPE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'MASUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'KELUAR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+          [
+            { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'TANGGAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'NO_FAKTUR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'TIPE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'MASUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'KELUAR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+            { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+          ]
         ]
         tableFooter.push(
           [

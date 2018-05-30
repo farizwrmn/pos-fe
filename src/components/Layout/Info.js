@@ -53,6 +53,7 @@ const Info = ({ ipAddress, dispatch, app }) => {
     showHeader={false}
     bordered={false}
     size="small"
+    className="ant-table-info"
     columns={columns}
     rowKey={(record, key) => key}
     dataSource={data}

@@ -1,0 +1,6 @@
+{
+  "name": "Reminder",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Reminder.js"
+}

@@ -94,7 +94,10 @@ export default {
     dataCashierTrans: {},
     listServiceReminder: [],
     showAlert: false,
-    showListReminder: false
+    showListReminder: false,
+    paymentListActiveKey: '1',
+    modalAddUnit: false,
+    modalAddMember: false
   },
 
   subscriptions: {
@@ -120,6 +123,10 @@ export default {
               startPeriod: infoStore.startPeriod,
               endPeriod: infoStore.endPeriod
             }
+          })
+        } else if (location.pathname === '/service/history') {
+          dispatch({
+            type: 'getServiceReminder'
           })
         }
       })
@@ -865,7 +872,12 @@ export default {
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
           })
+          let successModal = Modal.info({
+            title: 'Success add product',
+            content: 'Product has been added in Product`s Tab'
+          })
           yield put({ type: 'pos/hideProductModal' })
+          setTimeout(() => successModal.destroy(), 1000)
         }
       }
     },

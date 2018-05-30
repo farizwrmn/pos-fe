@@ -16,37 +16,36 @@ const PrintXLS = ({ listAsset, storeInfo }) => {
       underline: true
     },
     merchant: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     period: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     tableTitle: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
     },
     tableHeader: {
-      name: 'Calibri',
-      family: 4,
-      size: 12,
-      bold: true
-    },
-    tableBody: {
-      name: 'Calibri',
-      family: 4,
-      size: 11
-    },
-    tableFooter: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 11,
       bold: true
+    },
+    tableBody: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
+    tableFooter: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
     },
     tableBorder: {
       top: { style: 'thin', color: { argb: '000000' } },
@@ -57,17 +56,19 @@ const PrintXLS = ({ listAsset, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN ASET PELANGGAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN ASET CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
 
   const tableHeader = [
-    { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'NO PLAT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-    { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    [
+      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NO PLAT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'SUB TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
   ]
 
   let tableTitles = []
