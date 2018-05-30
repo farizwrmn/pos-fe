@@ -159,62 +159,11 @@ const PrintXLS = ({ listTrans, date, storeInfo }) => {
     )
     return tableBody
   }
-
-  // const getTitle = (activeKey) => {
-  //   let title
-  //   switch (activeKey) {
-  //     case '0':
-  //       title = 'LAPORAN REKAP FIFO'
-  //       break
-  //     case '1':
-  //       title = 'LAPORAN SISA SALDO STOCK'
-  //       break
-  //     case '2':
-  //       title = 'LAPORAN NILAI PERSEDIAAN'
-  //       break
-  //     case '3':
-  //       title = 'LAPORAN KARTU STOCK FIFO'
-  //       break
-  //     default:
-  //   }
-  //   return title
-  // }
-
   const title = [
     { value: 'LAPORAN TUNGGAKAN AR', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
     { value: `PER : ${moment(date, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
-
-  // let groupBy = (xs, key) => {
-  //   return xs.reduce((rv, x) => {
-  //     (rv[x[key]] = rv[x[key]] || []).push(x)
-  //     return rv
-  //   }, {})
-  // }
-  // let groubedByTeam = groupBy(listTrans, 'productCode')
-  // let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
-
-  // try {
-  //   if (activeKey === '3') {
-  //     for (let i = 0; i < arr.length; i += 1) {
-  //       tableBody.push(createTableBody(arr[i]))
-  //     }
-  //   } else {
-  //     tableBody = createTableBody(listRekap)
-  //   }
-  // } catch (e) {
-  //   console.log(e)
-  // }
-
-  // const getData = (activeKey) => {
-  //   let data = listRekap
-  //   if (activeKey === '3') {
-  //     data = arr
-  //   }
-  //   return data
-  // }
-
   // Declare additional Props
   const XLSProps = {
     paperSize: 9,
