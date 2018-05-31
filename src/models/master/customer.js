@@ -112,28 +112,19 @@ export default modelExtend(pageModel, {
       yield put({ type: 'hideLoading' })
       if (data.success) {
         if (payload.mode === 'pdf') {
-          if (data.data.length <= 500) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                listPrintAllCustomer: data.data,
-                changed: true
-              }
-            })
-          } else {
+          if (data.data.length > 500) {
             Modal.warning({
               title: 'Your Data is too many, please print out with using Excel'
             })
           }
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              listPrintAllCustomer: data.data,
-              changed: true
-            }
-          })
         }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPrintAllCustomer: data.data,
+            changed: true
+          }
+        })
       }
     },
 
@@ -240,9 +231,12 @@ export default modelExtend(pageModel, {
         }
         const increase = yield call(increaseSequence, seqDetail)
         if (!increase.success) throw increase
+        Modal.info({
+          title: `You are successfully added member with member code = ${payload.data.memberCode}`
+        })
       } else {
         const { memberCode, ...other } = payload.data
-        let current = Object.assign({}, payload.id, other)
+        let current = Object.assign({}, { memberCode: payload.id }, other)
         yield put({
           type: 'updateState',
           payload: {

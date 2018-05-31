@@ -159,7 +159,8 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     dispatch({
       type: 'service/queryAllService',
       payload: {
-        type: 'all'
+        type: 'all',
+        mode
       }
     })
     setTimeout(() => {
@@ -231,9 +232,9 @@ const Service = ({ service, loading, dispatch, location, app }) => {
     storeInfo
   }
 
-  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button type="default" size="large" onClick={getAllService} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
-  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button type="default" size="large" onClick={getAllService} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
-  let notification = changed ? "Click 'Print All Service' to print!" : "Click 'Get All Service' to get all data!"
+  let buttonClickPDF = (changed && listPrintAllService.length && listPrintAllService.length <= 500) ? (<PrintPDF data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button disabled={serviceLoading} type="default" size="large" onClick={getAllService} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
+  let buttonClickXLS = (changed && listPrintAllService.length) ? (<PrintXLS data={listPrintAllService} name="Print All Service" {...printProps} />) : (<Button disabled={serviceLoading} type="default" size="large" onClick={getAllService} loading={serviceLoading}><Icon type="file-pdf" />Get All Service</Button>)
+  let notification = (changed && listPrintAllService.length) ? "Click 'Print All Service' to print!" : "Click 'Get All Service' to get all data!"
   let printmode
   if (mode === 'pdf') {
     printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>

@@ -214,7 +214,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     dispatch({
       type: 'productstock/queryAllStock',
       payload: {
-        type: 'all'
+        type: 'all',
+        mode
       }
     })
     setTimeout(() => {
@@ -265,9 +266,9 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     storeInfo
   }
 
-  let buttonClickPDF = changed ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
-  let buttonClickXLS = changed ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
-  let notification = changed ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
+  let buttonClickPDF = (changed && listPrintAllStock.length && listPrintAllStock.length <= 500) ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let buttonClickXLS = (changed && listPrintAllStock.length) ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let notification = (changed && listPrintAllStock.length) ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
   let printmode
   if (mode === 'pdf') {
     printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>

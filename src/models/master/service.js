@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, queryServiceType, add, edit, remove } from '../../services/master/service'
 import { pageModel } from './../common'
@@ -84,13 +84,21 @@ export default modelExtend(pageModel, {
   effects: {
     * queryAllService ({ payload = {} }, { call, put }) {
       yield put({ type: 'showLoading' })
-      const data = yield call(query, payload)
+      const data = yield call(query, { type: payload.type })
       yield put({ type: 'hideLoading' })
       if (data.success) {
+        if (payload.mode === 'pdf') {
+          if (data.data.length > 500) {
+            Modal.warning({
+              title: 'Your Data is too many, please print out with using Excel'
+            })
+          }
+        }
         yield put({
           type: 'updateState',
           payload: {
-            listPrintAllService: data.data
+            listPrintAllService: data.data,
+            changed: true
           }
         })
       }

@@ -66,9 +66,9 @@ const formCustomer = ({
     getAllCustomer()
   }
 
-  let buttonClickPDF = (changed && listPrintAllCustomer.length && listPrintAllCustomer.length <= 500) ? (<PrintPDF data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
-  let buttonClickXLS = (changed && listPrintAllCustomer.length) ? (<PrintXLS data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button type="default" size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
-  let notification = changed ? "Click 'Print All Customer' to print!" : "Click 'Get All Customer' to get all data!"
+  let buttonClickPDF = (changed && listPrintAllCustomer.length && listPrintAllCustomer.length <= 500) ? (<PrintPDF data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button disabled={customerLoading} type="default" size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
+  let buttonClickXLS = (changed && listPrintAllCustomer.length) ? (<PrintXLS data={listPrintAllCustomer} name="Print All Customer" {...printProps} />) : (<Button type="default" disabled={customerLoading} size="large" onClick={changeButton} loading={customerLoading}><Icon type="file-pdf" />Get All Customer</Button>)
+  let notification = (changed && listPrintAllCustomer.length) ? "Click 'Print All Customer' to print!" : "Click 'Get All Customer' to get all data!"
   let printmode
   if (mode === 'pdf') {
     printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
