@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Checkbox, Button } from 'antd'
+import { Checkbox, Button, Modal } from 'antd'
 import ModalFrom from './Modal'
 import Filter from './Filter'
 import List from './List'
@@ -36,11 +36,17 @@ const Role = ({ role, dispatch }) => {
   }
 
   const deleteRole = (role) => {
-    dispatch({
-      type: 'role/delete',
-      payload: {
-        id: role
-      }
+    Modal.confirm({
+      title: `Do you Want to delete ${role.miscDesc}'s role?`,
+      onOk () {
+        dispatch({
+          type: 'role/delete',
+          payload: {
+            id: role.miscName
+          }
+        })
+      },
+      onCancel () { }
     })
   }
 
@@ -49,8 +55,8 @@ const Role = ({ role, dispatch }) => {
       let checkVariable = roles[key].miscVariable.split(',')
       columns.push(
         {
-          // title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
-          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled onClick={() => deleteRole(roles[key].miscName)}>Delete</Button></div>),
+          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key])}>Delete</Button></div>),
+          // title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled onClick={() => deleteRole(roles[key])}>Delete</Button></div>),
           children: [
             {
               title: roles[key].miscDesc,
@@ -66,12 +72,18 @@ const Role = ({ role, dispatch }) => {
   }
 
   const saveNewRole = (data) => {
-    dispatch({
-      type: 'role/add',
-      payload: {
-        id: data.miscName,
-        data: { ...data }
-      }
+    Modal.confirm({
+      title: `Do you Want to save ${data.miscDesc}'s role?`,
+      onOk () {
+        dispatch({
+          type: 'role/add',
+          payload: {
+            id: data.miscName,
+            data: { ...data }
+          }
+        })
+      },
+      onCancel () { }
     })
   }
 
