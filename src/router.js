@@ -317,12 +317,12 @@ const Routers = function ({ history, app }) {
             }, 'report-service-summary')
           }
         }, {
-          path: 'report/purchaseinvoice/summary',
+          path: 'transaction/purchase/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/report/purchaseinvoice'))
-              cb(null, require('./routes/report/purchaseinvoice/'))
-            }, 'report-purchaseinvoice-summary')
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/purchasehistory/'))
+            }, 'transaction-purchase-history')
           }
         }, {
           path: 'report/service/history',

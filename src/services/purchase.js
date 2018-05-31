@@ -96,3 +96,34 @@ export async function remove (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryHistories (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const storeId = lstorage.getCurrentUserStore()
+  params.storeId = storeId
+  return request({
+    url: purchase,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${purchase}/transNo/${params.transNo}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryHistoryDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: purchaseDetail,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
