@@ -260,6 +260,12 @@ const Customer = ({ customer, customergroup, customertype, city, misc, loading, 
         }
       })
     },
+    activateMember (payload) {
+      dispatch({
+        type: 'customer/activateMember',
+        payload
+      })
+    },
   }
 
   const formProps = {

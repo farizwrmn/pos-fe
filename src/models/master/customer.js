@@ -2,12 +2,16 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/customer'
-import { query as queryMobile, activate, getMemberStatus } from '../../services/mobile/member'
+import { query as queryMobile, srvGetMemberStatus, srvActivateMember } from '../../services/mobile/member'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const success = () => {
   message.success('Customer has been saved')
+}
+const activate = (info) => {
+  console.log('zzz4', info.memberCardId)
+  message.success('Member: ' + info.memberCardId + ' has been activated')
 }
 
 export default modelExtend(pageModel, {
@@ -32,11 +36,13 @@ export default modelExtend(pageModel, {
     mode: '',
     changed: false,
     checkMember: {
-      visibleModal: false,
       existingCheckBoxDisable: true,
-      existingInputBoxDisable: true,
       existingSearchButtonDisable: true,
-      memberStatus: '' },
+      confirmCheckBoxDisable: true,
+      activateButtonDisable: true,
+      confirmCheckBoxCheck: false,
+      info: { memberStatus: '|status', memberCode: '' },
+    },
     customerLoading: false,
     pagination: {
       showSizeChanger: true,
@@ -184,22 +190,24 @@ export default modelExtend(pageModel, {
     },
 
     * queryMemberStatus ({ payload = {} }, { call, put }) {
-      const result = yield call(getMemberStatus, payload)
+      const result = yield call(srvGetMemberStatus, payload)
       let existingCheckBoxDisable = true
+      let confirmCheckBoxDisable = true
       if (result.success) {
         if (result.data) {
-          console.log('zzz1', result.data)
           existingCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
+          confirmCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
         } else {
           existingCheckBoxDisable = true
+          confirmCheckBoxDisable = true
         }
 
         yield put({
           type: 'responseMemberStatus',
           payload: {
             checkMember: {
-              visibleModal: true,
               existingCheckBoxDisable,
+              confirmCheckBoxDisable,
               info: result.data.info,
               dataMember: result.data.member,
               dataAsset: result.data.asset,
@@ -209,17 +217,27 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * resetMemberStatus ({}, { put }) {
-      yield put({
-        type: 'responseResetMemberStatus'
-      })
-    },
     * enabledItem ({ payload = {} }, { put }) {
-      console.log('zzz2', payload)
       yield put({
         type: 'responseEnabledItem',
         payload
       })
+    },
+    * activateMember ({ payload = {} }, { call, put }) {
+      console.log('zzz1', payload)
+      const result = yield call(srvActivateMember, payload)
+      if (result.success) {
+        yield put({
+          type: 'responseActivateMember',
+          payload
+        })
+        activate(payload)
+      }
+      else {
+        throw data
+      }
+
+
     },
 
     * delete ({ payload }, { call, put, select }) {
@@ -270,20 +288,20 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * activate ({ payload }, { call, put }) {
-      const data = yield call(activate, payload)
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            dataCustomer: {}
-          }
-        })
-        success()
-      } else {
-        throw data
-      }
-    },
+    // * activate ({ payload }, { call, put }) {
+    //   const data = yield call(activate, payload)
+    //   if (data.success) {
+    //     yield put({
+    //       type: 'updateState',
+    //       payload: {
+    //         dataCustomer: {}
+    //       }
+    //     })
+    //     success()
+    //   } else {
+    //     throw data
+    //   }
+    // },
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ customer }) => customer.currentItem.memberCode)
@@ -387,37 +405,39 @@ export default modelExtend(pageModel, {
 
     responseMemberStatus (state, action) {
       const { checkMember } = action.payload
-      // console.log('zzz5', checkMember)
-      // console.log('zzz6', state)
-      checkMember.existingInputBoxDisable=state.checkMember.existingInputBoxDisable
       checkMember.existingSearchButtonDisable=state.checkMember.existingSearchButtonDisable
-      // console.log('zzz51', checkMember)
+      checkMember.activateButtonDisable=state.checkMember.activateButtonDisable
       return {
         ...state,
         checkMember
       }
     },
-    responseResetMemberStatus (state, action) {
-      const resetCheckMember = state.checkMember
-      resetCheckMember.visibleModal = false
-      // console.log('zzz6', resetCheckMember)
-      return {
-        ...state,
-        checkMember: resetCheckMember
-      }
-    },
     responseEnabledItem (state, action) {
-      console.log('zzz3', state)
-      console.log('zzz4', action.payload)
       if (action.payload.mode==='existing') {
-        // state.checkMember.existingInputBoxDisable=action.payload.state
         state.checkMember.existingSearchButtonDisable=action.payload.state
+      } else if (action.payload.mode==='confirm') {
+        state.checkMember.activateButtonDisable=action.payload.state
+        state.checkMember.confirmCheckBoxCheck=!action.payload.state
       }
-      console.log('zzz312', state)
       return {
         ...state,
       }
     },
-
+    responseActivateMember (state, action) {
+      console.log('zzz5', state)
+      console.log('zzz6', action)
+      state.checkMember = {
+        existingCheckBoxDisable: true,
+        existingSearchButtonDisable: true,
+        confirmCheckBoxDisable: true,
+        activateButtonDisable: true,
+        confirmCheckBoxCheck: false,
+        info: { memberStatus: '|status', memberCode: '' },
+        memberStatus: ''
+      }
+      return {
+        ...state,
+      }
+    }
   }
 })
