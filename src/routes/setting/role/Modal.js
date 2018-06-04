@@ -26,8 +26,7 @@ const ModalForm = ({
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue,
-    resetFields
+    getFieldsValue
   }
 }) => {
   let availableRoles = []

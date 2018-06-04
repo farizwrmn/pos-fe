@@ -88,7 +88,7 @@ const PrintXLS = ({ listPOSCompareSvsI, dataSource, fromDate, toDate, diffDay, s
           }
         }
       }
-      const header = ['NO.', 'Section Width', 'Aspect Ratio', 'Rim Diameter', `Sold in ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`, 'Monthly TO', 'BS', 'DL', 'GT', 'MI', 'Total']
+      const header = ['NO.', 'Section Width', 'Aspect Ratio', 'Rim Diameter', `Sold in ${diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}`, 'Monthly TO', 'BS', 'DL', 'GT', 'MI', 'Total']
       const footer = [
         '',
         '',

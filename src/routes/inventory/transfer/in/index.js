@@ -64,6 +64,14 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
           end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
         }
       })
+      dispatch({
+        type: 'transferIn/queryCode',
+        payload: {
+          active: 1,
+          status: 0,
+          storeIdReceiver: lstorage.getCurrentUserStore()
+        }
+      })
     }
   }
   const modalProps = {

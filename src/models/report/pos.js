@@ -1,7 +1,6 @@
 /**
  * Created by Veirry on 25/04/2018.
  */
-import moment from 'moment'
 import {
   query as queryReport,
   queryTrans,
@@ -26,7 +25,7 @@ export default {
     listPOSCompareSvsI: [],
     fromDate: '',
     toDate: '',
-    paramDate: [ new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date() ],
+    paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
     diffDay: 0,
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
@@ -238,7 +237,7 @@ export default {
       } else {
         throw data
       }
-    },
+    }
   },
   reducers: {
     querySuccessPOS (state, { payload }) {
@@ -305,12 +304,14 @@ export default {
       return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
     },
     setValue (state, action) {
-      return { ...state,
+      return {
+        ...state,
         fromDate: action.payload.from,
         toDate: action.payload.to,
-        paramDate: [ action.payload.from, action.payload.to ],
-        diffDay: Math.round((new Date(action.payload.to)-new Date(action.payload.from))/(1000*60*60*24)+1),
-        ...action.payload }
+        paramDate: [action.payload.from, action.payload.to],
+        diffDay: Math.round(((new Date(action.payload.to) - new Date(action.payload.from)) / (1000 * 60 * 60 * 24)) + 1),
+        ...action.payload
+      }
     },
     setListNull (state) {
       return {

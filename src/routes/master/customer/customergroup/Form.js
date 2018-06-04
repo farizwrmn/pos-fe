@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, message } from 'antd'
+import { Form, Input, Button, Row, Checkbox, Col, Modal, message } from 'antd'
 
 const FormItem = Form.Item
 
@@ -111,6 +111,12 @@ const formCustomerGroup = ({
                 }
               ]
             })(<Input />)}
+          </FormItem>
+          <FormItem label="Pending Payment" {...formItemLayout}>
+            {getFieldDecorator('pendingPayment', {
+              valuePropName: 'checked',
+              initialValue: item.pendingPayment ? (item.pendingPayment === '0' ? 0 : 1) : item.pendingPayment
+            })(<Checkbox />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -68,29 +68,29 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         tableBody.push(row)
         start += 1
       }
-      tableFooter.push(
-        [
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-          { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
-        ]
-      )
-      tableHeader.push(
-        [
-          { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-          { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
-        ]
-      )
     }
+    tableFooter.push(
+      [
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+      ]
+    )
+    tableHeader.push(
+      [
+        { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+      ]
+    )
     return tableBody
   }
 

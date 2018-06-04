@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Button } from 'antd'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -17,18 +18,24 @@ const modal = ({
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
+  let defaultRole = (lstorage.getStorageKey('udi')[3] || '')
   const handleOk = () => {
+    if (defaultRole === 'CSH') return
     validateFields((errors) => {
-      if (errors) {
-        return
-      }
+      if (errors) return
       const record = {
         id: item ? item.id : '',
         transNo: data.length > 0 ? data[0].transNo : '',
         storeId: data.length > 0 ? data[0].storeId : '',
         ...getFieldsValue()
       }
-      onOk(record)
+      Modal.confirm({
+        title: `Void ${data[0].transNo}'s payment`,
+        content: 'Are you sure ?',
+        onOk () {
+          onOk(record)
+        }
+      })
       resetFields()
     })
   }

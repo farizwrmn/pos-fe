@@ -28,24 +28,24 @@ const column = {
 }
 
 const formProductCategory = ({
-                               item = {},
-                               onSubmit,
-                               onCancel,
-                               disabled,
-                               modalType,
-                               button,
-                               listCategory,
-                               showCategories,
-                               listBrand,
-                               showBrands,
-                               form: {
-                                 getFieldDecorator,
-                                 validateFields,
-                                 getFieldsValue,
-                                 resetFields,
-                                 setFieldsValue
-                               }
-                             }) => {
+  item = {},
+  onSubmit,
+  onCancel,
+  disabled,
+  modalType,
+  button,
+  listCategory,
+  showCategories,
+  listBrand,
+  showBrands,
+  form: {
+    getFieldDecorator,
+    validateFields,
+    getFieldsValue,
+    resetFields,
+    setFieldsValue
+  }
+}) => {
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -295,7 +295,7 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
-          <FormItem></FormItem>
+          <FormItem />
           <FormItem label="Aspect Ratio" hasFeedback {...formItemLayout}>
             {getFieldDecorator('aspectRatio', {
               initialValue: item.aspectRatio

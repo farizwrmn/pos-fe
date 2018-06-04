@@ -3,7 +3,6 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, DatePicker, Select, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
@@ -15,18 +14,17 @@ const { RangePicker } = DatePicker
 const Option = Select.Option
 
 const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
-                  listCategory,
-                  showCategories,
-                  listBrand,
-                  showBrands,
-                  paramDate,
-                  diffDay,
-                  form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator },
-                  ...printProps }) => {
-
+  listCategory,
+  showCategories,
+  listBrand,
+  showBrands,
+  paramDate,
+  diffDay,
+  form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator },
+  ...printProps }) => {
   const handleSearch = () => {
     const data = getFieldsValue()
-    let param={}
+    let param = {}
     if (data) {
       const toDay = new Date()
       const firstDay = new Date(toDay.getFullYear(), toDay.getMonth(), 1)
@@ -36,20 +34,12 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
       param.year = data.period.format('YYYY')
 
       param.from = data.rangePicker ? data.rangePicker[0].format('YYYY-MM-DD') : moment(firstDay, 'L').format('YYYY-MM-DD')
-      param.to = data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') :moment(toDay, 'L').format('YYYY-MM-DD')
+      param.to = data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : moment(toDay, 'L').format('YYYY-MM-DD')
       param.category = data.category.key
       // param.brand = data.brand
     }
 
     onSearch(param)
-  }
-
-  const handleChangeDate = (value) => {
-    handleReset()
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-
-    onDateChange(from, to)
   }
 
   const handleReset = () => {
@@ -66,6 +56,14 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
     setFieldsValue(fields)
     resetFields()
     onListReset()
+  }
+
+  const handleChangeDate = (value) => {
+    handleReset()
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+
+    onDateChange(from, to)
   }
 
   const formItemLayout = {
@@ -116,25 +114,27 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
         <Col lg={12} md={24}>
           <FormItem label="Sales Range Date" {...formItemLayout} >
             {getFieldDecorator('rangePicker', {
-              rules: [ { required: true } ]
-            })(<RangePicker size="large" style={{ width: '60%' }}
-                // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-                onChange={value => handleChangeDate(value)}
-                format="DD-MMM-YYYY"
-              />
+              rules: [{ required: true }]
+            })(<RangePicker size="large"
+              style={{ width: '60%' }}
+              // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
+              onChange={value => handleChangeDate(value)}
+              format="DD-MMM-YYYY"
+            />
             )}
-            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>{diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}</span>
+            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>{diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}</span>
           </FormItem>
           <FormItem label="Inventory Period" {...formItemLayout}>
             {getFieldDecorator('period', {
-              rules: [ { required: true } ]
+              rules: [{ required: true }]
             })(<MonthPicker
               // defaultValue={moment(toDay, 'YYYY/MM/DD')}
-              style={{ width: '60%' }} />)}
+              style={{ width: '60%' }}
+            />)}
           </FormItem>
           <FormItem label="Category" {...formItemLayout}>
             {getFieldDecorator('category',
-              { initialValue: {key:"9", label: "TYRE"} }
+              { initialValue: { key: '9', label: 'TYRE' } }
             )(
               <Select
                 mode="default"

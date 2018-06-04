@@ -1,9 +1,13 @@
 import pathToRegexp from 'path-to-regexp'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
 import { query, queryPaymentSplit, add, cancelPayment } from '../../../services/payment/payment'
 import { queryDetail } from '../../../services/payment'
+
+const success = (msg) => {
+  message.success(msg)
+}
 
 export default {
 
@@ -122,7 +126,16 @@ export default {
             modalVisible: false
           }
         })
-        setInterval(() => { location.reload() }, 1000)
+        yield put({
+          type: 'queryPosDetail',
+          payload: {
+            id: payload.data.transNo,
+            transNo: payload.data.transNo,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        success('Payment has been saved')
+        // setInterval(() => { location.reload() }, 1000)
       } else {
         throw data
       }
@@ -137,7 +150,16 @@ export default {
             itemPayment: {}
           }
         })
-        setInterval(() => { location.reload() }, 1000)
+        yield put({
+          type: 'queryPosDetail',
+          payload: {
+            id: payload.transNo,
+            transNo: payload.transNo,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        success(`Payment ${payload.transNo} has been void`)
+        // setInterval(() => { location.reload() }, 1000)
       } else {
         throw data
       }

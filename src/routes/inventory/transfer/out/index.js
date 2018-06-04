@@ -209,7 +209,9 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         dispatch({
           type: 'transferOut/updateState',
           payload: {
-            listItem: arrayProd
+            listItem: arrayProd,
+            currentItemList: data,
+            modalVisible: true
           }
         })
         dispatch({

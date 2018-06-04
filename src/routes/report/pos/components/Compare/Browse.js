@@ -26,7 +26,7 @@ const Browse = ({ diffDay, ...browseProps }) => {
       width: '55px'
     },
     {
-      title: `Sold in ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`,
+      title: `Sold in ${diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}`,
       dataIndex: 'salesQty',
       key: 'salesQty',
       width: '60px'
@@ -66,7 +66,7 @@ const Browse = ({ diffDay, ...browseProps }) => {
       dataIndex: 'total',
       key: 'total',
       width: '50px'
-    },
+    }
   ]
 
   return (
