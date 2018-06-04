@@ -58,10 +58,11 @@ const ModalForm = ({
           {getFieldDecorator('miscName', {
             rules: [
               {
-                required: true
+                required: true,
+                min: 3
               }
             ]
-          })(<Input />)}
+          })(<Input maxLength={10} />)}
         </FormItem>
         <FormItem label="Description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscDesc', {
@@ -70,7 +71,7 @@ const ModalForm = ({
                 required: true
               }
             ]
-          })(<Input max={50} />)}
+          })(<Input maxLength={20} />)}
         </FormItem>
         <FormItem label="Reference" hasFeedback {...formItemLayout}>
           {getFieldDecorator('miscVariable')(<Select placeholder="Select role">{availableRoles}</Select>)}

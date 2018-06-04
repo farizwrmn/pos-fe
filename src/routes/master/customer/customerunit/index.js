@@ -15,6 +15,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
   const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer, searchText, pagination } = customer
+
   const modalProps = {
     listCustomer,
     searchText,
@@ -98,11 +99,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
 
   const listProps = {
     dataSource: listUnit,
-    dataCustomer,
-    user,
     loading: loading.effects['customerunit/query'],
-    storeInfo,
-    location,
     editItem (item) {
       dispatch({
         type: 'customerunit/changeTab',
@@ -121,12 +118,12 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
         }
       }))
     },
-    deleteItem (code, id) {
+    deleteItem (policeNo) {
       dispatch({
         type: 'customerunit/delete',
         payload: {
-          memberCode: code,
-          policeNo: id
+          member: customerInfo,
+          policeNo
         }
       })
     }

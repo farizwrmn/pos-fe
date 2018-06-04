@@ -6,7 +6,27 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffDay, category, brand }) => {
+const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, tableHeader, fromDate, toDate, diffDay, category, brand }) => {
+  let brandHeaders = []
+  let brandFooters = []
+  let width = ['4%', '9%', '9%', '9%', '9%', '9%']
+  let eachWidth = '9%'
+  if (tableHeader && tableHeader.length > 0) {
+    let brandHeader = []
+    let brandFooter = []
+    eachWidth = `${45 / (tableHeader.length + 1)}%`
+    for (let i = 0; i < tableHeader.length; i += 1) {
+      brandHeader.push(
+        { fontSize: 10, text: tableHeader[i], alignment: 'center' }
+      )
+      brandFooter.push(
+        { text: `${listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      )
+    }
+    brandHeaders = brandHeader
+    brandFooters = brandFooter
+  }
+
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -22,10 +42,9 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
         row.push({ text: (data.rimDiameter || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.salesQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         row.push({ text: `${(parseFloat(data.monthlyTO)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: data.BS.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.DL.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.GT.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.MI.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        for (let i = 0; i < tableHeader.length; i += 1) {
+          row.push({ text: (data[`brand0${i + 1}`]).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        }
         row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
@@ -37,18 +56,18 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
   // Declare Variable
   let qtySoldTotal = 0
   let qtyMonthlyTOTotal = 0
-  let qtyBSTotal = 0
-  let qtyDLTotal = 0
-  let qtyGTTotal = 0
-  let qtyMITotal = 0
+  // let qtyBrand01Total = 0
+  // let qtyBrand02Total = 0
+  // let qtyBrand03Total = 0
+  // let qtyBrand04Total = 0
   let qtyTotal = 0
   if (listPOSCompareSvsI.length > 0) {
     qtySoldTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.salesQty), 0)
     qtyMonthlyTOTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.monthlyTO), 0)
-    qtyBSTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.BS), 0)
-    qtyDLTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.DL), 0)
-    qtyGTTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.GT), 0)
-    qtyMITotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.MI), 0)
+    // qtyBrand01Total = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand01), 0)
+    // qtyBrand02Total = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand02), 0)
+    // qtyBrand03Total = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand03), 0)
+    // qtyBrand04Total = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand04), 0)
     qtyTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
   }
 
@@ -148,7 +167,8 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
       ]
     }
   }
-  const tableHeader = [
+
+  const tableHeaders = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Section \n Width', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
@@ -156,11 +176,7 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
       { fontSize: 12, text: 'Rim \n Diameter', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: `Sold in \n ${diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}`, style: 'tableHeader', rowSpan: 2, alignment: 'center' },
       { fontSize: 12, text: 'Monthly \n TurnOver', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
-      { fontSize: 12, text: 'Stock in month', style: 'tableHeader', colSpan: 5, alignment: 'center' },
-      {},
-      {},
-      {},
-      {}
+      { fontSize: 12, text: 'Stock in month', style: 'tableHeader', colSpan: brandHeaders.length + 1, alignment: 'center' }
     ],
     [
       {},
@@ -169,19 +185,22 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
       {},
       {},
       {},
-      { fontSize: 10, text: 'BS', alignment: 'center' },
-      { fontSize: 10, text: 'DL', alignment: 'center' },
-      { fontSize: 10, text: 'GT', alignment: 'center' },
-      { fontSize: 10, text: 'MI', alignment: 'center' },
       { fontSize: 10, text: 'total', alignment: 'center' }
     ]
   ]
+
+  for (let i = 0; i < brandHeaders.length; i += 1) {
+    tableHeaders[0].splice(7, 0, {})
+    tableHeaders[1].splice(6 + i, 0, brandHeaders[i])
+  }
+
   let tableBody = []
   try {
     tableBody = createTableBody(listPOSCompareSvsI)
   } catch (e) {
     console.log(e)
   }
+
   const tableFooter = [
     [
       { text: 'Total', colSpan: 4, alignment: 'center', fontSize: 12 },
@@ -190,24 +209,27 @@ const PrintPDF = ({ user, listPOSCompareSvsI, storeInfo, fromDate, toDate, diffD
       {},
       { text: `${qtySoldTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${qtyMonthlyTOTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${qtyBSTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${qtyDLTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 },
-      { text: `${qtyGTTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${qtyMITotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
 
+  for (let i = 0; i < brandFooters.length; i += 1) {
+    tableFooter[0].splice(6 + i, 0, brandFooters[i])
+  }
+  for (let i = 0; i <= tableHeader.length; i += 1) {
+    width.splice(6 + i, 0, eachWidth)
+  }
+
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%'],
+    width,
     pageMargins: [50, 145, 50, 60],
     pageSize: 'A3',
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',
-    tableHeader,
+    tableHeader: tableHeaders,
     tableBody,
     tableFooter,
     data: listPOSCompareSvsI,

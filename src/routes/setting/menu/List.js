@@ -4,17 +4,17 @@ import { Tree, Card, Modal, Button } from 'antd'
 
 const TreeNode = Tree.TreeNode
 
-const List = ({ menuTree, onChangeTree, onEditItem, modalEdit, onSelectMenu, onCancelSelect }) => {
-  const selectedItem = (key, title) => {
-    onSelectMenu(key, title)
+const List = ({ menuTree, onChangeTree, editItem, onDeleteItem, modalEdit, onSelectMenu, onCancelSelect }) => {
+  const selectedItem = (item) => {
+    onSelectMenu(item)
   }
 
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {
       if (item.children && item.children.length) {
-        return <TreeNode id={item.id} key={item.menuId} title={(<span onClick={() => selectedItem(item.menuId, item.name)}>{item.name}</span>)}>{getMenus(item.children)}</TreeNode>
+        return <TreeNode id={item.id} key={item.menuId} title={(<span onClick={() => selectedItem(item)}>{item.menuId}. {item.name}</span>)}>{getMenus(item.children)}</TreeNode>
       }
-      return <TreeNode id={item.id} key={item.menuId} title={(<span onClick={() => selectedItem(item.menuId, item.name)}>{item.name}</span>)} />
+      return <TreeNode id={item.id} key={item.menuId} title={(<span onClick={() => selectedItem(item)}>{item.menuId}. {item.name}</span>)} />
     })
   }
 
@@ -69,7 +69,7 @@ const List = ({ menuTree, onChangeTree, onEditItem, modalEdit, onSelectMenu, onC
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     footer: [
-      <Button type="primary" onClick={() => onEditItem(modalEdit.key)}>Edit</Button>
+      <Button type="primary" onClick={() => editItem()}>Edit</Button>
       // <Button type="danger" onClick={() => onDeleteItem(modalEdit.key)}>Delete</Button>
     ],
     onCancel () {
@@ -79,7 +79,7 @@ const List = ({ menuTree, onChangeTree, onEditItem, modalEdit, onSelectMenu, onC
 
   return (
     <div>
-      {modalEdit.visible && <Modal {...modalProps}>Do you want to edit {modalEdit.title}?</Modal>}
+      {modalEdit.visible && <Modal {...modalProps}>Do you want to edit {modalEdit.item.name}?</Modal>}
       <Card title="Menu" style={{ height: 500, overflowY: 'auto' }}>
         <Tree
           className="draggable-tree"

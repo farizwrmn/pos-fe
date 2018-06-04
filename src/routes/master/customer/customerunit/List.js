@@ -14,7 +14,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       confirm({
         title: `Are you sure delete ${record.policeNo} ?`,
         onOk () {
-          deleteItem(record.memberCode, record.policeNo)
+          deleteItem(record.policeNo)
         }
       })
     }
@@ -74,7 +74,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           title: 'Time',
           dataIndex: 'createdAt',
           key: 'createdAt',
-          render: _text => `${moment(_text).format('LLL')}`
+          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
         }
       ]
     },
@@ -90,7 +90,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           title: 'Time',
           dataIndex: 'updatedAt',
           key: 'updatedAt',
-          render: _text => `${moment(_text).format('LLL')}`
+          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
         }
       ]
     },

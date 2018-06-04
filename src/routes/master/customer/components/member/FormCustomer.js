@@ -65,6 +65,7 @@ const FormCustomer = ({
         ...item,
         ...getFieldsValue()
       }
+      if (data.email === '') data.email = null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {

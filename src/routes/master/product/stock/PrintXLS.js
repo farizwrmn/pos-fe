@@ -12,22 +12,6 @@ const PrintXLS = ({ data, storeInfo, name }) => {
       family: 4,
       size: 12
     },
-    title: {
-      name: 'Courier New',
-      family: 4,
-      size: 12,
-      underline: true
-    },
-    header: {
-      fontSize: 11,
-      margin: [0, 0, 0, 10]
-    },
-    body: {
-      fontSize: 10
-    },
-    footer: {
-      fontSize: 10
-    },
     tableHeader: {
       name: 'Courier New',
       family: 4,
@@ -43,11 +27,6 @@ const PrintXLS = ({ data, storeInfo, name }) => {
       left: { style: 'thin', color: { argb: '000000' } },
       bottom: { style: 'thin', color: { argb: '000000' } },
       right: { style: 'thin', color: { argb: '000000' } }
-    },
-    tableFooter: {
-      name: 'Times New Roman',
-      family: 4,
-      size: 10
     }
   }
   const createTableBody = (list) => {

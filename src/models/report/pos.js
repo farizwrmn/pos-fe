@@ -30,6 +30,8 @@ export default {
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
+    selectedBrand: [],
+    tableHeader: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -313,6 +315,16 @@ export default {
         ...action.payload
       }
     },
+    addSelectedBrand (state, { payload }) {
+      const { brand } = payload
+      state.selectedBrand.push(brand)
+      return { ...state }
+    },
+    deselectedBrand (state, { payload }) {
+      const { brand } = payload
+      state.selectedBrand = state.selectedBrand.filter(x => x.key !== brand.key)
+      return { ...state }
+    },
     setListNull (state) {
       return {
         ...state,
@@ -323,6 +335,8 @@ export default {
         listPOSDetail: [],
         listPOSCompareSvsI: [],
         diffDay: 0,
+        selectedBrand: [],
+        tableHeader: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,
