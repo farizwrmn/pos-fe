@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -29,6 +29,47 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Name',
       dataIndex: 'groupName',
       key: 'groupName'
+    },
+    {
+      title: 'Pending Payment',
+      dataIndex: 'pendingPayment',
+      key: 'pendingPayment',
+      render: text =>
+        (<span>
+          <Tag color={text === '1' ? 'blue' : 'red'}>
+            {text === '1' ? 'Allow' : 'Disallowed'}
+          </Tag>
+        </span>)
+    },
+    {
+      title: 'Created',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'createdBy',
+          key: 'createdBy'
+        },
+        {
+          title: 'Time',
+          dataIndex: 'createdAt',
+          key: 'createdAt'
+        }
+      ]
+    },
+    {
+      title: 'Updated',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'updatedBy',
+          key: 'updatedBy'
+        },
+        {
+          title: 'Time',
+          dataIndex: 'updatedAt',
+          key: 'updatedAt'
+        }
+      ]
     },
     {
       title: 'Operation',

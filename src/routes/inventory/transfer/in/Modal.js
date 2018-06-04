@@ -1,9 +1,9 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
-import { Form, Modal, DatePicker, Select } from 'antd'
+import { Form, Modal, Select } from 'antd'
 import moment from 'moment'
 
-const { MonthPicker } = DatePicker
+// const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -27,7 +27,7 @@ const modal = ({
   transNo,
   storeId,
   ...modalProps,
-  changeDate,
+  // changeDate,
   onSearch,
   form: {
     getFieldDecorator,
@@ -54,14 +54,6 @@ const modal = ({
       data.period = data.period ? data.period : []
       data.transNo = data.transNo ? data.transNo : []
       data.storeIdReceiver = data.storeIdReceiver ? data.storeIdReceiver : []
-
-      if (data.transNo.length === 0 && data.storeIdReceiver.length === 0) {
-        Modal.warning({
-          title: 'No Data',
-          content: 'No data inside storage'
-        })
-        return
-      }
       for (let key in data) {
         if (data[key].length === 0) {
           delete data[key]
@@ -81,12 +73,12 @@ const modal = ({
     onOk: handleOk
   }
 
-  const filterDate = (date, dateString) => {
-    // let startDate = moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss')
-    // let endDate = moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss')
-    changeDate(dateString)
-    resetFields()
-  }
+  // const filterDate = (date, dateString) => {
+  //   // let startDate = moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss')
+  //   // let endDate = moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss')
+  //   changeDate(dateString)
+  //   resetFields()
+  // }
 
   let childrenTransNo = []
   const selectTransNo = () => {
@@ -104,13 +96,27 @@ const modal = ({
 
   return (
     <Modal {...modalOpts}>
-      <FormItem label="Period" hasFeedback {...formItemLayout}>
+      {/* <FormItem label="Period" hasFeedback {...formItemLayout}>
         {getFieldDecorator('period', {
           initialValue: null
         })(
           // <RangePicker onChange={filterDate} />
           <MonthPicker onChange={filterDate} placeholder="Select Period" />
         )}
+      </FormItem> */}
+      <FormItem label="Store Name" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('storeIdReceiver', {
+          initialValue: item.storeIdReceiver
+        })(<Select
+          mode="multiple"
+          style={{ width: 245 }}
+          placeholder="Select Store Name"
+          onFocus={selectStoreId()}
+          onChange={() => resetSelectedField('transNo')}
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {childrenStoreId}
+        </Select>)}
       </FormItem>
       <FormItem label="Trans No" hasFeedback {...formItemLayout}>
         {getFieldDecorator('transNo', {
@@ -124,20 +130,6 @@ const modal = ({
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {childrenTransNo}
-        </Select>)}
-      </FormItem>
-      <FormItem label="Store Name" hasFeedback {...formItemLayout}>
-        {getFieldDecorator('storeIdReceiver', {
-          initialValue: item.storeIdReceiver
-        })(<Select
-          mode="multiple"
-          style={{ width: 245 }}
-          placeholder="Select Store Name"
-          onFocus={selectStoreId()}
-          onChange={() => resetSelectedField('transNo')}
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {childrenStoreId}
         </Select>)}
       </FormItem>
     </Modal>

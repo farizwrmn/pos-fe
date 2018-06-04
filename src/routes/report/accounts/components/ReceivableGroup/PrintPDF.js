@@ -28,7 +28,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
           { text: (data.memberName || '').toString(), alignment: 'left', style: 'tableContent' },
           { text: (data.memberGroupName || '').toString(), alignment: 'left', style: 'tableContent' },
 
-          { text: (beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
+          { text: (data.beginValue || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
           { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
           { text: (data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : ''), alignment: 'left', style: 'tableContent' },
           { text: (data.cash || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },

@@ -3,7 +3,6 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, DatePicker, Select, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
@@ -52,14 +51,6 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
     })
   }
 
-  const handleChangeDate = (value) => {
-    handleReset()
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-
-    onDateChange(from, to)
-  }
-
   const handleReset = () => {
     const fields = getFieldsValue()
     for (let item in fields) {
@@ -74,6 +65,14 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
     setFieldsValue(fields)
     resetFields()
     onListReset()
+  }
+
+  const handleChangeDate = (value) => {
+    handleReset()
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+
+    onDateChange(from, to)
   }
 
   const formItemLayout = {

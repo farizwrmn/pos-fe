@@ -60,11 +60,20 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/inventory/transfer/in') {
+          // dispatch({
+          //   type: 'queryCode',
+          //   payload: {
+          //     active: 1,
+          //     status: 0,
+          //     storeIdReceiver: lstorage.getCurrentUserStore()
+          //   }
+          // })
           dispatch({
-            type: 'queryCode',
+            type: 'queryMutasiOut',
             payload: {
               active: 1,
-              status: 0
+              status: 0,
+              storeIdReceiver: lstorage.getCurrentUserStore()
             }
           })
         }
@@ -114,7 +123,7 @@ export default modelExtend(pageModel, {
       let transNo = []
       let storeId = []
       // yield put({ type: 'resetAll', payload: payload })
-      if (data.data.length > 0) {
+      if (data.success) {
         transNo = data.data.map(n => n.transNo)
         storeId = data.data.map(n => n)
         yield put({
@@ -133,22 +142,10 @@ export default modelExtend(pageModel, {
     },
     * queryMutasiOut ({ payload = {} }, { call, put }) {
       yield put({ type: 'setPeriod', payload })
-      let data
-      try {
-        data = yield call(queryOut, payload)
-        if (data.success === false) {
-          Modal.warning({
-            title: 'Something Went Wrong',
-            content: 'Please Refresh the page or change params'
-          })
-        }
-      } catch (e) {
-        console.log('error', e)
-      }
-
+      let data = yield call(queryOut, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
-        if (data.data.length > 0) {
+        if ((data.data || []).length > 0) {
           yield put({
             type: 'querySuccessTrans',
             payload: {
@@ -162,13 +159,16 @@ export default modelExtend(pageModel, {
               }
             }
           })
-          yield put({ type: 'updateState', payload: { currentItem: {} } })
-        } else {
-          Modal.warning({
-            title: 'No Data',
-            content: 'No data inside storage'
+          yield put({
+            type: 'updateState',
+            payload: {
+              transNo: data.data.map(n => n.transNo),
+              storeId: data.data.map(n => n)
+            }
           })
         }
+      } else {
+        throw data
       }
     },
     * queryTransferIn ({ payload = {} }, { call, put }) {

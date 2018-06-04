@@ -239,7 +239,7 @@ export default {
       } else {
         throw data
       }
-    },
+    }
   },
   reducers: {
     querySuccessPOS (state, { payload }) {
@@ -311,7 +311,7 @@ export default {
         fromDate: action.payload.from,
         toDate: action.payload.to,
         paramDate: [action.payload.from, action.payload.to],
-        diffDay: Math.round((new Date(action.payload.to) - new Date(action.payload.from)) / (1000 * 60 * 60 * 24) + 1),
+        diffDay: Math.round(((new Date(action.payload.to) - new Date(action.payload.from)) / (1000 * 60 * 60 * 24)) + 1),
         ...action.payload
       }
     },
