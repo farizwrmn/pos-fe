@@ -3,184 +3,178 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Icon, Modal } from 'antd'
-import { saveAs } from 'file-saver'
-import * as Excel from 'exceljs/dist/exceljs.min.js'
+import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const warning = Modal.warning
+const PrintXLS = ({ listPOSCompareSvsI, tableHeader, fromDate, toDate, diffDay, storeInfo, category, brand }) => {
+  const styles = {
+    merchant: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
+    },
+    period: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
+    },
+    productType: {
+      name: 'Courier New',
+      family: 4,
+      size: 10
+    },
+    title: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+      underline: true
+    },
+    tableHeader: {
+      name: 'Courier New',
+      family: 4,
+      size: 11
+    },
+    tableBody: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
+    tableFooter: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
+    tableBorder: {
+      top: { style: 'thin', color: { argb: '000000' } },
+      left: { style: 'thin', color: { argb: '000000' } },
+      bottom: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
+    }
+  }
 
-const PrintXLS = ({ listPOSCompareSvsI, dataSource, fromDate, toDate, diffDay, storeInfo, category, brand }) => {
   let qtySoldTotal = 0
   let qtyMonthlyTOTotal = 0
-  let qtyBSTotal = 0
-  let qtyDLTotal = 0
-  let qtyGTTotal = 0
-  let qtyMITotal = 0
+  // let qtyBSTotal = 0
+  // let qtyDLTotal = 0
+  // let qtyGTTotal = 0
+  // let qtyMITotal = 0
   let qtyTotal = 0
   if (listPOSCompareSvsI.length > 0) {
     qtySoldTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.salesQty), 0)
     qtyMonthlyTOTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.monthlyTO), 0)
-    qtyBSTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.BS), 0)
-    qtyDLTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.DL), 0)
-    qtyGTTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.GT), 0)
-    qtyMITotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.MI), 0)
+    // qtyBSTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand01), 0)
+    // qtyDLTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand02), 0)
+    // qtyGTTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand03), 0)
+    // qtyMITotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.brand04), 0)
     qtyTotal = listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
   }
 
-  const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
-  workbook.created = new Date()
-  // workbook.lastPrinted = new Date(2016, 9, 27)
-  workbook.views = [
-    {
-      x: 0,
-      y: 0,
-      width: 10000,
-      height: 20000,
-      firstSheet: 0,
-      activeTab: 1,
-      visibility: 'visible'
+  let brandHeaders = []
+  let brandFooters = []
+
+  if (tableHeader && tableHeader.length > 0) {
+    let brandHeader = []
+    let brandFooter = []
+    for (let i = 0; i < tableHeader.length; i += 1) {
+      brandHeader.push(
+        { value: tableHeader[i], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+      )
+      brandFooter.push(
+        { value: `${listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      )
     }
-  ]
-  const sheet = workbook.addWorksheet('POS 1',
-    { pageSetup: { paperSize: 9, orientation: 'portrait' } })
-  const handleXLS = () => {
-    if (fromDate === '' && toDate === '') {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...'
-      })
-    } else if (listPOSCompareSvsI.length === 0) {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...'
-      })
-    } else {
-      sheet.getCell('F2').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12,
-        underline: true
-      }
-      sheet.getCell('F3').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12
-      }
-      sheet.getCell('F4').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12
-      }
-      sheet.getCell('J5').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 10
-      }
-      for (let n = 0; n <= listPOSCompareSvsI.length; n += 1) {
-        for (let m = 65; m < 74; m += 1) {
-          let o = 11 + n
-          sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-            name: 'Times New Roman',
-            family: 4,
-            size: 10
-          }
-        }
-      }
-      const header = ['NO.', 'Section Width', 'Aspect Ratio', 'Rim Diameter', `Sold in ${diffDay > 0 ? diffDay + ' day' + (diffDay===1 ? '' : 's') : ''}`, 'Monthly TO', 'BS', 'DL', 'GT', 'MI', 'Total']
-      const footer = [
-        '',
-        '',
-        '',
-        'TOTAL',
-        `${qtySoldTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`,
-        `${qtyMonthlyTOTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${qtyBSTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${qtyDLTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${qtyGTTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${qtyMITotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      ]
-      for (let m = 65; m < (65 + header.length); m += 1) {
-        let o = 7
-        let count = m - 65
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
-      }
-
-      for (let n = 0; n < listPOSCompareSvsI.length; n += 1) {
-        let m = 9 + n
-        sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
-        sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`B${m}`).value = listPOSCompareSvsI[n].sectionWidth
-        sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = listPOSCompareSvsI[n].aspectRatio
-        sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = listPOSCompareSvsI[n].rimDiameter
-        sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].salesQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].monthlyTO)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].BS)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].DL)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].GT)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].MI)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).value = `${(parseFloat(listPOSCompareSvsI[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-        sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-      }
-
-      for (let m = 65; m < (65 + footer.length); m += 1) {
-        let n = listPOSCompareSvsI.length + 10
-        let count = m - 65
-        sheet.getCell(`C${n}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11
-        }
-        sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
-          name: 'Times New Roman',
-          family: 4,
-          size: 10
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
-      }
-
-      sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F2').value = 'LAPORAN PENJUALAN - PERSEDIAAN'
-      sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F3').value = `${storeInfo.name}`
-      sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
-      sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J5').value = `KATEGORI PRODUK : ${category || 'ALL CATEGORY'}`
-      sheet.getCell('J6').alignment = { vertical: 'middle', horizontal: 'right' }
-      sheet.getCell('J6').value = `MERK : ${brand || 'ALL BRAND'}`
-      workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `POS-Compare${moment().format('YYYYMMDD')}.xlsx`)
-      })
-    }
+    brandHeaders = brandHeader
+    brandFooters = brandFooter
   }
+
+  const createTableBody = (list) => {
+    let body = []
+    let start = 1
+    for (let key in list) {
+      if (list.hasOwnProperty(key)) {
+        let data = list[key]
+        let row = []
+        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.sectionWidth, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.aspectRatio, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.rimDiameter, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `${(parseFloat(data.salesQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `${(parseFloat(data.monthlyTO)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        for (let i = 0; i < tableHeader.length; i += 1) {
+          row.push({ value: `${(data[`brand0${i + 1}`]).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        }
+        row.push({ value: `${(parseFloat(data.total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        body.push(row)
+      }
+      start += 1
+    }
+    return body
+  }
+
+  const title = [
+    { value: 'LAPORAN PENJUALAN - PERSEDIAAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period },
+    {},
+    { value: `KATEGORI PRODUK : ${category || 'ALL CATEGORY'}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.productType },
+    { value: `MERK : ${brand || 'ALL BRAND'}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.productType },
+    {}
+  ]
+
+  const tableHeaders = [
+    [
+      { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'Section Width', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'Aspect Ratio', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'Rim Diameter', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: `Sold in ${diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'Monthly TO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'Total', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
+  ]
+
+  for (let i = 0; i < brandHeaders.length; i += 1) {
+    tableHeaders[0].splice(6 + i, 0, brandHeaders[i])
+  }
+
+  const tableFooter = [
+    [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${qtySoldTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${qtyMonthlyTOTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
+  ]
+
+  for (let i = 0; i < brandFooters.length; i += 1) {
+    tableFooter[0].splice(6 + i, 0, brandFooters[i])
+  }
+
+  let tableBody
+  try {
+    tableBody = createTableBody(listPOSCompareSvsI)
+  } catch (e) {
+    console.log(e)
+  }
+
+  // Declare additional Props
+  const XLSProps = {
+    className: 'button-width02 button-extra-large bgcolor-green',
+    paperSize: 9,
+    orientation: 'portrait',
+    data: listPOSCompareSvsI,
+    title,
+    tableHeader: tableHeaders,
+    tableBody,
+    tableFooter,
+    fileName: 'POS-Compare'
+  }
+
   return (
-    <Button type="dashed"
-      size="large"
-      className="button-width02 button-extra-large bgcolor-green"
-      onClick={() => handleXLS(dataSource)}
-    >
-      <Icon type="file-excel" className="icon-large" />
-    </Button>
+    <BasicExcelReport {...XLSProps} />
   )
 }
 

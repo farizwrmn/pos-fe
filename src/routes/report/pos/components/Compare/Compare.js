@@ -8,15 +8,17 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => {
-  const { listPOSCompareSvsI, fromDate, toDate, productCode, category, brand, paramDate, diffDay } = posReport
+  const { listPOSCompareSvsI, tableHeader, fromDate, toDate, productCode, category, brand, paramDate, diffDay, selectedBrand } = posReport
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
 
   const browseProps = {
     dataSource: listPOSCompareSvsI,
+    tableHeader,
     listPOSCompareSvsI,
     storeInfo,
+    selectedBrand,
     user,
     fromDate,
     toDate,
@@ -28,18 +30,35 @@ const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => 
   const filterProps = {
     listPOSCompareSvsI,
     listCategory,
+    tableHeader,
     listBrand,
+    selectedBrand,
     user,
     storeInfo,
-    // fromDate,
-    // toDate,
+    fromDate,
+    toDate,
     paramDate,
     diffDay,
     productCode,
     category,
     brand,
+    countSelectedBrand (brand) {
+      dispatch({
+        type: 'posReport/addSelectedBrand',
+        payload: {
+          brand
+        }
+      })
+    },
+    deselectedBrand (brand) {
+      dispatch({
+        type: 'posReport/deselectedBrand',
+        payload: {
+          brand
+        }
+      })
+    },
     onListReset () {
-      console.log('aaa1')
       dispatch({
         type: 'posReport/setListNull'
       })
@@ -58,7 +77,18 @@ const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => 
       dispatch({
         type: 'posReport/queryCompareSalesInventory',
         payload: {
-          ...data
+          ...data,
+          category: data.category.key
+        }
+      })
+      dispatch({
+        type: 'posReport/updateState',
+        payload: {
+          category: data.category.label,
+          fromDate: data.from,
+          toDate: data.to,
+          tableHeader: selectedBrand.map(x => x.key),
+          brand: selectedBrand.map(x => x.label).join(', ')
         }
       })
     },
