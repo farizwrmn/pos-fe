@@ -78,7 +78,7 @@ const ModalBrowse = ({ ...modalProps, customer, loading, dispatch }) => {
       })
     },
     onClickRow (record) {
-      console.log('this')
+      console.log('this', record)
       dispatch({
         type: 'customer/updateState',
         payload: {

@@ -8,7 +8,7 @@ import Tab from './Tab'
 const Customer = ({ customer, loading, dispatch, location, app }) => {
   const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
     show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed,
-    customerLoading, modalAddUnit, addUnit } = customer
+    customerLoading, modalAddUnit, addUnit, checkMember } = customer
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -197,14 +197,6 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
           mode
         }
       })
-      // setTimeout(() => {
-      //   dispatch({
-      //     type: 'customer/updateState',
-      //     payload: {
-      //       changed: true
-      //     }
-      //   })
-      // }, 1000)
     }
   }
   const modalProps = {
@@ -230,6 +222,7 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
     visible: modalVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    checkMember,
     onCancel () {
       dispatch({
         type: 'customer/updateState',
@@ -237,7 +230,36 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
           modalVisible: false
         }
       })
-    }
+    },
+
+    checkMemberCardId (payload) {
+      dispatch({
+        type: 'customer/queryMemberStatus',
+        payload: {
+          memberCardId: payload
+        }
+      })
+    },
+    resetMemberStatus () {
+      dispatch({
+        type: 'customer/resetMemberStatus'
+      })
+    },
+    enabledItem (mode, state) {
+      dispatch({
+        type: 'customer/enabledItem',
+        payload: {
+          mode,
+          state
+        }
+      })
+    },
+    activateMember (payload) {
+      dispatch({
+        type: 'customer/activateMember',
+        payload
+      })
+    },
   }
 
   const formProps = {
