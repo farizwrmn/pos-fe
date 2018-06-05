@@ -38,7 +38,8 @@ export default {
                 type: 'querySellpriceReport',
                 payload: {
                   period: location.query.period,
-                  year: location.query.year
+                  year: location.query.year,
+                  transNo: location.query.transNo !== '' ? location.query.transNo : null
                 }
               })
               // if (location.query.transNo) {

@@ -74,7 +74,7 @@ const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { valida
           </Form.Item>
           <Form.Item label="Transaction No" hasFeedback {...formItemLayout}>
             {getFieldDecorator('transNo')(
-              <Input.Search size="large" placeholder="Find by Transaction" style={{ marginBottom: '8px', width: '100%' }} />
+              <Input.Search onSearch={() => handleSearch()} size="large" placeholder="Find by Transaction" style={{ marginBottom: '8px', width: '100%' }} />
             )}
           </Form.Item>
         </Col>
