@@ -43,7 +43,7 @@ const RepeatReport = ({
     { pageSetup: { paperSize, orientation } })
 
   let sheet1
-  if (tableFilter.length) {
+  if ((tableFilter || []).length) {
     sheet1 = workbook.addWorksheet('POS 2',
       { pageSetup: { paperSize, orientation } })
   }
@@ -80,12 +80,12 @@ const RepeatReport = ({
 
   const createXLSLineItems0 = () => {
     let content = []
-    if (title.length > 0) {
-      for (let i = 0; i < title.length; i += 1) {
+    if ((title || []).length > 0) {
+      for (let i = 0; i < (title || []).length; i += 1) {
         let line = 2 + i
-        let position = getPositionTitle(Math.round(tableBody[0][0].length / 2))
-        if (tableHeader && tableHeader.length) {
-          position = getPositionTitle(Math.round(tableHeader[0].length / 2))
+        let position = getPositionTitle(Math.round((tableBody[0][0] || []).length / 2))
+        if (tableHeader && (tableHeader || []).length) {
+          position = getPositionTitle(Math.round((tableHeader[0] || []).length / 2))
         }
         content.push({
           value: sheet.getCell(`${position}${line}`).value = title[i].value,
@@ -95,10 +95,10 @@ const RepeatReport = ({
       }
     }
 
-    let position = title.length + 4
-    for (let i = 0; i < data.length; i += 1) {
-      for (let j = 0; j < tableTitle[i].length; j += 1) {
-        for (let k = 0; k < tableTitle[i][j].length; k += 1) {
+    let position = (title || []).length + 4
+    for (let i = 0; i < (data || []).length; i += 1) {
+      for (let j = 0; j < (tableTitle[i] || []).length; j += 1) {
+        for (let k = 0; k < (tableTitle[i][j] || []).length; k += 1) {
           content.push({
             value: sheet.getCell(`${getPosition(k)}${position}`).value = tableTitle[i][j][k].value,
             alignment: sheet.getCell(`${getPosition(k)}${position}`).alignment = tableTitle[i][j][k].alignment,
@@ -109,7 +109,7 @@ const RepeatReport = ({
       }
 
       for (let header in tableHeader) {
-        for (let i = 0; i < tableHeader[header].length; i += 1) {
+        for (let i = 0; i < (tableHeader[header] || []).length; i += 1) {
           content.push({
             value: sheet.getCell(`${getPosition(i)}${position}`).value = tableHeader[header][i].value,
             alignment: sheet.getCell(`${getPosition(i)}${position}`).alignment = tableHeader[header][i].alignment,
@@ -120,8 +120,8 @@ const RepeatReport = ({
       }
 
       let tableBodyPosition = position + 1
-      for (let n = 0; n < tableBody[i].length; n += 1) {
-        for (let o = 0; o < tableBody[i][n].length; o += 1) {
+      for (let n = 0; n < (tableBody[i] || []).length; n += 1) {
+        for (let o = 0; o < (tableBody[i][n] || []).length; o += 1) {
           content.push({
             value: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).value = tableBody[i][n][o].value,
             alignment: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).alignment = tableBody[i][n][o].alignment,
@@ -132,8 +132,8 @@ const RepeatReport = ({
         tableBodyPosition += 1
       }
 
-      for (let j = 0; j < tableFooter[i].length; j += 1) {
-        let tableFooterPosition = position + tableBody[i].length + 1
+      for (let j = 0; j < (tableFooter[i] || []).length; j += 1) {
+        let tableFooterPosition = position + (tableBody[i] || []).length + 1
         content.push({
           value: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).value = tableFooter[i][j].value,
           alignment: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).alignment = tableFooter[i][j].alignment,
@@ -142,9 +142,9 @@ const RepeatReport = ({
         })
       }
 
-      position = position + 4 + tableBody[i].length
-      if (tableTotal.length > 0) {
-        for (let i = 0; i < tableTotal[0].length; i += 1) {
+      position = position + 4 + (tableBody[i] || []).length
+      if ((tableTotal || []).length > 0) {
+        for (let i = 0; i < (tableTotal[0] || []).length; i += 1) {
           let line = position + 1
           content.push({
             value: sheet.getCell(`${getPosition(i)}${line}`).value = tableTotal[0][i].value,
@@ -160,10 +160,10 @@ const RepeatReport = ({
 
   const createXLSLineItems1 = () => {
     let content = []
-    if (title.length > 0) {
-      for (let i = 0; i < title.length; i += 1) {
+    if ((title || []).length > 0) {
+      for (let i = 0; i < (title || []).length; i += 1) {
         let line = 2 + i
-        let position = getPositionTitle(Math.round(tableBody[0][0].length / 2))
+        let position = getPositionTitle(Math.round((tableBody[0][0] || []).length / 2))
         content.push({
           value: sheet1.getCell(`${position}${line}`).value = title[i].value,
           alignment: sheet1.getCell(`${position}${line}`).alignment = title[i].alignment,
@@ -171,9 +171,9 @@ const RepeatReport = ({
         })
       }
     }
-    let position = title.length + 4
-    for (let i = 0; i < tableFilter.length; i += 1) {
-      for (let j = 0; j < tableFilter[i].length; j += 1) {
+    let position = (title || []).length + 4
+    for (let i = 0; i < (tableFilter || []).length; i += 1) {
+      for (let j = 0; j < (tableFilter[i] || []).length; j += 1) {
         content.push({
           value: sheet1.getCell(`${getPosition(j)}${position}`).value = tableFilter[i][j].value,
           alignment: sheet1.getCell(`${getPosition(j)}${position}`).alignment = tableFilter[i][j].alignment,
@@ -186,14 +186,14 @@ const RepeatReport = ({
   }
 
   const printXLS = () => {
-    if (tableBody.length === 0) {
+    if ((tableBody || []).length === 0) {
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
       })
     } else {
       createXLSLineItems0()
-      if (tableFilter.length) createXLSLineItems1()
+      if ((tableFilter || []).length) createXLSLineItems1()
       workbook.xlsx.writeBuffer().then((e) => {
         let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         saveAs(blob, `${fileName}${moment().format('YYYYMMDD')}.xlsx`)
