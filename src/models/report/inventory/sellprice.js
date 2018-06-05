@@ -33,7 +33,6 @@ export default {
         if (location.pathname === '/report/inventory/sellprice' && location.query.activeKey && location.query.period && location.query.year) {
           switch (location.query.activeKey) {
             case '0':
-              console.log('location.query.transNo', location.query.transNo)
               dispatch({
                 type: 'querySellpriceReport',
                 payload: {
@@ -63,10 +62,12 @@ export default {
               break
             case '1':
               dispatch({
-                type: 'queryInventoryTransferOut',
+                type: 'querySellpriceReport',
                 payload: {
                   period: location.query.period,
-                  year: location.query.year
+                  year: location.query.year,
+                  type: 'detail',
+                  transNo: location.query.transNo !== '' ? location.query.transNo : null
                 }
               })
               break

@@ -90,8 +90,9 @@ const modal = ({
       <Modal
         width="80%"
         height="80%"
+        className="modal-accept"
         footer={[
-          <Button type="danger" onClick={() => handleCancel()}>Void</Button>,
+          <Button type="danger" style={{ align: 'left' }} onClick={() => handleCancel()}>Void</Button>,
           <Button disabled={disableButton} key="submit" type="primary" onClick={() => handleOk()} >Process</Button>
         ]}
         {...modalOpts}

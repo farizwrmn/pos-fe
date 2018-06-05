@@ -1,35 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { BasicReport } from 'components'
+import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
-  // Declare Function
-  const createTableBody = (tabledata) => {
-    let body = []
-    const rows = tabledata
-    let count = 1
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let data = rows[key]
-        let row = [
-          { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: moment(data.transDate || '').format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
-          { text: (data.employeeName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.statusText || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 },
-          { text: (data.createdBy || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
-        ]
-        body.push(row)
-      }
-      count += 1
-    }
-    return body
-  }
-
+  let width = []
   const styles = {
     header: {
       fontSize: 18,
+      alignment: 'center',
       bold: true,
       margin: [0, 0, 0, 10]
     },
@@ -45,8 +24,110 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
       bold: true,
       fontSize: 13,
       color: 'black'
+    },
+    tableTitle: {
+      fontSize: 12,
+      margin: [0, 10, 0, 5]
+    },
+    rowTextFooter: {
+      alignment: 'center',
+      fontSize: 12,
+      bold: true
+    },
+    rowNumberFooter: {
+      alignment: 'right',
+      fontSize: 12,
+      bold: true
     }
   }
+
+  const group = (data, key) => {
+    return _.reduce(data, (group, item) => {
+      (group[item[key]] = group[item[key]] || []).push(item)
+      return group
+    }, [])
+  }
+
+  const listData = group(listInventoryTransfer, 'transNo')
+
+  const createTableBody = (tabledata) => {
+    // let totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
+    // let total = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.nettoTotal) || 0), 0)
+
+    const headers = [
+      [
+        { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PRODUCT CODE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PRODUCT NAME', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PREV. SELLPRICE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'SELLPRICE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PREV. DISTPRICE01', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'DISTPRICE01', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'PREV. DISTPRICE02', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'DISTPRICE02', style: 'tableHeader', alignment: 'center' }
+      ]
+    ]
+
+    const rows = tabledata
+    let body = []
+    for (let i = 0; i < headers.length; i += 1) {
+      body.push(headers[i])
+    }
+
+    let counter = 1
+    for (let key in rows) {
+      if (rows.hasOwnProperty(key)) {
+        let data = rows[key]
+        let row = [
+          { text: counter, alignment: 'center', fontSize: 11 },
+          { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.prevSellPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.sellPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.prevDistPrice01 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.distPrice01 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.prevDistPrice02 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.distPrice02 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+        ]
+        body.push(row)
+      }
+      counter += 1
+    }
+
+    // let totalRow = [
+    //   { text: 'Grand Total', colSpan: 3, style: 'rowTextFooter' },
+    //   {},
+    //   {},
+    //   { text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' },
+    //   {},
+    //   { text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' }
+    // ]
+    // body.push(totalRow)
+    width.push(['4%', '18%', '18%', '10%', '10%', '10%', '10%', '10%', '10%'])
+    return body
+  }
+
+  let tableBody = []
+  let tableTitle = []
+  for (let key in listData) {
+    try {
+      tableBody.push(createTableBody(listData[key]))
+      tableTitle.push({
+        table: {
+          widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+          body: [
+            [{ text: 'Invoice No' }, ':', { text: (listData[key][0].transNo || '').toString() }, {}, { text: 'Description' }, ':', { text: (listData[key][0].description || '').toString() }],
+            [{ text: 'Invoice Date' }, ':', { text: listData[key][0].transDate ? moment(listData[key][0].transDate).format('DD-MMM-YYYY') : '' }, {}, { text: 'Created By' }, ':', { text: (listData[key][0].createdBy || '').toString() }]
+          ]
+        },
+        style: 'tableTitle',
+        layout: 'noBorders'
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   const header = {
     stack: [
       {
@@ -55,40 +136,34 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN PERUBAHAN HARGA',
-            style: 'header',
-            fontSize: 18,
-            alignment: 'center'
+            text: 'LAPORAN PERUBAHAN HARGA DETAIL',
+            style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1091, y2: 5, lineWidth: 0.5 }]
           },
           {
-            columns: [
-              {
-                text: `\nPERIODE: ${period}`,
-                fontSize: 11,
-                alignment: 'left'
-              },
-              {}
-            ]
+            text: `\nPeriod: ${period ? moment(period).format('MMMM-YYYY') : '-'}`,
+            fontSize: 10,
+            alignment: 'left'
           }
         ]
       }
     ],
     margin: [50, 12, 50, 30]
   }
+
   const footer = (currentPage, pageCount) => {
     return {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1091, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
             {
-              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
+              text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
               alignment: 'left'
@@ -110,51 +185,49 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
       ]
     }
   }
-  const tableHeader = [
-    [
-      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TRANS NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TRANS DATE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PIC', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'STATUS', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CREATED BY', style: 'tableHeader', alignment: 'center' }
-    ]
-  ]
-  let tableBody = []
-  try {
-    tableBody = createTableBody(listInventoryTransfer)
-  } catch (e) {
-    console.log(e)
-  }
-  const tableFooter = [
-    // [
-    //   { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-    //   {},
-    //   {},
-    //   { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    //   { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    //   { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    // ]
-  ]
 
-  // Declare additional Props
+  // const extra = [
+  //   [
+  //     { text: 'Grand Total', colSpan: 3, style: 'tableHeader', alignment: 'center' },
+  //     {},
+  //     {},
+  //     { text: (qtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+  //     {},
+  //     { text: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+  //   ]
+  // ]
+  tableTitle.push({
+    table: {
+      widths: ['100%'],
+      body: [
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    style: 'tableTitle',
+    layout: 'noBorders'
+  })
+  // tableBody.push(extra)
+  // width.push(['6%', '27%', '30%', '8%', '13%', '16%'])
+
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '20%', '19%', '19%', '19%', '19%'],
-    pageMargins: [50, 145, 50, 60],
-    pageSize: 'A4',
+    pageSize: 'A3',
     pageOrientation: 'landscape',
-    tableStyle: styles,
-    layout: 'noBorder',
-    tableHeader,
-    tableBody,
-    tableFooter,
-    data: listInventoryTransfer,
+    width,
+    pageMargins: [50, 130, 50, 60],
     header,
-    footer
+    tableTitle,
+    tableBody,
+    footer,
+    tableStyle: styles,
+    data: Object.keys(listData)
   }
+
   return (
-    <BasicReport {...pdfProps} />
+    <RepeatReport {...pdfProps} />
   )
 }
 
