@@ -2,12 +2,16 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/customer'
-import { query as queryMobile, activate } from '../../services/mobile/member'
+import { query as queryMobile, srvGetMemberStatus, srvActivateMember } from '../../services/mobile/member'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const success = () => {
   message.success('Customer has been saved')
+}
+const activate = (info) => {
+  console.log('zzz4', info.memberCardId)
+  message.success('Member: ' + info.memberCardId + ' has been activated')
 }
 
 export default modelExtend(pageModel, {
@@ -31,6 +35,14 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
+    checkMember: {
+      existingCheckBoxDisable: true,
+      existingSearchButtonDisable: true,
+      confirmCheckBoxDisable: true,
+      activateButtonDisable: true,
+      confirmCheckBoxCheck: false,
+      info: { memberStatus: '|status', memberCode: '' },
+    },
     customerLoading: false,
     modalAddUnit: false,
     modalAddMember: false,
@@ -180,6 +192,57 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryMemberStatus ({ payload = {} }, { call, put }) {
+      const result = yield call(srvGetMemberStatus, payload)
+      let existingCheckBoxDisable = true
+      let confirmCheckBoxDisable = true
+      if (result.success) {
+        if (result.data) {
+          existingCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
+          confirmCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
+        } else {
+          existingCheckBoxDisable = true
+          confirmCheckBoxDisable = true
+        }
+
+        yield put({
+          type: 'responseMemberStatus',
+          payload: {
+            checkMember: {
+              existingCheckBoxDisable,
+              confirmCheckBoxDisable,
+              info: result.data.info,
+              dataMember: result.data.member,
+              dataAsset: result.data.asset,
+              dataBooking: result.data.booking
+            }
+          }
+        })
+      }
+    },
+    * enabledItem ({ payload = {} }, { put }) {
+      yield put({
+        type: 'responseEnabledItem',
+        payload
+      })
+    },
+    * activateMember ({ payload = {} }, { call, put }) {
+      console.log('zzz1', payload)
+      const result = yield call(srvActivateMember, payload)
+      if (result.success) {
+        yield put({
+          type: 'responseActivateMember',
+          payload
+        })
+        activate(payload)
+      }
+      else {
+        throw data
+      }
+
+
+    },
+
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.customer)
@@ -247,20 +310,20 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * activate ({ payload }, { call, put }) {
-      const data = yield call(activate, payload)
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            dataCustomer: {}
-          }
-        })
-        success()
-      } else {
-        throw data
-      }
-    },
+    // * activate ({ payload }, { call, put }) {
+    //   const data = yield call(activate, payload)
+    //   if (data.success) {
+    //     yield put({
+    //       type: 'updateState',
+    //       payload: {
+    //         dataCustomer: {}
+    //       }
+    //     })
+    //     success()
+    //   } else {
+    //     throw data
+    //   }
+    // },
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ customer }) => customer.currentItem.memberCode)
@@ -368,7 +431,43 @@ export default modelExtend(pageModel, {
         customerData = []
       }
       return { ...state, listCustomer: customerData }
-    }
+    },
 
+    responseMemberStatus (state, action) {
+      const { checkMember } = action.payload
+      checkMember.existingSearchButtonDisable=state.checkMember.existingSearchButtonDisable
+      checkMember.activateButtonDisable=state.checkMember.activateButtonDisable
+      return {
+        ...state,
+        checkMember
+      }
+    },
+    responseEnabledItem (state, action) {
+      if (action.payload.mode==='existing') {
+        state.checkMember.existingSearchButtonDisable=action.payload.state
+      } else if (action.payload.mode==='confirm') {
+        state.checkMember.activateButtonDisable=action.payload.state
+        state.checkMember.confirmCheckBoxCheck=!action.payload.state
+      }
+      return {
+        ...state,
+      }
+    },
+    responseActivateMember (state, action) {
+      console.log('zzz5', state)
+      console.log('zzz6', action)
+      state.checkMember = {
+        existingCheckBoxDisable: true,
+        existingSearchButtonDisable: true,
+        confirmCheckBoxDisable: true,
+        activateButtonDisable: true,
+        confirmCheckBoxCheck: false,
+        info: { memberStatus: '|status', memberCode: '' },
+        memberStatus: ''
+      }
+      return {
+        ...state,
+      }
+    }
   }
 })

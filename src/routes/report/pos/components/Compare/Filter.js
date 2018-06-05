@@ -120,6 +120,7 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
 
   const printOpts = {
     listPOSCompareSvsI,
+    paramDate,
     diffDay,
     selectedBrand,
     tableHeader,

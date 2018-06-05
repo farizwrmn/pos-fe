@@ -43,7 +43,7 @@ const formCustomer = ({
     showPDFModal,
     onShowPDFModal,
     onHidePDFModal,
-    getAllCustomer
+    getAllCustomer,
   } = tabProps
   const change = (key) => {
     changeTab(key)
@@ -105,6 +105,7 @@ const formCustomer = ({
     openModal,
     dataCustomer,
     disabled,
+    // memberStatus,
     ...mobileProps
   }
   const formOpts = {
@@ -138,10 +139,9 @@ const formCustomer = ({
         </TabPane>
         <TabPane tab="Mobile" key="2" >
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               {activeKey === '2' && <FormMobile {...formMobileProps} />}
             </Col>
-            <Col span={12} />
           </Row>
         </TabPane>
       </Tabs>
@@ -157,6 +157,7 @@ formCustomer.propTypes = {
   listType: PropTypes.object.isRequired,
   listCity: PropTypes.object.isRequired,
   listIdType: PropTypes.object.isRequired,
+  checkMember: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   clickBrowse: PropTypes.func.isRequired,
   changeTab: PropTypes.func.isRequired,
