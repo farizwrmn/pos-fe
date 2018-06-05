@@ -4,6 +4,7 @@ import Search from './Search'
 // import Editor from './Editor'
 import FilterItem from './FilterItem'
 import SelectItem from './SelectItem'
+import DataQuery from './DataQuery'
 import Loader from './Loader'
 import * as Layout from './Layout/index.js'
 import { BasicReport, RepeatReport, BasicInvoice, BasicReportCard } from './Pdf/index.js'
@@ -18,6 +19,7 @@ export {
   DropOption,
   Search,
   // Editor,
+  DataQuery,
   FilterItem,
   SelectItem,
   Loader,
