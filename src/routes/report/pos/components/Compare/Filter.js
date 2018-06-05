@@ -15,31 +15,40 @@ const Option = Select.Option
 
 const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
   listCategory,
+  countSelectedBrand,
+  deselectedBrand,
+  selectedBrand,
   showCategories,
+  tableHeader,
   listBrand,
   showBrands,
   paramDate,
   diffDay,
-  form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator },
+  form: { getFieldsValue, setFieldsValue, resetFields, validateFields, getFieldDecorator },
   ...printProps }) => {
   const handleSearch = () => {
-    const data = getFieldsValue()
-    let param = {}
-    if (data) {
-      const toDay = new Date()
-      const firstDay = new Date(toDay.getFullYear(), toDay.getMonth(), 1)
-      if (!data.period) data.period = moment(toDay, 'YYYY/MM/DD')
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      let param = {}
+      if (data) {
+        const toDay = new Date()
+        const firstDay = new Date(toDay.getFullYear(), toDay.getMonth(), 1)
+        if (!data.period) data.period = moment(toDay, 'YYYY/MM/DD')
 
-      param.period = data.period.format('MM')
-      param.year = data.period.format('YYYY')
+        param.period = data.period.format('MM')
+        param.year = data.period.format('YYYY')
 
-      param.from = data.rangePicker ? data.rangePicker[0].format('YYYY-MM-DD') : moment(firstDay, 'L').format('YYYY-MM-DD')
-      param.to = data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : moment(toDay, 'L').format('YYYY-MM-DD')
-      param.category = data.category.key
-      // param.brand = data.brand
-    }
+        param.from = data.rangePicker ? data.rangePicker[0].format('YYYY-MM-DD') : moment(firstDay, 'L').format('YYYY-MM-DD')
+        param.to = data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : moment(toDay, 'L').format('YYYY-MM-DD')
+        param.category = data.category
+        param.brand = `[${selectedBrand.map(x => x.key).toString()}]`
+      }
 
-    onSearch(param)
+      onSearch(param)
+    })
   }
 
   const handleReset = () => {
@@ -100,12 +109,30 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
   }
 
   const productCategory = listCategory.length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
-  const productBrand = listBrand.length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
+  let productBrand = []
+  if (listBrand.length > 0) {
+    if (selectedBrand.length > 3) {
+      productBrand = listBrand.map(b => <Option disabled={!selectedBrand.map(x => x.key).includes(b.brandCode)} value={b.brandCode} key={b.brandCode}>{b.brandName}</Option>)
+    } else {
+      productBrand = listBrand.map(b => <Option value={b.brandCode} key={b.brandCode}>{b.brandName}</Option>)
+    }
+  }
 
   const printOpts = {
     listPOSCompareSvsI,
+    paramDate,
     diffDay,
+    selectedBrand,
+    tableHeader,
     ...printProps
+  }
+
+  const onSelectBrand = (value) => {
+    countSelectedBrand(value)
+  }
+
+  const onDeselectBrand = (value) => {
+    deselectedBrand(value)
   }
 
   return (
@@ -133,13 +160,12 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
             />)}
           </FormItem>
           <FormItem label="Category" {...formItemLayout}>
-            {getFieldDecorator('category',
-              { initialValue: { key: '9', label: 'TYRE' } }
-            )(
+            {getFieldDecorator('category', {
+              rules: [{ required: true }]
+            })(
               <Select
                 mode="default"
                 allowClear
-                disabled
                 labelInValue
                 onFocus={() => category()}
                 style={{ width: '100%', height: '32px', marginTop: '5px' }}
@@ -151,11 +177,13 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
           <FormItem label="Brand" {...formItemLayout}>
             {getFieldDecorator('brand')(
               <Select
-                mode="default"
-                allowClear
-                disabled
+                className="select-multiple-brand"
+                mode="multiple"
+                labelInValue
+                onSelect={value => onSelectBrand(value)}
+                onDeselect={value => onDeselectBrand(value)}
                 onFocus={() => brand()}
-                style={{ width: '100%', height: '32px' }}
+                style={{ width: '100%' }}
               >
                 {productBrand}
               </Select>

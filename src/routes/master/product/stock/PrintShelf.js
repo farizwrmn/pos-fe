@@ -15,19 +15,21 @@ const PrintShelf = ({ stickers, user }) => {
           row.push({
             columns: [
               { text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' },
-              { text: '(Sellprice)', style: 'info', margin: [0, 12, 0, 0] }
+              { text: '(Non-Member)', style: 'info', margin: [0, 12, 0, 0] }
             ]
           })
           row.push({
             columns: [
               { text: `Rp ${(tableBody[key].info.distPrice01 || 0).toLocaleString()}`, style: 'others' },
-              { text: '(Dist price 01)', style: 'info', margin: [0, 5, 0, 0] }
+              { text: '(Member)', style: 'info', margin: [0, 5, 0, 0] }
             ]
           })
           row.push({
             columns: [
-              { text: `Rp ${(tableBody[key].info.distPrice02 || 0).toLocaleString()}`, style: 'others' },
-              { text: '(Dist price 02)', style: 'info', margin: [0, 5, 0, 0] }
+              { text: ' ', style: 'others' },
+              { text: ' ', style: 'info', margin: [0, 5, 0, 0] }
+              // { text: `Rp ${(tableBody[key].info.distPrice02 || 0).toLocaleString()}`, style: 'others' },
+              // { text: '(Dist price 02)', style: 'info', margin: [0, 5, 0, 0] }
             ]
           })
           row.push({ text: (tableBody[key].info.productCode || '').toString(), style: 'others', alignment: 'left' })
@@ -135,7 +137,7 @@ const PrintShelf = ({ stickers, user }) => {
   }
 
   const pdfProps = {
-    name: 'Shelf',
+    name: 'Print Shelf',
     width: [260, 260, 260],
     pageSize: { width: 870, height: 590 },
     pageOrientation: 'landscape',

@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, show, edit, remove } from '../services/menu'
+import { query, add, edit, remove } from '../services/menu'
 import { pageModel } from './common'
 
 export default modelExtend(pageModel, {
@@ -9,7 +9,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     listMenu: [],
     modalType: 'add',
-    modalEdit: { visible: false, key: '', title: '' }
+    modalEdit: { visible: false, item: {} }
   },
 
   subscriptions: {
@@ -49,28 +49,10 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: current
+            currentItem: { ...current, menuId: null }
           }
         })
         throw data
-      }
-    },
-
-    * show ({ payload }, { call, put }) {
-      const data = yield call(show, payload)
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: data.data,
-            modalType: 'edit',
-            modalEdit: {
-              visible: false,
-              key: '',
-              title: ''
-            }
-          }
-        })
       }
     },
 

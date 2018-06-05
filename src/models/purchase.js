@@ -1,12 +1,14 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { lstorage, configMain } from 'utils'
-import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail } from '../services/purchase'
+import moment from 'moment'
+import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail, queryHistories, queryHistory, queryHistoryDetail } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
 
 const { prefix } = configMain
+const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 export default modelExtend(pageModel, {
   namespace: 'purchase',
@@ -53,7 +55,12 @@ export default modelExtend(pageModel, {
       current: 1,
       total: null
     },
-    datePicker: ''
+    datePicker: '',
+    purchaseHistory: {},
+    listPurchaseHistoryDetail: [],
+    listPurchaseHistories: [],
+    modalPrintInvoice: false,
+    period: moment(infoStore.startPeriod).format('YYYY-MM')
   },
 
   subscriptions: {
@@ -68,6 +75,15 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
+        } else if (location.pathname === '/transaction/purchase/history') {
+          const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
+          dispatch({
+            type: 'queryHistory',
+            payload: {
+              startPeriod: infoStore.startPeriod,
+              endPeriod: infoStore.endPeriod
+            }
+          })
         }
       })
     }
@@ -482,8 +498,64 @@ export default modelExtend(pageModel, {
           type: 'modalEditHide'
         })
       }
-    }
+    },
 
+    * queryHistory ({ payload }, { call, put }) {
+      const data = yield call(queryHistories, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessHistory',
+          payload: {
+            listPurchaseHistories: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryHistoryByTransNo ({ payload }, { call, put }) {
+      const data = yield call(queryHistory, payload)
+      if (data.success && data.purchase) {
+        let listPurchaseHistories = [data.purchase]
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseHistories
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseHistories: []
+          }
+        })
+      }
+    },
+
+    * queryHistoryDetail ({ payload }, { call, put }) {
+      const data = yield call(queryHistory, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: { purchaseHistory: data.purchase }
+        })
+        const detail = yield call(queryHistoryDetail, payload)
+        if (detail.success && detail.data.length > 0) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listPurchaseHistoryDetail: detail.data,
+              modalPrintInvoice: true
+            }
+          })
+        }
+      }
+    }
   },
 
   reducers: {
@@ -500,6 +572,18 @@ export default modelExtend(pageModel, {
 
     updateState (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    querySuccessHistory (state, { payload }) {
+      const { listPurchaseHistories, pagination } = payload
+      return {
+        ...state,
+        listPurchaseHistories,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
     },
 
     queryGetProductsSuccess (state, action) {

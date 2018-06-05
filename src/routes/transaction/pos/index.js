@@ -1595,16 +1595,20 @@ const Pos = ({
               />
             </Form>
 
-            <ButtonGroup style={{ marginRight: 10 }}>
+            <ButtonGroup>
+              <Button type="primary" size="large" onClick={handleMemberBrowse} >Member</Button>
               <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} />
+                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
               </Tooltip>
-              <Button type="primary" size="large" onClick={handleMemberBrowse}>Member</Button>
+            </ButtonGroup>
+
+            <ButtonGroup style={{ marginRight: 8 }}>
               <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
               <Tooltip title="add Asset">
                 <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
               </Tooltip>
             </ButtonGroup>
+
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}

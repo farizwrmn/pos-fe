@@ -21,15 +21,6 @@ export async function add (params) {
   })
 }
 
-export async function show (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${menus}/${params.id}`,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
-
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
