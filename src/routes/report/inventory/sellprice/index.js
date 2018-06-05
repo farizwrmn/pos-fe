@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
-import { PriceHeader, PriceDetail } from './components'
+import {
+  PriceHeader
+  // PriceDetail
+} from './components'
 
 const TabPane = Tabs.TabPane
 
@@ -29,9 +32,9 @@ const Report = ({ sellpriceReport, dispatch }) => {
         <TabPane tab="SellPrice" key="0">
           {activeKey === '0' && <PriceHeader />}
         </TabPane>
-        <TabPane tab="Price Detail" key="1">
+        {/* <TabPane tab="Price Detail" key="1">
           {activeKey === '1' && <PriceDetail />}
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   )
