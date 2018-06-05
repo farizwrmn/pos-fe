@@ -4,7 +4,7 @@ import { Tree, Card, Modal, Button } from 'antd'
 
 const TreeNode = Tree.TreeNode
 
-const List = ({ menuTree, onChangeTree, editItem, onDeleteItem, modalEdit, onSelectMenu, onCancelSelect }) => {
+const List = ({ menuTree, onChangeTree, editItem, modalEdit, onSelectMenu, onCancelSelect }) => {
   const selectedItem = (item) => {
     onSelectMenu(item)
   }

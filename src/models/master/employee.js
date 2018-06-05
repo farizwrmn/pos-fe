@@ -55,6 +55,11 @@ export default modelExtend(pageModel, {
               type: 'query'
             })
             break
+          case '/tools/sellprice':
+            dispatch({
+              type: 'query'
+            })
+            break
           default:
         }
       })

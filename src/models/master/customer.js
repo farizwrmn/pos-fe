@@ -11,7 +11,7 @@ const success = () => {
 }
 const activate = (info) => {
   console.log('zzz4', info.memberCardId)
-  message.success('Member: ' + info.memberCardId + ' has been activated')
+  message.success(`Member: ${info.memberCardId} has been activated`)
 }
 
 export default modelExtend(pageModel, {
@@ -41,7 +41,7 @@ export default modelExtend(pageModel, {
       confirmCheckBoxDisable: true,
       activateButtonDisable: true,
       confirmCheckBoxCheck: false,
-      info: { memberStatus: '|status', memberCode: '' },
+      info: { memberStatus: '|status', memberCode: '' }
     },
     customerLoading: false,
     modalAddUnit: false,
@@ -198,8 +198,8 @@ export default modelExtend(pageModel, {
       let confirmCheckBoxDisable = true
       if (result.success) {
         if (result.data) {
-          existingCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
-          confirmCheckBoxDisable = (result.data.info.memberStatus.split("|")[0] === '1') ? false : true
+          existingCheckBoxDisable = result.data.info.memberStatus.split('|')[0] !== '1'
+          confirmCheckBoxDisable = result.data.info.memberStatus.split('|')[0] !== '1'
         } else {
           existingCheckBoxDisable = true
           confirmCheckBoxDisable = true
@@ -235,12 +235,9 @@ export default modelExtend(pageModel, {
           payload
         })
         activate(payload)
+      } else {
+        throw result
       }
-      else {
-        throw data
-      }
-
-
     },
 
     * delete ({ payload }, { call, put, select }) {
@@ -435,22 +432,22 @@ export default modelExtend(pageModel, {
 
     responseMemberStatus (state, action) {
       const { checkMember } = action.payload
-      checkMember.existingSearchButtonDisable=state.checkMember.existingSearchButtonDisable
-      checkMember.activateButtonDisable=state.checkMember.activateButtonDisable
+      checkMember.existingSearchButtonDisable = state.checkMember.existingSearchButtonDisable
+      checkMember.activateButtonDisable = state.checkMember.activateButtonDisable
       return {
         ...state,
         checkMember
       }
     },
     responseEnabledItem (state, action) {
-      if (action.payload.mode==='existing') {
-        state.checkMember.existingSearchButtonDisable=action.payload.state
-      } else if (action.payload.mode==='confirm') {
-        state.checkMember.activateButtonDisable=action.payload.state
-        state.checkMember.confirmCheckBoxCheck=!action.payload.state
+      if (action.payload.mode === 'existing') {
+        state.checkMember.existingSearchButtonDisable = action.payload.state
+      } else if (action.payload.mode === 'confirm') {
+        state.checkMember.activateButtonDisable = action.payload.state
+        state.checkMember.confirmCheckBoxCheck = !action.payload.state
       }
       return {
-        ...state,
+        ...state
       }
     },
     responseActivateMember (state, action) {
@@ -466,7 +463,7 @@ export default modelExtend(pageModel, {
         memberStatus: ''
       }
       return {
-        ...state,
+        ...state
       }
     }
   }

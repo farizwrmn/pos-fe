@@ -2,8 +2,8 @@ import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { configMain } from 'utils'
 import { Modal, Select } from 'antd'
-import { query as queryPos, updatePosHeader } from '../services/payment'
-import { pageModel } from './common'
+import { query as queryPos, updatePosHeader } from '../../services/payment'
+import { pageModel } from '../common'
 
 const { prefix } = configMain
 const Option = Select.Option

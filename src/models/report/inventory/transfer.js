@@ -2,8 +2,8 @@
  * Created by Veirry on 04/10/2017.
  */
 import { lstorage } from 'utils'
-import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../services/report/pos'
-import { queryInventoryTransferIn, queryInventoryTransferOut, queryInventoryInTransit } from '../../services/report/inventory'
+import { query as queryReport, queryTrans, queryAll, queryTransCancel, queryPosDaily } from '../../../services/report/pos'
+import { queryInventoryTransferIn, queryInventoryTransferOut, queryInventoryInTransit } from '../../../services/report/inventory'
 
 export default {
   namespace: 'inventoryReport',

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'antd'
-import ListMember from '../transaction/pos/ListMember'
-import ListMechanic from '../transaction/pos/ListMechanic'
-import ListUnit from '../transaction/pos/ListUnit'
+import ListMember from '../../transaction/pos/ListMember'
+import ListMechanic from '../../transaction/pos/ListMechanic'
+import ListUnit from '../../transaction/pos/ListUnit'
 
 const ModalBrowse = ({
   onOk,

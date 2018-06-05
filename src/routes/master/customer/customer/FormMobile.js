@@ -39,22 +39,22 @@ const ModalMobile = ({
   const infoCheck = (checkMember.info) ? {
     memberStatus: checkMember.info.memberStatus,
     memberCode: checkMember.info.memberCode
-  } : { memberStatus: "", memberCode: ""}
-  const dataMember= (checkMember.dataMember) ? {
+  } : { memberStatus: '', memberCode: '' }
+  const dataMember = (checkMember.dataMember) ? {
     email: checkMember.dataMember.memberEmail,
     name: checkMember.dataMember.memberName,
     point: checkMember.dataMember.memberPoint,
     valid: checkMember.dataMember.validThrough
-  } : { email: "", name: "", point: "", valid: "" }
+  } : { email: '', name: '', point: '', valid: '' }
 
   const columnAsset = [
     { title: 'Police No', dataIndex: 'policeNo', key: 'policeNo' },
     { title: 'Merk', dataIndex: 'merk', key: 'merk' },
     { title: 'Model', dataIndex: 'model', key: 'model' },
     { title: 'Type', dataIndex: 'type', key: 'type' },
-    { title: 'Year', dataIndex: 'year', key: 'year'},
-    { title: 'Chassis No', dataIndex: 'chassisNo', key: 'chassisNo'},
-    { title: 'Machine No', dataIndex: 'machineNo', key: 'machineNo'}]
+    { title: 'Year', dataIndex: 'year', key: 'year' },
+    { title: 'Chassis No', dataIndex: 'chassisNo', key: 'chassisNo' },
+    { title: 'Machine No', dataIndex: 'machineNo', key: 'machineNo' }]
   const dataAsset = (checkMember.dataAsset) ? checkMember.dataAsset : []
 
   const columnBooking = [
@@ -86,8 +86,8 @@ const ModalMobile = ({
   }
 
   let memberStatusInfo
-  if (checkMember.info){
-    memberStatusInfo = checkMember.info.memberStatus.split("|")[1]
+  if (checkMember.info) {
+    memberStatusInfo = checkMember.info.memberStatus.split('|')[1]
   } else {
     memberStatusInfo = 'status'
   }
@@ -108,23 +108,26 @@ const ModalMobile = ({
     console.log('zzz2', getFieldsValue())
     activateMember(getFieldsValue())
   }
-  console.log('zzz4',infoCheck)
-  console.log('zzz5',dataCustomer.memberCode)
+  console.log('zzz4', infoCheck)
+  console.log('zzz5', dataCustomer.memberCode)
   return (
     <div>
       {modalVisible && <ModalBrowse {...modalMobileProps} />}
       <Form layout="horizontal" {...mobileOpts}>
         <FormItem label="Member Card ID" {...formItemLayout}>
-          <Col xs={{ span:10, offset: 2}} sm={{ span:9, offset: 3}} md={{ span: 10, offset: 2 }}>
-          {getFieldDecorator('memberCardId',
-            { initialValue: infoCheck.memberCode || '' })(
-            <Input placeholder="input here"
-                   addonAfter={memberStatusInfo}/>
-          )}
+          <Col xs={{ span: 10, offset: 2 }} sm={{ span: 9, offset: 3 }} md={{ span: 10, offset: 2 }}>
+            {getFieldDecorator('memberCardId', {
+              initialValue: infoCheck.memberCode || ''
+            })(
+              <Input placeholder="input here"
+                addonAfter={memberStatusInfo}
+              />
+            )}
           </Col>
-          <Col xs={{ span:3, offset: 2}} md={{ span: 2, offset: 10 }}>
-            <Button className="button-line-height1" type="primary"
-                    onClick={() => handleCheckMemberCardId()}
+          <Col xs={{ span: 3, offset: 2 }} md={{ span: 2, offset: 10 }}>
+            <Button className="button-line-height1"
+              type="primary"
+              onClick={() => handleCheckMemberCardId()}
             >Check</Button>
           </Col>
         </FormItem>
@@ -132,21 +135,23 @@ const ModalMobile = ({
         <FormItem label="Existing Member" {...formItemLayout}>
           <Col span="1" offset={1}>
             <Checkbox disabled={checkMember.existingCheckBoxDisable}
-                      onChange={(e) => handleCheckExisting(e.target.checked)}></Checkbox>
+              onChange={e => handleCheckExisting(e.target.checked)}
+            />
           </Col>
-          <Col xs={{ span:10, offset: 2}} sm={{ span:9, offset: 3}} md={{ span: 10, offset: 0 }}>
-            {getFieldDecorator('memberCode',
-              { initialValue: dataCustomer.memberCode || 'code' })(
-              <Input disabled={true}
-                     placeholder="code"
-                     addonAfter={dataCustomer.memberName || 'name'}
+          <Col xs={{ span: 10, offset: 2 }} sm={{ span: 9, offset: 3 }} md={{ span: 10, offset: 0 }}>
+            {getFieldDecorator('memberCode', {
+              initialValue: dataCustomer.memberCode || 'code'
+            })(
+              <Input disabled
+                placeholder="code"
+                addonAfter={dataCustomer.memberName || 'name'}
               />
             )}
           </Col>
-          <Col xs={{ span:3, offset: 2}} md={{ span: 2, offset: 10 }}>
+          <Col xs={{ span: 3, offset: 2 }} md={{ span: 2, offset: 10 }}>
             <Button className="button-line-height1"
-                    disabled={checkMember.existingSearchButtonDisable}
-                    onClick={() => handleSearchMember()}
+              disabled={checkMember.existingSearchButtonDisable}
+              onClick={() => handleSearchMember()}
             >Search</Button>
           </Col>
         </FormItem>
@@ -157,22 +162,22 @@ const ModalMobile = ({
               <TabPane tab="data Member" key="1">
                 <Row className="ant-form-item">
                   <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
-                    <Input disabled={true} addonBefore="Email" placeholder="member email" value={dataMember.email}/>
+                    <Input disabled addonBefore="Email" placeholder="member email" value={dataMember.email} />
                   </Col>
                 </Row>
                 <Row className="ant-form-item">
                   <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
-                    <Input disabled={true} addonBefore="Name" placeholder="member names" value={dataMember.name}/>
+                    <Input disabled addonBefore="Name" placeholder="member names" value={dataMember.name} />
                   </Col>
                 </Row>
                 <Row className="ant-form-item">
                   <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
-                    <Input disabled={true} addonBefore="Point   " placeholder="member point" value={dataMember.point}/>
+                    <Input disabled addonBefore="Point   " placeholder="member point" value={dataMember.point} />
                   </Col>
                 </Row>
                 <Row className="ant-form-item">
                   <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
-                    <Input disabled={true} addonBefore="Valid   " placeholder="member valid through" value={dataMember.valid}/>
+                    <Input disabled addonBefore="Valid   " placeholder="member valid through" value={dataMember.valid} />
                   </Col>
                 </Row>
               </TabPane>
@@ -182,25 +187,25 @@ const ModalMobile = ({
               <TabPane tab="data Booking" key="3">
                 <Table columns={columnBooking} dataSource={dataBooking} />
               </TabPane>
-              <TabPane tab="data Existing" key="4" disabled>
-              </TabPane>
+              <TabPane tab="data Existing" key="4" disabled />
             </Tabs>
           </div>
         </section>
 
-        <Col xs={{ span:3, offset: 2}} md={{ span: 3, offset: 0 }}></Col>
+        <Col xs={{ span: 3, offset: 2 }} md={{ span: 3, offset: 0 }} />
         <FormItem label="" {...formItemLayout}>
-          <Col xs={{ span:10, offset: 2}} sm={{ span: 9, offset: 3}} md={{ span: 9, offset: 1, pull: 4 }}>
+          <Col xs={{ span: 10, offset: 2 }} sm={{ span: 9, offset: 3 }} md={{ span: 9, offset: 1, pull: 4 }}>
             <Checkbox disabled={checkMember.confirmCheckBoxDisable}
-                      checked={checkMember.confirmCheckBoxCheck}
-                      onChange={(e) => handleCheckConfirm(e.target.checked)}>
+              checked={checkMember.confirmCheckBoxCheck}
+              onChange={e => handleCheckConfirm(e.target.checked)}
+            >
               have user confirmed mobile data to customer?
             </Checkbox>
           </Col>
-          <Col xs={{ span:3, offset: 2}} md={{ span: 2, offset: 12 }}>
+          <Col xs={{ span: 3, offset: 2 }} md={{ span: 2, offset: 12 }}>
             <Button className="button-line-height1"
-                    disabled={checkMember.activateButtonDisable}
-                    onClick={() => handleActivate()}
+              disabled={checkMember.activateButtonDisable}
+              onClick={() => handleActivate()}
             >Activate</Button>
           </Col>
         </FormItem>

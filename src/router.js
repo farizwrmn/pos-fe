@@ -414,9 +414,17 @@ const Routers = function ({ history, app }) {
           path: 'report/inventory/transfer',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/report/inventory'))
-              cb(null, require('./routes/report/inventory/'))
-            }, 'report-account-payment')
+              registerModel(app, require('./models/report/inventory/transfer'))
+              cb(null, require('./routes/report/inventory/transfer'))
+            }, 'report-inventory-transfer')
+          }
+        }, {
+          path: 'report/inventory/sellprice',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/inventory/sellprice'))
+              cb(null, require('./routes/report/inventory/sellprice'))
+            }, 'report-inventory-sellprice')
           }
         }, {
           path: 'report/accounts/payment',
@@ -431,7 +439,7 @@ const Routers = function ({ history, app }) {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/maintenance'))
+              registerModel(app, require('./models/tools/maintenance'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
@@ -439,15 +447,27 @@ const Routers = function ({ history, app }) {
             }, 'accounts-payment')
           }
         }, {
-          path: 'maintenance',
+          path: 'tools/maintenance',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/maintenance'))
+              registerModel(app, require('./models/tools/maintenance'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
-              cb(null, require('./routes/maintenance/'))
-            }, 'maintenance')
+              cb(null, require('./routes/tools/maintenance/'))
+            }, 'tools-maintenance')
+          }
+        }, {
+          path: 'tools/sellprice',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/tools/sellprice'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/employee'))
+              cb(null, require('./routes/tools/sellprice'))
+            }, 'tools-sellprice')
           }
         }, {
           path: 'setting/user',

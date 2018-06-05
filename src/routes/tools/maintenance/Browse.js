@@ -4,7 +4,7 @@ import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd
 import moment from 'moment'
 import { DropOption } from 'components'
 import { configMain } from 'utils'
-import styles from '../../themes/index.less'
+import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search

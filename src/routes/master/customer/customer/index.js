@@ -259,7 +259,7 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
         type: 'customer/activateMember',
         payload
       })
-    },
+    }
   }
 
   const formProps = {
