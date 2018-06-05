@@ -135,7 +135,7 @@ const PrintShelf = ({ stickers, user }) => {
   }
 
   const pdfProps = {
-    name: 'Shelf',
+    name: 'Print',
     width: [260, 260, 260],
     pageSize: { width: 870, height: 590 },
     pageOrientation: 'landscape',

@@ -112,7 +112,7 @@ const PrintSticker = ({ user, stickers }) => {
   }
 
   const pdfProps = {
-    name: 'Print Sticker',
+    name: 'Print',
     width: [130, 130, 130, 130, 130, 130],
     pageSize: { width: 890, height: 615 },
     pageOrientation: 'landscape',

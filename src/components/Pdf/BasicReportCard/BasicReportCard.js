@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, Modal } from 'antd'
+import { Icon, Modal, Button } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 
@@ -65,13 +65,10 @@ const BasicReportCard = ({
     }
   }
   return (
-    <div
-      className={className}
-      onClick={() => printPdf(tableBody)}
-    >
-      <Icon type="file-pdf" className="icon-large" />
+    <Button onClick={() => printPdf(tableBody)}>
+      <Icon type="file-pdf" />
       {name}
-    </div>
+    </Button>
   )
 }
 
