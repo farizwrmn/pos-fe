@@ -8,7 +8,7 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, app }) => {
+const Report = ({ dispatch, fifoReport, loading, app }) => {
   const { period, year, activeKey } = fifoReport
   let { listRekap } = fifoReport
   if (activeKey === '1') {
@@ -17,7 +17,8 @@ const Report = ({ dispatch, fifoReport, app }) => {
   const { user, storeInfo } = app
 
   const browseProps = {
-    dataSource: listRekap
+    dataSource: listRekap,
+    loading: loading.effects['fifoReport/queryInAdj']
   }
 
   const filterProps = {

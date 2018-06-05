@@ -162,7 +162,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       { fontSize: 10, text: 'NAMA PRODUK', rowSpan: 2, alignment: 'center' },
       { fontSize: 10, text: 'TRANSIT FROM OTHER PERIOD (a)', colSpan: 2, alignment: 'center' },
       {},
-      { fontSize: 10, text: 'TRANSFER FROM OTHER PERIOD (b)', colSpan: 2, alignment: 'center' },
+      { fontSize: 10, text: 'TRANSFER TO OTHER PERIOD (b)', colSpan: 2, alignment: 'center' },
       {},
       { fontSize: 10, text: 'TR IN (c)', colSpan: 2, alignment: 'center' },
       {},
