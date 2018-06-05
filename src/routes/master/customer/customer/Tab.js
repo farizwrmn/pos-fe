@@ -43,7 +43,7 @@ const formCustomer = ({
     showPDFModal,
     onShowPDFModal,
     onHidePDFModal,
-    getAllCustomer,
+    getAllCustomer
   } = tabProps
   const change = (key) => {
     changeTab(key)

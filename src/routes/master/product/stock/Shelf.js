@@ -174,14 +174,14 @@ const Shelf = ({
               <p style={priceStyle}>Rp. {parseInt(x.info.sellPrice, 0).toLocaleString()}</p>
               <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice01, 0).toLocaleString()}</p>
               <p style={distPriceStyleLeft}><br /></p>
-              {/*<p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice02, 0).toLocaleString()}</p>*/}
+              {/* <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice02, 0).toLocaleString()}</p> */}
             </Col>
             <Col md={12}>
               <p style={sellPriceStyle}>(Non-Member)</p>
               <p style={distPriceStyleRight}>(Member)</p>
-              {/*<p style={sellPriceStyle}>(Sellprice)</p>*/}
-              {/*<p style={distPriceStyleRight}>(Dist price 01)</p>*/}
-              {/*<p style={distPriceStyleRight}>(Dist price 02)</p>*/}
+              {/* <p style={sellPriceStyle}>(Sellprice)</p> */}
+              {/* <p style={distPriceStyleRight}>(Dist price 01)</p> */}
+              {/* <p style={distPriceStyleRight}>(Dist price 02)</p> */}
             </Col>
           </Row>
           <p style={productCodeStyle}>{x.info.productCode}</p>
