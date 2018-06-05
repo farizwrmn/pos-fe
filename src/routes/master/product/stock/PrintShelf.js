@@ -10,8 +10,13 @@ const PrintShelf = ({ stickers, user }) => {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           let row = []
-          const maxStringPerRow = tableBody[key].name.substr(0, 28).toString()
-          row.push({ text: maxStringPerRow, style: 'productName', alignment: 'left' })
+          const maxStringPerRow1 = tableBody[key].name.slice(0, 28).toString()
+          let maxStringPerRow2 = ' '
+          if (tableBody[key].name.slice(28, 56).toString().length > 0) {
+            maxStringPerRow2 = tableBody[key].name.slice(28, 56).toString()
+          }
+          row.push({ text: maxStringPerRow1, style: 'productName', alignment: 'left' })
+          row.push({ text: maxStringPerRow2, style: 'productName', alignment: 'left' })
           row.push({
             columns: [
               { text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' },

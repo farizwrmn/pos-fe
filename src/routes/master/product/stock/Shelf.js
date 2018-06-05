@@ -2,8 +2,6 @@ import React from 'react'
 import { Table, Icon, Row, Col, Card } from 'antd'
 import ModalSticker from './Modal'
 
-let tableData = []
-
 const columnList = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -35,7 +33,7 @@ const cardStyle = {
 
 const gridStyle = {
   width: '33.3%',
-  height: '100px',
+  height: '120px',
   padding: '10px 8px 5px 8px'
 }
 
@@ -90,7 +88,9 @@ const Shelf = ({
   onShowModalProduct,
   showModalProduct,
   listSticker,
-  pushSticker,
+  addSticker,
+  deleteSticker,
+  updateSticker,
   onSelectSticker,
   ...modalStickerProps
 }) => {
@@ -102,18 +102,15 @@ const Shelf = ({
   const deleteItem = (record) => {
     const getRecord = listSticker.map(item => item.name).indexOf(record.name)
     listSticker.splice(getRecord, 1)
-    pushSticker(listSticker)
+    deleteSticker(record)
   }
 
   const getItem = (record) => {
-    tableData.push(record)
-    pushSticker(tableData)
+    addSticker(record)
   }
 
   const changeItem = (firstRecord, lastRecord) => {
-    const find = listSticker.findIndex(x => x.name === firstRecord.name)
-    listSticker[find] = lastRecord
-    pushSticker(listSticker)
+    updateSticker(firstRecord, lastRecord)
   }
 
   const handleRowClick = (record) => {
@@ -148,7 +145,7 @@ const Shelf = ({
   }]
 
   const tableProps = {
-    dataSource: listSticker || [],
+    dataSource: listSticker,
     columns,
     pagination: false,
     style: tableStyle
@@ -168,7 +165,8 @@ const Shelf = ({
       let count = []
       for (let i = 0; i < x.qty; i += 1) {
         count.push(<Card.Grid style={gridStyle}>
-          <p style={labelStyle}>{x.name.substr(0, 20)}</p>
+          <p style={labelStyle}>{x.name.slice(0, 20)}</p>
+          <p style={labelStyle}>{x.name.slice(20, 40).length > 0 ? x.name.slice(20, 40) : '\u00A0'}</p>
           <Row>
             <Col md={12}>
               <p style={priceStyle}>Rp. {parseInt(x.info.sellPrice, 0).toLocaleString()}</p>

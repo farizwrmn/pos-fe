@@ -10,7 +10,7 @@ const PrintSticker = ({ user, stickers }) => {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           let row = []
-          const maxStringPerRow = tableBody[key].name.substr(0, 20).toString()
+          const maxStringPerRow = tableBody[key].name.slice(0, 20).toString()
           row.push({ text: maxStringPerRow, style: 'productName' })
           row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
           body.push(row)
