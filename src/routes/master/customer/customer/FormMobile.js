@@ -108,8 +108,7 @@ const ModalMobile = ({
     console.log('zzz2', getFieldsValue())
     activateMember(getFieldsValue())
   }
-  console.log('zzz4', infoCheck)
-  console.log('zzz5', dataCustomer.memberCode)
+
   return (
     <div>
       {modalVisible && <ModalBrowse {...modalMobileProps} />}

@@ -893,21 +893,21 @@ export default {
       let data = {}
       if (payload.outOfStock) {
         data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        yield put({
-          type: 'showProductModal',
-          payload: {
-            modalType: 'browseProductFree'
-          }
-        })
+        // yield put({
+        //   type: 'showProductModal',
+        //   payload: {
+        //     modalType: 'browseProductFree'
+        //   }
+        // })
       } else {
         const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
         data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        yield put({
-          type: 'showProductModal',
-          payload: {
-            modalType: 'browseProductLock'
-          }
-        })
+        // yield put({
+        //   type: 'showProductModal',
+        //   payload: {
+        //     modalType: 'browseProductLock'
+        //   }
+        // })
       }
       let newData = data.data
       if (data.success) {

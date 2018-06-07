@@ -461,6 +461,12 @@ const Pos = ({
     let jsondata = JSON.stringify(eval(`(${json})`))
     const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
     dispatch({
+      type: 'pos/showProductModal',
+      payload: {
+        modalType: 'browseProductLock'
+      }
+    })
+    dispatch({
       type: 'pos/getProducts',
       payload: {
         outOfStock
