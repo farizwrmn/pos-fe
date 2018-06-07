@@ -49,7 +49,7 @@ const Filter = ({
 
   let suppliers = []
   if (list && list.length > 0) {
-    suppliers = list.map(x => (<Option value={x.supplierCode}>{x.supplierName}</Option>))
+    suppliers = list.map(x => (<Option value={x.id}>{x.supplierName}</Option>))
   }
 
   return (
