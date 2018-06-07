@@ -305,6 +305,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/purchase'))
+              registerModel(app, require('./models/master/supplier'))
               cb(null, require('./routes/report/purchase/summary/'))
             }, 'report-purchase-summary')
           }

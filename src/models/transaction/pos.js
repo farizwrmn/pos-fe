@@ -128,6 +128,12 @@ export default {
           dispatch({
             type: 'getServiceReminder'
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listUnitUsage: []
+            }
+          })
         }
       })
     }

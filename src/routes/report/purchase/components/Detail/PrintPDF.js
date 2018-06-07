@@ -110,7 +110,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
-              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'ID PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierCode || '').toString(), fontSize: 11 }],
+              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'KODE PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierCode || '').toString(), fontSize: 11 }],
               [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'NAMA PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierName || '').toString(), fontSize: 11 }],
               [{ text: 'TIPE PAJAK', fontSize: 11 }, ':', { text: (listData[i].taxType || '').toString(), fontSize: 11 }, {}, { text: 'ALAMAT', fontSize: 11 }, ':', { text: '', fontSize: 11 }],
               [{ text: 'DISKON(%)', fontSize: 11 }, ':', { text: `${(listData[i].discInvoicePercent || 0).toString()}%`, fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (listData[i].memo || '').toString(), fontSize: 11 }],
@@ -134,7 +134,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN HISTORY RINCIAN PEMBELIAN',
+            text: 'LAPORAN HISTORY PEMBELIAN DETAIL',
             style: 'header'
           },
           {

@@ -53,7 +53,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   }
 
   const title = [
-    { value: 'LAPORAN HISTORY RINCIAN PEMBELIAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN HISTORY PEMBELIAN DETAIL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
@@ -87,7 +87,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: 'ID PEMASOK', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: 'KODE PEMASOK', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
         { value: (master.supplierCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
@@ -182,7 +182,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   let tableFilters = [
     [
       { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
-      { value: 'ID PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'KODE PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
