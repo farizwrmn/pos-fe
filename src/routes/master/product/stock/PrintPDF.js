@@ -48,6 +48,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'NAMA', style: 'tableHeader' },
       { text: 'MEREK', style: 'tableHeader' },
       { text: 'KATEGORI', style: 'tableHeader' },
+      { text: 'ASPEK RASIO', style: 'tableHeader' },
       { text: 'HARGA JUAL', style: 'tableHeader' },
       { text: 'HARGA POKOK', style: 'tableHeader' },
       { text: 'HARGA DIST-1', style: 'tableHeader' },
@@ -66,6 +67,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
         row.push({ text: (tableBody[key].productName || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].brandName || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].categoryName || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].aspectRatio || '0').toString(), alignment: 'right' })
         row.push({ text: (tableBody[key].sellPrice || 0).toLocaleString(), alignment: 'right' })
         row.push({ text: (tableBody[key].costPrice || 0).toLocaleString(), alignment: 'right' })
         row.push({ text: (tableBody[key].distPrice01 || 0).toLocaleString(), alignment: 'right' })
@@ -124,7 +126,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    width: ['3%', '14%', '25%', '16%', '10%', '8%', '8%', '8%', '8%'],
+    width: ['3%', '12%', '22%', '15%', '9%', '7%', '7%', '8%', '8%', '8%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [15, 140, 15, 60],
