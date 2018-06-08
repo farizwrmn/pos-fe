@@ -948,11 +948,11 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
-      if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
+      if ((memberInformation || []).length !== 0 && (mechanicInformation || []).length !== 0) {
         let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
-        if (checkExists.length === 0) {
+        if ((checkExists || []).length === 0) {
           // if (listByCode.length === 0) {
           //   arrayProd = listByCode.slice()
           // } else {
