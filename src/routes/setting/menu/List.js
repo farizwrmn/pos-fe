@@ -64,7 +64,7 @@ const List = ({ menuTree, onChangeTree, editItem, modalEdit, onSelectMenu, onCan
   }
 
   const modalProps = {
-    title: 'Edit / Delete Menu',
+    title: 'Edit Menu',
     visible: modalEdit.visible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',

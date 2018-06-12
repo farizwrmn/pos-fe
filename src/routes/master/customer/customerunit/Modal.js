@@ -16,7 +16,6 @@ const ModalBrowse = ({
   changeText,
   onChange
 }) => {
-  const width = '80%'
   const modalOpts = {
     ...modalProps
   }
@@ -66,7 +65,7 @@ const ModalBrowse = ({
   }
 
   return (
-    <Modal {...modalOpts} width={width} height="80%" footer={[]}>
+    <Modal className="modal-browse" {...modalOpts} footer={[]}>
       <ModalList {...listProps} />
     </Modal>
   )

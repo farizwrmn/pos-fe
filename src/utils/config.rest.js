@@ -69,6 +69,7 @@ module.exports = {
     cashierList: '/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc',
     transTypeList: '/misc/code/TRANSTYPE?fields=miscName,miscDesc,miscVariable&as=code,type,variable',
     cashierTrans: '/cashierTrans',
+    cashier: '/cashiers',
     period: '/period',
     creditCharge: '/creditCharge',
     setting: '/setting',

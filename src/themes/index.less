@@ -215,6 +215,9 @@ body {
         height: auto !important;
         /* for IE as it does not support min-height */
         height: 32px;
+        .range-date {
+            width: 70%;
+        }
     }
     .ant-form-item-margin-bottom {
         margin-bottom: 5px;
@@ -252,6 +255,23 @@ body {
     .ant-input-group-addon {
         width: 80px;
         text-align: left;
+    }
+
+    .ant-modal-wrap.vertical-center-modal {
+        .ant-modal.modal-browse {
+            margin:auto 5% !important;
+            width:90% !important;
+            height:80%;
+
+            .ant-modal-content {
+                min-height:100%;
+                position:absolute;
+                top:0;
+                bottom:0;
+                left:0;
+                right:0;
+            }
+        }
     }
 
     .tab-card-box {
@@ -373,6 +393,11 @@ body {
 
 @media (max-width: 767px) {
      :global {
+        .ant-form-item-control {
+            .range-date {
+                width: 100% !important;
+            }
+        }
         .wrapper-switcher {
             width: 85%;
             right: -85%;
@@ -384,6 +409,23 @@ body {
             .ant-card-body {
                 padding: 0;
                 margin: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 360px) {
+    :global {
+        .ant-modal-wrap.vertical-center-modal {
+            .ant-modal {
+                .ant-modal-content {
+                    .ant-input {
+                        width: 120px;
+                    }
+                    .ant-form-inline .ant-form-item {
+                        margin-right: 8px;
+                    }
+                }
             }
         }
     }

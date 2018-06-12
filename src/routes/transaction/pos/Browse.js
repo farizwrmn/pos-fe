@@ -56,7 +56,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
   }
 
   return (
-    <Modal {...modalOpts} width={width} height="80%" footer={null}>
+    <Modal className="modal-browse" {...modalOpts} footer={null}>
       {(modalType === 'browse') && <List {...listProps} />}
       {(modalType === 'browseAsset') && <ListAsset {...listProps} />}
       {(modalType === 'browseMember') && <ListMember {...listProps} />}
