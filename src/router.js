@@ -186,6 +186,22 @@ const Routers = function ({ history, app }) {
             }, 'master-city')
           }
         }, {
+          path: 'master/counter',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/counter'))
+              cb(null, require('./routes/master/counter/'))
+            }, 'master-counter')
+          }
+        }, {
+          path: 'master/shift',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/shift'))
+              cb(null, require('./routes/master/shift/'))
+            }, 'master-shift')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -481,6 +497,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/setting/user/'))
             }, 'setting-user')
+          }
+        }, {
+          path: 'setting/cashier',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/cashier'))
+              registerModel(app, require('./models/setting/user'))
+              cb(null, require('./routes/setting/cashier/'))
+            }, 'setting-cashier')
           }
         }, {
           path: 'setting/user/:id',
