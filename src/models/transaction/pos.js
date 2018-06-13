@@ -9,6 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
+import { queryInformation, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -59,6 +60,7 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
+    cashierInformation: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -105,6 +107,7 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+          let userId = lstorage.getStorageKey('udi')[1]
           dispatch({
             type: 'showShiftModal',
             payload: memberUnitInfo
@@ -114,6 +117,10 @@ export default {
           })
           dispatch({
             type: 'getServiceReminder'
+          })
+          dispatch({
+            type: 'getCashierInformation',
+            payload: '000003'
           })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
@@ -1384,6 +1391,34 @@ export default {
             listServiceReminder: data.data
           }
         })
+      } else {
+        throw data
+      }
+    },
+
+    * getCashierInformation ({ payload = {} }, { call, put }) {
+      const data = yield call(queryInformation, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            cashierInformation: data.data[0]
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * cashRegister ({ payload = {} }, { call, put }) {
+      const data = yield call(cashRegister, payload)
+      if (data.success) {
+        const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
+        const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
+        let dataCashierTransByShift = {}
+        if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
+          dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: 'C' })
+        }
       } else {
         throw data
       }

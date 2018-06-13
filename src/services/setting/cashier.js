@@ -40,3 +40,22 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryInformation (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${cashier}/users/${params}/periods/O`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function cashRegister (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${cashier}/cashregisters`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
