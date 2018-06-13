@@ -206,6 +206,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/customerunit'))
@@ -592,6 +594,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/menu'))
               cb(null, require('./routes/setting/menu/'))
             }, 'setting-menu')
+          }
+        }, {
+          path: 'setting/store',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/master/city'))
+              cb(null, require('./routes/setting/store/'))
+            }, 'setting-store')
           }
         }, {
           path: 'setting/role',
