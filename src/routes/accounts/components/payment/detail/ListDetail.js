@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
-import styles from '../../../../themes/index.less'
+import styles from '../../../../../themes/index.less'
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {

@@ -2,8 +2,8 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
-import { query, queryPaymentSplit, add, cancelPayment } from '../../../services/payment/payment'
-import { queryDetail } from '../../../services/payment'
+import { queryDetail, queryHistory } from '../../../services/purchase'
+import { query, queryPaymentSplit, add, cancelPayment } from '../../../services/payment/payable'
 
 const success = (msg) => {
   message.success(msg)
@@ -11,7 +11,7 @@ const success = (msg) => {
 
 export default {
 
-  namespace: 'paymentDetail',
+  namespace: 'payableDetail',
 
   state: {
     itemCancel: {},
@@ -20,16 +20,20 @@ export default {
     listAmount: [],
     listPaymentOpts: [],
     modalVisible: false,
-    modalCancelVisible: false
+    modalCancelVisible: false,
+    modalAddBankVisible: false,
+
+    visibleTooltip: false,
+    valueNumber: null
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(() => {
-        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
+        const match = pathToRegexp('/accounts/payable/:id').exec(location.pathname)
         if (match) {
           dispatch({
-            type: 'queryPosDetail',
+            type: 'queryPurchaseDetail',
             payload: {
               id: decodeURIComponent(match[1]),
               transNo: decodeURIComponent(match[1]),
@@ -56,7 +60,7 @@ export default {
         throw data
       }
     },
-    * queryPosDetail ({ payload }, { call, put }) {
+    * queryPurchaseDetail ({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
@@ -65,28 +69,25 @@ export default {
           listAmount: []
         }
       })
-      const { id, ...other } = payload
-      const invoiceInfo = yield call(query, payload)
-      const payment = yield call(queryPaymentSplit, other)
-      const data = yield call(queryDetail, payload)
-      let dataPos = []
-      let dataPayment = []
-      for (let n = 0; n < data.pos.length; n += 1) {
-        dataPos.push({
+      const data = yield call(queryDetail, { transNo: payload.transNo })
+      let dataPurchase = []
+      for (let n = 0; n < (data.data || []).length; n += 1) {
+        dataPurchase.push({
           no: n + 1,
-          id: data.pos[n].id,
-          typeCode: data.pos[n].typeCode,
-          productCode: data.pos[n].productCode || data.pos[n].serviceCode,
-          productName: data.pos[n].productName || data.pos[n].serviceName,
-          qty: data.pos[n].qty || 0,
-          sellingPrice: data.pos[n].sellingPrice || 0,
-          discount: data.pos[n].discount || 0,
-          disc1: data.pos[n].disc1 || 0,
-          disc2: data.pos[n].disc2 || 0,
-          disc3: data.pos[n].disc3 || 0
+          id: data.data[n].id,
+          productCode: data.data[n].productCode || data.data[n].serviceCode,
+          productName: data.data[n].productName || data.data[n].serviceName,
+          qty: data.data[n].qty || 0,
+          price: data.data[n].purchasePrice || 0,
+          totalDiscount: data.data[n].totalDiscount || 0,
+          netto: data.data[n].netto || 0
         })
       }
-      for (let n = 0; n < payment.data.length; n += 1) {
+      const { id, ...other } = payload
+      const invoiceInfo = yield call(queryHistory, payload)
+      const payment = yield call(queryPaymentSplit, other)
+      let dataPayment = []
+      for (let n = 0; n < (payment.data || []).length; n += 1) {
         dataPayment.push({
           no: n + 1,
           id: payment.data[n].id,
@@ -97,22 +98,27 @@ export default {
           typeCode: payment.data[n].typeCode,
           cardNo: payment.data[n].cardNo,
           cardName: payment.data[n].cardName,
+          checkNo: payment.data[n].checkNo,
           description: payment.data[n].description,
-          paid: payment.data[n].paid || 0
+          paid: payment.data[n].paid || 0,
+          createdBy: payment.data[n].createdBy,
+          createdAt: payment.data[n].createdAt,
+          updatedBy: payment.data[n].updatedBy,
+          updatedAt: payment.data[n].updatedAt
         })
       }
-      if (invoiceInfo.data.length > 0) {
+      if (invoiceInfo.success) {
         if (data.success) {
           yield put({
             type: 'querySuccess',
             payload: {
-              data: invoiceInfo.data
+              data: invoiceInfo.purchase
             }
           })
           yield put({
             type: 'updateState',
             payload: {
-              listDetail: dataPos,
+              listDetail: dataPurchase,
               listAmount: dataPayment
             }
           })
@@ -126,6 +132,7 @@ export default {
       }
     },
     * add ({ payload }, { call, put }) {
+      // console.log('payload', payload)
       const data = yield call(add, payload)
       if (data.success) {
         yield put({
@@ -135,7 +142,7 @@ export default {
           }
         })
         yield put({
-          type: 'queryPosDetail',
+          type: 'queryPurchaseDetail',
           payload: {
             id: payload.data.transNo,
             transNo: payload.data.transNo,
@@ -145,6 +152,7 @@ export default {
         success('Payment has been saved')
         // setInterval(() => { location.reload() }, 1000)
       } else {
+        console.log('data', data)
         throw data
       }
     },
@@ -159,7 +167,7 @@ export default {
           }
         })
         yield put({
-          type: 'queryPosDetail',
+          type: 'queryPurchaseDetail',
           payload: {
             id: payload.transNo,
             transNo: payload.transNo,

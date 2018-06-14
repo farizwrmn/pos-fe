@@ -4,6 +4,7 @@
 // import { queryPaymentWithPOS } from '../../services/payment/payment'
 import { Modal } from 'antd'
 import { queryPaymentWithPOS, queryPaymentAR, queryPaymentARGroup } from '../../services/report/payment'
+import { queryPayableWithBank } from '../../services/report/payable'
 
 export default {
   namespace: 'accountsReport',
@@ -33,6 +34,13 @@ export default {
         if (location.pathname === '/report/accounts/payment') {
           dispatch({
             type: 'setListNull'
+          })
+        } else if (location.pathname === '/report/accounts/payment') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: '1'
+            }
           })
         }
       })
@@ -80,6 +88,26 @@ export default {
     },
     * queryARGroup ({ payload }, { call, put }) {
       const data = yield call(queryPaymentARGroup, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'No Data',
+          content: 'Cannot get data from storage'
+        })
+        throw data
+      }
+    },
+    * queryPayableTrans ({ payload }, { call, put }) {
+      const data = yield call(queryPayableWithBank, payload)
       if (data.success) {
         yield put({
           type: 'updateState',

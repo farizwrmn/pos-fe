@@ -13,28 +13,30 @@ const formItemLayout = {
 
 const modal = ({
   onOk,
-  invoiceCancel,
-  form: { getFieldDecorator, validateFields, getFieldsValue },
+  item = {},
+  data,
+  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[3] || '')
-  console.log(lstorage.getStorageKey('udi'))
   const handleOk = () => {
     if (defaultRole === 'CSH') return
-
     validateFields((errors) => {
       if (errors) return
-      const data = {
-        ...getFieldsValue(),
-        transNo: invoiceCancel
+      const record = {
+        id: item ? item.id : '',
+        transNo: data ? data.transNo : '',
+        storeId: data ? data.storeId : '',
+        ...getFieldsValue()
       }
       Modal.confirm({
-        title: `Void ${invoiceCancel}'s payment`,
+        title: `Void ${data.transNo}'s payment`,
         content: 'Are you sure ?',
         onOk () {
-          onOk(data)
+          onOk(record)
         }
       })
+      resetFields()
     })
   }
   const modalOpts = {
@@ -49,7 +51,7 @@ const modal = ({
     >
       <Form>
         <FormItem label="No" {...formItemLayout}>
-          <Input value={invoiceCancel} />
+          <Input value={data ? data.transNo : ''} />
         </FormItem>
         <FormItem label="Memo" {...formItemLayout}>
           {getFieldDecorator('memo', {

@@ -19,7 +19,8 @@ const BasicReport = ({
   tableHeader = [],
   tableBody = [],
   tableFooter = [],
-  data = []
+  data = [],
+  mergeCells = []
 }) => {
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -36,8 +37,7 @@ const BasicReport = ({
     }
   ]
 
-  const sheet = workbook.addWorksheet('POS 1',
-    { pageSetup: { paperSize, orientation } })
+  let sheet = ''
 
   const getPositionTitle = (length) => {
     let alphabet = ''
@@ -70,6 +70,8 @@ const BasicReport = ({
   }
 
   const createXLSLineItems = () => {
+    sheet = workbook.addWorksheet('POS 1',
+      { pageSetup: { paperSize, orientation } })
     let content = []
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
@@ -128,8 +130,10 @@ const BasicReport = ({
         content.push(get[i])
       }
     }
+    for (let i in mergeCells) sheet.mergeCells(mergeCells[i])
     return content
   }
+
   const printXLS = () => {
     if ((tableHeader.length === 0 && tableFooter.length === 0) || tableBody.length === 0) {
       Modal.warning({
