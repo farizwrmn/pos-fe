@@ -170,6 +170,12 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           outOfStock: 0
         }
       })
+      dispatch({
+        type: 'pos/showProductModal',
+        payload: {
+          modalType: 'browseProductFree'
+        }
+      })
     },
     handleInvoiceBrowse () {
       dispatch({
