@@ -1,0 +1,6 @@
+{
+  "name": "CashRegister",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./CashRegister.js"
+}

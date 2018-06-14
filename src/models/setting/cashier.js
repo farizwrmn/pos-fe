@@ -15,7 +15,8 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listCashier: []
+    listCashier: [],
+    modalVisible: false,
   },
 
   subscriptions: {
@@ -31,6 +32,14 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
+        } else if (pathname === '/monitor/cashier/periods') {
+          dispatch({ type: 'query' })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              searchText: ''
+            }
+          })
         }
       })
     }
@@ -44,7 +53,24 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCashier',
           payload: {
-            listCashier: data.data,
+            list: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryActive ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessCashier',
+          payload: {
+            list: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -117,15 +143,24 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
-    }
+    },
   },
 
   reducers: {
-    querySuccessCashier (state, action) {
-      const { listCashier, pagination } = action.payload
+    updateState (state, { payload }) {
+      console.table('zzz3')
       return {
         ...state,
-        listCashier,
+        ...payload
+      }
+    },
+
+    querySuccessCashier (state, action) {
+      const { list, pagination } = action.payload
+      return {
+        ...state,
+        list,
+        listCashier: list,
         pagination: {
           ...state.pagination,
           ...pagination

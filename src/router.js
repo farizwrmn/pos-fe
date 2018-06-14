@@ -45,16 +45,6 @@ const Routers = function ({ history, app }) {
             }, 'login')
           }
         }, {
-          path: 'service/history',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/master/customer'))
-              registerModel(app, require('./models/master/customerunit'))
-              cb(null, require('./routes/service/history'))
-            }, 'service-history')
-          }
-        }, {
           path: 'nps/01',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -612,6 +602,27 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/role'))
               cb(null, require('./routes/setting/role/'))
             }, 'setting-role')
+          }
+        }, {
+          path: 'monitor/service/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customerunit'))
+              cb(null, require('./routes/monitor/service/history'))
+            }, 'service-history')
+          }
+        }, {
+          path: 'monitor/cashier/periods',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/cashier'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customerunit'))
+              cb(null, require('./routes/monitor/cashier/periods'))
+            }, 'service-history')
           }
         }, {
           path: '*',
