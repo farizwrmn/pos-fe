@@ -978,7 +978,6 @@ export default {
 
     * cashRegister ({ payload = {} }, { call, put }) {
       const data = yield call(cashRegister, payload)
-      // if (data.success || (!data.success && data.message.split(':')[1].trim().split('|')[0]==='1')) {
       if (data.success) {
         const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
         const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
@@ -1427,6 +1426,7 @@ export default {
 
     * getCashierInformation ({ payload = {} }, { call, put }) {
       const data = yield call(queryInformation, payload)
+      console.log('zzz7', data)
       const cashierInformation = (data || []).length > 1 ? data.data[0] : ''
       if (data.success) {
         yield put({
