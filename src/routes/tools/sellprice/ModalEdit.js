@@ -100,7 +100,7 @@ const modal = ({
             rules: [{
               required: false
             }]
-          })(<Input type="number" addonBefore={prefixSelector('sellPrice')} autoFocus min={0} style={{ width: '100%' }} />)}
+          })(<Input type="number" addonBefore={prefixSelector('sellPrice')} autoFocus style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
       <Form layout="horizontal">
@@ -110,7 +110,7 @@ const modal = ({
             rules: [{
               required: false
             }]
-          })(<Input type="number" addonBefore={prefixSelector('distPrice01')} min={0} style={{ width: '100%' }} />)}
+          })(<Input type="number" addonBefore={prefixSelector('distPrice01')} style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
       <Form layout="horizontal">
@@ -120,7 +120,7 @@ const modal = ({
             rules: [{
               required: false
             }]
-          })(<Input type="number" addonBefore={prefixSelector('distPrice02')} min={0} style={{ width: '100%' }} />)}
+          })(<Input type="number" addonBefore={prefixSelector('distPrice02')} style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
     </Modal >
