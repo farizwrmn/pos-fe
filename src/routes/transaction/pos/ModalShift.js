@@ -67,10 +67,13 @@ const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, lis
         return
       }
       const data = { ...getFieldsValue() }
+      console.log('zzz4', cashierInformation)
+      console.log('zzz4a', cashierId)
+
       data.period = moment(data.period).format('YYYY-MM-DD')
       data.status = cashierInformation.status
       data.storeId = cashierInformation.storeId
-      data.cashierId = cashierInformation.cashierId
+      data.cashierId = cashierInformation.cashierId || cashierId
       // const data = {
       //   ...getFieldsValue(),
       //   cashierId,

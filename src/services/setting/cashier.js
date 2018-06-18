@@ -1,4 +1,4 @@
-import { request, config, crypt } from '../../utils'
+import { request, config, crypt, lstorage } from '../../utils'
 const { apiCashierUsers } = config.rest
 const { cashier } = config.api
 
@@ -43,8 +43,9 @@ export async function edit (params) {
 
 export async function queryInformation (params) {
   const apiHeaderToken = crypt.apiheader()
+  const url = `${apiCashierUsers}/${params}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
-    url: `${apiCashierUsers}/${params}/periods/O`,
+    url,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -52,6 +53,9 @@ export async function queryInformation (params) {
 
 export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.status = "O"
+  console.log('zzz5', params)
   return request({
     url: `${cashier}/cashregisters`,
     method: 'post',
