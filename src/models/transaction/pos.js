@@ -115,7 +115,7 @@ export default {
           dispatch({
             type: 'getServiceReminder'
           })
-        } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
+        } else if (location.pathname === '/transaction/pos/history') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',

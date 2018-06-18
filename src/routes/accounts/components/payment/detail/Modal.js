@@ -25,19 +25,25 @@ const modal = ({
     getFieldsValue,
     getFieldValue,
     setFieldsValue,
-    resetFields
+    resetFields,
+    validateFields
   },
   ...modalProps
 }) => {
   const handleOk = () => {
-    const item = {
-      reference: data[0].id,
-      transNo: data[0].transNo,
-      storeId: data[0].storeId,
-      storeIdPayment: lstorage.getCurrentUserStore(),
-      ...getFieldsValue()
-    }
-    onOk(item)
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const item = {
+        reference: data[0].id,
+        transNo: data[0].transNo,
+        storeId: data[0].storeId,
+        storeIdPayment: lstorage.getCurrentUserStore(),
+        ...getFieldsValue()
+      }
+      onOk(item)
+    })
   }
 
   const handleCancel = () => {

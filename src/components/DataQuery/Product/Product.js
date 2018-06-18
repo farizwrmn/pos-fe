@@ -145,7 +145,9 @@ const Product = ({
         (<div>
           <Form layout="inline">
             <FormItem>
-              <Input placeholder="Search Product Name"
+              <Input
+                placeholder="Search Product Name"
+                autoFocus
                 value={searchText}
                 size="small"
                 onChange={e => handleChange(e)}

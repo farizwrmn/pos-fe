@@ -46,6 +46,7 @@ const Period = ({ location, dispatch, period, loading, app }) => {
     user,
     modalType,
     periodDate,
+    loading,
     accountActive,
     maskClosable: false,
     confirmLoading: loading.effects['period/update'],

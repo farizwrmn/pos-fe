@@ -10,7 +10,7 @@ import moment from 'moment'
 
 const warning = Modal.warning
 
-const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
+const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
   let paidTotal = listTrans.reduce((cnt, o) => cnt + o.paid, 0)
   let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
@@ -33,7 +33,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   const sheet = workbook.addWorksheet('POS 1',
     { pageSetup: { paperSize: 9, orientation: 'portrait' } })
   const handleXLS = () => {
-    if (fromDate === '' && toDate === '') {
+    if (from === '' && to === '') {
       warning({
         title: 'Parameter cannot be null',
         content: 'your Trans Date paramater probably not set...'
@@ -140,7 +140,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F3').value = `${storeInfo.name}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`
+      sheet.getCell('F4').value = `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`
       sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
       workbook.xlsx.writeBuffer().then((e) => {
         let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })

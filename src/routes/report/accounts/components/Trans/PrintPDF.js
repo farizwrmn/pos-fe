@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
+const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -75,7 +75,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },
@@ -183,8 +183,8 @@ PrintPDF.propTypes = {
   listTrans: PropTypes.array,
   user: PropTypes.object,
   storeInfo: PropTypes.object.isRequired,
-  fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string
 }
 
 export default PrintPDF
