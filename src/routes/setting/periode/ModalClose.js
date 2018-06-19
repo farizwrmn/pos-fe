@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, DatePicker } from 'antd'
+import { Form, Modal, Button, Input, DatePicker } from 'antd'
 import moment from 'moment'
 
 const { TextArea } = Input
@@ -17,6 +17,8 @@ const formItemLayout = {
 
 const modal = ({
   onOk,
+  onCancel,
+  loading,
   accountActive,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
@@ -51,11 +53,19 @@ const modal = ({
   }
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk
+    onOk: handleOk,
+    onCancel
   }
-
   return (
-    <Modal {...modalOpts}>
+    <Modal
+      confirmLoading={loading.effects['period/end']}
+      footer={[
+        <Button onClick={() => onCancel()} >Cancel</Button>,
+        <Button disabled={loading.effects['period/end']} key="submit" onClick={() => handleOk()} type="primary" >Close</Button>
+        // <Button key="submit" onClick={() => handleOk()} type="primary" >Close</Button>
+      ]}
+      {...modalOpts}
+    >
       <Form layout="horizontal">
         <FormItem label="Account Number" {...formItemLayout}>
           {getFieldDecorator('accountNumber', {
