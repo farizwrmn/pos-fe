@@ -182,7 +182,7 @@ const History = ({
     listUnitUsage
   }
 
-  let buttonName = 'Find Customer'
+  let buttonName = 'Find Cashier'
   if (customerInfo.memberName) {
     let name = customerInfo.memberName
     buttonName = name
