@@ -4,8 +4,9 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, loading, purchaseReport, app }) => {
+const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
   const { listPurchase, listPurchaseDetail, fromDate, toDate } = purchaseReport
+  const { list } = supplier
   const { user, storeInfo } = app
 
   const listData = _.map(listPurchase, (item) => {
@@ -22,12 +23,23 @@ const Report = ({ dispatch, loading, purchaseReport, app }) => {
   const filterProps = {
     listData,
     user,
+    list,
     storeInfo,
     fromDate,
     toDate,
     onListReset () {
       dispatch({
         type: 'purchaseReport/setListNull'
+      })
+    },
+    onSearch (data, startPeriod, endPeriod) {
+      dispatch({
+        type: 'purchaseReport/queryPurchase',
+        payload: {
+          startPeriod,
+          endPeriod,
+          ...data
+        }
       })
     },
     onDateChange (date) {
@@ -43,6 +55,11 @@ const Report = ({ dispatch, loading, purchaseReport, app }) => {
         payload: {
           transDate: date
         }
+      })
+    },
+    onSearchSupplier () {
+      dispatch({
+        type: 'supplier/query'
       })
     }
   }
@@ -62,4 +79,4 @@ Report.propTyps = {
   loading: PropTypes.object
 }
 
-export default connect(({ loading, purchaseReport, app }) => ({ loading, purchaseReport, app }))(Report)
+export default connect(({ loading, purchaseReport, supplier, app }) => ({ loading, purchaseReport, supplier, app }))(Report)

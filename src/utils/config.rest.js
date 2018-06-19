@@ -23,7 +23,9 @@ module.exports = {
     apiTime: '/time',
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',
-    apiTools: '/tools'
+    apiTools: '/tools',
+    apiCashierUsers: '/cashiers/users',
+    apiCashRegister: '/cashiers/cashregisters'
   },
   api: {
     getIpAddress: '/utils/ipaddr',
@@ -70,6 +72,7 @@ module.exports = {
     cashierList: '/misc/code/KASSA?fields=miscName,miscDesc&as=cashierNo,cashierDesc',
     transTypeList: '/misc/code/TRANSTYPE?fields=miscName,miscDesc,miscVariable&as=code,type,variable',
     cashierTrans: '/cashierTrans',
+    cashier: '/cashiers',
     period: '/period',
     creditCharge: '/creditCharge',
     setting: '/setting',

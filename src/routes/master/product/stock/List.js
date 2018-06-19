@@ -51,6 +51,13 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'categoryName'
     },
     {
+      title: 'Aspect Ratio',
+      dataIndex: 'aspectRatio',
+      key: 'aspectRatio',
+      className: styles.alignRight,
+      render: text => text || '0'
+    },
+    {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',

@@ -24,7 +24,7 @@ const ModalSticker = ({
     getFieldsValue
   }
 }) => {
-  let listItemName = listItem.length > 0 ? listItem.map(x => x.productName) : []
+  let listItemName = listItem.length > 0 ? listItem.map(x => `${x.productName} (${x.productCode})`) : []
 
   let productNames = listItem.length > 0 ? listItem.map(x => (<Option key={x.productName}>{x.productName}</Option>)) : []
 
@@ -81,6 +81,7 @@ const ModalSticker = ({
       const data = {
         ...getFieldsValue()
       }
+      data.qty = data.qty || 1
       if (listItemName.indexOf(data.name) === -1 && !update) {
         message.warning('Please select the correct product!')
         return false
@@ -91,9 +92,8 @@ const ModalSticker = ({
         return false
       }
       if (Object.keys(selectedSticker).length === 0) {
-        const listProduct = listItem.filter(x => x.productName === data.name)[0]
+        const listProduct = listItem.find(x => `${x.productName} (${x.productCode})` === data.name)
         data.info = listProduct
-        console.log(data)
         getItem(data)
       } else {
         data.info = selectedSticker.info
@@ -107,7 +107,6 @@ const ModalSticker = ({
   }
 
   let currentPeriod = period.length > 0 ? [moment(period[0]), moment(period[1])] : []
-
   let fieldName
   if (modalProductType === 'all' || update) {
     fieldName = (<AutoComplete {...autoCompleteProps} />)

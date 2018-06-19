@@ -61,7 +61,8 @@ export default modelExtend(pageModel, {
             payload: {
               changed: false,
               activeKey: activeKey || '0',
-              listSticker: []
+              listSticker: [],
+              listItem: []
             }
           })
         }
@@ -218,6 +219,30 @@ export default modelExtend(pageModel, {
 
     resetItem (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    pushSticker (state, { payload }) {
+      state.listSticker.push()
+      return { ...state, ...payload }
+    },
+
+    addSticker (state, { payload }) {
+      const { sticker } = payload
+      state.listSticker.push(sticker)
+      return { ...state }
+    },
+
+    deleteSticker (state, { payload }) {
+      const { sticker } = payload
+      state.listSticker = state.listSticker.filter(x => x.name !== sticker.name)
+      return { ...state }
+    },
+
+    updateSticker (state, { payload }) {
+      const { selectedRecord, changedRecord } = payload
+      let selected = state.listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
+      state.listSticker[selected] = changedRecord
+      return { ...state }
     },
 
     resetProductStockList (state) {

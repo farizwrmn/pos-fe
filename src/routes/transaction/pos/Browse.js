@@ -13,7 +13,6 @@ import ListAsset from './ListAsset'
 
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { listMember, listAsset, pagination, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
-  const width = modalType === 'modalPayment' || modalType === 'modalService' ? '45%' : '80%'
   const modalOpts = {
     ...modalProps
   }
@@ -56,7 +55,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
   }
 
   return (
-    <Modal {...modalOpts} width={width} height="80%" footer={null}>
+    <Modal className="modal-browse" {...modalOpts} footer={null}>
       {(modalType === 'browse') && <List {...listProps} />}
       {(modalType === 'browseAsset') && <ListAsset {...listProps} />}
       {(modalType === 'browseMember') && <ListMember {...listProps} />}

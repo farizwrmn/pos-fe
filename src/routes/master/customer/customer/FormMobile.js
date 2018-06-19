@@ -105,7 +105,6 @@ const ModalMobile = ({
     openModal()
   }
   const handleActivate = () => {
-    console.log('zzz2', getFieldsValue())
     activateMember(getFieldsValue())
   }
 

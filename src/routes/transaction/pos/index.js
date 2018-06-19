@@ -38,6 +38,8 @@ const Pos = ({
   loading,
   dispatch,
   pos,
+  shift,
+  counter,
   unit,
   app,
   payment }) => {
@@ -52,6 +54,8 @@ const Pos = ({
   // const { listGroup } = customergroup
   // const { listType } = customertype
   const { setting } = app
+  const { listShift } = shift
+  const { listCounter } = counter
   const {
     modalServiceVisible,
     modalMemberVisible,
@@ -86,7 +90,8 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     paymentListActiveKey,
-    modalAddUnit
+    modalAddUnit,
+    cashierInformation
   } = pos
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
@@ -664,7 +669,10 @@ const Pos = ({
   const modalShiftProps = {
     item: dataCashierTrans,
     listCashier,
+    listShift,
+    listCounter,
     curCashierNo,
+    cashierInformation,
     visible: modalShiftVisible,
     cashierId: user.userid,
     dispatch,
@@ -686,10 +694,20 @@ const Pos = ({
     },
     onOk (data) {
       dispatch({ type: 'app/foldSider' })
+      // dispatch({
+      //   type: 'pos/setCashierTrans',
+      //   payload: data
+      // })
       dispatch({
-        type: 'pos/setCashierTrans',
+        type: 'pos/cashRegister',
         payload: data
       })
+    },
+    findShift () {
+      dispatch({ type: 'shift/query' })
+    },
+    findCounter () {
+      dispatch({ type: 'counter/query' })
     }
   }
 
@@ -1946,4 +1964,4 @@ Pos.propTypes = {
   customergroup: PropTypes.object.isRequired
 }
 
-export default connect(({ pos, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)
+export default connect(({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)

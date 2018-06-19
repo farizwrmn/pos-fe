@@ -13,6 +13,8 @@ import { BasicReport as BasicExcelReport, RepeatReport as RepeatExcelReport, Rep
 import layer from './layer'
 import Notification from './Notification'
 import Reminder from './Reminder'
+import CashRegister from './CashRegister'
+
 
 export {
   Layout,
@@ -34,5 +36,6 @@ export {
   RepeatExcelReport,
   RepeatReportMergeCell,
   Notification,
-  Reminder
+  Reminder,
+  CashRegister
 }

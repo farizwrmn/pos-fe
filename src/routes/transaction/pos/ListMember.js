@@ -51,23 +51,28 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
     {
       title: 'Member Code',
       dataIndex: 'memberCode',
-      key: 'memberCode'
+      key: 'memberCode',
+      width: '200px'
     }, {
       title: 'Member Name',
       dataIndex: 'memberName',
-      key: 'memberName'
+      key: 'memberName',
+      width: '250px'
     }, {
       title: 'Address',
       dataIndex: 'address01',
-      key: 'address01'
+      key: 'address01',
+      width: '400px'
     }, {
       title: 'Mobile',
       dataIndex: 'mobileNumber',
-      key: 'mobileNumber'
+      key: 'mobileNumber',
+      width: '200px'
     }, {
       title: 'Type',
       dataIndex: 'memberTypeName',
-      key: 'memberTypeName'
+      key: 'memberTypeName',
+      width: '200px'
     }
   ]
 
@@ -96,6 +101,7 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
         bordered
         columns={columns}
         simple
+        scroll={{ x: '640px', y: 388 }}
         size="small"
         rowKey={record => record.memberCode}
         onRowClick={record => handleMenuClick(record)}

@@ -124,7 +124,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         modalType: 'add',
         currentItem: {},
         disable: '',
-        listSticker: []
+        listSticker: [],
+        listItem: []
       }
     })
     const { query, pathname } = location
@@ -327,6 +328,7 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       dispatch({
         type: 'productstock/updateState',
         payload: {
+          update: true,
           selectedSticker: sticker
         }
       })
@@ -360,11 +362,27 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         })
       }
     },
-    pushSticker (stickers) {
+    addSticker (sticker) {
       dispatch({
-        type: 'productstock/updateState',
+        type: 'productstock/addSticker',
         payload: {
-          listSticker: stickers
+          sticker
+        }
+      })
+    },
+    deleteSticker (sticker) {
+      dispatch({
+        type: 'productstock/deleteSticker',
+        payload: {
+          sticker
+        }
+      })
+    },
+    updateSticker (selectedRecord, changedRecord) {
+      dispatch({
+        type: 'productstock/updateSticker',
+        payload: {
+          selectedRecord, changedRecord
         }
       })
     },

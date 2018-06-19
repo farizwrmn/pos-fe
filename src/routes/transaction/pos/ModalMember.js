@@ -11,7 +11,6 @@ const Member = ({
     visible: modalAddMember,
     title: 'Add Member',
     footer: null,
-    width: 1000,
     onCancel () {
       cancelMember()
     }
@@ -24,7 +23,7 @@ const Member = ({
   }
 
   return (
-    <Modal {...modalProps}>
+    <Modal className="modal-browse" {...modalProps}>
       <FormCustomer {...formCustomerProps} />
     </Modal>
   )

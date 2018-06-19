@@ -9,6 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
+import { queryInformation, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -59,6 +60,7 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
+    cashierInformation: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -105,6 +107,8 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+          let userId = lstorage.getStorageKey('udi')[1]
+          console.log('zzz2', userId)
           dispatch({
             type: 'showShiftModal',
             payload: memberUnitInfo
@@ -115,7 +119,11 @@ export default {
           dispatch({
             type: 'getServiceReminder'
           })
-        } else if (location.pathname === '/transaction/pos/history') {
+          dispatch({
+            type: 'getCashierInformation',
+            payload: userId
+          })
+        } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',
@@ -127,6 +135,12 @@ export default {
         } else if (location.pathname === '/service/history') {
           dispatch({
             type: 'getServiceReminder'
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listUnitUsage: []
+            }
           })
         }
       })
@@ -962,6 +976,32 @@ export default {
       }
     },
 
+    * cashRegister ({ payload = {} }, { call, put }) {
+      const data = yield call(cashRegister, payload)
+      if (data.success) {
+        const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
+        const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
+        if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
+          yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: 'C' })
+        }
+        console.log('zzz6', data.cashregisters.cashierId)
+        localStorage.setItem('cashierNo', data.cashregisters.cashierId)
+        yield put({
+          type: 'hideShiftModal',
+          payload: {
+            curShift: payload.shift,
+            curCashierNo: payload.cashierNo
+          }
+        })
+      } else {
+        console.log('zzz5', data.message.split(':')[1].trim().split('|')[1])
+        Modal.warning({
+          title: 'Warning',
+          content: data.message.split(':')[1].trim().split('|')[1]
+        })
+      }
+    },
+
     * setCashierTrans ({ payload }, { call, put }) {
       const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
       const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
@@ -1376,6 +1416,22 @@ export default {
           type: 'updateState',
           payload: {
             listServiceReminder: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * getCashierInformation ({ payload = {} }, { call, put }) {
+      const data = yield call(queryInformation, payload)
+      console.log('zzz7', data)
+      const cashierInformation = (data || []).length > 1 ? data.data[0] : ''
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            cashierInformation
           }
         })
       } else {
