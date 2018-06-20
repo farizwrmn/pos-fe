@@ -9,7 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryInformation, cashRegister } from '../../services/setting/cashier'
+import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -108,7 +108,6 @@ export default {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           let userId = lstorage.getStorageKey('udi')[1]
-          console.log('zzz2', userId)
           dispatch({
             type: 'showShiftModal',
             payload: memberUnitInfo
@@ -985,7 +984,6 @@ export default {
         if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
           dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: 'C' })
         }
-        console.log('zzz6', data.cashregisters.cashierId)
         localStorage.setItem('cashierNo', data.cashregisters.cashierId)
         yield put({
           type: 'hideShiftModal',
@@ -995,7 +993,6 @@ export default {
           }
         })
       } else {
-        console.log('zzz5',data.message.split(':')[1].trim().split('|')[1])
         Modal.warning({
           title: 'Warning',
           content: data.message.split(':')[1].trim().split('|')[1]
@@ -1425,8 +1422,7 @@ export default {
     },
 
     * getCashierInformation ({ payload = {} }, { call, put }) {
-      const data = yield call(queryInformation, payload)
-      console.log('zzz7', data)
+      const data = yield call(queryCurrentOpenCashRegister, payload)
       const cashierInformation = (data || []).length > 1 ? data.data[0] : ''
       if (data.success) {
         yield put({

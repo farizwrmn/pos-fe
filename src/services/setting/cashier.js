@@ -1,4 +1,5 @@
 import { request, config, crypt, lstorage } from '../../utils'
+import moment from 'moment'
 const { apiCashierUsers } = config.rest
 const { cashier } = config.api
 
@@ -41,9 +42,44 @@ export async function edit (params) {
   })
 }
 
-export async function queryInformation (params) {
+export async function queryCurrentOpenCashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashierUsers}/${params}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
+  return request({
+    url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryCashRegisterByStore (params) {
+  const apiHeaderToken = crypt.apiheader()
+
+  let url, paramCashierId=0, paramStoreId=0, paramStatus
+  if (params) {
+    if (params.hasOwnProperty('cashierId')) paramCashierId = params.cashierId
+    if (params.hasOwnProperty('storeId')) paramStoreId = params.storeId
+    if (params.hasOwnProperty('status')) paramStatus = params.status
+  }
+
+  if (paramStatus) {
+    url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}/status/${paramStatus}`
+  } else {
+    url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}`
+  }
+  let periods=[]
+  if (params && params.hasOwnProperty('periods')) {
+    periods[0]=moment(params.periods[0]).format('YYYY-MM-DD')
+    periods[1]=moment(params.periods[1]).format('YYYY-MM-DD')
+    url = url + `?period=${periods}&`
+  } else {
+    url = url + `?`
+  }
+
+  const orderBy = 'order=period-,shiftid,counterId'
+  url = url + orderBy
+
+
   return request({
     url,
     method: 'get',
@@ -55,7 +91,7 @@ export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   params.status = "O"
-  console.log('zzz5', params)
+
   return request({
     url: `${cashier}/cashregisters`,
     method: 'post',

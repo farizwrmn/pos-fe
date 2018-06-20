@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/setting/cashier'
+import { query, add, edit, remove, queryCashRegisterByStore } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -16,7 +16,9 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listCashier: [],
-    modalVisible: false,
+    cashierInfo: [],
+    listCashRegister: [],
+    modalVisible: false
   },
 
   subscriptions: {
@@ -64,13 +66,13 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryActive ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+    * getCashRegisterByStore ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCashRegisterByStore, payload.item)
       if (data) {
         yield put({
-          type: 'querySuccessCashier',
+          type: 'querySuccessCashRegisterByStore',
           payload: {
-            list: data.data,
+            listCashRegister: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -148,7 +150,6 @@ export default modelExtend(pageModel, {
 
   reducers: {
     updateState (state, { payload }) {
-      console.table('zzz3')
       return {
         ...state,
         ...payload
@@ -161,6 +162,18 @@ export default modelExtend(pageModel, {
         ...state,
         list,
         listCashier: list,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessCashRegisterByStore (state, action) {
+      const { listCashRegister, pagination } = action.payload
+      return {
+        ...state,
+        listCashRegister: listCashRegister,
         pagination: {
           ...state.pagination,
           ...pagination
