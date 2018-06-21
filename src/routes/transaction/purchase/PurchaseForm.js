@@ -24,7 +24,7 @@ const formItemLayout1 = {
 }
 const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
   modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
+  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -58,10 +58,12 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
     border: 0
   }
   const hdlDateChange = (e) => {
-    let a = e.format('YYYY-MM-DD')
-    localStorage.setItem('setDate', a)
-    const b = localStorage.getItem('setDate')
-    onChangeDate(b)
+    if (e) {
+      let a = e.format('YYYY-MM-DD')
+      onChangeDate(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
+    } else {
+      onChangeDate(null)
+    }
   }
 
   const hdlChangePercent = () => {
@@ -121,7 +123,9 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
     }
   ]
   const handleMenuClick = (record) => {
+    console.log('record', record)
     onChooseSupplier(record)
+    setFieldsValue({ tempo: record.paymentTempo })
   }
   const hdlBrowseProduct = () => {
     handleBrowseProduct()

@@ -22,7 +22,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'ID',
+      title: 'Code',
       dataIndex: 'supplierCode',
       key: 'supplierCode'
     },
@@ -30,6 +30,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Name',
       dataIndex: 'supplierName',
       key: 'supplierName'
+    },
+    {
+      title: 'Payment Tempo',
+      dataIndex: 'paymentTempo',
+      key: 'paymentTempo',
+      render: text => (text ? `${text} ${parseFloat(text) > 1 ? 'days' : 'day'}` : '')
     },
     {
       title: 'Address',
