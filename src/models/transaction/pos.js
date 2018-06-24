@@ -60,7 +60,7 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInformation: {},
+    cashierInfo: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -107,7 +107,7 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-          let userId = lstorage.getStorageKey('udi')[1]
+          const userId = lstorage.getStorageKey('udi')[1]
           dispatch({
             type: 'showShiftModal',
             payload: memberUnitInfo
@@ -1422,13 +1422,14 @@ export default {
     },
 
     * getCashierInformation ({ payload = {} }, { call, put }) {
-      const data = yield call(queryCurrentOpenCashRegister, payload)
-      const cashierInformation = (data || []).length > 1 ? data.data[0] : ''
-      if (data.success) {
+      const results = yield call(queryCurrentOpenCashRegister, payload)
+      const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
+
+      if (results.success) {
         yield put({
           type: 'updateState',
           payload: {
-            cashierInformation
+            cashierInfo: cashierInformation
           }
         })
       } else {

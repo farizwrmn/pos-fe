@@ -56,7 +56,7 @@ const getDate = (mode) => {
   return today
 }
 
-const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
@@ -67,13 +67,12 @@ const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, lis
         return
       }
       const data = { ...getFieldsValue() }
-      console.log('zzz4', cashierInformation)
-      console.log('zzz4a', cashierId)
+
 
       data.period = moment(data.period).format('YYYY-MM-DD')
-      data.status = cashierInformation.status
-      data.storeId = cashierInformation.storeId
-      data.cashierId = cashierInformation.cashierId || cashierId
+      data.status = cashierInfo.status
+      data.storeId = cashierInfo.storeId
+      data.cashierId = cashierInfo.cashierId || cashierId
       // const data = {
       //   ...getFieldsValue(),
       //   cashierId,
@@ -168,7 +167,7 @@ const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, lis
       <Form layout="horizontal">
         <FormItem label="Open" hasFeedback {...formItemLayout}>
           {getFieldDecorator('period', {
-            initialValue: cashierInformation.period ? moment(cashierInformation.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+            initialValue: cashierInfo.period ? moment(cashierInfo.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
             rules: [
               {
                 required: true
@@ -178,7 +177,7 @@ const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, lis
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
-            initialValue: cashierInformation.shiftId,
+            initialValue: cashierInfo.shiftId,
             rules: [
               {
                 required: true
@@ -190,7 +189,7 @@ const ModalShift = ({ cashierInformation, findShift, listShift, findCounter, lis
         </FormItem>
         <FormItem label="Counter" hasFeedback {...formItemLayout}>
           {getFieldDecorator('counterId', {
-            initialValue: cashierInformation.counterId,
+            initialValue: cashierInfo.counterId,
             rules: [
               {
                 required: true

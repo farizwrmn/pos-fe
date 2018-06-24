@@ -1,153 +1,57 @@
 import React from 'react'
 import { connect } from 'dva'
-import { CashRegister } from 'components'
-import { Row, Col, Button, Form, Select, Icon, DatePicker } from 'antd'
-import ModalBrowse from './Modal'
+import ViewDetail from './viewDetail'
+import { lstorage, isEmptyObject } from 'utils'
+import { Row, Col, Button, Form, Input, Icon, DatePicker, Modal } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
-const Option = Select.Option
-const { RangePicker } = DatePicker
+const confirm = Modal.confirm
+const warning = Modal.warning
 
 const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 },
-    lg: { span: 7 }
-  },
+  labelCol: { span: 7 },
   wrapperCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
+    xs: { span: 12, offset: 4 },
+    sm: { span: 12, offset: 4 },
     md: { span: 9 },
     lg: { span: 9 }
   }
 }
 
+const formItemLayout2 = {
+  labelCol: { span: 7 },
+  wrapperCol: {
+    xs: { span: 12, offset: 4 },
+    sm: { span: 12, offset: 4 },
+    md: { span: 13 },
+    lg: { span: 13 }
+  }
+}
+
 const column = {
   xs: { span: 24 },
-  sm: { span: 12 },
+  sm: { span: 24 },
   md: { span: 12 },
   lg: { span: 12 },
   xl: { span: 12 }
 }
 
-const column2 = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
 
-const History = ({
+const CloseCashRegister = ({
   cashier,
-  store,
   loading,
   dispatch,
   form: {
     getFieldDecorator,
+    getFieldValue,
     getFieldsValue,
-    resetFields,
     validateFields
   }
 }) => {
-  const { list, listCashier, listCashRegister, modalVisible,searchText, pagination, cashierInfo } = cashier
-  const { listCashierStore } = store
-
-  let stores = []
-  if (listCashierStore && listCashierStore.length) {
-    stores = listCashierStore.map(x => (<Option value={x.id}>{x.storeName}</Option>))
-  }
-
-  const modalProps = {
-    listCashier,
-    searchText,
-    pagination,
-    loading,
-    modalVisible,
-    visible: modalVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    onCancel () {
-      dispatch({
-        type: 'cashier/updateState',
-        payload: {
-          modalVisible: false
-        }
-      })
-    },
-    onSearch () {
-      dispatch({
-        type: 'cashier/getCashRegisterByStore',
-        payload: {
-          page: 1,
-          params: { cashierId: '', storeId: '', from: '', to: ''}
-        }
-      })
-    },
-    onReset () {
-      dispatch({
-        type: 'cashier/query'
-      })
-      dispatch({
-        type: 'cashier/updateState',
-        payload: {
-          searchText: ''
-        }
-      })
-    },
-    onClickRow (record) {
-      dispatch({
-        type: 'cashier/updateState',
-        payload: {
-          cashierInfo: record,
-          modalVisible: false,
-        }
-      })
-      resetFields()
-    },
-    changeText (text) {
-      dispatch({
-        type: 'cashier/updateState',
-        payload: {
-          searchText: text
-        }
-      })
-    },
-    onChange (page) {
-      dispatch({
-        type: 'cashier/query',
-        payload: {
-          q: searchText,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      })
-    }
-  }
-
-  const openModal = () => {
-    dispatch({
-      type: 'cashier/updateState',
-      payload: {
-        modalVisible: true,
-        listCashier: list
-      }
-    })
-  }
-
-  const showStores = () => {
-    dispatch({
-      type: 'store/getAllStores',
-      payload: {
-        mode: 'cashier',
-        cashier: cashierInfo.cashierId
-      }
-    })
-  }
-
-  const showCashRegister = () => {
+  const { listCashTransSummary, listCashTransDetail, activeTabKeyClose, cashierInfo } = cashier
+console.log('zzz',cashierInfo)
+  const showSummary = () => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -155,85 +59,125 @@ const History = ({
       let item = { ...getFieldsValue() }
       item.cashierId = cashierInfo.cashierId
       dispatch({
-        type: 'cashier/getCashRegisterByStore',
+        type: 'cashier/getCashierTransSource',
         payload: {
-          item
+          cashierId: cashierInfo.cashierId,
+          id: cashierInfo.id
         }
       })
     })
   }
 
-  const cashRegisterProps = {
-    listCashRegister
-  }
-
-  let buttonName = 'Find Cashier'
-  if (cashierInfo.cashierId) {
-    let name = cashierInfo.cashierId
-    buttonName = name
-    if (name.length > 17) {
-      buttonName = `${name.slice(0, 17)}...`
+  const confirmClose = () => {
+    if (!isEmptyObject(listCashTransSummary)) {
+      confirm({
+        title: `Are you sure closing this cash register  ?`,
+        onOk () {
+          dispatch({
+            type: 'cashier/closeCashRegister',
+            payload: {
+              storeId: cashierInfo.storeId,
+              cashierId: cashierInfo.cashierId,
+              id: cashierInfo.id,
+              desc: getFieldValue('periodDesc')
+            }
+          })
+        }
+      })
+    } else {
+      warning({
+        title: `Please check your data first by clicking 'Check' Button  ?`,
+      })
     }
   }
 
+
+  const viewDetailProps = {
+    listCashTransSummary,
+    listCashTransDetail,
+    showDetail (record) {
+      dispatch({
+        type: 'cashier/getCashierTransSourceDetail',
+        payload: {
+          cashierId: cashierInfo.cashierId,
+          id: cashierInfo.id,
+          transType: record
+        }
+      })
+    },
+    dispatch,
+    activeTabKeyClose
+  }
+
+
   return (
     <div className="content-inner">
-      {modalVisible && <ModalBrowse {...modalProps} />}
-      <Row type="flex" justify="start" className="collapse-form-reminder">
+      <Row type="flex" justify="start">
         <Col {...column}>
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
-            <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
-          </FormItem>
-          <FormItem label="Store Id" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('storeId', {
-              initialValue: ''
-            })(<Select
-              showSearch
-              style={{ width: '100%' }}
-              placeholder="Select Store"
-              optionFilterProp="children"
-              onFocus={showStores}
-            >{stores}
-            </Select>)}
-          </FormItem>
-          <FormItem label="Status" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('status', {
-              initialValue: ''
-            })(<Select defaultValue="" style={{ width: '100%' }}>
-              <Option value="O">Open</Option>
-              <Option value="C">Close</Option>
-              <Option value="R" disabled>Request</Option>
-              <Option value="V" disabled>Verify</Option>
-              <Option value="">All Status</Option>
-            </Select>)}
+            {getFieldDecorator('cashierId', {
+              initialValue: cashierInfo.cashierId,
+              rules: [ { required: true } ]
+            })(<Input disabled/>)}
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
-            {getFieldDecorator('periods', {})
-            (<RangePicker size="large"
-                // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-                //onChange={value => handleChangeDate(value)}
-                            format="DD-MMM-YYYY"
-              />
+            {getFieldDecorator('periods', {
+              initialValue: cashierInfo.period ? moment(cashierInfo.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+              rules: [ { required: true } ]
+            })
+            (<DatePicker size="large" style={{ width: '100%' }} disabled/>
             )}
           </FormItem>
         </Col>
-        <Col {...column2} style={{ textAlign: 'right' }}>
+        <Col {...column}>
+          <FormItem label="Shift" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('shiftName', {
+              initialValue: cashierInfo.shiftName || '',
+              rules: [ { required: true } ]
+            })(<Input disabled/>)}
+          </FormItem>
+          <FormItem label="Counter" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('counterName', {
+              initialValue: cashierInfo.counterName || '',
+              rules: [ { required: true } ]
+            })(<Input disabled/>)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row type="flex" justify="start">
+        <Col {...column}>
+          <FormItem label="Description" hasFeedback {...formItemLayout2}>
+            {getFieldDecorator('periodDesc', {
+              initialValue: cashierInfo.periodDesc || ''
+            })(<Input />)}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row type="flex" justify="start">
+        <Col span={2} style={{ textAlign: 'left' }}>
           <Button
-            type="dashed"
-            size="large"
-            style={{ marginLeft: '5px' }}
-            className="button-width02 button-extra-large"
-            onClick={() => showCashRegister()}
-          >
-            <Icon type="search" className="icon-large" />
+            type="primary"
+            className="button-width02"
+            onClick={() => showSummary()}
+          >Check
+            <Icon type="filter" />
+          </Button>
+        </Col>
+        <Col span={22} style={{ textAlign: 'right' }}>
+          <Button
+            disabled={cashierInfo.status==='O' ? false : true}
+            className="button-width02"
+            onClick={() => confirmClose()}
+          >Close
+            <Icon type="lock" />
           </Button>
         </Col>
       </Row>
       <div className="reminder">
-        <CashRegister {...cashRegisterProps}/>
+        <ViewDetail {...viewDetailProps}/>
       </div>
     </div >
   )
 }
 
-export default connect(({ cashier, store, loading }) => ({ cashier, store, loading }))(Form.create()(History))
+export default connect(({ cashier, store, loading }) => ({ cashier, store, loading }))(Form.create()(CloseCashRegister))

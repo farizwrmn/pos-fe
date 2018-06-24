@@ -94,7 +94,6 @@ const FormInput = ({
   if (listShift && listShift.length > 0) {
     shifts = listShift.map(x => (<p><Checkbox checked={selectedShift.indexOf(x.id) > -1} onChange={x => changeShift(x)} value={x.id} >{x.shiftName}</Checkbox></p>))
   }
-  console.log('zzz1', listStore)
   if (listStore && listStore.length > 0) {
     parents = listStore.map(x => (<Option value={x.id}>{x.title}</Option>))
   }

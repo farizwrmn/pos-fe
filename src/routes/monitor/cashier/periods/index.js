@@ -3,7 +3,6 @@ import { connect } from 'dva'
 import { CashRegister } from 'components'
 import { Row, Col, Button, Form, Select, Icon, DatePicker } from 'antd'
 import ModalBrowse from './Modal'
-import moment from 'moment'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -184,9 +183,13 @@ const History = ({
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
             <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
           </FormItem>
-          <FormItem label="Store Id" hasFeedback {...formItemLayout}>
+          <FormItem label="Store Id"
+                    help="Store based on the cashier..."
+                    hasFeedback {...formItemLayout}
+          >
             {getFieldDecorator('storeId', {
-              initialValue: ''
+              initialValue: '',
+              rules: [{ required: true }]
             })(<Select
               showSearch
               style={{ width: '100%' }}

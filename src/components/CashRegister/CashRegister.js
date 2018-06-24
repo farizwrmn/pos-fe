@@ -51,7 +51,7 @@ const CashRegister = ({
 
   const dataCashRegister = (
     <Table bordered pagination={false} scroll={{ x: '840px', y: 350 }}
-           style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
+           style={{ margin: '0px 5px', backgroundColor: '#FFF', maxHeight: '180px' }}
            columns={columnsCashRegister}
            dataSource={listCashRegister || []} />
   )

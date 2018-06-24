@@ -91,7 +91,7 @@ const Pos = ({
     listServiceReminder,
     paymentListActiveKey,
     modalAddUnit,
-    cashierInformation
+    cashierInfo
   } = pos
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
@@ -672,7 +672,7 @@ const Pos = ({
     listShift,
     listCounter,
     curCashierNo,
-    cashierInformation,
+    cashierInfo,
     visible: modalShiftVisible,
     cashierId: user.userid,
     dispatch,
