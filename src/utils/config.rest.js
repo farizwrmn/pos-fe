@@ -23,7 +23,9 @@ module.exports = {
     apiTime: '/time',
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',
-    apiTools: '/tools'
+    apiTools: '/tools',
+    apiCashierUsers: '/cashiers/users',
+    apiCashRegister: '/cashiers/cashregisters',
   },
   api: {
     getIpAddress: '/utils/ipaddr',

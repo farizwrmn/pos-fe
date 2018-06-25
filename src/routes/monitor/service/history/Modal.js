@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'antd'
-import { ModalList } from '../../components'
+import { ModalList } from '../../../components'
 
 
 const ModalBrowse = ({

@@ -9,16 +9,16 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 10 },
+    xs: { span: 8 },
     sm: { span: 8 },
-    md: { span: 8 },
-    lg: { span: 6 }
+    md: { span: 7 },
+    lg: { span: 7 }
   },
   wrapperCol: {
-    xs: { span: 14 },
-    sm: { span: 14 },
-    md: { span: 14 },
-    lg: { span: 8 }
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 9 },
+    lg: { span: 9 }
   }
 }
 

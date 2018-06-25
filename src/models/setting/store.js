@@ -32,18 +32,26 @@ export default modelExtend(pageModel, {
     * getAllStores ({ payload = {} }, { call, put }) {
       const data = yield call(getAllStores, payload)
       if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listStore: data.data
-          }
-        })
+        if (payload && payload.mode==='cashier') {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listCashierStore: data.data
+            }
+          })
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listStore: data.data
+            }
+          })
+        }
       }
     },
 
     * showStore ({ payload = {} }, { call, put }) {
       let data = yield call(showStore, payload)
-      console.log(data.data[0].cashierShift)
       if (data.success) {
         data = data.data[0]
         yield put({
