@@ -12,6 +12,23 @@ import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetFields, getFieldDecorator }, ...printProps }) => {
   const construct = (dataSales) => {
     let result = []
@@ -90,28 +107,26 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
   }
 
   return (
-    <div>
-      <Row style={{ display: 'flex' }}>
-        <Col span={10} >
-          <FilterItem label="Trans Date">
-            {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
-            )}
-          </FilterItem>
-        </Col>
-        <Col span={14} style={{ float: 'right', textAlign: 'right' }}>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          {<PrintPDF {...printOpts} />}
-          {<PrintXLS {...printOpts} />}
-        </Col>
-      </Row>
-    </div>
+    <Row style={{ clear: 'both' }}>
+      <Col {...leftColumn} >
+        <FilterItem label="Trans Date">
+          {getFieldDecorator('rangePicker')(
+            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        {<PrintPDF {...printOpts} />}
+        {<PrintXLS {...printOpts} />}
+      </Col>
+    </Row>
   )
 }
 

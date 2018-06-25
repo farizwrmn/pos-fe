@@ -14,28 +14,34 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 8
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
+    xs: { span: 8 },
+    sm: { span: 4 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 16
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
+    xs: { span: 16 },
+    sm: { span: 20 },
+    md: { span: 17 }
   }
 }
+
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ onDateChange,
   listCategory,
   showCategories,
@@ -76,79 +82,77 @@ const Filter = ({ onDateChange,
   }
 
   return (
-    <div>
-      <Form layout="horizontal">
-        <Row>
-          <Col lg={10} md={24}>
-            <FormItem label="Period" {...formItemLayout}>
-              {getFieldDecorator('rangePicker', {
-                initialValue: query ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '',
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <MonthPicker placeholder="Select Period" />
-              )}
-            </FormItem>
-            <FormItem label="Compare with" {...formItemLayout}>
-              {getFieldDecorator('rangePickerNext', {
-                initialValue: query ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '',
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <MonthPicker placeholder="Select Period" />
-              )}
-            </FormItem>
-            <FormItem label="Service Type" {...formItemLayout}>
-              {getFieldDecorator('service')(<Select
-                optionFilterProp="children"
-                allowClear
-                mode="default"
-                style={{ maxWidth: '189px' }}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >{serviceType}
-              </Select>)}
-            </FormItem>
-            <FormItem label="Category ID" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('category')(<Select
-                optionFilterProp="children"
-                allowClear
-                onFocus={() => category()}
-                mode="default"
-                style={{ maxWidth: '189px' }}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >{productCategory}
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col lg={14} md={24} style={{ marginBottom: '0px', float: 'right', textAlign: 'right' }}>
-            <Button
-              type="dashed"
-              size="large"
-              style={{ marginLeft: '5px' }}
-              className="button-width02 button-extra-large"
-              onClick={() => onChange()}
-            >
-              <Icon type="search" className="icon-large" />
-            </Button>
-            {<PrintPDF {...printProps} />}
-            {<PrintXLS {...printProps} />}
-            <Button type="dashed"
-              size="large"
-              className="button-width02 button-extra-large bgcolor-lightgrey"
-              onClick={() => handleReset()}
-            >
-              <Icon type="rollback" className="icon-large" />
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </div>
+    <Form layout="horizontal">
+      <Row>
+        <Col {...leftColumn}>
+          <FormItem label="Period" {...formItemLayout}>
+            {getFieldDecorator('rangePicker', {
+              initialValue: query ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '',
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <MonthPicker placeholder="Select Period" />
+            )}
+          </FormItem>
+          <FormItem label="Compare with" {...formItemLayout}>
+            {getFieldDecorator('rangePickerNext', {
+              initialValue: query ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '',
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <MonthPicker placeholder="Select Period" />
+            )}
+          </FormItem>
+          <FormItem label="Service Type" {...formItemLayout}>
+            {getFieldDecorator('service')(<Select
+              optionFilterProp="children"
+              allowClear
+              mode="default"
+              style={{ maxWidth: '189px' }}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >{serviceType}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Category ID" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('category')(<Select
+              optionFilterProp="children"
+              allowClear
+              onFocus={() => category()}
+              mode="default"
+              style={{ maxWidth: '189px' }}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >{productCategory}
+            </Select>)}
+          </FormItem>
+        </Col>
+        <Col {...rightColumn} style={{ marginBottom: '0px', float: 'right', textAlign: 'right' }}>
+          <Button
+            type="dashed"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            className="button-width02 button-extra-large"
+            onClick={() => onChange()}
+          >
+            <Icon type="search" className="icon-large" />
+          </Button>
+          {<PrintPDF {...printProps} />}
+          {<PrintXLS {...printProps} />}
+          <Button type="dashed"
+            size="large"
+            className="button-width02 button-extra-large bgcolor-lightgrey"
+            onClick={() => handleReset()}
+          >
+            <Icon type="rollback" className="icon-large" />
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 
