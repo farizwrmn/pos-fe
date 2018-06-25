@@ -42,14 +42,6 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/product/stock') {
-          // if (!activeKey) {
-          //   dispatch(routerRedux.push({
-          //     pathname,
-          //     query: {
-          //       activeKey: '0'
-          //     }
-          //   }))
-          // }
           if (activeKey === '1') {
             dispatch({
               type: 'query',

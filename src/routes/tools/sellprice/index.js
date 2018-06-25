@@ -5,13 +5,14 @@ import { connect } from 'dva'
 import Form from './Form'
 import ModalItem from './Modal'
 import ModalEdit from './ModalEdit'
+import ModalRounding from './ModalRounding'
 import ListTransfer from './ListTransferOut'
 import FilterTransfer from './FilterTransferOut'
 
 const TabPane = Tabs.TabPane
 const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispatch, loading }) => {
   const { modalInvoiceVisible, listInvoice, tmpInvoiceList, listTransOut, period, modalConfirmVisible, formType, showPrintModal } = transferOut
-  const { modalProductVisible, listTrans, currentItemList, modalAcceptVisible, modalVisible, modalEditVisible, currentItem, filter, sort, disable, listItem, activeKey, selectedRowKeys } = sellprice
+  const { modalProductVisible, listTrans, currentItemList, modalAcceptVisible, modalVisible, modalEditVisible, currentItem, filter, sort, disable, listItem, activeKey, selectedRowKeys, modalRoundingVisible } = sellprice
   const { list } = employee
   let listEmployee = list
   const { user, storeInfo } = app
@@ -109,6 +110,21 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
         })
       }
     },
+    handleModalRounding () {
+      if ((listItem || []).length > 0 && (selectedRowKeys || []).length > 0) {
+        dispatch({
+          type: 'sellprice/updateState',
+          payload: {
+            modalRoundingVisible: true
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Item was not selected',
+          content: 'Select at least 1 item from list'
+        })
+      }
+    },
     onRowClick (item) {
       let arrayProd = []
       const listByCode = listItem
@@ -127,7 +143,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02
         }
-        arrayProd.push({ ...data })
+        arrayProd.push(data)
         dispatch({
           type: 'sellprice/updateState',
           payload: {
@@ -234,6 +250,50 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
         payload: {
           currentItemList: {},
           modalEditVisible: false
+        }
+      })
+    }
+  }
+
+  const formRoundingProps = {
+    visible: modalRoundingVisible,
+    listItem,
+    currentItemList,
+    selectedRowKeys,
+    onOkList (item) {
+      dispatch({
+        type: 'sellprice/updateState',
+        payload: {
+          currentItemList: {},
+          modalRoundingVisible: false,
+          listItem: item
+        }
+      })
+    },
+    onCancelList () {
+      dispatch({
+        type: 'sellprice/updateState',
+        payload: {
+          currentItemList: {},
+          modalRoundingVisible: false
+        }
+      })
+    },
+    onDeleteItem (no) {
+      dispatch({
+        type: 'sellprice/deleteListState',
+        payload: {
+          no,
+          listItem
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'sellprice/updateState',
+        payload: {
+          currentItemList: {},
+          modalRoundingVisible: false
         }
       })
     }
@@ -467,6 +527,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
             <Form {...formProps} />
             {modalVisible && <ModalItem {...formEditProps} />}
             {modalEditVisible && <ModalEdit {...formEditAllProps} />}
+            {modalRoundingVisible && <ModalRounding {...formRoundingProps} />}
           </div>)}
         </TabPane>
         <TabPane tab="Browse" key="1">
