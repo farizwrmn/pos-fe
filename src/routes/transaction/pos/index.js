@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { configMain } from 'utils'
+import { configMain, isEmptyObject } from 'utils'
 import { Reminder } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
@@ -91,12 +91,18 @@ const Pos = ({
     listServiceReminder,
     paymentListActiveKey,
     modalAddUnit,
-    cashierInformation
+    cashierInfo
   } = pos
+
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
+
+  let currentCashier = {
+    cashierId: '', employeeName: '',  shiftId: '', shiftName: '',
+    counterId: '', counterName: '', period: '', status: '' }
+  if (!isEmptyObject(cashierInfo)) currentCashier = cashierInfo
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false,
@@ -636,7 +642,7 @@ const Pos = ({
     listShift,
     listCounter,
     curCashierNo,
-    cashierInformation,
+    currentCashier,
     visible: modalShiftVisible,
     cashierId: user.userid,
     dispatch,
@@ -1574,10 +1580,10 @@ const Pos = ({
               <Row>
                 <Card bordered={false} noHovering>
                   <Row gutter={32}>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {cashierInformation.cashierId} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {cashierInformation.employeeName} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {cashierInformation.shiftName} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {cashierInformation.period} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {currentCashier.cashierId} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {currentCashier.employeeName} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {currentCashier.shiftName} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {currentCashier.period} </Col>
                   </Row>
                 </Card>
               </Row>

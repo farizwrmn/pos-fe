@@ -30,11 +30,12 @@ const formItemLayout = {
 //     label: '3'
 //   }]
 
-const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
+  console.log('zzz2', currentCashier)
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -44,9 +45,9 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
 
 
       data.period = moment(data.period).format('YYYY-MM-DD')
-      data.status = cashierInfo.status
-      data.storeId = cashierInfo.storeId
-      data.cashierId = cashierInfo.cashierId || cashierId
+      data.status = currentCashier.status
+      data.storeId = currentCashier.storeId
+      data.cashierId = currentCashier.cashierId || cashierId
       // const data = {
       //   ...getFieldsValue(),
       //   cashierId,
@@ -141,41 +142,41 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
       <Form layout="horizontal">
         <FormItem label="Open" hasFeedback {...formItemLayout}>
           {getFieldDecorator('period', {
-            initialValue: cashierInfo.period ? moment(cashierInfo.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+            initialValue: currentCashier.period ? moment(currentCashier.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
             rules: [
               {
                 required: true
               }
             ]
-          })(<DatePicker disabled={cashierInfo.period} style={{ width: '100%' }} />)}
+          })(<DatePicker disabled={currentCashier.period} style={{ width: '100%' }} />)}
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
-            initialValue: cashierInfo.shiftId,
+            initialValue: currentCashier.shiftId,
             rules: [
               {
                 required: true
               }
             ]
-          })(<Select disabled={cashierInfo.shiftId != null} onFocus={findShift}>
+          })(<Select disabled={currentCashier.shiftId != null} onFocus={findShift}>
             {shifts}
           </Select>)}
         </FormItem>
         <FormItem label="Counter" hasFeedback {...formItemLayout}>
           {getFieldDecorator('counterId', {
-            initialValue: cashierInfo.counterId,
+            initialValue: currentCashier.counterId,
             rules: [
               {
                 required: true
               }
             ]
-          })(<Select disabled={cashierInfo.counterId != null} onFocus={findCounter}>
+          })(<Select disabled={currentCashier.counterId != null} onFocus={findCounter}>
             {counters}
           </Select>)}
         </FormItem>
         <FormItem label="Current Balance" {...formItemLayout}>
           {getFieldDecorator('cash', {
-            initialValue: cashierInfo.cash || 0
+            initialValue: currentCashier.cash || 0
           })(<Input disabled />)}
         </FormItem>
       </Form>
