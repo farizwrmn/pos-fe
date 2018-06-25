@@ -153,7 +153,7 @@ const PrintXLS = ({
   const title = [
     { value: 'LAPORAN TUNGGAKAN AR', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
-    { value: `PER : ${moment(date, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`, alignment: styles.alignmentCenter, font: styles.title }
+    { value: `PERIODE : ${moment(date, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
 
   const XLSProps = {

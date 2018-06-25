@@ -95,7 +95,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
           {
             columns: [
               {
-                text: `\nPER ${date ? moment(date, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}`,
+                text: `\nPERIODE ${date ? moment(date, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}`,
                 fontSize: 12,
                 alignment: 'left'
               },

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Modal, Button, Form, Input, Cascader, DatePicker, Select } from 'antd'
+import { Modal, Button, Form, Input, DatePicker, Select } from 'antd'
 import { routerRedux } from 'dva/router'
 
 const FormItem = Form.Item
@@ -173,7 +173,7 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
                 required: true
               }
             ]
-          })(<DatePicker style={{ width: '100%' }} />)}
+          })(<DatePicker disabled={cashierInfo.period} style={{ width: '100%' }} />)}
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
@@ -183,7 +183,7 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
                 required: true
               }
             ]
-          })(<Select onFocus={findShift}>
+          })(<Select disabled={cashierInfo.shiftId != null} onFocus={findShift}>
             {shifts}
           </Select>)}
         </FormItem>
@@ -195,13 +195,13 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
                 required: true
               }
             ]
-          })(<Select onFocus={findCounter}>
+          })(<Select disabled={cashierInfo.counterId != null} onFocus={findCounter}>
             {counters}
           </Select>)}
         </FormItem>
         <FormItem label="Current Balance" {...formItemLayout}>
           {getFieldDecorator('cash', {
-            initialValue: item.cash || 0
+            initialValue: cashierInfo.cash || 0
           })(<Input disabled />)}
         </FormItem>
       </Form>

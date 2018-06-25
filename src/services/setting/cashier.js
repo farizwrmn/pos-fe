@@ -124,7 +124,7 @@ export async function queryCloseRegister (params) {
 export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
-  params.status = "O"
+  params.status = 'O'
 
   return request({
     url: `${cashier}/cashregisters`,

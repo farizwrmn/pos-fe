@@ -124,6 +124,7 @@ const FormAdd = ({
         </Row>
         <Row>
           <Button type="dashed" size="large" icon="edit" className="bgcolor-lightgrey" style={{ marginRight: '8px' }} onClick={handleModalEdit}>Edit</Button>
+          {/* <Button type="dashed" size="large" icon="edit" style={{ marginRight: '8px' }} onClick={handleModalRounding}>Rounding</Button> */}
           <Button type="primary" size="large" icon="barcode" style={{ marginRight: '8px' }} onClick={handleProductBrowse}>Product</Button>
           <Button size="large" type="primary" icon="save" disabled={!((listItem || []).length > 0) || disableSave} onClick={handleSubmit} style={{ float: 'right' }}>Save</Button>
         </Row>

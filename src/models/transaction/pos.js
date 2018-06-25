@@ -113,15 +113,19 @@ export default {
             payload: memberUnitInfo
           })
           dispatch({
-            type: 'loadDataPos'
+            type: 'loadDataPos',
+            payload: {
+              cashierId: userId,
+              status: 'O'
+            }
           })
           dispatch({
             type: 'getServiceReminder'
           })
-          dispatch({
-            type: 'getCashierInformation',
-            payload: userId
-          })
+          // dispatch({
+          //   type: 'getCashierInformation',
+          //   payload: userId
+          // })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
@@ -518,39 +522,19 @@ export default {
     },
 
     * loadDataPos ({ payload = {} }, { call, put }) {
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-      let arrayProd = dataPos.slice()
-      let curRecord = 0
-      let curCashierNo = localStorage.getItem('cashierNo')
-      let curItem = payload
-      const dataCashier = yield call(getCashierNo)
-      const dataCashierTrans = yield call(getCashierTrans, { cashierId: null, cashierNo: curCashierNo, shift: null, status: 'O' })
-
-      if (dataCashierTrans.success) {
-        curItem = dataCashierTrans.data
-      } else {
-        curItem = {}
-      }
-
-      if (JSON.stringify(arrayProd) !== '[]') {
-        for (let i = 0; i < arrayProd.length; i += 1) {
-          curRecord += 1
-        }
+      const data = yield call(queryInformation, payload)
+      if (data.success) {
+        const cashierInformation = (data.data || []).length > 0 ? data.data[0] : {}
         yield put({
-          type: 'setStatePosLoaded',
+          type: 'updateState',
           payload: {
-            arrayProd: JSON.stringify(arrayProd),
-            curRecord: curRecord + 1
+            cashierInformation,
+            dataCashierTrans: cashierInformation
           }
         })
+      } else {
+        throw data
       }
-      yield put({
-        type: 'setCashierNo',
-        payload: {
-          listCashier: dataCashier.data,
-          dataCashierTrans: curItem
-        }
-      })
     },
 
     * getMember ({ payload }, { call, put }) {
@@ -978,12 +962,6 @@ export default {
     * cashRegister ({ payload = {} }, { call, put }) {
       const data = yield call(cashRegister, payload)
       if (data.success) {
-        const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
-        const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
-        let dataCashierTransByShift = {}
-        if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
-          dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: 'C' })
-        }
         localStorage.setItem('cashierNo', data.cashregisters.cashierId)
         yield put({
           type: 'hideShiftModal',
@@ -995,80 +973,8 @@ export default {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: data.message.split(':')[1].trim().split('|')[1]
+          content: `Report error ${data.message}` || 'Report error'
         })
-      }
-    },
-
-    * setCashierTrans ({ payload }, { call, put }) {
-      const dataCashierTransById = yield call(getCashierTrans, { cashierId: payload.cashierId, cashierNo: null, shift: null, status: 'O' })
-      const dataCashierTransByNo = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: null, status: 'O' })
-      let dataCashierTransByShift = {}
-      if (dataCashierTransByNo.success === false && dataCashierTransById.success === false) {
-        dataCashierTransByShift = yield call(getCashierTrans, { cashierId: null, cashierNo: payload.cashierNo, shift: payload.shift, status: 'C' })
-      }
-
-
-      const newDataCashierTransById = dataCashierTransById.data
-      const newDataCashierTransByNo = dataCashierTransByNo.data
-      // const newDataCashierTransByShift = dataCashierTransByShift.data
-
-      if (dataCashierTransByShift.success) {
-        Modal.warning({
-          title: 'Warning',
-          content: 'This Shift has been closed for this Machine...!'
-        })
-      } else if (dataCashierTransById.success) {
-        if (newDataCashierTransById.cashierNo !== payload.cashierNo) {
-          Modal.warning({
-            title: 'Warning',
-            content: `Cashier Id ${payload.cashierId} status is Open in Machine ${newDataCashierTransById.cashierNo}...!`
-          })
-        } else if (newDataCashierTransById.shift !== parseInt(payload.shift, 10)) {
-          Modal.warning({
-            title: 'Warning',
-            content: `Cashier Id ${payload.cashierId} status is Open in this Machine on Shift ${newDataCashierTransById.shift}...!`
-          })
-        } else {
-          yield put({
-            type: 'hideShiftModal',
-            payload: {
-              curShift: payload.shift,
-              curCashierNo: payload.cashierNo
-            }
-          })
-        }
-      } else if (dataCashierTransByNo.success) {
-        if (newDataCashierTransByNo.cashierId !== payload.cashierId) {
-          Modal.warning({
-            title: 'Warning',
-            content: `This Machine is logged on by Cashier ${newDataCashierTransByNo.cashierId}...!`
-          })
-        } else {
-          yield put({
-            type: 'hideShiftModal',
-            payload: {
-              curShift: payload.shift,
-              curCashierNo: payload.cashierNo
-            }
-          })
-        }
-      } else {
-        const data = yield call(createCashierTrans, payload)
-
-        if (data.success) {
-          localStorage.setItem('cashierNo', payload.cashierNo)
-
-          yield put({
-            type: 'hideShiftModal',
-            payload: {
-              curShift: payload.shift,
-              curCashierNo: payload.cashierNo
-            }
-          })
-        } else {
-          throw data
-        }
       }
     },
 
@@ -1419,23 +1325,7 @@ export default {
       } else {
         throw data
       }
-    },
-
-    * getCashierInformation ({ payload = {} }, { call, put }) {
-      const results = yield call(queryCurrentOpenCashRegister, payload)
-      const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
-
-      if (results.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInfo: cashierInformation
-          }
-        })
-      } else {
-        throw data
-      }
-    },
+    }
   },
 
   reducers: {
@@ -1663,23 +1553,23 @@ export default {
       return { ...state, ...action.payload, visiblePopover: true }
     },
 
-    setStatePosLoaded (state, action) {
-      if (!state.dataPosLoaded) {
-        localStorage.setItem('cashier_trans', action.payload.arrayProd)
+    // setStatePosLoaded (state, action) {
+    //   if (!state.dataPosLoaded) {
+    //     localStorage.setItem('cashier_trans', action.payload.arrayProd)
 
-        let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-        let a = dataPos
-        let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    //     let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+    //     let a = dataPos
+    //     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
-        return {
-          ...state,
-          dataPosLoaded: true,
-          curTotal: grandTotal,
-          curRecord: action.payload.curRecord
-        }
-      }
-      return { ...state }
-    },
+    //     return {
+    //       ...state,
+    //       dataPosLoaded: true,
+    //       curTotal: grandTotal,
+    //       curRecord: action.payload.curRecord
+    //     }
+    //   }
+    //   return { ...state }
+    // },
 
     setCashierNo (state, action) {
       const { listCashier, dataCashierTrans } = action.payload

@@ -4,7 +4,7 @@ import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import { configMain } from 'utils'
-import styles from '../../../themes/index.less'
+import styles from '../../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
@@ -19,7 +19,7 @@ const BrowseGroup = ({
     const reg = new RegExp(e, 'gi')
     let newData
     newData = tmpDataSource.map((record) => {
-      const match = record.policeNo ? record.transNo.match(reg) || record.cashierId.match(reg) || record.policeNo.match(reg) : record.transNo.match(reg) || record.cashierId.match(reg)
+      const match = record.transNo.match(reg)
       if (!match) {
         return null
       }

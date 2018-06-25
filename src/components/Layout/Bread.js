@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon, Tooltip, Cascader, Row, Col } from 'antd'
+import { Breadcrumb, Icon, Tooltip, Cascader, Modal, Row, Col } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
@@ -65,23 +65,34 @@ const Bread = ({ menu, changeRole }) => {
   })
 
   const handleChangeStore = (value) => {
-    const localId = lstorage.getStorageKey('udi')
-    const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-    lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
-    localStorage.setItem('newItem', JSON.stringify({ store: false }))
-    changeRole(value.toString())
-    setInterval(() => { window.location.reload() }, 1000)
+    Modal.confirm({
+      title: 'Warning: current Local storage will be delete',
+      content: 'this action will delete current local storage',
+      onOk () {
+        const localId = lstorage.getStorageKey('udi')
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        changeRole(value.toString())
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('cashierNo')
+        setInterval(() => { window.location.reload() }, 1000)
+      }
+    })
   }
 
   return (
     <div className={styles.bread}>
       <Row>
         <Col xs={4} sm={6} md={8} lg={10} xl={12}>
-          {screen.width >= 768 &&
-            <Breadcrumb>
-              {breads}
-            </Breadcrumb>
-          }
+          <Breadcrumb>
+            {breads}
+          </Breadcrumb>
         </Col>
         <Col xs={20} sm={18} md={16} lg={14} xl={12}>
           <div className={styles.currentStore}>
@@ -89,7 +100,7 @@ const Bread = ({ menu, changeRole }) => {
               <span>{currentStoreName}</span>
             </Col>
             <Col span={2}>
-              <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`} >
+              <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`}>
                 <Cascader options={listUserStores}
                   onChange={handleChangeStore}
                   changeOnSelect

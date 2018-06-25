@@ -57,7 +57,7 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/accounts/payment'))
+    dispatch(routerRedux.push('/accounts/payment?activeKey=1'))
   }
 
   const modalCancelProps = {
@@ -113,7 +113,7 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
 
   return (<div className="wrapper">
-    <Row>
+    {(listDetail || []).length > 0 && <Row>
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
@@ -141,9 +141,9 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
           </Row>
         </div>
       </Col>
-    </Row>
-    <ModalCancel {...modalCancelProps} />
-    <ModalPayment {...modalProps} />
+    </Row>}
+    {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
+    {modalVisible && <ModalPayment {...modalProps} />}
   </div>)
 }
 

@@ -227,7 +227,7 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
-    },
+    }
   },
 
   reducers: {

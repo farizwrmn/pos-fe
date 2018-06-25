@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Modal, Select, DatePicker, Checkbox } from 'antd'
+import { Form, InputNumber, Button, Row, Col, Modal, Select, DatePicker, Checkbox } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item

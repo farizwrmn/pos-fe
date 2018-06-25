@@ -112,7 +112,7 @@ export async function queryHistories (params) {
 export async function queryHistory (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${purchase}/transNo/${params.transNo}`,
+    url: `${purchase}/transNo/${encodeURIComponent(params.transNo)}`,
     method: 'get',
     headers: apiHeaderToken
   })

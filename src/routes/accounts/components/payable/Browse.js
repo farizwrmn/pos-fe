@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { configMain } from 'utils'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
+import { Link } from 'dva/router'
 import moment from 'moment'
+import { configMain } from 'utils'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
@@ -15,9 +16,8 @@ const BrowseGroup = ({
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
-    let newData
-    newData = tmpDataSource.map((record) => {
-      const match = record.transNo.match(reg) || record.policeNo.match(reg) || record.cashierId.match(reg)
+    let newData = tmpDataSource.map((record) => {
+      const match = record.transNo.match(reg)
       if (!match) {
         return null
       }
@@ -32,61 +32,76 @@ const BrowseGroup = ({
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: 180
+      render: (text, record) => (record.statusActive === '1' ? <Link to={`/accounts/payable/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
     },
     {
       title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
+      dataIndex: 'invoiceDate',
+      key: 'invoiceDate',
       width: 150,
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${moment(_text).format('LL')}`
     },
-    {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 120
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 120,
-      sorter: (a, b) => a.lastMeter - b.lastMeter
-    },
-    {
-      title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId',
-      width: 100
-    },
+    // {
+    //   title: 'Car Unit',
+    //   dataIndex: 'policeNo',
+    //   key: 'policeNo',
+    //   width: 120
+    // },
+    // {
+    //   title: 'KM',
+    //   dataIndex: 'lastMeter',
+    //   key: 'lastMeter',
+    //   width: 140,
+    //   className: styles.alignRight,
+    //   sorter: (a, b) => a.lastMeter - b.lastMeter,
+    //   render: text => text.toLocaleString()
+    // },
+    // {
+    //   title: 'Cashier',
+    //   dataIndex: 'cashierId',
+    //   key: 'cashierId',
+    //   width: 140
+    // },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
+      dataIndex: 'statusPaid',
+      key: 'statusPaid',
+      width: 120,
+      render: text => (
+        <span>
+          <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
+            {(text || '')}
+          </Tag>
+        </span>
+      )
+    },
+    {
+      title: 'Active',
+      dataIndex: 'statusActive',
+      key: 'statusActive',
+      width: 120,
       render: text =>
         (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+          <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
+            {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
           </Tag>
         </span>),
       filters: [{
         text: 'Active',
-        value: 'A'
+        value: '1'
       }, {
         text: 'Canceled',
-        value: 'C'
+        value: '0'
       }],
       filterMultiple: false,
-      onFilter: (value, record) => record.status.indexOf(value) === 0
+      onFilter: (value, record) => record.statusActive.indexOf(value) === 0
     },
     {
       title: 'Payment',
       dataIndex: 'paymentVia',
       key: 'paymentVia',
-      width: 100,
+      width: 120,
       filters: [{
         text: 'CASH',
         value: 'C'
@@ -97,7 +112,7 @@ const BrowseGroup = ({
         text: 'Card',
         value: 'K'
       }],
-      filterMultiple: false,
+      filterMultiple: true,
       onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
       render: text =>
         (<span>
@@ -135,17 +150,17 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 800 }} bordered columns={columns} dataSource={dataSource} />
+      <Table bordered pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
     </Form>
   )
 }
 
 BrowseGroup.propTypes = {
   form: PropTypes.isRequired,
-  onChangePeriod: PropTypes.func.isRequired,
-  onSearchChange: PropTypes.func.isRequired,
-  dataSource: PropTypes.array.isRequired,
-  tmpDataSource: PropTypes.array.isRequired
+  onChangePeriod: PropTypes.func,
+  onSearchChange: PropTypes.func,
+  dataSource: PropTypes.array,
+  tmpDataSource: PropTypes.array
 }
 
 export default Form.create()(BrowseGroup)

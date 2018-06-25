@@ -21,13 +21,6 @@ const Filter = ({
   },
   ...printProps
 }) => {
-  const handleChange = (value) => {
-    let transDate = []
-    transDate[0] = value[0].format('YYYY-MM-DD')
-    transDate[1] = value[1].format('YYYY-MM-DD')
-    onDateChange(transDate)
-  }
-
   const handleSearch = () => {
     const data = {
       ...getFieldsValue()

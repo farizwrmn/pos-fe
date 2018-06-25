@@ -160,6 +160,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'master/product/sticker',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/master/product/printSticker/'))
+            }, 'master-product-sticker')
+          }
+        }, {
           path: 'master/service',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -445,6 +453,15 @@ const Routers = function ({ history, app }) {
             }, 'report-account-summary')
           }
         }, {
+          path: 'report/accounts/payable',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounts'))
+              registerModel(app, require('./models/master/customergroup'))
+              cb(null, require('./routes/report/accounts/payable'))
+            }, 'report-account-summary')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -452,7 +469,9 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
-              cb(null, require('./routes/accounts/payment'))
+              registerModel(app, require('./models/accounts/detail/payableDetail'))
+              registerModel(app, require('./models/accounts/accountPayment'))
+              cb(null, require('./routes/accounts/summary'))
             }, 'accounts-payment')
           }
         }, {
@@ -513,7 +532,18 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/detail/paymentDetail'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/accounts/payment/detail/'))
+              cb(null, require('./routes/accounts/components/payment/detail/'))
+            }, 'setting-payment-detail')
+          }
+        }, {
+          path: 'accounts/payable/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/detail/payableDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/supplierBank'))
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/accounts/components/payable/detail/'))
             }, 'setting-payment-detail')
           }
         }, {

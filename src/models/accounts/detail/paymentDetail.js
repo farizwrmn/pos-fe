@@ -57,6 +57,14 @@ export default {
       }
     },
     * queryPosDetail ({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          data: [],
+          listDetail: [],
+          listAmount: []
+        }
+      })
       const { id, ...other } = payload
       const invoiceInfo = yield call(query, payload)
       const payment = yield call(queryPaymentSplit, other)

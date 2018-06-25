@@ -38,6 +38,7 @@ module.exports = {
     customergroup: '/members/groups',
     customertype: '/members/types',
     suppliers: '/suppliers',
+    bank: '/bank',
     city: '/cities',
     services: '/services',
     servicestype: '/misc/code/service',

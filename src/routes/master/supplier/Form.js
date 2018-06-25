@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Select, Row, Col, message, Modal } from 'antd'
+import { Form, Input, InputNumber, Button, Select, Row, Col, message, Modal } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -122,6 +122,18 @@ const formSupplier = ({
                 }
               ]
             })(<Input maxLength={50} />)}
+          </FormItem>
+          <FormItem label="Payment Tempo" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('paymentTempo', {
+              initialValue: item.paymentTempo,
+              rules: [
+                {
+                  required: false,
+                  pattern: /^[0-9]{1,5}$/i,
+                  message: 'max: 99999'
+                }
+              ]
+            })(<InputNumber min={0} maxLength={5} placeholder="day(s)" style={{ width: '36%' }} />)}
           </FormItem>
           <FormItem label="Address 1" hasFeedback {...formItemLayout}>
             {getFieldDecorator('address01', {
