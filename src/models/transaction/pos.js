@@ -13,7 +13,7 @@ import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setti
 
 const { prefix } = configMain
 
-const { updateCashierTrans } = cashierService
+const { getCashierNo, getCashierTrans, createCashierTrans, updateCashierTrans } = cashierService
 
 export default {
 
@@ -60,7 +60,7 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInformation: {},
+    cashierInfo: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -524,12 +524,12 @@ export default {
     * loadDataPos ({ payload = {} }, { call, put }) {
       const data = yield call(queryCurrentOpenCashRegister, payload)
       if (data.success) {
-        const cashierInformation = (data.data || []).length > 0 ? data.data[0] : {}
+        const cashierInfo = (data.data || []).length > 0 ? data.data[0] : {}
         yield put({
           type: 'updateState',
           payload: {
-            cashierInformation,
-            dataCashierTrans: cashierInformation
+            cashierInfo,
+            dataCashierTrans: cashierInfo
           }
         })
       } else {

@@ -1,6 +1,5 @@
-import moment from 'moment'
 import { request, config, crypt, lstorage } from '../../utils'
-
+import moment from 'moment'
 const { apiCashierUsers, apiCashRegister } = config.rest
 const { cashier } = config.api
 
@@ -44,6 +43,7 @@ export async function edit (params) {
 }
 
 export async function queryCurrentOpenCashRegister (params) {
+  console.log('zzz1', params)
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
