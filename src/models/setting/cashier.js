@@ -2,7 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage, messageInfo, isEmptyObject } from 'utils'
-import { query, add, edit, remove,
+import {
+  query, add, edit, remove,
   queryCashRegisterByStore, queryCurrentOpenCashRegister,
   queryCashierTransSource, queryCashierTransSourceDetail,
   queryCloseRegister
@@ -98,19 +99,19 @@ export default modelExtend(pageModel, {
       const results = yield call(queryCurrentOpenCashRegister, payload)
       const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
       if (results.success) {
-        if (results.data.length===0) {
+        if (results.data.length === 0) {
           console.log('xxx1')
           messageInfo('There is no cash register open for this store', 'warning', 10)
         } else {
           yield put({
             type: 'updateState',
             payload: {
-              cashierInfo: cashierInformation,
+              cashierInfo: cashierInformation
             }
           })
         }
       } else {
-        throw data
+        throw results
       }
     },
 
@@ -122,12 +123,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listCashTransSummary: { data: summaryDetail, total: summaryTotal},
+            listCashTransSummary: { data: summaryDetail, total: summaryTotal },
             activeTabKeyClose: '1'
           }
         })
       } else {
-        throw data
+        throw results
       }
     },
 
@@ -139,12 +140,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listCashTransDetail: { data: transDetail, total: transTotal},
+            listCashTransDetail: { data: transDetail, total: transTotal },
             activeTabKeyClose: '2'
           }
         })
       } else {
-        throw data
+        throw results
       }
     },
 
@@ -157,11 +158,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            cashRegister: {status: 'C'},
+            cashRegister: { status: 'C' }
           }
         })
       } else {
-        throw data
+        throw results
       }
     },
 
@@ -232,11 +233,7 @@ export default modelExtend(pageModel, {
 
   reducers: {
     updateState (state, { payload }) {
-      console.log('gggg',payload)
-      console.log('hhhh',state)
       const { cashRegister } = payload
-      console.log('iiii',cashRegister)
-      console.log('jjjjd',isEmptyObject(cashRegister))
       if (!isEmptyObject(cashRegister)) state.cashierInfo.status = cashRegister.status
       return {
         ...state,
@@ -246,7 +243,7 @@ export default modelExtend(pageModel, {
     updateStateClose (state, { payload }) {
       return {
         ...state,
-        ...payload,
+        ...payload
       }
     },
 
@@ -267,7 +264,7 @@ export default modelExtend(pageModel, {
       const { listCashRegister, pagination } = action.payload
       return {
         ...state,
-        listCashRegister: listCashRegister,
+        listCashRegister,
         pagination: {
           ...state.pagination,
           ...pagination

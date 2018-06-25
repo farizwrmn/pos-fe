@@ -30,32 +30,6 @@ const formItemLayout = {
 //     label: '3'
 //   }]
 
-const getDate = (mode) => {
-  let today = new Date()
-  let dd = today.getDate()
-  let mm = today.getMonth() + 1
-  //  January is 0!
-  let yyyy = today.getFullYear()
-
-  if (dd < 10) {
-    dd = `0${dd}`
-  }
-
-  if (mm < 10) {
-    mm = `0${mm}`
-  }
-
-  if (mode === 1) {
-    today = `${dd}${mm}${yyyy}`
-  } else if (mode === 2) {
-    today = `${mm}${yyyy}`
-  } else if (mode === 3) {
-    today = `${yyyy}-${mm}-${dd}`
-  }
-
-  return today
-}
-
 const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,

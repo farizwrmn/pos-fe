@@ -60,7 +60,7 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInfo: {},
+    cashierInformation: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -522,7 +522,7 @@ export default {
     },
 
     * loadDataPos ({ payload = {} }, { call, put }) {
-      const data = yield call(queryInformation, payload)
+      const data = yield call(queryCurrentOpenCashRegister, payload)
       if (data.success) {
         const cashierInformation = (data.data || []).length > 0 ? data.data[0] : {}
         yield put({

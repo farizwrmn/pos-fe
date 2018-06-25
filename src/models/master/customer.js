@@ -448,7 +448,7 @@ export default modelExtend(pageModel, {
         ...state
       }
     },
-    responseActivateMember (state, action) {
+    responseActivateMember (state) {
       state.checkMember = {
         existingCheckBoxDisable: true,
         existingSearchButtonDisable: true,

@@ -51,7 +51,7 @@ const History = ({
     validateFields
   }
 }) => {
-  const { list, listCashier, listCashRegister, modalVisible,searchText, pagination, cashierInfo } = cashier
+  const { list, listCashier, listCashRegister, modalVisible, searchText, pagination, cashierInfo } = cashier
   const { listCashierStore } = store
 
   let stores = []
@@ -81,7 +81,7 @@ const History = ({
         type: 'cashier/getCashRegisterByStore',
         payload: {
           page: 1,
-          params: { cashierId: '', storeId: '', from: '', to: ''}
+          params: { cashierId: '', storeId: '', from: '', to: '' }
         }
       })
     },
@@ -101,7 +101,7 @@ const History = ({
         type: 'cashier/updateState',
         payload: {
           cashierInfo: record,
-          modalVisible: false,
+          modalVisible: false
         }
       })
       resetFields()
@@ -184,8 +184,9 @@ const History = ({
             <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
           </FormItem>
           <FormItem label="Store Id"
-                    help="Store based on the cashier..."
-                    hasFeedback {...formItemLayout}
+            help="Store based on the cashier..."
+            hasFeedback
+            {...formItemLayout}
           >
             {getFieldDecorator('storeId', {
               initialValue: '',
@@ -211,12 +212,9 @@ const History = ({
             </Select>)}
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
-            {getFieldDecorator('periods', {})
-            (<RangePicker size="large"
-                // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-                //onChange={value => handleChangeDate(value)}
-                            format="DD-MMM-YYYY"
-              />
+            {getFieldDecorator('periods', {})(<RangePicker size="large"
+              format="DD-MMM-YYYY"
+            />
             )}
           </FormItem>
         </Col>
@@ -233,7 +231,7 @@ const History = ({
         </Col>
       </Row>
       <div className="reminder">
-        <CashRegister {...cashRegisterProps}/>
+        <CashRegister {...cashRegisterProps} />
       </div>
     </div >
   )

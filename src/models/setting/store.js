@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
     * getAllStores ({ payload = {} }, { call, put }) {
       const data = yield call(getAllStores, payload)
       if (data.success) {
-        if (payload && payload.mode==='cashier') {
+        if (payload && payload.mode === 'cashier') {
           yield put({
             type: 'updateState',
             payload: {

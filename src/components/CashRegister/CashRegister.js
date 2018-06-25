@@ -5,7 +5,7 @@ import { connect } from 'dva'
 const TabPane = Tabs.TabPane
 
 const CashRegister = ({
-  listCashRegister,
+  listCashRegister
 }) => {
   const columnsCashRegister = [{
     title: 'Period',
@@ -50,14 +50,18 @@ const CashRegister = ({
   }]
 
   const dataCashRegister = (
-    <Table bordered pagination={false} scroll={{ x: '840px', y: 350 }}
-           style={{ margin: '0px 5px', backgroundColor: '#FFF', maxHeight: '180px' }}
-           columns={columnsCashRegister}
-           dataSource={listCashRegister || []} />
+    <Table bordered
+      pagination={false}
+      scroll={{ x: '840px', y: 350 }}
+      style={{ margin: '0px 5px', backgroundColor: '#FFF', maxHeight: '180px' }}
+      columns={columnsCashRegister}
+      dataSource={listCashRegister || []}
+    />
   )
   const dataDetail = (
-    <Table bordered pagination={false}
-           style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
+    <Table bordered
+      pagination={false}
+      style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
     />
   )
   return (

@@ -24,7 +24,7 @@ const Report = ({ dispatch, purchaseReport }) => {
   }
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => callback(key)} type="card">
+      <Tabs style={{ clear: 'both' }} activeKey={activeKey} onChange={key => callback(key)} type="card">
         <TabPane tab="By Trans" key="1">
           {activeKey === '1' && <Trans />}
         </TabPane>

@@ -125,9 +125,8 @@ const isEmptyObject = (obj) => {
   console.log('abc', obj)
   if (!obj) {
     return true
-  } else {
-    return Object.keys(obj).length === 0 && obj.constructor === Object
   }
+  return Object.keys(obj).length === 0 && obj.constructor === Object
 }
 
 
