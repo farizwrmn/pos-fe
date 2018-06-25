@@ -1,7 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/setting/cashier'
+import { lstorage, messageInfo, isEmptyObject } from 'utils'
+import {
+  query, add, edit, remove,
+  queryCashRegisterByStore, queryCurrentOpenCashRegister,
+  queryCashierTransSource, queryCashierTransSourceDetail,
+  queryCloseRegister
+} from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -15,7 +21,12 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    activeTabKeyClose: '1',
     listCashier: [],
+    cashierInfo: [],
+    listCashRegister: [],
+    listCashTransSummary: {},
+    listCashTransDetail: {},
     modalVisible: false
   },
 
@@ -40,6 +51,9 @@ export default modelExtend(pageModel, {
               searchText: ''
             }
           })
+        } else if (pathname === '/monitor/cashier/close') {
+          const userId = lstorage.getStorageKey('udi')[1]
+          dispatch({ type: 'getCashierInformation', payload: userId })
         }
       })
     }
@@ -64,13 +78,13 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryActive ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+    * getCashRegisterByStore ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCashRegisterByStore, payload.item)
       if (data) {
         yield put({
-          type: 'querySuccessCashier',
+          type: 'querySuccessCashRegisterByStore',
           payload: {
-            list: data.data,
+            listCashRegister: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -78,6 +92,77 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * getCashierInformation ({ payload = {} }, { call, put }) {
+      const results = yield call(queryCurrentOpenCashRegister, payload)
+      const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
+      if (results.success) {
+        if (results.data.length === 0) {
+          console.log('xxx1')
+          messageInfo('There is no cash register open for this store', 'warning', 10)
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              cashierInfo: cashierInformation
+            }
+          })
+        }
+      } else {
+        throw results
+      }
+    },
+
+    * getCashierTransSource ({ payload = {} }, { call, put }) {
+      const results = yield call(queryCashierTransSource, payload)
+      const summaryDetail = (results.data.detail || []).length > 0 ? results.data.detail : ''
+      const summaryTotal = (results.data.total || []).length > 0 ? results.data.total : ''
+      if (results.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCashTransSummary: { data: summaryDetail, total: summaryTotal },
+            activeTabKeyClose: '1'
+          }
+        })
+      } else {
+        throw results
+      }
+    },
+
+    * getCashierTransSourceDetail ({ payload = {} }, { call, put }) {
+      const results = yield call(queryCashierTransSourceDetail, payload)
+      const transDetail = (results.data.detail || []).length > 0 ? results.data.detail : ''
+      const transTotal = (results.data.total || []).length > 0 ? results.data.total : ''
+      if (results.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCashTransDetail: { data: transDetail, total: transTotal },
+            activeTabKeyClose: '2'
+          }
+        })
+      } else {
+        throw results
+      }
+    },
+
+    * closeCashRegister ({ payload = {} }, { call, put }) {
+      console.log('zzz1', payload)
+      const results = yield call(queryCloseRegister, payload)
+      console.log('zzz2', results)
+      if (results.success) {
+        messageInfo('This Cash Register has been successfully closed', 'info', 10)
+        yield put({
+          type: 'updateState',
+          payload: {
+            cashRegister: { status: 'C' }
+          }
+        })
+      } else {
+        throw results
       }
     },
 
@@ -148,6 +233,14 @@ export default modelExtend(pageModel, {
 
   reducers: {
     updateState (state, { payload }) {
+      const { cashRegister } = payload
+      if (!isEmptyObject(cashRegister)) state.cashierInfo.status = cashRegister.status
+      return {
+        ...state,
+        ...payload
+      }
+    },
+    updateStateClose (state, { payload }) {
       return {
         ...state,
         ...payload
@@ -160,6 +253,18 @@ export default modelExtend(pageModel, {
         ...state,
         list,
         listCashier: list,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessCashRegisterByStore (state, action) {
+      const { listCashRegister, pagination } = action.payload
+      return {
+        ...state,
+        listCashRegister,
         pagination: {
           ...state.pagination,
           ...pagination

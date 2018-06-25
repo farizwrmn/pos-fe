@@ -648,11 +648,18 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/cashier'))
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/master/customer'))
-              registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/monitor/cashier/periods'))
-            }, 'service-history')
+            }, 'cashier-periods')
+          }
+        }, {
+          path: 'monitor/cashier/close',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/cashier'))
+              registerModel(app, require('./models/setting/store'))
+              cb(null, require('./routes/monitor/cashier/close'))
+            }, 'cashier-periods-close')
           }
         }, {
           path: '*',

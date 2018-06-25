@@ -13,6 +13,36 @@ const { MonthPicker } = DatePicker
 const { RangePicker } = DatePicker
 const Option = Select.Option
 
+const leftColumn = {
+  xs: 24,
+  sm: 15,
+  md: 15,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 9,
+  md: 9,
+  lg: 12
+}
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 11 },
+    sm: { span: 10 },
+    md: { span: 9 }
+  },
+  wrapperCol: {
+    xs: { span: 13 },
+    sm: { span: 14 },
+    md: { span: 15 }
+  }
+}
+
 const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
   listCategory,
   countSelectedBrand,
@@ -75,31 +105,6 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
     onDateChange(from, to)
   }
 
-  const formItemLayout = {
-    labelCol: {
-      xs: {
-        span: 8
-      },
-      sm: {
-        span: 8
-      },
-      md: {
-        span: 7
-      }
-    },
-    wrapperCol: {
-      xs: {
-        span: 16
-      },
-      sm: {
-        span: 16
-      },
-      md: {
-        span: 17
-      }
-    }
-  }
-
   const brand = () => {
     showBrands()
   }
@@ -136,82 +141,77 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
   }
 
   return (
-    <div>
-      <Row>
-        <Col lg={12} md={24}>
-          <FormItem label="Sales Range Date" {...formItemLayout} >
-            {getFieldDecorator('rangePicker', {
-              rules: [{ required: true }]
-            })(<RangePicker size="large"
-              style={{ width: '60%' }}
-              // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-              onChange={value => handleChangeDate(value)}
-              format="DD-MMM-YYYY"
-            />
-            )}
-            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>{diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}</span>
-          </FormItem>
-          <FormItem label="Inventory Period" {...formItemLayout}>
-            {getFieldDecorator('period', {
-              rules: [{ required: true }]
-            })(<MonthPicker
-              // defaultValue={moment(toDay, 'YYYY/MM/DD')}
-              style={{ width: '60%' }}
-            />)}
-          </FormItem>
-          <FormItem label="Category" {...formItemLayout}>
-            {getFieldDecorator('category', {
-              rules: [{ required: true }]
-            })(
-              <Select
-                mode="default"
-                allowClear
-                labelInValue
-                onFocus={() => category()}
-                style={{ width: '100%', height: '32px', marginTop: '5px' }}
-              >
-                {productCategory}
-              </Select>
-            )}
-          </FormItem>
-          <FormItem label="Brand" {...formItemLayout}>
-            {getFieldDecorator('brand')(
-              <Select
-                className="select-multiple-brand"
-                mode="multiple"
-                labelInValue
-                onSelect={value => onSelectBrand(value)}
-                onDeselect={value => onDeselectBrand(value)}
-                onFocus={() => brand()}
-                style={{ width: '100%' }}
-              >
-                {productBrand}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col lg={12} md={24} style={{ float: 'right', textAlign: 'right' }}>
-          <Button
-            size="large"
-            style={{ marginLeft: '5px' }}
-            type="primary"
-            className="button-width02 button-extra-large"
-            onClick={() => handleSearch()}
-          >
-            <Icon type="search" className="icon-large" />
-          </Button>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          {<PrintPDF {...printOpts} />}
-          {<PrintXLS {...printOpts} />}
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col {...leftColumn}>
+        <FormItem label="Sales Range Date" {...formItemLayout} >
+          {getFieldDecorator('rangePicker', {
+            rules: [{ required: true }]
+          })(<RangePicker
+            className="range-date"
+            style={{ width: '70%' }}
+            onChange={value => handleChangeDate(value)}
+            format="DD-MMM-YYYY"
+          />
+          )}
+          <span className="ant-form-text" style={{ paddingLeft: '4px' }}>{diffDay > 0 ? `${diffDay} day${diffDay === 1 ? '' : 's'}` : ''}</span>
+        </FormItem>
+        <FormItem label="Inventory Period" {...formItemLayout}>
+          {getFieldDecorator('period', {
+            rules: [{ required: true }]
+          })(<MonthPicker style={{ width: '100%' }} />)}
+        </FormItem>
+        <FormItem label="Category" {...formItemLayout}>
+          {getFieldDecorator('category', {
+            rules: [{ required: true }]
+          })(
+            <Select
+              mode="default"
+              allowClear
+              labelInValue
+              onFocus={() => category()}
+              style={{ width: '100%', height: '32px', marginTop: '5px' }}
+            >
+              {productCategory}
+            </Select>
+          )}
+        </FormItem>
+        <FormItem label="Brand" {...formItemLayout}>
+          {getFieldDecorator('brand')(
+            <Select
+              className="select-multiple-brand"
+              mode="multiple"
+              labelInValue
+              onSelect={value => onSelectBrand(value)}
+              onDeselect={value => onDeselectBrand(value)}
+              onFocus={() => brand()}
+              style={{ width: '100%' }}
+            >
+              {productBrand}
+            </Select>
+          )}
+        </FormItem>
+      </Col>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          size="large"
+          style={{ marginLeft: '5px' }}
+          type="primary"
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        {<PrintPDF {...printOpts} />}
+        {<PrintXLS {...printOpts} />}
+      </Col>
+    </Row>
   )
 }
 

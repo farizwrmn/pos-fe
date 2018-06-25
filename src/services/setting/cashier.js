@@ -1,6 +1,7 @@
+import moment from 'moment'
 import { request, config, crypt, lstorage } from '../../utils'
 
-const { apiCashierUsers } = config.rest
+const { apiCashierUsers, apiCashRegister } = config.rest
 const { cashier } = config.api
 
 export async function query (params) {
@@ -42,7 +43,7 @@ export async function edit (params) {
   })
 }
 
-export async function queryInformation (params) {
+export async function queryCurrentOpenCashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
@@ -52,10 +53,81 @@ export async function queryInformation (params) {
   })
 }
 
+export async function queryCashRegisterByStore (params) {
+  const apiHeaderToken = crypt.apiheader()
+
+  let url
+  let paramCashierId = 0
+  let paramStoreId = 0
+  let paramStatus
+  let periods = []
+  let paramPeriods = []
+  if (params) {
+    if (params.hasOwnProperty('cashierId')) paramCashierId = params.cashierId
+    if (params.hasOwnProperty('storeId')) paramStoreId = params.storeId
+    if (params.hasOwnProperty('status')) paramStatus = params.status
+    if (params.hasOwnProperty('periods')) periods = params.periods
+  }
+
+  if (paramStatus) {
+    url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}/status/${paramStatus}`
+  } else {
+    url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}`
+  }
+  if (periods) {
+    paramPeriods[0] = moment(periods[0]).format('YYYY-MM-DD')
+    paramPeriods[1] = moment(periods[1]).format('YYYY-MM-DD')
+    url = `${url}?period=${paramPeriods}&`
+  } else {
+    url = `${url}?`
+  }
+
+  const orderBy = 'order=period-,shiftid,counterId'
+  url = `${url}${orderBy}`
+
+  return request({
+    url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryCashierTransSource (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}`
+  return request({
+    url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+export async function queryCashierTransSourceDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}&transType=${params.transType}`
+  return request({
+    url,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+export async function queryCloseRegister (params) {
+  console.log('qqq', params)
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${apiCashRegister}/${params.id}?status=C`
+  console.log('qqq1', url)
+  return request({
+    url,
+    method: 'put',
+    data: { desc: params.desc },
+    headers: apiHeaderToken
+  })
+}
+
 export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   params.status = 'O'
+
   return request({
     url: `${cashier}/cashregisters`,
     method: 'post',

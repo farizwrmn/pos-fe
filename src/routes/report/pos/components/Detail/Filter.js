@@ -7,6 +7,23 @@ import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({
   onDateChange,
   onListReset,
@@ -28,28 +45,26 @@ const Filter = ({
   }
 
   return (
-    <div>
-      <Row>
-        <Col lg={10} md={24}>
-          <FilterItem label="Trans Date">
-            {getFieldDecorator('period')(
-              <RangePicker size="large" onChange={value => handleChangeDate(value)} format="DD-MMM-YYYY" />
-            )}
-          </FilterItem>
-        </Col>
-        <Col lg={14} md={24} style={{ textAlign: 'right' }}>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          <PrintPDF {...printProps} />
-          <PrintXLS {...printProps} />
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col {...leftColumn}>
+        <FilterItem label="Trans Date">
+          {getFieldDecorator('period')(
+            <RangePicker size="large" onChange={value => handleChangeDate(value)} format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...rightColumn} style={{ textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
+      </Col>
+    </Row>
   )
 }
 

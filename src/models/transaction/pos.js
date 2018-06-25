@@ -9,7 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryInformation, cashRegister } from '../../services/setting/cashier'
+import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -107,7 +107,7 @@ export default {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-          let userId = lstorage.getStorageKey('udi')[1]
+          const userId = lstorage.getStorageKey('udi')[1]
           dispatch({
             type: 'showShiftModal',
             payload: memberUnitInfo
@@ -522,7 +522,7 @@ export default {
     },
 
     * loadDataPos ({ payload = {} }, { call, put }) {
-      const data = yield call(queryInformation, payload)
+      const data = yield call(queryCurrentOpenCashRegister, payload)
       if (data.success) {
         const cashierInformation = (data.data || []).length > 0 ? data.data[0] : {}
         yield put({

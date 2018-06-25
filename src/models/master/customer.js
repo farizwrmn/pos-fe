@@ -10,7 +10,6 @@ const success = () => {
   message.success('Customer has been saved')
 }
 const activate = (info) => {
-  console.log('zzz4', info.memberCardId)
   message.success(`Member: ${info.memberCardId} has been activated`)
 }
 
@@ -227,7 +226,6 @@ export default modelExtend(pageModel, {
       })
     },
     * activateMember ({ payload = {} }, { call, put }) {
-      console.log('zzz1', payload)
       const result = yield call(srvActivateMember, payload)
       if (result.success) {
         yield put({
@@ -450,9 +448,7 @@ export default modelExtend(pageModel, {
         ...state
       }
     },
-    responseActivateMember (state, action) {
-      console.log('zzz5', state)
-      console.log('zzz6', action)
+    responseActivateMember (state) {
       state.checkMember = {
         existingCheckBoxDisable: true,
         existingSearchButtonDisable: true,

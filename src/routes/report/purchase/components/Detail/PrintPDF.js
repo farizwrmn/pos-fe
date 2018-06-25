@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
-  listData = listData.filter(x => x.items.length)
+  // listData = listData.filter(x => x.items.length)
   let width = []
   const styles = {
     header: {
@@ -40,6 +40,8 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     let totalDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
+    let body = []
+
     let headers = [
       [
         { text: 'NO', style: 'tableHeader' },
@@ -55,7 +57,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       ]
     ]
 
-    let body = []
     for (let i = 0; i < headers.length; i += 1) {
       body.push(headers[i])
     }
@@ -120,7 +121,30 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           layout: 'noBorders'
         }
       )
-      tableBody.push(createTableBody(listData[i].items))
+      if (listData[i].items && listData[i].items.length > 0) {
+        tableBody.push(createTableBody(listData[i].items))
+      } else {
+        let body = []
+        let headers = [
+          [
+            { text: 'NO', style: 'tableHeader' },
+            { text: 'KODE PRODUK', style: 'tableHeader' },
+            { text: 'NAMA PRODUK', style: 'tableHeader' },
+            { text: 'QTY', style: 'tableHeader' },
+            { text: 'HARGA SATUAN', style: 'tableHeader' },
+            { text: 'SUB TOTAL', style: 'tableHeader' },
+            { text: 'DISK(%)', style: 'tableHeader' },
+            { text: 'DISK(N)', style: 'tableHeader' },
+            { text: 'TOTAL DISKON', style: 'tableHeader' },
+            { text: 'TOTAL', style: 'tableHeader' }
+          ]
+        ]
+        for (let i = 0; i < headers.length; i += 1) {
+          body.push(headers[i])
+        }
+        width.push(['4%', '16%', '24%', '6%', '8%', '8%', '7%', '7%', '10%', '10%'])
+        tableBody.push(body)
+      }
     } catch (e) {
       console.log(e)
     }

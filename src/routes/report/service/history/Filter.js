@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Row, Col, Form, DatePicker } from 'antd'
+import { Button, Row, Col, Form, DatePicker, Icon } from 'antd'
 import moment from 'moment'
 import { SelectItem } from 'components'
 import PrintPDF from './PrintPDF'
@@ -8,41 +8,32 @@ import PrintXLS from './PrintXLS'
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 8
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 16
-    },
-    sm: {
-      span: 14
-    },
-    md: {
-      span: 14
-    }
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 10 },
-  xl: { span: 10 }
+const leftColumn = {
+  xs: 24,
+  sm: 13,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
 }
 
-const columnButton = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 4 },
-  xl: { span: 4 }
+const rightColumn = {
+  xs: 24,
+  sm: 11,
+  md: 12,
+  lg: 12
 }
 
 const FormItem = Form.Item
@@ -137,7 +128,7 @@ const Filter = ({
   return (
     <Row>
       <Form layout="horizontal">
-        <Col {...column} >
+        <Col {...leftColumn} >
           <FormItem label="Period" {...formItemLayout}>
             {getFieldDecorator('period', {
               rules: [
@@ -163,8 +154,6 @@ const Filter = ({
               rules: [{ required: true }]
             })(<SelectItem {...employeeProps} />)}
           </FormItem>
-        </Col>
-        <Col {...column} >
           <FormItem label="Service Name" {...formItemLayout}>
             {getFieldDecorator('serviceCode', {
               valuePropName: 'value',
@@ -172,17 +161,25 @@ const Filter = ({
             })(<SelectItem {...serviceNameProps} />)}
           </FormItem>
         </Col>
-        <Col {...columnButton} >
-          <Col span={24} style={{ margin: '2.5px 0' }}>
-            <Button style={{ width: 80 }} onClick={clickSearch}>Search</Button>
-          </Col>
-          <Col span={24} style={{ margin: '2.5px 0' }}>
-            <Button type="danger" style={{ width: 80 }} onClick={clickReset}>Reset</Button>
-          </Col>
-          <Col span={24} style={{ margin: '3px 0' }}>
-            <PrintPDF {...printProps} />
-            <PrintXLS {...printProps} />
-          </Col>
+        <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+          <Button
+            size="large"
+            style={{ marginLeft: '5px' }}
+            type="primary"
+            className="button-width02 button-extra-large"
+            onClick={() => clickSearch()}
+          >
+            <Icon type="search" className="icon-large" />
+          </Button>
+          <Button type="dashed"
+            size="large"
+            className="button-width02 button-extra-large bgcolor-lightgrey"
+            onClick={() => clickReset()}
+          >
+            <Icon type="rollback" className="icon-large" />
+          </Button>
+          <PrintPDF {...printProps} />
+          <PrintXLS {...printProps} />
         </Col>
       </Form>
     </Row>
