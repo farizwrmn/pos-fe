@@ -8,6 +8,23 @@ import PrintXLS from './PrintXLS'
 const { RangePicker } = DatePicker
 const Option = Select.Option
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({
   onDateChange,
   onListReset,
@@ -46,56 +63,54 @@ const Filter = ({
   }
 
   return (
-    <div>
-      <Row style={{ display: 'flex' }}>
-        <Col lg={10} md={24}>
-          <FilterItem label="Trans Date">
-            {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" format="DD-MMM-YYYY" />
-            )}
-          </FilterItem>
-          <FilterItem label="Supplier">
-            {getFieldDecorator('supplierId')(
-              <Select
-                showSearch
-                placeholder="Select a supplier"
-                onFocus={() => searchSupplier()}
-                optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                style={{ width: '100%', marginTop: '5px' }}
-              >
-                {suppliers}
-              </Select>
-            )}
-          </FilterItem>
-          <FilterItem label="Trans No">
-            {getFieldDecorator('transNo')(
-              <Input maxLength={50} style={{ width: '100%', marginTop: '5px' }} />
-            )}
-          </FilterItem>
-        </Col>
-        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
-          <Button
-            size="large"
-            style={{ marginLeft: '5px' }}
-            type="primary"
-            className="button-width02 button-extra-large"
-            onClick={() => handleSearch()}
-          >
-            <Icon type="search" className="icon-large" />
-          </Button>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          <PrintPDF {...printProps} />
-          <PrintXLS {...printProps} />
-        </Col>
-      </Row>
-    </div>
+    <Row >
+      <Col {...leftColumn}>
+        <FilterItem label="Trans Date">
+          {getFieldDecorator('rangePicker')(
+            <RangePicker size="large" format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+        <FilterItem label="Supplier">
+          {getFieldDecorator('supplierId')(
+            <Select
+              showSearch
+              placeholder="Select a supplier"
+              onFocus={() => searchSupplier()}
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              style={{ width: '100%', marginTop: '5px' }}
+            >
+              {suppliers}
+            </Select>
+          )}
+        </FilterItem>
+        <FilterItem label="Trans No">
+          {getFieldDecorator('transNo')(
+            <Input maxLength={50} style={{ width: '100%', marginTop: '5px' }} />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          size="large"
+          style={{ marginLeft: '5px' }}
+          type="primary"
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
+      </Col>
+    </Row>
   )
 }
 

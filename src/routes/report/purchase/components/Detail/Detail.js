@@ -14,7 +14,6 @@ const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
       items: _.filter(listPurchaseDetail, { transNo: item.transNo })
     })
   })
-
   const browseProps = {
     dataSource: listPurchaseDetail,
     loading: loading.effects['purchaseReport/queryPurchase']
@@ -39,6 +38,12 @@ const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
           startPeriod,
           endPeriod,
           ...data
+        }
+      })
+      dispatch({
+        type: 'purchaseReport/queryPurchaseDetail',
+        payload: {
+          transDate: [startPeriod, endPeriod]
         }
       })
     },

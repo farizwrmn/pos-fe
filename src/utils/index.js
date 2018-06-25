@@ -109,10 +109,26 @@ const messageInfo = (info, type = 'info', duration = 3) => {
     case 'success':
       message.success(info, duration)
       break
+    case 'warning':
+      message.warning(info, duration)
+      break
     default:
       message.info(info, duration)
   }
 }
+
+const formatNumberIndonesia = (text) => {
+  return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const isEmptyObject = (obj) => {
+  console.log('abc', obj)
+  if (!obj) {
+    return true
+  }
+  return Object.keys(obj).length === 0 && obj.constructor === Object
+}
+
 
 module.exports = {
   configMain,
@@ -127,5 +143,7 @@ module.exports = {
   crypt,
   lstorage,
   ip,
-  messageInfo
+  messageInfo,
+  formatNumberIndonesia,
+  isEmptyObject
 }

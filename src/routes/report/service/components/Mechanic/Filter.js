@@ -11,6 +11,23 @@ import PrintPDF from './PrintPDF'
 const RadioGroup = Radio.Group
 const { RangePicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 13,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 11,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const handleChange = () => {
     const data = getFieldsValue()
@@ -41,14 +58,14 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
   return (
     <div>
       <Row>
-        <Col lg={10} md={24}>
+        <Col {...leftColumn}>
           <FilterItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
               <RangePicker size="large" format="DD-MMM-YYYY" />
             )}
           </FilterItem>
         </Col>
-        <Col lg={14} md={24} style={{ float: 'right', textAlign: 'right' }}>
+        <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
           <Button
             type="dashed"
             size="large"
@@ -70,7 +87,7 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
         </Col>
       </Row>
       <Row>
-        <Col lg={10} md={24}>
+        <Col {...leftColumn}>
           <FilterItem label="Has Employee ?">
             {getFieldDecorator('hasEmployee', { initialValue: 1 })(
               <RadioGroup>

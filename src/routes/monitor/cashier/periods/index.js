@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'dva'
 import { CashRegister } from 'components'
-import { Row, Col, Button, Form, Icon, DatePicker } from 'antd'
+import { Row, Col, Button, Form, Select, Icon, DatePicker } from 'antd'
 import ModalBrowse from './Modal'
 
 const FormItem = Form.Item
+const Option = Select.Option
 const { RangePicker } = DatePicker
 
 const formItemLayout = {
@@ -39,22 +40,24 @@ const column2 = {
 }
 
 const History = ({
-  customerunit,
   cashier,
+  store,
   loading,
-  pos,
   dispatch,
   form: {
     getFieldDecorator,
-    getFieldValue,
+    getFieldsValue,
     resetFields,
     validateFields
   }
 }) => {
-  const { listServiceReminder, listUnitUsage } = pos
-  const { customerInfo } = customerunit
+  const { list, listCashier, listCashRegister, modalVisible, searchText, pagination, cashierInfo } = cashier
+  const { listCashierStore } = store
 
-  const { list, listCashier, modalVisible, searchText, pagination } = cashier
+  let stores = []
+  if (listCashierStore && listCashierStore.length) {
+    stores = listCashierStore.map(x => (<Option value={x.id}>{x.storeName}</Option>))
+  }
 
   const modalProps = {
     listCashier,
@@ -75,10 +78,10 @@ const History = ({
     },
     onSearch () {
       dispatch({
-        type: 'cashier/query',
+        type: 'cashier/getCashRegisterByStore',
         payload: {
           page: 1,
-          q: searchText
+          params: { cashierId: '', storeId: '', from: '', to: '' }
         }
       })
     },
@@ -95,29 +98,10 @@ const History = ({
     },
     onClickRow (record) {
       dispatch({
-        type: 'customerunit/updateState',
-        payload: {
-          customerInfo: record
-        }
-      })
-      dispatch({
-        type: 'customerunit/query',
-        payload: {
-          code: record.memberCode
-        }
-      })
-      dispatch({
         type: 'cashier/updateState',
         payload: {
-          modalVisible: false,
-          activeKey: '1',
-          dataCustomer: record
-        }
-      })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          listUnitUsage: []
+          cashierInfo: record,
+          modalVisible: false
         }
       })
       resetFields()
@@ -147,36 +131,44 @@ const History = ({
       type: 'cashier/updateState',
       payload: {
         modalVisible: true,
-        listCustomer: list
+        listCashier: list
       }
     })
   }
 
-  const showReminder = () => {
+  const showStores = () => {
+    dispatch({
+      type: 'store/getAllStores',
+      payload: {
+        mode: 'cashier',
+        cashier: cashierInfo.cashierId
+      }
+    })
+  }
+
+  const showCashRegister = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
-      const unit = getFieldValue('unit')
+      let item = { ...getFieldsValue() }
+      item.cashierId = cashierInfo.cashierId
       dispatch({
-        type: 'pos/getServiceUsageReminder',
+        type: 'cashier/getCashRegisterByStore',
         payload: {
-          policeNo: unit.key
+          item
         }
       })
     })
   }
 
-  const reminderProps = {
-    unitId: getFieldValue('unit') ? getFieldValue('unit').key : null,
-    unitPoliceNo: getFieldValue('unit') ? getFieldValue('unit').label : '...',
-    listServiceReminder,
-    listUnitUsage
+  const cashRegisterProps = {
+    listCashRegister
   }
 
-  let buttonName = 'Find Customer'
-  if (customerInfo.memberName) {
-    let name = customerInfo.memberName
+  let buttonName = 'Find Cashier'
+  if (cashierInfo.cashierId) {
+    let name = cashierInfo.cashierId
     buttonName = name
     if (name.length > 17) {
       buttonName = `${name.slice(0, 17)}...`
@@ -189,14 +181,38 @@ const History = ({
       <Row type="flex" justify="start" className="collapse-form-reminder">
         <Col {...column}>
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
-            <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15, width: '100%' }}>{buttonName}</Button>
+            <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
+          </FormItem>
+          <FormItem label="Store Id"
+            help="Store based on the cashier..."
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('storeId', {
+              initialValue: '',
+              rules: [{ required: true }]
+            })(<Select
+              showSearch
+              style={{ width: '100%' }}
+              placeholder="Select Store"
+              optionFilterProp="children"
+              onFocus={showStores}
+            >{stores}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Status" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('status', {
+              initialValue: ''
+            })(<Select defaultValue="" style={{ width: '100%' }}>
+              <Option value="O">Open</Option>
+              <Option value="C">Close</Option>
+              <Option value="R" disabled>Request</Option>
+              <Option value="V" disabled>Verify</Option>
+              <Option value="">All Status</Option>
+            </Select>)}
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
-            {getFieldDecorator('rangePicker', {
-              rules: [{ required: true }]
-            })(<RangePicker size="large"
-              // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-              // onChange={value => handleChangeDate(value)}
+            {getFieldDecorator('periods', {})(<RangePicker size="large"
               format="DD-MMM-YYYY"
             />
             )}
@@ -208,17 +224,17 @@ const History = ({
             size="large"
             style={{ marginLeft: '5px' }}
             className="button-width02 button-extra-large"
-            onClick={() => showReminder()}
+            onClick={() => showCashRegister()}
           >
             <Icon type="search" className="icon-large" />
           </Button>
         </Col>
       </Row>
       <div className="reminder">
-        <CashRegister {...reminderProps} />
+        <CashRegister {...cashRegisterProps} />
       </div>
     </div >
   )
 }
 
-export default connect(({ cashier, customer, customerunit, pos, loading }) => ({ cashier, customer, customerunit, pos, loading }))(Form.create()(History))
+export default connect(({ cashier, store, loading }) => ({ cashier, store, loading }))(Form.create()(History))

@@ -1,234 +1,80 @@
 import React from 'react'
 import { Tabs, Table } from 'antd'
 import { connect } from 'dva'
-import moment from 'moment'
 
 const TabPane = Tabs.TabPane
 
-const Reminder = ({
-  listServiceReminder,
-  listUnitUsage,
-  unitId,
-  unitPoliceNo,
-  dispatch
+const CashRegister = ({
+  listCashRegister
 }) => {
-  const columnAlert = [{
-    title: 'Name',
-    dataIndex: 'checkName',
-    key: 'checkName',
-    width: 250,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text}</div>
-      }
-    }
-  }, {
-    title: 'KM',
-    dataIndex: 'checkMileage',
-    key: 'checkMileage',
-    width: 110,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text.toLocaleString()}</div>
-      }
-    }
-  }, {
+  const columnsCashRegister = [{
     title: 'Period',
-    dataIndex: 'checkTimePeriod',
-    key: 'checkTimePeriod',
-    width: 130,
-    render (text, record) {
-      return {
-        props: {
-          style: {
-            backgroundColor: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#FF4D49' : '#ffffff',
-            color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
-          }
-        },
-        children: <div>{text.toLocaleString()} days</div>
-      }
-    }
+    dataIndex: 'period',
+    key: 'Period',
+    width: '100px'
+  }, {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+    width: '60px'
+  }, {
+    title: 'Shift',
+    dataIndex: 'shiftName',
+    key: 'shiftName',
+    width: '150px'
+  }, {
+    title: 'Counter',
+    dataIndex: 'counterName',
+    key: 'counterName',
+    width: '150px'
+  }, {
+    title: 'Opening',
+    dataIndex: 'openingBalance',
+    key: 'openingBalance',
+    width: '150px'
+  }, {
+    title: 'Cash-In',
+    dataIndex: 'cashIn',
+    key: 'cashIn',
+    width: '150px'
+  }, {
+    title: 'Cash-Out',
+    dataIndex: 'cashOut',
+    key: 'cashOut',
+    width: '150px'
+  }, {
+    title: 'Closing',
+    dataIndex: 'closingBalance',
+    key: 'closingBalance',
+    width: '150px'
   }]
 
-  const columnUsage = [
-    {
-      title: 'Product',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: 200,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Last Meter',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 100,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Next Service',
-      dataIndex: 'nextServiceMeter',
-      key: 'nextServiceMeter',
-      width: 100,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Last Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    },
-    {
-      title: 'Avg By KM',
-      dataIndex: 'nextServiceKM',
-      key: 'nextServiceKM',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    },
-    {
-      title: 'Avg By Date',
-      dataIndex: 'nextServiceDate',
-      key: 'nextServiceDate',
-      width: 110,
-      render (text, record) {
-        return {
-          props: {
-            style: {
-              backgroundColor: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#FF4D49' : '#ffffff',
-              color: (moment().format('YYYY-MM-DD') >= moment(record.nextServiceKM, 'YYYY-MM-DD').format('YYYY-MM-DD') ||
-                moment().format('YYYY-MM-DD') >= moment(record.nextServiceDate, 'YYYY-MM-DD').format('YYYY-MM-DD')) ?
-                '#ffffff' : '#666'
-            }
-          },
-          children: <div>{text ? moment(text, 'YYYY-MM-DD').format('DD-MMM-YYYY') : ''}</div>
-        }
-      }
-    }
-  ]
-
-  if (listServiceReminder && listServiceReminder.length) {
-    listServiceReminder.sort((x, y) => x.checkMileage - y.checkMileage)
-  }
-
-  let alertDescription = (<Table bordered pagination={false} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listServiceReminder} columns={columnAlert} />)
-  let alertUsage = (<Table bordered pagination={false} scroll={{ x: '840px', y: 350 }} style={{ margin: '0px 5px', backgroundColor: '#FFF' }} dataSource={listUnitUsage || []} columns={columnUsage} />)
-  const handleChangeReminder = (key) => {
-    if (key === '2') {
-      dispatch({
-        type: 'pos/getServiceUsageReminder',
-        payload: {
-          policeNo: unitId
-        }
-      })
-    }
-  }
-
+  const dataCashRegister = (
+    <Table bordered
+      pagination={false}
+      scroll={{ x: '840px', y: 350 }}
+      style={{ margin: '0px 5px', backgroundColor: '#FFF', maxHeight: '180px' }}
+      columns={columnsCashRegister}
+      dataSource={listCashRegister || []}
+    />
+  )
+  const dataDetail = (
+    <Table bordered
+      pagination={false}
+      style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
+    />
+  )
   return (
-    <Tabs type="card" onChange={handleChangeReminder}>
+    <Tabs type="card">
       <TabPane tab="List" key="1">
-        <div className="componentTitleWrapper">
-          <h3 className="componentTitle">
-            <span>Usage for {unitPoliceNo}</span>
-          </h3>
-        </div>
-        <div className="service-reminders">{alertUsage}</div>
+        <div className="service-reminders">{dataCashRegister}</div>
       </TabPane>
-      <TabPane tab="Log" key="2">
-        <div className="componentTitleWrapper">
-          <h3 className="componentTitle">
-            <span>Services</span>
-          </h3>
-        </div>
-        <div className="service-reminders">{alertDescription}</div>
+      <TabPane tab="Detail" key="2">
+        <div className="service-reminders">{dataDetail}</div>
       </TabPane>
     </Tabs>
   )
 }
 
-export default connect(({ pos }) => ({ pos }))(Reminder)
+export default connect(({ cashier }) => ({ cashier }))(CashRegister)
 
