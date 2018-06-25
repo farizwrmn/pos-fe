@@ -44,7 +44,7 @@ export async function edit (params) {
 
 export async function queryInformation (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = `${apiCashierUsers}/${params}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
+  const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
     url,
     method: 'get',
@@ -56,7 +56,6 @@ export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   params.status = 'O'
-  console.log('zzz5', params)
   return request({
     url: `${cashier}/cashregisters`,
     method: 'post',

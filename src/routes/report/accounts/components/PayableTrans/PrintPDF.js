@@ -151,17 +151,17 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'SUPPLIER', colSpan: '4', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
 
-      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TGL JTO', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO FAKTUR', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SALDO AWAL', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PEMBELIAN', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL JTO', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO FAKTUR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'SALDO AWAL', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PEMBELIAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
 
       { fontSize: 12, text: 'PEMBAYARAN', colSpan: '6', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
@@ -170,17 +170,17 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
 
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'RETUR PEMBELIAN', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'ADJ', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SALDO AKHIR', rowSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'KETERANGAN', rowSpan: '3', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'RETUR PEMBELIAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'ADJ', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'SALDO AKHIR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KETERANGAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' }
     ],
     [
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA SUPPLIER', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NPWP', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'ALAMAT', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO REK', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA SUPPLIER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NPWP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO REK', style: 'tableHeader', alignment: 'center' },
 
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
@@ -188,43 +188,47 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
 
-      { fontSize: 12, text: 'TGL BAYAR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CASH', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'VIA BANK', colSpan: '3', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: 'JUMLAH BAYAR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
-    ],
-    [
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL BAYAR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'CASH', style: 'tableHeader', alignment: 'center' },
+      // { fontSize: 12, text: 'VIA BANK', colSpan: '3', style: 'tableHeader', alignment: 'center' },
+      // { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+      // { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAMA BANK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NO GIRO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NOMINAL BANK', style: 'tableHeader', alignment: 'center' },
 
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'JUMLAH BAYAR', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
     ]
+    // ,
+    // [
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: 'NAMA BANK', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: 'NO GIRO', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: 'NOMINAL BANK', style: 'tableHeader', alignment: 'center' },
+
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
+    // ]
   ]
   let tableBody = []
   try {
