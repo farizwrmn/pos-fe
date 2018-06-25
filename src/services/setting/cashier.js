@@ -1,5 +1,6 @@
-import { request, config, crypt, lstorage } from '../../utils'
 import moment from 'moment'
+import { request, config, crypt, lstorage } from '../../utils'
+
 const { apiCashierUsers, apiCashRegister } = config.rest
 const { cashier } = config.api
 

@@ -12,8 +12,13 @@ const ViewDetail = ({
   dispatch,
   activeTabKeyClose
 }) => {
-  let summary = { total: { openingCash: 0, cashIn: 0, cashOut: 0 } }
-  ``
+  let summary = {
+    total: {
+      openingCash: 0,
+      cashIn: 0,
+      cashOut: 0
+    }
+  }
   summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
 
   let detail = { total: { openingCash: 0, cashIn: 0, cashOut: 0 } }

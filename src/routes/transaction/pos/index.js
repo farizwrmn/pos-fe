@@ -91,7 +91,7 @@ const Pos = ({
     listServiceReminder,
     paymentListActiveKey,
     modalAddUnit,
-    cashierInfo
+    cashierInformation
   } = pos
 
   const { modalAddMember, currentItem } = customer
@@ -100,9 +100,16 @@ const Pos = ({
   const { usingWo, woNumber } = payment
 
   let currentCashier = {
-    cashierId: '', employeeName: '',  shiftId: '', shiftName: '',
-    counterId: '', counterName: '', period: '', status: '' }
-  if (!isEmptyObject(cashierInfo)) currentCashier = cashierInfo
+    cashierId: '',
+    employeeName: '',
+    shiftId: '',
+    shiftName: '',
+    counterId: '',
+    counterName: '',
+    period: '',
+    status: ''
+  }
+  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false,
