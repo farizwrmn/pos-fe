@@ -3,12 +3,11 @@ import moment from 'moment'
 import { configMain, lstorage } from 'utils'
 import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
-import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
-import { queryInformation } from '../services/setting/cashier'
+import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -20,7 +19,6 @@ const { prefix } = configMain
 const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
 
 const { create } = cashierService
-const { updateCashierTrans } = cashierTransService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 
 export default {
@@ -156,7 +154,7 @@ export default {
               disc3: dataPos[key].disc3
             })
           }
-          const cashier = yield call(queryInformation, payload)
+          const cashier = yield call(queryCurrentOpenCashRegister, payload)
           if (cashier.success) {
             const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
             const detailPOS = {
@@ -165,9 +163,9 @@ export default {
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
               technicianId: payload.technicianId,
-              cashierNo: cashierInformation.counterId,
-              cashierId: cashierInformation.cashierId,
-              shift: cashierInformation.shiftId,
+              // cashierNo: cashierInformation.counterId,
+              // cashierId: cashierInformation.cashierId,
+              // shift: cashierInformation.shiftId,
               cashierTransId: cashierInformation.id,
               transDate: cashierInformation.period,
               transTime: payload.transTime,
@@ -203,9 +201,9 @@ export default {
               //     content: `Call your IT support, message: ${e}`
               //   })
               // }
-
+              let dataPayment
               try {
-                yield call(addSome, {
+                dataPayment = yield call(addSome, {
                   head: {
                     transNo: trans,
                     storeId: lstorage.getCurrentUserStore(),
@@ -229,7 +227,7 @@ export default {
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
-                  transDatePrint: moment(date.data).format('DD-MM-YYYY'),
+                  transDatePrint: moment(cashierInformation.period).format('DD-MM-YYYY'),
                   company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
                   gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
                   phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
@@ -262,15 +260,15 @@ export default {
               yield put({
                 type: 'pos/setAllNull'
               })
-              const data_cashier_trans_update = yield call(updateCashierTrans, {
-                total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
-                totalCreditCard: payload.totalCreditCard,
-                status: 'O',
-                cashierNo: payload.curCashierNo,
-                shift: payload.curShift
-                // transDate: payload.transDate2
-              })
-              if (data_cashier_trans_update.success) {
+              // const data_cashier_trans_update = yield call(updateCashierTrans, {
+              //   total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
+              //   totalCreditCard: payload.totalCreditCard,
+              //   status: 'O',
+              //   cashierNo: payload.curCashierNo,
+              //   shift: payload.curShift
+              //   // transDate: payload.transDate2
+              // })
+              if (dataPayment.success) {
                 Modal.info({
                   title: 'Information',
                   content: 'Transaction has been saved...!'
