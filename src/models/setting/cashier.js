@@ -148,7 +148,6 @@ export default modelExtend(pageModel, {
 
   reducers: {
     updateState (state, { payload }) {
-      console.table('zzz3')
       return {
         ...state,
         ...payload

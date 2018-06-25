@@ -143,7 +143,6 @@ const History = ({
   }
 
   const openModal = () => {
-    console.log('zzz0')
     dispatch({
       type: 'cashier/updateState',
       payload: {
@@ -184,7 +183,6 @@ const History = ({
     }
   }
 
-  console.log('zzz1', modalVisible)
   return (
     <div className="content-inner">
       {modalVisible && <ModalBrowse {...modalProps} />}
