@@ -200,6 +200,22 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
+          path: 'master/account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/master/accountCode/'))
+            }, 'master-account')
+          }
+        }, {
+          path: 'master/expense-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/expenseType'))
+              cb(null, require('./routes/master/expenseType/'))
+            }, 'master-expense-type')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -463,6 +479,19 @@ const Routers = function ({ history, app }) {
           }
         }, {
           path: 'accounts/payment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/accounts/detail/payableDetail'))
+              registerModel(app, require('./models/accounts/accountPayment'))
+              cb(null, require('./routes/accounts/summary'))
+            }, 'accounts-payment')
+          }
+        }, {
+          path: 'expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/tools/maintenance'))
