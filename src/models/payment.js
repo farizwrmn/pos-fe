@@ -154,6 +154,7 @@ export default {
               disc3: dataPos[key].disc3
             })
           }
+
           const cashier = yield call(queryCurrentOpenCashRegister, payload)
           if (cashier.success) {
             const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}

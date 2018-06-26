@@ -53,7 +53,7 @@ export default modelExtend(pageModel, {
           })
         } else if (pathname === '/monitor/cashier/close') {
           const userId = lstorage.getStorageKey('udi')[1]
-          dispatch({ type: 'getCashierInformation', payload: userId })
+          dispatch({ type: 'getCashierInformation', payload: { cashierId: userId } })
         }
       })
     }
@@ -100,7 +100,6 @@ export default modelExtend(pageModel, {
       const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
       if (results.success) {
         if (results.data.length === 0) {
-          console.log('xxx1')
           messageInfo('There is no cash register open for this store', 'warning', 10)
         } else {
           yield put({
@@ -150,9 +149,7 @@ export default modelExtend(pageModel, {
     },
 
     * closeCashRegister ({ payload = {} }, { call, put }) {
-      console.log('zzz1', payload)
       const results = yield call(queryCloseRegister, payload)
-      console.log('zzz2', results)
       if (results.success) {
         messageInfo('This Cash Register has been successfully closed', 'info', 10)
         yield put({
