@@ -155,9 +155,10 @@ export default {
             })
           }
 
-          const cashier = yield call(queryCurrentOpenCashRegister, payload)
-          if (cashier.success) {
-            const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
+          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
+          if (currentRegister.success) {
+            // const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
+            const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
               dataPos: arrayProd,
               transNo: trans,
