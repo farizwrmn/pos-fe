@@ -50,7 +50,6 @@ export async function queryDetail (params) {
 }
 
 export async function create (params) {
-  console.log('xyz', params)
   const apiHeaderToken = crypt.apiheader()
   const url = `${pos}/code/${encodeURIComponent(params.transNo)}`
   return request({

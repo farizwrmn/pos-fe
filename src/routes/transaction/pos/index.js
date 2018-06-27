@@ -681,7 +681,6 @@ const Pos = ({
         type: 'pos/cashRegister',
         payload: data
       })
-      console.log('yyy1',lstorage.getLoginTime())
     },
     findShift () {
       dispatch({ type: 'shift/query' })
