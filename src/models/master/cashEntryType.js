@@ -1,21 +1,21 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/expenseType'
+import { query, add, edit, remove } from '../../services/master/cashEntryType'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Expense has been saved')
+  message.success('Type has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'expenseType',
+  namespace: 'cashEntryType',
 
   state: {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listExpense: []
+    listCash: []
   },
 
   subscriptions: {
@@ -23,7 +23,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey } = location.query
         const { pathname } = location
-        if (pathname === '/master/expense-type') {
+        if (pathname === '/master/cash-type') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -31,9 +31,6 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
-        }
-        if (pathname === '/transaction/pos') {
-          dispatch({ type: 'query' })
         }
       })
     }
@@ -47,7 +44,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listExpense: data.data,
+            listCash: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -90,7 +87,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ expenseType }) => expenseType.currentItem.id)
+      const id = yield select(({ cashEntryType }) => cashEntryType.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -125,10 +122,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listExpense, pagination } = action.payload
+      const { listCash, pagination } = action.payload
       return {
         ...state,
-        listExpense,
+        listCash,
         pagination: {
           ...state.pagination,
           ...pagination

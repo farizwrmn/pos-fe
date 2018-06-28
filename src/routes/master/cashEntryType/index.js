@@ -9,13 +9,13 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
-  const { listExpense, modalType, currentItem, activeKey } = expenseType
+const CashEntryType = ({ cashEntryType, loading, dispatch, location, app }) => {
+  const { listCash, modalType, currentItem, activeKey } = cashEntryType
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'expenseType/query',
+        type: 'cashEntryType/query',
         payload: {
           ...value
         }
@@ -24,10 +24,10 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
   }
 
   const listProps = {
-    dataSource: listExpense,
+    dataSource: listCash,
     user,
     storeInfo,
-    loading: loading.effects['expenseType/query'],
+    loading: loading.effects['cashEntryType/query'],
     location,
     editItem (item) {
       const { pathname } = location
@@ -38,13 +38,13 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'expenseType/editItem',
+        type: 'cashEntryType/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'expenseType/delete',
+        type: 'cashEntryType/delete',
         payload: id
       })
     }
@@ -52,7 +52,7 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'expenseType/changeTab',
+      type: 'cashEntryType/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -63,12 +63,12 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'expenseType/updateState', payload: { listExpense: [] } })
+    dispatch({ type: 'cashEntryType/updateState', payload: { listCash: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'expenseType/updateState',
+      type: 'cashEntryType/updateState',
       payload: {
         activeKey: '1'
       }
@@ -81,7 +81,7 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
-        type: `expenseType/${modalType}`,
+        type: `cashEntryType/${modalType}`,
         payload: data
       })
     },
@@ -94,7 +94,7 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'expenseType/updateState',
+        type: 'cashEntryType/updateState',
         payload: {
           currentItem: {}
         }
@@ -126,12 +126,12 @@ const ExpenseType = ({ expenseType, loading, dispatch, location, app }) => {
   )
 }
 
-ExpenseType.propTypes = {
-  expenseType: PropTypes.object,
+CashEntryType.propTypes = {
+  cashEntryType: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ expenseType, loading, app }) => ({ expenseType, loading, app }))(ExpenseType)
+export default connect(({ cashEntryType, loading, app }) => ({ cashEntryType, loading, app }))(CashEntryType)

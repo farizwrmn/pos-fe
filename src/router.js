@@ -208,12 +208,12 @@ const Routers = function ({ history, app }) {
             }, 'master-account')
           }
         }, {
-          path: 'master/expense-type',
+          path: 'master/cash-type',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/expenseType'))
-              cb(null, require('./routes/master/expenseType/'))
-            }, 'master-expense-type')
+              registerModel(app, require('./models/master/cashEntryType'))
+              cb(null, require('./routes/master/cashEntryType/'))
+            }, 'master-cash-type')
           }
         }, {
           path: 'transaction/pos',
@@ -491,16 +491,11 @@ const Routers = function ({ history, app }) {
             }, 'accounts-payment')
           }
         }, {
-          path: 'expense',
+          path: 'cash-entry',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/tools/maintenance'))
-              registerModel(app, require('./models/unit'))
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
-              registerModel(app, require('./models/accounts/detail/payableDetail'))
-              registerModel(app, require('./models/accounts/accountPayment'))
-              cb(null, require('./routes/accounts/summary'))
+              registerModel(app, require('./models/accounts/cashentry'))
+              cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-payment')
           }
         }, {
