@@ -1,5 +1,6 @@
-import { request, config, crypt, lstorage } from '../../utils'
 import moment from 'moment'
+import { request, config, crypt, lstorage } from '../../utils'
+
 const { apiCashierUsers, apiCashRegister } = config.rest
 const { cashier } = config.api
 
@@ -56,10 +57,11 @@ export async function queryCashRegisterByStore (params) {
   const apiHeaderToken = crypt.apiheader()
 
   let url
-  let paramCashierId=0
-  let paramStoreId=0
+  let paramCashierId = 0
+  let paramStoreId = 0
   let paramStatus
-  let periods=[], paramPeriods=[]
+  let periods = []
+  let paramPeriods = []
   if (params) {
     if (params.hasOwnProperty('cashierId')) paramCashierId = params.cashierId
     if (params.hasOwnProperty('storeId')) paramStoreId = params.storeId
@@ -73,15 +75,15 @@ export async function queryCashRegisterByStore (params) {
     url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}`
   }
   if (periods) {
-    paramPeriods[0]=moment(periods[0]).format('YYYY-MM-DD')
-    paramPeriods[1]=moment(periods[1]).format('YYYY-MM-DD')
-    url = url + `?period=${paramPeriods}&`
+    paramPeriods[0] = moment(periods[0]).format('YYYY-MM-DD')
+    paramPeriods[1] = moment(periods[1]).format('YYYY-MM-DD')
+    url += `?period=${paramPeriods}&`
   } else {
-    url = url + `?`
+    url += '?'
   }
 
   const orderBy = 'order=period-,shiftid,counterId'
-  url = url + orderBy
+  url += orderBy
 
   return request({
     url,
@@ -112,7 +114,7 @@ export async function queryCloseRegister (params) {
   console.log('qqq', params)
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashRegister}/${params.id}?status=C`
-  console.log('qqq1',url)
+  console.log('qqq1', url)
   return request({
     url,
     method: 'put',
@@ -124,7 +126,7 @@ export async function queryCloseRegister (params) {
 export async function cashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
-  params.status = "O"
+  params.status = 'O'
 
   return request({
     url: `${cashier}/cashregisters`,
