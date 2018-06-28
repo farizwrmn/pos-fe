@@ -108,7 +108,8 @@ const Pos = ({
     counterId: null,
     counterName: null,
     period: null,
-    status: null
+    status: null,
+    cashActive: null
   }
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
@@ -1578,18 +1579,15 @@ const Pos = ({
     }, 1000)
   }
 
-  let styleCashRegisterTitle = color.normal
   let dotVisible = false
   let cashRegisterTitle = 'Cashier Information'
   if (lstorage.getLoginTimeDiff() > 500) {
     console.log('something fishy')
   } else {
     if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
-      styleCashRegisterTitle = color.error
       cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
       dotVisible=true
     }
-    // cashRegisterTitle = <p style={{ color: styleCashRegisterTitle }}>{cashRegisterTitle}</p>
   }
 
   return (
