@@ -81,18 +81,26 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryAllStock ({ payload = {} }, { call, put }) {
+    * checkLengthOfData ({ payload = {} }, { call, put }) {
       yield put({ type: 'showLoading' })
-      const data = yield call(query, { type: payload.type })
+      const data = yield call(query, payload)
       yield put({ type: 'hideLoading' })
       if (data.success) {
-        if (payload.mode === 'pdf') {
-          if (data.data.length > 500) {
-            Modal.warning({
-              title: 'Your Data is too many, please print out with using Excel'
-            })
-          }
+        if (data.data.length > 0) {
+          Modal.warning({
+            title: 'Your Data is too many, please print out with using Excel'
+          })
+        } else {
+          yield put({ type: 'queryAllStock', payload: { type: 'all' } })
         }
+      }
+    },
+
+    * queryAllStock ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(query, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {

@@ -10,33 +10,34 @@ const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 },
-    lg: { span: 7 }
+    xs: { span: 7 },
+    sm: { span: 4 },
+    md: { span: 4 },
+    lg: { span: 3 }
   },
   wrapperCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 9 },
+    xs: { span: 15 },
+    sm: { span: 12 },
+    md: { span: 12 },
     lg: { span: 9 }
   }
 }
 
-const column = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const leftColumn = {
+  xs: 24,
+  sm: 16,
+  md: 16,
+  lg: 16,
+  style: {
+    marginBottom: 10
+  }
 }
 
-const column2 = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const rightColumn = {
+  xs: 24,
+  sm: 8,
+  md: 8,
+  lg: 8
 }
 
 const History = ({
@@ -51,7 +52,7 @@ const History = ({
     validateFields
   }
 }) => {
-  const { list, listCashier, listCashRegister, modalVisible,searchText, pagination, cashierInfo } = cashier
+  const { list, listCashier, listCashRegister, modalVisible, searchText, pagination, cashierInfo } = cashier
   const { listCashierStore } = store
 
   let stores = []
@@ -81,7 +82,7 @@ const History = ({
         type: 'cashier/getCashRegisterByStore',
         payload: {
           page: 1,
-          params: { cashierId: '', storeId: '', from: '', to: ''}
+          params: { cashierId: '', storeId: '', from: '', to: '' }
         }
       })
     },
@@ -101,7 +102,7 @@ const History = ({
         type: 'cashier/updateState',
         payload: {
           cashierInfo: record,
-          modalVisible: false,
+          modalVisible: false
         }
       })
       resetFields()
@@ -176,16 +177,17 @@ const History = ({
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       {modalVisible && <ModalBrowse {...modalProps} />}
-      <Row type="flex" justify="start" className="collapse-form-reminder">
-        <Col {...column}>
+      <Row>
+        <Col {...leftColumn}>
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
             <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
           </FormItem>
           <FormItem label="Store Id"
-                    help="Store based on the cashier..."
-                    hasFeedback {...formItemLayout}
+            help="Store based on the cashier..."
+            hasFeedback
+            {...formItemLayout}
           >
             {getFieldDecorator('storeId', {
               initialValue: '',
@@ -211,16 +213,16 @@ const History = ({
             </Select>)}
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
-            {getFieldDecorator('periods', {})
-            (<RangePicker size="large"
-                // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
-                //onChange={value => handleChangeDate(value)}
-                            format="DD-MMM-YYYY"
-              />
+            {getFieldDecorator('periods', {})(<RangePicker size="large"
+              // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
+              // onChange={value => handleChangeDate(value)}
+              format="DD-MMM-YYYY"
+              style={{ width: '100%' }}
+            />
             )}
           </FormItem>
         </Col>
-        <Col {...column2} style={{ textAlign: 'right' }}>
+        <Col {...rightColumn} style={{ textAlign: 'right' }}>
           <Button
             type="dashed"
             size="large"
@@ -233,7 +235,7 @@ const History = ({
         </Col>
       </Row>
       <div className="reminder">
-        <CashRegister {...cashRegisterProps}/>
+        <CashRegister {...cashRegisterProps} />
       </div>
     </div >
   )

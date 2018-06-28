@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey } = location.query
         const { pathname } = location
+        if (pathname === '/setting/store') dispatch({ type: 'query' })
         if (pathname === '/master/city') {
           // if (!activeKey) {
           //   dispatch(routerRedux.push({
