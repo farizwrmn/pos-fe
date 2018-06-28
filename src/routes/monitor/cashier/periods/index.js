@@ -218,23 +218,26 @@ const History = ({
               format="DD-MMM-YYYY"
               style={{ width: '100%' }}
             />
-              <Col {...rightColumn} style={{ textAlign: 'right' }}>
-                <Button
-                  type="dashed"
-                  size="large"
-                  style={{ marginLeft: '5px' }}
-                  className="button-width02 button-extra-large"
-                  onClick={() => showCashRegister()}
-                >
-                  <Icon type="search" className="icon-large" />
-                </Button>
-              </Col>
+            )}
+          </FormItem>
+        </Col>
+        <Col {...rightColumn} style={{ textAlign: 'right' }}>
+          <Button
+            type="dashed"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            className="button-width02 button-extra-large"
+            onClick={() => showCashRegister()}
+          >
+            <Icon type="search" className="icon-large" />
+          </Button>
+        </Col>
       </Row>
       <div className="reminder">
-              <CashRegister {...cashRegisterProps} />
-            </div>
+        <CashRegister {...cashRegisterProps} />
+      </div>
     </div >
-          )
-        }
-        
-export default connect(({cashier, store, loading }) => ({cashier, store, loading }))(Form.create()(History))
+  )
+}
+
+export default connect(({ cashier, store, loading }) => ({ cashier, store, loading }))(Form.create()(History))
