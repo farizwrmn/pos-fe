@@ -44,8 +44,9 @@ export async function edit (params) {
 }
 
 export async function queryCurrentOpenCashRegister (params) {
+  console.log('zzz1', params)
   const apiHeaderToken = crypt.apiheader()
-  const url = `${apiCashierUsers}/${params}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
+  const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
     url,
     method: 'get',
@@ -77,13 +78,13 @@ export async function queryCashRegisterByStore (params) {
   if (periods) {
     paramPeriods[0] = moment(periods[0]).format('YYYY-MM-DD')
     paramPeriods[1] = moment(periods[1]).format('YYYY-MM-DD')
-    url += `?period=${paramPeriods}&`
+    url = `${url}?period=${paramPeriods}&`
   } else {
-    url += '?'
+    url = `${url}?`
   }
 
   const orderBy = 'order=period-,shiftid,counterId'
-  url += orderBy
+  url = `${url}${orderBy}`
 
   return request({
     url,

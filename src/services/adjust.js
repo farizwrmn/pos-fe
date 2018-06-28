@@ -1,9 +1,12 @@
-import { request, config, crypt } from '../utils'
+import { request, config, crypt, lstorage } from '../utils'
 
 const { adjust, adjustDetail } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  params = {
+    storeId: lstorage.getCurrentUserStore()
+  }
   return request({
     url: adjust,
     method: 'get',
@@ -24,6 +27,7 @@ export async function queryDetail (params) {
 
 export async function create (params) {
   let url = params.id ? `${adjust}/code/${encodeURIComponent(params.id)}` : null
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,

@@ -9,7 +9,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cashier = ({ cashier, user, loading, dispatch, location, app }) => {
+const Cashier = ({ cashier, user, loading, dispatch, location }) => {
   const { listCashier, modalType, currentItem, activeKey } = cashier
   const { list } = user
   const filterProps = {
@@ -133,8 +133,7 @@ Cashier.propTypes = {
   user: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
-  app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ cashier, user, loading, app }) => ({ cashier, user, loading, app }))(Cashier)
+export default connect(({ cashier, user, loading }) => ({ cashier, user, loading }))(Cashier)

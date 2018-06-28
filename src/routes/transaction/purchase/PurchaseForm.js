@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
+import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
 import moment from 'moment'
 import { configMain } from 'utils'
 import Browse from './Browse'
@@ -24,7 +24,7 @@ const formItemLayout1 = {
 }
 const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
   modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dispatch, ...purchaseProps }) => {
+  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -58,10 +58,12 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
     border: 0
   }
   const hdlDateChange = (e) => {
-    let a = e.format('YYYY-MM-DD')
-    localStorage.setItem('setDate', a)
-    const b = localStorage.getItem('setDate')
-    onChangeDate(b)
+    if (e) {
+      let a = e.format('YYYY-MM-DD')
+      onChangeDate(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
+    } else {
+      onChangeDate(null)
+    }
   }
 
   const hdlChangePercent = () => {
@@ -121,7 +123,15 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
     }
   ]
   const handleMenuClick = (record) => {
+    let a = getFieldValue('transDate')
     onChooseSupplier(record)
+    if (record.paymentTempo) {
+      message.success(`Supplier ${record.supplierName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
+      setFieldsValue({ tempo: record.paymentTempo })
+      if (a) {
+        onChangeDate(moment(a).add(record.paymentTempo, 'days').format('YYYY-MM-DD'))
+      }
+    }
   }
   const hdlBrowseProduct = () => {
     handleBrowseProduct()
@@ -221,8 +231,36 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
                       }]
                     })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
                   </FormItem>
+                  <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('invoiceType', {
+                      rules: [{
+                        required: true,
+                        message: 'Required'
+                      }]
+                    })((<Select>
+                      <Option value="C">CASH</Option>
+                      <Option value="K">KREDIT</Option>
+                    </Select>))}
+                  </FormItem>
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+                  <FormItem label="Has Receive" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('receiveChecks', {
+                      rules: [{
+                        required: getFieldValue('receiveChecks'),
+                        message: 'Required'
+                      }]
+                    })(<Checkbox />)}
+                  </FormItem>
+                  {getFieldValue('receiveChecks') &&
+                    <FormItem label="Receive Date" {...formItemLayout}>
+                      {getFieldDecorator('receiveDate', {
+                        rules: [{
+                          required: true,
+                          message: 'Required'
+                        }]
+                      })(<DatePicker />)}
+                    </FormItem>}
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transDate', {
                       rules: [{
@@ -243,17 +281,6 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
                   </FormItem>
                   <FormItem label="Due Date" hasFeedback {...formItemLayout}>
                     <Input disabled value={date} />
-                  </FormItem>
-                  <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('invoiceType', {
-                      rules: [{
-                        required: true,
-                        message: 'Required'
-                      }]
-                    })((<Select>
-                      <Option value="C">CASH</Option>
-                      <Option value="K">KREDIT</Option>
-                    </Select>))}
                   </FormItem>
                 </Col>
               </Row>

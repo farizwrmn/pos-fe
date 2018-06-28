@@ -3,11 +3,11 @@ import moment from 'moment'
 import { configMain, lstorage } from 'utils'
 import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
-import * as cashierTransService from '../services/cashier'
 import * as creditChargeService from '../services/creditCharge'
-import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
+import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -18,8 +18,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs
 const { prefix } = configMain
 const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
 
-const { create, createDetail } = cashierService
-const { updateCashierTrans } = cashierTransService
+const { create } = cashierService
 const { listCreditCharge, getCreditCharge } = creditChargeService
 
 export default {
@@ -155,52 +154,56 @@ export default {
               disc3: dataPos[key].disc3
             })
           }
-          const detailPOS = {
-            dataPos: arrayProd,
-            transNo: trans,
-            storeId: lstorage.getCurrentUserStore(),
-            memberCode: payload.memberCode,
-            technicianId: payload.technicianId,
-            cashierNo: payload.curCashierNo,
-            cashierId: payload.cashierId,
-            shift: payload.curShift,
-            // transDate: `${moment().format('YYYYMMDD')}`,
-            transTime: payload.transTime,
-            total: payload.grandTotal,
-            lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
-            creditCardNo: payload.creditCardNo,
-            creditCardType: payload.creditCardType,
-            creditCardCharge: payload.creditCardCharge,
-            totalCreditCard: payload.totalCreditCard,
-            discount: payload.totalDiscount,
-            rounding: payload.rounding,
-            paid: payload.totalPayment,
-            paymentVia: payload.paymentVia,
-            policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-            policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
-            change: payload.totalChange,
-            woReference: payload.woNumber
-          }
-          const point = parseInt((payload.grandTotal / 10000), 10)
-          const data_create = yield call(create, detailPOS)
-          if (data_create.success) {
-            const data_detail = yield call(createDetail, {
-              data: arrayProd,
-              transNo: trans
-            })
-            if (data_detail.success) {
+          const cashier = yield call(queryCurrentOpenCashRegister, payload)
+          if (cashier.success) {
+            const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
+            const detailPOS = {
+              dataPos: arrayProd,
+              transNo: trans,
+              storeId: lstorage.getCurrentUserStore(),
+              memberCode: payload.memberCode,
+              technicianId: payload.technicianId,
+              // cashierNo: cashierInformation.counterId,
+              // cashierId: cashierInformation.cashierId,
+              // shift: cashierInformation.shiftId,
+              cashierTransId: cashierInformation.id,
+              transDate: cashierInformation.period,
+              transTime: payload.transTime,
+              total: payload.grandTotal,
+              lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
+              creditCardNo: payload.creditCardNo,
+              creditCardType: payload.creditCardType,
+              creditCardCharge: payload.creditCardCharge,
+              totalCreditCard: payload.totalCreditCard,
+              discount: payload.totalDiscount,
+              rounding: payload.rounding,
+              paid: payload.totalPayment,
+              paymentVia: payload.paymentVia,
+              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+              policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
+              change: payload.totalChange,
+              woReference: payload.woNumber
+            }
+            const point = parseInt((payload.grandTotal / 10000), 10)
+            const data_create = yield call(create, detailPOS)
+            if (data_create.success) {
+              // const data_detail = yield call(createDetail, {
+              //   data: arrayProd,
+              //   transNo: trans
+              // })
+              // if (data_detail.success) {
+              // try {
+              //   const transNoIncrease = yield call(increaseSequence, invoice)
+              //   console.log('transNoincrease', transNoIncrease)
+              // } catch (e) {
+              //   Modal.warning({
+              //     title: 'Something went wrong',
+              //     content: `Call your IT support, message: ${e}`
+              //   })
+              // }
+              let dataPayment
               try {
-                const transNoIncrease = yield call(increaseSequence, invoice)
-                console.log('transNoincrease', transNoIncrease)
-              } catch (e) {
-                Modal.warning({
-                  title: 'Something went wrong',
-                  content: `Call your IT support, message: ${e}`
-                })
-              }
-
-              try {
-                yield call(addSome, {
+                dataPayment = yield call(addSome, {
                   head: {
                     transNo: trans,
                     storeId: lstorage.getCurrentUserStore(),
@@ -224,7 +227,7 @@ export default {
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
-                  transDatePrint: moment(date.data).format('DD-MM-YYYY'),
+                  transDatePrint: moment(cashierInformation.period).format('DD-MM-YYYY'),
                   company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
                   gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
                   phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
@@ -257,26 +260,27 @@ export default {
               yield put({
                 type: 'pos/setAllNull'
               })
-              const data_cashier_trans_update = yield call(updateCashierTrans, {
-                total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
-                totalCreditCard: payload.totalCreditCard,
-                status: 'O',
-                cashierNo: payload.curCashierNo,
-                shift: payload.curShift
-                // transDate: payload.transDate2
-              })
-              if (data_cashier_trans_update.success) {
+              // const data_cashier_trans_update = yield call(updateCashierTrans, {
+              //   total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
+              //   totalCreditCard: payload.totalCreditCard,
+              //   status: 'O',
+              //   cashierNo: payload.curCashierNo,
+              //   shift: payload.curShift
+              //   // transDate: payload.transDate2
+              // })
+              if (dataPayment.success) {
                 Modal.info({
                   title: 'Information',
                   content: 'Transaction has been saved...!'
                 })
               }
+              // }
+            } else {
+              Modal.error({
+                title: 'Error Saving Payment',
+                content: `${JSON.stringify(data_create.message)}`
+              })
             }
-          } else {
-            Modal.error({
-              title: 'Error Saving Payment',
-              content: `${JSON.stringify(data_create.message)}`
-            })
           }
         }
       } else {

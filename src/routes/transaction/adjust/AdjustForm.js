@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
+import { lstorage } from 'utils'
 import Browse from './Browse'
 import styles from '../../../themes/index.less'
 
@@ -29,7 +30,8 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
       const data = {
         ...getFieldsValue(),
         pic: itemEmployee !== null ? itemEmployee.employeeName : '',
-        picId: itemEmployee !== null ? itemEmployee.employeeId : ''
+        picId: itemEmployee !== null ? itemEmployee.employeeId : '',
+        storeId: lstorage.getCurrentUserStore()
       }
       data.transType = data.transType[0]
       onOk(data)

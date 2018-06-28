@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, message, Select, TimePicker } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, TimePicker } from 'antd'
 import moment from 'moment'
-import Search from 'antd/lib/input/Search';
 
 const FormItem = Form.Item
 const Option = Select.Option

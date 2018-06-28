@@ -13,6 +13,7 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
+    loading: loading.effects['fifoReport/queryCard'],
     storeInfo,
     user,
     period,

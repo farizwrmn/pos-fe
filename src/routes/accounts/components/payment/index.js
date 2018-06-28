@@ -6,9 +6,10 @@ import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
-const Pos = ({ location, dispatch, loading, pos, app }) => {
-  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, tmpListPayment, posData } = pos
+const Pos = ({ location, dispatch, loading, accountPayment, pos, app }) => {
+  const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
+    pagination, modalPrintVisible, posData } = pos
+  const { listPayment, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
   const modalProps = {
@@ -206,4 +207,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, loading, app }) => ({ pos, loading, app }))(Pos)
+export default connect(({ pos, accountPayment, loading, app }) => ({ pos, accountPayment, loading, app }))(Pos)

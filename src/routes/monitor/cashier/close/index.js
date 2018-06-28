@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import ViewDetail from './viewDetail'
-import { lstorage, isEmptyObject } from 'utils'
+import { isEmptyObject } from 'utils'
 import { Row, Col, Button, Form, Input, Icon, DatePicker, Modal } from 'antd'
 import moment from 'moment'
+import ViewDetail from './viewDetail'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -40,7 +40,6 @@ const column = {
 
 const CloseCashRegister = ({
   cashier,
-  loading,
   dispatch,
   form: {
     getFieldDecorator,
@@ -50,7 +49,7 @@ const CloseCashRegister = ({
   }
 }) => {
   const { listCashTransSummary, listCashTransDetail, activeTabKeyClose, cashierInfo } = cashier
-console.log('zzz',cashierInfo)
+  console.log('zzz', cashierInfo)
   const showSummary = () => {
     validateFields((errors) => {
       if (errors) {
@@ -71,7 +70,7 @@ console.log('zzz',cashierInfo)
   const confirmClose = () => {
     if (!isEmptyObject(listCashTransSummary)) {
       confirm({
-        title: `Are you sure closing this cash register  ?`,
+        title: 'Are you sure closing this cash register  ?',
         onOk () {
           dispatch({
             type: 'cashier/closeCashRegister',
@@ -86,7 +85,7 @@ console.log('zzz',cashierInfo)
       })
     } else {
       warning({
-        title: `Please check your data first by clicking 'Check' Button  ?`,
+        title: 'Please check your data first by clicking \'Check\' Button  ?'
       })
     }
   }
@@ -117,15 +116,14 @@ console.log('zzz',cashierInfo)
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
             {getFieldDecorator('cashierId', {
               initialValue: cashierInfo.cashierId,
-              rules: [ { required: true } ]
-            })(<Input disabled/>)}
+              rules: [{ required: true }]
+            })(<Input disabled />)}
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
             {getFieldDecorator('periods', {
               initialValue: cashierInfo.period ? moment(cashierInfo.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
-              rules: [ { required: true } ]
-            })
-            (<DatePicker size="large" style={{ width: '100%' }} disabled/>
+              rules: [{ required: true }]
+            })(<DatePicker size="large" style={{ width: '100%' }} disabled />
             )}
           </FormItem>
         </Col>
@@ -133,14 +131,14 @@ console.log('zzz',cashierInfo)
           <FormItem label="Shift" hasFeedback {...formItemLayout}>
             {getFieldDecorator('shiftName', {
               initialValue: cashierInfo.shiftName || '',
-              rules: [ { required: true } ]
-            })(<Input disabled/>)}
+              rules: [{ required: true }]
+            })(<Input disabled />)}
           </FormItem>
           <FormItem label="Counter" hasFeedback {...formItemLayout}>
             {getFieldDecorator('counterName', {
               initialValue: cashierInfo.counterName || '',
-              rules: [ { required: true } ]
-            })(<Input disabled/>)}
+              rules: [{ required: true }]
+            })(<Input disabled />)}
           </FormItem>
         </Col>
       </Row>
@@ -165,7 +163,7 @@ console.log('zzz',cashierInfo)
         </Col>
         <Col span={22} style={{ textAlign: 'right' }}>
           <Button
-            disabled={cashierInfo.status==='O' ? false : true}
+            disabled={cashierInfo.status !== 'O'}
             className="button-width02"
             onClick={() => confirmClose()}
           >Close
@@ -174,7 +172,7 @@ console.log('zzz',cashierInfo)
         </Col>
       </Row>
       <div className="reminder">
-        <ViewDetail {...viewDetailProps}/>
+        <ViewDetail {...viewDetailProps} />
       </div>
     </div >
   )

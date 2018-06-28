@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { configMain } from 'utils'
+import { configMain, isEmptyObject } from 'utils'
 import { Reminder } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
@@ -91,12 +91,25 @@ const Pos = ({
     listServiceReminder,
     paymentListActiveKey,
     modalAddUnit,
-    cashierInfo
+    cashierInformation
   } = pos
+
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
+
+  let currentCashier = {
+    cashierId: '',
+    employeeName: '',
+    shiftId: '',
+    shiftName: '',
+    counterId: '',
+    counterName: '',
+    period: '',
+    status: ''
+  }
+  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false,
@@ -211,42 +224,6 @@ const Pos = ({
       })
     }
   }
-
-  const checkTime = (i) => {
-    if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
-    return i
-  }
-
-  const setTime = () => {
-    let today = new Date()
-    let h = today.getHours()
-    let m = today.getMinutes()
-    let s = today.getSeconds()
-    m = checkTime(m)
-    s = checkTime(s)
-
-    return `${h}:${m}:${s}`
-  }
-
-  // const getQueueQuantity = (productId) => {
-  //   const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-  //   // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
-  //   let tempQueue = []
-  //   let tempTrans = []
-  //   const listQueue = _.get(queue, `queue1`) ? _.get(queue, `queue1`) : []
-  //   for (let n = 0; n < 10; n += 1) {
-  //     tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
-  //     if (tempQueue.length > 0) {
-  //       tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
-  //     }
-  //   }
-  //   if (tempTrans.length > 0) {
-  //     return tempTrans
-  //   } else {
-  //     console.log('queue is empty, nothing to check')
-  //     return []
-  //   }
-  // }
 
   const handleQueue = () => {
     if (localStorage.getItem('cashier_trans') === null) {
@@ -672,7 +649,7 @@ const Pos = ({
     listShift,
     listCounter,
     curCashierNo,
-    cashierInfo,
+    currentCashier,
     visible: modalShiftVisible,
     cashierId: user.userid,
     dispatch,
@@ -966,11 +943,11 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
-      if (memberInformation.length !== 0 && mechanicInformation.length !== 0) {
+      if ((memberInformation || []).length !== 0 && (mechanicInformation || []).length !== 0) {
         let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
-        if (checkExists.length === 0) {
+        if ((checkExists || []).length === 0) {
           // if (listByCode.length === 0) {
           //   arrayProd = listByCode.slice()
           // } else {
@@ -1607,16 +1584,32 @@ const Pos = ({
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
-              {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
-              <Input size="large"
-                autoFocus
-                value={curBarcode}
-                style={{ fontSize: 24, marginBottom: 8 }}
-                placeholder="Search Code Here"
-                onKeyDown={e => handleKeyDown(e)}
-                onChange={e => onChange(e)}
-                onKeyPress={e => handleKeyPress(e)}
-              />
+              <Row>
+                <Card bordered={false} noHovering>
+                  <Row gutter={32}>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {currentCashier.cashierId} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {currentCashier.employeeName} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {currentCashier.shiftName} </Col>
+                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {currentCashier.period} </Col>
+                  </Row>
+                </Card>
+              </Row>
+              <Row>
+                <Col lg={2} md={24}>
+                  {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
+                </Col>
+                <Col lg={22} md={24}>
+                  <Input size="large"
+                    autoFocus
+                    value={curBarcode}
+                    style={{ fontSize: 24, marginBottom: 8 }}
+                    placeholder="Search Code Here"
+                    onKeyDown={e => handleKeyDown(e)}
+                    onChange={e => onChange(e)}
+                    onKeyPress={e => handleKeyPress(e)}
+                  />
+                </Col>
+              </Row>
             </Form>
 
             <ButtonGroup>
@@ -1678,13 +1671,13 @@ const Pos = ({
 
             <Form layout="inline">
               <Row>
-                <Col lg={{ span: 10 }}>
-                  <FormItem label="Qty">
+                <Col lg={{ span: 10 }} md={24}>
+                  <FormItem label="Qty" {...formItemLayout}>
                     <Input value={totalQty} style={{ fontSize: 24, marginBottom: 8 }} />
                   </FormItem>
                 </Col>
-                <Col xs={{ span: 5, offset: 2 }} lg={{ span: 10, offset: 4 }}>
-                  <FormItem label="Total">
+                <Col lg={{ span: 10, offset: 4 }} md={24}>
+                  <FormItem label="Total" {...formItemLayout}>
                     <Input value={totalPayment} style={{ fontSize: 24, marginBottom: 8 }} />
                   </FormItem>
                 </Col>
@@ -1927,17 +1920,6 @@ const Pos = ({
             </FormItem>
           </Form>
         </Col>
-      </Row>
-      <Row>
-        <Card bordered={false} title="Information">
-          <Row gutter={32}>
-            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {curCashierNo} </Col>
-            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {user.userid} </Col>
-            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {curShift} </Col>
-            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {getDate(1)} </Col>
-            <Col xs={24} sm={24} md={4} lg={4} xl={4}> Time : {setTime()} </Col>
-          </Row>
-        </Card>
       </Row>
       {(localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>

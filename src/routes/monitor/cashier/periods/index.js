@@ -214,31 +214,27 @@ const History = ({
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
             {getFieldDecorator('periods', {})(<RangePicker size="large"
-              // defaultValue={[moment(paramDate[0], 'YYYY/MM/DD'), moment(paramDate[1], 'YYYY/MM/DD')]}
               // onChange={value => handleChangeDate(value)}
               format="DD-MMM-YYYY"
               style={{ width: '100%' }}
             />
-            )}
-          </FormItem>
-        </Col>
-        <Col {...rightColumn} style={{ textAlign: 'right' }}>
-          <Button
-            type="dashed"
-            size="large"
-            style={{ marginLeft: '5px' }}
-            className="button-width02 button-extra-large"
-            onClick={() => showCashRegister()}
-          >
-            <Icon type="search" className="icon-large" />
-          </Button>
-        </Col>
+              <Col {...rightColumn} style={{ textAlign: 'right' }}>
+                <Button
+                  type="dashed"
+                  size="large"
+                  style={{ marginLeft: '5px' }}
+                  className="button-width02 button-extra-large"
+                  onClick={() => showCashRegister()}
+                >
+                  <Icon type="search" className="icon-large" />
+                </Button>
+              </Col>
       </Row>
       <div className="reminder">
-        <CashRegister {...cashRegisterProps} />
-      </div>
+              <CashRegister {...cashRegisterProps} />
+            </div>
     </div >
-  )
-}
-
-export default connect(({ cashier, store, loading }) => ({ cashier, store, loading }))(Form.create()(History))
+          )
+        }
+        
+export default connect(({cashier, store, loading }) => ({cashier, store, loading }))(Form.create()(History))

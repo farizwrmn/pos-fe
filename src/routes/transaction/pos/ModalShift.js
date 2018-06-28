@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Modal, Button, Form, Input, Cascader, DatePicker, Select } from 'antd'
+import { Modal, Button, Form, Input, DatePicker, Select } from 'antd'
 import { routerRedux } from 'dva/router'
 
 const FormItem = Form.Item
@@ -30,33 +30,7 @@ const formItemLayout = {
 //     label: '3'
 //   }]
 
-const getDate = (mode) => {
-  let today = new Date()
-  let dd = today.getDate()
-  let mm = today.getMonth() + 1
-  //  January is 0!
-  let yyyy = today.getFullYear()
-
-  if (dd < 10) {
-    dd = `0${dd}`
-  }
-
-  if (mm < 10) {
-    mm = `0${mm}`
-  }
-
-  if (mode === 1) {
-    today = `${dd}${mm}${yyyy}`
-  } else if (mode === 2) {
-    today = `${mm}${yyyy}`
-  } else if (mode === 3) {
-    today = `${yyyy}-${mm}-${dd}`
-  }
-
-  return today
-}
-
-const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
@@ -70,9 +44,9 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
 
 
       data.period = moment(data.period).format('YYYY-MM-DD')
-      data.status = cashierInfo.status
-      data.storeId = cashierInfo.storeId
-      data.cashierId = cashierInfo.cashierId || cashierId
+      data.status = currentCashier.status
+      data.storeId = currentCashier.storeId
+      data.cashierId = currentCashier.cashierId || cashierId
       // const data = {
       //   ...getFieldsValue(),
       //   cashierId,
@@ -167,41 +141,41 @@ const ModalShift = ({ cashierInfo, findShift, listShift, findCounter, listCounte
       <Form layout="horizontal">
         <FormItem label="Open" hasFeedback {...formItemLayout}>
           {getFieldDecorator('period', {
-            initialValue: cashierInfo.period ? moment(cashierInfo.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+            initialValue: currentCashier.period ? moment(currentCashier.period, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
             rules: [
               {
                 required: true
               }
             ]
-          })(<DatePicker style={{ width: '100%' }} />)}
+          })(<DatePicker disabled={currentCashier.period} style={{ width: '100%' }} />)}
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
-            initialValue: cashierInfo.shiftId,
+            initialValue: currentCashier.shiftId,
             rules: [
               {
                 required: true
               }
             ]
-          })(<Select onFocus={findShift}>
+          })(<Select disabled={currentCashier.shiftId != null} onFocus={findShift}>
             {shifts}
           </Select>)}
         </FormItem>
         <FormItem label="Counter" hasFeedback {...formItemLayout}>
           {getFieldDecorator('counterId', {
-            initialValue: cashierInfo.counterId,
+            initialValue: currentCashier.counterId,
             rules: [
               {
                 required: true
               }
             ]
-          })(<Select onFocus={findCounter}>
+          })(<Select disabled={currentCashier.counterId != null} onFocus={findCounter}>
             {counters}
           </Select>)}
         </FormItem>
         <FormItem label="Current Balance" {...formItemLayout}>
           {getFieldDecorator('cash', {
-            initialValue: item.cash || 0
+            initialValue: currentCashier.cash || 0
           })(<Input disabled />)}
         </FormItem>
       </Form>

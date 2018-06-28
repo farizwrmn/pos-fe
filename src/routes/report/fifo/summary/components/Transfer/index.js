@@ -8,12 +8,13 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, app }) => {
+const Report = ({ dispatch, fifoReport, loading, app }) => {
   const { period, year, activeKey, listRekap } = fifoReport
   const { user, storeInfo } = app
 
   const browseProps = {
-    dataSource: listRekap
+    dataSource: listRekap,
+    loading: loading.effects['fifoReport/queryTransferFlow']
   }
 
   const filterProps = {

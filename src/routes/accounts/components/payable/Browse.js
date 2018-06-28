@@ -4,29 +4,11 @@ import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import { configMain } from 'utils'
-import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = configMain
-
-const leftColumn = {
-  xs: 24,
-  sm: 12,
-  md: 12,
-  lg: 12,
-  style: {
-    marginBottom: 10
-  }
-}
-
-const rightColumn = {
-  xs: 24,
-  sm: 12,
-  md: 12,
-  lg: 12
-}
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
@@ -34,9 +16,8 @@ const BrowseGroup = ({
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
-    let newData
-    newData = tmpDataSource.map((record) => {
-      const match = record.policeNo ? record.transNo.match(reg) || record.cashierId.match(reg) || record.policeNo.match(reg) : record.transNo.match(reg) || record.cashierId.match(reg)
+    let newData = tmpDataSource.map((record) => {
+      const match = record.transNo.match(reg)
       if (!match) {
         return null
       }
@@ -51,57 +32,70 @@ const BrowseGroup = ({
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',
-      render: (text, record) => (record.status === 'A' ? <Link to={`/accounts/payment/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
+      render: (text, record) => (record.statusActive === '1' ? <Link to={`/accounts/payable/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
     },
     {
       title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
+      dataIndex: 'invoiceDate',
+      key: 'invoiceDate',
       width: 150,
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${moment(_text).format('LL')}`
     },
-    {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 120
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 140,
-      className: styles.alignRight,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
-      render: text => text.toLocaleString()
-    },
-    {
-      title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId',
-      width: 140
-    },
+    // {
+    //   title: 'Car Unit',
+    //   dataIndex: 'policeNo',
+    //   key: 'policeNo',
+    //   width: 120
+    // },
+    // {
+    //   title: 'KM',
+    //   dataIndex: 'lastMeter',
+    //   key: 'lastMeter',
+    //   width: 140,
+    //   className: styles.alignRight,
+    //   sorter: (a, b) => a.lastMeter - b.lastMeter,
+    //   render: text => text.toLocaleString()
+    // },
+    // {
+    //   title: 'Cashier',
+    //   dataIndex: 'cashierId',
+    //   key: 'cashierId',
+    //   width: 140
+    // },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'statusPaid',
+      key: 'statusPaid',
+      width: 120,
+      render: text => (
+        <span>
+          <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
+            {(text || '')}
+          </Tag>
+        </span>
+      )
+    },
+    {
+      title: 'Active',
+      dataIndex: 'statusActive',
+      key: 'statusActive',
       width: 120,
       render: text =>
         (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+          <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
+            {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
           </Tag>
         </span>),
       filters: [{
         text: 'Active',
-        value: 'A'
+        value: '1'
       }, {
         text: 'Canceled',
-        value: 'C'
+        value: '0'
       }],
       filterMultiple: false,
-      onFilter: (value, record) => record.status.indexOf(value) === 0
+      onFilter: (value, record) => record.statusActive.indexOf(value) === 0
     },
     {
       title: 'Payment',
@@ -118,7 +112,7 @@ const BrowseGroup = ({
         text: 'Card',
         value: 'K'
       }],
-      filterMultiple: false,
+      filterMultiple: true,
       onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
       render: text =>
         (<span>
@@ -136,8 +130,8 @@ const BrowseGroup = ({
 
   return (
     <Form>
-      <Row>
-        <Col {...leftColumn}>
+      <Row style={{ marginBottom: '10px' }}>
+        <Col xl={12} lg={12} md={12}>
           <FormItem hasFeedBack >
             {getFieldDecorator('typeCode', {
               initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
@@ -147,7 +141,7 @@ const BrowseGroup = ({
             })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
-        <Col {...rightColumn}>
+        <Col xl={12} lg={12} md={12} style={{ float: 'center' }}>
           <FormItem>
             <Search
               placeholder="Search Invoice"

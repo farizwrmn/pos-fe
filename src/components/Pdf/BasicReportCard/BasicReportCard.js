@@ -6,7 +6,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 const BasicReportCard = ({
   name,
-  className,
   width = 'auto',
   pageMargins = [0, 0, 0, 0],
   pageSize = 'A4',
