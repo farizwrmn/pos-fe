@@ -135,7 +135,7 @@ export default {
               endPeriod: infoStore.endPeriod
             }
           })
-        } else if (location.pathname === '/service/history') {
+        } else if (location.pathname === '/monitor/service/history') {
           dispatch({
             type: 'getServiceReminder'
           })
