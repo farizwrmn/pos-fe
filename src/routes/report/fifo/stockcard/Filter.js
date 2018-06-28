@@ -12,6 +12,23 @@ import PrintPDF from './PrintPDF'
 const Option = Select.Option
 const { MonthPicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 14,
+  md: 14,
+  lg: 14,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 10,
+  md: 10,
+  lg: 10
+}
+
 const Filter = ({
   onOk,
   period,
@@ -93,20 +110,19 @@ const Filter = ({
     resetFields()
   }
   return (
-    <div>
-      <Row>
-        <Col lg={14} md={24} >
-          <FilterItem label="Period">
-            {getFieldDecorator('Period', {
-              initialValue: moment.utc(`${period}-${year}`, 'MM-YYYY'),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<MonthPicker style={{ width: '189px' }} onChange={onChange} placeholder="Select Period" />)}
-          </FilterItem>
-          {/* <FilterItem label="Category">
+    <Row>
+      <Col {...leftColumn} >
+        <FilterItem label="Period">
+          {getFieldDecorator('Period', {
+            initialValue: moment.utc(`${period}-${year}`, 'MM-YYYY'),
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<MonthPicker style={{ width: '189px' }} onChange={onChange} placeholder="Select Period" />)}
+        </FilterItem>
+        {/* <FilterItem label="Category">
             {getFieldDecorator('category')(<Select
               showSearch
               placeholder="Select category"
@@ -117,65 +133,64 @@ const Filter = ({
               <Option value="tom">Tom</Option>
             </Select>)}
           </FilterItem> */}
-          <Row style={{ marginTop: 5 }}>
-            <Col lg={12} md={24} >
-              <FilterItem label="Product Code">
-                {getFieldDecorator('productCode', {
-                })(<Select
-                  className=""
-                  mode="multiple"
-                  style={{ width: '189px' }}
-                  placeholder="Select Code"
-                  onFocus={selectChildren()}
-                  onChange={() => resetSelected('productName')}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  {...printProps}
-                >
-                  {optionSelect}
-                </Select>)}
-              </FilterItem>
-            </Col>
-            <Col lg={12} md={24} >
-              <FilterItem label="Product Name">
-                {getFieldDecorator('productName', {
-                })(<Select
-                  mode="multiple"
-                  style={{ width: '189px' }}
-                  placeholder="Select Name"
-                  onFocus={selectChildrenName()}
-                  onChange={() => resetSelected('productCode')}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  {...printProps}
-                >
-                  {optionSelectName}
-                </Select>
-                )}
-              </FilterItem>
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={10} md={24} style={{ textAlign: 'right' }}>
-          <Button
-            type="dashed"
-            size="large"
-            style={{ marginLeft: '5px' }}
-            className="button-width02 button-extra-large"
-            onClick={() => handleSearch()}
-          >
-            <Icon type="search" className="icon-large" />
-          </Button>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          {<PrintPDF {...exportProps} />}
-          {<PrintXLS {...exportProps} />}
-        </Col>
-      </Row>
-    </div>
+        <Row style={{ marginTop: 5 }}>
+          <Col lg={12} md={24} >
+            <FilterItem label="Product Code">
+              {getFieldDecorator('productCode', {
+              })(<Select
+                className=""
+                mode="multiple"
+                style={{ width: '189px' }}
+                placeholder="Select Code"
+                onFocus={selectChildren()}
+                onChange={() => resetSelected('productName')}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                {...printProps}
+              >
+                {optionSelect}
+              </Select>)}
+            </FilterItem>
+          </Col>
+          <Col lg={12} md={24} >
+            <FilterItem label="Product Name">
+              {getFieldDecorator('productName', {
+              })(<Select
+                mode="multiple"
+                style={{ width: '189px' }}
+                placeholder="Select Name"
+                onFocus={selectChildrenName()}
+                onChange={() => resetSelected('productCode')}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                {...printProps}
+              >
+                {optionSelectName}
+              </Select>
+              )}
+            </FilterItem>
+          </Col>
+        </Row>
+      </Col>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        {<PrintPDF {...exportProps} />}
+        {<PrintXLS {...exportProps} />}
+      </Col>
+    </Row>
   )
 }
 

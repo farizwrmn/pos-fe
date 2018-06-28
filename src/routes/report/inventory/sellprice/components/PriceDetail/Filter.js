@@ -8,6 +8,23 @@ import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { validateFields, getFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const handleReset = () => {
     const { pathname } = location
@@ -22,26 +39,14 @@ const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { valida
   }
   const formItemLayout = {
     labelCol: {
-      xs: {
-        span: 9
-      },
-      sm: {
-        span: 8
-      },
-      md: {
-        span: 7
-      }
+      xs: { span: 9 },
+      sm: { span: 8 },
+      md: { span: 7 }
     },
     wrapperCol: {
-      xs: {
-        span: 15
-      },
-      sm: {
-        span: 16
-      },
-      md: {
-        span: 14
-      }
+      xs: { span: 15 },
+      sm: { span: 16 },
+      md: { span: 14 }
     }
   }
   const monthPickerProps = {
@@ -64,42 +69,40 @@ const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { valida
   }
 
   return (
-    <div>
-      <Row>
-        <Col lg={10} md={24}>
-          <Form.Item label="Period" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('monthPicker')(
-              <MonthPicker style={{ marginBottom: '8px', width: '100%' }} {...monthPickerProps} />
-            )}
-          </Form.Item>
-          <Form.Item label="Transaction No" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transNo')(
-              <Input.Search size="large" placeholder="Find by Transaction" style={{ marginBottom: '8px', width: '100%' }} />
-            )}
-          </Form.Item>
-        </Col>
-        <Col lg={14} md={24} style={{ textAlign: 'right' }}>
-          <Button
-            type="dashed"
-            size="large"
-            style={{ marginLeft: '5px' }}
-            className="button-width02 button-extra-large"
-            onClick={() => handleSearch()}
-          >
-            <Icon type="search" className="icon-large" />
-          </Button>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          <PrintPDF {...printProps} />
-          <PrintXLS {...printProps} />
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col {...leftColumn}>
+        <Form.Item label="Period" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('monthPicker')(
+            <MonthPicker style={{ marginBottom: '8px', width: '100%' }} {...monthPickerProps} />
+          )}
+        </Form.Item>
+        <Form.Item label="Transaction No" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transNo')(
+            <Input.Search size="large" placeholder="Find by Transaction" style={{ marginBottom: '8px', width: '100%' }} />
+          )}
+        </Form.Item>
+      </Col>
+      <Col {...rightColumn} style={{ textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
+      </Col>
+    </Row>
   )
 }
 
