@@ -14,7 +14,7 @@ const Role = ({ role, dispatch }) => {
     title: 'Menu',
     dataIndex: 'name',
     key: 'name',
-    // width: screen.width < 400 ? 180 : 250,
+    width: screen.width < 400 ? 170 : 250,
     fixed: 'left'
   }]
 
