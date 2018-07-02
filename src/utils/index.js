@@ -122,7 +122,6 @@ const formatNumberIndonesia = (text) => {
 }
 
 const isEmptyObject = (obj) => {
-  console.log('abc', obj)
   if (!obj) {
     return true
   }

@@ -1,7 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, DatePicker, Select } from 'antd'
+import { lstorage } from 'utils'
+import ListDetail from './ListDetail'
+import ModalList from './Modal'
 
+const Option = Select.Option
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -26,39 +30,41 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  showLov,
   onSubmit,
-  onCancel,
-  modalType,
-  button,
+  modalShow,
+  modalShowList,
+  resetListItem,
+  // onCancel,
+  listItem,
+  // modalType,
+  modalVisible,
+  modalProps,
+  listBank,
+  listDetailProps,
+  listOpts,
+  listCustomer,
+  listSupplier,
+  updateCurrentItem,
+  bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
+  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
+  customerOpt = (listCustomer || []).length > 0 ? listCustomer.map(c => <Option value={c.id} key={c.id}>{`${c.memberName} (${c.memberCode})`}</Option>) : [],
+  supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   form: {
     getFieldDecorator,
+    getFieldValue,
     validateFields,
     getFieldsValue,
+    setFieldsValue,
     resetFields
-  }
+  },
+  inputType = getFieldValue('type')
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  // const handleCancel = () => {
+  //   onCancel()
+  //   resetFields()
+  // }
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -68,51 +74,265 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.storeId = lstorage.getCurrentUserStore()
+      data.memberId = data.memberId ? data.memberId.key : null
+      data.supplierId = data.supplierId ? data.supplierId.key : null
+      data.bankId = data.bankId ? data.bankId.key : null
+      data.transType = data.transType ? data.transType.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
-          // setTimeout(() => {
+          onSubmit(data, listItem, getFieldsValue())
           resetFields()
-          // }, 500)
         },
         onCancel () { }
       })
     })
   }
+  const hdlModalShow = () => {
+    validateFields(['type'], (errors) => {
+      if (errors) {
+        return
+      }
+      const type = getFieldValue('type')
+      modalShow(type)
+    })
+  }
+
+  const hdlModalReset = () => {
+    const oldType = getFieldValue('type')
+    const oldSupplierId = getFieldValue('supplierId')
+    const oldMemberId = getFieldValue('memberId')
+    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
+      if (errors) {
+        return
+      }
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          const type = getFieldValue('type')
+          resetListItem(type)
+        },
+        onCancel () {
+          if (oldType === 'I') {
+            setFieldsValue({
+              type: oldType
+            })
+            updateCurrentItem({
+              memberId: {
+                key: oldMemberId ? oldMemberId.key : null,
+                label: oldMemberId ? oldMemberId.label : null
+              },
+              supplierId: {
+                key: null,
+                label: null
+              },
+              ...item
+            })
+          } else if (oldType === 'E') {
+            setFieldsValue({
+              type: oldType
+            })
+            updateCurrentItem({
+              supplierId: {
+                key: oldSupplierId ? oldSupplierId.key : null,
+                label: oldSupplierId ? oldSupplierId.label : null
+              },
+              memberId: {
+                key: null,
+                label: null
+              },
+              ...item
+            })
+          }
+        }
+      })
+    })
+  }
+
+  const modalOpts = {
+    showLov,
+    inputType: getFieldValue('type'),
+    ...modalProps
+  }
+
+  const handleModalShowList = (record) => {
+    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
+      if (errors) {
+        return
+      }
+      record.accountId = {
+        key: record.accountId,
+        label: record.accountName
+      }
+      modalShowList(record)
+    })
+  }
+
+  const listDetailOpts = {
+    handleModalShowList,
+    ...listDetailProps
+  }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('typeCode', {
-              initialValue: item.typeCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('typeName', {
-              initialValue: item.typeName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <div>
+      <Form layout="horizontal">
+        <Row>
+          <Col {...column}>
+            <FormItem label="transNo" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transNo', {
+                initialValue: item.transNo,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input disabled maxLength={30} />)}
+            </FormItem>
+            <FormItem label="Reference" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('reference', {
+                initialValue: item.reference
+              })(<Input maxLength={40} autoFocus />)}
+            </FormItem>
+            <FormItem label="Type" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('type', {
+                initialValue: item.type,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Select
+                  allowClear
+                  onChange={() => hdlModalReset()}
+                >
+                  <Option value="E">Expense</Option>
+                  <Option value="I">Income</Option>
+                </Select>)}
+            </FormItem>
+            {getFieldValue('type') === 'I' && <FormItem label="Member" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('memberId', {
+                initialValue: item.memberId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                onFocus={() => showLov('customer')}
+                onSearch={value => showLov('customer', { q: value })}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{customerOpt}
+              </Select>)}
+            </FormItem>}
+            {getFieldValue('type') === 'E' && <FormItem label="Supplier" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('supplierId', {
+                initialValue: item.supplierId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                onFocus={() => showLov('supplier')}
+                onSearch={value => showLov('supplier', { q: value })}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{supplierOpt}
+              </Select>)}
+            </FormItem>}
+            <FormItem label="Cashier" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('cashierTransId', {
+                initialValue: item.cashierTransId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col {...column}>
+            <FormItem label="Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate
+              })(<DatePicker />)}
+            </FormItem>
+            <FormItem label="Bank" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bankId', {
+                initialValue: item.bankId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                // <AutoComplete {...autoCompleteProps} />
+                <Select
+                  showSearch
+                  allowClear
+                  onFocus={() => showLov('bank')}
+                  onSearch={value => showLov('bank', { q: value })}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={filterOption}
+                >{bankOpt}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transType', {
+                initialValue: item.transType,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                onFocus={() => showLov('paymentOpts')}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{paymentOpt}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description')(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col {...column}>
+            <Button type="primary" size="large" onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Add</Button>
+          </Col>
+          <Col {...column} />
+        </Row>
+        <Row style={{ marginBottom: '8px' }}>
+          <ListDetail {...listDetailOpts} />
+        </Row>
+        <Row>
+          <Col {...column} />
+          <Col {...column}>
+            <FormItem>
+              {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
+              <Button type="primary" onClick={handleSubmit} style={{ float: 'right' }}>Save</Button>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
+    </div>
   )
 }
 

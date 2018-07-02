@@ -22,9 +22,9 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
-  modalProductVisible, modalPurchaseVisible, supplierInformation, listSupplier, onGetSupplier,
-  onChooseItem, tmpSupplierData, onSearchSupplier, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
+const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
+  modalProductVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
+  onChooseItem, tmpSupplierData, onSearchSupplier, onSearchSupplierData, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -98,6 +98,14 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
   const hdlSearch = (e) => {
     onSearchSupplier(e, tmpSupplierData)
   }
+  const hdlSearchPagination = (page) => {
+    const query = {
+      q: searchTextSupplier,
+      page: page.current,
+      pageSize: page.pageSize
+    }
+    onSearchSupplierData(query)
+  }
   const hdlGetSupplier = () => {
     onGetSupplier()
   }
@@ -143,13 +151,14 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
   const contentPopover = (
     <Table
       bordered
-      pagination={false}
+      pagination={paginationSupplier}
       scroll={{ x: 500, y: 100 }}
       columns={columns}
       simple
       dataSource={listSupplier}
       size="small"
       pageSize={5}
+      onChange={hdlSearchPagination}
       onRowClick={_record => handleMenuClick(_record)}
     />
   )
@@ -292,7 +301,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, rounding, onChangeRounding
             <Panel header="Search Supplier" key="1" style={customPanelStyle}>
               <FormItem label="Search" {...formItemLayout}>
                 <div style={{ marginLeft: 20, clear: 'both', whiteSpace: 'nowrap' }}>
-                  <Popover placement="bottomLeft" content={contentPopover} trigger={'focus'}>
+                  <Popover placement="bottomLeft" content={contentPopover} trigger={['click']}>
                     <Search onEnter={value => hdlSearch(value)} onSearch={value => hdlSearch(value)} onFocus={() => hdlGetSupplier()} />
                   </Popover>
                 </div>

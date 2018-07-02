@@ -12,7 +12,7 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
-  const { list, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
+  const { listSupplier, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
   const { listCity } = city
   const { user, storeInfo } = app
   const filterProps = {
@@ -23,12 +23,21 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
       ...location.query
     },
     onFilterChange (value) {
-      dispatch({
-        type: 'supplier/query',
-        payload: {
-          ...value
+      // dispatch({
+      //   type: 'customer/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
         }
-      })
+      }))
     },
     switchIsChecked () {
       dispatch({
@@ -37,16 +46,36 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
       })
     },
     onResetClick () {
-      dispatch({ type: 'supplier/resetSupplierList' })
+      const { query, pathname } = location
+      const { q, createdAt, page, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          ...other
+        }
+      }))
     }
   }
 
   const listProps = {
-    dataSource: list,
+    dataSource: listSupplier,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['supplier/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'supplier/updateState',
@@ -114,7 +143,7 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
   }
 
   const printProps = {
-    dataSource: list,
+    dataSource: listSupplier,
     user,
     storeInfo
   }

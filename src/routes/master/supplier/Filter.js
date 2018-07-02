@@ -23,8 +23,8 @@ const TwoColProps = {
 const Filter = ({
   onFilterChange,
   filter,
-  onResetClick,
   show,
+  onResetClick,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -32,16 +32,16 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    const { createTime } = fields
-    if (createTime.length) {
-      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
+    const { createdAt } = fields
+    if (createdAt.length) {
+      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
     }
-    return fields
+    const { birthDate, ...other } = fields
+    return other
   }
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    if (fields.userName === undefined || fields.userName === '') delete fields.userName
     fields = handleFields(fields)
     onFilterChange(fields)
   }
@@ -58,6 +58,7 @@ const Filter = ({
       }
     }
     setFieldsValue(fields)
+    // handleSubmit()
     onResetClick()
   }
 
@@ -67,15 +68,19 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { userName } = filter
 
   let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
+  if (filter.createdAt && filter.createdAt[0]) {
+    initialCreateTime[0] = moment(filter.createdAt[0])
   }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
+  if (filter.createdAt && filter.createdAt[1]) {
+    initialCreateTime[1] = moment(filter.createdAt[1])
   }
+
+  const params = location.search.substring(1)
+  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
+
+  if (query.q) query.q = query.q.replace(/\+/g, ' ')
 
   const disabledDate = (current) => {
     return current > moment(new Date())
@@ -84,12 +89,14 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('userName', { initialValue: userName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('q', {
+          initialValue: query.q
+        })(<Search placeholder="Search" size="large" onSearch={handleSubmit} />)}
       </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        <FilterItem label="Createtime" >
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker disabledDate={disabledDate} style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} >
+        <FilterItem label="Create At" >
+          {getFieldDecorator('createdAt', { initialValue: initialCreateTime })(
+            <RangePicker disabledDate={disabledDate} style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createdAt')} />
           )}
         </FilterItem>
       </Col>

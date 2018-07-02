@@ -1,44 +1,56 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
-import { DropOption } from 'components'
+import moment from 'moment'
+import { Table } from 'antd'
+// import { DropOption } from 'components'
 
-const confirm = Modal.confirm
+// const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
-  const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
-    }
-  }
+const List = ({
+  editItem,
+  deleteItem,
+  ...tableProps }) => {
+  // const handleMenuClick = (record, e) => {
+  //   if (e.key === '1') {
+  //     editItem(record)
+  //   } else if (e.key === '2') {
+  //     confirm({
+  //       title: `Are you sure delete ${record.counterName} ?`,
+  //       onOk () {
+  //         deleteItem(record.id)
+  //       }
+  //     })
+  //   }
+  // }
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'typeCode',
-      key: 'typeCode'
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName'
+      title: 'Reference',
+      dataIndex: 'reference',
+      key: 'reference'
     },
     {
-      title: 'Operation',
-      key: 'operation',
-      width: 100,
-      fixed: 'right',
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      }
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
+      render: _text => `${_text ? moment(_text).format('DD-MMM-YYYY') : '-'}`
     }
+    // ,
+    // {
+    //   title: 'Operation',
+    //   key: 'operation',
+    //   width: 100,
+    //   fixed: 'right',
+    //   render: (text, record) => {
+    //     return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+    //   }
+    // }
   ]
 
   return (

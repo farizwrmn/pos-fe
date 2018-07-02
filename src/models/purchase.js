@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     date: '',
     readOnly: false,
     addItem: {},
+    searchTextSupplier: '',
     curHead: {
       discInvoiceNominal: 0,
       discInvoicePercent: 0,
@@ -92,19 +93,21 @@ export default modelExtend(pageModel, {
   effects: {
     * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccess',
           payload: {
             listSupplier: data.data,
             tmpSupplierData: data.data,
-            pagination: {
+            paginationSupplier: {
               current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
+              pageSize: Number(payload.pageSize) || 10,
               total: data.total
             }
           }
         })
+      } else {
+        throw data
       }
     },
 
@@ -136,7 +139,7 @@ export default modelExtend(pageModel, {
         let ppnType = data.taxType
         const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
         const x = dataProduct
-        for (let key = 0; key < x.length; key += 1) {
+        for (let key = 0; key < (x || []).length; key += 1) {
           const total = (x[key].qty * x[key].price)
           const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
@@ -164,7 +167,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const storeId = lstorage.getCurrentUserStore()
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
-      if (purchase_detail.length !== 0) {
+      if ((purchase_detail || []).length !== 0) {
         const data = yield call(create, { id: payload.transNo, data: payload })
         if (data.success) {
           let arrayProd = []
@@ -213,15 +216,15 @@ export default modelExtend(pageModel, {
       let addData = []
       let editData = []
       let voidData = []
-      for (let n = 0; n < payload.data.length; n += 1) {
+      for (let n = 0; n < (payload.data || []).length; n += 1) {
         if (payload.data[n].ket === 'add') {
           addData.push(payload.data[n])
         } else if (payload.data[n].ket === 'edit') {
           editData.push(payload.data[n])
         }
       }
-      if (payload.dataVoid.length > 0) {
-        for (let n = 0; n < payload.dataVoid.length; n += 1) {
+      if ((payload.dataVoid || []).length > 0) {
+        for (let n = 0; n < (payload.dataVoid || []).length; n += 1) {
           voidData.push({
             storeId,
             transNo: payload.id.transNo,
@@ -545,7 +548,7 @@ export default modelExtend(pageModel, {
           payload: { purchaseHistory: data.purchase }
         })
         const detail = yield call(queryHistoryDetail, payload)
-        if (detail.success && detail.data.length > 0) {
+        if (detail.success && (detail.data || []).length > 0) {
           yield put({
             type: 'updateState',
             payload: {
@@ -561,12 +564,16 @@ export default modelExtend(pageModel, {
   reducers: {
 
     querySuccess (state, action) {
-      const { listPurchase, listSupplier, tmpSupplierData } = action.payload
+      const { listPurchase, listSupplier, tmpSupplierData, paginationSupplier } = action.payload
       return {
         ...state,
         listPurchase,
         listSupplier,
-        tmpSupplierData
+        tmpSupplierData,
+        paginationSupplier: {
+          ...state.pagination,
+          ...paginationSupplier
+        }
       }
     },
 

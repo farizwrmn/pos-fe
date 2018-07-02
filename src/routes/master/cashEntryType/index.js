@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const CashEntryType = ({ cashEntryType, loading, dispatch, location, app }) => {
-  const { listCash, modalType, currentItem, activeKey } = cashEntryType
+  const { listCashType, modalType, currentItem, activeKey } = cashEntryType
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -24,7 +24,7 @@ const CashEntryType = ({ cashEntryType, loading, dispatch, location, app }) => {
   }
 
   const listProps = {
-    dataSource: listCash,
+    dataSource: listCashType,
     user,
     storeInfo,
     loading: loading.effects['cashEntryType/query'],
@@ -63,7 +63,7 @@ const CashEntryType = ({ cashEntryType, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'cashEntryType/updateState', payload: { listCash: [] } })
+    dispatch({ type: 'cashEntryType/updateState', payload: { listCashType: [] } })
   }
 
   const clickBrowse = () => {

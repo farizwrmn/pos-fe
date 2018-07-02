@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table } from 'antd'
-import moment from 'moment'
 import styles from '../../../../../themes/index.less'
 
 const Browse = ({ ...browseProps }) => {
@@ -10,13 +9,6 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'transNo',
       key: 'transNo',
       width: '175px'
-    },
-    {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: '175px',
-      render: text => `${moment(text).format('LL ')}`
     },
     {
       title: 'Product Code',
@@ -77,7 +69,7 @@ const Browse = ({ ...browseProps }) => {
       <Table
         {...browseProps}
         bordered
-        scroll={{ x: 1300, y: 300 }}
+        scroll={{ x: 1125, y: 300 }}
         columns={columns}
         simple
         size="small"

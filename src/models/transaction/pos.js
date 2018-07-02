@@ -766,12 +766,12 @@ export default {
         } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
           yield put({
             type: 'paymentEdit',
@@ -850,12 +850,12 @@ export default {
         } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
           localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
           yield put({

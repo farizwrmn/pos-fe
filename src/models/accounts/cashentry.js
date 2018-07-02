@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/cashEntryType'
+import { lstorage } from 'utils'
+import { query as querySequence } from '../../services/sequence'
+import { query, add, edit, remove } from '../../services/payment/cashentry'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -13,9 +15,13 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    currentItemList: {},
     modalType: 'add',
+    inputType: null,
     activeKey: '0',
-    listCash: []
+    listCash: [],
+    modalVisible: false,
+    listItem: []
   },
 
   subscriptions: {
@@ -30,6 +36,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
+          if (activeKey === '0') dispatch({ type: 'querySequence' })
           if (activeKey === '1') dispatch({ type: 'query' })
         }
       })
@@ -55,6 +62,26 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * querySequence ({ payload = {} }, { select, call, put }) {
+      const invoice = {
+        seqCode: 'CAS',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ cashentry }) => cashentry.currentItem)
+      const transNo = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            transNo
+          }
+        }
+      })
+    },
+
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
@@ -65,6 +92,12 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: payload.oldValue
+        }
+      })
       const data = yield call(add, payload)
       if (data.success) {
         success()
@@ -72,7 +105,8 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            listItem: []
           }
         })
       } else {
@@ -131,6 +165,15 @@ export default modelExtend(pageModel, {
           ...pagination
         }
       }
+    },
+
+    updateCurrentItem (state, { payload }) {
+      const { currentItem } = state
+      return { ...state, currentItem: { ...currentItem, ...payload } }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     changeTab (state, { payload }) {

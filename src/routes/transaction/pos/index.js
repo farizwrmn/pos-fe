@@ -100,14 +100,14 @@ const Pos = ({
   const { usingWo, woNumber } = payment
 
   let currentCashier = {
-    cashierId: '',
-    employeeName: '',
-    shiftId: '',
-    shiftName: '',
-    counterId: '',
-    counterName: '',
-    period: '',
-    status: ''
+    cashierId: null,
+    employeeName: null,
+    shiftId: null,
+    shiftName: null,
+    counterId: null,
+    counterName: null,
+    period: null,
+    status: null
   }
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
