@@ -36,8 +36,11 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '0') dispatch({ type: 'querySequence' })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') {
+            dispatch({ type: 'query' })
+          } else {
+            dispatch({ type: 'querySequence' })
+          }
         }
       })
     }

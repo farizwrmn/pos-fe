@@ -478,6 +478,14 @@ const Routers = function ({ history, app }) {
             }, 'report-account-summary')
           }
         }, {
+          path: 'report/cashentry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/cashEntryReport'))
+              cb(null, require('./routes/report/accounts/cashentry'))
+            }, 'report-account-summary')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

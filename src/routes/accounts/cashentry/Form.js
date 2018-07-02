@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Modal, DatePicker, Select } from 'antd'
+import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
@@ -212,7 +213,7 @@ const FormCounter = ({
                   <Option value="I">Income</Option>
                 </Select>)}
             </FormItem>
-            {getFieldValue('type') === 'I' && <FormItem label="Member" hasFeedback {...formItemLayout}>
+            {getFieldValue('type') === 'I' && <FormItem label={(<Link target="_blank" to={'/master/customer'}>Member</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('memberId', {
                 initialValue: item.memberId,
                 rules: [
@@ -231,7 +232,7 @@ const FormCounter = ({
               >{customerOpt}
               </Select>)}
             </FormItem>}
-            {getFieldValue('type') === 'E' && <FormItem label="Supplier" hasFeedback {...formItemLayout}>
+            {getFieldValue('type') === 'E' && <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierId', {
                 initialValue: item.supplierId,
                 rules: [
