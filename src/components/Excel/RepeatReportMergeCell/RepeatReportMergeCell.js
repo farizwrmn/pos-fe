@@ -82,6 +82,7 @@ const RepeatReportMergeCell = ({
             value: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).value = tableBody[i][n][tableBodyValue].value,
             alignment: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).alignment = tableBody[i][n][tableBodyValue].alignment,
             font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font,
+            numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).numFmt = tableBody[i][n][tableBodyValue].numFmt,
             border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
           })
         }
@@ -95,6 +96,7 @@ const RepeatReportMergeCell = ({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).alignment = tableFooter[i][tableFooterValue].alignment,
           font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font,
+          numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).numFmt = tableFooter[i][tableFooterValue].numFmt,
           border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
         })
       }
