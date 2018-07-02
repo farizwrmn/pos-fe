@@ -1,5 +1,5 @@
 const format = (value, decimal) => {
-  if (value !== 0 && value instanceof Number) {
+  if (value !== 0 && typeof value === 'number') {
     let defaultFormat = '#,##0'
     if (decimal > 0) {
       defaultFormat += '.'
