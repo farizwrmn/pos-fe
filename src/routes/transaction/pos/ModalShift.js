@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Modal, Button, Form, Input, DatePicker, Select } from 'antd'
+import { Modal, Button, Form, Input, DatePicker, Select, Badge } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage, color } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -16,25 +17,25 @@ const formItemLayout = {
   }
 }
 
-// const listShift = [
-//   {
-//     value: '1',
-//     label: '1'
-//   },
-//   {
-//     value: '2',
-//     label: '2'
-//   },
-//   {
-//     value: '3',
-//     label: '3'
-//   }]
-
 const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
+  let styleCashRegisterTitle = color.normal
+  let dotVisible = false
+  let cashRegisterTitle = 'Cashier Information'
+  if (lstorage.getLoginTimeDiff() > 500) {
+    console.log('something fishy')
+  } else {
+    if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
+      styleCashRegisterTitle = color.error
+      cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
+      dotVisible = true
+    }
+    cashRegisterTitle = <p style={{ color: styleCashRegisterTitle }}>{cashRegisterTitle}</p>
+  }
+
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -42,21 +43,10 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
       }
       const data = { ...getFieldsValue() }
 
-
       data.period = moment(data.period).format('YYYY-MM-DD')
       data.status = currentCashier.status
       data.storeId = currentCashier.storeId
       data.cashierId = currentCashier.cashierId || cashierId
-      // const data = {
-      //   ...getFieldsValue(),
-      //   cashierId,
-      // transDate: getDate(3),
-      //   total: 0,
-      //   totalCreditCard: 0,
-      //   status: 'O'
-      // }
-      // data.cashierNo = data.counter.join(' ')
-      // data.shift = data.shift.join(' ')
       onOk(data)
     })
   }
@@ -81,7 +71,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   }
 
   return (
-    <Modal title="Cashier Information"
+    <Modal title={cashRegisterTitle}
       {...modalOpts}
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
@@ -91,53 +81,6 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
       ]}
       closable={false}
     >
-      {/* <Form layout="horizontal">
-        <FormItem label="Cashier No" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('cashierNo', {
-            initialValue: item.cashierNo && item.cashierNo.split(' '),
-            rules: [
-              {
-                required: true
-              }
-            ]
-          })(<Cascader
-            onFocus={getCashier}
-            size="large"
-            style={{ width: '100%' }}
-            options={listCashier}
-            placeholder="Pick Cashier No"
-          />)}
-        </FormItem>
-        <FormItem label="Shift" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('shift', {
-            initialValue: (item.shift ? item.shift.toString() && item.shift.toString().split(' ') : ''),
-            rules: [
-              {
-                required: true
-              }
-            ]
-          })(<Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={listShift}
-            placeholder="Pick a Shift"
-          />)}
-        </FormItem>
-        <FormItem label="Balance" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('balance', {
-            initialValue: item.balance || 0,
-            rules: [
-              {
-                required: true,
-                pattern: /^[0-9]{1,50}$/i,
-                message: 'Balance must be a number...!'
-
-              }
-            ]
-          })(<Input />)}
-        </FormItem>
-      </Form> */}
-
       <Form layout="horizontal">
         <FormItem label="Open" hasFeedback {...formItemLayout}>
           {getFieldDecorator('period', {
@@ -147,7 +90,8 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
                 required: true
               }
             ]
-          })(<DatePicker disabled={currentCashier.period} style={{ width: '100%' }} />)}
+          })(<DatePicker disabled={currentCashier.cashActive} style={{ width: '100%' }} />)}
+          <Badge dot={dotVisible} />
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
@@ -157,7 +101,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
                 required: true
               }
             ]
-          })(<Select disabled={currentCashier.shiftId != null} onFocus={findShift}>
+          })(<Select disabled={currentCashier.cashActive} onFocus={findShift}>
             {shifts}
           </Select>)}
         </FormItem>
@@ -169,7 +113,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
                 required: true
               }
             ]
-          })(<Select disabled={currentCashier.counterId != null} onFocus={findCounter}>
+          })(<Select disabled={currentCashier.cashActive} onFocus={findCounter}>
             {counters}
           </Select>)}
         </FormItem>

@@ -135,7 +135,7 @@ export default {
               endPeriod: infoStore.endPeriod
             }
           })
-        } else if (location.pathname === '/service/history') {
+        } else if (location.pathname === '/monitor/service/history') {
           dispatch({
             type: 'getServiceReminder'
           })
@@ -522,9 +522,9 @@ export default {
     },
 
     * loadDataPos ({ payload = {} }, { call, put }) {
-      const data = yield call(queryCurrentOpenCashRegister, payload)
-      if (data.success) {
-        const cashierInformation = (data.data || []).length > 0 ? data.data[0] : {}
+      const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
+      if (currentRegister.success) {
+        const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
         yield put({
           type: 'updateState',
           payload: {
@@ -533,7 +533,7 @@ export default {
           }
         })
       } else {
-        throw data
+        throw currentRegister
       }
     },
 
@@ -963,6 +963,13 @@ export default {
       const data = yield call(cashRegister, payload)
       if (data.success) {
         localStorage.setItem('cashierNo', data.cashregisters.cashierId)
+        yield put({
+          type: 'updateState',
+          payload: {
+            cashierInformation: data.cashregisters,
+            dataCashierTrans: data.cashregisters
+          }
+        })
         yield put({
           type: 'hideShiftModal',
           payload: {

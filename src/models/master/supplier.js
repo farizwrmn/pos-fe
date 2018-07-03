@@ -34,20 +34,13 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/supplier') {
-          // if (!activeKey) {
-          //   dispatch(routerRedux.push({
-          //     pathname,
-          //     query: {
-          //       activeKey: '0'
-          //     }
-          //   }))
-          // }
           if (activeKey === '1') {
             dispatch({
               type: 'query',
               payload: other
             })
           }
+          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
             payload: {
@@ -175,8 +168,15 @@ export default modelExtend(pageModel, {
     },
 
     resetSupplierList (state) {
-      return { ...state, listSupplier: [], pagination: { total: 0 } }
-    }
+      return { ...state, list: [], listSupplier: [], pagination: { total: 0 } }
+    },
 
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
+    }
   }
 })

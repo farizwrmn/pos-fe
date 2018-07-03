@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { configMain, isEmptyObject } from 'utils'
+import moment from 'moment'
+import { configMain, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
@@ -107,9 +108,11 @@ const Pos = ({
     counterId: null,
     counterName: null,
     period: null,
-    status: null
+    status: null,
+    cashActive: null
   }
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
+
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
   const keyShortcut = {
     16: false,
@@ -1537,6 +1540,7 @@ const Pos = ({
         bordered
         pagination={{ pageSize: 5 }}
         onRowClick={_record => hdlTableRowClick(_record)}
+
         locale={{
           emptyText: 'No Unit'
         }}
@@ -1576,6 +1580,15 @@ const Pos = ({
     }, 1000)
   }
 
+  let dotVisible = false
+  let cashRegisterTitle = 'Cashier Information'
+  if (lstorage.getLoginTimeDiff() > 500) {
+    console.log('something fishy')
+  } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
+    cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
+    dotVisible = true
+  }
+
   return (
     <div className="content-inner">
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1585,12 +1598,18 @@ const Pos = ({
             <Form layout="vertical">
               {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
               <Row>
-                <Card bordered={false} noHovering>
+                <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
                   <Row gutter={32}>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Cashier : {currentCashier.cashierId} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Name : {currentCashier.employeeName} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Shift : {currentCashier.shiftName} </Col>
-                    <Col xs={24} sm={24} md={4} lg={4} xl={4}> Date : {currentCashier.period} </Col>
+                    <Col span={2}># {currentCashier.id} </Col>
+                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Cashier : {currentCashier.cashierId} </Col>
+                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
+                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
+                    <Col xs={24} sm={24} md={5} lg={5} xl={5}>
+                      <Tooltip title={cashRegisterTitle}>
+                        Date : {currentCashier.period}
+                        <Badge dot={dotVisible} />
+                      </Tooltip>
+                    </Col>
                   </Row>
                 </Card>
               </Row>

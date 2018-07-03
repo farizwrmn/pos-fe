@@ -5,18 +5,21 @@ import ModalBrowse from './Modal'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const columnLeft = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 8 },
-  xl: { span: 12 }
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
 }
 
-const columnRight = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 16 },
-  xl: { span: 12 }
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
 }
 
 const Filter = ({
@@ -81,7 +84,7 @@ const Filter = ({
 
   return (
     <Row>
-      <Col {...columnLeft} >
+      <Col {...leftColumn} >
         {showChoice && <Modal {...modalChoiceProps}>
           <Row style={{ marginTop: 30, textAlign: 'center' }}>
             <Col md={12}><Button type="default" size="large" onClick={getAllCustomer}>Find All Customer</Button></Col>
@@ -91,7 +94,7 @@ const Filter = ({
 
         {Object.keys(customerInfo).length > 0 && <Card {...cardProps}>{item}</Card>}
       </Col>
-      <Col {...columnRight} style={{ textAlign: 'right' }}>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button
           type="dashed"
           size="large"

@@ -13,7 +13,7 @@ const List = ({ listStore, editItem, modalEdit, onSelectMenu, onCancelSelect }) 
     return data.map((item) => {
       if (item.children) {
         return (
-          <TreeNode title={item.title}>
+          <TreeNode title={(<span onClick={() => selectedItem(item)}>{item.title}</span>)}>
             {renderTreeNodes(item.children)}
           </TreeNode>
         )
@@ -23,7 +23,7 @@ const List = ({ listStore, editItem, modalEdit, onSelectMenu, onCancelSelect }) 
   }
 
   const modalProps = {
-    title: 'Edit Menu',
+    title: 'Edit Store',
     visible: modalEdit.visible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -38,7 +38,7 @@ const List = ({ listStore, editItem, modalEdit, onSelectMenu, onCancelSelect }) 
   return (
     <div>
       {modalEdit.visible && <Modal {...modalProps}>Do you want to edit {modalEdit.item.title}?</Modal>}
-      <Card title="Menu" style={{ height: 500, overflowY: 'auto' }}>
+      <Card title="Stores" style={{ height: 500, overflowY: 'auto' }}>
         <Tree
           className="draggable-tree"
         >

@@ -8,13 +8,13 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 7 },
+    xs: { span: 9 },
     sm: { span: 5 },
     md: { span: 6 }
   },
   wrapperCol: {
-    xs: { span: 14 },
-    sm: { span: 16 },
+    xs: { span: 15 },
+    sm: { span: 10 },
     md: { span: 15 }
   }
 }
@@ -64,10 +64,10 @@ const FormInput = ({
         offset: modalType === 'edit' ? 10 : 18
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 2 : 13
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 19
+        offset: modalType === 'edit' ? 9 : 17
       },
       lg: {
         offset: modalType === 'edit' ? 13 : 18
@@ -94,8 +94,9 @@ const FormInput = ({
   if (listShift && listShift.length > 0) {
     shifts = listShift.map(x => (<p><Checkbox checked={selectedShift.indexOf(x.id) > -1} onChange={x => changeShift(x)} value={x.id} >{x.shiftName}</Checkbox></p>))
   }
+
   if (listStore && listStore.length > 0) {
-    parents = listStore.map(x => (<Option value={x.id}>{x.title}</Option>))
+    parents = listStore.map(x => (<Option value={x.id}>{x.storeName}</Option>))
   }
 
   const handleSubmit = () => {
@@ -144,7 +145,7 @@ const FormInput = ({
                 })(<Input maxLength={50} />)}
               </FormItem>
               <FormItem label="Store Parent" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('storeParentId', {
+                {getFieldDecorator('parent', {
                   initialValue: item.storeParentId
                 })(<Select
                   allowClear
@@ -174,6 +175,7 @@ const FormInput = ({
                 {getFieldDecorator('cityId', {
                   initialValue: item.cityId
                 })(<Select
+                  allowClear
                   optionFilterProp="children"
                   onFocus={showCities}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

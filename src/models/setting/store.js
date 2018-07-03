@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { getAllStores, showStore, updateStore } from '../../services/setting/store'
+import { getAllStores, addStore, showStore, updateStore } from '../../services/setting/store'
 import { pageModel } from './../common'
 
 const success = (id) => {
@@ -50,6 +50,29 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * add ({ payload = {} }, { call, put }) {
+      const data = yield call(addStore, payload.data)
+      if (data.success) {
+        success(payload.data.name)
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            selectedShift: []
+          }
+        })
+        yield put({ type: 'getAllStores' })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload.data
+          }
+        })
+        throw data
+      }
+    },
+
     * showStore ({ payload = {} }, { call, put }) {
       let data = yield call(showStore, payload)
       if (data.success) {
@@ -76,6 +99,7 @@ export default modelExtend(pageModel, {
             selectedShift: []
           }
         })
+        yield put({ type: 'getAllStores' })
       } else {
         throw data
       }

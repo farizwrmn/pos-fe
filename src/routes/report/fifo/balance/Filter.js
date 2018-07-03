@@ -13,6 +13,23 @@ import PrintPDF from './PrintPDF'
 const { MonthPicker } = DatePicker
 const Option = Select.Option
 
+const leftColumn = {
+  xs: 24,
+  sm: 14,
+  md: 14,
+  lg: 14,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 10,
+  md: 10,
+  lg: 10
+}
+
 const Filter = ({
   onOk,
   onChangePeriod,
@@ -155,7 +172,7 @@ const Filter = ({
 
   return (
     <Row>
-      <Col lg={14} md={24}>
+      <Col {...leftColumn} >
         <FilterItem label="Period">
           {getFieldDecorator('rangePicker', {
             initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : ''
@@ -221,7 +238,7 @@ const Filter = ({
           </Row>
         }
       </Col>
-      <Col lg={10} md={24} style={{ margin: '10px 0', float: 'right', textAlign: 'right' }}>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         {activeKey === '3' && <Button
           type="dashed"
           size="large"

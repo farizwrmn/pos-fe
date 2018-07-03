@@ -8,35 +8,32 @@ import PrintPDF from './PrintPDF'
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 9
-    },
-    sm: {
-      span: 8
-    },
-    md: {
-      span: 7
-    }
+    xs: { span: 9 },
+    sm: { span: 8 },
+    md: { span: 7 }
   },
   wrapperCol: {
-    xs: {
-      span: 15
-    },
-    sm: {
-      span: 16
-    },
-    md: {
-      span: 14
-    }
+    xs: { span: 15 },
+    sm: { span: 16 },
+    md: { span: 14 }
   }
 }
 
-const column = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
 }
 
 const FormItem = Form.Item
@@ -166,7 +163,7 @@ const Filter = ({
 
   return (
     <Row>
-      <Col {...column} >
+      <Col {...leftColumn} >
         <FormItem label="Member Code" {...formItemLayout}>
           <Button type="primary" onClick={hdlOpenModal} >Find Customer</Button>
           {showCustomer && <ModalBrowse {...modalProps} />}
@@ -187,7 +184,7 @@ const Filter = ({
         <Button onClick={clickSearch} style={{ margin: '5px' }}>Search</Button>
         <Button type="danger" onClick={clickReset}>Reset</Button>
       </Col>
-      <Col {...column} >
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <PrintPDF {...printProps} />
         <PrintXLS {...printProps} />
         {Object.keys(customerInfo).length > 0 && <Card {...cardProps}>{item}</Card>}

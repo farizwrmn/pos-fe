@@ -25,7 +25,7 @@ const Report = ({ dispatch, fifoReport }) => {
     })
   }
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       <Tabs activeKey={activeKey} onChange={key => callback(key)} type="card">
         <TabPane tab="Summary" key="0">
           {activeKey === '0' && <Summary />}

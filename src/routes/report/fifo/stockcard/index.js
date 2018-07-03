@@ -78,7 +78,7 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>

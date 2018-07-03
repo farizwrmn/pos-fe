@@ -106,7 +106,7 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app }) =>
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Summary" key="0" >
           <Filter {...filterProps} />
