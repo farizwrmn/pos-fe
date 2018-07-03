@@ -26,6 +26,7 @@ const Report = ({ dispatch, cashEntryReport }) => {
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={callback} type="card">
         <TabPane tab="By Trans" key="1">{activeKey === '1' && <CashEntryTrans />}</TabPane>
+        {/* <TabPane tab="Detail" key="2">{activeKey === '2' && <CashEntryDetail />}</TabPane> */}
       </Tabs>
     </div>
   )

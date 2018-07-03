@@ -8,6 +8,7 @@ export default {
 
   state: {
     listTrans: [],
+    listDetail: [],
     from: '',
     to: '',
     date: null,
@@ -31,6 +32,7 @@ export default {
           type: 'querySuccessTrans',
           payload: {
             listTrans: data.data,
+            listDetail: data.detail || [],
             pagination: {
               total: data.total
             },
@@ -45,11 +47,12 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { listTrans, pagination, tmpList, from, to } = action.payload
+      const { listTrans, listDetail, pagination, tmpList, from, to } = action.payload
 
       return {
         ...state,
         listTrans,
+        listDetail,
         from,
         to,
         tmpList,

@@ -8,7 +8,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, cashEntryReport, app }) => {
-  const { listTrans, from, to } = cashEntryReport
+  const { listTrans, listDetail, from, to } = cashEntryReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listTrans,
@@ -21,6 +21,7 @@ const Report = ({ dispatch, cashEntryReport, app }) => {
 
   const filterProps = {
     listTrans,
+    listDetail,
     user,
     storeInfo,
     from,
@@ -36,7 +37,9 @@ const Report = ({ dispatch, cashEntryReport, app }) => {
         payload: {
           from,
           to,
-          field: 'id,transNo,transDate,typeName,reference,amountIn,amountOut',
+          type: 'detail',
+          field: 'id,transNo,transDate,typeName,reference',
+          fielddetail: 'id,transNoId,accountDetailCode,accountName,description,amountIn,amountOut',
           order: 'transDate,transNo,id'
         }
       })
