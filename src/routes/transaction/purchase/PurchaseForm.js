@@ -60,6 +60,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   const hdlDateChange = (e) => {
     if (e) {
       let a = e.format('YYYY-MM-DD')
+      console.log(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
       onChangeDate(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
     } else {
       onChangeDate(null)
@@ -91,9 +92,9 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
 
   const onChange = (e) => {
     const { value } = e.target
-    let a = localStorage.getItem('setDate')
-    let add = moment(a, 'YYYY-MM-DD').add(value, 'd')
-    onChangeDate(add.format('YYYY-MM-DD'))
+    let a = getFieldValue('transDate')
+    let add = moment(a, 'YYYY-MM-DD').add(value, 'days')
+    onChangeDate(moment(add).format('YYYY-MM-DD'))
   }
   const hdlSearch = (e) => {
     onSearchSupplier(e, tmpSupplierData)
