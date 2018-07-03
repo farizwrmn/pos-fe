@@ -9,6 +9,7 @@ import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
 import ip from './ip'
+import numberFormat from './numberFormat'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -145,5 +146,6 @@ module.exports = {
   ip,
   messageInfo,
   formatNumberIndonesia,
-  isEmptyObject
+  isEmptyObject,
+  numberFormat
 }

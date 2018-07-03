@@ -12,6 +12,16 @@ export async function getAllStores (params) {
   })
 }
 
+export async function addStore (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: apiStores,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function showStore (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -340,7 +340,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     }
   }
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
         <TabPane tab="List" key="0">
           <Row>

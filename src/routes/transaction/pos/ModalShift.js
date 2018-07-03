@@ -35,7 +35,6 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
-  console.log('zzz2', currentCashier)
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {

@@ -10,33 +10,34 @@ const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 },
-    lg: { span: 7 }
+    xs: { span: 7 },
+    sm: { span: 4 },
+    md: { span: 4 },
+    lg: { span: 3 }
   },
   wrapperCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 9 },
+    xs: { span: 15 },
+    sm: { span: 12 },
+    md: { span: 12 },
     lg: { span: 9 }
   }
 }
 
-const column = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const leftColumn = {
+  xs: 24,
+  sm: 16,
+  md: 16,
+  lg: 16,
+  style: {
+    marginBottom: 10
+  }
 }
 
-const column2 = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const rightColumn = {
+  xs: 24,
+  sm: 8,
+  md: 8,
+  lg: 8
 }
 
 const History = ({
@@ -176,10 +177,10 @@ const History = ({
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       {modalVisible && <ModalBrowse {...modalProps} />}
-      <Row type="flex" justify="start" className="collapse-form-reminder">
-        <Col {...column}>
+      <Row>
+        <Col {...leftColumn}>
           <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
             <Button type="primary" size="large" onClick={openModal} style={{ width: '100%' }}>{buttonName}</Button>
           </FormItem>
@@ -213,12 +214,14 @@ const History = ({
           </FormItem>
           <FormItem label="Period" {...formItemLayout} >
             {getFieldDecorator('periods', {})(<RangePicker size="large"
+              // onChange={value => handleChangeDate(value)}
               format="DD-MMM-YYYY"
+              style={{ width: '100%' }}
             />
             )}
           </FormItem>
         </Col>
-        <Col {...column2} style={{ textAlign: 'right' }}>
+        <Col {...rightColumn} style={{ textAlign: 'right' }}>
           <Button
             type="dashed"
             size="large"

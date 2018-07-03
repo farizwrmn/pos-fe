@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
+import { numberFormat } from 'utils'
 
 const PrintXLS = ({ data, storeInfo, name }) => {
   const styles = {
@@ -42,10 +43,10 @@ const PrintXLS = ({ data, storeInfo, name }) => {
         row.push({ value: (list[key].brandName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].categoryName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].aspectRatio || '0').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].sellPrice || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].costPrice || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].distPrice01 || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].distPrice02 || 0).toLocaleString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (list[key].sellPrice || 0), numFmt: numberFormat.format(list[key].sellPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (list[key].costPrice || 0), numFmt: numberFormat.format(list[key].costPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (list[key].distPrice01 || 0), numFmt: numberFormat.format(list[key].distPrice01, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (list[key].distPrice02 || 0), numFmt: numberFormat.format(list[key].distPrice02, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1

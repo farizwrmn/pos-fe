@@ -6,11 +6,21 @@ const Search = Input.Search
 const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 
-const filterItemLayout = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
 }
 
 const FilterTransfer = ({
@@ -41,15 +51,15 @@ const FilterTransfer = ({
   }
 
   return (
-    <Row gutter={24}>
-      <Col {...filterItemLayout} >
+    <Row >
+      <Col {...leftColumn} >
         <FormItem >
           {getFieldDecorator('period', { initialValue: period ? moment.utc(period, 'YYYY-MM') : null })(
             <MonthPicker onChange={handleChangeDate} placeholder="Select Period" />
           )}
         </FormItem>
       </Col>
-      <Col {...filterItemLayout} >
+      <Col {...rightColumn} >
         <FormItem >
           {getFieldDecorator('transNo')(
             <Search

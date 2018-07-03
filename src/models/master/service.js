@@ -35,20 +35,8 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/service':
-            // if (!activeKey) {
-            //   dispatch(routerRedux.push({
-            //     pathname,
-            //     query: {
-            //       activeKey: '0'
-            //     }
-            //   }))
-            // }
-            if (activeKey === '1') {
-              dispatch({
-                type: 'query',
-                payload: other
-              })
-            }
+            if (!activeKey) dispatch({ type: 'refreshView' })
+            if (activeKey === '1') dispatch({ type: 'query', payload: other })
             dispatch({ type: 'queryServiceType' })
             dispatch({
               type: 'updateState',
@@ -82,18 +70,26 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryAllService ({ payload = {} }, { call, put }) {
+    * checkLengthOfData ({ payload = {} }, { call, put }) {
       yield put({ type: 'showLoading' })
-      const data = yield call(query, { type: payload.type })
+      const data = yield call(query, payload)
       yield put({ type: 'hideLoading' })
       if (data.success) {
-        if (payload.mode === 'pdf') {
-          if (data.data.length > 500) {
-            Modal.warning({
-              title: 'Your Data is too many, please print out with using Excel'
-            })
-          }
+        if (data.data.length > 0) {
+          Modal.warning({
+            title: 'Your Data is too many, please print out with using Excel'
+          })
+        } else {
+          yield put({ type: 'queryAllService', payload: { type: 'all' } })
         }
+      }
+    },
+
+    * queryAllService ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(query, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
@@ -216,6 +212,14 @@ export default modelExtend(pageModel, {
     querySuccessServiceType (state, action) {
       const { listServiceType } = action.payload
       return { ...state, listServiceType }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
     }
 
   }

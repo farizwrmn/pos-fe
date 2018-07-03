@@ -12,14 +12,21 @@ const ViewDetail = ({
   dispatch,
   activeTabKeyClose
 }) => {
-  let summary = { total: { openingCash:0, cashIn:0, cashOut: 0 }}
+  let summary = {
+    total: {
+      openingCash: 0,
+      cashIn: 0,
+      cashOut: 0
+    }
+  }
+
   if (listCashTransSummary) {
     if (listCashTransSummary.hasOwnProperty('data')) {
       summary.total.cashIn = listCashTransSummary.total[0].cashIn
       summary.total.cashOut = listCashTransSummary.total[0].cashOut
     }
   }
-  summary.total.cashOnHand = summary.total.openingCash + summary.total.cashIn - summary.total.cashOut
+  summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
 
   let detail = { total: { openingCash:0, cashIn:0, cashOut: 0 }}
   if (listCashTransDetail) {

@@ -31,7 +31,7 @@ const Report = ({ customerReport, location, dispatch }) => {
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" style={{ clear: 'both' }}>
       <Tabs {...tabProps}>
         <TabPane tab="History" key="0">
           <History />

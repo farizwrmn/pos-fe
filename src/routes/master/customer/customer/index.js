@@ -190,13 +190,22 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
       })
     },
     getAllCustomer () {
-      dispatch({
-        type: 'customer/queryAllCustomer',
-        payload: {
-          type: 'all',
-          mode
-        }
-      })
+      if (mode === 'pdf') {
+        dispatch({
+          type: 'customer/checkLengthOfData',
+          payload: {
+            page: 51,
+            pageSize: 10
+          }
+        })
+      } else {
+        dispatch({
+          type: 'customer/queryAllCustomer',
+          payload: {
+            type: 'all'
+          }
+        })
+      }
     }
   }
   const modalProps = {

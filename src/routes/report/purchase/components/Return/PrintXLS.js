@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -110,10 +111,12 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`F${m}`).value = listTrans[n].productName
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].qty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).value = parseFloat(listTrans[n].qty)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).numFmt = numberFormat.format(listTrans[n].qty, 2)
+        sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].amount)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`H${m}`).numFmt = numberFormat.format(listTrans[n].amount, 2)
       }
 
       for (let m = 65; m < (header.length + 65); m += 1) {

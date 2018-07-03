@@ -33,14 +33,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/employee':
-            // if (!activeKey) {
-            //   dispatch(routerRedux.push({
-            //     pathname,
-            //     query: {
-            //       activeKey: '0'
-            //     }
-            //   }))
-            // }
+            if (!activeKey) dispatch({ type: 'refreshView' })
             dispatch({ type: 'querySequenceEmployee' })
             dispatch({
               type: 'updateState',
@@ -250,6 +243,14 @@ export default modelExtend(pageModel, {
         show: 1
       }
       return { ...state, ...defaultState }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
     }
 
   }

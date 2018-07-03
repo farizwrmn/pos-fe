@@ -9,12 +9,12 @@ const TreeNode = TreeSelect.TreeNode
 const formItemLayout = {
   labelCol: {
     xs: { span: 7 },
-    sm: { span: 5 },
+    sm: { span: 3 },
     md: { span: 4 }
   },
   wrapperCol: {
-    xs: { span: 14 },
-    sm: { span: 16 },
+    xs: { span: 16 },
+    sm: { span: 10 },
     md: { span: 17 }
   }
 }
@@ -55,13 +55,13 @@ const FormInput = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 18
+        offset: modalType === 'edit' ? 9 : 18
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 7 : 11
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 19
+        offset: modalType === 'edit' ? 9 : 17
       },
       lg: {
         offset: modalType === 'edit' ? 13 : 18

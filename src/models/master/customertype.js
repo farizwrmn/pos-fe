@@ -32,14 +32,7 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/master/customertype') {
-          // if (!activeKey) {
-          //   dispatch(routerRedux.push({
-          //     pathname,
-          //     query: {
-          //       activeKey: '0'
-          //     }
-          //   }))
-          // }
+          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({ type: 'querySellprice' })
           dispatch({
             type: 'updateState',
@@ -185,6 +178,14 @@ export default modelExtend(pageModel, {
     querySuccessSellprice (state, action) {
       const { listSellprice } = action.payload
       return { ...state, listSellprice }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
     }
   }
 })

@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import InputMask from 'react-input-mask'
 import { Form, Input, Button, Select, DatePicker, Radio, Row, Col, Tooltip, Modal } from 'antd'
 
 const FormItem = Form.Item
@@ -66,6 +67,16 @@ const FormCustomer = ({
         ...getFieldsValue()
       }
       if (data.email === '') data.email = null
+      if (data.taxId === '') data.taxId = null
+      if (data.taxId) {
+        if (data.taxId.includes('_')) {
+          Modal.warning({
+            title: 'NPWP is not valid!'
+          })
+          return
+        }
+        data.taxId = data.taxId.replace(/[.-]/g, '')
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -343,14 +354,8 @@ const FormCustomer = ({
           </FormItem>
           <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxId', {
-              initialValue: item.taxId,
-              rules: [
-                {
-                  pattern: /^[0-9]{3,15}$/,
-                  message: '0-9'
-                }
-              ]
-            })(<Input maxLength={15} />)}
+              initialValue: item.taxId
+            })(<InputMask mask="99.999.999.9-999.999" className="ant-input ant-input-lg" />)}
           </FormItem>
           <FormItem label="Gender" hasFeedback {...formItemLayout}>
             {getFieldDecorator('gender', {
