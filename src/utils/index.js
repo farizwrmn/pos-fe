@@ -119,11 +119,10 @@ const messageInfo = (info, type = 'info', duration = 3) => {
 }
 
 const formatNumberIndonesia = (text) => {
-  return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return ((text) ? text : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 const isEmptyObject = (obj) => {
-  console.log('abc', obj)
   if (!obj) {
     return true
   }

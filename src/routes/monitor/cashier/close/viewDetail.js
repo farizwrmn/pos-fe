@@ -7,25 +7,13 @@ const TabPane = Tabs.TabPane
 
 const ViewDetail = ({
   listCashTransSummary,
+  summary,
   listCashTransDetail,
   showDetail,
   dispatch,
   activeTabKeyClose
 }) => {
-  let summary = {
-    total: {
-      openingCash: 0,
-      cashIn: 0,
-      cashOut: 0
-    }
-  }
-  if (listCashTransSummary) {
-    if (listCashTransSummary.hasOwnProperty('data')) {
-      summary.total.cashIn = listCashTransSummary.total[0].cashIn
-      summary.total.cashOut = listCashTransSummary.total[0].cashOut
-    }
-  }
-  summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
+
 
   let detail = { total: { openingCash: 0, cashIn: 0, cashOut: 0 } }
   if (listCashTransDetail) {
@@ -113,15 +101,15 @@ const ViewDetail = ({
             <Col span={4}>
               Opening Cash
             </Col>
-            <Col offset={18} span={2} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(0)}
+            <Col offset={17} span={3} style={{ textAlign: 'right' }}>
+              {formatNumberIndonesia(summary.total.openingCash)}
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
               Cash-In
             </Col>
-            <Col offset={17} span={2} style={{ textAlign: 'right' }}>
+            <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashIn)}
             </Col>
           </Row>
@@ -129,7 +117,7 @@ const ViewDetail = ({
             <Col offset={1} span={4}>
               Cash-Out
             </Col>
-            <Col offset={17} span={2} style={{ textAlign: 'right' }}>
+            <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashOut)}
             </Col>
           </Row>
@@ -137,7 +125,7 @@ const ViewDetail = ({
             <Col span={4}>
               Cash-on Hand
             </Col>
-            <Col offset={18} span={2} style={{ textAlign: 'right' }}>
+            <Col offset={17} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashOnHand)}
             </Col>
           </Row>
@@ -163,7 +151,7 @@ const ViewDetail = ({
             <Col offset={1} span={4}>
               Cash-In
             </Col>
-            <Col offset={17} span={2} style={{ textAlign: 'right' }}>
+            <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(detail.total.cashIn)}
             </Col>
           </Row>
@@ -171,7 +159,7 @@ const ViewDetail = ({
             <Col offset={1} span={4}>
               Cash-Out
             </Col>
-            <Col offset={17} span={2} style={{ textAlign: 'right' }}>
+            <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(detail.total.cashOut)}
             </Col>
           </Row>

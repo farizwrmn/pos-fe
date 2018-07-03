@@ -68,7 +68,7 @@ export default modelExtend(pageModel, {
               }
             })
             break
-          case '/service/history':
+          case '/monitor/service/history':
             dispatch({ type: 'query' })
             dispatch({
               type: 'updateState',
