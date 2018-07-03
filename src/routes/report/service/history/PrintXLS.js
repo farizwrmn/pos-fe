@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
@@ -15,40 +16,39 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
 
   const styles = {
     title: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       underline: true
     },
     merchant: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     period: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12
     },
     tableTitle: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 12,
       bold: true
     },
     tableHeader: {
-      name: 'Calibri',
-      family: 4,
-      size: 12,
-      bold: true
-    },
-    tableBody: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 11
     },
+    tableBody: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
     tableFooter: {
-      name: 'Calibri',
+      name: 'Courier New',
       family: 4,
       size: 11
     },
@@ -102,10 +102,10 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
       tableBody.push({ value: `${arr[i][n].transNo}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${moment(arr[i][n].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].serviceName}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(arr[i][n].qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(arr[i][n].sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(arr[i][n].discount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: `${(parseFloat(arr[i][n].amount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].qty, numFmt: numberFormat.format(arr[i][n].qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].sellingPrice, numFmt: numberFormat.format(arr[i][n].sellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].discount, numFmt: numberFormat.format(arr[i][n].discount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].amount, numFmt: numberFormat.format(arr[i][n].amount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
     }
     tableBodies.push(group)
@@ -121,10 +121,10 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalSellingPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalAmount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalQty, numFmt: numberFormat.format(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalSellingPrice, numFmt: numberFormat.format(totalSellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount, numFmt: numberFormat.format(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalAmount, numFmt: numberFormat.format(totalAmount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooters.push(tableFooter)
   }
 
