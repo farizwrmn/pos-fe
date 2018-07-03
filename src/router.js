@@ -216,6 +216,14 @@ const Routers = function ({ history, app }) {
             }, 'master-cash-type')
           }
         }, {
+          path: 'master/bank',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/master/bank/'))
+            }, 'master-bank')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
