@@ -44,7 +44,6 @@ export async function edit (params) {
 }
 
 export async function queryCurrentOpenCashRegister (params) {
-  console.log('zzz1', params)
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
@@ -112,14 +111,12 @@ export async function queryCashierTransSourceDetail (params) {
   })
 }
 export async function queryCloseRegister (params) {
-  console.log('qqq', params)
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashRegister}/${params.id}?status=C`
-  console.log('qqq1', url)
   return request({
     url,
     method: 'put',
-    data: { desc: params.desc },
+    data: { desc: params.desc, total: params.summary.total },
     headers: apiHeaderToken
   })
 }
