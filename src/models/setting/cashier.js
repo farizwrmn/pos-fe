@@ -45,12 +45,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/monitor/cashier/periods') {
           dispatch({ type: 'query' })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
+          dispatch({ type: 'refreshView' })
         } else if (pathname === '/monitor/cashier/close') {
           const userId = lstorage.getStorageKey('udi')[1]
           dispatch({ type: 'getCashierInformation', payload: userId })
@@ -98,9 +93,8 @@ export default modelExtend(pageModel, {
     * getCashierInformation ({ payload = {} }, { call, put }) {
       const results = yield call(queryCurrentOpenCashRegister, payload)
       const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
-      if (results.success) {
+      if (results.success && results.data) {
         if (results.data.length === 0) {
-          console.log('xxx1')
           messageInfo('There is no cash register open for this store', 'warning', 10)
         } else {
           yield put({
@@ -289,6 +283,13 @@ export default modelExtend(pageModel, {
         modalType: 'edit',
         activeKey: '0',
         currentItem: item
+      }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        cashierInfo: []
       }
     }
   }

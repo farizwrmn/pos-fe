@@ -42,12 +42,8 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/product/stock') {
-          if (activeKey === '1') {
-            dispatch({
-              type: 'query',
-              payload: other
-            })
-          }
+          if (!activeKey) dispatch({ type: 'refreshView' })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
           dispatch({
             type: 'updateState',
             payload: {
@@ -267,6 +263,14 @@ export default modelExtend(pageModel, {
         productNames = []
       }
       return { ...state, auto: productNames }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
     }
 
   }

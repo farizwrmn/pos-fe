@@ -35,20 +35,8 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/service':
-            // if (!activeKey) {
-            //   dispatch(routerRedux.push({
-            //     pathname,
-            //     query: {
-            //       activeKey: '0'
-            //     }
-            //   }))
-            // }
-            if (activeKey === '1') {
-              dispatch({
-                type: 'query',
-                payload: other
-              })
-            }
+            if (!activeKey) dispatch({ type: 'refreshView' })
+            if (activeKey === '1') dispatch({ type: 'query', payload: other })
             dispatch({ type: 'queryServiceType' })
             dispatch({
               type: 'updateState',
@@ -224,6 +212,14 @@ export default modelExtend(pageModel, {
     querySuccessServiceType (state, action) {
       const { listServiceType } = action.payload
       return { ...state, listServiceType }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
     }
 
   }

@@ -89,20 +89,8 @@ export default modelExtend(pageModel, {
             })
             break
           case '/master/customer':
-            // if (!activeKey) {
-            //   dispatch(routerRedux.push({
-            //     pathname,
-            //     query: {
-            //       activeKey: '0'
-            //     }
-            //   }))
-            // }
-            if (activeKey === '1') {
-              dispatch({
-                type: 'query',
-                payload: other
-              })
-            }
+            if (!activeKey) dispatch({ type: 'refreshView' })
+            if (activeKey === '1') dispatch({ type: 'query', payload: other })
             dispatch({
               type: 'updateState',
               payload: {
@@ -468,6 +456,15 @@ export default modelExtend(pageModel, {
       }
       return {
         ...state
+      }
+    },
+
+    refreshView (state) {
+      console.log(state)
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
       }
     }
   }
