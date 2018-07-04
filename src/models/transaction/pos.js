@@ -980,8 +980,12 @@ export default {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: `Report error ${data.message}` || 'Report error'
+          content: (<p>Please go to <b>Setting > Person > Cashier</b> to make sure that your account has registered</p>)
         })
+        // Modal.warning({
+        //   title: 'Warning',
+        //   content: `Report error ${data.message}` || 'Report error'
+        // })
       }
     },
 
