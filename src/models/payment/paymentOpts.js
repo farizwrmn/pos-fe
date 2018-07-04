@@ -27,7 +27,22 @@ export default {
   },
 
   effects: {
-
+    * query ({ payload = {} }, { call, put }) {
+      const data = yield call(queryOpts, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listOpts: data.data
+          }
+        })
+      } else {
+        Modal.error({
+          title: 'Cannot find payment method',
+          content: 'Using default setting'
+        })
+      }
+    },
     * queryOpts ({ payload = {} }, { call, put }) {
       const data = yield call(queryOpts, payload)
       if (data.success) {

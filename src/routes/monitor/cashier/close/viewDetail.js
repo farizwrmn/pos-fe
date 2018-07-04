@@ -13,8 +13,6 @@ const ViewDetail = ({
   dispatch,
   activeTabKeyClose
 }) => {
-
-
   let detail = { total: { openingCash: 0, cashIn: 0, cashOut: 0 } }
   if (listCashTransDetail) {
     if (listCashTransDetail.hasOwnProperty('data')) {

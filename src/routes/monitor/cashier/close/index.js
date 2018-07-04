@@ -67,6 +67,21 @@ const CloseCashRegister = ({
     })
   }
 
+  let summary = {
+    total: {
+      openingCash: cashierInfo.openingBalance,
+      cashIn: 0,
+      cashOut: 0
+    }
+  }
+  if (listCashTransSummary) {
+    if (listCashTransSummary.hasOwnProperty('data')) {
+      summary.total.cashIn = listCashTransSummary.total[0].cashIn
+      summary.total.cashOut = listCashTransSummary.total[0].cashOut
+    }
+  }
+  summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
+
   const confirmClose = () => {
     if (!isEmptyObject(listCashTransSummary)) {
       confirm({
@@ -90,21 +105,6 @@ const CloseCashRegister = ({
       })
     }
   }
-
-  let summary = {
-    total: {
-      openingCash: cashierInfo.openingBalance,
-      cashIn: 0,
-      cashOut: 0
-    }
-  }
-  if (listCashTransSummary) {
-    if (listCashTransSummary.hasOwnProperty('data')) {
-      summary.total.cashIn = listCashTransSummary.total[0].cashIn
-      summary.total.cashOut = listCashTransSummary.total[0].cashOut
-    }
-  }
-  summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
 
   const viewDetailProps = {
     listCashTransSummary,
@@ -162,7 +162,7 @@ const CloseCashRegister = ({
         <Col {...column}>
           <FormItem label="Description" hasFeedback {...formItemLayout2}>
             {getFieldDecorator('periodDesc', {
-              initialValue: cashierInfo.periodDesc || 'Closing ' + (cashierInfo.period || 'nothing')
+              initialValue: cashierInfo.periodDesc || `Closing ${cashierInfo.period || 'nothing'}`
             })(<Input />)}
           </FormItem>
         </Col>

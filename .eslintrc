@@ -73,6 +73,7 @@
     "localStorage": true,
     "navigator": true,
     "alert": true,
+    "screen": true,
     "location": true,
     "Element": true,
     "Image": true,

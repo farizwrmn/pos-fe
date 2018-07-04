@@ -43,7 +43,8 @@ const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
       dispatch({
         type: 'purchaseReport/queryPurchaseDetail',
         payload: {
-          transDate: [startPeriod, endPeriod]
+          transDate: [startPeriod, endPeriod],
+          ...data
         }
       })
     },
@@ -62,9 +63,12 @@ const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
         }
       })
     },
-    onSearchSupplier () {
+    onSearchSupplier (value) {
       dispatch({
-        type: 'supplier/query'
+        type: 'supplier/query',
+        payload: {
+          q: value
+        }
       })
     }
   }

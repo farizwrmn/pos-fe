@@ -22,7 +22,6 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
-
   let styleCashRegisterTitle = color.normal
   let dotVisible = false
   let cashRegisterTitle = 'Cashier Information'

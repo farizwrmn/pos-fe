@@ -1,6 +1,6 @@
 const APIV1 = '/api/v1'
-const APIHOST = 'demopos.darkotech.id' // '192.168.80.64'
-const APIPORT = 5557
+const APIHOST = 'localhost' // '192.168.80.64'
+const APIPORT = 6402
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
     apiMobile: '/mobile',
     apiTools: '/tools',
     apiCashierUsers: '/cashiers/users',
-    apiCashRegister: '/cashiers/cashregisters',
+    apiCashRegister: '/cashiers/cashregisters'
   },
   api: {
     getIpAddress: '/utils/ipaddr',
@@ -56,6 +56,7 @@ module.exports = {
     pos: '/pos',
     posdetail: '/posdetail',
     posreport: '/posreport',
+    cashEntryReport: '/report/cashentry',
     posReport: '/report/pos',
     purchasereport: '/report/purchase',
     inventoryreport: '/report/transfer',
