@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
@@ -64,6 +65,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   let tableHeader = []
   let tableFooter = []
   const createTableBody = (list) => {
+    console.log(list)
     let tableBody = []
     let start = 1
     let countQtyValue = 0
@@ -79,22 +81,22 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
           { value: (data.address01 || data.address02 || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.accountNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transNo || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.beginValue || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transNo || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.beginValue || 0), numFmt: numberFormat.formatNumberInExcel(data.beginValue, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.nettoTotal || 0), numFmt: numberFormat.formatNumberInExcel(data.nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paid || 0), numFmt: numberFormat.formatNumberInExcel(data.paid, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.bankName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.checkNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paid || 0), numFmt: numberFormat.formatNumberInExcel(data.paid, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: (data.paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paidTotal || 0), numFmt: numberFormat.formatNumberInExcel(data.paidTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.returnTotal || 0), numFmt: numberFormat.formatNumberInExcel(data.returnTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjustTotal || 0), numFmt: numberFormat.formatNumberInExcel(data.adjustTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.total || 0), numFmt: numberFormat.formatNumberInExcel(data.total, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.detail || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
         tableBody.push(row)
@@ -197,19 +199,19 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: beginTotal, numFmt: numberFormat.formatNumberInExcel(beginTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: nettoTotal, numFmt: numberFormat.formatNumberInExcel(nettoTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
 
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, numFmt: numberFormat.formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, numFmt: numberFormat.formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
 
-        { value: (paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, numFmt: numberFormat.formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: returnTotal, numFmt: numberFormat.formatNumberInExcel(returnTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: adjustTotal, numFmt: numberFormat.formatNumberInExcel(adjustTotal, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: total, numFmt: numberFormat.formatNumberInExcel(total, 2), alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody }
       ]
     )

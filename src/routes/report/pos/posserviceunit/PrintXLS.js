@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -79,11 +80,11 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
       const footer = [
         'GRAND TOTAL',
         '',
-        `${qtyUnit}`,
-        `${serviceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${counterTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${(parseFloat(serviceTotal) + parseFloat(productTotal) + parseFloat(counterTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        qtyUnit,
+        serviceTotal,
+        productTotal,
+        counterTotal,
+        (parseFloat(serviceTotal) + parseFloat(productTotal) + parseFloat(counterTotal))
       ]
       for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
@@ -103,16 +104,21 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`B${m}`).value = `${moment(listTrans[n].transDate, 'DD-MMM-YYYY').format('DD-MMM-YYYY')}`
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = (parseFloat(listTrans[n].qtyUnit) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        sheet.getCell(`C${m}`).value = (parseFloat(listTrans[n].qtyUnit) || 0)
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).value = `${(parseFloat(listTrans[n].service)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`C${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(listTrans[n].qtyUnit) || 0), 2)
+        sheet.getCell(`D${m}`).value = (parseFloat(listTrans[n].service))
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].product)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listTrans[n].service), 2)
+        sheet.getCell(`E${m}`).value = (parseFloat(listTrans[n].product))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].counter) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listTrans[n].product), 2)
+        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].counter) || 0)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product) + parseFloat(listTrans[n].counter))).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(listTrans[n].counter) || 0), 2)
+        sheet.getCell(`G${m}`).value = ((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product) + parseFloat(listTrans[n].counter)))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product) + parseFloat(listTrans[n].counter)), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -129,7 +135,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('D2').alignment = { vertical: 'middle', horizontal: 'center' }

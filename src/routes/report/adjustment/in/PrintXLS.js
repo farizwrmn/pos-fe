@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
+import { numberFormat } from 'utils'
 import { saveAs } from 'file-saver'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
@@ -79,9 +80,9 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         '',
         '',
         'GRAND TOTAL',
-        `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${costTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        qtyTotal,
+        costTotal,
+        grandTotal
       ]
       for (let m = 65; m < 71; m += 1) {
         let o = 7
@@ -92,7 +93,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count])
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -103,12 +105,15 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).value = `${(parseFloat(listTrans[n].qtyIn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).value = parseFloat(listTrans[n].qtyIn)
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].costPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].qtyIn)
+        sheet.getCell(`E${m}`).value = parseFloat(listTrans[n].costPrice)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].costPrice)
+        sheet.getCell(`F${m}`).value = parseFloat(listTrans[n].amount)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].amount)
       }
 
       for (let m = 65; m < 71; m += 1) {

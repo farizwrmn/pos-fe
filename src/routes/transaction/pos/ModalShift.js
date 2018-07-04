@@ -32,7 +32,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
     if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
       styleCashRegisterTitle = color.error
       cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
-      dotVisible=true
+      dotVisible = true
     }
     cashRegisterTitle = <p style={{ color: styleCashRegisterTitle }}>{cashRegisterTitle}</p>
   }
@@ -92,7 +92,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
               }
             ]
           })(<DatePicker disabled={currentCashier.cashActive} style={{ width: '100%' }} />)}
-          <Badge dot={dotVisible}></Badge>
+          <Badge dot={dotVisible} />
         </FormItem>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {

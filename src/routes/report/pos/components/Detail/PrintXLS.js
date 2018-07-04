@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
@@ -166,15 +167,15 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         tableBody.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push({ value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push({ value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.qty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.disc1) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.disc2) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.disc3) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.discount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        tableBody.push({ value: `${(parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.qty) || 0), numFmt: numberFormat.formatNumberInExcel(data.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.sellingPrice) || 0), numFmt: numberFormat.formatNumberInExcel(data.sellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.total) || 0), numFmt: numberFormat.formatNumberInExcel(data.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.disc1) || 0), numFmt: numberFormat.formatNumberInExcel(data.disc1, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.disc2) || 0), numFmt: numberFormat.formatNumberInExcel(data.disc2, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.disc3) || 0), numFmt: numberFormat.formatNumberInExcel(data.disc3, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.discount) || 0), numFmt: numberFormat.formatNumberInExcel(data.discount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.totalDiscount) || 0), numFmt: numberFormat.formatNumberInExcel(data.totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: (parseFloat(data.netto) || 0), numFmt: numberFormat.formatNumberInExcel(data.netto, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         group.push(tableBody)
         count += 1
       }
@@ -195,15 +196,15 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalQty, numFmt: numberFormat.formatNumberInExcel(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalSubTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount1.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount2.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount3.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount4.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: `${totalAfterDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalSubTotal, numFmt: numberFormat.formatNumberInExcel(totalSubTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount1, numFmt: numberFormat.formatNumberInExcel(totalDiscount1, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount2, numFmt: numberFormat.formatNumberInExcel(totalDiscount2, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount3, numFmt: numberFormat.formatNumberInExcel(totalDiscount3, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount4, numFmt: numberFormat.formatNumberInExcel(totalDiscount4, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount, numFmt: numberFormat.formatNumberInExcel(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalAfterDiscount, numFmt: numberFormat.formatNumberInExcel(totalAfterDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooters.push(tableFooter)
   }
 
@@ -251,15 +252,15 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
         { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.qty) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.sellingPrice) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.total) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.disc1) || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.disc2) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.disc3) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.discount) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.totalDiscount) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: `${(parseFloat(item.netto) || 0)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
+        { value: (parseFloat(item.qty) || 0), numFmt: numberFormat.formatNumberInExcel(item.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.sellingPrice) || 0), numFmt: numberFormat.formatNumberInExcel(item.sellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.total) || 0), numFmt: numberFormat.formatNumberInExcel(item.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.disc1) || 0), numFmt: numberFormat.formatNumberInExcel(item.disc1, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.disc2) || 0), numFmt: numberFormat.formatNumberInExcel(item.disc2, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.disc3) || 0), numFmt: numberFormat.formatNumberInExcel(item.disc3, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.discount) || 0), numFmt: numberFormat.formatNumberInExcel(item.discount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.totalDiscount) || 0), numFmt: numberFormat.formatNumberInExcel(item.totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.netto) || 0), numFmt: numberFormat.formatNumberInExcel(item.netto, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
       ])
     }
   }

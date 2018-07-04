@@ -1,4 +1,4 @@
-const format = (value, decimal) => {
+const formatNumberInExcel = (value, decimal) => {
   if (value !== 0 && typeof value === 'number') {
     let defaultFormat = '#,##0'
     if (decimal > 0) {
@@ -13,5 +13,6 @@ const format = (value, decimal) => {
 }
 
 module.exports = {
-  format
+  format,
+  formatNumberInExcel
 }

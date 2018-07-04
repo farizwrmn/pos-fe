@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -85,13 +86,13 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         '',
         '',
         'GRAND TOTAL',
-        `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`,
-        `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        qtyTotal,
+        grandTotal,
+        discountTotal,
+        dppTotal,
+        ppnTotal,
+        roundingTotal,
+        nettoTotal
       ]
       for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
@@ -115,20 +116,27 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${listDaily[n].productName}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`E${m}`).value = `${parseInt(listDaily[n].qty, 10).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = parseInt(listDaily[n].qty, 10)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listDaily[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseInt(listDaily[n].qty, 10), 2)
+        sheet.getCell(`F${m}`).value = (parseFloat(listDaily[n].total))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listDaily[n].totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].total), 2)
+        sheet.getCell(`G${m}`).value = (parseFloat(listDaily[n].totalDiscount))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listDaily[n].DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].totalDiscount), 2)
+        sheet.getCell(`H${m}`).value = (parseFloat(listDaily[n].DPP))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listDaily[n].PPN)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].DPP), 2)
+        sheet.getCell(`I${m}`).value = (parseFloat(listDaily[n].PPN))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).value = `${(parseFloat(listDaily[n].roundingItem)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].PPN), 2)
+        sheet.getCell(`J${m}`).value = (parseFloat(listDaily[n].roundingItem))
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).value = `${(parseFloat(listDaily[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`J${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].roundingItem), 2)
+        sheet.getCell(`K${m}`).value = (parseFloat(listDaily[n].netto))
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`K${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].netto), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -145,7 +153,8 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

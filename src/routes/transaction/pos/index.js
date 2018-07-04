@@ -1586,7 +1586,7 @@ const Pos = ({
   } else {
     if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
       cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
-      dotVisible=true
+      dotVisible = true
     }
   }
 
@@ -1607,7 +1607,7 @@ const Pos = ({
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}>
                       <Tooltip title={cashRegisterTitle}>
-                      Date : {currentCashier.period} <Badge dot={dotVisible}>  </Badge>
+                        Date : {currentCashier.period} <Badge dot={dotVisible}>  </Badge>
                       </Tooltip>
                     </Col>
                   </Row>

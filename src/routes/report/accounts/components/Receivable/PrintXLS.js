@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, date, storeInfo }) => {
@@ -82,16 +83,16 @@ const PrintXLS = ({ listTrans, date, storeInfo }) => {
         row.push({ value: (data.memberName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
 
         row.push({ value: (data.memberGroupName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt120days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt90days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.nettoTotal || 0), numFmt: numberFormat.formatNumberInExcel(data.nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.paid || 0), numFmt: numberFormat.formatNumberInExcel(data.paid, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt120days || 0), numFmt: numberFormat.formatNumberInExcel(data.gt120days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt90days || 0), numFmt: numberFormat.formatNumberInExcel(data.gt90days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
 
-        row.push({ value: (data.gt60days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt30days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt15days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gte0days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.restNetto || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt60days || 0), numFmt: numberFormat.formatNumberInExcel(data.gt60days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt30days || 0), numFmt: numberFormat.formatNumberInExcel(data.gt30days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt15days || 0), numFmt: numberFormat.formatNumberInExcel(data.gt15days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gte0days || 0), numFmt: numberFormat.formatNumberInExcel(data.gte0days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.restNetto || 0), numFmt: numberFormat.formatNumberInExcel(data.restNetto, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
       }
       start += 1
@@ -145,16 +146,16 @@ const PrintXLS = ({ listTrans, date, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${paidTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${gt120daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${gt90daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${gt60daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: grandTotal, numFmt: numberFormat.formatNumberInExcel(grandTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: paidTotal, numFmt: numberFormat.formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt120daysTotal, numFmt: numberFormat.formatNumberInExcel(gt120daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt90daysTotal, numFmt: numberFormat.formatNumberInExcel(gt90daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt60daysTotal, numFmt: numberFormat.formatNumberInExcel(gt60daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: `${gt30daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${gt15daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${gte0daysTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: gt30daysTotal, numFmt: numberFormat.formatNumberInExcel(gt30daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt15daysTotal, numFmt: numberFormat.formatNumberInExcel(gt15daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gte0daysTotal, numFmt: numberFormat.formatNumberInExcel(gte0daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: nettoTotal, numFmt: numberFormat.formatNumberInExcel(nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     return tableBody
