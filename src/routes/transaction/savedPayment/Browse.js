@@ -156,7 +156,7 @@ const BrowseGroup = ({
         <Col xl={12} lg={12} md={12}>
           <FormItem hasFeedBack >
             {getFieldDecorator('typeCode', {
-              initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
+              initialValue: moment(new Date(), 'YYYYMM'),
               rules: [{
                 required: true
               }]
