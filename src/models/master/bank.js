@@ -52,7 +52,7 @@ export default modelExtend(pageModel, {
       }
     },
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, { data: payload })
       if (data.success) {
         success()
         yield put({
@@ -71,7 +71,7 @@ export default modelExtend(pageModel, {
       }
     },
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ cashEntryType }) => cashEntryType.currentItem.id)
+      const id = yield select(({ bank }) => bank.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -113,8 +113,39 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccessCounter (state, action) {
+      const { listAccountCode, pagination } = action.payload
+      return {
+        ...state,
+        listAccountCode,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
     updateState (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    changeTab (state, { payload }) {
+      const { key } = payload
+      return {
+        ...state,
+        activeKey: key,
+        modalType: 'add',
+        currentItem: {}
+      }
+    },
+    editItem (state, { payload }) {
+      const { item } = payload
+      return {
+        ...state,
+        modalType: 'edit',
+        activeKey: '0',
+        currentItem: item
+      }
     }
   }
 })

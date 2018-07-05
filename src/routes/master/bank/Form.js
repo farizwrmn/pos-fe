@@ -108,7 +108,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="chargeFee" hasFeedback {...formItemLayout}>
             {getFieldDecorator('chargeFee', {
-              initialValue: item.chargeFee,
+              initialValue: item.chargeFee || 0,
               rules: [
                 {
                   required: true
@@ -118,7 +118,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Charge Fee Percent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('chargeFeePercent', {
-              initialValue: item.chargeFeePercent,
+              initialValue: item.chargeFeePercent || 0,
               rules: [
                 {
                   required: true
