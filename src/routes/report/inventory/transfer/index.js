@@ -26,10 +26,10 @@ const Report = ({ inventoryReport, dispatch }) => {
   return (
     <div className="content-inner" style={{ clear: 'both' }}>
       <Tabs activeKey={activeKey} onChange={key => onChangeTab(key)} type="card">
-        <TabPane tab="Transfer In" key="0"><TransferIn /></TabPane>
-        <TabPane tab="Transfer Out" key="1"><TransferOut /></TabPane>
-        <TabPane tab="In Transfer" key="2"><InTransfer /></TabPane>
-        <TabPane tab="In Transit" key="3"><InTransit /></TabPane>
+        <TabPane tab="Transfer In" key="0">{activeKey === '0' && <TransferIn />}</TabPane>
+        <TabPane tab="Transfer Out" key="1">{activeKey === '1' && <TransferOut />}</TabPane>
+        <TabPane tab="In Transfer" key="2">{activeKey === '2' && <InTransfer />}</TabPane>
+        <TabPane tab="In Transit" key="3">{activeKey === '3' && <InTransit />}</TabPane>
       </Tabs>
     </div>
   )

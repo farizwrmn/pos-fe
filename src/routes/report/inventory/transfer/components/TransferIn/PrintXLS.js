@@ -4,6 +4,8 @@ import moment from 'moment'
 import numberFormat from 'utils'
 import { RepeatExcelReport } from 'components'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({
   listInventoryTransfer,
   period,
@@ -130,15 +132,14 @@ const PrintXLS = ({
     let count = 1
     for (let n = 0; n < master.length; n += 1) {
       let data = master[n]
-      console.log(typeof data.qty)
       let tableBody = [
         { value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.qty) || 0), numFmt: numberFormat.formatNumberInExcel(data.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.purchasePrice) || 0), numFmt: numberFormat.formatNumberInExcel(data.purchasePrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.nettoTotal) || 0), numFmt: numberFormat.formatNumberInExcel(data.nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+        { value: (parseFloat(data.qty) || 0), numFmt: formatNumberInExcel(data.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.purchasePrice) || 0), numFmt: formatNumberInExcel(data.purchasePrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.nettoTotal) || 0), numFmt: formatNumberInExcel(data.nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
       ]
       group.push(tableBody)
       count += 1
@@ -153,9 +154,9 @@ const PrintXLS = ({
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: totalQty, numFmt: numberFormat.formatNumberInExcel(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: totalQty, numFmt: formatNumberInExcel(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: total, numFmt: numberFormat.formatNumberInExcel(total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: total, numFmt: formatNumberInExcel(total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
     tableFooters.push(tableFooter)
   }

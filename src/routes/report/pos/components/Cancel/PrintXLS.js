@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel} = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
@@ -99,7 +100,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = formatNumberInExcel(header[count], 2)
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -114,19 +115,19 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = (parseFloat(listTrans[n].total))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].total)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(listTrans[n].total)
         sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].discount))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].discount)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(listTrans[n].discount)
         sheet.getCell(`G${m}`).value = (parseFloat(listTrans[n].DPP))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].DPP, 2)
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(listTrans[n].DPP, 2)
         sheet.getCell(`H${m}`).value = (parseFloat(listTrans[n].PPN))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].PPN, 2)
+        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel(listTrans[n].PPN, 2)
         sheet.getCell(`I${m}`).value = (parseFloat(listTrans[n].netto))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].netto, 2)
+        sheet.getCell(`I${m}`).numFmt = formatNumberInExcel(listTrans[n].netto, 2)
         sheet.getCell(`J${m}`).value = listTrans[n].memo
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`K${m}`).value = listTrans[n].cashier

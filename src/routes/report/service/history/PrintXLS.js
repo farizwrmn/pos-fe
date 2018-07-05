@@ -4,6 +4,8 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
   let groupBy = (xs, key) => {
     return xs.reduce((rv, x) => {
@@ -102,10 +104,10 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
       tableBody.push({ value: `${arr[i][n].transNo}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${moment(arr[i][n].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].serviceName}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: arr[i][n].qty, numFmt: numberFormat.formatNumberInExcel(arr[i][n].qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: arr[i][n].sellingPrice, numFmt: numberFormat.formatNumberInExcel(arr[i][n].sellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: arr[i][n].discount, numFmt: numberFormat.formatNumberInExcel(arr[i][n].discount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: arr[i][n].amount, numFmt: numberFormat.formatNumberInExcel(arr[i][n].amount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].qty, numFmt: formatNumberInExcel(arr[i][n].qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].sellingPrice, numFmt: formatNumberInExcel(arr[i][n].sellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].discount, numFmt: formatNumberInExcel(arr[i][n].discount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].amount, numFmt: formatNumberInExcel(arr[i][n].amount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
     }
     tableBodies.push(group)
@@ -121,10 +123,10 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: totalQty, numFmt: numberFormat.formatNumberInExcel(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: totalSellingPrice, numFmt: numberFormat.formatNumberInExcel(totalSellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: totalDiscount, numFmt: numberFormat.formatNumberInExcel(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: totalAmount, numFmt: numberFormat.formatNumberInExcel(totalAmount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalQty, numFmt: formatNumberInExcel(totalQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalSellingPrice, numFmt: formatNumberInExcel(totalSellingPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount, numFmt: formatNumberInExcel(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalAmount, numFmt: formatNumberInExcel(totalAmount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooters.push(tableFooter)
   }
 

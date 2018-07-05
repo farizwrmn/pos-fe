@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({ listAsset, storeInfo }) => {
   const listData = _.reduce(listAsset, (group, item) => {
     (group[item.memberCode] = group[item.memberCode] || []).push(item)
@@ -93,9 +95,9 @@ const PrintXLS = ({ listAsset, storeInfo }) => {
       tableBody.push({ value: `${parseInt((n + 1), 10)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${listData[key][n].policeNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(listData[key][n].grandTotal) || 0), numFmt: numberFormat.formatNumberInExcel(listData[key][n].grandTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(listData[key][n].totalDiscount) || 0), numFmt: numberFormat.formatNumberInExcel(listData[key][n].totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(listData[key][n].nettoTotal) || 0), numFmt: numberFormat.formatNumberInExcel(listData[key][n].nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(listData[key][n].grandTotal) || 0), numFmt: formatNumberInExcel(listData[key][n].grandTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(listData[key][n].totalDiscount) || 0), numFmt: formatNumberInExcel(listData[key][n].totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(listData[key][n].nettoTotal) || 0), numFmt: formatNumberInExcel(listData[key][n].nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
     }
     tableBodies.push(group)
@@ -108,9 +110,9 @@ const PrintXLS = ({ listAsset, storeInfo }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: subTotal, numFmt: numberFormat.formatNumberInExcel(subTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: totalDiscount, numFmt: numberFormat.formatNumberInExcel(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: total, numFmt: numberFormat.formatNumberInExcel(total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: subTotal, numFmt: formatNumberInExcel(subTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: totalDiscount, numFmt: formatNumberInExcel(totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: total, numFmt: formatNumberInExcel(total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooters.push(tableFooter)
   }
 

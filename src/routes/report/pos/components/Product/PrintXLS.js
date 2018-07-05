@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }) => {
   let qtyTotal = list.reduce((cnt, o) => cnt + parseFloat(o.Qty), 0)
@@ -111,21 +112,21 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = parseInt(list[n].Qty, 10)
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).numFmt = numberFormat.formatNumberInExcel(parseInt(list[n].Qty, 10), 2)
+        sheet.getCell(`D${m}`).numFmt = formatNumberInExcel(parseInt(list[n].Qty, 10), 2)
         sheet.getCell(`E${m}`).value = (parseFloat(list[n].Total))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(list[n].Total), 2)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(parseFloat(list[n].Total), 2)
         sheet.getCell(`F${m}`).value = (parseFloat(list[n].discountTotal))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(list[n].discountTotal), 2)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(list[n].discountTotal), 2)
         sheet.getCell(`G${m}`).value = (parseFloat(list[n].Total) - parseFloat(list[n].discountTotal))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
         sheet.getCell(`H${m}`).value = '0'
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`I${m}`).value = (parseFloat(list[n].Total) - parseFloat(list[n].discountTotal))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
+        sheet.getCell(`I${m}`).numFmt = formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -143,7 +144,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
