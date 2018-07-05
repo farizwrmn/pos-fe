@@ -25,7 +25,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           { text: (data.transNo || '-').toString(), alignment: 'left', fontSize: 11 },
           { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
           { text: (data.reference || '-').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.typeName || '-').toString(), alignment: 'left', fontSize: 11 },
+          { text: 'CASH', alignment: 'left', fontSize: 11 },
           { text: `${data.amountIn ? formatNumberIndonesia(data.amountIn) : '-'}`, alignment: 'right', fontSize: 11 },
           { text: `${data.amountOut ? formatNumberIndonesia(data.amountOut) : '-'}`, alignment: 'right', fontSize: 11 }
         ]

@@ -99,11 +99,6 @@ const PrintXLS = ({ listDetail, from, to, storeInfo }) => {
         { value: `${formatDate(arr[i][0].transDate)}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],
       [
-        { value: 'Pembayaran', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-        { value: `${arr[i][0].typeName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
-      ],
-      [
         { value: 'Reference', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: `${arr[i][0].reference || ''}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }

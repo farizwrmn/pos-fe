@@ -74,7 +74,6 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
-      data.bankId = data.bankId ? data.bankId.key : null
       data.transType = data.transType ? data.transType.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
