@@ -200,6 +200,22 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
+          path: 'master/account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/master/accountCode/'))
+            }, 'master-account')
+          }
+        }, {
+          path: 'master/cash-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/cashEntryType'))
+              cb(null, require('./routes/master/cashEntryType/'))
+            }, 'master-cash-type')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -462,6 +478,14 @@ const Routers = function ({ history, app }) {
             }, 'report-account-summary')
           }
         }, {
+          path: 'report/cashentry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/cashEntryReport'))
+              cb(null, require('./routes/report/accounts/cashentry'))
+            }, 'report-account-summary')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -472,6 +496,19 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/detail/payableDetail'))
               registerModel(app, require('./models/accounts/accountPayment'))
               cb(null, require('./routes/accounts/summary'))
+            }, 'accounts-payment')
+          }
+        }, {
+          path: 'cash-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/cashentry'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/supplier'))
+              cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-payment')
           }
         }, {

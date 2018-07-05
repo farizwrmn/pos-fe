@@ -29,6 +29,7 @@ const column = {
 const FormCustomer = ({
   modalType,
   button,
+  memberCodeDisable,
   item,
   onSubmit,
   confirmSendMember,
@@ -77,6 +78,7 @@ const FormCustomer = ({
         }
         data.taxId = data.taxId.replace(/[.-]/g, '')
       }
+      if (memberCodeDisable) data.memberGetDefault = true
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -191,19 +193,19 @@ const FormCustomer = ({
                   initialValue: item.memberCode,
                   rules: [
                     {
-                      required: item.memberGetDefault ? !item.memberGetDefault : true,
+                      required: !memberCodeDisable,
                       pattern: /^[a-z0-9_-]{3,16}$/i,
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input placeholder={item.memberGetDefault ? 'Code generate by system' : ''} disabled={item.memberCodeDisable ? item.memberCodeDisable : (modalType === 'edit')} style={{ height: '32px' }} maxLength={16} />)}
+                })(<Input placeholder={memberCodeDisable ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : memberCodeDisable} style={{ height: '32px' }} maxLength={16} />)}
               </Col>
               <Col lg={6} md={24}>
                 {/* <Tooltip placement="bottomLeft" title="Get member from mobile user">
                     <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="primary" icon="mobile" onClick={OpenMobileModal} />
                   </Tooltip> */}
                 <Tooltip placement="bottomLeft" title="Get Default Code">
-                  <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
+                  <Button disabled={item.memberCode ? item.memberCode : memberCodeDisable} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
                 </Tooltip>
               </Col>
             </Row>

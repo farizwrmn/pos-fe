@@ -112,7 +112,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`G${m}`).value = list[n].serviceName
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`H${m}`).value = list[n].amount
-        sheet.getCell(`H${m}`).numFmt = numberFormat.format(list[n].amount, 2)
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].amount, 2)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -131,7 +131,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.format(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

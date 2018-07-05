@@ -83,8 +83,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         'GRAND TOTAL',
         '',
         '',
-        `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${amountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        qtyTotal,
+        amountTotal]
       for (let m = 65; m < (header.length + 65); m += 1) {
         let o = 7
         let count = m - 65
@@ -113,10 +113,10 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`G${m}`).value = parseFloat(listTrans[n].qty)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.format(listTrans[n].qty, 2)
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].qty, 2)
         sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].amount)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.format(listTrans[n].amount, 2)
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].amount, 2)
       }
 
       for (let m = 65; m < (header.length + 65); m += 1) {
@@ -133,7 +133,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcelNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

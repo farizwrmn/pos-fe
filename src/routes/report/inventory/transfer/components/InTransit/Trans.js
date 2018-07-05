@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import Browse from './Browse'
@@ -32,12 +33,22 @@ const Report = ({ dispatch, inventoryReport, app, loading }) => {
     },
     onDateChange (month, year) {
       const period = `${year}-${month}`
+      const { query, pathname } = location
       dispatch({
         type: 'inventoryReport/updateState',
         payload: {
           period
         }
       })
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey,
+          period: month,
+          year
+        }
+      }))
       dispatch({
         type: 'inventoryReport/queryInventoryInTransit',
         payload: {

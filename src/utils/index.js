@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
 import { message } from 'antd'
+import moment from 'moment'
 import configCompany from './config.company'
 import configMain from './config.main'
 import config from './config.rest'
@@ -118,8 +119,12 @@ const messageInfo = (info, type = 'info', duration = 3) => {
   }
 }
 
-const formatNumberIndonesia = (text) => {
-  return ((text) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const formatDate = (text, format) => {
+  if (text && format) {
+    return moment(text, format).format('DD-MMM-YYYY')
+  }
+  if (text) return moment(text).format('DD-MMM-YYYY')
+  return null
 }
 
 const isEmptyObject = (obj) => {
@@ -144,7 +149,7 @@ module.exports = {
   lstorage,
   ip,
   messageInfo,
-  formatNumberIndonesia,
+  formatDate,
   isEmptyObject,
   numberFormat
 }

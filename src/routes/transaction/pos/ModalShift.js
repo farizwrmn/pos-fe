@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Modal, Button, Form, Input, DatePicker, Select, Badge, Icon } from 'antd'
+import { Modal, Button, Form, Input, DatePicker, Select, Badge } from 'antd'
 import { routerRedux } from 'dva/router'
-import { lstorage, color } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -17,40 +16,13 @@ const formItemLayout = {
   }
 }
 
-const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, infoCashRegister, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
-  const cashActive = (currentCashier.cashActive || 0) !== 0
-
-  let infoCashRegister = {}
-  infoCashRegister.title = 'Cashier Information'
-  infoCashRegister.titleColor = color.normal
-  infoCashRegister.descColor = color.error
-  infoCashRegister.dotVisible = false
-
-  if (lstorage.getLoginTimeDiff() > 500) {
-    console.log('something fishy')
-  } else {
-    if (!currentCashier.period) {
-      infoCashRegister.desc = '* Select the correct cash register'
-      infoCashRegister.dotVisible = true
-    } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
-      infoCashRegister.desc = '* The open cash register date is different from current date'
-      infoCashRegister.dotVisible = true
-    }
-
-    infoCashRegister.Caption =
-      (<span style={{ color: infoCashRegister.titleColor }}>
-        <Icon type={cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
-        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
-          {infoCashRegister.desc}
-        </span>
-      </span>)
-  }
   const disabledDate = (current) => {
-    if (cashActive) {
+    if (infoCashRegister.cashActive) {
       return true
     }
     return current > moment(new Date())
@@ -82,12 +54,14 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   }
 
   let initPeriod = moment(new Date(), 'YYYY-MM-DD')
-  if (cashActive) {
-    initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
-  } else if (currentCashier.period) {
+  if (infoCashRegister.cashActive) {
     initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
   } else {
+    // if (currentCashier.period) {
+    //   initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
+    // } else {
     initPeriod = moment(new Date(), 'YYYY-MM-DD')
+    // }
   }
   let shifts = []
   let counters = []
@@ -99,7 +73,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   }
 
   return (
-    <Modal title={infoCashRegister.Caption}
+    <Modal title={infoCashRegister.CaptionObject}
       {...modalOpts}
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
@@ -129,7 +103,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
                 required: true
               }
             ]
-          })(<Select disabled={cashActive} onFocus={findShift}>
+          })(<Select disabled={infoCashRegister.cashActive} onFocus={findShift}>
             {shifts}
           </Select>)}
         </FormItem>
@@ -141,7 +115,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
                 required: true
               }
             ]
-          })(<Select disabled={cashActive} onFocus={findCounter}>
+          })(<Select disabled={infoCashRegister.cashActive} onFocus={findCounter}>
             {counters}
           </Select>)}
         </FormItem>
