@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, DatePicker, Select } from 'antd'
+import { Form, Input, message, Button, Row, Col, Modal, Select } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
@@ -41,14 +41,10 @@ const FormCounter = ({
   // modalType,
   modalVisible,
   modalProps,
-  listBank,
   listDetailProps,
-  listOpts,
   listCustomer,
   listSupplier,
   updateCurrentItem,
-  bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   customerOpt = (listCustomer || []).length > 0 ? listCustomer.map(c => <Option value={c.id} key={c.id}>{`${c.memberName} (${c.memberCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   form: {
@@ -93,6 +89,7 @@ const FormCounter = ({
   const hdlModalShow = () => {
     validateFields(['type'], (errors) => {
       if (errors) {
+        message.warning('Type is required', 1.5)
         return
       }
       const type = getFieldValue('type')
@@ -173,6 +170,7 @@ const FormCounter = ({
 
   const listDetailOpts = {
     handleModalShowList,
+    listItem,
     ...listDetailProps
   }
 
@@ -196,6 +194,11 @@ const FormCounter = ({
                 initialValue: item.reference
               })(<Input maxLength={40} autoFocus />)}
             </FormItem>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description')(<Input />)}
+            </FormItem>
+          </Col>
+          <Col {...column}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('type', {
                 initialValue: item.type,
@@ -209,8 +212,8 @@ const FormCounter = ({
                   allowClear
                   onChange={() => hdlModalReset()}
                 >
-                  <Option value="E">Expense</Option>
-                  <Option value="I">Income</Option>
+                  <Option value="E">In</Option>
+                  <Option value="I">Out</Option>
                 </Select>)}
             </FormItem>
             {getFieldValue('type') === 'I' && <FormItem label={(<Link target="_blank" to={'/master/customer'}>Member</Link>)} hasFeedback {...formItemLayout}>
@@ -218,7 +221,7 @@ const FormCounter = ({
                 initialValue: item.memberId,
                 rules: [
                   {
-                    required: true
+                    required: false
                   }
                 ]
               })(<Select
@@ -237,7 +240,7 @@ const FormCounter = ({
                 initialValue: item.supplierId,
                 rules: [
                   {
-                    required: true
+                    required: false
                   }
                 ]
               })(<Select
@@ -251,66 +254,6 @@ const FormCounter = ({
               >{supplierOpt}
               </Select>)}
             </FormItem>}
-            <FormItem label="Cashier" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('cashierTransId', {
-                initialValue: item.cashierTransId,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Input style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-          <Col {...column}>
-            <FormItem label="Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transDate', {
-                initialValue: item.transDate
-              })(<DatePicker />)}
-            </FormItem>
-            <FormItem label="Bank" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bankId', {
-                initialValue: item.bankId,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                // <AutoComplete {...autoCompleteProps} />
-                <Select
-                  showSearch
-                  allowClear
-                  onFocus={() => showLov('bank')}
-                  onSearch={value => showLov('bank', { q: value })}
-                  optionFilterProp="children"
-                  labelInValue
-                  filterOption={filterOption}
-                >{bankOpt}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transType', {
-                initialValue: item.transType,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                onFocus={() => showLov('paymentOpts')}
-                optionFilterProp="children"
-                labelInValue
-                filterOption={filterOption}
-              >{paymentOpt}
-              </Select>)}
-            </FormItem>
-            <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
-            </FormItem>
           </Col>
         </Row>
         <Row>

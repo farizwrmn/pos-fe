@@ -511,8 +511,6 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/cashentry'))
-              registerModel(app, require('./models/payment/paymentOpts'))
-              registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))

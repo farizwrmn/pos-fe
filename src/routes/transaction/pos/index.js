@@ -1605,9 +1605,13 @@ const Pos = ({
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}>
+                      <Badge dot={dotVisible}>
+                        Date : {currentCashier.period}
+                      </Badge >
+                    </Col>
+                    <Col xs={24} sm={24} md={5} lg={5} xl={5}>
                       <Tooltip title={cashRegisterTitle}>
                         Date : {currentCashier.period}
-                        <Badge dot={dotVisible} />
                       </Tooltip>
                     </Col>
                   </Row>
@@ -1940,7 +1944,8 @@ const Pos = ({
           </Form>
         </Col>
       </Row>
-      {(localStorage.getItem('lastMeter') || showAlert) &&
+      {
+        (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
           <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
           <Reminder {...reminderProps} />
