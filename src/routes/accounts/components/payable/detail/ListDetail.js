@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
 import styles from '../../../../../themes/index.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
@@ -33,7 +36,7 @@ const List = ({ ...tableProps, editList }) => {
       key: 'qty',
       width: 60,
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(text || 0)
     },
     {
       title: 'Price',
@@ -41,7 +44,7 @@ const List = ({ ...tableProps, editList }) => {
       key: 'price',
       width: 72,
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(text || 0)
     },
     {
       title: 'Total Disc',
@@ -49,7 +52,7 @@ const List = ({ ...tableProps, editList }) => {
       key: 'totalDiscount',
       width: 72,
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(text || 0)
     },
     {
       title: 'Netto',
@@ -57,7 +60,7 @@ const List = ({ ...tableProps, editList }) => {
       key: 'netto',
       width: 72,
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(text || 0)
     }
   ]
 

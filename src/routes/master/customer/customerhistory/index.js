@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { numberFormat } from 'utils'
 import { Button, Modal } from 'antd'
 import { ModalListHistory } from '../components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const History = ({ history, loading, dispatch }) => {
   const { listTrans, modalVisible, policeNoId, memberCode } = history
@@ -37,7 +40,7 @@ const History = ({ history, loading, dispatch }) => {
   const modalProps = {
     visible: modalVisible,
     maskClosable: false,
-    footer: ['Total: ', totalPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })],
+    footer: ['Total: ', formatNumberIndonesia(totalPrice)],
     wrapClassName: 'vertical-center-modal',
     onCancel () {
       dispatch({
@@ -71,7 +74,7 @@ const History = ({ history, loading, dispatch }) => {
       key: 'nettoTotal',
       width: 40,
       render: (text) => {
-        return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        return formatNumberIndonesia(text || 0)
       }
     }
   ]

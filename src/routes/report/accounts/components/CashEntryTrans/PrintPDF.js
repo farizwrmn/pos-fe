@@ -5,7 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { formatNumberIndonesia, formatDate } from 'utils'
+import { numberFormat, formatDate } from 'utils'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
