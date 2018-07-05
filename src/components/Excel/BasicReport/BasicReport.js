@@ -108,7 +108,8 @@ const BasicReport = ({
           get.push({
             value: sheet.getCell(`${getPosition(j)}${line}`).value = tableBody[i][j].value,
             alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableBody[i][j].alignment,
-            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableBody[i][j].font
+            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableBody[i][j].font,
+            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = tableBody[i][j].numFmt
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableBody[i][j].border
           })
         }
@@ -123,7 +124,8 @@ const BasicReport = ({
           get.push({
             value: sheet.getCell(`${getPosition(j)}${line}`).value = tableFooter[i][j].value,
             alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableFooter[i][j].alignment,
-            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableFooter[i][j].font
+            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableFooter[i][j].font,
+            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = tableBody[i][j].numFmt
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableFooter[i][j].border
           })
         }

@@ -1,9 +1,11 @@
 import React from 'react'
 import { Tabs, Table, Row, Col, Icon } from 'antd'
 import { connect } from 'dva'
-import { formatNumberIndonesia } from 'utils'
+import { numberFormat } from 'utils'
+import styles from '../../../../themes/index.less'
 
 const TabPane = Tabs.TabPane
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const ViewDetail = ({
   listCashTransSummary,
@@ -13,8 +15,6 @@ const ViewDetail = ({
   dispatch,
   activeTabKeyClose
 }) => {
-
-
   let detail = { total: { openingCash: 0, cashIn: 0, cashOut: 0 } }
   if (listCashTransDetail) {
     if (listCashTransDetail.hasOwnProperty('data')) {
@@ -37,13 +37,15 @@ const ViewDetail = ({
     dataIndex: 'cashIn',
     key: 'cashIn',
     width: '200px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Cash Out',
     dataIndex: 'cashOut',
     key: 'cashOut',
     width: '200px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Detail',
     dataIndex: 'detail',
@@ -80,13 +82,15 @@ const ViewDetail = ({
     dataIndex: 'cashIn',
     key: 'cashIn',
     width: '100px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Cash Out',
     dataIndex: 'cashOut',
     key: 'cashOut',
     width: '100px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }]
 
   const dataCashRegister = (
@@ -99,7 +103,7 @@ const ViewDetail = ({
         (<div>
           <Row>
             <Col span={4}>
-              Opening Cash
+                   Opening Cash
             </Col>
             <Col offset={17} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.openingCash)}
@@ -107,7 +111,7 @@ const ViewDetail = ({
           </Row>
           <Row>
             <Col offset={1} span={4}>
-              Cash-In
+                   Cash-In
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashIn)}
@@ -115,7 +119,7 @@ const ViewDetail = ({
           </Row>
           <Row>
             <Col offset={1} span={4}>
-              Cash-Out
+                   Cash-Out
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashOut)}
@@ -123,7 +127,7 @@ const ViewDetail = ({
           </Row>
           <Row>
             <Col span={4}>
-              Cash-on Hand
+                   Cash-on Hand
             </Col>
             <Col offset={17} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(summary.total.cashOnHand)}
@@ -144,12 +148,12 @@ const ViewDetail = ({
         (<div>
           <Row>
             <Col span={4}>
-              Total
+                   Total
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
-              Cash-In
+                   Cash-In
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(detail.total.cashIn)}
@@ -157,7 +161,7 @@ const ViewDetail = ({
           </Row>
           <Row>
             <Col offset={1} span={4}>
-              Cash-Out
+                   Cash-Out
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
               {formatNumberIndonesia(detail.total.cashOut)}
@@ -189,4 +193,3 @@ const ViewDetail = ({
 }
 
 export default connect(({ cashier }) => ({ cashier }))(ViewDetail)
-

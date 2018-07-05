@@ -17,32 +17,36 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    listSupplier: [],
     activeKey: '0',
     disable: '',
-    show: 1
+    show: 1,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/supplier') {
-          // if (!activeKey) {
-          //   dispatch(routerRedux.push({
-          //     pathname,
-          //     query: {
-          //       activeKey: '0'
-          //     }
-          //   }))
-          // }
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+          }
+          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
         }
       })
     }
@@ -56,7 +60,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            listSupplier: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -138,6 +142,18 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccess (state, action) {
+      const { listSupplier, pagination } = action.payload
+      return {
+        ...state,
+        list: listSupplier,
+        listSupplier,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }
@@ -152,8 +168,15 @@ export default modelExtend(pageModel, {
     },
 
     resetSupplierList (state) {
-      return { ...state, list: [], pagination: { total: 0 } }
-    }
+      return { ...state, list: [], listSupplier: [], pagination: { total: 0 } }
+    },
 
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {}
+      }
+    }
   }
 })

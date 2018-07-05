@@ -12,6 +12,23 @@ import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
   // const handleChange = (value) => {
   //   const from = value[0].format('YYYY-MM-DD')
@@ -35,28 +52,26 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
   }
 
   return (
-    <div>
-      <Row>
-        <Col lg={10} md={24}>
-          <FilterItem label="Period">
-            {getFieldDecorator('rangePicker')(
-              <MonthPicker onChange={onChange} placeholder="Select Period" />
-            )}
-          </FilterItem>
-        </Col>
-        <Col lg={14} md={24} style={{ margin: '10px 0', float: 'right', textAlign: 'right' }}>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          {<PrintPDF {...printProps} />}
-          {<PrintXLS {...printProps} />}
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col {...leftColumn} >
+        <FilterItem label="Period">
+          {getFieldDecorator('rangePicker')(
+            <MonthPicker onChange={onChange} placeholder="Select Period" />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        {<PrintPDF {...printProps} />}
+        {<PrintXLS {...printProps} />}
+      </Col>
+    </Row>
   )
 }
 

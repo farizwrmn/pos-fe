@@ -1,7 +1,7 @@
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, isEmptyObject } from 'utils'
+import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
@@ -533,7 +533,7 @@ export default {
           }
         })
       } else {
-        throw data
+        throw currentRegister
       }
     },
 
@@ -766,12 +766,12 @@ export default {
         } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
           yield put({
             type: 'paymentEdit',
@@ -850,12 +850,12 @@ export default {
         } else if (totalQty > totalTempListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
           Modal.warning({
             title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${tempListProduct}`
+            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
           localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
           yield put({
@@ -967,7 +967,7 @@ export default {
           type: 'updateState',
           payload: {
             cashierInformation: data.cashregisters,
-            dataCashierTrans: data.cashregisters,
+            dataCashierTrans: data.cashregisters
           }
         })
         yield put({
@@ -980,8 +980,12 @@ export default {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: `Report error ${data.message}` || 'Report error'
+          content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
         })
+        // Modal.warning({
+        //   title: 'Warning',
+        //   content: `Report error ${data.message}` || 'Report error'
+        // })
       }
     },
 

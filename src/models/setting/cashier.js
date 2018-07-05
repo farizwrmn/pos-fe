@@ -45,12 +45,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/monitor/cashier/periods') {
           dispatch({ type: 'query' })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              searchText: ''
-            }
-          })
+          dispatch({ type: 'refreshView' })
         } else if (pathname === '/monitor/cashier/close') {
           const userId = lstorage.getStorageKey('udi')[1]
           dispatch({ type: 'getCashierInformation', payload: { cashierId: userId } })
@@ -287,6 +282,13 @@ export default modelExtend(pageModel, {
         modalType: 'edit',
         activeKey: '0',
         currentItem: item
+      }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        cashierInfo: []
       }
     }
   }

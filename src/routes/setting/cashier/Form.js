@@ -9,13 +9,15 @@ const Option = Select.Option
 const formItemLayout = {
   labelCol: {
     xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    sm: { span: 4 },
+    md: { span: 4 },
+    lg: { span: 6 }
   },
   wrapperCol: {
     xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    sm: { span: 12 },
+    md: { span: 10 },
+    lg: { span: 12 }
   }
 }
 
@@ -45,16 +47,16 @@ const FormCashier = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 19
+        offset: modalType === 'edit' ? 12 : 19
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 10 : 14
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 19
+        offset: modalType === 'edit' ? 9 : 12
       },
       lg: {
-        offset: modalType === 'edit' ? 13 : 18
+        offset: modalType === 'edit' ? 11 : 15
       }
     }
   }

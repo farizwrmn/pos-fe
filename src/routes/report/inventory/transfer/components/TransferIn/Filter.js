@@ -9,6 +9,23 @@ import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
+const leftColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12,
+  style: {
+    marginBottom: 10
+  }
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 12,
+  md: 12,
+  lg: 12
+}
+
 const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
   const handleReset = () => {
     const { pathname } = location
@@ -53,28 +70,26 @@ const Filter = ({ dispatch, activeKey, onDateChange, onListReset, form: { resetF
   }
 
   return (
-    <div>
-      <Row>
-        <Col lg={10} md={24}>
-          <FilterItem label="Period">
-            {getFieldDecorator('monthPicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
-              <MonthPicker {...monthPickerProps} />
-            )}
-          </FilterItem>
-        </Col>
-        <Col lg={14} md={24} style={{ textAlign: 'right' }}>
-          <Button type="dashed"
-            size="large"
-            className="button-width02 button-extra-large bgcolor-lightgrey"
-            onClick={() => handleReset()}
-          >
-            <Icon type="rollback" className="icon-large" />
-          </Button>
-          <PrintPDF {...printProps} />
-          <PrintXLS {...printProps} />
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col {...leftColumn} >
+        <FilterItem label="Period">
+          {getFieldDecorator('monthPicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
+            <MonthPicker {...monthPickerProps} />
+          )}
+        </FilterItem>
+      </Col>
+      <Col {...rightColumn} style={{ textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-lightgrey"
+          onClick={() => handleReset()}
+        >
+          <Icon type="rollback" className="icon-large" />
+        </Button>
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
+      </Col>
+    </Row >
   )
 }
 

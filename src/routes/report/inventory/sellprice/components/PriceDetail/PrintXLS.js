@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({
@@ -117,12 +118,12 @@ const PrintXLS = ({
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.prevSellPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.sellPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.prevDistPrice01) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.distPrice01) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.prevDistPrice02) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(parseFloat(data.distPrice02) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+        { value: (parseFloat(data.prevSellPrice) || 0), numFmt: numberFormat.formatNumberInExcel(data.prevSellPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.sellPrice) || 0), numFmt: numberFormat.formatNumberInExcel(data.sellPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.prevDistPrice01) || 0), numFmt: numberFormat.formatNumberInExcel(data.prevDistPrice01, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.distPrice01) || 0), numFmt: numberFormat.formatNumberInExcel(data.distPrice01, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.prevDistPrice02) || 0), numFmt: numberFormat.formatNumberInExcel(data.prevDistPrice02, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.distPrice02) || 0), numFmt: numberFormat.formatNumberInExcel(data.distPrice02, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
       ]
       group.push(tableBody)
       count += 1

@@ -6,7 +6,6 @@ const { prefix } = configMain
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 export default {
-
   namespace: 'poshistory',
 
   state: {

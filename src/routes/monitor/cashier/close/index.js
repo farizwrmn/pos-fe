@@ -67,30 +67,6 @@ const CloseCashRegister = ({
     })
   }
 
-  const confirmClose = () => {
-    if (!isEmptyObject(listCashTransSummary)) {
-      confirm({
-        title: 'Are you sure closing this cash register  ?',
-        onOk () {
-          dispatch({
-            type: 'cashier/closeCashRegister',
-            payload: {
-              storeId: cashierInfo.storeId,
-              cashierId: cashierInfo.cashierId,
-              id: cashierInfo.id,
-              desc: getFieldValue('periodDesc'),
-              summary
-            }
-          })
-        }
-      })
-    } else {
-      warning({
-        title: 'Please check your data first by clicking \'Check\' Button  ?'
-      })
-    }
-  }
-
   let summary = {
     total: {
       openingCash: cashierInfo.openingBalance,
@@ -124,6 +100,29 @@ const CloseCashRegister = ({
     activeTabKeyClose
   }
 
+  const confirmClose = () => {
+    if (!isEmptyObject(listCashTransSummary)) {
+      confirm({
+        title: 'Are you sure closing this cash register  ?',
+        onOk () {
+          dispatch({
+            type: 'cashier/closeCashRegister',
+            payload: {
+              storeId: cashierInfo.storeId,
+              cashierId: cashierInfo.cashierId,
+              id: cashierInfo.id,
+              desc: getFieldValue('periodDesc'),
+              summary
+            }
+          })
+        }
+      })
+    } else {
+      warning({
+        title: 'Please check your data first by clicking \'Check\' Button  ?'
+      })
+    }
+  }
 
   return (
     <div className="content-inner">
@@ -162,7 +161,7 @@ const CloseCashRegister = ({
         <Col {...column}>
           <FormItem label="Description" hasFeedback {...formItemLayout2}>
             {getFieldDecorator('periodDesc', {
-              initialValue: cashierInfo.periodDesc || 'Closing ' + (cashierInfo.period || 'nothing')
+              initialValue: cashierInfo.periodDesc || `Closing ${cashierInfo.period || 'nothing'}`
             })(<Input />)}
           </FormItem>
         </Col>

@@ -1,7 +1,10 @@
 import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
+import { numberFormat } from 'utils'
 import { RepeatReport } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listAsset, storeInfo }) => {
   let width = []
@@ -41,9 +44,9 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
         let row = []
         row.push({ text: counter, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (parseFloat(data.grandTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.nettoTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.grandTotal) || 0), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.totalDiscount) || 0), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.nettoTotal) || 0), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       counter += 1
@@ -52,9 +55,9 @@ const PrintPDF = ({ user, listAsset, storeInfo }) => {
     let totalRow = []
     totalRow.push({ text: 'Total', colSpan: 2, style: 'rowTextFooter' })
     totalRow.push({})
-    totalRow.push({ text: `${subTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(subTotal), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(total), style: 'rowNumberFooter' })
     body.push(totalRow)
     width.push(['5%', '20%', '25%', '25%', '25%'])
     return body

@@ -4,7 +4,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicReport } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
   // Declare Function
@@ -19,9 +22,9 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (parseFloat(data.amount) / parseFloat(data.count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(parseFloat(data.amount) / parseFloat(data.count)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.count), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -151,8 +154,8 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       {},
       {},
       {},
-      { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(count), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(amount), alignment: 'right', fontSize: 12 }
     ]
   ]
 

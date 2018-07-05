@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
 import { message } from 'antd'
+import moment from 'moment'
 import configCompany from './config.company'
 import configMain from './config.main'
 import config from './config.rest'
@@ -9,6 +10,7 @@ import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
 import ip from './ip'
+import numberFormat from './numberFormat'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -117,8 +119,12 @@ const messageInfo = (info, type = 'info', duration = 3) => {
   }
 }
 
-const formatNumberIndonesia = (text) => {
-  return ((text) ? text : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const formatDate = (text, format) => {
+  if (text && format) {
+    return moment(text, format).format('DD-MMM-YYYY')
+  }
+  if (text) return moment(text).format('DD-MMM-YYYY')
+  return null
 }
 
 const isEmptyObject = (obj) => {
@@ -143,6 +149,7 @@ module.exports = {
   lstorage,
   ip,
   messageInfo,
-  formatNumberIndonesia,
-  isEmptyObject
+  formatDate,
+  isEmptyObject,
+  numberFormat
 }

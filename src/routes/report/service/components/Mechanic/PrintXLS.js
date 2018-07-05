@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -12,7 +13,6 @@ const warning = Modal.warning
 
 const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
   let amountTotal = list.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
   workbook.created = new Date()
@@ -82,7 +82,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         '',
         '',
         '',
-        `${amountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        amountTotal]
       for (let m = 65; m < (65 + footer.length); m += 1) {
         let o = 7
         let count = m - 65
@@ -111,7 +111,8 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`G${m}`).value = list[n].serviceName
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(list[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).value = list[n].amount
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].amount, 2)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
@@ -129,7 +130,8 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

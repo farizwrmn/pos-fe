@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -127,28 +128,28 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         '',
         '',
         '',
-        `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${transferInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${transferInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${transferOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${transferOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${inTransitQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${inTransitPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${inTransferQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${inTransferPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        beginQty,
+        beginPrice,
+        purchaseQty,
+        purchasePrice,
+        adjInQty,
+        adjInPrice,
+        transferInQty,
+        transferInPrice,
+        posQty,
+        valuePrice,
+        posPrice,
+        adjOutQty,
+        adjOutPrice,
+        transferOutQty,
+        transferOutPrice,
+        count,
+        amount,
+        (parseFloat(valuePrice) - parseFloat(posPrice)),
+        inTransitQty,
+        inTransitPrice,
+        inTransferQty,
+        inTransferPrice
       ]
       for (let m = 65; m < (65 + header2.length); m += 1) {
         let o = 7
@@ -183,50 +184,72 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${listRekap[n].productName}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`E${m}`).value = `${parseFloat(listRekap[n].beginQty).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = parseFloat(listRekap[n].beginQty)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listRekap[n].beginPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].beginQty), 2)
+        sheet.getCell(`F${m}`).value = parseFloat(listRekap[n].beginPrice)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listRekap[n].purchaseQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].beginPrice), 2)
+        sheet.getCell(`G${m}`).value = parseFloat(listRekap[n].purchaseQty)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listRekap[n].purchasePrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].purchaseQty), 2)
+        sheet.getCell(`H${m}`).value = parseFloat(listRekap[n].purchasePrice)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listRekap[n].adjInQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].purchasePrice), 2)
+        sheet.getCell(`I${m}`).value = parseFloat(listRekap[n].adjInQty)
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).value = `${(parseFloat(listRekap[n].adjInPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjInQty), 2)
+        sheet.getCell(`J${m}`).value = parseFloat(listRekap[n].adjInPrice)
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).value = `${(parseFloat(listRekap[n].transferInQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`J${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjInPrice), 2)
+        sheet.getCell(`K${m}`).value = parseFloat(listRekap[n].transferInQty)
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`L${m}`).value = `${(parseFloat(listRekap[n].transferInPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`K${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferInQty), 2)
+        sheet.getCell(`L${m}`).value = parseFloat(listRekap[n].transferInPrice)
         sheet.getCell(`L${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`M${m}`).value = `${(parseFloat(listRekap[n].posQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`L${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferInPrice), 2)
+        sheet.getCell(`M${m}`).value = parseFloat(listRekap[n].posQty)
         sheet.getCell(`M${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`N${m}`).value = `${(parseFloat(listRekap[n].valuePrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`M${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].posQty), 2)
+        sheet.getCell(`N${m}`).value = parseFloat(listRekap[n].valuePrice)
         sheet.getCell(`N${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`O${m}`).value = `${(parseFloat(listRekap[n].posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`N${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].valuePrice), 2)
+        sheet.getCell(`O${m}`).value = parseFloat(listRekap[n].posPrice)
         sheet.getCell(`O${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`P${m}`).value = `${(parseFloat(listRekap[n].adjOutQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`O${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].posPrice), 2)
+        sheet.getCell(`P${m}`).value = parseFloat(listRekap[n].adjOutQty)
         sheet.getCell(`P${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Q${m}`).value = `${(parseFloat(listRekap[n].adjOutPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`P${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjOutQty), 2)
+        sheet.getCell(`Q${m}`).value = parseFloat(listRekap[n].adjOutPrice)
         sheet.getCell(`Q${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`R${m}`).value = `${(parseFloat(listRekap[n].transferOutQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`Q${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjOutPrice), 2)
+        sheet.getCell(`R${m}`).value = parseFloat(listRekap[n].transferOutQty)
         sheet.getCell(`R${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`S${m}`).value = `${(parseFloat(listRekap[n].transferOutPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`R${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferOutQty), 2)
+        sheet.getCell(`S${m}`).value = parseFloat(listRekap[n].transferOutPrice)
         sheet.getCell(`S${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`T${m}`).value = `${(parseFloat(listRekap[n].count)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`S${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferOutPrice), 2)
+        sheet.getCell(`T${m}`).value = parseFloat(listRekap[n].count)
         sheet.getCell(`T${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`U${m}`).value = `${(parseFloat(listRekap[n].amount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`T${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].count), 2)
+        sheet.getCell(`U${m}`).value = parseFloat(listRekap[n].amount)
         sheet.getCell(`U${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`V${m}`).value = `${(parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`U${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].amount), 2)
+        sheet.getCell(`V${m}`).value = parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice)
         sheet.getCell(`V${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`W${m}`).value = `${(parseFloat(listRekap[n].inTransitQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`V${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice), 2)
+        sheet.getCell(`W${m}`).value = parseFloat(listRekap[n].inTransitQty)
         sheet.getCell(`W${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`X${m}`).value = `${(parseFloat(listRekap[n].inTransitPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`W${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransitQty), 2)
+        sheet.getCell(`X${m}`).value = parseFloat(listRekap[n].inTransitPrice)
         sheet.getCell(`X${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Y${m}`).value = `${(parseFloat(listRekap[n].inTransferQty)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`X${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransitPrice), 2)
+        sheet.getCell(`Y${m}`).value = parseFloat(listRekap[n].inTransferQty)
         sheet.getCell(`Y${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Z${m}`).value = `${(parseFloat(listRekap[n].inTransferPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`Y${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransferQty), 2)
+        sheet.getCell(`Z${m}`).value = parseFloat(listRekap[n].inTransferPrice)
         sheet.getCell(`Z${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`Z${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransferPrice), 2)
       }
       for (let m = 65; m < (65 + footer.length); m += 1) {
         let n = listRekap.length + 10
@@ -242,7 +265,8 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[counter] || ''}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[counter]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[counter], 2)
       }
 
       sheet.getCell('L2').alignment = { vertical: 'middle', horizontal: 'center' }

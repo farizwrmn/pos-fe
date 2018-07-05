@@ -47,14 +47,7 @@ export default modelExtend(pageModel, {
           }
         })
         if (pathname === '/master/customerunit') {
-          // if (!activeKey) {
-          //   dispatch(routerRedux.push({
-          //     pathname,
-          //     query: {
-          //       activeKey: '0'
-          //     }
-          //   }))
-          // }
+          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
             payload: {
@@ -236,6 +229,15 @@ export default modelExtend(pageModel, {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    refreshView (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {},
+        customerInfo: {}
       }
     }
 

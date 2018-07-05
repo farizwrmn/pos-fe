@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -80,9 +81,9 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         '',
         '',
         'GRAND TOTAL',
-        `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${serviceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${(parseFloat(serviceTotal) + parseFloat(productTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        productTotal,
+        serviceTotal,
+        (parseFloat(serviceTotal) + parseFloat(productTotal))
       ]
       for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
@@ -108,12 +109,15 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`E${m}`).value = `${listTrans[n].policeNo}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].product)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].product))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].service)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listTrans[n].product), 2)
+        sheet.getCell(`G${m}`).value = (parseFloat(listTrans[n].service))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product))).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listTrans[n].service), 2)
+        sheet.getCell(`H${m}`).value = ((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product)))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product)), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -130,7 +134,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('D2').alignment = { vertical: 'middle', horizontal: 'center' }

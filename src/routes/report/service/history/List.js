@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
 import moment from 'moment'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -35,25 +38,25 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Selling Price',
       dataIndex: 'sellingPrice',
       key: 'sellingPrice',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     }
   ]
 
@@ -66,7 +69,7 @@ const List = ({ ...tableProps, dataSource }) => {
         scroll={{ x: 1300 }}
         columns={columns}
         simple
-        footer={() => `Total: ${totalPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}
+        footer={() => `Total: ${formatNumberIndonesia(totalPrice)}`}
         rowKey={record => record.id}
       />
     </div>

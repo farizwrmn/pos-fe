@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { numberFormat } from 'utils'
 import { Table } from 'antd'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -23,19 +26,19 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'grandTotal',
       key: 'grandTotal',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Netto Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     }
   ]
 
@@ -48,7 +51,7 @@ const List = ({ ...tableProps, dataSource }) => {
         scroll={{ x: 1300 }}
         columns={columns}
         simple
-        footer={() => `Total Asset: ${totalPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}
+        footer={() => `Total Asset: ${formatNumberIndonesia(totalPrice)}`}
         rowKey={record => record.id}
       />
     </div>
