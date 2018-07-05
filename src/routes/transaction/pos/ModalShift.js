@@ -22,8 +22,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   validateFields,
   getFieldsValue
 }, ...modalProps }) => {
-
-  const cashActive = ((currentCashier.cashActive || 0)===0) ? false : true
+  const cashActive = (currentCashier.cashActive || 0) !== 0
 
   let infoCashRegister = {}
   infoCashRegister.title = 'Cashier Information'
@@ -43,19 +42,18 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
     }
 
     infoCashRegister.Caption =
-      <span style={{ color: infoCashRegister.titleColor }}>
-        <Icon type={cashActive ? 'smile-o' : 'frown-o'}></Icon> {infoCashRegister.title}
+      (<span style={{ color: infoCashRegister.titleColor }}>
+        <Icon type={cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
         <span style={{ display: 'block', color: infoCashRegister.descColor }}>
           {infoCashRegister.desc}
         </span>
-      </span>
+      </span>)
   }
   const disabledDate = (current) => {
     if (cashActive) {
       return true
-    } else {
-      return current > moment(new Date())
     }
+    return current > moment(new Date())
   }
 
   const handleOk = () => {
@@ -86,12 +84,10 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   let initPeriod = moment(new Date(), 'YYYY-MM-DD')
   if (cashActive) {
     initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
+  } else if (currentCashier.period) {
+    initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
   } else {
-    if (currentCashier.period) {
-      initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
-    } else {
-      initPeriod = moment(new Date(), 'YYYY-MM-DD')
-    }
+    initPeriod = moment(new Date(), 'YYYY-MM-DD')
   }
   let shifts = []
   let counters = []
