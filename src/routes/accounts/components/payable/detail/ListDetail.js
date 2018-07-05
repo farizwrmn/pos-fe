@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import { numberFormat } from 'utils'
 import styles from '../../../../../themes/index.less'
 
-const formatNumberIndonesia = formatNumberIndonesia
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
