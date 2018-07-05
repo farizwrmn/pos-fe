@@ -4,7 +4,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare Function
@@ -202,7 +205,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: `${(parseFloat(productTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 12 },
       {}
     ]
   ]

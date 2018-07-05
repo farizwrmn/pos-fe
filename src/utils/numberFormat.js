@@ -1,4 +1,4 @@
-const format = (value, decimal) => {
+const formatNumberInExcel = (value, decimal) => {
   if (value !== 0 && typeof value === 'number') {
     let defaultFormat = '#,##0'
     if (decimal > 0) {
@@ -12,6 +12,11 @@ const format = (value, decimal) => {
   return 'General'
 }
 
+const formatNumberIndonesia = (text) => {
+  return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
 module.exports = {
-  format
+  formatNumberInExcel,
+  formatNumberIndonesia
 }

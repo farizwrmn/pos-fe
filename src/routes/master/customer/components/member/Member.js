@@ -5,6 +5,7 @@ import FormCustomer from './FormCustomer'
 
 const Member = ({
   item,
+  customer,
   modalType,
   cancelMember,
   customergroup,
@@ -13,6 +14,7 @@ const Member = ({
   misc,
   dispatch
 }) => {
+  const { memberCodeDisable } = customer
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -21,6 +23,7 @@ const Member = ({
 
   const formCustomerProps = {
     item,
+    memberCodeDisable,
     modalType,
     cancelMember,
     listGroup,

@@ -1,8 +1,9 @@
 import React from 'react'
 import { Tabs, Table, Row, Col, Icon } from 'antd'
 import { connect } from 'dva'
-import { formatNumberIndonesia } from 'utils'
+import { numberFormat } from 'utils'
 
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 const TabPane = Tabs.TabPane
 
 const ViewDetail = ({

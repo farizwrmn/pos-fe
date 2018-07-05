@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -81,10 +82,10 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         '',
         '',
         'GRAND TOTAL',
-        `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `(${paidTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
-        `${changeTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        grandTotal,
+        paidTotal,
+        changeTotal,
+        nettoTotal]
       for (let m = 65; m < 73; m += 1) {
         let o = 7
         let count = m - 65
@@ -94,7 +95,8 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
           size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count])
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -108,12 +110,15 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${moment(listTrans[n].invoiceDate).format('DD-MM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat((listTrans[n].nettoTotal) || 0)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = parseFloat((listTrans[n].nettoTotal) || 0)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat((listTrans[n].paid) || 0)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].nettoTotal)
+        sheet.getCell(`F${m}`).value = parseFloat((listTrans[n].paid) || 0)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat((listTrans[n].change) || 0)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].paid)
+        sheet.getCell(`G${m}`).value = parseFloat((listTrans[n].change) || 0)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`G${m}`).value = numberFormat.formatNumberInExcel(listTrans[n].change)
         sheet.getCell(`H${m}`).value = `${listTrans[n].status || 'PENDING'}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }

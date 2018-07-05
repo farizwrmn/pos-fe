@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -83,11 +84,11 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         '',
         '',
         'GRAND TOTAL',
-        `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        grandTotal,
+        discountTotal,
+        dppTotal,
+        ppnTotal,
+        nettoTotal]
       for (let m = 65; m < (header.length + 65); m += 1) {
         let o = 7
         let count = m - 65
@@ -97,7 +98,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           size: 11
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = `${header[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count], 2)
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -110,16 +112,21 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(listTrans[n].total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).value = (parseFloat(listTrans[n].total))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(listTrans[n].discount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].total)
+        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].discount))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(listTrans[n].DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].discount)
+        sheet.getCell(`G${m}`).value = (parseFloat(listTrans[n].DPP))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = `${(parseFloat(listTrans[n].PPN)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].DPP, 2)
+        sheet.getCell(`H${m}`).value = (parseFloat(listTrans[n].PPN))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(listTrans[n].netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].PPN, 2)
+        sheet.getCell(`I${m}`).value = (parseFloat(listTrans[n].netto))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].netto, 2)
         sheet.getCell(`J${m}`).value = listTrans[n].memo
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`K${m}`).value = listTrans[n].cashier

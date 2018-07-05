@@ -4,7 +4,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicReport, RepeatReport } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
   const styles = {
@@ -75,36 +78,36 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
             row.push({ text: count, style: 'textCenter' })
             row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
             row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
-            row.push({ text: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.transferInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.transferOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.inTransitQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.inTransferQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.beginQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.purchaseQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.adjInQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.transferInQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.posQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.adjOutQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.transferOutQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.count || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.inTransitQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.inTransferQty || 0), style: 'textRight' })
             body.push(row)
             break
           case '1':
             row.push({ text: count, style: 'textCenter' })
             row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
             row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
-            row.push({ text: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.count || 0), style: 'textRight' })
             body.push(row)
             break
           case '2':
             row.push({ text: count, style: 'textCenter' })
             row.push({ text: (data.productCode || '').toString(), style: 'textLeft' })
             row.push({ text: (data.productName || '').toString(), style: 'textLeft' })
-            row.push({ text: (data.beginQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.purchaseQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.adjInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.posQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.valuePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.adjOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (data.count || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.beginQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.purchaseQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.adjInQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.posQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.valuePrice || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.adjOutQty || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(data.count || 0), style: 'textRight' })
             body.push(row)
             break
           case '3':
@@ -112,9 +115,9 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
             row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), style: 'textLeft' })
             row.push({ text: (data.transNo || '').toString(), style: 'textLeft' })
             row.push({ text: (data.transType || '').toString(), style: 'textLeft' })
-            row.push({ text: (parseFloat(data.pQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: (parseFloat(data.sQty) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 }), style: 'textRight' })
-            row.push({ text: countQtyValue.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(parseFloat(data.pQty) || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(parseFloat(data.sQty) || 0), style: 'textRight' })
+            row.push({ text: formatNumberIndonesia(countQtyValue), style: 'textRight' })
             body.push(row)
             break
           default:
@@ -129,8 +132,8 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           {},
           {},
           {},
-          { text: `${inQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${outQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
+          { text: formatNumberIndonesia(inQty), style: 'textRight' },
+          { text: formatNumberIndonesia(outQty), style: 'textRight' },
           {}
         ]
       )
@@ -202,16 +205,16 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
-          { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${transferInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${transferOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${inTransitQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${inTransferQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
+          { text: formatNumberIndonesia(beginQty), style: 'textRight' },
+          { text: formatNumberIndonesia(purchaseQty), style: 'textRight' },
+          { text: formatNumberIndonesia(adjInQty), style: 'textRight' },
+          { text: formatNumberIndonesia(transferInQty), style: 'textRight' },
+          { text: formatNumberIndonesia(posQty), style: 'textRight' },
+          { text: formatNumberIndonesia(adjOutQty), style: 'textRight' },
+          { text: formatNumberIndonesia(transferOutQty), style: 'textRight' },
+          { text: formatNumberIndonesia(count), style: 'textRight' },
+          { text: formatNumberIndonesia(inTransitQty), style: 'textRight' },
+          { text: formatNumberIndonesia(inTransferQty), style: 'textRight' }
         ]
       )
       break
@@ -233,7 +236,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
-          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+          { text: formatNumberIndonesia(count), alignment: 'right', fontSize: 12 }
         ]
       )
       break
@@ -275,13 +278,13 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year, activeKey }) => {
           { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 12 },
           {},
           {},
-          { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' },
-          { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'textRight' }
+          { text: formatNumberIndonesia(beginQty), style: 'textRight' },
+          { text: formatNumberIndonesia(purchaseQty), style: 'textRight' },
+          { text: formatNumberIndonesia(adjInQty), style: 'textRight' },
+          { text: formatNumberIndonesia(posQty), style: 'textRight' },
+          { text: formatNumberIndonesia(valuePrice), style: 'textRight' },
+          { text: formatNumberIndonesia(adjOutQty), style: 'textRight' },
+          { text: formatNumberIndonesia(count), style: 'textRight' }
         ]
       )
       break

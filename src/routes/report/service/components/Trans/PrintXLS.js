@@ -113,19 +113,19 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = parseFloat(list[n].total)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.format(list[n].total, 2)
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].total, 2)
         sheet.getCell(`F${m}`).value = parseFloat(list[n].discount)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.format(list[n].discount, 2)
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].discount, 2)
         sheet.getCell(`G${m}`).value = parseFloat(list[n].DPP)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.format(list[n].DPP, 2)
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].DPP, 2)
         sheet.getCell(`H${m}`).value = parseFloat(list[n].PPN)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.format(list[n].PPN, 2)
+        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].PPN, 2)
         sheet.getCell(`I${m}`).value = parseFloat(list[n].netto)
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).numFmt = numberFormat.format(list[n].netto, 2)
+        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(list[n].netto, 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -143,7 +143,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.format(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

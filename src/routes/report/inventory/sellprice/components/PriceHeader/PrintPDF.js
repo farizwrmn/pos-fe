@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicReport } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
   // Declare Function
@@ -17,8 +20,8 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
           { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
           { text: moment(data.transDate || '').format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
           { text: (data.employeeName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.statusText || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 },
-          { text: (data.createdBy || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(data.statusText || ''), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.createdBy || ''), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -131,9 +134,9 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
     //   { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
     //   {},
     //   {},
-    //   { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    //   { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-    //   { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+    //   { text: formatNumberIndonesia(qtyTotal), alignment: 'right', fontSize: 12 },
+    //   { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
+    //   { text: formatNumberIndonesia(discountTotal), alignment: 'right', fontSize: 12 },
     // ]
   ]
 

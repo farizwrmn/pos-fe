@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
@@ -128,18 +129,18 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
         { value: `${parseInt((n + 1), 10)}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
         { value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.categoryName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.DPP || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.costPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(100 - (((allDppTotal - data.DPP) / (allDppTotal > 0 ? allDppTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(100 - (((allQtyTotal - data.qty) / (allQtyTotal > 0 ? allQtyTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.qty || 0), numFmt: numberFormat.formatNumberInExcel((data.qty || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.DPP || 0), numFmt: numberFormat.formatNumberInExcel((data.DPP || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.costPrice || 0), numFmt: numberFormat.formatNumberInExcel((data.costPrice || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (100 - (((allDppTotal - data.DPP) / (allDppTotal > 0 ? allDppTotal : 1)) * 100) || 0), numFmt: numberFormat.formatNumberInExcel((100 - (((allDppTotal - data.DPP) / (allDppTotal > 0 ? allDppTotal : 1)) * 100) || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (100 - (((allQtyTotal - data.qty) / (allQtyTotal > 0 ? allQtyTotal : 1)) * 100) || 0), numFmt: numberFormat.formatNumberInExcel((100 - (((allQtyTotal - data.qty) / (allQtyTotal > 0 ? allQtyTotal : 1)) * 100) || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.qtyNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.DPPNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.DPPNextEvo || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.costPriceNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${(data.costPriceNextEvo || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+        { value: (data.qty || 0), numFmt: numberFormat.formatNumberInExcel((data.qty || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.qtyNext || 0), numFmt: numberFormat.formatNumberInExcel((data.qtyNext || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.DPPNext || 0), numFmt: numberFormat.formatNumberInExcel((data.DPPNext || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.DPPNextEvo || 0), numFmt: numberFormat.formatNumberInExcel((data.DPPNextEvo || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.costPriceNext || 0), numFmt: numberFormat.formatNumberInExcel((data.costPriceNext || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (data.costPriceNextEvo || 0), numFmt: numberFormat.formatNumberInExcel((data.costPriceNextEvo || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
       ]
       group.push(tableBody)
     }
@@ -156,17 +157,17 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${costPriceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: qtyTotal, numFmt: numberFormat.formatNumberInExcel(qtyTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: dppTotal, numFmt: numberFormat.formatNumberInExcel(dppTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: costPriceTotal, numFmt: numberFormat.formatNumberInExcel(costPriceTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${weightTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${soaTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${qtyNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: qtyNextTotal, numFmt: numberFormat.formatNumberInExcel(qtyNextTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${(qtyNextTotal !== 0 ? (((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${dppNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: dppNextTotal, numFmt: numberFormat.formatNumberInExcel(dppNextTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${(dppNextTotal !== 0 ? ((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100 : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${costPriceNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} `, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: costPriceNextTotal, numFmt: numberFormat.formatNumberInExcel(costPriceNextTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: `${(costPriceNextTotal !== 0 ? (((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter }
     ]
     tableFooters.push(tableFooter)
@@ -174,17 +175,17 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
       { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allQtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allDppTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allCostPriceTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: (allQtyTotal || 0), numFmt: numberFormat.formatNumberInExcel((allQtyTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: (allDppTotal || 0), numFmt: numberFormat.formatNumberInExcel((allDppTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: (allCostPriceTotal || 0), numFmt: numberFormat.formatNumberInExcel((allCostPriceTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: '100 %', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: '100 %', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allQtyNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: (allQtyNextTotal || 0), numFmt: numberFormat.formatNumberInExcel((allQtyNextTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: `${(allQtyNextTotal !== 0 ? (((allQtyTotal - allQtyNextTotal) / (allQtyNextTotal > 0 ? allQtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allDppNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: (allDppNextTotal || 0), numFmt: numberFormat.formatNumberInExcel((allDppNextTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: `${(allDppNextTotal !== 0 ? (((allDppTotal - allDppNextTotal) / (allDppNextTotal > 0 ? allDppNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: `${(allCostPriceNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: (allCostPriceNextTotal || 0), numFmt: numberFormat.formatNumberInExcel((allCostPriceNextTotal || 0), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: `${(allCostPriceNextTotal !== 0 ? (((allCostPriceTotal - allCostPriceNextTotal) / (allCostPriceNextTotal > 0 ? allCostPriceNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter }
     ]
     tableTotals.push(tableTotal)

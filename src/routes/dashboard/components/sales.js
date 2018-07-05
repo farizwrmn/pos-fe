@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { color } from 'utils'
+import { color, numberFormat } from 'utils'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Menu, Dropdown, Button, Icon, Modal, DatePicker, Row, Form } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
 import ModalRange from './modalRange'
 import styles from './sales.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const FormItem = Form.Item
 const { MonthPicker } = DatePicker
@@ -210,7 +212,7 @@ const Sales = ({
           <Tooltip
             wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
             content={(content) => {
-              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${item.value.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}</li>)
+              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${formatNumberIndonesia(item.value)}`}</li>)
               return <div className={styles.tooltip}><p className={styles.tiptitle}>{moment(content.label, 'DD/MM').format('ll')}</p><ul>{list}</ul></div>
             }}
           />

@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -82,12 +83,12 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }
         '',
         '',
         'GRAND TOTAL',
-        `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        qtyTotal,
+        grandTotal,
+        discountTotal,
+        dppTotal,
         0,
-        `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`]
+        nettoTotal]
       for (let m = 65; m < (65 + header.length); m += 1) {
         let o = 7
         let count = m - 65
@@ -108,18 +109,23 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${list[n].productCode}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${parseInt(list[n].Qty, 10).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).value = parseInt(list[n].Qty, 10)
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = `${(parseFloat(list[n].Total)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`D${m}`).numFmt = numberFormat.formatNumberInExcel(parseInt(list[n].Qty, 10), 2)
+        sheet.getCell(`E${m}`).value = (parseFloat(list[n].Total))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = `${(parseFloat(list[n].discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(list[n].Total), 2)
+        sheet.getCell(`F${m}`).value = (parseFloat(list[n].discountTotal))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = `${(parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(list[n].discountTotal), 2)
+        sheet.getCell(`G${m}`).value = (parseFloat(list[n].Total) - parseFloat(list[n].discountTotal))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
         sheet.getCell(`H${m}`).value = '0'
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).value = `${(parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        sheet.getCell(`I${m}`).value = (parseFloat(list[n].Total) - parseFloat(list[n].discountTotal))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel((parseFloat(list[n].Total) - parseFloat(list[n].discountTotal)), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -136,7 +142,8 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo, productCode }
           size: 10
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

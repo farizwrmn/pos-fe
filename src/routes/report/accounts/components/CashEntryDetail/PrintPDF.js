@@ -2,7 +2,9 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
-import { formatNumberIndonesia, formatDate } from 'utils'
+import { numberFormat, formatDate } from 'utils'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listDetail, storeInfo, from, to }) => {
   let width = []
