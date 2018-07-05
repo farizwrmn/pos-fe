@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import styles from '../../../../../themes/index.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, dataSource }) => {
   const columns = [
@@ -48,13 +51,13 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Total Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Netto Total',
@@ -73,7 +76,7 @@ const List = ({ ...tableProps, dataSource }) => {
         scroll={{ x: 1500 }}
         columns={columns}
         simple
-        footer={() => `Total: ${totalPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}
+        footer={() => `Total: ${formatNumberIndonesia(totalPrice)}`}
         rowKey={record => record.id}
       />
     </div>

@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { connect } from 'dva'
+import { numberFormat } from 'utils'
 import styles from '../../../../themes/index.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
   const handleMenuClick = (record) => {
@@ -35,7 +38,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'qty',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'Price',
@@ -43,7 +46,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'price',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'Disc %',
@@ -51,7 +54,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'disc1',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'Disc NML',
@@ -59,7 +62,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'discount',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'DPP',
@@ -67,7 +70,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'dpp',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'PPN',
@@ -75,7 +78,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'ppn',
       width: 50,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'Total',
@@ -83,7 +86,7 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'total',
       width: 100,
       className: styles.alignRight,
-      render: text => (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+      render: text => formatNumberIndonesia(parseFloat(text))
     },
     {
       title: 'KET',

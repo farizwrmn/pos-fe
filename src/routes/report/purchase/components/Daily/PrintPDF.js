@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 import { BasicReport } from 'components'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, brand }) => {
   // Declare Function
@@ -17,12 +20,12 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
         row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || '').toString(), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.totalDiscount)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.DPP)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.PPN)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.roundingItem)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
-        row.push({ text: `${(parseFloat(data.netto)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.total), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.totalDiscount)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.DPP)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.PPN)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.roundingItem)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.netto)), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -169,13 +172,13 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 },
-      { text: `${roundingTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 11 },
-      { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(qtyTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(discountTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(ppnTotal), alignment: 'right', fontSize: 11 },
+      { text: formatNumberIndonesia(roundingTotal), alignment: 'right', fontSize: 11 },
+      { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
 

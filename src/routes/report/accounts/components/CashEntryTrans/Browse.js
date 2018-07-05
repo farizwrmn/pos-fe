@@ -5,7 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import moment from 'moment'
-import { formatNumberIndonesia } from 'utils'
+import { numberFormat } from 'utils'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const Browse = ({ ...browseProps }) => {
   const columns = [

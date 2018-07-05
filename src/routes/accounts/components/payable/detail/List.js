@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
+import { numberFormat } from 'utils'
 import { Table, Icon, Tag } from 'antd'
 import moment from 'moment'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
@@ -41,7 +44,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
       dataIndex: 'paid',
       key: 'paid',
       width: 120,
-      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
     },
     {
       title: 'Description',
