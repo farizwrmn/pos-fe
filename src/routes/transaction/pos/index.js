@@ -653,7 +653,7 @@ const Pos = ({
   infoCashRegister.titleColor = color.normal
   infoCashRegister.descColor = color.error
   infoCashRegister.dotVisible = false
-  infoCashRegister.cashActive = (currentCashier.cashActive || 0) !== 0
+  infoCashRegister.cashActive = ((currentCashier.cashActive || 0) === true)
 
   if (lstorage.getLoginTimeDiff() > 500) {
     console.log('something fishy')
