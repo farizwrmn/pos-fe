@@ -22,6 +22,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     addItem: {},
+    activeKey: '1',
     itemEmployee: [],
     dataBrowse: [],
     listType: [],
