@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, ...purchaseProps }) => {
+  handleModalShowList, listItem, ...purchaseProps }) => {
   const columns = [
     {
       title: 'No',
@@ -51,6 +51,12 @@ const Browse = ({
       size="small"
       pagination={{ pageSize: 5 }}
       onRowClick={_record => hdlModalShow(_record)}
+      footer={() => (
+        <div>
+          <div>Debit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()}</div>
+          <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
+        </div>)
+      }
     />
   )
 }
