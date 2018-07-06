@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import { Button, Input, Form, Col, Row, Modal } from 'antd'
 
 const FormItem = Form.Item
+const confirm = Modal.confirm
 
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15 }
 }
 
-const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
+const AdjustList = ({ onOk, onDeleteItem, item, disabledItemIn, disabledItemOut, form: { resetFields, getFieldDecorator, validateFields, getFieldsValue }, ...editProps }) => {
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -21,6 +22,25 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
       data.Record = item.no
       onOk(data)
       resetFields()
+    })
+  }
+
+  const handleDelete = () => {
+    const Record = {
+      ...getFieldsValue()
+    }
+    const data = {
+      Record: Record.Record
+    }
+    confirm({
+      title: `Remove Record ${item.name} ?`,
+      content: `Record ${item.name} will remove from list !`,
+      onOk () {
+        onDeleteItem(data)
+      },
+      onCancel () {
+        console.log('Cancel')
+      }
     })
   }
 
@@ -79,9 +99,9 @@ const AdjustList = ({ onOk, onChooseItem, item, disabledItemIn, disabledItemOut,
           <Col span={6}>
             <Button type="primary" onClick={handleClick}> Change </Button>
           </Col>
-          {/* <Col span={6}> */}
-          {/* <Button type="danger" onClick={handleDelete}> Delete </Button> */}
-          {/* </Col> */}
+          <Col span={6}>
+            <Button type="danger" onClick={handleDelete}> Delete </Button>
+          </Col>
         </Row>
       </Form>
     </Modal>

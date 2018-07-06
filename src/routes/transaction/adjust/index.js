@@ -69,6 +69,12 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         type: 'adjust/onChangeDisabledItem',
         payload: e
       })
+    },
+    onDeleteItem (data) {
+      dispatch({
+        type: 'adjust/adjustDelete',
+        payload: data
+      })
     }
   }
   const browseProps = {
@@ -276,17 +282,21 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     <div className="content-inner">
       <Tabs defaultActiveKey={activeKey} onChange={activeKey => changeTab(activeKey)}>
         <TabPane tab="Adjustment" key="1">
-          <AdjustForm {...adjustProps} />
+          {activeKey === '1' && <AdjustForm {...adjustProps} />}
         </TabPane>
         <TabPane tab="Archive" key="2">
-          <History {...historyProps} />
-          <Row>
-            <Col xs={8} sm={8} md={18} lg={18} xl={18}>
-              <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
-                <AdjustFormEdit {...adjustProps} />
-              </Modal>
-            </Col>
-          </Row>
+          {activeKey === '2' && (
+            <div>
+              <History {...historyProps} />
+              <Row>
+                <Col xs={8} sm={8} md={18} lg={18} xl={18}>
+                  <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+                    <AdjustFormEdit {...adjustProps} />
+                  </Modal>
+                </Col>
+              </Row>
+            </div>
+          )}
         </TabPane>
       </Tabs>
       {modalEditVisible && <AdjustList {...editProps} />}
