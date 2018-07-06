@@ -211,8 +211,8 @@ const FormCounter = ({
                   allowClear
                   onChange={() => hdlModalReset()}
                 >
-                  <Option value="E">In</Option>
-                  <Option value="I">Out</Option>
+                  <Option value="E">Out</Option>
+                  <Option value="I">In</Option>
                 </Select>)}
             </FormItem>
             {getFieldValue('type') === 'I' && <FormItem label={(<Link target="_blank" to={'/master/customer'}>Member</Link>)} hasFeedback {...formItemLayout}>
