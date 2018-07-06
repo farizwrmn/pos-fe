@@ -54,7 +54,8 @@
     "webpack": "1.15.0"
   },
   "pre-commit": [
-    "precommit-msg"
+    "precommit-msg",
+    "lint"
   ],
   "scripts": {
     "dev": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server",
