@@ -53,10 +53,6 @@
     "serve": "^6.0.6",
     "webpack": "1.15.0"
   },
-  "pre-commit": [
-    "precommit-msg",
-    "lint"
-  ],
   "scripts": {
     "dev": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server",
     "dev8888": "set BROWSER=none&&set HOST=0.0.0.0&&PORT=8888 roadhog server",

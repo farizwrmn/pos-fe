@@ -91,7 +91,7 @@ const PrintPDF = ({ user, listDetail, storeInfo, from, to }) => {
             widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
             body: [
               [{ text: 'Invoice No' }, ':', { text: (arr[i][0].transNo || '').toString() }, {}, { text: 'Invoice Date' }, ':', { text: formatDate(arr[i][0].transDate) }],
-              [{ text: 'Pembayaran' }, ':', { text: (arr[i][0].typeName || '').toString() }, {}, { text: 'Reference' }, ':', { text: (arr[i][0].reference || '') }]
+              [{}, {}, {}, {}, { text: 'Reference' }, ':', { text: (arr[i][0].reference || '') }]
             ]
           },
           style: 'tableTitle',

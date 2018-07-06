@@ -1963,7 +1963,8 @@ const Pos = ({
           </Form>
         </Col>
       </Row>
-      {(localStorage.getItem('lastMeter') || showAlert) &&
+      {
+        (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
           <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
           <Reminder {...reminderProps} />
