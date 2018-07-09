@@ -6,6 +6,7 @@ import FormCustomer from './FormCustomer'
 const Member = ({
   item,
   customer,
+  store,
   modalType,
   cancelMember,
   customergroup,
@@ -15,6 +16,7 @@ const Member = ({
   dispatch
 }) => {
   const { memberCodeDisable } = customer
+  const { setting } = store
   const { listGroup } = customergroup
   const { listType } = customertype
   const { listCity } = city
@@ -24,6 +26,7 @@ const Member = ({
   const formCustomerProps = {
     item,
     memberCodeDisable,
+    setting,
     modalType,
     cancelMember,
     listGroup,
@@ -118,25 +121,11 @@ const Member = ({
         type: 'city/query'
       })
     },
-    defaultMember (data) {
+    defaultMember () {
       dispatch({
         type: 'customer/updateState',
         payload: {
-          currentItem: {
-            memberCodeDisable: true,
-            memberGetDefault: true,
-            ...data
-          }
-        }
-      })
-    },
-    updateCurrentItem (data) {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          currentItem: {
-            ...data
-          }
+          memberCodeDisable: !memberCodeDisable
         }
       })
     },
@@ -155,4 +144,4 @@ const Member = ({
   )
 }
 
-export default connect(({ customer, pos, customergroup, customertype, city, misc }) => ({ customer, pos, customergroup, customertype, city, misc }))(Member)
+export default connect(({ customer, store, pos, customergroup, customertype, city, misc }) => ({ customer, store, pos, customergroup, customertype, city, misc }))(Member)

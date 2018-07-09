@@ -1,5 +1,5 @@
 const APIV1 = '/api/v1'
-const APIHOST = 'localhost' // '192.168.80.64'
+const APIHOST = 'demopos.darkotech.id' // '192.168.80.64'
 const APIPORT = 6402
 const APIURL = `http://${APIHOST}:${APIPORT}`
 

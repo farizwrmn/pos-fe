@@ -34,7 +34,7 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
-    memberCodeDisable: true,
+    memberCodeDisable: false,
     checkMember: {
       existingCheckBoxDisable: true,
       existingSearchButtonDisable: true,
@@ -251,7 +251,6 @@ export default modelExtend(pageModel, {
         seqCode: 'CUST',
         type: 1 // storeId
       }
-      // if (payload.data.memberGetDefault) {
       if (payload.data.memberGetDefault) {
         const sequence = yield call(querySequence, seqDetail)
         payload.id = sequence.data

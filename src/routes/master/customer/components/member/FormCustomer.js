@@ -30,6 +30,7 @@ const FormCustomer = ({
   modalType,
   button,
   memberCodeDisable,
+  setting,
   item,
   onSubmit,
   confirmSendMember,
@@ -43,7 +44,6 @@ const FormCustomer = ({
   showIdType,
   showCity,
   defaultMember,
-  updateCurrentItem,
   onCancel,
   onCancelMobile,
   // showMobileModal,
@@ -78,7 +78,8 @@ const FormCustomer = ({
         }
         data.taxId = data.taxId.replace(/[.-]/g, '')
       }
-      if (memberCodeDisable) data.memberGetDefault = true
+      data.memberGetDefault = setting.memberCode
+      if (memberCodeDisable) data.memberGetDefault = memberCodeDisable
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -102,21 +103,14 @@ const FormCustomer = ({
   // }
 
   const GetDefaultMember = () => {
-    if (!item.memberGetDefault) {
-      const { memberCode, ...other } = getFieldsValue()
-      defaultMember(other)
-      resetFields()
-    } else {
-      updateCurrentItem(getFieldsValue())
-      resetFields()
-    }
+    defaultMember()
+    resetFields()
   }
 
   const childrenGroup = listGroup.length > 0 ? listGroup.map(group => <Option value={group.id} key={group.id}>{group.groupName}</Option>) : []
   const childrenType = listType.length > 0 ? listType.map(type => <Option value={type.id} key={type.id}>{type.typeName}</Option>) : []
   const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
   const childrenCity = listCity.length > 0 ? listCity.map(city => <Option value={city.id} key={city.id}>{city.cityName}</Option>) : []
-
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -193,19 +187,19 @@ const FormCustomer = ({
                   initialValue: item.memberCode,
                   rules: [
                     {
-                      required: !memberCodeDisable,
+                      required: setting.memberCode ? !setting.memberCode : !memberCodeDisable,
                       pattern: /^[a-z0-9_-]{3,16}$/i,
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input placeholder={memberCodeDisable ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : memberCodeDisable} style={{ height: '32px' }} maxLength={16} />)}
+                })(<Input placeholder={(setting.memberCode || memberCodeDisable) ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : (setting.memberCode ? setting.memberCode : memberCodeDisable)} style={{ height: '32px' }} maxLength={16} />)}
               </Col>
               <Col lg={6} md={24}>
                 {/* <Tooltip placement="bottomLeft" title="Get member from mobile user">
                     <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="primary" icon="mobile" onClick={OpenMobileModal} />
                   </Tooltip> */}
                 <Tooltip placement="bottomLeft" title="Get Default Code">
-                  <Button disabled={item.memberCode ? item.memberCode : memberCodeDisable} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
+                  <Button disabled={item.memberCode ? item.memberCode : setting.memberCode} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
                 </Tooltip>
               </Col>
             </Row>
@@ -379,7 +373,7 @@ const FormCustomer = ({
       {(modalType === 'edit' || modalType === 'add') &&
         <FormItem {...tailFormItemLayout}>
           {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          {item.memberCodeDisable && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancelMobile}>Cancel</Button>}
+          {/* {item.memberCodeDisable && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancelMobile}>Cancel</Button>} */}
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>}
       {modalType === 'addMember' && <div style={{ textAlign: 'right' }}>

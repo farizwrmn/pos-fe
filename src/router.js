@@ -97,6 +97,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/master/customer/customer/'))
             }, 'master-customer')
           }
@@ -665,6 +666,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/store'))
               registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/master/city'))
               cb(null, require('./routes/setting/store/'))
             }, 'setting-store')

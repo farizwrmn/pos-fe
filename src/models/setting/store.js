@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import { getAllStores, addStore, showStore, updateStore } from '../../services/setting/store'
 import { pageModel } from './../common'
 
@@ -13,7 +14,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     listStore: [],
-    selectedShift: [],
+    setting: { cashRegisterPeriods: { active: false, autoClose: false }, selectedShift: [], selectedCounter: [], memberCode: false },
     modalType: 'add',
     modalEdit: { visible: false, item: {} }
   },
@@ -23,6 +24,9 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         if (location.pathname === '/setting/store') {
           dispatch({ type: 'getAllStores' })
+          dispatch({ type: 'refreshSetting' })
+        } else if (location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
+          dispatch({ type: 'showStore', payload: { id: lstorage.getCurrentUserStore() } })
         }
       })
     }
@@ -54,13 +58,7 @@ export default modelExtend(pageModel, {
       const data = yield call(addStore, payload.data)
       if (data.success) {
         success(payload.data.name)
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            selectedShift: []
-          }
-        })
+        yield put({ type: 'refreshSetting' })
         yield put({ type: 'getAllStores' })
       } else {
         yield put({
@@ -81,7 +79,15 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             currentItem: data,
-            selectedShift: data.cashierShift ? data.cashierShift.split(',').map(x => parseInt(x, 10)) : []
+            setting: {
+              cashRegisterPeriods: data.settingValue ? {
+                active: data.settingValue.cashRegisterPeriods.active,
+                autoClose: data.settingValue.cashRegisterPeriods.autoClose
+              } : {},
+              selectedShift: data.settingValue ? data.settingValue.shift : [],
+              selectedCounter: data.settingValue ? data.settingValue.counter : [],
+              memberCode: data.settingValue ? data.settingValue.memberCode.bySystem : false
+            }
           }
         })
       }
@@ -91,14 +97,7 @@ export default modelExtend(pageModel, {
       const data = yield call(updateStore, payload)
       if (data.success) {
         success(payload.data.name)
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            selectedShift: []
-          }
-        })
+        yield put({ type: 'refreshSetting' })
         yield put({ type: 'getAllStores' })
       } else {
         throw data
@@ -109,14 +108,51 @@ export default modelExtend(pageModel, {
   reducers: {
     addShift (state, { payload }) {
       const { shift } = payload
-      state.selectedShift.push(shift)
+      state.setting.selectedShift.push(shift)
       return { ...state }
     },
 
     deleteShift (state, { payload }) {
       const { shift } = payload
-      state.selectedShift = state.selectedShift.filter(x => x !== shift)
+      state.setting.selectedShift = state.setting.selectedShift.filter(x => x !== shift)
       return { ...state }
+    },
+
+    addCounter (state, { payload }) {
+      const { counter } = payload
+      state.setting.selectedCounter.push(counter)
+      return { ...state }
+    },
+
+    deleteCounter (state, { payload }) {
+      const { counter } = payload
+      state.setting.selectedCounter = state.setting.selectedCounter.filter(x => x !== counter)
+      return { ...state }
+    },
+
+    setMemberCodeBySystem (state, { payload }) {
+      const { value } = payload
+      state.setting.memberCode = value
+      return { ...state }
+    },
+
+    setCashRegisterPeriods (state, { payload }) {
+      const { checked, value } = payload
+      if (value === 'active') {
+        state.setting.cashRegisterPeriods.active = checked
+      } else if (value === 'autoClose') {
+        state.setting.cashRegisterPeriods.autoClose = checked
+      }
+      return { ...state }
+    },
+
+    refreshSetting (state) {
+      return {
+        ...state,
+        modalType: 'add',
+        currentItem: {},
+        setting: { cashRegisterPeriods: { active: false, autoClose: false }, selectedShift: [], selectedCounter: [], memberCode: false }
+      }
     }
   }
 })
