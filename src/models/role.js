@@ -106,11 +106,16 @@ export default modelExtend(pageModel, {
             }
             data.push(Object.assign({}, menus[m], check))
           }
-          data = arrayToTree(data.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
+          let tempData = data
+          let sortArrayNullAsc = []
+          data = arrayToTree(tempData.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
+          for (let key in data) sortArrayNullAsc.push(data[key])
+          data = arrayToTree(tempData.filter(_ => _.mpid === '-1'), 'menuId', 'mpid')
+          for (let key in data) sortArrayNullAsc.push(data[key])
           yield put({
             type: 'updateState',
             payload: {
-              listRole: data,
+              listRole: sortArrayNullAsc,
               roles
             }
           })

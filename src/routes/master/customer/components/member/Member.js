@@ -50,6 +50,27 @@ const Member = ({
           modalType
         }
       })
+      dispatch({
+        type: 'pos/queryGetMemberSuccess',
+        payload: { memberInformation: data }
+      })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'unit/lov', payload: { id: data.memberCode } })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showListReminder: false
+        }
+      })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id, name: data.memberName }
+          }
+        }
+      })
     },
     onCancel () {
       const { pathname } = location
@@ -134,4 +155,4 @@ const Member = ({
   )
 }
 
-export default connect(({ customer, customergroup, customertype, city, misc }) => ({ customer, customergroup, customertype, city, misc }))(Member)
+export default connect(({ customer, pos, customergroup, customertype, city, misc }) => ({ customer, pos, customergroup, customertype, city, misc }))(Member)

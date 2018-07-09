@@ -96,6 +96,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/master/customer/customer/'))
             }, 'master-customer')
           }
