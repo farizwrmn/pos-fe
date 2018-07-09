@@ -36,7 +36,7 @@ const Report = ({ dispatch, cashEntryReport, app }) => {
         payload: {
           from,
           to,
-          field: 'id,transNo,transDate,typeName,reference,amountIn,amountOut',
+          field: 'id,transNo,transDate,reference,amountIn,amountOut',
           order: 'transDate,transNo,id'
         }
       })

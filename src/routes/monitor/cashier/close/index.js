@@ -82,6 +82,24 @@ const CloseCashRegister = ({
   }
   summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
 
+  const viewDetailProps = {
+    listCashTransSummary,
+    summary,
+    listCashTransDetail,
+    showDetail (record) {
+      dispatch({
+        type: 'cashier/getCashierTransSourceDetail',
+        payload: {
+          cashierId: cashierInfo.cashierId,
+          id: cashierInfo.id,
+          transType: record
+        }
+      })
+    },
+    dispatch,
+    activeTabKeyClose
+  }
+
   const confirmClose = () => {
     if (!isEmptyObject(listCashTransSummary)) {
       confirm({
@@ -105,25 +123,6 @@ const CloseCashRegister = ({
       })
     }
   }
-
-  const viewDetailProps = {
-    listCashTransSummary,
-    summary,
-    listCashTransDetail,
-    showDetail (record) {
-      dispatch({
-        type: 'cashier/getCashierTransSourceDetail',
-        payload: {
-          cashierId: cashierInfo.cashierId,
-          id: cashierInfo.id,
-          transType: record
-        }
-      })
-    },
-    dispatch,
-    activeTabKeyClose
-  }
-
 
   return (
     <div className="content-inner">

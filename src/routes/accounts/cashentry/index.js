@@ -9,10 +9,8 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, app }) => {
+const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
   const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
-  const { listOpts } = paymentOpts
-  const { listBank } = bank
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode } = accountCode
@@ -101,7 +99,7 @@ const Cash = ({ cashentry, accountCode, bank, paymentOpts, customer, supplier, l
       }
     })
   }
-  console.log('currentItemList', currentItemList)
+
   const modalProps = {
     title: 'Add Detail',
     item: currentItemList,
@@ -138,8 +136,6 @@ const Cash = ({ cashentry, accountCode, bank, paymentOpts, customer, supplier, l
     inputType,
     listDetailProps,
     listItem,
-    listOpts,
-    listBank,
     listCustomer,
     listSupplier,
     item: currentItem,
@@ -274,9 +270,7 @@ Cash.propTypes = {
 export default connect(({
   cashentry,
   accountCode,
-  paymentOpts,
-  bank,
   customer,
   supplier,
   loading,
-  app }) => ({ cashentry, accountCode, paymentOpts, bank, customer, supplier, loading, app }))(Cash)
+  app }) => ({ cashentry, accountCode, customer, supplier, loading, app }))(Cash)

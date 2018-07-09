@@ -2,9 +2,10 @@ import React from 'react'
 import { Tabs, Table, Row, Col, Icon } from 'antd'
 import { connect } from 'dva'
 import { numberFormat } from 'utils'
+import styles from '../../../../themes/index.less'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 const TabPane = Tabs.TabPane
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const ViewDetail = ({
   listCashTransSummary,
@@ -36,13 +37,15 @@ const ViewDetail = ({
     dataIndex: 'cashIn',
     key: 'cashIn',
     width: '200px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text || 0)
   }, {
     title: 'Cash Out',
     dataIndex: 'cashOut',
     key: 'cashOut',
     width: '200px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text || 0)
   }, {
     title: 'Detail',
     dataIndex: 'detail',
@@ -79,13 +82,8 @@ const ViewDetail = ({
     dataIndex: 'cashIn',
     key: 'cashIn',
     width: '100px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-  }, {
-    title: 'Cash Out',
-    dataIndex: 'cashOut',
-    key: 'cashOut',
-    width: '100px',
-    render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text || 0)
   }]
 
   const dataCashRegister = (
@@ -188,4 +186,3 @@ const ViewDetail = ({
 }
 
 export default connect(({ cashier }) => ({ cashier }))(ViewDetail)
-

@@ -90,7 +90,7 @@ const Bread = ({ menu, changeRole }) => {
     <div className={styles.bread}>
       <Row>
         <Col xs={4} sm={6} md={8} lg={10} xl={12}>
-          {screen.width >= 768 &&
+          {window.screen.width >= 768 &&
             <Breadcrumb>
               {breads}
             </Breadcrumb>

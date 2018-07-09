@@ -1,9 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
 import { query, add, edit, remove } from '../../services/payment/cashentry'
+import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -94,32 +95,49 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put, select }) {
       yield put({
         type: 'updateState',
         payload: {
           currentItem: payload.oldValue
         }
       })
-      const data = yield call(add, payload)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            listItem: []
+      const cashier = yield select(({ app }) => app.user)
+      const currentRegister = yield call(queryCurrentOpenCashRegister, { cashierId: cashier.userid })
+      if (currentRegister.success) {
+        if (currentRegister.data) {
+          const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
+          payload.data.cashierTransId = cashierInformation.id
+          payload.data.transDate = cashierInformation.period
+          const data = yield call(add, payload)
+          if (data.success) {
+            success()
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalType: 'add',
+                currentItem: {},
+                listItem: []
+              }
+            })
+            yield put({ type: 'querySequence' })
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                currentItem: payload.oldValue
+              }
+            })
+            throw data
           }
-        })
+        } else {
+          Modal.warning({
+            title: 'No cashierInformation',
+            content: `No cashier information for ${cashier.userid}`
+          })
+        }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
+        throw currentRegister
       }
     },
 

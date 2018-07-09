@@ -646,6 +646,35 @@ const Pos = ({
     setCurBarcode('', 1)
   }
 
+  // const cashActive = (currentCashier.cashActive || 0) !== 0
+
+  let infoCashRegister = {}
+  infoCashRegister.title = 'Cashier Information'
+  infoCashRegister.titleColor = color.normal
+  infoCashRegister.descColor = color.error
+  infoCashRegister.dotVisible = false
+  infoCashRegister.cashActive = ((currentCashier.cashActive || 0) === true)
+
+  if (lstorage.getLoginTimeDiff() > 500) {
+    console.log('something fishy')
+  } else {
+    if (!currentCashier.period) {
+      infoCashRegister.desc = '* Select the correct cash register'
+      infoCashRegister.dotVisible = true
+    } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
+      infoCashRegister.desc = '* The open cash register date is different from current date'
+      infoCashRegister.dotVisible = true
+    }
+    infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
+    infoCashRegister.CaptionObject =
+      (<span style={{ color: infoCashRegister.titleColor }}>
+        <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
+        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
+          {infoCashRegister.desc}
+        </span>
+      </span>)
+  }
+
   const modalShiftProps = {
     item: dataCashierTrans,
     listCashier,
@@ -655,6 +684,7 @@ const Pos = ({
     currentCashier,
     visible: modalShiftVisible,
     cashierId: user.userid,
+    infoCashRegister,
     dispatch,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -1580,14 +1610,6 @@ const Pos = ({
     }, 1000)
   }
 
-  let dotVisible = false
-  let cashRegisterTitle = 'Cashier Information'
-  if (lstorage.getLoginTimeDiff() > 500) {
-    console.log('something fishy')
-  } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
-    cashRegisterTitle = 'Cashier Information - The open cash register date is different from current date'
-    dotVisible = true
-  }
 
   return (
     <div className="content-inner">
@@ -1605,9 +1627,10 @@ const Pos = ({
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
                     <Col xs={24} sm={24} md={5} lg={5} xl={5}>
-                      <Tooltip title={cashRegisterTitle}>
+                      <Tooltip title={infoCashRegister.Caption}>
                         Date : {currentCashier.period}
-                        <Badge dot={dotVisible} />
+                        {'  '}
+                        <Badge dot={infoCashRegister.dotVisible} />
                       </Tooltip>
                     </Col>
                   </Row>
@@ -1940,7 +1963,8 @@ const Pos = ({
           </Form>
         </Col>
       </Row>
-      {(localStorage.getItem('lastMeter') || showAlert) &&
+      {
+        (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
           <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
           <Reminder {...reminderProps} />

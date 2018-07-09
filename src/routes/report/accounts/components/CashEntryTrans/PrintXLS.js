@@ -74,7 +74,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
           { value: (data.transNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.reference || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.typeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: 'CASH', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
 
           { value: data.amountIn, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: data.amountOut, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }

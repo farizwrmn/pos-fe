@@ -980,7 +980,7 @@ export default {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: (<p>Please go to <b>Setting > Person > Cashier</b> to make sure that your account has registered</p>)
+          content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
         })
         // Modal.warning({
         //   title: 'Warning',
