@@ -115,7 +115,6 @@ const FormInput = ({
   if (listCity && listCity.length > 0) {
     cities = listCity.map(x => (<Option value={x.id}>{x.cityName}</Option>))
   }
-  console.log(listStore)
   if (listStore && listStore.length > 0) {
     parents = listStore.map(x => (<Option value={x.id}>{x.title}</Option>))
   }

@@ -256,15 +256,6 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           }
         }, {
-          path: 'transaction/pos/history',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
-              cb(null, require('./routes/transaction/savedPayment/'))
-            }, 'transaction-pos-history')
-          }
-        }, {
           path: 'transaction/purchase/add',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -360,11 +351,36 @@ const Routers = function ({ history, app }) {
             }, 'report-service-summary')
           }
         }, {
+          path: 'transaction/pos/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/history/'))
+            }, 'transaction-pos-history')
+          }
+        }, {
           path: 'transaction/purchase/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/purchase'))
-              cb(null, require('./routes/transaction/purchasehistory/'))
+              cb(null, require('./routes/transaction/history/'))
+            }, 'transaction-purchase-history')
+          }
+        }, {
+          path: 'transaction/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/history/'))
             }, 'transaction-purchase-history')
           }
         }, {
