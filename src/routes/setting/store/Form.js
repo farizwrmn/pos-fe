@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Row, Col, Button, Modal, Select, Card, Checkbox } from 'antd'
+import { Form, Input, Row, Col, Button, Modal, Select } from 'antd'
 import List from './List'
+import Setting from './Setting'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -31,10 +32,15 @@ const FormInput = ({
   item,
   addShift,
   deleteShift,
+  addCounter,
+  deleteCounter,
+  memberCodeBySystem,
+  cashRegisterPeriods,
   listStore,
-  selectedShift,
+  setting,
   listCity,
   listShift,
+  listCounter,
   showCities,
   showParents,
   modalType,
@@ -75,6 +81,12 @@ const FormInput = ({
     }
   }
 
+  const changeCashRegisterPeriods = (e) => {
+    const check = e.target.checked
+    const value = e.target.value
+    cashRegisterPeriods(check, value)
+  }
+
   const changeShift = (e) => {
     const check = e.target.checked
     if (check) {
@@ -84,19 +96,27 @@ const FormInput = ({
     }
   }
 
+  const changeCounter = (e) => {
+    const check = e.target.checked
+    if (check) {
+      addCounter(e.target.value)
+    } else {
+      deleteCounter(e.target.value)
+    }
+  }
+
+  const changeMemberCode = (e) => {
+    const check = e.target.checked
+    memberCodeBySystem(check)
+  }
+
   let cities = []
-  let shifts = []
   let parents = []
   if (listCity && listCity.length > 0) {
     cities = listCity.map(x => (<Option value={x.id}>{x.cityName}</Option>))
   }
-
-  if (listShift && listShift.length > 0) {
-    shifts = listShift.map(x => (<p><Checkbox checked={selectedShift.indexOf(x.id) > -1} onChange={x => changeShift(x)} value={x.id} >{x.shiftName}</Checkbox></p>))
-  }
-
   if (listStore && listStore.length > 0) {
-    parents = listStore.map(x => (<Option value={x.id}>{x.storeName}</Option>))
+    parents = listStore.map(x => (<Option value={x.id}>{x.title}</Option>))
   }
 
   const handleSubmit = () => {
@@ -107,7 +127,18 @@ const FormInput = ({
       const data = {
         ...getFieldsValue()
       }
-      data.cashierShift = (selectedShift.length > 0 ? (selectedShift.length > 1 ? selectedShift.join(',') : selectedShift[0]) : '')
+      data.settingValue = {
+        cashRegisterPeriods: {
+          active: setting.cashRegisterPeriods.active,
+          autoClose: setting.cashRegisterPeriods.autoClose
+        },
+        shift: setting.selectedShift,
+        counter: setting.selectedCounter,
+        memberCode: {
+          bySystem: setting.memberCode
+        }
+      }
+
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -124,6 +155,16 @@ const FormInput = ({
   const handleCancel = () => {
     onCancel()
     resetFields()
+  }
+
+  const settingProps = {
+    listShift,
+    listCounter,
+    setting,
+    changeCashRegisterPeriods,
+    changeShift,
+    changeCounter,
+    changeMemberCode
   }
 
   return (
@@ -157,7 +198,8 @@ const FormInput = ({
               </FormItem>
               <FormItem label="Short Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('shortName', {
-                  initialValue: item.shortName
+                  initialValue: item.shortName,
+                  rules: [{ required: true }]
                 })(<Input maxLength={20} />)}
               </FormItem>
               <FormItem label="Address 01" hasFeedback {...formItemLayout}>
@@ -173,7 +215,8 @@ const FormInput = ({
               </FormItem>
               <FormItem label="City" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityId', {
-                  initialValue: item.cityId
+                  initialValue: item.cityId,
+                  rules: [{ required: true }]
                 })(<Select
                   allowClear
                   optionFilterProp="children"
@@ -259,11 +302,6 @@ const FormInput = ({
                   initialValue: item.longitude
                 })(<Input maxLength={20} />)}
               </FormItem>
-              <FormItem label="List Shift" hasFeedback {...formItemLayout}>
-                <Card>
-                  {shifts}
-                </Card>
-              </FormItem>
               <FormItem {...tailFormItemLayout}>
                 {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
                 <Button type="primary" onClick={handleSubmit}>{button}</Button>
@@ -274,6 +312,8 @@ const FormInput = ({
       </Col>
       <Col {...column}>
         <List {...listProps} />
+        <div style={{ height: 10 }} />
+        <Setting {...settingProps} />
       </Col>
     </Row>
   )

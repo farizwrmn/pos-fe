@@ -7,6 +7,8 @@ import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({ listPOSCompareSvsI, tableHeader, fromDate, toDate, diffDay, storeInfo, category, brand }) => {
   const styles = {
     merchant: {
@@ -81,7 +83,7 @@ const PrintXLS = ({ listPOSCompareSvsI, tableHeader, fromDate, toDate, diffDay, 
         { value: tableHeader[i], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
       )
       brandFooter.push(
-        { value: listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0), numFmt: numberFormat.formatNumberInExcel(listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0), 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+        { value: listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0), numFmt: formatNumberInExcel(listPOSCompareSvsI.reduce((cnt, o) => cnt + parseFloat(o[`brand0${i + 1}`]), 0), 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       )
     }
     brandHeaders = brandHeader
@@ -99,12 +101,12 @@ const PrintXLS = ({ listPOSCompareSvsI, tableHeader, fromDate, toDate, diffDay, 
         row.push({ value: data.sectionWidth, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.aspectRatio, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.rimDiameter, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.salesQty), numFmt: numberFormat.formatNumberInExcel(data.salesQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.monthlyTO), numFmt: numberFormat.formatNumberInExcel(data.monthlyTO, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.salesQty), numFmt: formatNumberInExcel(data.salesQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.monthlyTO), numFmt: formatNumberInExcel(data.monthlyTO, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         for (let i = 0; i < tableHeader.length; i += 1) {
-          row.push({ value: data[`brand0${i + 1}`], numFmt: numberFormat.formatNumberInExcel(data[`brand0${i + 1}`], 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: data[`brand0${i + 1}`], numFmt: formatNumberInExcel(data[`brand0${i + 1}`], 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         }
-        row.push({ value: parseFloat(data.total), numFmt: numberFormat.formatNumberInExcel(data.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.total), numFmt: formatNumberInExcel(data.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
@@ -144,9 +146,9 @@ const PrintXLS = ({ listPOSCompareSvsI, tableHeader, fromDate, toDate, diffDay, 
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: qtySoldTotal, numFmt: numberFormat.formatNumberInExcel(qtySoldTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: qtyMonthlyTOTotal, numFmt: numberFormat.formatNumberInExcel(qtyMonthlyTOTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: qtyTotal, numFmt: numberFormat.formatNumberInExcel(qtyTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: qtySoldTotal, numFmt: formatNumberInExcel(qtySoldTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: qtyMonthlyTOTotal, numFmt: formatNumberInExcel(qtyMonthlyTOTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: qtyTotal, numFmt: formatNumberInExcel(qtyTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
   ]
 

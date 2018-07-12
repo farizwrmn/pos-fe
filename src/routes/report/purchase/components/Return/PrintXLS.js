@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
@@ -113,10 +114,10 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`G${m}`).value = parseFloat(listTrans[n].qty)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].qty, 2)
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(listTrans[n].qty, 2)
         sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].amount)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].amount, 2)
+        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel(listTrans[n].amount, 2)
       }
 
       for (let m = 65; m < (header.length + 65); m += 1) {
@@ -134,7 +135,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcelNumberInExcel(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

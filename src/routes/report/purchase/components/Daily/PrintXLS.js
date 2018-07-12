@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category, brand }) => {
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
@@ -118,25 +119,25 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`E${m}`).value = parseInt(listDaily[n].qty, 10)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseInt(listDaily[n].qty, 10), 2)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(parseInt(listDaily[n].qty, 10), 2)
         sheet.getCell(`F${m}`).value = (parseFloat(listDaily[n].total))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].total), 2)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].total), 2)
         sheet.getCell(`G${m}`).value = (parseFloat(listDaily[n].totalDiscount))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].totalDiscount), 2)
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].totalDiscount), 2)
         sheet.getCell(`H${m}`).value = (parseFloat(listDaily[n].DPP))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].DPP), 2)
+        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].DPP), 2)
         sheet.getCell(`I${m}`).value = (parseFloat(listDaily[n].PPN))
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].PPN), 2)
+        sheet.getCell(`I${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].PPN), 2)
         sheet.getCell(`J${m}`).value = (parseFloat(listDaily[n].roundingItem))
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].roundingItem), 2)
+        sheet.getCell(`J${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].roundingItem), 2)
         sheet.getCell(`K${m}`).value = (parseFloat(listDaily[n].netto))
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listDaily[n].netto), 2)
+        sheet.getCell(`K${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].netto), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {
@@ -154,7 +155,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

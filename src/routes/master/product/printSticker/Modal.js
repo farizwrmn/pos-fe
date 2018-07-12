@@ -93,7 +93,6 @@ const ModalSticker = ({
       if (Object.keys(selectedSticker).length === 0) {
         const listProduct = listItem.filter(x => x.productName === data.name)[0]
         data.info = listProduct
-        console.log(data)
         getItem(data)
       } else {
         data.info = selectedSticker.info

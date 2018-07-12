@@ -12,9 +12,6 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
   const { user, storeInfo } = app
   const filterProps = {
     period,
-    filter: {
-      ...location.query
-    },
     filterChange (date) {
       dispatch({
         type: 'purchase/queryHistory',

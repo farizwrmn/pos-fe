@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Table, Button } from 'antd'
+import { Table, Button, Icon } from 'antd'
 import styles from '../../../themes/index.less'
 
 const List = ({ ...tableProps, printInvoice }) => {
@@ -12,9 +12,8 @@ const List = ({ ...tableProps, printInvoice }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: (text) => {
-        return moment(text).format('DD MMMM YYYY')
-      }
+      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
+      render: _text => `${moment(_text).format('LL')}`
     },
     {
       title: 'No',
@@ -55,7 +54,7 @@ const List = ({ ...tableProps, printInvoice }) => {
       }
     },
     {
-      title: 'Operation',
+      title: <Icon type="setting" />,
       key: 'operation',
       width: 70,
       fixed: 'right',

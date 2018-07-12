@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import FormInput from './Form'
 
-const Store = ({ store, shift, city, dispatch }) => {
-  const { listStore, currentItem, modalType, modalEdit, selectedShift } = store
+const Store = ({ store, shift, counter, city, dispatch }) => {
+  const { listStore, currentItem, modalType, modalEdit, setting } = store
   const { listCity } = city
   const { listShift } = shift
+  const { listCounter } = counter
 
   const listProps = {
     listStore,
@@ -55,10 +56,11 @@ const Store = ({ store, shift, city, dispatch }) => {
 
   const formProps = {
     ...listProps,
-    selectedShift,
+    setting,
     listCity,
     listStore,
     listShift,
+    listCounter,
     item: currentItem,
     modalType,
     button: modalType === 'add' ? 'Save' : 'Update',
@@ -72,14 +74,7 @@ const Store = ({ store, shift, city, dispatch }) => {
       })
     },
     onCancel () {
-      dispatch({
-        type: 'store/updateState',
-        payload: {
-          currentItem: {},
-          modalType: 'add',
-          selectedShift: []
-        }
-      })
+      dispatch({ type: 'store/refreshSetting' })
     },
     showParents () {
       dispatch({
@@ -102,6 +97,30 @@ const Store = ({ store, shift, city, dispatch }) => {
         type: 'store/deleteShift',
         payload: { shift }
       })
+    },
+    addCounter (counter) {
+      dispatch({
+        type: 'store/addCounter',
+        payload: { counter }
+      })
+    },
+    deleteCounter (counter) {
+      dispatch({
+        type: 'store/deleteCounter',
+        payload: { counter }
+      })
+    },
+    memberCodeBySystem (value) {
+      dispatch({
+        type: 'store/setMemberCodeBySystem',
+        payload: { value }
+      })
+    },
+    cashRegisterPeriods (checked, value) {
+      dispatch({
+        type: 'store/setCashRegisterPeriods',
+        payload: { checked, value }
+      })
     }
   }
 
@@ -118,4 +137,4 @@ Store.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ store, shift, city }) => ({ store, shift, city }))(Store)
+export default connect(({ store, shift, counter, city }) => ({ store, shift, counter, city }))(Store)

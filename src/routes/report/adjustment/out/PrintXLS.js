@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
@@ -94,7 +95,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count])
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = formatNumberInExcel(header[count])
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -107,13 +108,13 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`D${m}`).value = parseFloat(listTrans[n].qtyOut)
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].qtyOut)
+        sheet.getCell(`D${m}`).numFmt = formatNumberInExcel(listTrans[n].qtyOut)
         sheet.getCell(`E${m}`).value = parseFloat(listTrans[n].costPrice)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].costPrice)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(listTrans[n].costPrice)
         sheet.getCell(`F${m}`).value = parseFloat(listTrans[n].amount)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].amount)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(listTrans[n].amount)
       }
 
       for (let m = 65; m < 71; m += 1) {

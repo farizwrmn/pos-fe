@@ -84,7 +84,6 @@ const formShift = ({
       }
       data.start = moment(data.start).format(format)
       data.end = moment(data.end).format(format)
-      console.log(data)
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {

@@ -4,6 +4,8 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
   let qtyTotal = listHistory.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let grandTotal = listHistory.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
@@ -62,10 +64,10 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
         row.push({ value: (data.transNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.qty), numFmt: numberFormat.formatNumberInExcel(data.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.total), numFmt: numberFormat.formatNumberInExcel(data.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.totalDiscount), numFmt: numberFormat.formatNumberInExcel(data.totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(data.nettoTotal), numFmt: numberFormat.formatNumberInExcel(data.nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.qty), numFmt: formatNumberInExcel(data.qty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.total), numFmt: formatNumberInExcel(data.total, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.totalDiscount), numFmt: formatNumberInExcel(data.totalDiscount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(data.nettoTotal), numFmt: formatNumberInExcel(data.nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
@@ -114,10 +116,10 @@ const PrintXLS = ({ listHistory, from, to, storeInfo }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: qtyTotal, numFmt: numberFormat.formatNumberInExcel(qtyTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: grandTotal, numFmt: numberFormat.formatNumberInExcel(grandTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: discountTotal, numFmt: numberFormat.formatNumberInExcel(discountTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: nettoTotal, numFmt: numberFormat.formatNumberInExcel(nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: qtyTotal, numFmt: formatNumberInExcel(qtyTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: grandTotal, numFmt: formatNumberInExcel(grandTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: discountTotal, numFmt: formatNumberInExcel(discountTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: nettoTotal, numFmt: formatNumberInExcel(nettoTotal, 2), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
   ]
 

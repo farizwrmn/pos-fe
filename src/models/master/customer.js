@@ -34,7 +34,7 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
-    memberCodeDisable: true,
+    memberCodeDisable: false,
     checkMember: {
       existingCheckBoxDisable: true,
       existingSearchButtonDisable: true,
@@ -251,7 +251,6 @@ export default modelExtend(pageModel, {
         seqCode: 'CUST',
         type: 1 // storeId
       }
-      // if (payload.data.memberGetDefault) {
       if (payload.data.memberGetDefault) {
         const sequence = yield call(querySequence, seqDetail)
         payload.id = sequence.data
@@ -284,6 +283,30 @@ export default modelExtend(pageModel, {
               modalAddMember: false
             }
           })
+          localStorage.removeItem('member', [])
+          localStorage.removeItem('memberUnit')
+          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+
+          let arrayProd
+          if (JSON.stringify(listByCode) === '[]') {
+            arrayProd = listByCode.slice()
+          } else {
+            arrayProd = JSON.parse(listByCode.slice())
+          }
+          let item = payload.data
+          arrayProd.push({
+            memberCode: item.memberCode,
+            memberName: item.memberName,
+            address01: item.address01,
+            point: item.point ? item.point : 0,
+            id: item.id,
+            memberTypeId: item.memberTypeId,
+            memberSellPrice: item.memberSellPrice,
+            memberPendingPayment: item.memberPendingPayment,
+            gender: item.gender,
+            phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
+          })
+          localStorage.setItem('member', JSON.stringify(arrayProd))
         }
         const increase = yield call(increaseSequence, seqDetail)
         if (!increase.success) throw increase
@@ -462,7 +485,6 @@ export default modelExtend(pageModel, {
     },
 
     refreshView (state) {
-      console.log(state)
       return {
         ...state,
         modalType: 'add',

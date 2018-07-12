@@ -38,14 +38,14 @@ const ViewDetail = ({
     key: 'cashIn',
     width: '200px',
     className: styles.alignRight,
-    render: text => formatNumberIndonesia(text)
+    render: text => formatNumberIndonesia(text || 0)
   }, {
     title: 'Cash Out',
     dataIndex: 'cashOut',
     key: 'cashOut',
     width: '200px',
     className: styles.alignRight,
-    render: text => formatNumberIndonesia(text)
+    render: text => formatNumberIndonesia(text || 0)
   }, {
     title: 'Detail',
     dataIndex: 'detail',
@@ -83,14 +83,7 @@ const ViewDetail = ({
     key: 'cashIn',
     width: '100px',
     className: styles.alignRight,
-    render: text => formatNumberIndonesia(text)
-  }, {
-    title: 'Cash Out',
-    dataIndex: 'cashOut',
-    key: 'cashOut',
-    width: '100px',
-    className: styles.alignRight,
-    render: text => formatNumberIndonesia(text)
+    render: text => formatNumberIndonesia(text || 0)
   }]
 
   const dataCashRegister = (
@@ -103,34 +96,34 @@ const ViewDetail = ({
         (<div>
           <Row>
             <Col span={4}>
-                   Opening Cash
+              Opening Cash
             </Col>
             <Col offset={17} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(summary.total.openingCash)}
+              {formatNumberIndonesia(summary.total.openingCash || 0)}
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
-                   Cash-In
+              Cash-In
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(summary.total.cashIn)}
+              {formatNumberIndonesia(summary.total.cashIn || 0)}
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
-                   Cash-Out
+              Cash-Out
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(summary.total.cashOut)}
+              {formatNumberIndonesia(summary.total.cashOut || 0)}
             </Col>
           </Row>
           <Row>
             <Col span={4}>
-                   Cash-on Hand
+              Cash-on Hand
             </Col>
             <Col offset={17} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(summary.total.cashOnHand)}
+              {formatNumberIndonesia(summary.total.cashOnHand || 0)}
             </Col>
           </Row>
         </div>)
@@ -148,23 +141,23 @@ const ViewDetail = ({
         (<div>
           <Row>
             <Col span={4}>
-                   Total
+              Total
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
-                   Cash-In
+              Cash-In
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(detail.total.cashIn)}
+              {formatNumberIndonesia(detail.total.cashIn || 0)}
             </Col>
           </Row>
           <Row>
             <Col offset={1} span={4}>
-                   Cash-Out
+              Cash-Out
             </Col>
             <Col offset={16} span={3} style={{ textAlign: 'right' }}>
-              {formatNumberIndonesia(detail.total.cashOut)}
+              {formatNumberIndonesia(detail.total.cashOut || 0)}
             </Col>
           </Row>
         </div>)
