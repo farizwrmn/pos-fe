@@ -10,7 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
-const { formatNumberInExcel} = numberFormat
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
   let beginQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.beginQty), 0)

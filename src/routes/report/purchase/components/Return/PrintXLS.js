@@ -135,7 +135,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[count]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcelNumberInExcel(footer[count], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcel(footer[count], 2)
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }

@@ -50,6 +50,20 @@ const CloseCashRegister = ({
 }) => {
   const { listCashTransSummary, listCashTransDetail, activeTabKeyClose, cashierInfo } = cashier
 
+  if (isEmptyObject(cashierInfo)) {
+    cashierInfo.id = null
+    cashierInfo.cashierId = ''
+    cashierInfo.storeId = null
+    cashierInfo.storeName = ''
+    cashierInfo.shiftId = null
+    cashierInfo.shiftName = ''
+    cashierInfo.counterId = null
+    cashierInfo.counterName = ''
+    cashierInfo.period = null
+    cashierInfo.periodDesc = ''
+    cashierInfo.status = ''
+    cashierInfo.openingBalance = 0
+  }
   const showSummary = () => {
     validateFields((errors) => {
       if (errors) {
