@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
+  const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode } = accountCode
@@ -29,9 +29,21 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   const listProps = {
     dataSource: listCash,
     user,
+    pagination,
     storeInfo,
     loading: loading.effects['cashentry/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({

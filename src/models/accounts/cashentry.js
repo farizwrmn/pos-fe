@@ -22,13 +22,18 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listCash: [],
     modalVisible: false,
-    listItem: []
+    listItem: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/cash-entry') {
           dispatch({
@@ -38,7 +43,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query' })
+            dispatch({ type: 'query', payload: other })
           } else {
             dispatch({ type: 'querySequence' })
           }

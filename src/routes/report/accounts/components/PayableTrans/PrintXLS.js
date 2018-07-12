@@ -65,7 +65,6 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   let tableHeader = []
   let tableFooter = []
   const createTableBody = (list) => {
-    console.log(list)
     let tableBody = []
     let start = 1
     let countQtyValue = 0
