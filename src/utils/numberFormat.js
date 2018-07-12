@@ -13,7 +13,7 @@ const formatNumberInExcel = (value, decimal) => {
 }
 
 const formatNumberIndonesia = (text) => {
-  return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return (text || '-').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 module.exports = {
