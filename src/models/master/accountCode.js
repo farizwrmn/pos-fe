@@ -31,6 +31,15 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '0') {
+            dispatch({
+              type: 'query',
+              payload: {
+                type: 'all',
+                field: 'id,accountCode,accountName,accountParentId'
+              }
+            })
+          }
         }
       })
     }

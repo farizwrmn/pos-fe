@@ -78,6 +78,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
   const formProps = {
     modalType,
     item: currentItem,
+    listAccountCode,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({

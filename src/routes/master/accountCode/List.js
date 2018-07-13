@@ -31,6 +31,16 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'accountName'
     },
     {
+      title: 'Parent Code',
+      dataIndex: 'accountParentCode',
+      key: 'accountParentCode'
+    },
+    {
+      title: 'Parent Name',
+      dataIndex: 'accountParentName',
+      key: 'accountParentName'
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,

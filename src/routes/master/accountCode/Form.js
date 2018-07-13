@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Tree, Button, Row, Col, Modal } from 'antd'
+import { arrayToTree } from 'utils'
 
 const FormItem = Form.Item
+const TreeNode = Tree.TreeNode
 
 const formItemLayout = {
   labelCol: {
@@ -26,6 +28,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  listAccountCode,
   onSubmit,
   onCancel,
   modalType,
@@ -60,6 +63,47 @@ const FormCounter = ({
     resetFields()
   }
 
+  const menuTree = arrayToTree((listAccountCode || []).filter(_ => _.id !== null), 'id', 'accountParentId')
+  const levelMap = {}
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children) {
+        if (item.accountParentId) {
+          levelMap[item.id] = item.accountParentId
+        }
+        return (
+          <TreeNode
+            key={item.accountCode}
+            title={(
+              <div
+                // onClick={() => handleClickTree(item.accountCode, item.id)}
+                value={item.accountCode}
+              >
+                {item.accountName} ({item.accountCode})
+              </div>
+            )}
+          >
+            {getMenus(item.children)}
+          </TreeNode>
+        )
+      }
+      return (
+        <TreeNode
+          key={item.accountCode}
+          title={(
+            <div
+              // onClick={() => handleClickTree(item.accountCode, item.id)}
+              value={item.accountCode}
+            >{item.accountName} ({item.accountCode})
+            </div>
+          )}
+        >
+          {(!menuTree.includes(item)) && item.name}
+        </TreeNode>
+      )
+    })
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -80,6 +124,8 @@ const FormCounter = ({
       })
     })
   }
+
+  const Visualize = getMenus(menuTree)
 
   return (
     <Form layout="horizontal">
@@ -106,11 +152,33 @@ const FormCounter = ({
               ]
             })(<Input maxLength={50} />)}
           </FormItem>
+          <FormItem label="Parent" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountParentId', {
+              initialValue: item.accountParentId
+            })(<Input maxLength={50} />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
+        {(listAccountCode || []).length > 0 &&
+          <div>
+            <strong style={{ fontSize: '15' }}> Current Account </strong>
+            <br />
+            <br />
+            <Col {...column}>
+              <div style={{ margin: '0px', width: '100 %', overflowY: 'auto', height: '300px' }}>
+                <Tree
+                  showLine
+                  // onRightClick={handleChooseTree}
+                  defaultExpandAll
+                >
+                  {Visualize}
+                </Tree>
+              </div>
+            </Col>
+          </div>}
       </Row>
     </Form>
   )
