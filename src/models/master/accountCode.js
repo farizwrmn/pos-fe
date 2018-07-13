@@ -49,7 +49,7 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccessCounter',
           payload: {
@@ -83,6 +83,13 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {}
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: {
+            type: 'all',
+            field: 'id,accountCode,accountName,accountParentId'
           }
         })
       } else {

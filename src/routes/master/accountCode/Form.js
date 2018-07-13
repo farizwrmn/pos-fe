@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Tree, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Tree, Button, Row, Col, Modal, Select } from 'antd'
 import { arrayToTree } from 'utils'
 
 const FormItem = Form.Item
+const Option = Select.Option
 const TreeNode = Tree.TreeNode
 
 const formItemLayout = {
@@ -33,6 +34,7 @@ const FormCounter = ({
   onCancel,
   modalType,
   button,
+  showParent,
   form: {
     getFieldDecorator,
     validateFields,
@@ -57,6 +59,8 @@ const FormCounter = ({
       }
     }
   }
+
+  const listOptions = (listAccountCode || []).length > 0 ? (listAccountCode || []).map(c => <Option key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
 
   const handleCancel = () => {
     onCancel()
@@ -125,6 +129,10 @@ const FormCounter = ({
     })
   }
 
+  const getData = () => {
+    showParent()
+  }
+
   const Visualize = getMenus(menuTree)
 
   return (
@@ -154,8 +162,21 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Parent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountParentId', {
-              initialValue: item.accountParentId
-            })(<Input maxLength={50} />)}
+              initialValue: item.accountParentId,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Parent of category"
+              onFocus={getData}
+              filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+            >{listOptions}
+            </Select>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -86,6 +86,15 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         payload: data
       })
     },
+    showParent () {
+      dispatch({
+        type: 'accountCode/query',
+        payload: {
+          type: 'all',
+          field: 'id,accountCode,accountName'
+        }
+      })
+    },
     onCancel () {
       const { pathname } = location
       dispatch(routerRedux.push({
