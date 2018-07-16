@@ -399,29 +399,6 @@ export default {
   },
 
   reducers: {
-    successPost (state, action) {
-      const { posMessage } = action.payload
-      localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('service_detail')
-      localStorage.removeItem('member')
-      localStorage.removeItem('memberUnit')
-      localStorage.removeItem('lastMeter')
-      return {
-        ...state,
-        posMessage,
-        totalPayment: 0,
-        totalChange: 0,
-        lastTransNo: '',
-        inputPayment: '',
-        creditCardTotal: 0,
-        creditCharge: 0,
-        creditChargeAmount: 0,
-        creditCardNo: 0,
-        creditCardType: '',
-        modalCreditVisible: false
-      }
-    },
-
     listSuccess (state, action) {
       const { listCreditCharge } = action.payload
       return {
