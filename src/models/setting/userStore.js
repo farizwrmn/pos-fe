@@ -23,6 +23,12 @@ export default modelExtend(pageModel, {
             payload: location.query
           })
         }
+        if (location.pathname === '/marketing/promo') {
+          dispatch({
+            type: 'getAllStores'
+            // payload: location.query
+          })
+        }
       })
     }
   },

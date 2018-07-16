@@ -738,6 +738,15 @@ const Routers = function ({ history, app }) {
             }, 'cashier-periods-close')
           }
         }, {
+          path: 'marketing/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/marketing/bundling'))
+              cb(null, require('./routes/marketing/bundling'))
+            }, 'marketing-bundling')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

@@ -24,6 +24,7 @@ module.exports = {
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',
     apiTools: '/tools',
+    apiPromo: '/promo',
     apiCashierUsers: '/cashiers/users',
     apiCashRegister: '/cashiers/cashregisters'
   },
