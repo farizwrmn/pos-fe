@@ -50,6 +50,20 @@ const CloseCashRegister = ({
 }) => {
   const { listCashTransSummary, listCashTransDetail, activeTabKeyClose, cashierInfo } = cashier
 
+  if (isEmptyObject(cashierInfo)) {
+    cashierInfo.id = null
+    cashierInfo.cashierId = ''
+    cashierInfo.storeId = null
+    cashierInfo.storeName = ''
+    cashierInfo.shiftId = null
+    cashierInfo.shiftName = ''
+    cashierInfo.counterId = null
+    cashierInfo.counterName = ''
+    cashierInfo.period = null
+    cashierInfo.periodDesc = ''
+    cashierInfo.status = ''
+    cashierInfo.openingBalance = 0
+  }
   const showSummary = () => {
     validateFields((errors) => {
       if (errors) {
@@ -82,6 +96,24 @@ const CloseCashRegister = ({
   }
   summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
 
+  const viewDetailProps = {
+    listCashTransSummary,
+    summary,
+    listCashTransDetail,
+    showDetail (record) {
+      dispatch({
+        type: 'cashier/getCashierTransSourceDetail',
+        payload: {
+          cashierId: cashierInfo.cashierId,
+          id: cashierInfo.id,
+          transType: record
+        }
+      })
+    },
+    dispatch,
+    activeTabKeyClose
+  }
+
   const confirmClose = () => {
     if (!isEmptyObject(listCashTransSummary)) {
       confirm({
@@ -105,25 +137,6 @@ const CloseCashRegister = ({
       })
     }
   }
-
-  const viewDetailProps = {
-    listCashTransSummary,
-    summary,
-    listCashTransDetail,
-    showDetail (record) {
-      dispatch({
-        type: 'cashier/getCashierTransSourceDetail',
-        payload: {
-          cashierId: cashierInfo.cashierId,
-          id: cashierInfo.id,
-          transType: record
-        }
-      })
-    },
-    dispatch,
-    activeTabKeyClose
-  }
-
 
   return (
     <div className="content-inner">

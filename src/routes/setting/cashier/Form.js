@@ -146,7 +146,7 @@ const FormCashier = ({
               initialValue: item.cashOut
             })(<InputNumber min={0} style={{ width: '100%' }} disabled />)}
           </FormItem>
-          <FormItem label="Non-Active" {...formItemLayout}>
+          <FormItem label="Active" {...formItemLayout}>
             {getFieldDecorator('active', {
               initialValue: item.isCashierActive,
               valuePropName: 'checked'

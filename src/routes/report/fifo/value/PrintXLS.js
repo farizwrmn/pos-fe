@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
   let beginQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.beginQty), 0)
@@ -186,70 +187,70 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`E${m}`).value = parseFloat(listRekap[n].beginQty)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].beginQty), 2)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].beginQty), 2)
         sheet.getCell(`F${m}`).value = parseFloat(listRekap[n].beginPrice)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].beginPrice), 2)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].beginPrice), 2)
         sheet.getCell(`G${m}`).value = parseFloat(listRekap[n].purchaseQty)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].purchaseQty), 2)
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].purchaseQty), 2)
         sheet.getCell(`H${m}`).value = parseFloat(listRekap[n].purchasePrice)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].purchasePrice), 2)
+        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].purchasePrice), 2)
         sheet.getCell(`I${m}`).value = parseFloat(listRekap[n].adjInQty)
         sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`I${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjInQty), 2)
+        sheet.getCell(`I${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].adjInQty), 2)
         sheet.getCell(`J${m}`).value = parseFloat(listRekap[n].adjInPrice)
         sheet.getCell(`J${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`J${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjInPrice), 2)
+        sheet.getCell(`J${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].adjInPrice), 2)
         sheet.getCell(`K${m}`).value = parseFloat(listRekap[n].transferInQty)
         sheet.getCell(`K${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`K${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferInQty), 2)
+        sheet.getCell(`K${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].transferInQty), 2)
         sheet.getCell(`L${m}`).value = parseFloat(listRekap[n].transferInPrice)
         sheet.getCell(`L${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`L${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferInPrice), 2)
+        sheet.getCell(`L${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].transferInPrice), 2)
         sheet.getCell(`M${m}`).value = parseFloat(listRekap[n].posQty)
         sheet.getCell(`M${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`M${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].posQty), 2)
+        sheet.getCell(`M${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].posQty), 2)
         sheet.getCell(`N${m}`).value = parseFloat(listRekap[n].valuePrice)
         sheet.getCell(`N${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`N${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].valuePrice), 2)
+        sheet.getCell(`N${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].valuePrice), 2)
         sheet.getCell(`O${m}`).value = parseFloat(listRekap[n].posPrice)
         sheet.getCell(`O${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`O${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].posPrice), 2)
+        sheet.getCell(`O${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].posPrice), 2)
         sheet.getCell(`P${m}`).value = parseFloat(listRekap[n].adjOutQty)
         sheet.getCell(`P${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`P${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjOutQty), 2)
+        sheet.getCell(`P${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].adjOutQty), 2)
         sheet.getCell(`Q${m}`).value = parseFloat(listRekap[n].adjOutPrice)
         sheet.getCell(`Q${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Q${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].adjOutPrice), 2)
+        sheet.getCell(`Q${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].adjOutPrice), 2)
         sheet.getCell(`R${m}`).value = parseFloat(listRekap[n].transferOutQty)
         sheet.getCell(`R${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`R${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferOutQty), 2)
+        sheet.getCell(`R${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].transferOutQty), 2)
         sheet.getCell(`S${m}`).value = parseFloat(listRekap[n].transferOutPrice)
         sheet.getCell(`S${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`S${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].transferOutPrice), 2)
+        sheet.getCell(`S${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].transferOutPrice), 2)
         sheet.getCell(`T${m}`).value = parseFloat(listRekap[n].count)
         sheet.getCell(`T${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`T${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].count), 2)
+        sheet.getCell(`T${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].count), 2)
         sheet.getCell(`U${m}`).value = parseFloat(listRekap[n].amount)
         sheet.getCell(`U${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`U${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].amount), 2)
+        sheet.getCell(`U${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].amount), 2)
         sheet.getCell(`V${m}`).value = parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice)
         sheet.getCell(`V${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`V${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice), 2)
+        sheet.getCell(`V${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].valuePrice) - parseFloat(listRekap[n].posPrice), 2)
         sheet.getCell(`W${m}`).value = parseFloat(listRekap[n].inTransitQty)
         sheet.getCell(`W${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`W${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransitQty), 2)
+        sheet.getCell(`W${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].inTransitQty), 2)
         sheet.getCell(`X${m}`).value = parseFloat(listRekap[n].inTransitPrice)
         sheet.getCell(`X${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`X${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransitPrice), 2)
+        sheet.getCell(`X${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].inTransitPrice), 2)
         sheet.getCell(`Y${m}`).value = parseFloat(listRekap[n].inTransferQty)
         sheet.getCell(`Y${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Y${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransferQty), 2)
+        sheet.getCell(`Y${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].inTransferQty), 2)
         sheet.getCell(`Z${m}`).value = parseFloat(listRekap[n].inTransferPrice)
         sheet.getCell(`Z${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`Z${m}`).numFmt = numberFormat.formatNumberInExcel(parseFloat(listRekap[n].inTransferPrice), 2)
+        sheet.getCell(`Z${m}`).numFmt = formatNumberInExcel(parseFloat(listRekap[n].inTransferPrice), 2)
       }
       for (let m = 65; m < (65 + footer.length); m += 1) {
         let n = listRekap.length + 10
@@ -266,7 +267,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`${String.fromCharCode(m)}${n}`).value = footer[counter]
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = numberFormat.formatNumberInExcel(footer[counter], 2)
+        sheet.getCell(`${String.fromCharCode(m)}${n}`).numFmt = formatNumberInExcel(footer[counter], 2)
       }
 
       sheet.getCell('L2').alignment = { vertical: 'middle', horizontal: 'center' }

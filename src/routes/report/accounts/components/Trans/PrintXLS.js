@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
@@ -96,7 +97,7 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
         sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = numberFormat.formatNumberInExcel(header[count])
+        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = formatNumberInExcel(header[count])
       }
 
       for (let n = 0; n < listTrans.length; n += 1) {
@@ -112,13 +113,13 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).value = parseFloat((listTrans[n].nettoTotal) || 0)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].nettoTotal)
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(listTrans[n].nettoTotal)
         sheet.getCell(`F${m}`).value = parseFloat((listTrans[n].paid) || 0)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = numberFormat.formatNumberInExcel(listTrans[n].paid)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(listTrans[n].paid)
         sheet.getCell(`G${m}`).value = parseFloat((listTrans[n].change) || 0)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = numberFormat.formatNumberInExcel(listTrans[n].change)
+        sheet.getCell(`G${m}`).value = formatNumberInExcel(listTrans[n].change)
         sheet.getCell(`H${m}`).value = `${listTrans[n].status || 'PENDING'}`
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }

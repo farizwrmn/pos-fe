@@ -1,6 +1,10 @@
 import React from 'react'
 import { Tabs, Table } from 'antd'
 import { connect } from 'dva'
+import { numberFormat } from 'utils'
+import styles from '../../themes/index.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const TabPane = Tabs.TabPane
 
@@ -31,22 +35,30 @@ const CashRegister = ({
     title: 'Opening',
     dataIndex: 'openingBalance',
     key: 'openingBalance',
-    width: '150px'
+    width: '150px',
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Cash-In',
     dataIndex: 'cashIn',
     key: 'cashIn',
-    width: '150px'
+    width: '150px',
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Cash-Out',
     dataIndex: 'cashOut',
     key: 'cashOut',
-    width: '150px'
+    width: '150px',
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }, {
     title: 'Closing',
     dataIndex: 'closingBalance',
     key: 'closingBalance',
-    width: '150px'
+    width: '150px',
+    className: styles.alignRight,
+    render: text => formatNumberIndonesia(text)
   }]
 
   const dataCashRegister = (

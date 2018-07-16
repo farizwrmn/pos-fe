@@ -350,6 +350,7 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
 
 Customer.propTypes = {
   customer: PropTypes.object,
+  customerunit: PropTypes.object,
   app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,

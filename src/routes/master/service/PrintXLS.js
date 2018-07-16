@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
 
+const { formatNumberInExcel } = numberFormat
+
 const PrintXLS = ({ data, storeInfo, name }) => {
   const styles = {
     merchant: {
@@ -44,8 +46,8 @@ const PrintXLS = ({ data, storeInfo, name }) => {
         row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].serviceCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].serviceName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(list[key].cost || 0), numFmt: numberFormat.formatNumberInExcel(list[key].cost, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: parseFloat(list[key].serviceCost || 0), numFmt: numberFormat.formatNumberInExcel(list[key].serviceCost, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(list[key].cost || 0), numFmt: formatNumberInExcel(list[key].cost, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: parseFloat(list[key].serviceCost || 0), numFmt: formatNumberInExcel(list[key].serviceCost, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].serviceTypeId || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }

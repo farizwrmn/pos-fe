@@ -42,11 +42,10 @@ class DynamicFieldSet extends React.Component {
     const { form } = this.props
     const keys = form.getFieldValue('keys')
     const formData = form.getFieldsValue()
-    let data = []
+    // let data = []
     for (let id = 0; id < keys.length; id += 1) {
       console.log('keys', formData)
     }
-    console.log(data)
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values)

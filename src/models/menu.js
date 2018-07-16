@@ -65,7 +65,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: {}
+            currentItem: {},
+            modalType: 'add'
           }
         })
         yield put({

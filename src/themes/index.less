@@ -27,10 +27,6 @@ body {
 }
 
 :global {
-    ul.ant-menu.ant-menu-inline.parent-wrapper.ant-menu-primary.ant-menu-root {
-        height: 100vh;
-        overflow-y: auto;
-    }
     .wrapper-switcher {
         position: fixed;
         width: 92%;
@@ -264,6 +260,14 @@ body {
         color: rgba(0, 0, 0, 0.57);
     }
 
+    .ant-modal-wrap {
+        .ant-modal.modal-browse {
+            margin:0 auto;
+            width:70% !important;
+            height:80%;
+        }
+    }
+
     .ant-modal-wrap.vertical-center-modal {
         .ant-modal.modal-browse {
             margin:auto 5% !important;
@@ -400,6 +404,17 @@ body {
 
 @media (max-width: 767px) {
      :global {
+        ul.ant-menu.ant-menu-inline.parent-wrapper.ant-menu-primary.ant-menu-root {
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .ant-modal-wrap {
+            .ant-modal.modal-browse {
+                margin:0 auto;
+                width:100% !important;
+            }
+        }
+
         .ant-form-item-control {
             .range-date {
                 width: 100% !important;
@@ -423,6 +438,13 @@ body {
 
 @media (max-width: 360px) {
     :global {
+        .ant-modal-wrap {
+            .ant-modal.modal-browse {
+                margin:0 auto;
+                width:100% !important;
+            }
+        }
+
         .ant-modal-wrap.vertical-center-modal {
             .ant-modal {
                 .ant-modal-content {
