@@ -478,6 +478,7 @@ const Pos = ({
       defaultRole = localId.split(/[# ]+/).pop()
     }
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
     const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
     if (service.length > 0 && (woNumber === '' || woNumber === null)) {
       Modal.warning({
@@ -510,6 +511,13 @@ const Pos = ({
       if (defaultRole !== 'OWN') {
         return
       }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
     }
     dispatch({ type: 'pos/setCurTotal' })
 
