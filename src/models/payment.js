@@ -156,7 +156,7 @@ export default {
           }
 
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-          if (currentRegister.success) {
+          if (currentRegister.success || payload.memberCode !== null) {
             // const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
             const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
@@ -283,6 +283,11 @@ export default {
                 content: `${JSON.stringify(data_create.message)}`
               })
             }
+          } else {
+            Modal.error({
+              title: 'Member is required',
+              content: 'Member and cashier information is required'
+            })
           }
         }
       } else {

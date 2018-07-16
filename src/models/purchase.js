@@ -196,6 +196,11 @@ export default modelExtend(pageModel, {
             localStorage.removeItem('purchase_void')
             yield put({ type: 'resetBrowse' })
             yield put({ type: 'changeRounding', payload: 0 })
+          } else {
+            Modal.warning({
+              title: 'Something went wrong',
+              content: `${JSON.stringify(data.message)}`
+            })
           }
         } else {
           Modal.warning({
