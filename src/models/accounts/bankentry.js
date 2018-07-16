@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove } from '../../services/payment/cashentry'
+import { query, add, edit, remove } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -12,7 +12,7 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'cashentry',
+  namespace: 'bankentry',
 
   state: {
     currentItem: {},
@@ -22,20 +22,15 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listCash: [],
     modalVisible: false,
-    listItem: [],
-    pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      current: 1
-    }
+    listItem: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey } = location.query
         const { pathname } = location
-        if (pathname === '/cash-entry') {
+        if (pathname === '/bank-entry') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -43,7 +38,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query', payload: other })
+            dispatch({ type: 'query' })
           } else {
             dispatch({ type: 'querySequence' })
           }
@@ -73,12 +68,12 @@ export default modelExtend(pageModel, {
 
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
-        seqCode: 'CAS',
+        seqCode: 'BTR',
         type: lstorage.getCurrentUserStore(),
         ...payload
       }
       const data = yield call(querySequence, invoice)
-      const currentItem = yield select(({ cashentry }) => cashentry.currentItem)
+      const currentItem = yield select(({ bankentry }) => bankentry.currentItem)
       const transNo = data.data
       yield put({
         type: 'updateState',

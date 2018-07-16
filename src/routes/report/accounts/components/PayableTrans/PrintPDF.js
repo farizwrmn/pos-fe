@@ -5,15 +5,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat, formatDate } from 'utils'
 
-const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+
+const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   // Declare Variable
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
-  let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidTotal || 0), 0)
+  let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
+  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
-  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
 
   // Declare Function
   const createTableBody = (tabledata) => {
@@ -23,30 +27,31 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data.supplierName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.supplierTaxId || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.address01 || data.address02 || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.accountNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.supplierTaxId || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.address01 || data.address02 || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.accountNo || ''), alignment: 'left', fontSize: 11 },
 
-          { text: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
-          { text: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.beginValue || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatDate(data.invoiceDate), alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.dueDate), alignment: 'left', fontSize: 11 },
+          { text: (data.transNo || ''), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
 
-          { text: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
-          { text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.bankName || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: (data.checkNo || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.bankName || ''), alignment: 'right', fontSize: 11 },
+          { text: (data.checkNo || ''), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paidBank || 0), alignment: 'right', fontSize: 11 },
 
-          { text: (data.paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.detail || '').toString(), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia((data.paid + data.paidBank) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.returnTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjustTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(totalValue), alignment: 'right', fontSize: 11 },
+          { text: (data.detail || ''), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -96,7 +101,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${formatDate(from)}  TO  ${formatDate(to)}`,
                 fontSize: 12,
                 alignment: 'left'
               },
@@ -188,7 +193,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
 
-      { fontSize: 12, text: 'TGL BAYAR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL BYR TERAKHIR', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'CASH', style: 'tableHeader', alignment: 'center' },
       // { fontSize: 12, text: 'VIA BANK', colSpan: '3', style: 'tableHeader', alignment: 'center' },
       // { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
@@ -254,9 +259,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       {},
       {},
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
 
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(paidTotal + paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${(returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${(adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
@@ -295,8 +300,8 @@ PrintPDF.propTypes = {
   listTrans: PropTypes.array,
   user: PropTypes.object,
   storeInfo: PropTypes.object.isRequired,
-  fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string
 }
 
 export default PrintPDF
