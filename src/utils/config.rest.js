@@ -20,6 +20,7 @@ module.exports = {
     apiUserTotp: '/users/:id/totp',
     apiUserTotpr: '/users/:id/totp/:mode',
     apiStores: '/stores',
+    apiListStores: '/list/stores',
     apiTime: '/time',
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',
