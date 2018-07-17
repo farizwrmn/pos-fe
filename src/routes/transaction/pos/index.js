@@ -661,10 +661,11 @@ const Pos = ({
   infoCashRegister.titleColor = color.normal
   infoCashRegister.descColor = color.error
   infoCashRegister.dotVisible = false
-  infoCashRegister.cashActive = ((currentCashier.cashActive || 0) === true)
+  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
 
-  if (lstorage.getLoginTimeDiff() > 500) {
-    console.log('something fishy')
+  let checkTimeDiff = lstorage.getLoginTimeDiff()
+  if (checkTimeDiff > 500) {
+    console.log('something fishy', checkTimeDiff)
   } else {
     if (!currentCashier.period) {
       infoCashRegister.desc = '* Select the correct cash register'
