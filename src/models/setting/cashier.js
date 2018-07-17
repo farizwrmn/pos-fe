@@ -6,7 +6,8 @@ import {
   query, add, edit, remove,
   queryCashRegisterByStore, queryCurrentOpenCashRegister,
   queryCashierTransSource, queryCashierTransSourceDetail,
-  queryCloseRegister
+  queryCloseRegister, getCashRegisterDetails, getClosedCashRegister,
+  sendRequestOpenCashRegister, getRequestedCashRegister
 } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -27,13 +28,24 @@ export default modelExtend(pageModel, {
     listCashRegister: [],
     listCashTransSummary: {},
     listCashTransDetail: {},
-    modalVisible: false
+    modalVisible: false,
+    listCashRegisterDetails: [],
+    listClosedCashRegister: [],
+    listRequestedCashRegister: [],
+    cashRegisterDetails: [],
+    requestActiveTabKey: '1',
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        dispatch({ type: 'refreshPage' })
+        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/setting/cashier') {
           dispatch({
@@ -45,10 +57,13 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/monitor/cashier/periods') {
           dispatch({ type: 'query' })
-          dispatch({ type: 'refreshView' })
         } else if (pathname === '/monitor/cashier/close') {
           const userId = lstorage.getStorageKey('udi')[1]
           dispatch({ type: 'getCashierInformation', payload: { cashierId: userId } })
+        } else if (pathname === '/monitor/cashier/request') {
+          dispatch({ type: 'getClosedCashRegister', payload: { ...other } })
+        } else if (pathname === '/monitor/cashier/approve') {
+          dispatch({ type: 'getRequestedCashRegister' })
         }
       })
     }
@@ -87,6 +102,7 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        message.success('Double click the row to see the details')
       }
     },
 
@@ -221,6 +237,90 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+
+    * getCashRegisterDetails ({ payload }, { call, put }) {
+      const data = yield call(getCashRegisterDetails, { id: payload })
+      if (data.success && data.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            activeKey: '1',
+            listCashRegisterDetails: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.data.length
+            }
+          }
+        })
+      } else {
+        message.error('No Details!')
+      }
+    },
+
+    * getClosedCashRegister ({ payload }, { call, put }) {
+      const data = yield call(getClosedCashRegister, payload)
+      if (data.success && data.data.count > 0) {
+        yield put({
+          type: 'querySuccessClosedCashRegister',
+          payload: {
+            listClosedCashRegister: data.data.rows,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.data.count
+            }
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listClosedCashRegister: [],
+            pagination: { total: 0 }
+          }
+        })
+        message.error('No Data!')
+      }
+    },
+
+    * getRequestedCashRegister ({ payload }, { call, put }) {
+      const data = yield call(getRequestedCashRegister, payload)
+      if (data.success && data.data.length > 0) {
+        yield put({
+          type: 'querySuccessRequestedCashRegister',
+          payload: {
+            listRequestedCashRegister: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listRequestedCashRegister: [],
+            pagination: { total: 0 }
+          }
+        })
+        message.error('No Data!')
+      }
+    },
+
+    * sendRequestOpenCashRegister ({ payload }, { call, put }) {
+      const data = yield call(sendRequestOpenCashRegister, { id: payload.id, data: payload.data })
+      if (data.success) {
+        yield put({
+          type: 'successSendRequestOpenCashRegister',
+          payload: data.cashregisters
+        })
+      } else {
+        throw data
+      }
     }
   },
 
@@ -265,6 +365,31 @@ export default modelExtend(pageModel, {
       }
     },
 
+    querySuccessClosedCashRegister (state, { payload }) {
+      const { listClosedCashRegister, pagination } = payload
+      return {
+        ...state,
+        listClosedCashRegister,
+        pagination: { ...state.pagination, ...pagination }
+      }
+    },
+
+    querySuccessRequestedCashRegister (state, { payload }) {
+      const { listRequestedCashRegister, pagination } = payload
+      return {
+        ...state,
+        listRequestedCashRegister,
+        pagination: { ...state.pagination, ...pagination }
+      }
+    },
+
+    successSendRequestOpenCashRegister (state, { payload }) {
+      return {
+        ...state,
+        currentItem: payload
+      }
+    },
+
     changeTab (state, { payload }) {
       const { key } = payload
       return {
@@ -285,10 +410,37 @@ export default modelExtend(pageModel, {
       }
     },
 
-    refreshView (state) {
+    checkRequest (state, { payload }) {
+      const { checked, record } = payload
+      let currentItem = {}
+      if (checked) {
+        currentItem = record
+      } else {
+        currentItem = {}
+      }
+      return { ...state, currentItem }
+    },
+
+    refreshPage (state) {
       return {
         ...state,
-        cashierInfo: []
+        currentItem: {},
+        modalType: 'add',
+        activeKey: '0',
+        activeTabKeyClose: '1',
+        listCashier: [],
+        cashierInfo: [],
+        listCashRegister: [],
+        listCashTransSummary: {},
+        listCashTransDetail: {},
+        modalVisible: false,
+        listClosedCashRegister: [],
+        requestActiveTabKey: '1',
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          current: 1
+        }
       }
     }
   }

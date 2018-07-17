@@ -143,3 +143,53 @@ export async function srvGetActiveCashier (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function getClosedCashRegister (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const user = lstorage.getStorageKey('udi')[1]
+  return request({
+    url: `${apiCashRegister}?cashierId=${user}&status=C`,
+    method: 'GET',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function getRequestedCashRegister (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiCashRegister}?status=R`,
+    method: 'GET',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function sendRequestOpenCashRegister (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiCashRegister}/${params.id}?status=R`,
+    method: 'PUT',
+    data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
+export async function approveRequestOpenCashRegister (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiCashRegister}${params.id}?status=A`,
+    method: 'PUT',
+    data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
+export async function getCashRegisterDetails (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiCashRegister}/${params.id}/details`,
+    method: 'GET',
+    headers: apiHeaderToken
+  })
+}
