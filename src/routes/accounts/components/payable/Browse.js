@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { configMain, numberFormat, formatDate } from 'utils'
+import styles from '../../../../themes/index.less'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
@@ -17,7 +20,7 @@ const BrowseGroup = ({
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
     let newData = tmpDataSource.map((record) => {
-      const match = record.transNo.match(reg)
+      const match = (record.transNo || '').match(reg) || (record.invoiceNo || '').match(reg) || (record.supplierName || '').match(reg) || (record.supplierCode || '').match(reg)
       if (!match) {
         return null
       }
@@ -29,18 +32,24 @@ const BrowseGroup = ({
   }
   const columns = [
     {
-      title: 'No',
+      title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo',
+      width: 120,
       render: (text, record) => (record.statusActive === '1' ? <Link to={`/accounts/payable/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: 140
     },
     {
       title: 'Date',
       dataIndex: 'invoiceDate',
       key: 'invoiceDate',
       width: 150,
-      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('LL')}`
+      render: text => formatDate(text)
     },
     // {
     //   title: 'Car Unit',
@@ -57,17 +66,35 @@ const BrowseGroup = ({
     //   sorter: (a, b) => a.lastMeter - b.lastMeter,
     //   render: text => text.toLocaleString()
     // },
-    // {
-    //   title: 'Cashier',
-    //   dataIndex: 'cashierId',
-    //   key: 'cashierId',
-    //   width: 140
-    // },
+    {
+      title: 'Due Date',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
+      width: 100,
+      sorter: (a, b) => moment.utc(a.transDate, 'YYYY-MM-DD') - moment.utc(b.transDate, 'YYYY-MM-DD'),
+      render: text => formatDate(text)
+    },
+    {
+      title: 'Total',
+      dataIndex: 'nettoTotal',
+      key: 'nettoTotal',
+      width: 100,
+      className: styles.alignRight,
+      render: text => formatNumberIndonesia(text)
+    },
+    {
+      title: 'Rest',
+      dataIndex: 'sisa',
+      key: 'sisa',
+      width: 100,
+      className: styles.alignRight,
+      render: text => formatNumberIndonesia(text)
+    },
     {
       title: 'Status',
       dataIndex: 'statusPaid',
       key: 'statusPaid',
-      width: 120,
+      width: 100,
       render: text => (
         <span>
           <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
@@ -96,30 +123,6 @@ const BrowseGroup = ({
       }],
       filterMultiple: false,
       onFilter: (value, record) => record.statusActive.indexOf(value) === 0
-    },
-    {
-      title: 'Payment',
-      dataIndex: 'paymentVia',
-      key: 'paymentVia',
-      width: 120,
-      filters: [{
-        text: 'CASH',
-        value: 'C'
-      }, {
-        text: 'Pending',
-        value: 'P'
-      }, {
-        text: 'Card',
-        value: 'K'
-      }],
-      filterMultiple: true,
-      onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
-      render: text =>
-        (<span>
-          <Tag color={text === 'C' ? 'blue' : text === 'P' ? 'red' : 'green'}>
-            {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
-          </Tag>
-        </span>)
     }
   ]
   const onChange = (date, dateString) => {

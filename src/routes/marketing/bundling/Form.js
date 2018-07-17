@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Collapse, Input, Button, Row, Col, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
+import moment from 'moment'
 
-const Panel = Collapse.Panel
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
 const FormItem = Form.Item
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -38,6 +39,7 @@ const FormCounter = ({
     getFieldDecorator,
     validateFieldsAndScroll,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
 }) => {
@@ -72,6 +74,13 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.startDate = (data.Date || []).length > 0 ? data.Date[0] : null
+      data.endDate = (data.Date || []).length > 0 ? data.Date[1] : null
+      data.availableDate = (data.availableDate || []).length > 0 ? data.availableDate.toString() : null
+      data.availableStore = (data.availableStore || []).length > 0 ? data.availableStore.toString() : null
+      data.startHour = data.startHour ? moment(data.startHour).format('HH:mm') : null
+      data.endHour = data.endHour ? moment(data.endHour).format('HH:mm') : null
+      console.log('data', moment(data.availableHour))
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -97,21 +106,36 @@ const FormCounter = ({
       return <TreeNode {...item} />
     })
   }
-
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
+          <FormItem label="Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('type', {
+              initialValue: item.type,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Select>
+                <Option value="0">Buy X Get Y</Option>
+                <Option value="1">Buy X Get Discount Y</Option>
+              </Select>
+            )}
+          </FormItem>
           <FormItem label="Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('code', {
               initialValue: item.code,
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  pattern: /^[a-z0-9-/]{3,10}$/i
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input maxLength={50} />)}
           </FormItem>
           <FormItem label="Promo Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
@@ -123,55 +147,57 @@ const FormCounter = ({
               ]
             })(<Input maxLength={50} />)}
           </FormItem>
-          <FormItem label="Start Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('startDate', {
-              initialValue: item.startDate,
+          <FormItem label="Available Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('Date', {
+              initialValue: item.startDate ? [
+                moment(item.startDate),
+                moment(item.endDate)
+              ] : null,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<DatePicker allowClear />)}
+            })(<RangePicker allowClear />)}
           </FormItem>
-          <FormItem label="End Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('endDate', {
-              initialValue: item.endDate,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<DatePicker allowClear />)}
+          <FormItem label="Available Hour" hasFeedback {...formItemLayout}>
+            <Row gutter={12}>
+              <Col span={12}>
+                {getFieldDecorator('startHour', {
+                  initialValue: item.startHour ? moment(item.startHour, 'HH:mm') : moment('00:00', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('00:00', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+              <Col span={12}>
+                {getFieldDecorator('endHour', {
+                  initialValue: item.endHour ? moment(item.endHour, 'HH:mm') : moment('23:59', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('23:59', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+            </Row>
           </FormItem>
-          <FormItem label="Start Hour" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('startHour', {
-              initialValue: item.startDate,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker allowClear />)}
-          </FormItem>
-          <FormItem label="End Hour" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('endHour', {
-              initialValue: item.endHour,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker allowClear />)}
-          </FormItem>
-          <FormItem label="Available Days" hasFeedback {...formItemLayout}>
+          <FormItem
+            label="Available Days"
+            hasFeedback
+            help={(getFieldValue('availableDate') || '').length > 0 ? `${(getFieldValue('availableDate') || '').length} ${(getFieldValue('availableDate') || '').length === 1 ? 'day' : 'days'}` : 'clear it if available every day'}
+            {...formItemLayout}
+          >
             {getFieldDecorator('availableDate', {
-              initialValue: item.availableDate,
+              initialValue: item.availableDate ? (item.availableDate || '').split(',') : [],
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
-            })(<Select>
+            })(<Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
               <Option value="0">Sunday</Option>
               <Option value="1">Monday</Option>
               <Option value="2">Tuesday</Option>
@@ -181,38 +207,36 @@ const FormCounter = ({
               <Option value="6">Saturday</Option>
             </Select>)}
           </FormItem>
-          <FormItem label="Available Store" hasFeedback {...formItemLayout}>
+          <FormItem
+            label="Store"
+            hasFeedback
+            help={(getFieldValue('availableStore') || '').length > 0 ? `${(getFieldValue('availableStore') || '').length} ${(getFieldValue('availableStore') || '').length === 1 ? 'store' : 'stores'}` : 'clear it if available all stores'}
+            {...formItemLayout}
+          >
             {getFieldDecorator('availableStore', {
-              initialValue: item.availableStore,
-              rules: [
-                {
-                  required: true
-                }
-              ]
+              initialValue: item.availableStore ? (item.availableStore || '').split(',') : []
             })(
-              <Collapse>
-                <Panel header="List of available Store" key="1">
-                  <Tree
-                    checkable
-                    checkStrictly
-                    autoExpandParent
-                    defaultExpandAll
-                  >
-                    {renderTreeNodes(listAllStores)}
-                  </Tree>
-                </Panel>
-              </Collapse>
+              <Select
+                mode="multiple"
+                allowClear
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenTransNo}
+              </Select>
             )}
           </FormItem>
-          <FormItem label="Available Multiple" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('availableMultiple', {
-              initialValue: item.availableMultiple,
+          <FormItem label="Apply Multiple" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('applyMultiple', {
+              initialValue: Number(item.applyMultiple),
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Checkbox />)}
+            })(<Checkbox defaultChecked={Number(item.applyMultiple)} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -21,19 +21,43 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
+      title: 'type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text) => {
+        return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
+      }
+    },
+    {
       title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      dataIndex: 'code',
+      key: 'code'
     },
     {
       title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Period',
+      dataIndex: 'Date',
+      key: 'Date',
+      render: (text, record) => {
+        return `${record.startDate} ~ ${record.endDate}`
+      }
+    },
+    {
+      title: 'Available Date',
+      dataIndex: 'availableDate',
+      key: 'availableDate'
+    },
+    {
+      title: 'Available Hour',
+      dataIndex: 'availableHour',
+      key: 'availableHour',
+      render: (text, record) => {
+        return `${record.startHour} ~ ${record.endHour}`
+      }
     },
     {
       title: 'Operation',

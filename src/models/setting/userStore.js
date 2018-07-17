@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { messageInfo } from 'utils'
-import { getAllStores, getUserStores, saveUserDefaultStore, saveUserStore }
+import { getAllStores, getListStores, getUserStores, saveUserDefaultStore, saveUserStore }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
 
@@ -25,7 +25,7 @@ export default modelExtend(pageModel, {
         }
         if (location.pathname === '/marketing/promo') {
           dispatch({
-            type: 'getAllStores'
+            type: 'getAllListStores'
             // payload: location.query
           })
         }
@@ -53,6 +53,18 @@ export default modelExtend(pageModel, {
     },
     * getAllStores ({ payload = {} }, { call, put }) {
       const stores = yield call(getAllStores, payload)
+      if (stores.success) {
+        // yield put({ type: 'getUserStores', payload })
+        yield put({
+          type: 'successAllStore',
+          payload: { listAllStores: stores.data }
+        })
+      } else {
+        console.log('error')
+      }
+    },
+    * getAllListStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getListStores, payload)
       if (stores.success) {
         // yield put({ type: 'getUserStores', payload })
         yield put({

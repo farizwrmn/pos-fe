@@ -1,6 +1,6 @@
 import { request, config, crypt } from '../../utils'
 
-const { apiPromo } = config.api
+const { apiPromo } = config.rest
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()

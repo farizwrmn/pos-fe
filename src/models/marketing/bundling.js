@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/accountCode'
+import { query, add, edit, remove } from '../../services/marketing/bundling'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -35,8 +35,7 @@ export default modelExtend(pageModel, {
             dispatch({
               type: 'query',
               payload: {
-                type: 'all',
-                field: 'id,accountCode,accountName,accountParentId'
+                type: 'all'
               }
             })
           }
@@ -53,7 +52,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listAccountCode: data.data,
+            listBundling: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -88,8 +87,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query',
           payload: {
-            type: 'all',
-            field: 'id,accountCode,accountName,accountParentId'
+            type: 'all'
           }
         })
       } else {
@@ -104,7 +102,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ bundling }) => bundling.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -139,10 +137,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+      const { listBundling, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listBundling,
         pagination: {
           ...state.pagination,
           ...pagination
