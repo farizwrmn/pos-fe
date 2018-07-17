@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -18,10 +21,10 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.qtyOut.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.costPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.qtyOut), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.costPrice), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -147,9 +150,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${costTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(qtyTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(costTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
 

@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -26,35 +29,35 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'total',
       key: 'total',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'discount',
       key: 'discount',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'DPP',
       dataIndex: 'DPP',
       key: 'DPP',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'PPN',
       dataIndex: 'PPN',
       key: 'PPN',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     }
   ]
 

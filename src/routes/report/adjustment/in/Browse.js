@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -32,21 +35,21 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'qtyIn',
       key: 'qtyIn',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Total',
       dataIndex: 'amount',
       key: 'amount',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     }
   ]
 

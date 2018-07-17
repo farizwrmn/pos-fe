@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -32,42 +35,42 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'pQty',
       key: 'pQty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Price',
       dataIndex: 'pPrice',
       key: 'pPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'pAmount',
       key: 'pAmount',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Out',
       dataIndex: 'sQty',
       key: 'sQty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Price',
       dataIndex: 'sPrice',
       key: 'sPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'sAmount',
       key: 'sAmount',
       width: '150px',
-      render: text => <p style={{ textAlign: 'right' }}>{(parseFloat(text) || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     }
   ]
 

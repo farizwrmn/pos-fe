@@ -4,6 +4,9 @@ import { Button, Icon, Modal } from 'antd'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { saveAs } from 'file-saver'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberInExcel } = numberFormat
 
 const BasicReport = ({
   name,
@@ -109,7 +112,7 @@ const BasicReport = ({
             value: sheet.getCell(`${getPosition(j)}${line}`).value = tableBody[i][j].value,
             alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableBody[i][j].alignment,
             font: sheet.getCell(`${getPosition(j)}${line}`).font = tableBody[i][j].font,
-            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = tableBody[i][j].numFmt
+            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableBody[i][j].value, 2)
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableBody[i][j].border
           })
         }
@@ -125,7 +128,7 @@ const BasicReport = ({
             value: sheet.getCell(`${getPosition(j)}${line}`).value = tableFooter[i][j].value,
             alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableFooter[i][j].alignment,
             font: sheet.getCell(`${getPosition(j)}${line}`).font = tableFooter[i][j].font,
-            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = tableBody[i][j].numFmt
+            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableBody[i][j].value, 2)
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableFooter[i][j].border
           })
         }

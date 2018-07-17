@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
@@ -30,22 +33,22 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           { text: (data.address01 || data.address02 || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.accountNo || '').toString(), alignment: 'left', fontSize: 11 },
 
-          { text: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
-          { text: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
+          { text: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : '', alignment: 'left', fontSize: 11 },
+          { text: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY') : '', alignment: 'left', fontSize: 11 },
           { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.beginValue || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
 
-          { text: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '', alignment: 'left', fontSize: 11 },
-          { text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : '', alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
           { text: (data.bankName || '').toString(), alignment: 'right', fontSize: 11 },
           { text: (data.checkNo || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
 
-          { text: (data.paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paidTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.returnTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjustTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.total || 0), alignment: 'right', fontSize: 11 },
           { text: (data.detail || '').toString(), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -247,19 +250,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       {},
       {},
       {},
-      { text: `${(beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(beginTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(nettoTotal || 0), alignment: 'right', fontSize: 12 },
 
       {},
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
       {},
       {},
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
 
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(returnTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(adjustTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(total || 0), alignment: 'right', fontSize: 12 },
       {}
     ]
   ]

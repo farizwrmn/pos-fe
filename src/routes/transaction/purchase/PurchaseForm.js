@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { configMain, numberFormat } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
+
+const { formatNumberIndonesia } = numberFormat
 
 const { TextArea, Search } = Input
 const Panel = Collapse.Panel
@@ -333,22 +335,22 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={(parseFloat(grandTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(grandTotal))} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Total Discount" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={(parseFloat(totalDisc)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(totalDisc))} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="Total Dpp" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={(parseFloat(totalDpp)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(totalDpp))} />
           </FormItem>
         </Row>
         <Row>
           <FormItem label="PPN" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={(parseFloat(totalPpn)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(totalPpn))} />
           </FormItem>
         </Row>
         <Row>
@@ -365,7 +367,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
         </Row>
         <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={(parseFloat(nettoTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(nettoTotal))} />
           </FormItem>
         </Row>
       </div>

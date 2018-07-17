@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const styles = {
@@ -64,10 +67,10 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push({ text: count, alignment: 'center' })
         row.push({ text: (data.typeCode || '').toString(), alignment: 'left' })
         row.push({ text: (data.typeName || '').toString(), alignment: 'left' })
-        row.push({ text: parseFloat(data.discPct01 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
-        row.push({ text: parseFloat(data.discPct02 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
-        row.push({ text: parseFloat(data.discPct03 || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
-        row.push({ text: parseFloat(data.discNominal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.discPct01 || 0)), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.discPct02 || 0)), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.discPct03 || 0)), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.discNominal || 0)), alignment: 'right' })
         row.push({ text: (data.sellPrice || '').toString(), alignment: 'left' })
         body.push(row)
       }

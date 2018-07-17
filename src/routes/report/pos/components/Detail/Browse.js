@@ -1,6 +1,9 @@
 import React from 'react'
 import { Table } from 'antd'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
@@ -34,35 +37,35 @@ const Browse = ({ ...browseProps }) => {
       dataIndex: 'qty',
       key: 'qty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Unit Price',
       dataIndex: 'sellingPrice',
       key: 'sellingPrice',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Sub Total',
       dataIndex: 'total',
       key: 'total',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Discount',
       dataIndex: 'totalDiscount',
       key: 'totalDiscount',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
       title: 'Total',
       dataIndex: 'netto',
       key: 'netto',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     }
   ]
 

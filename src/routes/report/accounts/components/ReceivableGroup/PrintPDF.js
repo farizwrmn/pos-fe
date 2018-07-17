@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, date,
   beginTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0),
@@ -23,19 +26,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
         let data = rows[key]
         let row = [
           { text: count, alignment: 'center', style: 'tableContent' },
-          { text: (data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', style: 'tableContent' },
+          { text: (data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : ''), alignment: 'left', style: 'tableContent' },
           { text: (data.transNo || '').toString(), alignment: 'left', style: 'tableContent' },
           { text: (data.memberName || '').toString(), alignment: 'left', style: 'tableContent' },
           { text: (data.memberGroupName || '').toString(), alignment: 'left', style: 'tableContent' },
 
-          { text: (data.beginValue || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
-          { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
+          { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', style: 'tableContent' },
+          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', style: 'tableContent' },
           { text: (data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : ''), alignment: 'left', style: 'tableContent' },
-          { text: (data.cash || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
-          { text: (data.otherPayment || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
+          { text: formatNumberIndonesia(data.cash || 0), alignment: 'right', style: 'tableContent' },
+          { text: formatNumberIndonesia(data.otherPayment || 0), alignment: 'right', style: 'tableContent' },
 
-          { text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' },
-          { text: (data.receiveable || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' }
+          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', style: 'tableContent' },
+          { text: formatNumberIndonesia(data.receiveable || 0), alignment: 'right', style: 'tableContent' }
         ]
         body.push(row)
       }
@@ -194,14 +197,14 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
       {},
       {},
 
-      { text: `${(beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(grandTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(beginTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(grandTotal || 0), alignment: 'right', style: 'tableFooter' },
       {},
-      { text: `${(cashTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(otherPaymentTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(cashTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(otherPaymentTotal || 0), alignment: 'right', style: 'tableFooter' },
 
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(receiveableTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' }
+      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(receiveableTotal || 0), alignment: 'right', style: 'tableFooter' }
     ]
   ]
 

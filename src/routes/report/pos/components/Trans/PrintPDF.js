@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -19,11 +22,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.discount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.DPP.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.PPN.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: data.netto.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.total), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.discount), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.DPP), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.PPN), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.netto), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -153,11 +156,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: `${grandTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${discountTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${ppnTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(discountTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(ppnTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
 

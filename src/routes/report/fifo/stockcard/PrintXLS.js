@@ -4,10 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let outJSON = listRekap
@@ -117,15 +114,15 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       tableBody.push({ value: `${moment(arr[i][n].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].transNo}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].transType}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pQty) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].pQty), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pPrice) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].pPrice), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pAmount) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].pAmount), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sQty) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].sQty), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sPrice) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].sPrice), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sAmount) || 0), numFmt: formatNumberInExcel(parseFloat(arr[i][n].sAmount), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: countQtyValue, numFmt: formatNumberInExcel(countQtyValue, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].pQty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].pPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].pAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].sQty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].sPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].sAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: countQtyValue, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({
-        value: (parseFloat(arr[i][n].pAmount) || 0) - (parseFloat(arr[i][n].sAmount) || 0), numFmt: formatNumberInExcel((arr[i][n].pAmount - arr[i][n].sAmount), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder
+        value: (parseFloat(arr[i][n].pAmount) || 0) - (parseFloat(arr[i][n].sAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder
       })
       group.push(tableBody)
     }
@@ -141,14 +138,14 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
     tableFooter.push({ value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: pQty, numFmt: formatNumberInExcel(pQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: pQty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: pAmount, numFmt: formatNumberInExcel(pAmount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: sQty, numFmt: formatNumberInExcel(sQty, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: pAmount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: sQty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: sAmount, numFmt: formatNumberInExcel(sAmount, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: sAmount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: (pAmount - sAmount), numFmt: formatNumberInExcel((pAmount - sAmount), 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+    tableFooter.push({ value: (pAmount - sAmount), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     tableFooters.push(tableFooter)
   }
 

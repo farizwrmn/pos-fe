@@ -4,10 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({
   listTrans, date, storeInfo,
@@ -82,14 +79,14 @@ const PrintXLS = ({
           { value: (data.memberName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.memberGroupName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: (data.beginValue || 0), numFmt: formatNumberInExcel(data.beginValue, 2), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.nettoTotal || 0), numFmt: formatNumberInExcel(data.nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.beginValue || 0), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.nettoTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : '').toString(), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.cash || 0), numFmt: formatNumberInExcel(data.cash, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.otherPayment || 0), numFmt: formatNumberInExcel(data.otherPayment, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.cash || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.otherPayment || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: (data.paid || 0), numFmt: formatNumberInExcel(data.paid, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.receiveable || 0), numFmt: formatNumberInExcel(data.receiveable, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+          { value: (data.paid || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.receiveable || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
         tableBody.push(row)
       }
@@ -140,14 +137,14 @@ const PrintXLS = ({
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: (beginTotal || 0), numFmt: formatNumberInExcel(beginTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (grandTotal || 0), numFmt: formatNumberInExcel(grandTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (beginTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (grandTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: (cashTotal || 0), numFmt: formatNumberInExcel(cashTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (otherPaymentTotal || 0), numFmt: formatNumberInExcel(otherPaymentTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (cashTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (otherPaymentTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: (paidTotal), numFmt: formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (receiveableTotal || 0), numFmt: formatNumberInExcel(receiveableTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: (paidTotal), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (receiveableTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     return tableBody

@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   // Declare Function
@@ -19,28 +22,28 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: data.beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.transferInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.transferInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.transferOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.transferOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (parseFloat(data.valuePrice) - parseFloat(data.posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.inTransferQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.inTransferPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.inTransitQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: data.inTransitPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(data.beginQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.beginPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.purchaseQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.purchasePrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjInQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjInPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.transferInQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.transferInPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.posQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.valuePrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.posPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjOutQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.adjOutPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.transferOutQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.transferOutPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.count), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.valuePrice) - parseFloat(data.posPrice)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.inTransferQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.inTransferPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.inTransitQty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.inTransitPrice), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -238,28 +241,28 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: `${beginQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${beginPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${purchaseQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${purchasePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${adjInQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${adjInPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${(transferInQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${(transferInPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${posQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${valuePrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${posPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${adjOutQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${adjOutPrice.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${(transferOutQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${(transferOutPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${count.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${amount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${(parseFloat(valuePrice) - parseFloat(posPrice)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 10 },
-      { text: `${(inTransitQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${(inTransitPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${(inTransferQty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 },
-      { text: `${(inTransferPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 9 }
+      { text: formatNumberIndonesia(beginQty), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(beginPrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(purchaseQty), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(purchasePrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(adjInQty), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(adjInPrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(transferInQty || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(transferInPrice || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(posQty), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(valuePrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(posPrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(adjOutQty), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(adjOutPrice), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(transferOutQty || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(transferOutPrice || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(count), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(amount), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(parseFloat(valuePrice) - parseFloat(posPrice)), alignment: 'right', fontSize: 10 },
+      { text: formatNumberIndonesia(inTransitQty || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(inTransitPrice || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(inTransferQty || 0), alignment: 'right', fontSize: 9 },
+      { text: formatNumberIndonesia(inTransferPrice || 0), alignment: 'right', fontSize: 9 }
     ]
   ]
 

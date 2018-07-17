@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -22,7 +25,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
         row.push({ text: (data.employeeName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.serviceName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.serviceCode || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (parseFloat(data.amount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.amount) || 0), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -150,7 +153,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
       {},
       {},
       {},
-      { text: `${(parseFloat(amountTotal) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(parseFloat(amountTotal) || 0), alignment: 'right', fontSize: 12 }
     ]
   ]
 
