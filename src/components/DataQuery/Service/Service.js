@@ -8,7 +8,7 @@ const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const FormItem = Form.Item
 
-const Product = ({
+const Service = ({
   dispatch,
   className,
   visible = false,
@@ -20,45 +20,33 @@ const Product = ({
       width: '5%'
     },
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
+      title: 'Service Code',
+      dataIndex: 'serviceCode',
+      key: 'serviceCode',
       width: '15%'
     }, {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
+      title: 'Service Name',
+      dataIndex: 'serviceName',
+      key: 'serviceName',
       width: '30%'
     }, {
-      title: 'Sell Price',
-      dataIndex: 'sellPrice',
-      key: 'sellPrice',
-      width: '15%',
-      render: text => formatNumberIndonesia(text)
-    }, {
-      title: 'Dist Price 01',
-      dataIndex: 'distPrice01',
-      key: 'distPrice01',
-      width: '15%',
-      render: text => formatNumberIndonesia(text)
-    }, {
-      title: 'Dist Price 02',
-      dataIndex: 'distPrice02',
-      key: 'distPrice02',
+      title: 'Service Cost',
+      dataIndex: 'serviceCost',
+      key: 'serviceCost',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }
   ],
   isModal = true,
   onRowClick,
-  productstock,
+  service,
   ...tableProps
 }) => {
-  const { searchText, list, pagination } = productstock
+  const { searchText, list, pagination } = service
   // const { pagination } = tableProps
   const handleSearch = () => {
     dispatch({
-      type: 'productstock/query',
+      type: 'service/query',
       payload: {
         page: 1,
         pageSize: 10,
@@ -70,7 +58,7 @@ const Product = ({
     const { value } = e.target
 
     dispatch({
-      type: 'productstock/updateState',
+      type: 'service/updateState',
       payload: {
         searchText: value
       }
@@ -78,7 +66,7 @@ const Product = ({
   }
   const handleReset = () => {
     dispatch({
-      type: 'productstock/query',
+      type: 'service/query',
       payload: {
         page: 1,
         pageSize: pagination.pageSize,
@@ -86,7 +74,7 @@ const Product = ({
       }
     })
     dispatch({
-      type: 'productstock/updateState',
+      type: 'service/updateState',
       payload: {
         searchText: null
       }
@@ -94,7 +82,7 @@ const Product = ({
   }
   const changeProduct = (page) => {
     dispatch({
-      type: 'productstock/query',
+      type: 'service/query',
       payload: {
         q: searchText,
         page: page.current,
@@ -115,7 +103,7 @@ const Product = ({
       >
         <Form layout="inline">
           <FormItem>
-            <Input placeholder="Search Product"
+            <Input placeholder="Search Service"
               value={searchText}
               size="small"
               onChange={e => handleChange(e)}
@@ -184,9 +172,9 @@ const Product = ({
   )
 }
 
-Product.propTypes = {
+Service.propTypes = {
   form: PropTypes.object.isRequired,
-  productstock: PropTypes.object.isRequired
+  service: PropTypes.object.isRequired
 }
 
-export default connect(({ productstock }) => ({ productstock }))(Product)
+export default connect(({ service }) => ({ service }))(Service)
