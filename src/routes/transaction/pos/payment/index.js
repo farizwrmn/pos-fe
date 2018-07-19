@@ -91,7 +91,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
             break
           }
         }
-        if ((memberInformation.memberPendingPayment ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding))) {
+        if ((memberInformation.memberPendingPayment === '1' ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding))) {
           Modal.error({
             title: 'Payment pending restricted',
             content: 'This member type cannot allow to pending'
