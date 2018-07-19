@@ -494,13 +494,13 @@ const FormCounter = ({
                 }
               ]
             })(<Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
-              <Option value="0">Sunday</Option>
               <Option value="1">Monday</Option>
               <Option value="2">Tuesday</Option>
               <Option value="3">Wednesday</Option>
               <Option value="4">Thursday</Option>
               <Option value="5">Friday</Option>
               <Option value="6">Saturday</Option>
+              <Option value="7">Sunday</Option>
             </Select>)}
           </FormItem>
           <FormItem

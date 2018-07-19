@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, isEmptyObject, lstorage, color } from 'utils'
-import { Reminder } from 'components'
+import { Reminder, DataQuery } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
@@ -12,7 +12,9 @@ import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
 import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
+import LovButton from './LovButton'
 
+const { Promo } = DataQuery
 const { prefix } = configMain
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
@@ -43,6 +45,7 @@ const Pos = ({
   counter,
   unit,
   app,
+  promo,
   payment }) => {
   // const {
   //   visiblePopoverCity,
@@ -95,6 +98,7 @@ const Pos = ({
     cashierInformation
   } = pos
 
+  const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
@@ -228,66 +232,128 @@ const Pos = ({
     }
   }
 
-  const handleQueue = () => {
-    if (localStorage.getItem('cashier_trans') === null) {
+  const lovButtonProps = {
+    handleMemberBrowse () {
+      // get member data
       dispatch({
-        type: 'pos/changeQueue',
+        type: 'pos/getMembers'
+      })
+
+      dispatch({
+        type: 'pos/showMemberModal',
         payload: {
-          queue: '1'
+          modalType: 'browseMember'
+        }
+      })
+    },
+    handleAddMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: true
+        }
+      })
+    },
+    handleAddAsset () {
+      if (memberInformation.length !== 0) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalAddUnit: true
+          }
+        })
+        let member = JSON.parse(localStorage.getItem('member'))[0]
+        dispatch({
+          type: 'customer/updateState',
+          payload: {
+            addUnit: {
+              modal: false,
+              info: { id: member.memberCode, name: member.memberName }
+            }
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Member Information is not found',
+          content: 'Insert Member'
+        })
+      }
+    },
+    handleAssetBrowse () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAssetVisible: true,
+          modalType: 'browseAsset',
+          pagination: {},
+          searchText: ''
+        }
+      })
+    },
+    handleMechanicBrowse () {
+      // get mechanic data
+      dispatch({
+        type: 'pos/getMechanics'
+      })
+
+      dispatch({
+        type: 'pos/showMechanicModal',
+        payload: {
+          modalType: 'browseMechanic'
+        }
+      })
+    },
+    handleProductBrowse () {
+      // get products data
+      let json = setting.Inventory
+      let jsondata = JSON.stringify(eval(`(${json})`))
+      const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+      dispatch({
+        type: 'pos/showProductModal',
+        payload: {
+          modalType: 'browseProductLock'
         }
       })
       dispatch({
-        type: 'pos/showQueueModal',
+        type: 'pos/getProducts',
         payload: {
-          modalType: 'queue'
+          outOfStock
         }
       })
-    } else {
-      Modal.warning({
-        title: 'Warning',
-        content: 'Please finish your current Transaction...!'
+    },
+    handleServiceBrowse () {
+      dispatch({
+        type: 'pos/getServices'
       })
+
+      dispatch({
+        type: 'pos/showServiceModal',
+        payload: {
+          modalType: 'browseService'
+        }
+      })
+    },
+    handleQueue () {
+      if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('service_detail') === null) {
+        dispatch({
+          type: 'pos/changeQueue',
+          payload: {
+            queue: '1'
+          }
+        })
+        dispatch({
+          type: 'pos/showQueueModal',
+          payload: {
+            modalType: 'queue'
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Warning',
+          content: 'Please finish your current Transaction...!'
+        })
+      }
     }
-  }
-
-  const objectSize = () => {
-    let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    Object.size = function (obj) {
-      let size = 0
-      let key
-      for (key in obj) {
-        if (obj.hasOwnProperty(key)) size += 1
-      }
-      return size
-    }
-    let size = Object.size(queue)
-    return size
-  }
-
-  const handleMemberBrowse = () => {
-    // get member data
-    dispatch({
-      type: 'pos/getMembers'
-    })
-
-    dispatch({
-      type: 'pos/showMemberModal',
-      payload: {
-        modalType: 'browseMember'
-      }
-    })
-  }
-
-  const handleAssetBrowse = () => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        modalAssetVisible: true,
-        modalType: 'browseAsset',
-        pagination: {},
-        searchText: ''
-      }
-    })
   }
 
   const reminderProps = {
@@ -295,41 +361,6 @@ const Pos = ({
     unitId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
     listServiceReminder,
     listUnitUsage
-  }
-
-  const handleAddAsset = () => {
-    if (memberInformation.length !== 0) {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalAddUnit: true
-        }
-      })
-      let member = JSON.parse(localStorage.getItem('member'))[0]
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          addUnit: {
-            modal: false,
-            info: { id: member.memberCode, name: member.memberName }
-          }
-        }
-      })
-    } else {
-      Modal.warning({
-        title: 'Member Information is not found',
-        content: 'Insert Member'
-      })
-    }
-  }
-
-  const handleAddMember = () => {
-    dispatch({
-      type: 'customer/updateState',
-      payload: {
-        modalAddMember: true
-      }
-    })
   }
 
   const modalAddUnitProps = {
@@ -422,51 +453,6 @@ const Pos = ({
       payload: {
         item: record,
         modalType: 'modalService'
-      }
-    })
-  }
-
-  const handleMechanicBrowse = () => {
-    // get mechanic data
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-
-    dispatch({
-      type: 'pos/showMechanicModal',
-      payload: {
-        modalType: 'browseMechanic'
-      }
-    })
-  }
-
-  const handleProductBrowse = () => {
-    // get products data
-    let json = setting.Inventory
-    let jsondata = JSON.stringify(eval(`(${json})`))
-    const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-    dispatch({
-      type: 'pos/showProductModal',
-      payload: {
-        modalType: 'browseProductLock'
-      }
-    })
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        outOfStock
-      }
-    })
-  }
-  const handleServiceBrowse = () => {
-    dispatch({
-      type: 'pos/getServices'
-    })
-
-    dispatch({
-      type: 'pos/showServiceModal',
-      payload: {
-        modalType: 'browseService'
       }
     })
   }
@@ -1472,6 +1458,9 @@ const Pos = ({
         title: 'Are you sure want to void/delete all items?',
         content: 'This Operation cannot be undone...!',
         onOk () {
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
           dispatch({
@@ -1621,6 +1610,9 @@ const Pos = ({
     }, 1000)
   }
 
+  const modalPromoProps = {
+    visible: modalPromoVisible
+  }
 
   return (
     <div className="content-inner">
@@ -1665,62 +1657,17 @@ const Pos = ({
               </Row>
             </Form>
 
-            <ButtonGroup>
-              <Button type="primary" size="large" onClick={handleMemberBrowse} >Member</Button>
-              <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
-
-            <ButtonGroup style={{ marginRight: 8 }}>
-              <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
-              <Tooltip title="add Asset">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
-
+            <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
-
-            <Button type="primary"
-              size="large"
-              icon="down-square-o"
-              className="button-width01"
-              onClick={handleMechanicBrowse}
-            >Mechanic
-            </Button>
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
-
-            <ButtonGroup>
-              <Button type="primary" size="large" icon="down-square-o" onClick={handleProductBrowse}>Product</Button>
-              <Tooltip title="add Product">
-                <Button type="primary" size="large" icon="plus-square-o" className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
             {modalProductVisible && <Browse {...modalProductProps} />}
-
-            <Button type="primary"
-              size="large"
-              icon="down-square-o"
-              className="button-width01"
-              onClick={handleServiceBrowse}
-            >Service
-            </Button>
             {modalServiceVisible && <Browse {...modalServiceProps} />}
-            <Badge count={objectSize()}>
-              <Button type="primary"
-                style={{ marginBottom: '4px' }}
-                size="large"
-                icon="down-square-o"
-                className="button-width01"
-                onClick={handleQueue}
-              >Queue
-              </Button>
-            </Badge>
             {modalQueueVisible && <Browse {...modalQueueProps} />}
 
+            {modalPromoVisible && <Promo {...modalPromoProps} />}
 
             <Form layout="inline">
               <Row>
@@ -1987,6 +1934,7 @@ const Pos = ({
 
 Pos.propTypes = {
   pos: PropTypes.object.isRequired,
+  promo: PropTypes.object.isRequired,
   payment: PropTypes.object.isRequired,
   customer: PropTypes.object.isRequired,
   customerunit: PropTypes.object.isRequired,
@@ -2000,4 +1948,4 @@ Pos.propTypes = {
   customergroup: PropTypes.object.isRequired
 }
 
-export default connect(({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)
+export default connect(({ pos, shift, promo, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, shift, promo, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)

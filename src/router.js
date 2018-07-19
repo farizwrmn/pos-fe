@@ -234,6 +234,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/marketing/promo'))
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
@@ -743,6 +744,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/service'))
               cb(null, require('./routes/marketing/bundling'))
             }, 'marketing-bundling')
           }
