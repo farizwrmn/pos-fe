@@ -41,3 +41,13 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function cancel (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiPromo}/cancel/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

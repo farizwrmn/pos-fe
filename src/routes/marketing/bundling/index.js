@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { Button, Tabs, Modal } from 'antd'
+import ModalCancel from './ModalCancel'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
@@ -10,7 +11,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
-  const { listBundling, modalType, currentItem, activeKey } = bundling
+  const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
@@ -28,19 +29,35 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
     dataSource: listBundling,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['bundling/query'],
     location,
-    editItem (item) {
-      const { pathname } = location
+    onChange (page) {
+      const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
         }
       }))
+    },
+    editItem (item) {
+      const { pathname } = location
       dispatch({
         type: 'bundling/editItem',
-        payload: { item }
+        payload: { item, pathname }
+      })
+    },
+    voidItem (items) {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          modalCancelVisible: true,
+          invoiceCancel: items.code,
+          currentItem: items
+        }
       })
     },
     deleteItem (id) {
@@ -52,21 +69,52 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
   }
 
   const changeTab = (key) => {
-    dispatch({
-      type: 'bundling/changeTab',
-      payload: { key }
-    })
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        activeKey: key
-      }
-    }))
-    dispatch({ type: 'bundling/updateState', payload: { listBundling: [] } })
+    if (key !== '0') {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'bundling/changeTab',
+            payload: { key }
+          })
+          const { query, pathname } = location
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          dispatch({
+            type: 'bundling/updateState',
+            payload: {
+              listBundling: [], listRules: [], listReward: []
+            }
+          })
+        }
+      })
+    } else {
+      dispatch({
+        type: 'bundling/changeTab',
+        payload: { key }
+      })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          listBundling: [], listRules: [], listReward: []
+        }
+      })
+    }
   }
-
   const clickBrowse = () => {
     dispatch({
       type: 'bundling/updateState',
@@ -78,14 +126,34 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
 
   const formProps = {
     modalType,
+    typeModal,
     listAllStores,
+    listRules,
+    listReward,
+    itemEditListRules,
+    itemEditListReward,
+    modalEditRulesVisible,
+    modalEditRewardVisible,
     item: currentItem,
+    modalProductVisible,
+    loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
-      dispatch({
-        type: `bundling/${modalType}`,
-        payload: data
-      })
+    onSubmit (data, listRules, listReward) {
+      if (modalType === 'add') {
+        dispatch({
+          type: 'bundling/add',
+          payload: {
+            data,
+            listRules,
+            listReward
+          }
+        })
+      } else {
+        dispatch({
+          type: 'bundling/edit',
+          payload: data
+        })
+      }
     },
     onCancel () {
       const { pathname } = location
@@ -99,6 +167,169 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
         type: 'bundling/updateState',
         payload: {
           currentItem: {}
+        }
+      })
+    },
+    getProduct () {
+      dispatch({
+        type: 'productstock/query'
+      })
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          list: []
+        }
+      })
+    },
+    getService () {
+      dispatch({
+        type: 'service/query'
+      })
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          list: []
+        }
+      })
+    },
+    showModal (type) {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          modalProductVisible: true,
+          typeModal: type
+        }
+      })
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          listProduct: []
+        }
+      })
+      dispatch({
+        type: 'productstock/query'
+      })
+    },
+    hideModal () {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          modalProductVisible: false,
+          typeModal: null
+        }
+      })
+    },
+    updateListRules (data) {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          listRules: data,
+          modalProductVisible: false,
+          modalProductEdit: true
+        }
+      })
+    },
+    updateListReward (data) {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          listReward: data,
+          modalProductVisible: false,
+          modalProductEdit: true
+        }
+      })
+    },
+    showModalEdit (item, type) {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          itemEditListRules: type === 0 ? item : {},
+          itemEditListReward: type === 1 ? item : {},
+          modalEditRulesVisible: type === 0,
+          modalEditRewardVisible: type === 1
+        }
+      })
+    },
+    confirmEditModal (item, type) {
+      if (type === 0) {
+        listRules[item.no - 1] = item
+        dispatch({
+          type: 'bundling/updateState',
+          payload: {
+            listRules,
+            itemEditListRules: {},
+            modalEditRulesVisible: false
+          }
+        })
+      } else if (type === 1) {
+        listReward[item.no - 1] = item
+        dispatch({
+          type: 'bundling/updateState',
+          payload: {
+            listReward,
+            itemEditListReward: {},
+            modalEditRewardVisible: false
+          }
+        })
+      }
+    },
+    deleteList (data, type) {
+      if (type === 0) {
+        dispatch({
+          type: 'bundling/updateState',
+          payload: {
+            listRules: data,
+            itemEditListRules: {},
+            modalEditRulesVisible: false
+          }
+        })
+      } else if (type === 1) {
+        dispatch({
+          type: 'bundling/updateState',
+          payload: {
+            listReward: data,
+            itemEditListReward: {},
+            modalEditRewardVisible: false
+          }
+        })
+      }
+    },
+    hideEditModal () {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          itemEditListRules: {},
+          itemEditListReward: {},
+          modalEditRulesVisible: false,
+          modalEditRewardVisible: false
+        }
+      })
+    }
+  }
+
+  const modalCancelProps = {
+    visible: modalCancelVisible,
+    loading: loading.effects['pos/queryPosDetail'],
+    maskClosable: false,
+    invoiceCancel,
+    title: 'Cancel the Transaction?',
+    confirmLoading: loading.effects['payment/printPayment'],
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: 'bundling/voidTrans',
+        payload: {
+          id: currentItem.id,
+          memo: data.memo
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'bundling/updateState',
+        payload: {
+          modalCancelVisible: false,
+          invoiceCancel: ''
         }
       })
     }
@@ -124,12 +355,15 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
           }
         </TabPane>
       </Tabs>
+      {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
     </div>
   )
 }
 
 Master.propTypes = {
   bundling: PropTypes.object,
+  productstock: PropTypes.object,
+  service: PropTypes.object,
   userStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -137,4 +371,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ bundling, userStore, loading, app }) => ({ bundling, userStore, loading, app }))(Master)
+export default connect(({ bundling, productstock, service, userStore, loading, app }) => ({ bundling, productstock, service, userStore, loading, app }))(Master)

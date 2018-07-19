@@ -1,7 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
+import { Form, Input, message, Button, Row, Col, Tag, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
 import moment from 'moment'
+import _ from 'lodash'
+import { posTotal } from 'utils'
+import ModalLov from './ModalLov'
+import ModalRules from './ModalRules'
+import ModalReward from './ModalReward'
+
+import ListReward from './ListReward'
+import ListRules from './ListRules'
+import styles from '../../../themes/index.less'
 
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
@@ -32,42 +41,220 @@ const FormCounter = ({
   item = {},
   listAllStores = [],
   onSubmit,
+  showModal,
+  hideModal,
+  getProduct,
+  getService,
+  listRules,
+  listReward,
+  typeModal,
+  updateListRules,
+  updateListReward,
   onCancel,
   modalType,
   button,
+  loading,
+  confirmEditModal,
+  deleteList,
+  hideEditModal,
+  itemEditListRules,
+  itemEditListReward,
+  modalEditRulesVisible,
+  modalEditRewardVisible,
+  showModalEdit,
+  modalProductVisible,
   form: {
     getFieldDecorator,
-    validateFieldsAndScroll,
+    validateFields,
     getFieldsValue,
     getFieldValue,
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
+  const modalProductProps = {
+    isModal: false,
+    visible: modalProductVisible,
+    loading: loading.effects['productstock/query'] || loading.effects['service/query'],
+    getProduct,
+    getService,
+    listRules,
+    listReward,
+    typeModal,
+    onCancel () {
+      hideModal()
+    },
+    onRowClick (item) {
+      const type = _.has(item, 'productCode') ? 'P' : 'S'
+      if (typeModal === 'Rules') {
+        let arrayProd = []
+        const listByCode = listRules
+        const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
+        if (checkExists.length === 0) {
+          arrayProd = listByCode
+          const data = {
+            no: arrayProd.length + 1,
+            type,
+            productId: item.id,
+            productCode: type === 'P' ? item.productCode : item.serviceCode,
+            productName: type === 'P' ? item.productName : item.serviceName,
+            qty: 1
+          }
+          arrayProd.push(data)
+          updateListRules(arrayProd)
+          message.success('1 item has been added')
+          showModalEdit(data, 0)
+        } else {
+          Modal.warning({
+            title: 'Cannot add product',
+            content: 'Already Exists in list'
+          })
+        }
+      } else if (typeModal === 'Reward') {
+        let arrayProd = []
+        const listByCode = listReward
+        const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
+        if (checkExists.length === 0) {
+          arrayProd = listByCode
+          const data = {
+            no: arrayProd.length + 1,
+            type,
+            productId: item.id,
+            productCode: type === 'P' ? item.productCode : item.serviceCode,
+            productName: type === 'P' ? item.productName : item.serviceName,
+            qty: 1,
+            sellingPrice: type === 'P' ? item.sellPrice : item.serviceCost,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0
+          }
+          data.total = posTotal(data)
+          arrayProd.push(data)
+          updateListReward(arrayProd)
+          message.success('1 item has been added')
+          showModalEdit(data, 1)
+        } else {
+          Modal.warning({
+            title: 'Cannot add product',
+            content: 'Already Exists in list'
+          })
+        }
       }
     }
   }
 
+  const modalRulesProps = {
+    item: itemEditListRules,
+    visible: modalEditRulesVisible,
+    onOkList (data) {
+      message.info('1 item has been edited')
+      confirmEditModal(data, 0)
+    },
+    onCancelList () {
+      hideEditModal()
+    },
+    onCancel () {
+      hideEditModal()
+    },
+    onDeleteItem (id) {
+      let arrayProd = listRules.slice()
+      Array.prototype.remove = function () {
+        let what
+        let a = arguments
+        let L = a.length
+        let ax
+        while (L && this.length) {
+          what = a[L -= 1]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[id])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          type: ary[n].type,
+          productId: ary[n].productId,
+          productCode: ary[n].productCode,
+          productName: ary[n].productName,
+          qty: ary[n].qty
+        })
+      }
+      deleteList(arrayProd, 0)
+    }
+  }
+
+  const modalRewardProps = {
+    item: itemEditListReward,
+    visible: modalEditRewardVisible,
+    onOkList (data) {
+      message.info('1 item has been edited')
+      confirmEditModal(data, 1)
+    },
+    onCancelList () {
+      hideEditModal()
+    },
+    onCancel () {
+      hideEditModal()
+    },
+    onDeleteItem (id) {
+      let arrayProd = listReward.slice()
+      Array.prototype.remove = function () {
+        let what
+        let a = arguments
+        let L = a.length
+        let ax
+        while (L && this.length) {
+          what = a[L -= 1]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[id])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          type: ary[n].type,
+          productId: ary[n].productId,
+          productCode: ary[n].productCode,
+          productName: ary[n].productName,
+          qty: ary[n].qty,
+          discount: ary[n].discount,
+          disc1: ary[n].disc1,
+          disc2: ary[n].disc2,
+          disc3: ary[n].disc3
+        })
+      }
+      deleteList(arrayProd, 1)
+    }
+  }
+
   const handleCancel = () => {
-    onCancel()
-    resetFields()
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        onCancel()
+        resetFields()
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
   }
 
   const handleSubmit = () => {
-    validateFieldsAndScroll((errors) => {
+    validateFields((errors) => {
       if (errors) {
         return
       }
@@ -80,11 +267,10 @@ const FormCounter = ({
       data.availableStore = (data.availableStore || []).length > 0 ? data.availableStore.toString() : null
       data.startHour = data.startHour ? moment(data.startHour).format('HH:mm') : null
       data.endHour = data.endHour ? moment(data.endHour).format('HH:mm') : null
-      console.log('data', moment(data.availableHour))
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
+          onSubmit(data, listRules, listReward)
           // setTimeout(() => {
           resetFields()
           // }, 500)
@@ -92,6 +278,10 @@ const FormCounter = ({
         onCancel () { }
       })
     })
+  }
+
+  const handleGetService = (type) => {
+    showModal(type)
   }
 
   const renderTreeNodes = (data) => {
@@ -106,7 +296,114 @@ const FormCounter = ({
       return <TreeNode {...item} />
     })
   }
+  const columns = [
+    {
+      title: 'No',
+      dataIndex: 'no',
+      key: 'no',
+      width: '100'
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      width: '100',
+      render: text =>
+        (<span>
+          <Tag color={text === 'P' ? 'green' : 'blue'}>
+            {text === 'P' ? 'Product' : 'Service'}
+          </Tag>
+        </span>)
+    },
+    {
+      title: 'Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: '175'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '175'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      className: styles.alignRight,
+      width: '75'
+    }
+  ]
+  const columnsReward = [
+    {
+      title: 'No',
+      dataIndex: 'no',
+      key: 'no',
+      width: '100'
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      width: '100',
+      render: text =>
+        (<span>
+          <Tag color={text === 'P' ? 'green' : 'blue'}>
+            {text === 'P' ? 'Product' : 'Service'}
+          </Tag>
+        </span>)
+    },
+    {
+      title: 'Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: '175'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '175'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      className: styles.alignRight,
+      width: '75'
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
+      className: styles.alignRight,
+      width: '75'
+    }
+  ]
+  const listRulesProps = {
+    dataSource: listRules,
+    columns,
+    onRowClick (item) {
+      if (modalType === 'add') {
+        showModalEdit(item, 0)
+      }
+    }
+  }
+  const listRewardProps = {
+    dataSource: listReward,
+    columns: columnsReward,
+    onRowClick (item) {
+      if (modalType === 'add') {
+        showModalEdit(item, 1)
+      }
+    }
+  }
   let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().startOf('day')
+  }
   return (
     <Form layout="horizontal">
       <Row>
@@ -120,7 +417,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select>
+              <Select disabled={modalType !== 'add'}>
                 <Option value="0">Buy X Get Y</Option>
                 <Option value="1">Buy X Get Discount Y</Option>
               </Select>
@@ -131,11 +428,10 @@ const FormCounter = ({
               initialValue: item.code,
               rules: [
                 {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,10}$/i
+                  required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input disabled maxLength={50} />)}
           </FormItem>
           <FormItem label="Promo Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
@@ -145,9 +441,9 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={60} />)}
           </FormItem>
-          <FormItem label="Available Date" hasFeedback {...formItemLayout}>
+          <FormItem label="Available Period" hasFeedback {...formItemLayout}>
             {getFieldDecorator('Date', {
               initialValue: item.startDate ? [
                 moment(item.startDate),
@@ -158,7 +454,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<RangePicker allowClear />)}
+            })(<RangePicker disabledDate={disabledDate} allowClear />)}
           </FormItem>
           <FormItem label="Available Hour" hasFeedback {...formItemLayout}>
             <Row gutter={12}>
@@ -230,20 +526,30 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Apply Multiple" hasFeedback {...formItemLayout}>
             {getFieldDecorator('applyMultiple', {
-              initialValue: Number(item.applyMultiple),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Checkbox defaultChecked={Number(item.applyMultiple)} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+              valuePropName: 'checked',
+              initialValue: item.applyMultiple ? (item.applyMultiple === '0' ? 0 : 1) : item.applyMultiple
+            })(<Checkbox />)}
           </FormItem>
         </Col>
+        <Col {...column}>
+          <Row>
+            <Col span={12}><h2 className="h2-add-items">Rules</h2></Col>
+            <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Rules')}>Add Items</Button></Col>
+          </Row>
+          <ListRules {...listRulesProps} />
+          <Row>
+            <Col span={12}><h2 className="h2-add-items">Reward</h2></Col>
+            <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
+          </Row>
+          <ListReward {...listRewardProps} />
+          Product is using Non-Member Price
+        </Col>
       </Row>
+      <Button size="large" disabled={item.status === '0'} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>
+      {modalType === 'edit' && <Button size="large" type="danger" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleCancel}>Cancel</Button>}
+      {modalEditRulesVisible && <ModalRules {...modalRulesProps} />}
+      {modalEditRewardVisible && <ModalReward {...modalRewardProps} />}
+      {modalProductVisible && <ModalLov {...modalProductProps} />}
     </Form>
   )
 }

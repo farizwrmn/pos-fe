@@ -1,21 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 
-const confirm = Modal.confirm
-
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, editItem, voidItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
     } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
+      voidItem(record)
     }
   }
 
@@ -60,12 +53,25 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       }
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      render: text => (
+        <span>
+          <Tag color={text === '1' ? 'green' : 'red'}>
+            {text === '1' ? 'Active' : 'Cancelled'}
+          </Tag>
+        </span>
+      )
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Void', disabled: record.status === '0' }]} />
       }
     }
   ]

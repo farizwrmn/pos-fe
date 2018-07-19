@@ -15,13 +15,19 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listAccountCode: []
+    listAccountCode: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
+        console.log('payload', other)
         const { pathname } = location
         if (pathname === '/master/account') {
           dispatch({
@@ -30,7 +36,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
           if (activeKey === '0') {
             dispatch({
               type: 'query',
@@ -48,6 +54,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
+      console.log('payload', payload)
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
