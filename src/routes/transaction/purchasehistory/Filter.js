@@ -8,17 +8,17 @@ const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 
 const searchBarLayout = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  xs: { span: 24 },
+  sm: { span: 12 },
+  md: { span: 12 },
+  lg: { span: 12 }
 }
 
 const filterItemLayout = {
+  xs: { span: 12 },
   sm: { span: 12 },
   md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  lg: { span: 12 }
 }
 
 const Filter = ({

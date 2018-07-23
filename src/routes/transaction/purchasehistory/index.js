@@ -68,7 +68,7 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
   }
 
   return (
-    <div className="content-inner">
+    <div>
       <Filter {...filterProps} />
       <List {...listProps} />
       {modalPrintInvoice && <Modal {...modalProps} />}

@@ -1,13 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
+import { message, Modal, Row, Col } from 'antd'
 import { lstorage, messageInfo, isEmptyObject } from 'utils'
 import {
   query, add, edit, remove,
   queryCashRegisterByStore, queryCurrentOpenCashRegister,
   queryCashierTransSource, queryCashierTransSourceDetail,
   queryCloseRegister, getCashRegisterDetails, getClosedCashRegister,
-  sendRequestOpenCashRegister, getRequestedCashRegister
+  sendRequestOpenCashRegister, getRequestedCashRegister, approveRequestOpenCashRegister
 } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -90,7 +90,7 @@ export default modelExtend(pageModel, {
 
     * getCashRegisterByStore ({ payload = {} }, { call, put }) {
       const data = yield call(queryCashRegisterByStore, payload.item)
-      if (data) {
+      if (data.success && data.total > 0) {
         yield put({
           type: 'querySuccessCashRegisterByStore',
           payload: {
@@ -103,6 +103,8 @@ export default modelExtend(pageModel, {
           }
         })
         message.success('Double click the row to see the details')
+      } else {
+        message.error('No Data!')
       }
     },
 
@@ -287,15 +289,15 @@ export default modelExtend(pageModel, {
 
     * getRequestedCashRegister ({ payload }, { call, put }) {
       const data = yield call(getRequestedCashRegister, payload)
-      if (data.success && data.data.length > 0) {
+      if (data.success && data.data.count > 0) {
         yield put({
           type: 'querySuccessRequestedCashRegister',
           payload: {
-            listRequestedCashRegister: data.data,
+            listRequestedCashRegister: data.data.rows,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
-              total: data.total
+              total: data.data.count
             }
           }
         })
@@ -318,6 +320,17 @@ export default modelExtend(pageModel, {
           type: 'successSendRequestOpenCashRegister',
           payload: data.cashregisters
         })
+      } else {
+        throw data
+      }
+    },
+
+    * approveRequestOpenCashRegister ({ payload }, { call, put }) {
+      const data = yield call(approveRequestOpenCashRegister, payload)
+      if (data.success) {
+        message.success('info request open cashier period successfully approved')
+        yield put({ type: 'getRequestedCashRegister' })
+        yield put({ type: 'updateState', payload: { currentItem: {} } })
       } else {
         throw data
       }
@@ -415,6 +428,26 @@ export default modelExtend(pageModel, {
       let currentItem = {}
       if (checked) {
         currentItem = record
+        Modal.info({
+          title: 'Request to open cash Register',
+          content: <Row>
+            <Col span={5}>
+              <p>Cashier</p>
+              <p>Problem</p>
+              <p>Action</p>
+            </Col>
+            <Col span={1}>
+              <p>:</p>
+              <p>:</p>
+              <p>:</p>
+            </Col>
+            <Col span={18}>
+              <p>{currentItem.cashierId}</p>
+              <p>{currentItem.problemDesc}</p>
+              <p>{currentItem.actionDesc}</p>
+            </Col>
+          </Row>
+        })
       } else {
         currentItem = {}
       }

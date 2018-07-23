@@ -178,7 +178,7 @@ export async function sendRequestOpenCashRegister (params) {
 export async function approveRequestOpenCashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${apiCashRegister}${params.id}?status=A`,
+    url: `${apiCashRegister}/${params.id}?status=A`,
     method: 'PUT',
     data: params.data,
     headers: apiHeaderToken
