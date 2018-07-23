@@ -171,7 +171,7 @@ export default {
 
       if (data.success) {
         messageInfo(data.profile.sessionid)
-        messageInfo(`${data.message} at ${moment(data.profile.userlogoutime).format('DD-MMM-YYYY hh:mm:ss')}`, 'success')
+        messageInfo(`${data.message} at ${moment(data.profile.userlogoutime).format('DD-MMM-YYYY HH:mm:ss')}`, 'success')
         yield put({ type: 'query' })
       } else {
         throw (data)

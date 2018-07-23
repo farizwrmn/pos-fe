@@ -717,7 +717,7 @@ export default {
                   {
                     columns: [
                       {
-                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
                         margin: additionalMargin1,
                         fontSize: additionalFontSize,
                         alignment: 'left'
@@ -756,7 +756,7 @@ export default {
                 {
                   columns: [
                     {
-                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
                       margin: additionalMargin2,
                       fontSize: additionalFontSize,
                       alignment: 'left'

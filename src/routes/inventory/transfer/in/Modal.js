@@ -62,8 +62,8 @@ const modal = ({
       // let startDate = moment(data.period[0]).format('YYYY-MM-DD')
       // let endDate = moment(data.period[1]).format('YYYY-MM-DD')
       const { period, ...other } = data
-      let startDate = period ? moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss') : null
-      let endDate = period ? moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss') : null
+      let startDate = period ? moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD HH:mm:ss') : null
+      let endDate = period ? moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD HH:mm:ss') : null
       onSearch(startDate, endDate, other)
     })
   }
@@ -74,8 +74,8 @@ const modal = ({
   }
 
   // const filterDate = (date, dateString) => {
-  //   // let startDate = moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD hh:mm:ss')
-  //   // let endDate = moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD hh:mm:ss')
+  //   // let startDate = moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD HH:mm:ss')
+  //   // let endDate = moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD HH:mm:ss')
   //   changeDate(dateString)
   //   resetFields()
   // }

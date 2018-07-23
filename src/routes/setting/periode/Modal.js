@@ -8,7 +8,7 @@ import moment from 'moment'
 
 const { TextArea } = Input
 const FormItem = Form.Item
-const dateFormat = 'YYYY/MM/DD hh:mm:ss'
+const dateFormat = 'YYYY/MM/DD HH:mm:ss'
 
 const formItemLayout = {
   labelCol: { span: 8 },

@@ -107,7 +107,7 @@ const modal = ({
               </FormItem>
               <FormItem label="Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
-                  initialValue: item.transDate ? moment.utc(moment(item.transDate).format('YYYY-MM-DD hh:mm:ss'), 'YYYY-MM-DD hh:mm:ss') : ''
+                  initialValue: item.transDate ? moment.utc(moment(item.transDate).format('YYYY-MM-DD HH:mm:ss'), 'YYYY-MM-DD HH:mm:ss') : ''
                 })(<DatePicker placeholder="Select Period" disabled />)}
               </FormItem>
               <FormItem label="PIC" hasFeedback {...formItemLayout}>
