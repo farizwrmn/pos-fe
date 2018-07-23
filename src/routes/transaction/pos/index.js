@@ -84,7 +84,7 @@ const Pos = ({
     listCashier,
     dataCashierTrans,
     curCashierNo,
-    curShift,
+    // curShift,
     modalQueueVisible,
     listUnitUsage,
     showAlert,
@@ -153,30 +153,30 @@ const Pos = ({
   let a = dataPos
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0).toLocaleString()
   let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0).toLocaleString()
-  const getDate = (mode) => {
-    let today = new Date()
-    let dd = today.getDate()
-    let mm = today.getMonth() + 1 // January is 0!
-    let yyyy = today.getFullYear()
+  // const getDate = (mode) => {
+  //   let today = new Date()
+  //   let dd = today.getDate()
+  //   let mm = today.getMonth() + 1 // January is 0!
+  //   let yyyy = today.getFullYear()
 
-    if (dd < 10) {
-      dd = `0${dd}`
-    }
+  //   if (dd < 10) {
+  //     dd = `0${dd}`
+  //   }
 
-    if (mm < 10) {
-      mm = `0${mm}`
-    }
+  //   if (mm < 10) {
+  //     mm = `0${mm}`
+  //   }
 
-    if (mode === 1) {
-      today = `${dd}-${mm}-${yyyy}`
-    } else if (mode === 2) {
-      today = mm + yyyy
-    } else if (mode === 3) {
-      today = `${yyyy}-${mm}-${dd}`
-    }
+  //   if (mode === 1) {
+  //     today = `${dd}-${mm}-${yyyy}`
+  //   } else if (mode === 2) {
+  //     today = mm + yyyy
+  //   } else if (mode === 3) {
+  //     today = `${yyyy}-${mm}-${dd}`
+  //   }
 
-    return today
-  }
+  //   return today
+  // }
 
   const onShowReminder = () => {
     dispatch({
@@ -478,6 +478,7 @@ const Pos = ({
       defaultRole = localId.split(/[# ]+/).pop()
     }
     const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
     const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
     if (service.length > 0 && (woNumber === '' || woNumber === null)) {
       Modal.warning({
@@ -510,6 +511,13 @@ const Pos = ({
       if (defaultRole !== 'OWN') {
         return
       }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
     }
     dispatch({ type: 'pos/setCurTotal' })
 
@@ -653,10 +661,11 @@ const Pos = ({
   infoCashRegister.titleColor = color.normal
   infoCashRegister.descColor = color.error
   infoCashRegister.dotVisible = false
-  infoCashRegister.cashActive = ((currentCashier.cashActive || 0) === true)
+  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
 
-  if (lstorage.getLoginTimeDiff() > 500) {
-    console.log('something fishy')
+  let checkTimeDiff = lstorage.getLoginTimeDiff()
+  if (checkTimeDiff > 500) {
+    console.log('something fishy', checkTimeDiff)
   } else {
     if (!currentCashier.period) {
       infoCashRegister.desc = '* Select the correct cash register'
@@ -1305,137 +1314,139 @@ const Pos = ({
         handleDiscount(3, value)
       } else if (keyShortcut[17] && keyShortcut[75]) { // shortcut modified quantity (Ctrl + Shift + Q)
         handleDiscount(5, value)
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[76]) { // shortcut untuk Closing Cashier (Ctrl + Shift + L)
-        let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-
-        let curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
-        let curQueue2 = (localStorage.getItem('queue2') === null ? [] : JSON.parse(localStorage.getItem('queue2')))
-        let curQueue3 = (localStorage.getItem('queue3') === null ? [] : JSON.parse(localStorage.getItem('queue3')))
-
-        keyShortcut[17] = false
-        keyShortcut[16] = false
-        keyShortcut[76] = false
-
-        if (JSON.stringify(curData) === '[]' && JSON.stringify(curQueue1) === '[]' && JSON.stringify(curQueue2) === '[]' && JSON.stringify(curQueue3) === '[]') {
-          Modal.confirm({
-            title: 'Are you sure want to close this Cashier?',
-            content: 'This Operation cannot be undone...!',
-            onOk () {
-              dispatch({
-                type: 'pos/setCloseCashier',
-                payload: {
-                  total: 0,
-                  totalCreditCard: 0,
-                  status: 'C',
-                  cashierNo: curCashierNo,
-                  shift: curShift,
-                  transDate: getDate(3)
-                }
-              })
-
-              // dispatch({
-              //   type: 'pos/showShiftModal',
-              // })
-            },
-            onCancel () {
-              console.log('cancel')
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'Warning',
-            content: 'Cannot closed cashier when having transaction...!'
-          })
-        }
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
-        keyShortcut[17] = false
-        keyShortcut[16] = false
-        keyShortcut[85] = false
-
-        let arrayProd = []
-
-        const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
-        const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
-        const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-
-        let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-        let memberInformation
-        if (JSON.stringify(listByCode) === '[]') {
-          memberInformation = listByCode.slice()
-        } else {
-          memberInformation = listByCode
-        }
-        const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
-
-        // start-mechanicInfo
-        const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
-        const mechanic = mechanicInfo[0]
-        // end-mechanicInfo
-
-        arrayProd.push({
-          cashier_trans,
-          memberCode: memberInfo.memberCode,
-          memberName: memberInfo.memberName,
-          point: memberInfo.point,
-          memberUnit,
-          lastMeter,
-          mechanicCode: mechanic.mechanicCode,
-          mechanicName: mechanic.mechanicName
-        })
-        if (localStorage.getItem('cashier_trans') === null) {
-          Modal.warning({
-            title: 'Warning',
-            content: 'Transaction Not Found...!'
-          })
-        } else if (localStorage.getItem('queue1') === null) {
-          localStorage.setItem('queue1', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          dispatch({
-            type: 'pos/insertQueue',
-            payload: {
-              queue: '1'
-            }
-          })
-        } else if (localStorage.getItem('queue2') === null) {
-          localStorage.setItem('queue2', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          dispatch({
-            type: 'pos/insertQueue',
-            payload: {
-              queue: '2'
-            }
-          })
-        } else if (localStorage.getItem('queue3') === null) {
-          localStorage.setItem('queue3', JSON.stringify(arrayProd))
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('lastMeter')
-          dispatch({
-            type: 'pos/insertQueue',
-            payload: {
-              queue: '3'
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'Warning',
-            content: 'Queues are full, Please finish previous transaction first...!'
-          })
-        }
       }
+      // else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[76]) { // shortcut untuk Closing Cashier (Ctrl + Shift + L)
+      //   let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+
+      //   let curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
+      //   let curQueue2 = (localStorage.getItem('queue2') === null ? [] : JSON.parse(localStorage.getItem('queue2')))
+      //   let curQueue3 = (localStorage.getItem('queue3') === null ? [] : JSON.parse(localStorage.getItem('queue3')))
+
+      //   keyShortcut[17] = false
+      //   keyShortcut[16] = false
+      //   keyShortcut[76] = false
+
+      //   if (JSON.stringify(curData) === '[]' && JSON.stringify(curQueue1) === '[]' && JSON.stringify(curQueue2) === '[]' && JSON.stringify(curQueue3) === '[]') {
+      //     Modal.confirm({
+      //       title: 'Are you sure want to close this Cashier?',
+      //       content: 'This Operation cannot be undone...!',
+      //       onOk () {
+      //         dispatch({
+      //           type: 'pos/setCloseCashier',
+      //           payload: {
+      //             total: 0,
+      //             totalCreditCard: 0,
+      //             status: 'C',
+      //             cashierNo: curCashierNo,
+      //             shift: curShift,
+      //             transDate: getDate(3)
+      //           }
+      //         })
+
+      //         // dispatch({
+      //         //   type: 'pos/showShiftModal',
+      //         // })
+      //       },
+      //       onCancel () {
+      //         console.log('cancel')
+      //       }
+      //     })
+      //   } else {
+      //     Modal.warning({
+      //       title: 'Warning',
+      //       content: 'Cannot closed cashier when having transaction...!'
+      //     })
+      //   }
+      // }
+      // else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
+      //   keyShortcut[17] = false
+      //   keyShortcut[16] = false
+      //   keyShortcut[85] = false
+
+      //   let arrayProd = []
+
+      //   const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
+      //   const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
+      //   const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+
+      //   let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      //   let memberInformation
+      //   if (JSON.stringify(listByCode) === '[]') {
+      //     memberInformation = listByCode.slice()
+      //   } else {
+      //     memberInformation = listByCode
+      //   }
+      //   const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
+
+      //   // start-mechanicInfo
+      //   const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
+      //   const mechanic = mechanicInfo[0]
+      //   // end-mechanicInfo
+
+      //   arrayProd.push({
+      //     cashier_trans,
+      //     memberCode: memberInfo.memberCode,
+      //     memberName: memberInfo.memberName,
+      //     point: memberInfo.point,
+      //     memberUnit,
+      //     lastMeter,
+      //     mechanicCode: mechanic.mechanicCode,
+      //     mechanicName: mechanic.mechanicName
+      //   })
+      //   if (localStorage.getItem('cashier_trans') === null) {
+      //     Modal.warning({
+      //       title: 'Warning',
+      //       content: 'Transaction Not Found...!'
+      //     })
+      //   } else if (localStorage.getItem('queue1') === null) {
+      //     localStorage.setItem('queue1', JSON.stringify(arrayProd))
+      //     localStorage.removeItem('cashier_trans')
+      //     localStorage.removeItem('service_detail')
+      //     localStorage.removeItem('member')
+      //     localStorage.removeItem('memberUnit')
+      //     localStorage.removeItem('mechanic')
+      //     localStorage.removeItem('lastMeter')
+      //     dispatch({
+      //       type: 'pos/insertQueue',
+      //       payload: {
+      //         queue: '1'
+      //       }
+      //     })
+      //   } else if (localStorage.getItem('queue2') === null) {
+      //     localStorage.setItem('queue2', JSON.stringify(arrayProd))
+      //     localStorage.removeItem('cashier_trans')
+      //     localStorage.removeItem('service_detail')
+      //     localStorage.removeItem('member')
+      //     localStorage.removeItem('memberUnit')
+      //     localStorage.removeItem('mechanic')
+      //     localStorage.removeItem('lastMeter')
+      //     dispatch({
+      //       type: 'pos/insertQueue',
+      //       payload: {
+      //         queue: '2'
+      //       }
+      //     })
+      //   } else if (localStorage.getItem('queue3') === null) {
+      //     localStorage.setItem('queue3', JSON.stringify(arrayProd))
+      //     localStorage.removeItem('cashier_trans')
+      //     localStorage.removeItem('service_detail')
+      //     localStorage.removeItem('member')
+      //     localStorage.removeItem('memberUnit')
+      //     localStorage.removeItem('mechanic')
+      //     localStorage.removeItem('lastMeter')
+      //     dispatch({
+      //       type: 'pos/insertQueue',
+      //       payload: {
+      //         queue: '3'
+      //       }
+      //     })
+      //   } else {
+      //     Modal.warning({
+      //       title: 'Warning',
+      //       content: 'Queues are full, Please finish previous transaction first...!'
+      //     })
+      //   }
+      // }
     } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
       if (kodeUtil === 'barcode') {
         dispatch({

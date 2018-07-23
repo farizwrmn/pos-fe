@@ -9,8 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
+const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, app }) => {
+  const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = bankentry
+  const { listOpts } = paymentOpts
+  const { listBank } = bank
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode } = accountCode
@@ -18,7 +20,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'cashentry/query',
+        type: 'bankentry/query',
         payload: {
           ...value
         }
@@ -29,21 +31,9 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   const listProps = {
     dataSource: listCash,
     user,
-    pagination,
     storeInfo,
-    loading: loading.effects['cashentry/query'],
+    loading: loading.effects['bankentry/query'],
     location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({
@@ -53,13 +43,13 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         }
       }))
       dispatch({
-        type: 'cashentry/editItem',
+        type: 'bankentry/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'cashentry/delete',
+        type: 'bankentry/delete',
         payload: id
       })
     }
@@ -72,7 +62,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         content: 'this action will reset your current process',
         onOk () {
           dispatch({
-            type: 'cashentry/changeTab',
+            type: 'bankentry/changeTab',
             payload: { key }
           })
           const { query, pathname } = location
@@ -83,12 +73,12 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
               activeKey: key
             }
           }))
-          dispatch({ type: 'cashentry/updateState', payload: { listCash: [], listItem: [] } })
+          dispatch({ type: 'bankentry/updateState', payload: { listCash: [], listItem: [] } })
         }
       })
     } else {
       dispatch({
-        type: 'cashentry/changeTab',
+        type: 'bankentry/changeTab',
         payload: { key }
       })
       const { query, pathname } = location
@@ -99,13 +89,13 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
           activeKey: key
         }
       }))
-      dispatch({ type: 'cashentry/updateState', payload: { listCash: [], listItem: [] } })
+      dispatch({ type: 'bankentry/updateState', payload: { listCash: [], listItem: [] } })
     }
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'cashentry/updateState',
+      type: 'bankentry/updateState',
       payload: {
         activeKey: '1'
       }
@@ -119,7 +109,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     listAccountCode,
     onCancel () {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           modalVisible: false
         }
@@ -129,7 +119,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           modalVisible: false,
           listItem
@@ -148,13 +138,15 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     inputType,
     listDetailProps,
     listItem,
+    listOpts,
+    listBank,
     listCustomer,
     listSupplier,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, detail, oldValue) {
       dispatch({
-        type: `cashentry/${modalType}`,
+        type: `bankentry/${modalType}`,
         payload: {
           data,
           detail,
@@ -171,7 +163,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         }
       }))
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           currentItem: {}
         }
@@ -203,7 +195,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     updateCurrentItem (data) {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           currentItem: data
         }
@@ -211,7 +203,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     modalShow (value) { // string
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
           inputType: value
@@ -220,7 +212,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     resetListItem (value) {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           listItem: [],
           inputType: value
@@ -236,7 +228,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         }
       })
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
           currentItemList: record
@@ -270,7 +262,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
 }
 
 Cash.propTypes = {
-  cashentry: PropTypes.object,
+  bankentry: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
   loading: PropTypes.object,
@@ -280,9 +272,11 @@ Cash.propTypes = {
 }
 
 export default connect(({
-  cashentry,
+  bankentry,
   accountCode,
+  paymentOpts,
+  bank,
   customer,
   supplier,
   loading,
-  app }) => ({ cashentry, accountCode, customer, supplier, loading, app }))(Cash)
+  app }) => ({ bankentry, accountCode, paymentOpts, bank, customer, supplier, loading, app }))(Cash)

@@ -45,7 +45,7 @@ const FormCustomer = ({
   showCity,
   defaultMember,
   onCancel,
-  onCancelMobile,
+  // onCancelMobile,
   // showMobileModal,
   form: {
     getFieldsValue,
@@ -134,10 +134,10 @@ const FormCustomer = ({
     resetFields()
   }
 
-  const handleCancelMobile = () => {
-    onCancelMobile()
-    resetFields()
-  }
+  // const handleCancelMobile = () => {
+  //   onCancelMobile()
+  //   resetFields()
+  // }
 
   return (
     <Form layout="horizontal">

@@ -25,7 +25,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
     if (infoCashRegister.cashActive) {
       return true
     }
-    return current > moment(new Date())
+    return current < moment(new Date()).add(-1, 'days').endOf('day') || current > moment(new Date()).add(0, 'days').endOf('day')
   }
 
   const handleOk = () => {

@@ -4,16 +4,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { formatDate } from 'utils'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   // Declare Variable
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
-  let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidTotal || 0), 0)
+  let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
+  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
-  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
 
   const styles = {
     merchant: {
@@ -64,7 +66,6 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   let tableHeader = []
   let tableFooter = []
   const createTableBody = (list) => {
-    console.log(list)
     let tableBody = []
     let start = 1
     let countQtyValue = 0
@@ -72,6 +73,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
       if (list.hasOwnProperty(key)) {
         let data = list[key]
         countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
+        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { value: start.toString(), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
@@ -80,13 +82,13 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
           { value: (data.address01 || data.address02 || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.accountNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.dueDate ? moment(data.dueDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.invoiceDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.dueDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.transNo || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.beginValue || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.nettoTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: data.transDate ? moment(data.transDate).format('DD-MMM-YYYY') : '', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.paid || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.bankName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.checkNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
@@ -145,7 +147,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
         { value: 'SALDO AWAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'PEMBELIAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
 
-        { value: 'TGL BAYAR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'TGL BYR TERAKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'CASH', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'VIA BANK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },

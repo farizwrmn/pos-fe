@@ -4,9 +4,9 @@ const { cashier } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.order = 'sort,accountParentCode'
+  params.order = 'typeCode'
   return request({
-    url: `${cashier}/account`,
+    url: `${cashier}/bankentry`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -16,8 +16,18 @@ export async function query (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account`,
+    url: `${cashier}/bankentry`,
     method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function edit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${cashier}/bankentry/${params.id}`,
+    method: 'put',
     data: params,
     headers: apiHeaderToken
   })
@@ -26,18 +36,9 @@ export async function add (params) {
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account/${id}`,
+    url: `${cashier}/bankentry/${id}`,
     method: 'delete',
     headers: apiHeaderToken
   })
 }
 
-export async function edit (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${cashier}/account/${params.id}`,
-    method: 'put',
-    data: params,
-    headers: apiHeaderToken
-  })
-}

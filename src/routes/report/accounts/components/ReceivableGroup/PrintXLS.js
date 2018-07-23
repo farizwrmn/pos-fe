@@ -120,7 +120,7 @@ const PrintXLS = ({
 
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'TGL BAYAR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'TGL BYR TERAKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'CASH', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'OTHER PAYMENT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
 

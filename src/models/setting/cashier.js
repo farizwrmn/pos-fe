@@ -110,7 +110,9 @@ export default modelExtend(pageModel, {
 
     * getCashierInformation ({ payload = {} }, { call, put }) {
       const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-      const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
+      const cashierInformation = (Array.isArray(currentRegister.data))
+        ? isEmptyObject(currentRegister.data[0]) ? {} : currentRegister.data[0]
+        : currentRegister.data
       // const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
       if (currentRegister.success) {
         if (!currentRegister.data) {

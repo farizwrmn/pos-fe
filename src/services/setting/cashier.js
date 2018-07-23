@@ -116,7 +116,7 @@ export async function queryCloseRegister (params) {
   return request({
     url,
     method: 'put',
-    data: { desc: params.desc, total: params.summary.total },
+    data: { storeId: params.storeId, desc: params.desc, total: params.summary.total },
     headers: apiHeaderToken
   })
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
+import { Form, message, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
 import { lstorage } from 'utils'
 import Browse from './Browse'
 import styles from '../../../themes/index.less'
@@ -89,6 +89,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
   }
   const handleButtonDeleteClick = () => {
     localStorage.removeItem('adjust')
+    message.warning('Transaction has been canceled and reset')
     onResetAll()
   }
   const columns = [

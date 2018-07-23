@@ -78,7 +78,7 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const notifications = yield call(getNotifications, payload)
-        const { data } = yield call(menusService.query)
+        const { data } = yield call(menusService.query, { field: 'menuId,icon,name,bpid,mpid,route' })
         const { permissions } = user
 
         let menu = data
@@ -105,7 +105,6 @@ export default {
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
         const misc = yield call(miscQuery, { code: 'company' })
-        // let company = (({ miscDesc, miscName, miscVariable }) => ({ miscDesc, miscName, miscVariable })) (misc.data[0])
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
 

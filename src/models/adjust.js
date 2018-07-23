@@ -22,6 +22,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     addItem: {},
+    activeKey: '1',
     itemEmployee: [],
     dataBrowse: [],
     listType: [],
@@ -286,7 +287,7 @@ export default modelExtend(pageModel, {
     },
 
     * adjustDelete ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
+      let dataPos = (localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : [])
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()
         Array.prototype.remove = function () {
@@ -317,6 +318,7 @@ export default modelExtend(pageModel, {
             Out: ary[n].Out
           })
         }
+        localStorage.setItem('adjust', JSON.stringify(arrayProd))
       }
       yield put({ type: 'modalEditHide' })
     },

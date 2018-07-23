@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, message, Button, Row, Col, Modal, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
@@ -41,10 +41,14 @@ const FormCounter = ({
   // modalType,
   modalVisible,
   modalProps,
+  listBank,
   listDetailProps,
+  listOpts,
   listCustomer,
   listSupplier,
   updateCurrentItem,
+  bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
+  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   customerOpt = (listCustomer || []).length > 0 ? listCustomer.map(c => <Option value={c.id} key={c.id}>{`${c.memberName} (${c.memberCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   form: {
@@ -74,6 +78,7 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
+      data.bankId = data.bankId ? data.bankId.key : null
       data.transType = data.transType ? data.transType.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
@@ -88,7 +93,6 @@ const FormCounter = ({
   const hdlModalShow = () => {
     validateFields(['type'], (errors) => {
       if (errors) {
-        message.warning('Type is required', 1.5)
         return
       }
       const type = getFieldValue('type')
@@ -169,7 +173,6 @@ const FormCounter = ({
 
   const listDetailOpts = {
     handleModalShowList,
-    listItem,
     ...listDetailProps
   }
 
@@ -253,6 +256,46 @@ const FormCounter = ({
               >{supplierOpt}
               </Select>)}
             </FormItem>}
+            <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transType', {
+                initialValue: item.transType,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                onFocus={() => showLov('paymentOpts')}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{paymentOpt}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Bank" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bankId', {
+                initialValue: item.bankId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                // <AutoComplete {...autoCompleteProps} />
+                <Select
+                  showSearch
+                  allowClear
+                  onFocus={() => showLov('bank')}
+                  onSearch={value => showLov('bank', { q: value })}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={filterOption}
+                >{bankOpt}
+                </Select>
+              )}
+            </FormItem>
           </Col>
         </Row>
         <Row>

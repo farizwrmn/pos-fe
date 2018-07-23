@@ -10,7 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
 const warning = Modal.warning
-const { formatNumberInExcel} = numberFormat
+const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
