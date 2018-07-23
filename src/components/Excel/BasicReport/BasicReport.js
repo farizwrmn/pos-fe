@@ -5,9 +5,6 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { numberFormat } from 'utils'
 import { saveAs } from 'file-saver'
 import moment from 'moment'
-import { numberFormat } from 'utils'
-
-const { formatNumberInExcel } = numberFormat
 
 const { formatNumberInExcel } = numberFormat
 
