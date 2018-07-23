@@ -417,6 +417,13 @@ body {
 
 @media (max-width: 767px) {
      :global {
+        .navbar {
+            position: absolute;
+            right: 0;
+            .ant-menu-submenu-horizontal > .ant-menu {
+                left: -28px;
+            }
+        }
         ul.ant-menu.ant-menu-inline.parent-wrapper.ant-menu-primary.ant-menu-root {
             height: 100vh;
             overflow-y: auto;

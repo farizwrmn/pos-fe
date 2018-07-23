@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, date,
   grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0),
@@ -26,19 +29,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', style: 'tableContent' })
-        row.push({ text: (data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', style: 'tableContent' })
+        row.push({ text: (data.invoiceDate ? moment(data.invoiceDate).format('DD-MMM-YYYY') : ''), alignment: 'left', style: 'tableContent' })
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', style: 'tableContent' })
         row.push({ text: (data.memberName || '').toString(), alignment: 'left', style: 'tableContent' })
         row.push({ text: (data.memberGroupName || '').toString(), alignment: 'left', style: 'tableContent' })
-        row.push({ text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gt120days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gt90days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gt60days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gt30days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gt15days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.gte0days || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
-        row.push({ text: (data.restNetto || '').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.paid || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gt120days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gt90days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gt60days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gt30days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gt15days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.gte0days || 0), alignment: 'right', style: 'tableContent' })
+        row.push({ text: formatNumberIndonesia(data.restNetto || ''), alignment: 'right', style: 'tableContent' })
         body.push(row)
       }
       count += 1
@@ -197,15 +200,15 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
       {},
       {},
       {},
-      { text: `${(grandTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `(${paidTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gt120daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gt90daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gt60daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gt30daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gt15daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${(gte0daysTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' },
-      { text: `${nettoTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', style: 'tableFooter' }
+      { text: formatNumberIndonesia(grandTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: `(${formatNumberIndonesia(paidTotal)})`, alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gt120daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gt90daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gt60daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gt30daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gt15daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(gte0daysTotal || 0), alignment: 'right', style: 'tableFooter' },
+      { text: formatNumberIndonesia(nettoTotal), alignment: 'right', style: 'tableFooter' }
     ]
   ]
 

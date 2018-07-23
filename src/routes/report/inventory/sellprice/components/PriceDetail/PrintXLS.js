@@ -1,17 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { RepeatExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({
   listInventoryTransfer,
   period
 }) => {
-  // let qtyTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.qty || 0), 0)
-  // let nettoTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.nettoTotal || 0), 0)
   const styles = {
     title: {
       name: 'Courier New',
@@ -120,43 +115,19 @@ const PrintXLS = ({
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.prevSellPrice) || 0), numFmt: formatNumberInExcel(data.prevSellPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.sellPrice) || 0), numFmt: formatNumberInExcel(data.sellPrice, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.prevDistPrice01) || 0), numFmt: formatNumberInExcel(data.prevDistPrice01, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.distPrice01) || 0), numFmt: formatNumberInExcel(data.distPrice01, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.prevDistPrice02) || 0), numFmt: formatNumberInExcel(data.prevDistPrice02, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(data.distPrice02) || 0), numFmt: formatNumberInExcel(data.distPrice02, 2), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+        { value: (parseFloat(data.prevSellPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.sellPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.prevDistPrice01) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.distPrice01) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.prevDistPrice02) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(data.distPrice02) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
       ]
       group.push(tableBody)
       count += 1
     }
     tableBodies.push(group)
-
-    // let totalQty = master.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
-    // let total = master.reduce((cnt, o) => cnt + (parseFloat(o.nettoTotal) || 0), 0)
-
-    // let tableFooter = [
-    //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-    //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-    //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-    //   { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-    //   { value: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-    //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-    //   { value: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
-    // ]
-    // tableFooters.push(tableFooter)
   }
   let tableTotals = []
-  // let grandTotal = [
-  //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-  //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-  //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-  //   { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-  //   { value: (qtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-  //   { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-  //   { value: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
-  // ]
-  // tableTotals.push(grandTotal)
 
   // Declare additional Props
   const XLSProps = {

@@ -4,6 +4,9 @@ import { Button, Icon, Modal } from 'antd'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { saveAs } from 'file-saver'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberInExcel } = numberFormat
 
 const RepeatReport = ({
   name,
@@ -126,7 +129,7 @@ const RepeatReport = ({
             value: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).value = tableBody[i][n][o].value,
             alignment: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).alignment = tableBody[i][n][o].alignment,
             font: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).font = tableBody[i][n][o].font,
-            numFmt: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).numFmt = tableBody[i][n][o].numFmt
+            numFmt: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).numFmt = formatNumberInExcel(tableBody[i][n][o].value, 2)
             // border: sheet.getCell(`${getPosition(o)}${tableBodyPosition}`).border = tableBody[i][n][o].border
           })
         }
@@ -139,7 +142,7 @@ const RepeatReport = ({
           value: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).value = tableFooter[i][j].value,
           alignment: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).alignment = tableFooter[i][j].alignment,
           font: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).font = tableFooter[i][j].font,
-          numFmt: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).numFmt = tableFooter[i][j].numFmt
+          numFmt: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).numFmt = formatNumberInExcel(tableFooter[i][j].value, 2)
           // border: sheet.getCell(`${getPosition(j)}${tableFooterPosition}`).border = tableFooter[i][j].border
         })
       }
@@ -152,7 +155,7 @@ const RepeatReport = ({
             value: sheet.getCell(`${getPosition(i)}${line}`).value = tableTotal[0][i].value,
             alignment: sheet.getCell(`${getPosition(i)}${line}`).alignment = tableTotal[0][i].alignment,
             font: sheet.getCell(`${getPosition(i)}${line}`).font = tableTotal[0][i].font,
-            numFmt: sheet.getCell(`${getPosition(i)}${line}`).numFmt = tableTotal[0][i].numFmt
+            numFmt: sheet.getCell(`${getPosition(i)}${line}`).numFmt = formatNumberInExcel(tableTotal[0][i].value, 2)
             // border: sheet.getCell(`${getPosition(i)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
           })
         }
@@ -181,7 +184,7 @@ const RepeatReport = ({
           value: sheet1.getCell(`${getPosition(j)}${position}`).value = tableFilter[i][j].value,
           alignment: sheet1.getCell(`${getPosition(j)}${position}`).alignment = tableFilter[i][j].alignment,
           font: sheet1.getCell(`${getPosition(j)}${position}`).font = tableFilter[i][j].font,
-          numFmt: sheet1.getCell(`${getPosition(j)}${position}`).numFmt = tableFilter[i][j].numFmt
+          numFmt: sheet1.getCell(`${getPosition(j)}${position}`).numFmt = formatNumberInExcel(tableFilter[i][j].value, 2)
         })
       }
       position += 1

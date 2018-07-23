@@ -12,7 +12,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
   let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
-  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
+  // let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
   let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
@@ -73,9 +73,9 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
       if (list.hasOwnProperty(key)) {
         let data = list[key]
         countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
-        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
+        // const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
-          { value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: start.toString(), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.supplierTaxId || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
@@ -85,19 +85,19 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
           { value: formatDate(data.invoiceDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: formatDate(data.dueDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.transNo || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.beginValue || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.nettoTotal || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.beginValue || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.nettoTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
           { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.paid || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.bankName || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.checkNo || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.paidBank || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paid || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.bankName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.checkNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paid || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: (data.paid + data.paidBank || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.returnTotal || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjustTotal || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (totalValue || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.paidTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.returnTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjustTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.total || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.detail || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
         tableBody.push(row)
@@ -200,19 +200,19 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: beginTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: nettoTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: beginTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: nettoTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
 
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: paidTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: paidBankTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
 
-        { value: paidTotal + paidBankTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: returnTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: adjustTotal, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: total, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: paidTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: returnTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: adjustTotal, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: total, alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody }
       ]
     )

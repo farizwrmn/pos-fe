@@ -47,10 +47,14 @@ const List = ({ menuTree, onChangeTree, editItem, modalEdit, onSelectMenu, onCan
         ar = arr
         i = index
       })
-      if (dropPosition === -1) {
+
+      if (i && i > 0) {
         dropKey = null
         ar.splice(i, 0, dragObj)
       } else {
+        if (dropPosition === -1 || dropPosition === 1) {
+          dropKey = dropKey.slice(0, -1)
+        }
         ar.splice(i + 1, 0, dragObj)
       }
     } else {

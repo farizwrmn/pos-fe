@@ -4,10 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, date, storeInfo }) => {
   // Declare Variable
@@ -85,16 +82,16 @@ const PrintXLS = ({ listTrans, date, storeInfo }) => {
         row.push({ value: (data.memberName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
 
         row.push({ value: (data.memberGroupName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.nettoTotal || 0), numFmt: formatNumberInExcel(data.nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.paid || 0), numFmt: formatNumberInExcel(data.paid, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt120days || 0), numFmt: formatNumberInExcel(data.gt120days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt90days || 0), numFmt: formatNumberInExcel(data.gt90days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.nettoTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.paid || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt120days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt90days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
 
-        row.push({ value: (data.gt60days || 0), numFmt: formatNumberInExcel(data.gt60days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt30days || 0), numFmt: formatNumberInExcel(data.gt30days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gt15days || 0), numFmt: formatNumberInExcel(data.gt15days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.gte0days || 0), numFmt: formatNumberInExcel(data.gte0days, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.restNetto || 0), numFmt: formatNumberInExcel(data.restNetto, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt60days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt30days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gt15days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.gte0days || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.restNetto || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
       }
       start += 1
@@ -148,16 +145,16 @@ const PrintXLS = ({ listTrans, date, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: grandTotal, numFmt: formatNumberInExcel(grandTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: paidTotal, numFmt: formatNumberInExcel(paidTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: gt120daysTotal, numFmt: formatNumberInExcel(gt120daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: gt90daysTotal, numFmt: formatNumberInExcel(gt90daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: gt60daysTotal, numFmt: formatNumberInExcel(gt60daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: grandTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: paidTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt120daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt90daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt60daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-        { value: gt30daysTotal, numFmt: formatNumberInExcel(gt30daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: gt15daysTotal, numFmt: formatNumberInExcel(gt15daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: gte0daysTotal, numFmt: formatNumberInExcel(gte0daysTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: nettoTotal, numFmt: formatNumberInExcel(nettoTotal, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: gt30daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gt15daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: gte0daysTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: nettoTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     return tableBody

@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ data, user, storeInfo, name }) => {
   const styles = {
@@ -61,8 +64,8 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
         row.push({ text: count, alignment: 'center' })
         row.push({ text: (tableBody[key].serviceCode || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].serviceName || '').toString(), alignment: 'left' })
-        row.push({ text: parseFloat(tableBody[key].cost || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
-        row.push({ text: parseFloat(tableBody[key].serviceCost || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(tableBody[key].cost || 0)), alignment: 'right' })
+        row.push({ text: formatNumberIndonesia(parseFloat(tableBody[key].serviceCost || 0)), alignment: 'right' })
         row.push({ text: (tableBody[key].serviceTypeId || '').toString(), alignment: 'left' })
         body.push(row)
       }

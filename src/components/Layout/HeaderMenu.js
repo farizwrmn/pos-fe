@@ -12,14 +12,14 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
   )
   const childComp = (
     <Tooltip placement="leftBottom" title={prompt}>
-      <div className={separator ? styles.void : `${styles.button} ${styles[addClass || prompt]}`} onClick={onClick}>
+      <div data-count={total > 99 ? '99+' : total}
+        className={separator ?
+          styles.void :
+          (((prompt === 'calendar' || prompt === 'notification') && total > 0) ? `${styles.button} ${styles[addClass || prompt]} ${styles.badgeStyle}` : `${styles.button} ${styles[addClass || prompt]}`)}
+        onClick={onClick}
+      >
         <Link to={clickRoute}>
           <Icon type={icon || prompt} />
-          {prompt === 'calendar' && total > 0 &&
-            <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>
-          }
-          {prompt === 'notification' && total > 0 &&
-            <span className={styles.badgeStyle}>{total > 99 ? '99+' : total}</span>}
         </Link>
       </div>
     </Tooltip>

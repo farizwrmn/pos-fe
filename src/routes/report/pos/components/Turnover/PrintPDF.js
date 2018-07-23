@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
@@ -63,18 +66,18 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.categoryName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.DPP || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.costPrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: `${(100 - (((allDppTotal - data.DPP) / (allDppTotal > 0 ? allDppTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 11 },
-          { text: `${(100 - (((allQtyTotal - data.qty) / (allQtyTotal > 0 ? allQtyTotal : 1)) * 100) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.qty || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.DPP || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.costPrice || 0), alignment: 'right', fontSize: 11 },
+          { text: `${formatNumberIndonesia(100 - (((allDppTotal - data.DPP) / (allDppTotal > 0 ? allDppTotal : 1)) * 100) || 0)}%`, alignment: 'right', fontSize: 11 },
+          { text: `${formatNumberIndonesia(100 - (((allQtyTotal - data.qty) / (allQtyTotal > 0 ? allQtyTotal : 1)) * 100) || 0)}%`, alignment: 'right', fontSize: 11 },
           {},
-          { text: (data.qtyNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: `${(data.qtyNextEvo || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 11 },
-          { text: (data.DPPNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: `${(data.DPPNextEvo || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 11 },
-          { text: (data.costPriceNext || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: `${(data.costPriceNextEvo || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(data.qtyNext || 0), alignment: 'right', fontSize: 11 },
+          { text: `${formatNumberIndonesia(data.qtyNextEvo || 0)}%`, alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.DPPNext || 0), alignment: 'right', fontSize: 11 },
+          { text: `${formatNumberIndonesia(data.DPPNextEvo || 0)}%`, alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.costPriceNext || 0), alignment: 'right', fontSize: 11 },
+          { text: `${formatNumberIndonesia(data.costPriceNextEvo || 0)}%`, alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -94,18 +97,18 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     const tableFooter = [
       { text: 'TOTAL', colSpan: 2, alignment: 'center', fontSize: 12 },
       {},
-      { text: `${qtyTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${dppTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${costPriceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${weightTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
-      { text: `${soaTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(qtyTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(costPriceTotal), alignment: 'right', fontSize: 12 },
+      { text: `${formatNumberIndonesia(weightTotal)} %`, alignment: 'right', fontSize: 12 },
+      { text: `${formatNumberIndonesia(soaTotal)} %`, alignment: 'right', fontSize: 12 },
       {},
-      { text: `${qtyNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(qtyNextTotal !== 0 ? (((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
-      { text: `${dppNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(dppNextTotal !== 0 ? (((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 },
-      { text: `${costPriceNextTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} `, alignment: 'right', fontSize: 12 },
-      { text: `${(costPriceNextTotal !== 0 ? ((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100 : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(qtyNextTotal), alignment: 'right', fontSize: 12 },
+      { text: `${formatNumberIndonesia(qtyNextTotal !== 0 ? (((qtyTotal - qtyNextTotal) / (qtyNextTotal > 0 ? qtyNextTotal : 1)) * 100) : 0)} %`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(dppNextTotal), alignment: 'right', fontSize: 12 },
+      { text: `${formatNumberIndonesia(dppNextTotal !== 0 ? (((dppTotal - dppNextTotal) / (dppNextTotal > 0 ? dppNextTotal : 1)) * 100) : 0)} %`, alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(costPriceNextTotal), alignment: 'right', fontSize: 12 },
+      { text: `${formatNumberIndonesia(costPriceNextTotal !== 0 ? ((costPriceTotal - costPriceNextTotal) / (costPriceNextTotal > 0 ? costPriceNextTotal : 1)) * 100 : 0)} %`, alignment: 'right', fontSize: 12 }
     ]
     body.push(tableFooter)
     width.push([
@@ -236,18 +239,18 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       [
         { fontSize: 12, text: 'GRAND TOTAL', colSpan: 2, style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: `${(allQtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allDppTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allCostPriceTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: formatNumberIndonesia(allQtyTotal || 0), style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: formatNumberIndonesia(allDppTotal || 0), style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: formatNumberIndonesia(allCostPriceTotal || 0), style: 'tableHeader', alignment: 'right' },
         { fontSize: 12, text: '100 %', style: 'tableHeader', alignment: 'right' },
         { fontSize: 12, text: '100 %', style: 'tableHeader', alignment: 'right' },
         {},
-        { fontSize: 12, text: `${(allQtyNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allQtyNextTotal !== 0 ? (((allQtyTotal - allQtyNextTotal) / (allQtyNextTotal > 0 ? allQtyNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allDppNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allDppNextTotal !== 0 ? (((allDppTotal - allDppNextTotal) / (allDppNextTotal > 0 ? allDppNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allCostPriceNextTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'tableHeader', alignment: 'right' },
-        { fontSize: 12, text: `${(allCostPriceNextTotal !== 0 ? (((allCostPriceTotal - allCostPriceNextTotal) / (allCostPriceNextTotal > 0 ? allCostPriceNextTotal : 1)) * 100) : 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %`, style: 'tableHeader', alignment: 'right' }
+        { fontSize: 12, text: formatNumberIndonesia(allQtyNextTotal || 0), style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: `${formatNumberIndonesia(allQtyNextTotal !== 0 ? (((allQtyTotal - allQtyNextTotal) / (allQtyNextTotal > 0 ? allQtyNextTotal : 1)) * 100) : 0)} %`, style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: formatNumberIndonesia(allDppNextTotal || 0), style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: `${formatNumberIndonesia(allDppNextTotal !== 0 ? (((allDppTotal - allDppNextTotal) / (allDppNextTotal > 0 ? allDppNextTotal : 1)) * 100) : 0)} %`, style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: formatNumberIndonesia(allCostPriceNextTotal || 0), style: 'tableHeader', alignment: 'right' },
+        { fontSize: 12, text: `${formatNumberIndonesia(allCostPriceNextTotal !== 0 ? (((allCostPriceTotal - allCostPriceNextTotal) / (allCostPriceNextTotal > 0 ? allCostPriceNextTotal : 1)) * 100) : 0)} %`, style: 'tableHeader', alignment: 'right' }
       ]
     ]
     body.push(extra)
