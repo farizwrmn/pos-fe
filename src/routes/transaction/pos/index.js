@@ -748,7 +748,7 @@ const Pos = ({
         memberName: item.memberName,
         address01: item.address01,
         point: item.point ? item.point : 0,
-        id: item.id,
+        id: item.memberId,
         memberTypeId: item.memberTypeId,
         memberSellPrice: item.memberSellPrice,
         memberPendingPayment: item.memberPendingPayment,
@@ -1184,7 +1184,7 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalVoidSuspendVisible: true
+          modalVoidSuspendVisible: false
         }
       })
     },
@@ -1192,7 +1192,7 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalVoidSuspendVisible: true
+          modalVoidSuspendVisible: false
         }
       })
     },
