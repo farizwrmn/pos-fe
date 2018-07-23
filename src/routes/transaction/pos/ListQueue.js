@@ -52,6 +52,7 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.removeItem('service_detail')
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('woNumber')
+      localStorage.removeItem('bundle_promo')
       try {
         if (JSON.parse(trans.memberUnit).policeNo) {
           localStorage.setItem('memberUnit', trans.memberUnit)
@@ -74,6 +75,7 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
+      localStorage.setItem('bundle_promo', JSON.stringify(trans.bundle_promo))
       localStorage.setItem('queue', JSON.stringify(queue))
       document.getElementById('KM').value = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       dispatch({

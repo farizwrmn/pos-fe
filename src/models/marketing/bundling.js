@@ -74,15 +74,13 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
-          if (activeKey === '0') {
-            // dispatch({
-            //   type: 'query',
-            //   payload: {
-            //     type: 'all'
-            //   }
-            // })
-            dispatch({ type: 'querySequence' })
-          }
+          // dispatch({
+          //   type: 'query',
+          //   payload: {
+          //     type: 'all'
+          //   }
+          // })
+          dispatch({ type: 'querySequence' })
         }
       })
     }

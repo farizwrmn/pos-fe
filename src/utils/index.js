@@ -9,8 +9,10 @@ import request from './request'
 import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
+import calendar from './calendar'
 import ip from './ip'
 import numberFormat from './numberFormat'
+import compare from './compare'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -158,5 +160,7 @@ module.exports = {
   formatDate,
   isEmptyObject,
   numberFormat,
-  posTotal
+  posTotal,
+  calendar,
+  compare
 }

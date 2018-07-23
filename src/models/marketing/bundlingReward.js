@@ -1,12 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import moment from 'moment'
-import { queryActive } from '../../services/marketing/promo'
-import { query as queryReward } from '../../services/marketing/bundlingReward'
+import { query } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
-import { getDateTime } from '../../services/setting/time'
 
 export default modelExtend(pageModel, {
-  namespace: 'promo',
+  namespace: 'bundlingReward',
 
   state: {
     currentItem: {},
@@ -14,7 +11,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     searchText: null,
     typeModal: null,
-    list: [],
+    listReward: [],
     modalPromoVibible: false,
     pagination: {
       showSizeChanger: true,
@@ -36,19 +33,12 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const date = yield call(getDateTime, {
-        id: 'date'
-      })
-      if (!date.success) {
-        throw date
-      }
-      payload.day = moment(date.data, 'YYYY-MM-DD').isoWeekday()
-      const data = yield call(queryActive, payload)
+      const data = yield call(query, payload)
       if (data.success) {
         yield put({
-          type: 'querySuccessCounter',
+          type: 'querySuccessReward',
           payload: {
-            list: data.data,
+            listReward: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -59,32 +49,15 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-    },
-    * queryReward ({ payload = {} }, { call, put }) {
-      const data = yield call(queryReward, payload)
-      if (!data.success) {
-        throw data
-      }
-      yield put({
-        type: 'querySuccessCounter',
-        payload: {
-          list: data.data,
-          pagination: {
-            current: Number(payload.page) || 1,
-            pageSize: Number(payload.pageSize) || 10,
-            total: data.total
-          }
-        }
-      })
     }
   },
 
   reducers: {
-    querySuccessCounter (state, action) {
-      const { list, pagination } = action.payload
+    querySuccessReward (state, action) {
+      const { listReward, pagination } = action.payload
       return {
         ...state,
-        list,
+        listReward,
         pagination: {
           ...state.pagination,
           ...pagination

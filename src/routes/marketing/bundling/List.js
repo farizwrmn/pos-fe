@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
+import { calendar } from 'utils'
+
+const { dayByNumber } = calendar
 
 const List = ({ ...tableProps, editItem, voidItem }) => {
   const handleMenuClick = (record, e) => {
@@ -42,7 +45,17 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
     {
       title: 'Available Date',
       dataIndex: 'availableDate',
-      key: 'availableDate'
+      key: 'availableDate',
+      render: (text) => {
+        let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
+        if (text !== null && (date || []).length === 7) {
+          date = <Tag color="green">{'Everyday'}</Tag>
+        }
+        if (text !== null && (date || []).length < 7) {
+          date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
+        }
+        return date
+      }
     },
     {
       title: 'Available Hour',

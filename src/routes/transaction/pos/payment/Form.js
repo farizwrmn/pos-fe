@@ -62,17 +62,6 @@ const formPayment = ({
     setFieldsValue
   }
 }) => {
-  // const { show } = filterProps
-  // const { onShowHideSearch } = tabProps
-  // const handleReset = () => {
-  //   resetFields()
-  // }
-
-  // const change = (key) => {
-  //   changeTab(key)
-  //   handleReset()
-  // }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {

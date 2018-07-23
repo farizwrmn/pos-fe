@@ -203,7 +203,7 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
       </FormItem>
       <Row>
         <Col span={6}>
-          <Button type="primary" onClick={handleClick}> Change </Button>
+          <Button type="primary" onClick={handleClick} disabled={!!item.bundleId}> Change </Button>
         </Col>
         <Col span={6}>
           <Button type="danger" onClick={handleDelete}> Delete </Button>

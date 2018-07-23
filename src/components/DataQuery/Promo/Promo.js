@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { connect } from 'dva'
-import { Table, Modal, Form, Input, Button } from 'antd'
+import { Table, Tag, Modal, Form, Input, Button } from 'antd'
 import { Link } from 'dva/router'
-import { lstorage } from 'utils'
+import { lstorage, calendar } from 'utils'
+import PromoProductReward from '../PromoProductReward'
 
+const { dayByNumber } = calendar
 const FormItem = Form.Item
 const width = 1000
 const Promo = ({
@@ -12,12 +15,13 @@ const Promo = ({
   className,
   visible = false,
   loading,
+  onChooseItem,
   columns = [
     {
       title: 'type',
       dataIndex: 'type',
       key: 'type',
-      width: `${width * 0.15}px`,
+      width: `${width * 0.115}px`,
       render: (text) => {
         return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
       }
@@ -26,7 +30,7 @@ const Promo = ({
       title: 'Code',
       dataIndex: 'code',
       key: 'code',
-      width: `${width * 0.15}px`
+      width: `${width * 0.1}px`
     },
     {
       title: 'Name',
@@ -40,14 +44,37 @@ const Promo = ({
       key: 'Date',
       width: `${width * 0.15}px`,
       render: (text, record) => {
-        return `${record.startDate} ~ ${record.endDate}`
+        return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
       }
     },
     {
       title: 'Available Date',
       dataIndex: 'availableDate',
       key: 'availableDate',
-      width: `${width * 0.15}px`
+      width: `${width * 0.15}px`,
+      render: (text) => {
+        let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
+        if (text !== null && (date || []).length === 7) {
+          date = <Tag color="green">{'Everyday'}</Tag>
+        }
+        if (text !== null && (date || []).length < 7) {
+          date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
+        }
+        return date
+      }
+    },
+    {
+      title: 'Apply Multiple',
+      dataIndex: 'applyMultiple',
+      key: 'applyMultiple',
+      width: `${width * 0.15}px`,
+      render: (text) => {
+        return (
+          <Tag color={text === '1' ? 'blue' : 'yellow'}>
+            {text === '1' ? 'Multiple' : 'One Per Transaction'}
+          </Tag>
+        )
+      }
     },
     {
       title: 'Available Hour',
@@ -55,7 +82,18 @@ const Promo = ({
       key: 'availableHour',
       width: `${width * 0.1}px`,
       render: (text, record) => {
-        return `${record.startHour} ~ ${record.endHour}`
+        return `${moment(record.startHour, 'hh:mm:ss').format('hh:mm')} ~ ${moment(record.endHour, 'hh:mm:ss').format('hh:mm')}`
+      }
+    },
+    {
+      title: '',
+      width: `${width * 0.08}px`,
+      render: (text, record) => {
+        return (
+          <div>
+            <PromoProductReward currentId={record.id} onChooseItem={() => onChooseItem(record)} />
+          </div >
+        )
       }
     }
   ],
@@ -65,7 +103,6 @@ const Promo = ({
   ...tableProps
 }) => {
   const { searchText, list, pagination } = promo
-  // const { pagination } = tableProps
   const handleSearch = () => {
     dispatch({
       type: 'promo/query',
@@ -73,7 +110,7 @@ const Promo = ({
         page: 1,
         pageSize: 10,
         storeId: lstorage.getCurrentUserStore(),
-        q: searchText
+        name: searchText
       }
     })
   }
@@ -94,7 +131,7 @@ const Promo = ({
         page: 1,
         pageSize: pagination.pageSize,
         storeId: lstorage.getCurrentUserStore(),
-        q: null
+        name: null
       }
     })
     dispatch({
@@ -108,7 +145,7 @@ const Promo = ({
     dispatch({
       type: 'promo/query',
       payload: {
-        q: searchText,
+        name: searchText,
         storeId: lstorage.getCurrentUserStore(),
         page: page.current,
         pageSize: page.pageSize
@@ -128,7 +165,7 @@ const Promo = ({
       >
         <Form layout="inline">
           <FormItem>
-            <Input placeholder="Search Promo"
+            <Input placeholder="Search Promo Name"
               value={searchText}
               onChange={e => handleChange(e)}
               onPressEnter={handleSearch}
