@@ -82,7 +82,7 @@ const Promo = ({
       key: 'availableHour',
       width: `${width * 0.1}px`,
       render: (text, record) => {
-        return `${moment(record.startHour, 'hh:mm:ss').format('hh:mm')} ~ ${moment(record.endHour, 'hh:mm:ss').format('hh:mm')}`
+        return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
       }
     },
     {
