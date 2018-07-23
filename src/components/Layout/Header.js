@@ -247,13 +247,13 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         {visibleItem.changeTotp && <ChangeTotp {...changeTotpProps} />}
         {visibleItem.displayBirthdate && <BirthdayList {...displayBirthdayProps} />}
 
-        <Menu mode="horizontal" onClick={handleClickMenu}>
+        <Menu mode="horizontal" onClick={handleClickMenu} className="navbar">
           <SubMenu
             style={{
               float: 'right'
             }}
             title={<span> <Icon type="user" />
-              {user.username} </span>}
+              {window.screen.width >= 768 && user.username} </span>}
           >
             <Menu.Item key="myProfile">
               My Profile

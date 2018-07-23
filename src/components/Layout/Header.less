@@ -14,11 +14,13 @@
     height: 47px;
     background-color: #fff;
     z-index: 999;
+    
     .rightWarpper,
     .leftWrapper {
         display: flex;
         padding-right: 16px;
-    }
+    } 
+    
     .leftWrapper {}
     .button {
         width: 47px;
@@ -125,6 +127,16 @@ button.refresh {
     margin-top: 8px;
     font-weight: 800;
     float: right;
+}
+
+@media (max-width: 767px) {
+    .header {
+        .rightWarpper {
+            width: 85%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    }
 }
 
 
