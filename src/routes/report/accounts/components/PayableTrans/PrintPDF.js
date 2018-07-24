@@ -14,7 +14,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
   let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
-  // let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
+  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
   let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
@@ -27,7 +27,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        // const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
+        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },
@@ -37,21 +37,21 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
 
           { text: formatDate(data.invoiceDate), alignment: 'left', fontSize: 11 },
           { text: formatDate(data.dueDate), alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.transNo || ''), alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
 
           { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
-          { text: (data.bankName || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: (data.checkNo || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: (data.bankName || ''), alignment: 'right', fontSize: 11 },
+          { text: (data.checkNo || ''), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.paidBank || 0), alignment: 'right', fontSize: 11 },
 
-          { text: formatNumberIndonesia(data.paidTotal || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia((data.paid + data.paidBank) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.returnTotal || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.adjustTotal || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.total || 0), alignment: 'right', fontSize: 11 },
-          { text: (data.detail || '').toString(), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(totalValue), alignment: 'right', fontSize: 11 },
+          { text: (data.detail || ''), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -252,19 +252,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       {},
       {},
       {},
-      { text: formatNumberIndonesia(beginTotal || 0), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(nettoTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: `${(beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
 
       {},
-      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       {},
       {},
-      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
+      { text: `${(paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
 
-      { text: formatNumberIndonesia(paidTotal || 0), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(returnTotal || 0), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(adjustTotal || 0), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(total || 0), alignment: 'right', fontSize: 12 },
+      { text: `${(paidTotal + paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
+      { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
       {}
     ]
   ]
