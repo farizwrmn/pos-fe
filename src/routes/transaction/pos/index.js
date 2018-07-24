@@ -748,7 +748,7 @@ const Pos = ({
         memberName: item.memberName,
         address01: item.address01,
         point: item.point ? item.point : 0,
-        id: item.memberId,
+        id: item.id,
         memberTypeId: item.memberTypeId,
         memberSellPrice: item.memberSellPrice,
         memberPendingPayment: item.memberPendingPayment,
@@ -1197,7 +1197,97 @@ const Pos = ({
       })
     },
     onVoid (id) {
-      console.log('this', id)
+      const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
+      const dataProduct = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const dataBundleFiltered = dataBundle.filter(x => x.bundleId !== id)
+      const dataProductFiltered = dataProduct.filter(x => x.bundleId !== id)
+      const dataServiceFiltered = dataService.filter(x => x.bundleId !== id)
+      let arrayProduct = []
+      let arrayService = []
+      let arrayBundle = []
+      for (let n = 0; n < (dataProductFiltered || []).length; n += 1) {
+        arrayProduct.push({
+          no: n + 1,
+          code: dataProductFiltered[n].code,
+          productId: dataProductFiltered[n].productId,
+          bundleId: dataProductFiltered[n].bundleId,
+          bundleName: dataProductFiltered[n].bundleName,
+          disc1: dataProductFiltered[n].disc1,
+          disc2: dataProductFiltered[n].disc2,
+          disc3: dataProductFiltered[n].disc3,
+          discount: dataProductFiltered[n].discount,
+          name: dataProductFiltered[n].name,
+          price: dataProductFiltered[n].price,
+          qty: dataProductFiltered[n].qty,
+          typeCode: dataProductFiltered[n].typeCode,
+          total: dataProductFiltered[n].total
+        })
+      }
+      for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
+        arrayService.push({
+          no: n + 1,
+          code: dataServiceFiltered[n].code,
+          productId: dataServiceFiltered[n].productId,
+          bundleId: dataServiceFiltered[n].bundleId,
+          bundleName: dataServiceFiltered[n].bundleName,
+          disc1: dataServiceFiltered[n].disc1,
+          disc2: dataServiceFiltered[n].disc2,
+          disc3: dataServiceFiltered[n].disc3,
+          discount: dataServiceFiltered[n].discount,
+          name: dataServiceFiltered[n].name,
+          price: dataServiceFiltered[n].price,
+          qty: dataServiceFiltered[n].qty,
+          typeCode: dataServiceFiltered[n].typeCode,
+          total: dataServiceFiltered[n].total
+        })
+      }
+      for (let o = 0; o < (dataBundleFiltered || []).length; o += 1) {
+        arrayBundle.push({
+          no: o + 1,
+          applyMultiple: dataBundleFiltered[o].applyMultiple,
+          bundleId: dataBundleFiltered[o].bundleId,
+          type: dataBundleFiltered[o].type,
+          code: dataBundleFiltered[o].code,
+          name: dataBundleFiltered[o].name,
+          startDate: dataBundleFiltered[o].startDate,
+          endDate: dataBundleFiltered[o].endDate,
+          startHour: dataBundleFiltered[o].startHour,
+          endHour: dataBundleFiltered[o].endHour,
+          availableDate: dataBundleFiltered[o].availableDate,
+          qty: dataBundleFiltered[o].qty
+        })
+      }
+      localStorage.setItem('cashier_trans', JSON.stringify(arrayProduct))
+      localStorage.setItem('service_detail', JSON.stringify(arrayService))
+      localStorage.setItem('bundle_promo', JSON.stringify(arrayBundle))
+
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: false
+        }
+      })
+      // for (let m = 0; m < (dataProductFiltered || []).length; m += 1) {
+      //   dispatch({
+      //     type: 'pos/paymentDelete',
+      //     payload: {
+      //       Record: dataProductFiltered[m].no,
+      //       Payment: 'Delete',
+      //       VALUE: 0
+      //     }
+      //   })
+      // }
+      // for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
+      //   dispatch({
+      //     type: 'pos/serviceDelete',
+      //     payload: {
+      //       Record: dataServiceFiltered[n].no,
+      //       Payment: 'Delete',
+      //       VALUE: 0
+      //     }
+      //   })
+      // }
     }
   }
 
@@ -1649,7 +1739,7 @@ const Pos = ({
   }
 
   return (
-    <div className="content-inner">
+    <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         <Col lg={18} md={20}>
@@ -2037,7 +2127,7 @@ const Pos = ({
             </Panel>
           </Collapse>
         </Col>
-      </Row>
+      </Row >
       <BottomButton {...buttomButtonProps} />
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
