@@ -2,6 +2,9 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   listData = listData.filter(x => x.items.length > 0)
@@ -104,14 +107,14 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
           row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
           row.push({ text: (data.qty || 0), alignment: 'center', fontSize: 11 })
-          row.push({ text: (parseFloat(data.sellingPrice) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.total) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.disc1) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.disc2) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.disc3) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.discount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.totalDiscount) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-          row.push({ text: (parseFloat(data.netto) || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.sellingPrice) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.total) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.disc1) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.disc2) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.disc3) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.discount) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.totalDiscount) || 0), alignment: 'right', fontSize: 11 })
+          row.push({ text: formatNumberIndonesia(parseFloat(data.netto) || 0), alignment: 'right', fontSize: 11 })
           body.push(row)
         }
         counter += 1
@@ -122,15 +125,15 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     totalRow.push({ text: 'Total', colSpan: 3, style: 'rowTextFooter' })
     totalRow.push({})
     totalRow.push({})
-    totalRow.push({ text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalQty), style: 'rowNumberFooter' })
     totalRow.push({})
-    totalRow.push({ text: `${totalSubTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount1.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount2.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount3.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount4.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
-    totalRow.push({ text: `${totalAfterDiscount.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalSubTotal), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount1), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount2), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount3), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount4), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalDiscount), style: 'rowNumberFooter' })
+    totalRow.push({ text: formatNumberIndonesia(totalAfterDiscount), style: 'rowNumberFooter' })
     body.push(totalRow)
     width.push(['2%', '12%', '24%', '4%', '8%', '8%', '6%', '6%', '6%', '8%', '8%', '8%'])
     return body

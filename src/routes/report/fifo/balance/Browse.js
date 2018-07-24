@@ -5,7 +5,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
 import styles from '../../../../themes/index.less'
+
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ dataSource, activeKey, ...browseProps }) => {
   let columns = []
@@ -45,7 +48,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'pPrice',
           width: '100px',
           className: styles.alignRight,
-          render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          render: text => formatNumberIndonesia(parseFloat(text || 0))
         },
         {
           title: 'Amount',
@@ -53,7 +56,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'pAmount',
           width: '150px',
           className: styles.alignRight,
-          render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          render: text => formatNumberIndonesia(parseFloat(text || 0))
         },
         {
           title: 'Out',
@@ -69,7 +72,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'sPrice',
           width: '100px',
           className: styles.alignRight,
-          render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          render: text => formatNumberIndonesia(parseFloat(text || 0))
         },
         {
           title: 'Amount',
@@ -77,7 +80,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'sAmount',
           width: '150px',
           className: styles.alignRight,
-          render: text => parseFloat(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          render: text => formatNumberIndonesia(parseFloat(text || 0))
         }
       )
       break

@@ -4,10 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let transitFromQty = listRekap.reduce((cnt, o) => cnt + parseFloat(o.transitFromQty || 0), 0)
@@ -84,22 +81,22 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transitFromQty || 0), numFmt: formatNumberInExcel(data.transitFromQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transitFromPrice || 0), numFmt: formatNumberInExcel(data.transitFromPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transferFromQty || 0), numFmt: formatNumberInExcel(data.transferFromQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transferFromPrice || 0), numFmt: formatNumberInExcel(data.transferFromPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjInQty || 0), numFmt: formatNumberInExcel(data.adjInQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjInPrice || 0), numFmt: formatNumberInExcel(data.adjInPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjOutQty || 0), numFmt: formatNumberInExcel(data.adjOutQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.adjOutPrice || 0), numFmt: formatNumberInExcel(data.adjOutPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.inTransitQty || 0), numFmt: formatNumberInExcel(data.inTransitQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.inTransitPrice || 0), numFmt: formatNumberInExcel(data.inTransitPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.inTransferQty || 0), numFmt: formatNumberInExcel(data.inTransferQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.inTransferPrice || 0), numFmt: formatNumberInExcel(data.inTransferPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transitQty || 0), numFmt: formatNumberInExcel(data.transitQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transitPrice || 0), numFmt: formatNumberInExcel(data.transitPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transferQty || 0), numFmt: formatNumberInExcel(data.transferQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transferPrice || 0), numFmt: formatNumberInExcel(data.transferPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+          { value: (data.transitFromQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transitFromPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transferFromQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transferFromPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjInQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjInPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.adjOutPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.inTransitQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.inTransitPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.inTransferQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.inTransferPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transitQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transitPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transferQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transferPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
         tableBody.push(row)
       }
@@ -111,22 +108,22 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transitFromQty || 0), numFmt: formatNumberInExcel(transitFromQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transitFromPrice || 0), numFmt: formatNumberInExcel(transitFromPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transferFromQty || 0), numFmt: formatNumberInExcel(transferFromQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transferFromPrice || 0), numFmt: formatNumberInExcel(transferFromPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjInQty || 0), numFmt: formatNumberInExcel(adjInQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjInPrice || 0), numFmt: formatNumberInExcel(adjInPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjOutQty || 0), numFmt: formatNumberInExcel(adjOutQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjOutPrice || 0), numFmt: formatNumberInExcel(adjOutPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (inTransitQty || 0), numFmt: formatNumberInExcel(inTransitQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (inTransitPrice || 0), numFmt: formatNumberInExcel(inTransitPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (inTransferQty || 0), numFmt: formatNumberInExcel(inTransferQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (inTransferPrice || 0), numFmt: formatNumberInExcel(inTransferPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transitQty || 0), numFmt: formatNumberInExcel(transitQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transitPrice || 0), numFmt: formatNumberInExcel(transitPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transferQty || 0), numFmt: formatNumberInExcel(transferQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (transferPrice || 0), numFmt: formatNumberInExcel(transferPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: (transitFromQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transitFromPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transferFromQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transferFromPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (adjInQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (adjInPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (adjOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (adjOutPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (inTransitQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (inTransitPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (inTransferQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (inTransferPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transitQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transitPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transferQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (transferPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     tableFooter.push(
@@ -149,8 +146,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: 'Total Keluar (d)', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjOutQty || 0), numFmt: formatNumberInExcel(adjOutQty, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (adjOutPrice || 0), numFmt: formatNumberInExcel(adjOutPrice, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: (adjOutQty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (adjOutPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     tableFooter.push(
@@ -173,8 +170,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: 'Total Masuk (c) + (e) + (g) - (a)', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (((adjInQty || 0) + (transitQty || 0) + (inTransitQty || 0)) - (transitFromQty || 0)), numFmt: formatNumberInExcel((((adjInQty || 0) + (transitQty || 0) + (inTransitQty || 0)) - (transitFromQty || 0)), 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: (((adjInPrice || 0) + (transitPrice || 0) + (inTransitPrice || 0)) - (transitFromPrice || 0)), numFmt: formatNumberInExcel((((adjInPrice || 0) + (transitPrice || 0) + (inTransitPrice || 0)) - (transitFromPrice || 0)), 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: (((adjInQty || 0) + (transitQty || 0) + (inTransitQty || 0)) - (transitFromQty || 0)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: (((adjInPrice || 0) + (transitPrice || 0) + (inTransitPrice || 0)) - (transitFromPrice || 0)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     tableHeader.push(

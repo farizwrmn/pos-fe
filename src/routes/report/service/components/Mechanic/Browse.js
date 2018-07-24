@@ -5,7 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
+import { numberFormat } from 'utils'
 
+const { formatNumberIndonesia } = numberFormat
 
 const Browse = ({ dataSource, ...browseProps }) => {
   const columns = [
@@ -45,7 +47,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       dataIndex: 'amount',
       key: 'amount',
       width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{text ? text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{text ? formatNumberIndonesia(text) : null}</p>
     }
   ]
   return (

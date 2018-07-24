@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
   let qtyTotal = listInventoryTransfer.reduce((cnt, o) => cnt + (o.qty || 0), 0)
@@ -82,9 +85,9 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
           { text: counter, alignment: 'center', fontSize: 11 },
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.qty || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.purchasePrice || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.qty || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.purchasePrice || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
           { text: (data.description || '').toString(), alignment: 'left', fontSize: 11 }
         ]
         body.push(row)
@@ -96,9 +99,9 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
       {},
       {},
-      { text: `${totalQty.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' },
+      { text: formatNumberIndonesia(totalQty), style: 'rowNumberFooter' },
       {},
-      { text: `${total.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, style: 'rowNumberFooter' },
+      { text: formatNumberIndonesia(total), style: 'rowNumberFooter' },
       {}
     ]
     body.push(totalRow)
@@ -129,9 +132,9 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
       { text: 'Grand Total', colSpan: 3, style: 'tableHeader', alignment: 'center' },
       {},
       {},
-      { text: (qtyTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+      { text: formatNumberIndonesia(qtyTotal || 0), alignment: 'right', fontSize: 11 },
       {},
-      { text: (nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
+      { text: formatNumberIndonesia(nettoTotal || 0), alignment: 'right', fontSize: 11 },
       {}
     ]
   ]

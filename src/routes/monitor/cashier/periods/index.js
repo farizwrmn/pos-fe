@@ -52,7 +52,7 @@ const History = ({
     validateFields
   }
 }) => {
-  const { list, listCashier, listCashRegister, modalVisible, searchText, pagination, cashierInfo } = cashier
+  const { activeKey, listCashRegisterDetails, list, listCashier, listCashRegister, modalVisible, searchText, pagination, cashierInfo } = cashier
   const { listCashierStore } = store
 
   let stores = []
@@ -164,7 +164,24 @@ const History = ({
   }
 
   const cashRegisterProps = {
-    listCashRegister
+    listCashRegister,
+    activeKey,
+    listCashRegisterDetails,
+    onRowDoubleClick (record) {
+      dispatch({
+        type: 'cashier/getCashRegisterDetails',
+        payload: record.id
+      })
+    },
+    changeTab (key) {
+      dispatch({
+        type: 'cashier/updateState',
+        payload: {
+          activeKey: key,
+          listCashRegisterDetails: []
+        }
+      })
+    }
   }
 
   let buttonName = 'Find Cashier'

@@ -11,7 +11,6 @@ const History = ({ history, dispatch }) => {
   const { path } = history
 
   const changeTab = (path) => {
-    console.log(path)
     dispatch({
       type: 'history/updateState',
       payload: {
@@ -21,10 +20,12 @@ const History = ({ history, dispatch }) => {
     dispatch(routerRedux.push(path))
   }
   return (
-    <Tabs activeKey={path} onChange={path => changeTab(path)}>
-      <TabPane tab="POS" key="/transaction/pos/history"><Pos /></TabPane>
-      <TabPane tab="Purchase" key="/transaction/purchase/history"><PurchaseHistory /></TabPane>
-    </Tabs>
+    <div className="content-inner" style={{ clear: 'both' }}>
+      <Tabs activeKey={path} onChange={path => changeTab(path)}>
+        <TabPane tab="POS" key="/transaction/pos/history"><Pos /></TabPane>
+        <TabPane tab="Purchase" key="/transaction/purchase/history"><PurchaseHistory /></TabPane>
+      </Tabs>
+    </div>
   )
 }
 

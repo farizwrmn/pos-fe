@@ -751,6 +751,24 @@ const Routers = function ({ history, app }) {
             }, 'marketing-bundling')
           }
         }, {
+          path: 'monitor/cashier/request',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/cashier'))
+              cb(null, require('./routes/monitor/cashier/request'))
+            }, 'cashier-periods-request')
+          }
+        },
+        // {
+        //   path: 'monitor/cashier/approve',
+        //   getComponent (nextState, cb) {
+        //     require.ensure([], (require) => {
+        //       registerModel(app, require('./models/setting/cashier'))
+        //       cb(null, require('./routes/monitor/cashier/approve'))
+        //     }, 'cashier-periods-approve')
+        //   }
+        // },
+        {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

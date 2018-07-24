@@ -4,6 +4,9 @@ import { Button, Icon, Modal } from 'antd'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { saveAs } from 'file-saver'
 import moment from 'moment'
+import { numberFormat } from 'utils'
+
+const { formatNumberInExcel } = numberFormat
 
 const RepeatReportMergeCell = ({
   className,
@@ -82,7 +85,7 @@ const RepeatReportMergeCell = ({
             value: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).value = tableBody[i][n][tableBodyValue].value,
             alignment: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).alignment = tableBody[i][n][tableBodyValue].alignment,
             font: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).font = tableBody[i][n][tableBodyValue].font,
-            numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).numFmt = tableBody[i][n][tableBodyValue].numFmt,
+            numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).numFmt = formatNumberInExcel(tableBody[i][n][tableBodyValue].value, 2),
             border: sheet.getCell(`${String.fromCharCode(char)}${tableBodyPosition}`).border = tableBody[i][n][tableBodyValue].border
           })
         }
@@ -96,7 +99,7 @@ const RepeatReportMergeCell = ({
           value: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).value = tableFooter[i][tableFooterValue].value,
           alignment: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).alignment = tableFooter[i][tableFooterValue].alignment,
           font: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).font = tableFooter[i][tableFooterValue].font,
-          numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).numFmt = tableFooter[i][tableFooterValue].numFmt,
+          numFmt: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).numFmt = formatNumberInExcel(tableFooter[i][tableFooterValue], 2),
           border: sheet.getCell(`${String.fromCharCode(char)}${tableFooterPosition}`).border = tableFooter[i][tableFooterValue].border
         })
       }

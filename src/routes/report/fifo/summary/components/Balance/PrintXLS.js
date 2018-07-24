@@ -4,10 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
 import { BasicExcelReport } from 'components'
-
-const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
@@ -65,9 +62,9 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)), numFmt: formatNumberInExcel((data.amount / data.count), 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.count || 0), numFmt: formatNumberInExcel(data.count, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.amount || 0), numFmt: formatNumberInExcel(data.amount, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.amount || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
         start += 1
       }
@@ -79,8 +76,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'TOTAL', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: count, numFmt: formatNumberInExcel(count, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: amount, numFmt: formatNumberInExcel(amount, 2), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+        { value: count, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: amount, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
     tableHeader.push(

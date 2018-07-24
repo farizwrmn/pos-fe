@@ -4,7 +4,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { RepeatExcelReport } from 'components'
-import { formatDate } from 'utils'
+import { formatDate, numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintXLS = ({ listDetail, from, to, storeInfo }) => {
   let outJSON = listDetail
@@ -131,8 +133,8 @@ const PrintXLS = ({ listDetail, from, to, storeInfo }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${(amountIn).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: `${(amountOut).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: formatNumberIndonesia(amountIn), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: formatNumberIndonesia(amountOut), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
     tableFooters.push(tableFooter)
   }

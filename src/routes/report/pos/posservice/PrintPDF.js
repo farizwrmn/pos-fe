@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -17,13 +20,13 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'left', fontSize: 11 })
+        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.memberName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.product || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.service || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
-        row.push({ text: (parseFloat(data.product) + parseFloat(data.service)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.product) + parseFloat(data.service)), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -151,9 +154,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       {},
       {},
       {},
-      { text: `${productTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${serviceTotal.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(parseFloat(productTotal) + parseFloat(serviceTotal)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(productTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(serviceTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(parseFloat(productTotal) + parseFloat(serviceTotal)), alignment: 'right', fontSize: 12 }
     ]
   ]
 

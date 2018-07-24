@@ -72,8 +72,8 @@ const PrintPDF = ({ user, listDetail, storeInfo, from, to }) => {
       {},
       {},
       {},
-      { text: `${(amountIn).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(amountOut).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(amountIn), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(amountOut), alignment: 'right', fontSize: 12 }
     ]
     body.push(totalRow)
     width.push(['5%', '11%', '23%', '23%', '19%', '19%'])
