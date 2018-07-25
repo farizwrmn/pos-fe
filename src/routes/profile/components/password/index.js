@@ -10,7 +10,8 @@ const Password = ({
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue
+    getFieldsValue,
+    resetFields
   }
 }) => {
   const updatePassword = () => {
@@ -24,9 +25,13 @@ const Password = ({
       if (data.newPassword === data.oldPassword) {
         message.warning('The password is same as before!')
         return false
+      } else if (data.newPassword !== data.confirmNewPassword) {
+        message.warning('New password does not match the confirm password!')
+        return false
       }
       data = { confirm: data.newPassword, password: data.newPassword, oldpassword: data.oldPassword }
       onUpdatePw(data)
+      resetFields()
     })
   }
 
@@ -59,9 +64,27 @@ const Password = ({
             }]
           })(
             <Input type={visiblePw ? 'text' : 'password'}
-              placeholder="Password"
+              placeholder="New Password"
               prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
               suffix={<Icon type={visiblePw ? 'eye-o' : 'eye'} onClick={onTogglePw} style={{ marginRight: '20px' }} />}
+            />
+          )}
+        </FormItem>
+        <FormItem
+          label="Confirm New Password"
+          hasFeedback
+        >
+
+          {getFieldDecorator('confirmNewPassword', {
+            rules: [{
+              required: true,
+              min: 8,
+              message: 'Please input your Password!'
+            }]
+          })(
+            <Input type={visiblePw ? 'text' : 'password'}
+              placeholder="Confirm New Password"
+              prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
             />
           )}
         </FormItem>
