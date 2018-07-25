@@ -89,7 +89,7 @@ const Period = ({ location, dispatch, period, loading, app }) => {
         payload: {
           modalType: 'add',
           periodDate: {
-            startDate: moment().format('YYYY/MM/DD hh:mm:ss')
+            startDate: moment().format('YYYY/MM/DD HH:mm:ss')
           }
         }
       })

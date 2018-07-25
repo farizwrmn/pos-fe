@@ -91,7 +91,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         {
           columns: [
             {
-              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
               alignment: 'left'

@@ -27,7 +27,7 @@ const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOp
   // login time
   const loginTime = lstorage.getLoginTime()
   const loginTimeDiff = lstorage.getLoginTimeDiff()
-  // const todayDateTime = new Date(moment.utc(loginTime).format('DD-MMM-YYYY hh:mm:ss'))
+  // const todayDateTime = new Date(moment.utc(loginTime).format('DD-MMM-YYYY HH:mm:ss'))
   // user store
   // const listUserStores = lstorage.getListUserStores()
   // const defaultStore = lstorage.getCurrentUserStore()

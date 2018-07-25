@@ -1,12 +1,25 @@
 import { request, config, crypt } from 'utils'
 
-const { apiStores, apiUserStore } = config.rest
+const { apiStores, apiListStores, apiUserStore } = config.rest
 
 export async function getAllStores () {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: apiStores,
     method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function getListStores (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.type = 'all'
+  params.field = 'id,storeCode,storeName,settingValue'
+  params.storeParentId = null
+  return request({
+    url: apiListStores,
+    method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }

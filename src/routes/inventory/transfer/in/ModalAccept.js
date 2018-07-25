@@ -93,7 +93,7 @@ const modal = ({
       }
       const dataHeader = {
         storeIdSender: item.storeId,
-        // receiveDate: moment().format('YYYY-MM-DD hh:mm:ss'),
+        // receiveDate: moment().format('YYYY-MM-DD HH:mm:ss'),
         reference: item.id,
         transType: 'MUIN',
         employeeId: data.employeeId.key,
@@ -140,7 +140,7 @@ const modal = ({
               </FormItem>
               <FormItem label="Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
-                  initialValue: moment.utc(moment().format('YYYY-MM-DD hh:mm:ss'), 'YYYY-MM-DD hh:mm:ss'),
+                  initialValue: moment.utc(moment().format('YYYY-MM-DD HH:mm:ss'), 'YYYY-MM-DD HH:mm:ss'),
                   rules: [
                     {
                       required: true

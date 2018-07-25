@@ -125,6 +125,7 @@ export default {
           const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
+          const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
           const trans = transNo.data
           const storeId = lstorage.getCurrentUserStore()
           const companySetting = JSON.parse((payload.setting.Company || '{}')).taxType
@@ -140,6 +141,7 @@ export default {
             arrayProd.push({
               storeId,
               transNo: trans,
+              bundleId: dataPos[key].bundleId,
               productId: dataPos[key].productId,
               productCode: dataPos[key].code,
               productName: dataPos[key].name,
@@ -161,6 +163,7 @@ export default {
             const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
               dataPos: arrayProd,
+              dataBundle,
               transNo: trans,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
@@ -399,29 +402,6 @@ export default {
   },
 
   reducers: {
-    successPost (state, action) {
-      const { posMessage } = action.payload
-      localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('service_detail')
-      localStorage.removeItem('member')
-      localStorage.removeItem('memberUnit')
-      localStorage.removeItem('lastMeter')
-      return {
-        ...state,
-        posMessage,
-        totalPayment: 0,
-        totalChange: 0,
-        lastTransNo: '',
-        inputPayment: '',
-        creditCardTotal: 0,
-        creditCharge: 0,
-        creditChargeAmount: 0,
-        creditCardNo: 0,
-        creditCardType: '',
-        modalCreditVisible: false
-      }
-    },
-
     listSuccess (state, action) {
       const { listCreditCharge } = action.payload
       return {
@@ -737,7 +717,7 @@ export default {
                   {
                     columns: [
                       {
-                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                        text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
                         margin: additionalMargin1,
                         fontSize: additionalFontSize,
                         alignment: 'left'
@@ -776,7 +756,7 @@ export default {
                 {
                   columns: [
                     {
-                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                      text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
                       margin: additionalMargin2,
                       fontSize: additionalFontSize,
                       alignment: 'left'
@@ -822,6 +802,7 @@ export default {
           localStorage.removeItem('mechanic')
           localStorage.removeItem('lastMeter')
           localStorage.removeItem('woNumber')
+          localStorage.removeItem('bundle_promo')
         } catch (e) {
           Modal.error({
             title: 'Error, Something Went Wrong!',

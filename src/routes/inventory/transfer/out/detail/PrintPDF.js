@@ -118,7 +118,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
             fontSize: 9,
             columns: [
               {
-                text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+                text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
                 margin: [0, 10, 0, 10],
                 fontSize: 9,
                 alignment: 'left'
@@ -157,7 +157,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         {
           columns: [
             {
-              text: `Tgl Cetak: ${moment().format('DD-MM-YYYY hh:mm:ss')}`,
+              text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
               margin: [0, 20, 0, 40],
               fontSize: 9,
               alignment: 'left'

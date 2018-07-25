@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain, isEmptyObject, lstorage, color } from 'utils'
-import { Reminder } from 'components'
+import { configMain, isEmptyObject, lstorage, color, calendar } from 'utils'
+import { Reminder, DataQuery } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalShift from './ModalShift'
@@ -12,12 +12,18 @@ import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
 import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
+import LovButton from './components/LovButton'
+import BottomButton from './components/BottomButton'
+import ModalVoidSuspend from './components/ModalVoidSuspend'
 
+const { dayByNumber } = calendar
+const { Promo } = DataQuery
 const { prefix } = configMain
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
 const ButtonGroup = Button.Group
+const width = 1000
 const formItemLayout = {
   labelCol: {
     span: 6
@@ -33,9 +39,6 @@ const formItemLayout = {
 const Pos = ({
   location,
   customer,
-  // city,
-  // customergroup,
-  // customertype,
   loading,
   dispatch,
   pos,
@@ -43,17 +46,8 @@ const Pos = ({
   counter,
   unit,
   app,
+  promo,
   payment }) => {
-  // const {
-  //   visiblePopoverCity,
-  //   visiblePopoverGroup,
-  //   visiblePopoverType,
-  //   currentItem,
-  //   modalType
-  // } = customer
-  // const { listCity } = city
-  // const { listGroup } = customergroup
-  // const { listType } = customertype
   const { setting } = app
   const { listShift } = shift
   const { listCounter } = counter
@@ -86,6 +80,7 @@ const Pos = ({
     curCashierNo,
     // curShift,
     modalQueueVisible,
+    modalVoidSuspendVisible,
     listUnitUsage,
     showAlert,
     showListReminder,
@@ -95,10 +90,16 @@ const Pos = ({
     cashierInformation
   } = pos
 
+  const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const { usingWo, woNumber } = payment
+
+  const objectSize = (text) => {
+    let queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
+    return (queue || []).length
+  }
 
   let currentCashier = {
     cashierId: null,
@@ -228,66 +229,217 @@ const Pos = ({
     }
   }
 
-  const handleQueue = () => {
-    if (localStorage.getItem('cashier_trans') === null) {
+  const lovButtonProps = {
+    handleMemberBrowse () {
+      // get member data
       dispatch({
-        type: 'pos/changeQueue',
+        type: 'pos/getMembers'
+      })
+
+      dispatch({
+        type: 'pos/showMemberModal',
         payload: {
-          queue: '1'
+          modalType: 'browseMember'
+        }
+      })
+    },
+    handleAddMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: true
+        }
+      })
+    },
+    handleAddAsset () {
+      if (memberInformation.length !== 0) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalAddUnit: true
+          }
+        })
+        let member = JSON.parse(localStorage.getItem('member'))[0]
+        dispatch({
+          type: 'customer/updateState',
+          payload: {
+            addUnit: {
+              modal: false,
+              info: { id: member.memberCode, name: member.memberName }
+            }
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Member Information is not found',
+          content: 'Insert Member'
+        })
+      }
+    },
+    handleAssetBrowse () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalAssetVisible: true,
+          modalType: 'browseAsset',
+          pagination: {},
+          searchText: ''
+        }
+      })
+    },
+    handleMechanicBrowse () {
+      // get mechanic data
+      dispatch({
+        type: 'pos/getMechanics'
+      })
+
+      dispatch({
+        type: 'pos/showMechanicModal',
+        payload: {
+          modalType: 'browseMechanic'
+        }
+      })
+    },
+    handleProductBrowse () {
+      // get products data
+      let json = setting.Inventory
+      let jsondata = JSON.stringify(eval(`(${json})`))
+      const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+      dispatch({
+        type: 'pos/showProductModal',
+        payload: {
+          modalType: 'browseProductLock'
         }
       })
       dispatch({
-        type: 'pos/showQueueModal',
+        type: 'pos/getProducts',
         payload: {
-          modalType: 'queue'
+          outOfStock
         }
       })
-    } else {
-      Modal.warning({
-        title: 'Warning',
-        content: 'Please finish your current Transaction...!'
+    },
+    handleServiceBrowse () {
+      dispatch({
+        type: 'pos/getServices'
+      })
+
+      dispatch({
+        type: 'pos/showServiceModal',
+        payload: {
+          modalType: 'browseService'
+        }
+      })
+    },
+    handlePromoBrowse () {
+      dispatch({
+        type: 'promo/query',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          modalPromoVisible: true
+        }
+      })
+    },
+    handleQueue () {
+      if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('service_detail') === null) {
+        dispatch({
+          type: 'pos/changeQueue',
+          payload: {
+            queue: '1'
+          }
+        })
+        dispatch({
+          type: 'pos/showQueueModal',
+          payload: {
+            modalType: 'queue'
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Warning',
+          content: 'Please finish your current Transaction...!'
+        })
+      }
+    }
+  }
+
+  const buttomButtonProps = {
+    handlePayment () {
+      let defaultRole = ''
+      const localId = localStorage.getItem(`${prefix}udi`)
+      if (localId && localId.indexOf('#') > -1) {
+        defaultRole = localId.split(/[# ]+/).pop()
+      }
+      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+      if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Service Validation',
+          content: 'You are giving service without WorkOrder'
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'Member Unit is not Defined '
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are inserting Member Unit without Work Order'
+        })
+      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are Work Order without Member Unit'
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (memberData === null) {
+        Modal.warning({
+          title: 'Member Validation',
+          content: 'Member Data Cannot be Null'
+        })
+        return
+      }
+      dispatch({ type: 'pos/setCurTotal' })
+
+      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+      dispatch(routerRedux.push('/transaction/pos/payment'))
+    },
+    handleSuspend () {
+      document.getElementById('KM').value = 0
+      dispatch({ type: 'pos/insertQueueCache' })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showAlert: false
+        }
+      })
+    },
+    handleVoidPromo () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: true
+        }
       })
     }
-  }
-
-  const objectSize = () => {
-    let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    Object.size = function (obj) {
-      let size = 0
-      let key
-      for (key in obj) {
-        if (obj.hasOwnProperty(key)) size += 1
-      }
-      return size
-    }
-    let size = Object.size(queue)
-    return size
-  }
-
-  const handleMemberBrowse = () => {
-    // get member data
-    dispatch({
-      type: 'pos/getMembers'
-    })
-
-    dispatch({
-      type: 'pos/showMemberModal',
-      payload: {
-        modalType: 'browseMember'
-      }
-    })
-  }
-
-  const handleAssetBrowse = () => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        modalAssetVisible: true,
-        modalType: 'browseAsset',
-        pagination: {},
-        searchText: ''
-      }
-    })
   }
 
   const reminderProps = {
@@ -297,41 +449,6 @@ const Pos = ({
     listUnitUsage
   }
 
-  const handleAddAsset = () => {
-    if (memberInformation.length !== 0) {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalAddUnit: true
-        }
-      })
-      let member = JSON.parse(localStorage.getItem('member'))[0]
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          addUnit: {
-            modal: false,
-            info: { id: member.memberCode, name: member.memberName }
-          }
-        }
-      })
-    } else {
-      Modal.warning({
-        title: 'Member Information is not found',
-        content: 'Insert Member'
-      })
-    }
-  }
-
-  const handleAddMember = () => {
-    dispatch({
-      type: 'customer/updateState',
-      payload: {
-        modalAddMember: true
-      }
-    })
-  }
-
   const modalAddUnitProps = {
     modalAddUnit,
     confirmSendUnit (data) {
@@ -339,28 +456,6 @@ const Pos = ({
         type: 'customerunit/add',
         payload: data
       })
-      // let getData = {
-      //   id: null,
-      //   policeNo: data.policeNo,
-      //   merk: data.merk,
-      //   model: data.model,
-      //   type: data.type,
-      //   year: data.year,
-      //   chassisNo: data.chassisNo,
-      //   machineNo: data.machineNo
-      // }
-      // dispatch({
-      //   type: 'pos/chooseMemberUnit',
-      //   payload: {
-      //     policeNo: getData
-      //   }
-      // })
-      // dispatch({
-      //   type: 'payment/setPoliceNo',
-      //   payload: {
-      //     policeNo: getData
-      //   }
-      // })
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -391,21 +486,6 @@ const Pos = ({
     }
   }
 
-  const closeAlert = () => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        showAlert: false
-      }
-    })
-  }
-
-  const handleSuspend = () => {
-    document.getElementById('KM').value = 0
-    dispatch({ type: 'pos/insertQueueCache' })
-    closeAlert()
-  }
-
   const modalEditPayment = (record) => {
     dispatch({
       type: 'pos/showPaymentModal',
@@ -424,106 +504,6 @@ const Pos = ({
         modalType: 'modalService'
       }
     })
-  }
-
-  const handleMechanicBrowse = () => {
-    // get mechanic data
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-
-    dispatch({
-      type: 'pos/showMechanicModal',
-      payload: {
-        modalType: 'browseMechanic'
-      }
-    })
-  }
-
-  const handleProductBrowse = () => {
-    // get products data
-    let json = setting.Inventory
-    let jsondata = JSON.stringify(eval(`(${json})`))
-    const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-    dispatch({
-      type: 'pos/showProductModal',
-      payload: {
-        modalType: 'browseProductLock'
-      }
-    })
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        outOfStock
-      }
-    })
-  }
-  const handleServiceBrowse = () => {
-    dispatch({
-      type: 'pos/getServices'
-    })
-
-    dispatch({
-      type: 'pos/showServiceModal',
-      payload: {
-        modalType: 'browseService'
-      }
-    })
-  }
-
-  const handlePayment = () => {
-    let defaultRole = ''
-    const localId = localStorage.getItem(`${prefix}udi`)
-    if (localId && localId.indexOf('#') > -1) {
-      defaultRole = localId.split(/[# ]+/).pop()
-    }
-    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
-    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-    if (service.length > 0 && (woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Service Validation',
-        content: 'You are giving service without WorkOrder'
-      })
-      if (defaultRole !== 'OWN') {
-        return
-      }
-    }
-    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'Member Unit is not Defined '
-      })
-      if (defaultRole !== 'OWN') {
-        return
-      }
-    }
-    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'You are inserting Member Unit without Work Order'
-      })
-    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'You are Work Order without Member Unit'
-      })
-      if (defaultRole !== 'OWN') {
-        return
-      }
-    }
-    if (memberData === null) {
-      Modal.warning({
-        title: 'Member Validation',
-        content: 'Member Data Cannot be Null'
-      })
-      return
-    }
-    dispatch({ type: 'pos/setCurTotal' })
-
-    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-    dispatch(routerRedux.push('/transaction/pos/payment'))
   }
 
   const hdlUnitClick = () => {
@@ -713,10 +693,6 @@ const Pos = ({
     },
     onOk (data) {
       dispatch({ type: 'app/foldSider' })
-      // dispatch({
-      //   type: 'pos/setCashierTrans',
-      //   payload: data
-      // })
       dispatch({
         type: 'pos/cashRegister',
         payload: data
@@ -1181,6 +1157,140 @@ const Pos = ({
     }
   }
 
+  const modalPromoProps = {
+    visible: modalPromoVisible,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          modalPromoVisible: false,
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
+  const ModalVoidSuspendProps = {
+    visible: modalVoidSuspendVisible,
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: false
+        }
+      })
+    },
+    onCancelList () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: false
+        }
+      })
+    },
+    onVoid (id) {
+      const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
+      const dataProduct = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const dataBundleFiltered = dataBundle.filter(x => x.bundleId !== id)
+      const dataProductFiltered = dataProduct.filter(x => x.bundleId !== id)
+      const dataServiceFiltered = dataService.filter(x => x.bundleId !== id)
+      let arrayProduct = []
+      let arrayService = []
+      let arrayBundle = []
+      for (let n = 0; n < (dataProductFiltered || []).length; n += 1) {
+        arrayProduct.push({
+          no: n + 1,
+          code: dataProductFiltered[n].code,
+          productId: dataProductFiltered[n].productId,
+          bundleId: dataProductFiltered[n].bundleId,
+          bundleName: dataProductFiltered[n].bundleName,
+          disc1: dataProductFiltered[n].disc1,
+          disc2: dataProductFiltered[n].disc2,
+          disc3: dataProductFiltered[n].disc3,
+          discount: dataProductFiltered[n].discount,
+          name: dataProductFiltered[n].name,
+          price: dataProductFiltered[n].price,
+          qty: dataProductFiltered[n].qty,
+          typeCode: dataProductFiltered[n].typeCode,
+          total: dataProductFiltered[n].total
+        })
+      }
+      for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
+        arrayService.push({
+          no: n + 1,
+          code: dataServiceFiltered[n].code,
+          productId: dataServiceFiltered[n].productId,
+          bundleId: dataServiceFiltered[n].bundleId,
+          bundleName: dataServiceFiltered[n].bundleName,
+          disc1: dataServiceFiltered[n].disc1,
+          disc2: dataServiceFiltered[n].disc2,
+          disc3: dataServiceFiltered[n].disc3,
+          discount: dataServiceFiltered[n].discount,
+          name: dataServiceFiltered[n].name,
+          price: dataServiceFiltered[n].price,
+          qty: dataServiceFiltered[n].qty,
+          typeCode: dataServiceFiltered[n].typeCode,
+          total: dataServiceFiltered[n].total
+        })
+      }
+      for (let o = 0; o < (dataBundleFiltered || []).length; o += 1) {
+        arrayBundle.push({
+          no: o + 1,
+          applyMultiple: dataBundleFiltered[o].applyMultiple,
+          bundleId: dataBundleFiltered[o].bundleId,
+          type: dataBundleFiltered[o].type,
+          code: dataBundleFiltered[o].code,
+          name: dataBundleFiltered[o].name,
+          startDate: dataBundleFiltered[o].startDate,
+          endDate: dataBundleFiltered[o].endDate,
+          startHour: dataBundleFiltered[o].startHour,
+          endHour: dataBundleFiltered[o].endHour,
+          availableDate: dataBundleFiltered[o].availableDate,
+          qty: dataBundleFiltered[o].qty
+        })
+      }
+      localStorage.setItem('cashier_trans', JSON.stringify(arrayProduct))
+      localStorage.setItem('service_detail', JSON.stringify(arrayService))
+      localStorage.setItem('bundle_promo', JSON.stringify(arrayBundle))
+
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: false
+        }
+      })
+      // for (let m = 0; m < (dataProductFiltered || []).length; m += 1) {
+      //   dispatch({
+      //     type: 'pos/paymentDelete',
+      //     payload: {
+      //       Record: dataProductFiltered[m].no,
+      //       Payment: 'Delete',
+      //       VALUE: 0
+      //     }
+      //   })
+      // }
+      // for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
+      //   dispatch({
+      //     type: 'pos/serviceDelete',
+      //     payload: {
+      //       Record: dataServiceFiltered[n].no,
+      //       Payment: 'Delete',
+      //       VALUE: 0
+      //     }
+      //   })
+      // }
+    }
+  }
+
   const handleKeyPress = (e) => {
     const { value } = e.target
     if (e.key === '+') {
@@ -1472,6 +1582,9 @@ const Pos = ({
         title: 'Are you sure want to void/delete all items?',
         content: 'This Operation cannot be undone...!',
         onOk () {
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          localStorage.removeItem('mechanic')
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
           dispatch({
@@ -1499,6 +1612,10 @@ const Pos = ({
   const dataService = () => {
     let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
     return (service)
+  }
+  const dataBundle = () => {
+    let data = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
+    return data
   }
 
   const hdlPopoverClose = () => {
@@ -1621,9 +1738,8 @@ const Pos = ({
     }, 1000)
   }
 
-
   return (
-    <div className="content-inner">
+    <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         <Col lg={18} md={20}>
@@ -1665,63 +1781,20 @@ const Pos = ({
               </Row>
             </Form>
 
-            <ButtonGroup>
-              <Button type="primary" size="large" onClick={handleMemberBrowse} >Member</Button>
-              <Tooltip title="add Member">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddMember} className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
-
-            <ButtonGroup style={{ marginRight: 8 }}>
-              <Button type="primary" size="large" onClick={handleAssetBrowse}>Asset</Button>
-              <Tooltip title="add Asset">
-                <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
-
+            <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
-
-            <Button type="primary"
-              size="large"
-              icon="down-square-o"
-              className="button-width01"
-              onClick={handleMechanicBrowse}
-            >Mechanic
-            </Button>
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
-
-            <ButtonGroup>
-              <Button type="primary" size="large" icon="down-square-o" onClick={handleProductBrowse}>Product</Button>
-              <Tooltip title="add Product">
-                <Button type="primary" size="large" icon="plus-square-o" className="button-width02" />
-              </Tooltip>
-            </ButtonGroup>
             {modalProductVisible && <Browse {...modalProductProps} />}
-
-            <Button type="primary"
-              size="large"
-              icon="down-square-o"
-              className="button-width01"
-              onClick={handleServiceBrowse}
-            >Service
-            </Button>
             {modalServiceVisible && <Browse {...modalServiceProps} />}
-            <Badge count={objectSize()}>
-              <Button type="primary"
-                style={{ marginBottom: '4px' }}
-                size="large"
-                icon="down-square-o"
-                className="button-width01"
-                onClick={handleQueue}
-              >Queue
-              </Button>
-            </Badge>
             {modalQueueVisible && <Browse {...modalQueueProps} />}
-
-
+            {modalPromoVisible && <Promo {...modalPromoProps} />}
+            {modalQueueVisible && <Browse {...modalQueueProps} />}
+            {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
+            {modalPaymentVisible && <Browse {...modalPaymentProps} />}
+            {modalServiceListVisible && <Browse {...ModalServiceListProps} />}
             <Form layout="inline">
               <Row>
                 <Col lg={{ span: 10 }} md={24}>
@@ -1736,14 +1809,15 @@ const Pos = ({
                 </Col>
               </Row>
             </Form>
+
             <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-              <TabPane tab="Product" key="1">
+              <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
                 <Table
                   rowKey={(record, key) => key}
                   pagination={{ pageSize: 5 }}
                   bordered
                   size="small"
-                  scroll={{ x: '908px', y: '220px' }}
+                  scroll={{ x: '1400px', y: '220px' }}
                   locale={{
                     emptyText: 'Your Payment List'
                   }}
@@ -1754,13 +1828,20 @@ const Pos = ({
                       width: '41px'
                     },
                     {
+                      title: 'Promo',
+                      dataIndex: 'bundleName',
+                      width: '121px',
+                      render: text => text
+                    },
+                    {
                       title: 'Code',
                       dataIndex: 'code',
                       width: '100px'
                     },
                     {
                       title: 'Product Name',
-                      dataIndex: 'name'
+                      dataIndex: 'name',
+                      width: '200px'
                     },
                     {
                       title: 'Q',
@@ -1816,86 +1897,179 @@ const Pos = ({
                   dataSource={dataTrans()}
                   style={{ marginBottom: 16 }}
                 />
-                {modalPaymentVisible && <Browse {...modalPaymentProps} />}
               </TabPane>
-              <TabPane tab="Service" key="2"><Table
-                rowKey={(record, key) => key}
-                pagination={{ pageSize: 5 }}
-                bordered
-                size="small"
-                scroll={{ x: '908px', y: '220px' }}
-                locale={{
-                  emptyText: 'Your Payment List'
-                }}
-                columns={[
-                  {
-                    title: 'No',
-                    dataIndex: 'no',
-                    width: '41px'
-                  },
-                  {
-                    title: 'Code',
-                    dataIndex: 'code',
-                    width: '100px'
-                  },
-                  {
-                    title: 'Service Name',
-                    dataIndex: 'name'
-                  },
-                  {
-                    title: 'Q',
-                    dataIndex: 'qty',
-                    width: '40px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Price',
-                    dataIndex: 'price',
-                    width: '100px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Disc1(%)',
-                    dataIndex: 'disc1',
-                    width: '90px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Disc2(%)',
-                    dataIndex: 'disc2',
-                    width: '90px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Disc3(%)',
-                    dataIndex: 'disc3',
-                    width: '90px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Disc',
-                    dataIndex: 'discount',
-                    width: '100px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  },
-                  {
-                    title: 'Total',
-                    dataIndex: 'total',
-                    width: '100px',
-                    className: styles.alignRight,
-                    render: text => (text || 0).toLocaleString()
-                  }
-                ]}
-                onRowClick={_record => modalEditService(_record)}
-                dataSource={dataService()}
-                style={{ marginBottom: 16 }}
-              />{modalServiceListVisible && <Browse {...ModalServiceListProps} />}</TabPane>
+              <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
+                <Table
+                  rowKey={(record, key) => key}
+                  pagination={{ pageSize: 5 }}
+                  bordered
+                  size="small"
+                  scroll={{ x: '1400px', y: '220px' }}
+                  locale={{
+                    emptyText: 'Your Payment List'
+                  }}
+                  columns={[
+                    {
+                      title: 'No',
+                      dataIndex: 'no',
+                      width: '41px'
+                    },
+                    {
+                      title: 'Promo',
+                      dataIndex: 'bundleName',
+                      width: '121px',
+                      render: text => text
+                    },
+                    {
+                      title: 'Code',
+                      dataIndex: 'code',
+                      width: '100px'
+                    },
+                    {
+                      title: 'Service Name',
+                      dataIndex: 'name',
+                      width: '200px'
+                    },
+                    {
+                      title: 'Q',
+                      dataIndex: 'qty',
+                      width: '40px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Price',
+                      dataIndex: 'price',
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Disc1(%)',
+                      dataIndex: 'disc1',
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Disc2(%)',
+                      dataIndex: 'disc2',
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Disc3(%)',
+                      dataIndex: 'disc3',
+                      width: '90px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Disc',
+                      dataIndex: 'discount',
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Total',
+                      dataIndex: 'total',
+                      width: '100px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    }
+                  ]}
+                  onRowClick={_record => modalEditService(_record)}
+                  dataSource={dataService()}
+                  style={{ marginBottom: 16 }}
+                />
+              </TabPane>
+              <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="3">
+                <Table
+                  rowKey={(record, key) => key}
+                  pagination={{ pageSize: 5 }}
+                  bordered
+                  size="small"
+                  scroll={{ x: '1000px', y: '220px' }}
+                  locale={{
+                    emptyText: 'Your Bundle List'
+                  }}
+                  // onRowClick={_record => modalEditService(_record)}
+                  dataSource={dataBundle()}
+                  style={{ marginBottom: 16 }}
+                  columns={[
+                    {
+                      title: 'No',
+                      dataIndex: 'no',
+                      key: 'no',
+                      width: '41px'
+                    },
+                    {
+                      title: 'type',
+                      dataIndex: 'type',
+                      key: 'type',
+                      width: `${width * 0.115}px`,
+                      render: (text) => {
+                        return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
+                      }
+                    },
+                    {
+                      title: 'Code',
+                      dataIndex: 'code',
+                      key: 'code',
+                      width: `${width * 0.1}px`
+                    },
+                    {
+                      title: 'Name',
+                      dataIndex: 'name',
+                      key: 'name',
+                      width: `${width * 0.15}px`
+                    },
+                    {
+                      title: 'Q',
+                      dataIndex: 'qty',
+                      width: '40px',
+                      className: styles.alignRight,
+                      render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Period',
+                      dataIndex: 'Date',
+                      key: 'Date',
+                      width: `${width * 0.15}px`,
+                      render: (text, record) => {
+                        return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
+                      }
+                    },
+                    {
+                      title: 'Available Date',
+                      dataIndex: 'availableDate',
+                      key: 'availableDate',
+                      width: `${width * 0.15}px`,
+                      render: (text) => {
+                        let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
+                        if (text !== null && (date || []).length === 7) {
+                          date = <Tag color="green">{'Everyday'}</Tag>
+                        }
+                        if (text !== null && (date || []).length < 7) {
+                          date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
+                        }
+                        return date
+                      }
+                    },
+                    {
+                      title: 'Available Hour',
+                      dataIndex: 'availableHour',
+                      key: 'availableHour',
+                      width: `${width * 0.1}px`,
+                      render: (text, record) => {
+                        return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
+                      }
+                    }
+                  ]}
+                />
+              </TabPane>
             </Tabs>
           </Card>
         </Col>
@@ -1953,27 +2127,8 @@ const Pos = ({
             </Panel>
           </Collapse>
         </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <Form layout="vertical">
-            <FormItem>
-              <Row>
-                <Col span={12} style={{ padding: 12 }}>
-                  <Row>
-                    <Col xs={24} sm={24} md={16} lg={16} xl={18}>
-                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '200%', height: 40, color: '#000000', background: '#8fc9fb' }} className="margin-right" width="100%" onClick={handlePayment}>Payment</Button>
-                    </Col>
-                    <Col xs={24} sm={24} md={16} lg={10} xl={8}>
-                      <Button style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40, color: '#000000', background: '#ffff66' }} onClick={handleSuspend}> Suspend </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </FormItem>
-          </Form>
-        </Col>
-      </Row>
+      </Row >
+      <BottomButton {...buttomButtonProps} />
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
@@ -1987,12 +2142,12 @@ const Pos = ({
 
 Pos.propTypes = {
   pos: PropTypes.object.isRequired,
+  promo: PropTypes.object.isRequired,
   payment: PropTypes.object.isRequired,
   customer: PropTypes.object.isRequired,
   customerunit: PropTypes.object.isRequired,
   unit: PropTypes.object.isRequired,
   app: PropTypes.object.isRequired,
-  position: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.object.isRequired,
@@ -2000,4 +2155,8 @@ Pos.propTypes = {
   customergroup: PropTypes.object.isRequired
 }
 
-export default connect(({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }) => ({ pos, shift, counter, unit, city, customer, customertype, customergroup, app, position, loading, customerunit, payment }))(Pos)
+export default connect(({
+  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+}) => ({
+  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+}))(Pos)

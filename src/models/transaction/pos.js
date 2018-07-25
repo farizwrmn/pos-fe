@@ -50,6 +50,7 @@ export default {
     modalProductVisible: false,
     modalServiceVisible: false,
     modalQueueVisible: false,
+    modalVoidSuspendVisible: false,
     modalVisible: false,
     modalPrintVisible: false,
     modalCancelVisible: false,
@@ -190,6 +191,8 @@ export default {
           no: n + 1,
           code: ary[n].code,
           productId: ary[n].productId,
+          bundleId: ary[n].bundleId,
+          bundleName: ary[n].bundleName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -245,6 +248,8 @@ export default {
           no: n + 1,
           code: ary[n].code,
           productId: ary[n].productId,
+          bundleId: ary[n].bundleId,
+          bundleName: ary[n].bundleName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -1079,6 +1084,8 @@ export default {
             no: n + 1,
             code: ary[n].code,
             productId: ary[n].productId,
+            bundleId: ary[n].bundleId,
+            bundleName: ary[n].bundleName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1169,6 +1176,8 @@ export default {
             no: n + 1,
             code: ary[n].code,
             productId: ary[n].productId,
+            bundleId: ary[n].bundleId,
+            bundleName: ary[n].bundleName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1199,6 +1208,7 @@ export default {
       const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const bundle_promo = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
       const woNumber = localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
 
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
@@ -1216,6 +1226,7 @@ export default {
       arrayProd.push({
         cashier_trans,
         service_detail,
+        bundle_promo,
         memberCode: memberInfo.memberCode,
         memberName: memberInfo.memberName,
         point: memberInfo.point,
@@ -1287,6 +1298,7 @@ export default {
       localStorage.removeItem('mechanic')
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('woNumber')
+      localStorage.removeItem('bundle_promo')
       let woNumber = localStorage.getItem('woNumber')
       yield put({
         type: 'setAllNull'

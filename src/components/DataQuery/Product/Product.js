@@ -2,6 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Modal, Form, Input, Button } from 'antd'
+import { numberFormat } from 'utils'
+import { Link } from 'dva/router'
+
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const FormItem = Form.Item
 
@@ -31,19 +35,19 @@ const Product = ({
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       width: '15%',
-      render: text => text.toLocaleString()
+      render: text => formatNumberIndonesia(text)
     }, {
       title: 'Dist Price 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       width: '15%',
-      render: text => text.toLocaleString()
+      render: text => formatNumberIndonesia(text)
     }, {
       title: 'Dist Price 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       width: '15%',
-      render: text => text.toLocaleString()
+      render: text => formatNumberIndonesia(text)
     }
   ],
   isModal = true,
@@ -112,19 +116,18 @@ const Product = ({
       >
         <Form layout="inline">
           <FormItem>
-            <Input placeholder="Search Product Name"
+            <Input placeholder="Search Product"
               value={searchText}
-              size="small"
               onChange={e => handleChange(e)}
               onPressEnter={handleSearch}
               style={{ marginBottom: 16 }}
             />
           </FormItem>
           <FormItem>
-            <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
+            <Button type="primary" onClick={handleSearch}>Search</Button>
           </FormItem>
           <FormItem>
-            <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
+            <Button type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
         </Form>
         <Table
@@ -135,9 +138,8 @@ const Product = ({
           scroll={{ x: 500, y: 388 }}
           columns={columns}
           simple
-          size="small"
           onChange={changeProduct}
-          rowKey={record => record.productCode}
+          rowKey={record => record.id}
           onRowClick={onRowClick}
         />
       </Modal>}
@@ -146,21 +148,21 @@ const Product = ({
           <Form layout="inline">
             <FormItem>
               <Input
-                placeholder="Search Product Name"
+                placeholder="Search Product"
                 autoFocus
                 value={searchText}
-                size="small"
                 onChange={e => handleChange(e)}
                 onPressEnter={handleSearch}
                 style={{ marginBottom: 16 }}
               />
             </FormItem>
             <FormItem>
-              <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
+              <Button type="primary" onClick={handleSearch}>Search</Button>
             </FormItem>
             <FormItem>
-              <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
+              <Button onClick={handleReset}>Reset</Button>
             </FormItem>
+            <Link target="_blank" to={'/master/product/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
           </Form>
           <Table
             {...tableProps}
@@ -170,9 +172,8 @@ const Product = ({
             scroll={{ x: 500, y: 388 }}
             columns={columns}
             simple
-            size="small"
             onChange={changeProduct}
-            rowKey={record => record.productCode}
+            rowKey={record => record.id}
             onRowClick={onRowClick}
           />
         </div>)

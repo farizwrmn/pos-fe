@@ -1,5 +1,5 @@
 const APIV1 = '/api/v1'
-const APIHOST = 'demopos.darkotech.id' // '192.168.80.64'
+const APIHOST = 'localhost' // '192.168.80.64'
 const APIPORT = 5557
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
@@ -20,10 +20,12 @@ module.exports = {
     apiUserTotp: '/users/:id/totp',
     apiUserTotpr: '/users/:id/totp/:mode',
     apiStores: '/stores',
+    apiListStores: '/list/stores',
     apiTime: '/time',
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',
     apiTools: '/tools',
+    apiPromo: '/promo',
     apiCashierUsers: '/cashiers/users',
     apiCashRegister: '/cashiers/cashregisters'
   },

@@ -17,6 +17,7 @@ const Routers = function ({ history, app }) {
       getIndexRoute (nextState, cb) {
         require.ensure([], (require) => {
           registerModel(app, require('./models/dashboard'))
+          registerModel(app, require('./models/app'))
           cb(null, { component: require('./routes/dashboard/') })
         }, 'dashboard')
       },
@@ -230,16 +231,17 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/transaction/pospromo'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/master/customer'))
-              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/marketing/promo'))
+              registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/marketing/bundlingRules'))
+              registerModel(app, require('./models/marketing/bundlingReward'))
               registerModel(app, require('./models/master/customerunit'))
-              registerModel(app, require('./models/master/customergroup'))
-              registerModel(app, require('./models/master/customertype'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/unit'))
-              registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/sequence'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
@@ -736,6 +738,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/monitor/cashier/close'))
             }, 'cashier-periods-close')
+          }
+        }, {
+          path: 'marketing/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/service'))
+              cb(null, require('./routes/marketing/bundling'))
+            }, 'marketing-bundling')
           }
         }, {
           path: 'monitor/cashier/request',

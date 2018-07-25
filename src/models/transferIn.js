@@ -224,7 +224,7 @@ export default modelExtend(pageModel, {
         id: 'timestamp'
       })
       if (date.success) {
-        payload.data.receiveDate = moment(date.data).format('YYYY-MM-DD hh:mm:ss')
+        payload.data.receiveDate = moment(date.data).format('YYYY-MM-DD HH:mm:ss')
         const sequence = yield call(querySequence, sequenceData)
         payload.transNo = sequence.data
         let data = yield call(add, payload)

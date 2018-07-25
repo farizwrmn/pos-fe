@@ -131,7 +131,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, date,
         {
           columns: [
             {
-              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY hh:mm:ss')}`,
+              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY HH:mm:ss')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
               alignment: 'left'

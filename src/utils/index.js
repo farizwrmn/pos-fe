@@ -9,8 +9,10 @@ import request from './request'
 import { color } from './theme'
 import crypt from './crypt'
 import lstorage from './lstorage'
+import calendar from './calendar'
 import ip from './ip'
 import numberFormat from './numberFormat'
+import compare from './compare'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -125,6 +127,14 @@ const formatDate = (text, format) => {
   return ''
 }
 
+const posTotal = (data) => {
+  let H1 = ((parseFloat(data.sellingPrice) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
+  let H2 = H1 * (1 - (data.disc2 / 100))
+  let H3 = H2 * (1 - (data.disc3 / 100))
+  let TOTAL = H3 - data.discount
+  return TOTAL
+}
+
 const isEmptyObject = (obj) => {
   if (!obj) {
     return true
@@ -149,5 +159,8 @@ module.exports = {
   messageInfo,
   formatDate,
   isEmptyObject,
-  numberFormat
+  numberFormat,
+  posTotal,
+  calendar,
+  compare
 }

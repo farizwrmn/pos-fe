@@ -1,4 +1,4 @@
-const APICOMPANYHOST = 'demopos.darkotech.id' // 'localhost'
+const APICOMPANYHOST = 'localhost' // 'localhost'
 const APICOMPANYPORT = 6402
 const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
 const APIV1 = '/api/v1'

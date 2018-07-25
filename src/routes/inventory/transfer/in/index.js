@@ -131,13 +131,13 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
   const getComponentCard = (list) => {
     let card = []
     let then = ''
-    let now = moment().format('DD/MM/YYYY hh:mm:ss')
+    let now = moment().format('DD/MM/YYYY HH:mm:ss')
     for (let key = 0; key < list.length; key += 1) {
       then = moment(list[key].transDate).format('dddd, DD-MM-YYYY')
       // let ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"))
       // let d = moment.duration(ms)
       // let duration = Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss")
-      let duration = moment(moment(now, 'DD/MM/YYYY hh:mm:ss')).diff(moment(then, 'DD/MM/YYYY hh:mm:ss'), 'd')
+      let duration = moment(moment(now, 'DD/MM/YYYY HH:mm:ss')).diff(moment(then, 'DD/MM/YYYY HH:mm:ss'), 'd')
       const cardProps = {
         title: list[key].transNo,
         style: {

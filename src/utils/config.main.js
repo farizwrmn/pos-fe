@@ -1,6 +1,6 @@
 module.exports = {
   name: 'DMI-PoS',
-  version: '2018.06.002',
+  version: '2018.07.003',
   prefix: 'dmiPos',
   footerText: 'Darkotech Mandiri Indonesia',
   footerSubText: 'Point of Sales © 2017-2018',

@@ -122,7 +122,7 @@ export default {
         yield put(routerRedux.push('/dashboard'))
       }
       messageInfo(data.profile.sessionid)
-      messageInfo(`${data.message} at ${moment(data.profile.userlogintime).format('DD-MMM-YYYY hh:mm:ss')} from ${data.profile.useripaddr1}`, 'success')
+      messageInfo(`${data.message} at ${moment(data.profile.userlogintime).format('DD-MMM-YYYY HH:mm:ss')} from ${data.profile.useripaddr1}`, 'success')
     }
   },
   reducers: {
