@@ -1,9 +1,10 @@
-import { request, config, crypt } from '../../utils'
+import { request, config, crypt, lstorage } from '../../utils'
 
 const { apiPromo } = config.rest
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   params.order = 'id'
   return request({
     url: `${apiPromo}/rules`,

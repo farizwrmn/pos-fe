@@ -506,6 +506,15 @@ const Pos = ({
     })
   }
 
+  const modalEditBundle = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalVoidSuspendVisible: true
+      }
+    })
+  }
+
   const hdlUnitClick = () => {
     dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
   }
@@ -1995,7 +2004,7 @@ const Pos = ({
                   locale={{
                     emptyText: 'Your Bundle List'
                   }}
-                  // onRowClick={_record => modalEditService(_record)}
+                  onRowClick={_record => modalEditBundle(_record)}
                   dataSource={dataBundle()}
                   style={{ marginBottom: 16 }}
                   columns={[

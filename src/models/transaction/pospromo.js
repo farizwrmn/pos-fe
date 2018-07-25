@@ -6,7 +6,7 @@ import { query as queryRules } from '../../services/marketing/bundlingRules'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 
-const { compareExistsById, compareBundleExists } = compare
+const { compareExistsById, compareBundleExists, compareExistsByIdAndQty } = compare
 
 export default modelExtend(pageModel, {
   namespace: 'pospromo',
@@ -17,7 +17,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     searchText: null,
     typeModal: null,
-    modalPromoVibible: false,
+    modalPromoVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * addPosPromo ({ payload = {} }, { call, put }) {
-      const { bundleId, currentBundle, currentProduct, currentService, ...other } = payload
+      const { bundleId, currentBundle, currentProduct, currentService, reject, resolve, ...other } = payload
       const data = yield call(query, { id: bundleId })
       const dataRules = yield call(queryRules, { bundleId, ...other })
       const dataReward = yield call(queryReward, { bundleId, ...other })
@@ -50,36 +50,85 @@ export default modelExtend(pageModel, {
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P')
         if (item && dataRules.data && dataReward.data) {
           const resultCompareBundle = compareBundleExists(currentBundle, item)
-          const resultCompareRulesProduct = compareExistsById(currentProduct, itemRulesProduct)
-          const resultCompareRulesService = compareExistsById(currentService, itemRulesService)
+          const resultCompareRulesProductRequired = compareExistsByIdAndQty(currentProduct, itemRulesProduct)
+          const resultCompareRulesServiceRequired = compareExistsByIdAndQty(currentService, itemRulesService)
+          // const resultCompareRulesProduct = compareExistsById(currentProduct, itemRulesProduct)
+          // const resultCompareRulesService = compareExistsById(currentService, itemRulesService)
           const resultCompareRewardProduct = compareExistsById(currentProduct, itemRewardProduct)
           const resultCompareRewardService = compareExistsById(currentService, itemRewardService)
-          const result = resultCompareRulesProduct.data || resultCompareRulesService.data || resultCompareRewardProduct.data || resultCompareRewardService.data
-          const status = resultCompareRulesProduct.status || resultCompareRulesService.status || resultCompareRewardProduct.status || resultCompareRewardService.status
-
-          if (resultCompareBundle.status && item.applyMultiple === '0') {
-            Modal.warning({
-              title: 'Cannot Apply Multiple to this promo',
-              content: 'Call your stock administrator for this issue'
-            })
-          } else if (status) {
-            const confirmPromise = () => {
-              const data = new Promise((resolve, reject) => {
-                Modal.confirm({
-                  title: `Promo's Item ${result.productName} is exists in transaction`,
-                  content: 'Do you want to add promo belong to exists item ?',
-                  onOk () {
-                    resolve()
-                  },
-                  onCancel () {
-                    reject()
+          const result = resultCompareRewardProduct.data || resultCompareRewardService.data
+          const status = resultCompareRewardProduct.status || resultCompareRewardService.status
+          if (resultCompareRulesProductRequired.status && resultCompareRulesServiceRequired.status) {
+            if (resultCompareBundle.status && item.applyMultiple === '0') {
+              Modal.warning({
+                title: 'Cannot Apply Multiple to this promo',
+                content: 'Call your stock administrator for this issue'
+              })
+            } else if (status) {
+              const confirmPromise = () => {
+                const data = new Promise((resolve, reject) => {
+                  Modal.confirm({
+                    title: `Promo's Item ${result.productName} is exists in transaction`,
+                    content: 'Do you want to add promo belong to exists item ?',
+                    onOk () {
+                      resolve()
+                    },
+                    onCancel () {
+                      reject()
+                    }
+                  })
+                })
+                return data
+              }
+              yield confirmPromise()
+              if (!resultCompareBundle.status) {
+                yield put({
+                  type: 'setBundleNeverExists',
+                  payload: {
+                    currentBundle,
+                    item
                   }
                 })
-              })
-              return data
-            }
-            yield confirmPromise()
-            if (!resultCompareBundle.status) {
+                yield put({
+                  type: 'setProductPos',
+                  payload: {
+                    currentProduct,
+                    currentReward: itemRewardProduct
+                  }
+                })
+                yield put({
+                  type: 'setServicePos',
+                  payload: {
+                    currentProduct: currentService,
+                    currentReward: itemRewardService
+                  }
+                })
+                payload.resolve('done')
+              } else if (resultCompareBundle.status && item.applyMultiple === '1') {
+                yield put({
+                  type: 'setBundleAlreadyExists',
+                  payload: {
+                    currentBundle,
+                    item
+                  }
+                })
+                yield put({
+                  type: 'setProductPos',
+                  payload: {
+                    currentProduct,
+                    currentReward: itemRewardProduct
+                  }
+                })
+                yield put({
+                  type: 'setServicePos',
+                  payload: {
+                    currentProduct: currentService,
+                    currentReward: itemRewardService
+                  }
+                })
+              }
+              payload.resolve('done')
+            } else if (!resultCompareBundle.status) {
               yield put({
                 type: 'setBundleNeverExists',
                 payload: {
@@ -101,6 +150,7 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              payload.resolve('done')
             } else if (resultCompareBundle.status && item.applyMultiple === '1') {
               yield put({
                 type: 'setBundleAlreadyExists',
@@ -123,50 +173,12 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              payload.resolve('done')
             }
-          } else if (!resultCompareBundle.status) {
-            yield put({
-              type: 'setBundleNeverExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-            yield put({
-              type: 'setProductPos',
-              payload: {
-                currentProduct,
-                currentReward: itemRewardProduct
-              }
-            })
-            yield put({
-              type: 'setServicePos',
-              payload: {
-                currentProduct: currentService,
-                currentReward: itemRewardService
-              }
-            })
-          } else if (resultCompareBundle.status && item.applyMultiple === '1') {
-            yield put({
-              type: 'setBundleAlreadyExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-            yield put({
-              type: 'setProductPos',
-              payload: {
-                currentProduct,
-                currentReward: itemRewardProduct
-              }
-            })
-            yield put({
-              type: 'setServicePos',
-              payload: {
-                currentProduct: currentService,
-                currentReward: itemRewardService
-              }
+          } else {
+            Modal.warning({
+              title: 'Rules validation',
+              content: 'Please check your required Rules Item'
             })
           }
         } else {
@@ -176,6 +188,7 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
+        payload.reject('error')
         throw data
       }
     },
