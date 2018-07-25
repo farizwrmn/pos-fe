@@ -10,7 +10,6 @@ import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProdu
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
-import { ServerResponse } from 'http'
 
 const { prefix } = configMain
 

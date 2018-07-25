@@ -77,12 +77,11 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
         } else if (location.pathname === '/transaction/purchase/history') {
-          const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',
             payload: {
-              startPeriod: infoStore.startPeriod,
-              endPeriod: infoStore.endPeriod
+              startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
+              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
             }
           })
         }

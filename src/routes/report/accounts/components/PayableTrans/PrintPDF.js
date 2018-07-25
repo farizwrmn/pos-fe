@@ -14,7 +14,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
   let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
-  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
+  // let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
   let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
@@ -27,7 +27,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
+        // const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },

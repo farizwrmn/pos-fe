@@ -12,7 +12,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
   let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
   let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
   let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
-  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
+  // let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
   let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
   let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
   let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
@@ -73,7 +73,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
       if (list.hasOwnProperty(key)) {
         let data = list[key]
         countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
-        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
+        // const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { value: start.toString(), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },

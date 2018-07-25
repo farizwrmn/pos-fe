@@ -20,15 +20,15 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
           endPeriod: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
         }
       })
-    },
-    filterTransNo (transNo) {
-      dispatch({
-        type: 'purchase/queryHistoryByTransNo',
-        payload: {
-          transNo
-        }
-      })
     }
+    // filterTransNo (transNo) {
+    //   dispatch({
+    //     type: 'purchase/queryHistoryByTransNo',
+    //     payload: {
+    //       transNo
+    //     }
+    //   })
+    // }
   }
 
   const listProps = {
