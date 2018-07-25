@@ -10,6 +10,7 @@ import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProdu
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
+import { ServerResponse } from 'http'
 
 const { prefix } = configMain
 
@@ -977,16 +978,16 @@ export default {
             curCashierNo: payload.cashierNo
           }
         })
-      } else {
+      } else if (data.statusCode === 422) {
         Modal.warning({
           title: 'Warning',
           content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
         })
-        throw data
-        // Modal.warning({
-        //   title: 'Warning',
-        //   content: `Report error ${data.message}` || 'Report error'
-        // })
+      } else if (data.statusCode === 409) {
+        Modal.warning({
+          title: 'Warning',
+          content: (<p>{data.message}</p>)
+        })
       }
     },
 
