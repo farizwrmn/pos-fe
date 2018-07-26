@@ -65,6 +65,7 @@ module.exports = {
     adjustreport: '/report/adjust',
     fiforeport: '/report/fifo',
     servicereport: '/report/service',
+    bundlingReport: '/report/bundling/daily',
     purchase: '/purchase',
     purchaseDetail: '/purchasedetail',
     adjust: '/adjust',
