@@ -180,7 +180,7 @@ export async function approveRequestOpenCashRegister (params) {
   return request({
     url: `${apiCashRegister}/${params.id}?status=A`,
     method: 'PUT',
-    data: params.data,
+    data: params,
     headers: apiHeaderToken
   })
 }

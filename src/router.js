@@ -514,6 +514,14 @@ const Routers = function ({ history, app }) {
             }, 'report-account-summary')
           }
         }, {
+          path: 'report/marketing/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/marketing/promo'))
+              cb(null, require('./routes/report/marketing/promo'))
+            }, 'report-marketing-promo')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
