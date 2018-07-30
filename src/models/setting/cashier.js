@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
     listCashRegister: [],
     listCashTransSummary: {},
     listCashTransDetail: {},
+    searchText: null,
     modalVisible: false,
     listCashRegisterDetails: [],
     listClosedCashRegister: [],
