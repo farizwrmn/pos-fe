@@ -21,7 +21,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/counter') {
           dispatch({
@@ -30,7 +30,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         } else if (pathname === '/setting/store' || pathname === '/transaction/pos') {
           dispatch({ type: 'query' })
         }

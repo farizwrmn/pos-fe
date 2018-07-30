@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ counter, loading, dispatch, location, app }) => {
-  const { listCounter, modalType, currentItem, activeKey } = counter
+  const { listCounter, modalType, currentItem, activeKey, pagination } = counter
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -27,8 +27,20 @@ const Counter = ({ counter, loading, dispatch, location, app }) => {
     dataSource: listCounter,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['counter/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({

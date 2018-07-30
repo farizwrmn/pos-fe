@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         } else if (pathname === '/monitor/cashier/periods') {
           dispatch({ type: 'query' })
         } else if (pathname === '/monitor/cashier/close') {

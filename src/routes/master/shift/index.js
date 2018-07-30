@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Shift = ({ shift, loading, dispatch, location, app }) => {
-  const { listShift, modalType, currentItem, activeKey } = shift
+  const { listShift, modalType, currentItem, activeKey, pagination } = shift
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -27,8 +27,20 @@ const Shift = ({ shift, loading, dispatch, location, app }) => {
     dataSource: listShift,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['shift/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       dispatch({
         type: 'shift/editItem',
