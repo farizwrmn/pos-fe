@@ -277,7 +277,7 @@ const modal = ({
         }
       })
   }
-
+  console.log('item.active', item.active)
   return (
     <Modal width="35vw"
       height="70vh"
@@ -335,7 +335,7 @@ const modal = ({
             <FormItem label="Active" {...formItemLayout}>
               {getFieldDecorator('active', {
                 valuePropName: 'checked',
-                initialValue: ((item.active === null || item.active === true) ? true : item.active)
+                initialValue: item.active === undefined ? true : item.active
               })(<Checkbox />)}
             </FormItem>
             <FormItem label="E-mail" hasFeedback {...formItemLayout}>
