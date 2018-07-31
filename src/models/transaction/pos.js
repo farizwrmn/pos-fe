@@ -100,13 +100,14 @@ export default {
     showListReminder: false,
     paymentListActiveKey: '1',
     modalAddUnit: false,
-    modalAddMember: false
+    modalAddMember: false,
+    currentCashier: {}
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/pos') {
+        if (location.pathname === '/transaction/pos' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           const userId = lstorage.getStorageKey('udi')[1]
           dispatch({

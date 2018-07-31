@@ -2,15 +2,67 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Modal, Tabs } from 'antd'
+import { Button, Modal, Tabs, Icon } from 'antd'
+import { color, isEmptyObject, lstorage } from 'utils'
+import moment from 'moment'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import ModalShift from './ModalShift'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
+const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier, loading, dispatch, location, app }) => {
   const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
+  const {
+    modalShiftVisible,
+    dataCashierTrans,
+    listCashier,
+    curCashierNo,
+    cashierInformation
+  } = pos
+
+  let currentCashier = {
+    cashierId: null,
+    employeeName: null,
+    shiftId: null,
+    shiftName: null,
+    counterId: null,
+    counterName: null,
+    period: null,
+    status: null,
+    cashActive: null
+  }
+
+  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
+  let infoCashRegister = {}
+  infoCashRegister.title = 'Cashier Information'
+  infoCashRegister.titleColor = color.normal
+  infoCashRegister.descColor = color.error
+  infoCashRegister.dotVisible = false
+  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
+  let checkTimeDiff = lstorage.getLoginTimeDiff()
+  if (checkTimeDiff > 500) {
+    console.log('something fishy', checkTimeDiff)
+  } else {
+    if (!currentCashier.period) {
+      infoCashRegister.desc = '* Select the correct cash register'
+      infoCashRegister.dotVisible = true
+    } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
+      infoCashRegister.desc = '* The open cash register date is different from current date'
+      infoCashRegister.dotVisible = true
+    }
+    infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
+    infoCashRegister.CaptionObject =
+      (<span style={{ color: infoCashRegister.titleColor }}>
+        <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
+        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
+          {infoCashRegister.desc}
+        </span>
+      </span>)
+  }
+  const { listShift } = shift
+  const { listCounter } = counter
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode } = accountCode
@@ -245,6 +297,48 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     }
   }
 
+  const modalShiftProps = {
+    item: dataCashierTrans,
+    listCashier,
+    listShift,
+    listCounter,
+    curCashierNo,
+    currentCashier,
+    visible: modalShiftVisible,
+    cashierId: user.userid,
+    infoCashRegister,
+    dispatch,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    getCashier () {
+      dispatch({
+        type: 'pos/loadDataPos'
+      })
+    },
+    onBack () {
+      dispatch({ type: 'pos/backPrevious' })
+    },
+    onCancel () {
+      Modal.error({
+        title: 'Error',
+        content: 'Please Use Confirm Button...!'
+      })
+    },
+    onOk (data) {
+      dispatch({ type: 'app/foldSider' })
+      dispatch({
+        type: 'pos/cashRegister',
+        payload: data
+      })
+    },
+    findShift () {
+      dispatch({ type: 'shift/query' })
+    },
+    findCounter () {
+      dispatch({ type: 'counter/query' })
+    }
+  }
+
   let moreButtonTab
   if (activeKey === '0') {
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
@@ -265,6 +359,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
           }
         </TabPane>
       </Tabs>
+      {modalShiftVisible && <ModalShift {...modalShiftProps} />}
     </div>
   )
 }
@@ -273,6 +368,7 @@ Cash.propTypes = {
   cashentry: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
+  pos: PropTypes.object.isRequired,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
@@ -285,4 +381,7 @@ export default connect(({
   customer,
   supplier,
   loading,
-  app }) => ({ cashentry, accountCode, customer, supplier, loading, app }))(Cash)
+  pos,
+  shift,
+  counter,
+  app }) => ({ cashentry, accountCode, customer, supplier, loading, pos, shift, counter, app }))(Cash)
