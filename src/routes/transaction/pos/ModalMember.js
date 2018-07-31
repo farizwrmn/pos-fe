@@ -23,7 +23,7 @@ const Member = ({
   }
 
   return (
-    <Modal className="modal-browse" {...modalProps}>
+    <Modal width="75%" className="modal-browse" {...modalProps}>
       <FormCustomer {...formCustomerProps} />
     </Modal>
   )

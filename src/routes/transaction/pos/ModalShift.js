@@ -22,10 +22,10 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
   getFieldsValue
 }, ...modalProps }) => {
   const disabledDate = (current) => {
-    if (infoCashRegister.cashActive) {
+    if (Number(infoCashRegister.cashActive)) {
       return true
     }
-    return current < moment(new Date()).add(-1, 'days').endOf('day') || current > moment(new Date()).add(0, 'days').endOf('day')
+    return current < moment(infoCashRegister.cashActive ? currentCashier.period : new Date()).add(-1, 'days').endOf('day') || current > moment(infoCashRegister.cashActive ? currentCashier.period : new Date()).add(0, 'days').endOf('day')
   }
 
   const handleOk = () => {
@@ -53,16 +53,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
     ...modalProps
   }
 
-  let initPeriod = moment(new Date(), 'YYYY-MM-DD')
-  if (infoCashRegister.cashActive) {
-    initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
-  } else {
-    // if (currentCashier.period) {
-    //   initPeriod = moment(currentCashier.period, 'YYYY-MM-DD')
-    // } else {
-    initPeriod = moment(new Date(), 'YYYY-MM-DD')
-    // }
-  }
+  let initPeriod = moment(Number(infoCashRegister.cashActive) ? currentCashier.period : new Date(), 'YYYY-MM-DD')
   let shifts = []
   let counters = []
   if (listShift && listShift.length > 0) {
@@ -78,7 +69,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
-          Confirm
+                    Confirm
         </Button>
       ]}
       closable={false}

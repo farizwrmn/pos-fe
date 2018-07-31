@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/accountCode'
+import { queryCode, query, add, edit, remove } from '../../services/master/accountCode'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -16,6 +15,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listAccountCode: [],
+    listAccountCodeLov: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -27,7 +27,6 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
-        console.log('payload', other)
         const { pathname } = location
         if (pathname === '/master/account') {
           dispatch({
@@ -36,10 +35,16 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-          if (activeKey === '0') {
+          if (activeKey === '1') {
             dispatch({
               type: 'query',
+              payload: {
+                ...other
+              }
+            })
+          } else {
+            dispatch({
+              type: 'queryLov',
               payload: {
                 type: 'all',
                 field: 'id,accountCode,accountName,accountParentId'
@@ -54,7 +59,6 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -68,6 +72,41 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessCounterLov',
+          payload: {
+            listAccountCode: data.data,
+            listAccountCodeLov: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryEditItem ({ payload = {} }, { call, put }) {
+      const data = yield call(queryCode, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data.data,
+            disable: 'disabled',
+            modalType: 'edit',
+            activeKey: '0'
+          }
+        })
+      } else {
+        throw data
       }
     },
 
@@ -124,14 +163,12 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
+        yield put({
+          type: 'query',
+          payload: {
+            type: 'all'
           }
-        }))
-        yield put({ type: 'query' })
+        })
       } else {
         yield put({
           type: 'updateState',
@@ -150,6 +187,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listAccountCode,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessCounterLov (state, action) {
+      const { listAccountCode, listAccountCodeLov, pagination } = action.payload
+      return {
+        ...state,
+        listAccountCode,
+        listAccountCodeLov,
         pagination: {
           ...state.pagination,
           ...pagination
