@@ -108,22 +108,24 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/pos' || location.pathname === '/cash-entry') {
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           const userId = lstorage.getStorageKey('udi')[1]
-          dispatch({
-            type: 'showShiftModal',
-            payload: memberUnitInfo
-          })
+          if (location.pathname !== '/transaction/pos/payment') {
+            dispatch({
+              type: 'showShiftModal',
+              payload: memberUnitInfo
+            })
+            dispatch({
+              type: 'getServiceReminder'
+            })
+          }
           dispatch({
             type: 'loadDataPos',
             payload: {
               cashierId: userId,
               status: 'O'
             }
-          })
-          dispatch({
-            type: 'getServiceReminder'
           })
           // dispatch({
           //   type: 'getCashierInformation',
@@ -530,6 +532,7 @@ export default {
 
     * loadDataPos ({ payload = {} }, { call, put }) {
       const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
+      console.log('currentRegister', currentRegister)
       if (currentRegister.success) {
         const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
         if (cashierInformation) {

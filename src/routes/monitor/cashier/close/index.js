@@ -83,7 +83,7 @@ const CloseCashRegister = ({
 
   let summary = {
     total: {
-      openingBalance: cashierInfo.openingBalance,
+      openingCash: cashierInfo.openingBalance,
       cashIn: 0,
       cashOut: 0
     }

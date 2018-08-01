@@ -83,13 +83,13 @@ const Pos = ({
     modalVoidSuspendVisible,
     listUnitUsage,
     showAlert,
+    cashierBalance,
     showListReminder,
     listServiceReminder,
     paymentListActiveKey,
     modalAddUnit,
     cashierInformation
   } = pos
-
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
@@ -1757,15 +1757,14 @@ const Pos = ({
               {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
               <Row>
                 <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
-                  <Row gutter={32}>
+                  <Row>
                     <Col span={2}># {currentCashier.id} </Col>
-                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Cashier : {currentCashier.cashierId} </Col>
-                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
-                    <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
-                    <Col xs={24} sm={24} md={5} lg={5} xl={5}>
+                    <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
+                    <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
+                    <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
+                    <Col md={5} lg={5}>
                       <Tooltip title={infoCashRegister.Caption}>
                         Date : {currentCashier.period}
-                        {'  '}
                         <Badge dot={infoCashRegister.dotVisible} />
                       </Tooltip>
                     </Col>
@@ -2138,6 +2137,23 @@ const Pos = ({
         </Col>
       </Row >
       <BottomButton {...buttomButtonProps} />
+      <Row>
+        <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
+          <Row gutter={32}>
+            <Col span={2}># {currentCashier.id} </Col>
+            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Cashier : {currentCashier.cashierId} </Col>
+            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
+            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
+            <Col xs={24} sm={24} md={5} lg={5} xl={5}>
+              <Tooltip title={infoCashRegister.Caption}>
+                Date : {currentCashier.period}
+                {'  '}
+                <Badge dot={infoCashRegister.dotVisible} />
+              </Tooltip>
+            </Col>
+          </Row>
+        </Card>
+      </Row>
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>

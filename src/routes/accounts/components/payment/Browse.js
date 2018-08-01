@@ -36,7 +36,7 @@ const BrowseGroup = ({
     const reg = new RegExp(e, 'gi')
     let newData
     newData = tmpDataSource.map((record) => {
-      const match = record.transNo.match(reg)
+      const match = record.transNo.match(reg) || record.policeNo.match(reg)
       if (!match) {
         return null
       }
@@ -62,16 +62,19 @@ const BrowseGroup = ({
       render: _text => `${moment(_text).format('LL')}`
     },
     {
+      title: 'Member',
+      dataIndex: 'memberName',
+      key: 'memberName'
+    },
+    {
       title: 'Car Unit',
       dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 120
+      key: 'policeNo'
     },
     {
       title: 'KM',
       dataIndex: 'lastMeter',
       key: 'lastMeter',
-      width: 140,
       className: styles.alignRight,
       sorter: (a, b) => a.lastMeter - b.lastMeter,
       render: text => text.toLocaleString()
@@ -79,14 +82,12 @@ const BrowseGroup = ({
     {
       title: 'Cashier',
       dataIndex: 'cashierId',
-      key: 'cashierId',
-      width: 140
+      key: 'cashierId'
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 120,
       render: text =>
         (<span>
           <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
@@ -107,7 +108,6 @@ const BrowseGroup = ({
       title: 'Payment',
       dataIndex: 'paymentVia',
       key: 'paymentVia',
-      width: 120,
       filters: [{
         text: 'CASH',
         value: 'C'
@@ -126,6 +126,16 @@ const BrowseGroup = ({
             {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
           </Tag>
         </span>)
+    },
+    {
+      title: 'Created By',
+      dataIndex: 'createdBy',
+      key: 'createdBy'
+    },
+    {
+      title: 'Updated By',
+      dataIndex: 'updatedBy',
+      key: 'updatedBy'
     }
   ]
   const onChange = (date, dateString) => {
@@ -156,7 +166,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table bordered pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
+      <Table bordered pageSize={5} size="small" columns={columns} dataSource={dataSource} />
     </Form>
   )
 }
