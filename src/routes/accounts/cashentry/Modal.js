@@ -12,12 +12,14 @@ const formItemLayout = {
 
 const ModalList = ({
   addModalItem,
+  editModalItem,
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   onDelete,
   showLov,
   item,
   inputType,
+  modalType,
   form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
@@ -27,9 +29,14 @@ const ModalList = ({
         return
       }
       const data = getFieldsValue()
+      data.no = item.no
       data.accountName = data.accountId.label
       data.accountId = data.accountId.key
-      addModalItem(data)
+      if (modalType === 'add') {
+        addModalItem(data, inputType)
+      } else if (modalType === 'edit') {
+        editModalItem(data, inputType)
+      }
       resetFields()
     })
   }
@@ -103,6 +110,9 @@ ModalList.propTypes = {
   pos: PropTypes.isRequired,
   item: PropTypes.isRequired,
   onDelete: PropTypes.func.isRequired,
-  modalPurchaseVisible: PropTypes.isRequired
+  modalPurchaseVisible: PropTypes.isRequired,
+  modalType: PropTypes.string.isRequired,
+  addModalItem: PropTypes.func.isRequired,
+  editModalItem: PropTypes.func.isRequired
 }
 export default Form.create()(ModalList)

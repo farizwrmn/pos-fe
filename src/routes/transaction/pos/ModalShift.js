@@ -69,7 +69,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
-                    Confirm
+          Confirm
         </Button>
       ]}
       closable={false}

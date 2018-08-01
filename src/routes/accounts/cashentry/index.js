@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Modal, Tabs, Icon } from 'antd'
+import { Button, message, Modal, Tabs, Icon, Row, Col, Card } from 'antd'
 import { color, isEmptyObject, lstorage } from 'utils'
 import moment from 'moment'
 import Form from './Form'
@@ -19,6 +19,7 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     dataCashierTrans,
     listCashier,
     curCashierNo,
+    cashierBalance,
     cashierInformation
   } = pos
 
@@ -154,7 +155,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
       dispatch({ type: 'cashentry/updateState', payload: { listCash: [], listItem: [] } })
     }
   }
-
   const clickBrowse = () => {
     dispatch({
       type: 'cashentry/updateState',
@@ -165,9 +165,10 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
   }
 
   const modalProps = {
-    title: 'Add Detail',
+    title: modalType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
+    modalType,
     listAccountCode,
     onCancel () {
       dispatch({
@@ -177,16 +178,48 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
         }
       })
     },
-    addModalItem (data) {
+    addModalItem (data, inputType) {
       data.no = (listItem || []).length + 1
-      listItem.push(data)
-      dispatch({
-        type: 'cashentry/updateState',
-        payload: {
-          modalVisible: false,
-          listItem
-        }
-      })
+      const currentTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0)
+      if ((parseFloat(currentTotal) + parseFloat(data.amountOut || 0) + parseFloat(cashierBalance.cashOut || 0)) > (parseFloat(cashierBalance.cashIn || 0) + parseFloat(cashierInformation.openingBalance || 0)) && inputType === 'E') {
+        Modal.warning({
+          title: 'Cash out is bigger than current balance',
+          content: 'Please recount your cash'
+        })
+      } else {
+        listItem.push(data)
+        dispatch({
+          type: 'cashentry/updateState',
+          payload: {
+            modalVisible: false,
+            modalType: 'add',
+            listItem,
+            currentItemList: {}
+          }
+        })
+        message.success('success add item')
+      }
+    },
+    editModalItem (data, inputType) {
+      const currentTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0)
+      if (((currentTotal - listItem[data.no - 1].amountOut) + parseFloat(data.amountOut || 0) + parseFloat(cashierBalance.cashOut || 0)) > (parseFloat(cashierBalance.cashIn || 0) + parseFloat(cashierInformation.openingBalance || 0)) && inputType === 'E') {
+        Modal.warning({
+          title: 'Cash out is bigger than current balance',
+          content: 'Please recount your cash'
+        })
+      } else {
+        listItem[data.no - 1] = data
+        dispatch({
+          type: 'cashentry/updateState',
+          payload: {
+            modalVisible: false,
+            modalType: 'add',
+            listItem,
+            currentItemList: {}
+          }
+        })
+        message.success('success edit item')
+      }
     }
   }
   const listDetailProps = {
@@ -208,6 +241,9 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
       dispatch({
         type: `cashentry/${modalType}`,
         payload: {
+          cashierBalance,
+          cashierInformation,
+          inputType,
           data,
           detail,
           oldValue
@@ -266,6 +302,7 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
         type: 'cashentry/updateState',
         payload: {
           modalVisible: true,
+          modalType: 'add',
           inputType: value
         }
       })
@@ -291,6 +328,7 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
         type: 'cashentry/updateState',
         payload: {
           modalVisible: true,
+          modalType: 'edit',
           currentItemList: record
         }
       })
@@ -325,7 +363,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
       })
     },
     onOk (data) {
-      dispatch({ type: 'app/foldSider' })
       dispatch({
         type: 'pos/cashRegister',
         payload: data
@@ -348,6 +385,17 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab={`Form ${modalType === 'add' ? 'Add' : 'Update'}`} key="0" >
+          <Row>
+            <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
+              <Row>
+                <Col span={2}># {currentCashier.id} </Col>
+                <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
+                <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
+                <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
+                <Col md={5} lg={5}>Date : {currentCashier.period}</Col>
+              </Row>
+            </Card>
+          </Row>
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >

@@ -9,7 +9,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
+import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -62,6 +62,7 @@ export default {
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     cashierInformation: {},
+    cashierBalance: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -531,13 +532,29 @@ export default {
       const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
       if (currentRegister.success) {
         const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInformation,
-            dataCashierTrans: cashierInformation
+        if (cashierInformation) {
+          const cashierBalance = yield call(queryCashierTransSource, { id: cashierInformation.id })
+          if (cashierBalance.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                cashierInformation,
+                dataCashierTrans: cashierInformation,
+                cashierBalance: cashierBalance.data.total[0] ? cashierBalance.data.total[0] : {}
+              }
+            })
+          } else {
+            throw cashierBalance
           }
-        })
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              cashierInformation,
+              dataCashierTrans: cashierInformation
+            }
+          })
+        }
       } else {
         throw currentRegister
       }
@@ -966,6 +983,7 @@ export default {
     },
 
     * cashRegister ({ payload = {} }, { call, put }) {
+      const userId = lstorage.getStorageKey('udi')[1]
       const data = yield call(cashRegister, payload)
       if (data.success) {
         localStorage.setItem('cashierNo', data.cashregisters.cashierId)
@@ -974,6 +992,13 @@ export default {
           payload: {
             cashierInformation: data.cashregisters,
             dataCashierTrans: data.cashregisters
+          }
+        })
+        yield put({
+          type: 'loadDataPos',
+          payload: {
+            cashierId: userId,
+            status: 'O'
           }
         })
         yield put({
