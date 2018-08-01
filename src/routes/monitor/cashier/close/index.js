@@ -83,7 +83,7 @@ const CloseCashRegister = ({
 
   let summary = {
     total: {
-      openingCash: cashierInfo.openingBalance,
+      openingBalance: cashierInfo.openingBalance,
       cashIn: 0,
       cashOut: 0
     }
@@ -117,7 +117,7 @@ const CloseCashRegister = ({
   const confirmClose = () => {
     if (!isEmptyObject(listCashTransSummary)) {
       confirm({
-        title: 'Are you sure closing this cash register  ?',
+        title: 'Are you sure closing this cash register ?',
         onOk () {
           dispatch({
             type: 'cashier/closeCashRegister',
@@ -126,7 +126,10 @@ const CloseCashRegister = ({
               cashierId: cashierInfo.cashierId,
               id: cashierInfo.id,
               desc: getFieldValue('periodDesc'),
-              summary
+              openingCash: cashierInfo.openingBalance,
+              cashIn: listCashTransSummary ? listCashTransSummary.total[0].cashIn : 0,
+              cashOut: listCashTransSummary ? listCashTransSummary.total[0].cashOut : 0,
+              closingBalance: (parseFloat(cashierInfo.openingBalance) + (listCashTransSummary ? (listCashTransSummary.total[0].cashIn || 0) : 0)) - (listCashTransSummary ? (listCashTransSummary.total[0].cashOut || 0) : 0)
             }
           })
         }
