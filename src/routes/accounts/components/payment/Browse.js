@@ -30,7 +30,7 @@ const rightColumn = {
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
-  form: { getFieldDecorator } }) => {
+  form: { getFieldDecorator }, ...browseProps }) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
@@ -166,7 +166,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table bordered pageSize={5} size="small" columns={columns} dataSource={dataSource} />
+      <Table {...browseProps} bordered pageSize={5} size="small" columns={columns} dataSource={dataSource} />
     </Form>
   )
 }

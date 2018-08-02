@@ -146,7 +146,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     tmpDataSource: tmpListPayment,
     width: 90,
     size: 'small',
-    loading: loading.effects['pos/queryHistory'],
+    loading: loading.effects['accountPayment/queryPurchase'],
     pagination,
     location,
     onSearchChange (data) {
