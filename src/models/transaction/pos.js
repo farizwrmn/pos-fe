@@ -1,3 +1,4 @@
+import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
@@ -155,6 +156,20 @@ export default {
             type: 'updateState',
             payload: {
               listUnitUsage: []
+            }
+          })
+        }
+      })
+
+      history.listen(() => {
+        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
+        const userId = lstorage.getStorageKey('udi')[1]
+        if (match) {
+          dispatch({
+            type: 'loadDataPos',
+            payload: {
+              cashierId: userId,
+              status: 'O'
             }
           })
         }

@@ -242,7 +242,12 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/setting/store'))
               registerModel(app, require('./models/sequence'))
+              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/misc'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           }
@@ -442,6 +447,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
+              registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/report/fifo/stockcard/'))
             }, 'report-purchase-summary-card')
           }
@@ -534,6 +540,9 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/master/counter'))
+              registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-payment')
           }
@@ -609,6 +618,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/detail/paymentDetail'))
               registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/components/payment/detail/'))
             }, 'setting-payment-detail')
           }

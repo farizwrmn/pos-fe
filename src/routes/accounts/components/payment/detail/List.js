@@ -1,13 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
-import { Table, Icon, Tag } from 'antd'
+import { Table, Modal, Icon, Tag } from 'antd'
 import moment from 'moment'
 
-const List = ({ cancelPayment, ...tableProps }) => {
+const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
-      cancelPayment(record)
+      if (record.cashierTransId === cashierInformation.id) {
+        cancelPayment(record)
+      } else {
+        Modal.warning({
+          title: 'Can`t Void this Invoice',
+          content: 'has been Closed'
+        })
+      }
     }
   }
 
@@ -84,7 +91,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Void', icon: 'delete' }
+            { key: '1', name: 'Void', icon: 'delete', disabled: record.cashierTransId !== cashierInformation.id }
           ]}
         />)
       }
@@ -106,7 +113,8 @@ const List = ({ cancelPayment, ...tableProps }) => {
 
 List.propTypes = {
   editList: PropTypes.func,
-  cancelPayment: PropTypes.func.isRequired
+  cancelPayment: PropTypes.func.isRequired,
+  cashierInformation: PropTypes.object.isRequired
 }
 
 export default List

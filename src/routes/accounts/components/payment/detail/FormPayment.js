@@ -36,6 +36,7 @@ const formPayment = ({
   data,
   cancelPayment,
   editItem,
+  cashierInformation,
   openModal,
   form: {
     resetFields
@@ -43,6 +44,7 @@ const formPayment = ({
 }) => {
   const listProps = {
     dataSource: listAmount,
+    cashierInformation,
     cancelPayment,
     editList (data) {
       editItem(data)

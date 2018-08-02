@@ -90,6 +90,7 @@ export default {
         dataPayment.push({
           no: n + 1,
           id: payment.data[n].id,
+          cashierTransId: payment.data[n].cashierTransId,
           active: payment.data[n].active,
           storeId: payment.data[n].storeId,
           transDate: payment.data[n].transDate,
