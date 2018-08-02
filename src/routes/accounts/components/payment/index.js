@@ -8,7 +8,7 @@ import ModalCancel from './ModalCancel'
 
 const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, posData, listPayment, tmpListPayment } = pos
+    modalPrintVisible, posData, listPayment, tmpListPayment } = pos
   const { storeInfo } = app
 
   const modalProps = {
@@ -146,7 +146,6 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     width: 90,
     size: 'small',
     loading: loading.effects['pos/queryHistory'],
-    pagination,
     location,
     onSearchChange (data) {
       dispatch({

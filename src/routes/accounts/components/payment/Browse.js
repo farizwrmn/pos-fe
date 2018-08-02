@@ -36,7 +36,7 @@ const BrowseGroup = ({
     const reg = new RegExp(e, 'gi')
     let newData
     newData = tmpDataSource.map((record) => {
-      const match = record.transNo.match(reg) || record.policeNo.match(reg)
+      const match = (record.transNo || '').match(reg) || (record.policeNo || '').match(reg) || (record.memberName || '').match(reg)
       if (!match) {
         return null
       }

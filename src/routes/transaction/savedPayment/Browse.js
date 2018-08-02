@@ -12,14 +12,14 @@ const FormItem = Form.Item
 const { prefix } = configMain
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,
+  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod,
   form: { getFieldDecorator } }) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
-      if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod) {
+      if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
         onShowCancelModal(record)
       } else {
         Modal.warning({
@@ -134,7 +134,7 @@ const BrowseGroup = ({
           type="primary"
           menuOptions={[
             { key: '1', name: 'Print', icon: 'printer' },
-            { key: '2', name: 'Void', icon: 'delete' }
+            { key: '2', name: 'Void', icon: 'delete', disabled: record.cashierTransId !== cashierInformation.id }
           ]}
         />)
       }

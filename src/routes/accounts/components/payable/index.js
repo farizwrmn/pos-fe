@@ -7,8 +7,14 @@ import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
 const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
-  const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, posData } = pos
+  const {
+    listPaymentDetail,
+    invoiceCancel,
+    modalCancelVisible,
+    memberPrint,
+    mechanicPrint,
+    modalPrintVisible,
+    posData } = pos
   const { listPayment, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
@@ -43,8 +49,8 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+                            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+                            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
           let productId = data.data[n].serviceCode
@@ -60,8 +66,8 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+                            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+                            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
           let productId = '-'
@@ -77,8 +83,8 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
             total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+                            ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
+                            ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
           })
         }
       }
@@ -147,7 +153,6 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     width: 90,
     size: 'small',
     loading: loading.effects['accountPayment/queryPurchase'],
-    pagination,
     location,
     onSearchChange (data) {
       dispatch({
