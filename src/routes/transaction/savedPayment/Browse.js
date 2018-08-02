@@ -33,7 +33,7 @@ const BrowseGroup = ({
     const reg = new RegExp(e, 'gi')
     let newData
     newData = tmpDataSource.map((record) => {
-      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierId || '').match(reg)
+      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierName || '').match(reg)
       if (!match) {
         return null
       }
@@ -68,9 +68,15 @@ const BrowseGroup = ({
       render: text => text.toLocaleString()
     },
     {
+      title: 'Cashier ID',
+      dataIndex: 'cashierTransId',
+      key: 'cashierTransId',
+      width: 100
+    },
+    {
       title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId',
+      dataIndex: 'cashierName',
+      key: 'cashierName',
       width: 100
     },
     {
