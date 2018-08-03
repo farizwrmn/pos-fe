@@ -76,7 +76,7 @@ const PrintXLS = ({ listTrans, transTime, fromDate, toDate, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN CUSTOMER PER JAM', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN PENJUALAN PER JAM', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
@@ -123,7 +123,7 @@ const PrintXLS = ({ listTrans, transTime, fromDate, toDate, storeInfo }) => {
     tableHeader,
     tableBody,
     tableFooter,
-    fileName: 'Purchase-Summary'
+    fileName: 'POS-Summary'
   }
 
   return (

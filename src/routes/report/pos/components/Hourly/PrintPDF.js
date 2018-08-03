@@ -64,7 +64,7 @@ const PrintPDF = ({ user, transTime, listTrans, storeInfo, fromDate, toDate }) =
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN CUSTOMER PER JAM',
+            text: 'LAPORAN PENJUALAN PER JAM',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

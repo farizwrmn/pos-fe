@@ -41,6 +41,18 @@ export async function queryHourly (params) {
   })
 }
 
+export async function queryHour (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `${posReport}/hour`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

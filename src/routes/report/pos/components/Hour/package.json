@@ -1,0 +1,6 @@
+{
+  "name": "Hour",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Hour.js"
+}

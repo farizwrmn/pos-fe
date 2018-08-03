@@ -20,7 +20,7 @@ const Report = ({ dispatch, posReport, loading, app }) => {
     toDate,
     productCode,
     transTime,
-    loading: loading.effects['posReport/queryHourly']
+    loading: loading.effects['posReport/queryHour']
   }
 
   const filterProps = {
@@ -54,7 +54,7 @@ const Report = ({ dispatch, posReport, loading, app }) => {
     },
     onDateChange (data) {
       dispatch({
-        type: 'posReport/queryHourly',
+        type: 'posReport/queryHour',
         payload: {
           fromDate: data.transDate.from,
           toDate: data.transDate.to,
