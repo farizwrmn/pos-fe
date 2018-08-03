@@ -5,9 +5,11 @@ import { Row, Col, Button, Card, Modal } from 'antd'
 import { DropOption } from 'components'
 import Inventory from './inventory'
 import Company from './company'
+import Product from './product'
 
-const Config = ({ dispatch, configure, loading }) => {
-  const { formHeader, formCompanyVisible, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
+const Config = ({ dispatch, configure, customertype, loading }) => {
+  const { formHeader, formProductVisible, formCompanyVisible, formInventoryVisible, config, visibilitySave, visibilityCommit } = configure
+  const { listSellprice } = customertype
   const inventoryProps = {
     formHeader,
     visible: formInventoryVisible,
@@ -74,6 +76,40 @@ const Config = ({ dispatch, configure, loading }) => {
     }
   }
 
+  const productProps = {
+    formHeader,
+    visible: formProductVisible,
+    listSellprice,
+    config,
+    visibilitySave,
+    visibilityCommit,
+    loading: loading.effects['configure/query'],
+    onOk (id, data) {
+      Modal.confirm({
+        title: 'Change Preference',
+        content: 'this action cannot be undone',
+        onOk () {
+          dispatch({
+            type: 'configure/update',
+            payload: {
+              id,
+              data
+            }
+          })
+        }
+      })
+    },
+    changeVisible (e, formHeader) {
+      dispatch({
+        type: 'configure/saveVisible',
+        payload: {
+          visibilitySave: e,
+          formHeader
+        }
+      })
+    }
+  }
+
   const clearLocal = () => {
     Modal.confirm({
       title: 'All local memory will delete',
@@ -103,6 +139,7 @@ const Config = ({ dispatch, configure, loading }) => {
           <Card title={formHeader}>
             {formInventoryVisible && <Inventory {...inventoryProps} />}
             {formCompanyVisible && <Company {...companyProps} />}
+            {formProductVisible && <Product {...productProps} />}
           </Card>
         </Col>
         <Col lg={{ span: 3, offset: 1 }} md={{ span: 5, offset: 1 }} sm={{ span: 24 }}>
@@ -111,7 +148,8 @@ const Config = ({ dispatch, configure, loading }) => {
             menuName="Options"
             menuOptions={[
               { key: 'Inventory', name: 'Inventory' },
-              { key: 'Company', name: 'Company' }
+              { key: 'Company', name: 'Company' },
+              { key: 'Product', name: 'Product' }
             ]}
           />
         </Col>
@@ -122,9 +160,10 @@ const Config = ({ dispatch, configure, loading }) => {
 
 Config.propTypes = {
   configure: PropTypes.object,
+  customertype: PropTypes.object.isRequired,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
-export default connect(({ configure, loading }) => ({ configure, loading }))(Config)
+export default connect(({ configure, customertype, loading }) => ({ configure, customertype, loading }))(Config)

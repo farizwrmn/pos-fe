@@ -520,6 +520,14 @@ const Routers = function ({ history, app }) {
             }, 'report-account-summary')
           }
         }, {
+          path: 'report/marketing/followup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/marketingReport'))
+              cb(null, require('./routes/report/marketing'))
+            }, 'report-marketing-followup')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -683,6 +691,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/configure'))
+              registerModel(app, require('./models/master/customertype'))
               cb(null, require('./routes/setting/configure/'))
             }, 'setting-misc')
           }

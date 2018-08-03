@@ -78,13 +78,7 @@ const Inventory = ({
             })(<Switch defaultChecked={config.posOrder.outOfStock} />)}
           </FormItem>
         </Col>
-        <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }}>
-          {/* <FormItem label='Enable Edit Purchase' {...formItemLayout}>
-            {getFieldDecorator('editPurchase', {
-              initialValue: config.posOrder.editPurchase,
-            })(<Switch defaultChecked={config.posOrder.editPurchase} />)}
-          </FormItem> */}
-        </Col>
+        <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }} />
       </Row>
       {visibilitySave && <Button type="primary" htmlType="submit" className="ant-form-save-width-half" onClick={saveClick} style={{ visibility: visibilitySave, margin: '5px 5px 5px 5px' }}>
         Save

@@ -232,7 +232,7 @@ export default {
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
-                  transDatePrint: moment(cashierInformation.period).format('DD-MM-YYYY'),
+                  transDatePrint: moment(cashierInformation.period, 'YYYY-MM-DD').format('DD-MM-YYYY'),
                   company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
                   gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
                   phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
