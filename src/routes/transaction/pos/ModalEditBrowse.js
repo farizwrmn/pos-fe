@@ -6,8 +6,6 @@ import ServiceList from './ServiceList'
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { pagination, itemPayment, itemService, modalType, isMotion } = pos
   let title = ''
-  console.log('itemPayment', itemPayment)
-  console.log('itemService', itemService)
   if (modalType === 'modalPayment') {
     title = `Edit ${itemPayment.code} - ${itemPayment.name}`
   } else if (modalType === 'modalService') {
