@@ -7,6 +7,7 @@ import { configMain, isEmptyObject, lstorage, color, calendar } from 'utils'
 import { Reminder, DataQuery } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
+import ModalEditBrowse from './ModalEditBrowse'
 import ModalShift from './ModalShift'
 import FormWo from './FormWo'
 import styles from '../../../themes/index.less'
@@ -1801,8 +1802,8 @@ const Pos = ({
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
-            {modalPaymentVisible && <Browse {...modalPaymentProps} />}
-            {modalServiceListVisible && <Browse {...ModalServiceListProps} />}
+            {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
+            {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             <Form layout="inline">
               <Row>
                 <Col lg={{ span: 10 }} md={24}>

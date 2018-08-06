@@ -7,8 +7,8 @@ import ListMechanic from './ListMechanic'
 import ListProductLock from './ListProductLock'
 import ListService from './ListService'
 import ListQueue from './ListQueue'
-import PaymentList from './PaymentList'
-import ServiceList from './ServiceList'
+// import PaymentList from './PaymentList'
+// import ServiceList from './ServiceList'
 import ListAsset from './ListAsset'
 
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
@@ -65,8 +65,8 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
       {(modalType === 'browseProductFree') && <ListProductLock {...listProps} />}
       {(modalType === 'browseService') && <ListService {...listProps} />}
       {(modalType === 'queue') && <ListQueue {...listProps} />}
-      {(modalType === 'modalPayment') && <PaymentList {...listProps} />}
-      {(modalType === 'modalService') && <ServiceList {...listProps} />}
+      {/* {(modalType === 'modalPayment') && <PaymentList {...listProps} />}
+      {(modalType === 'modalService') && <ServiceList {...listProps} />} */}
     </Modal>
   )
 }

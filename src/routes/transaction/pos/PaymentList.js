@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, InputNumber, Form, Col, Row, Modal } from 'antd'
+import { Button, Input, InputNumber, Form, Modal } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -10,7 +10,18 @@ const formItemLayout = {
   wrapperCol: { span: 12 }
 }
 
-const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: { getFieldDecorator, validateFields, getFieldsValue } }) => {
+const PaymentList = ({
+  onChooseItem,
+  DeleteItem,
+  onChangeTotalItem,
+  item,
+  form: {
+    getFieldDecorator,
+    validateFields,
+    getFieldsValue
+  },
+  ...modalProps
+}) => {
   const handleTotalChange = () => {
     const data = getFieldsValue()
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
@@ -19,6 +30,8 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
     let TOTAL = H3 - data.discount
     data.total = TOTAL
     data.productId = item.productId
+    data.code = item.code
+    data.name = item.name
     data.typeCode = item.typeCode
     onChangeTotalItem(data)
     return data
@@ -33,6 +46,8 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
       }
       data.typeCode = item.typeCode
       data.productId = item.productId
+      data.code = item.code
+      data.name = item.name
       onChooseItem(data)
     })
   }
@@ -56,160 +71,139 @@ const PaymentList = ({ onChooseItem, DeleteItem, onChangeTotalItem, item, form: 
   }
 
   return (
-    <Form>
-      <FormItem {...formItemLayout} label="no">
-        {getFieldDecorator('no', {
-          initialValue: item.no,
-          rules: [{
-            required: true,
-            message: 'Required'
-          }]
-        })(
-          <Input disabled />
-        )
-        }
-      </FormItem>
-      <FormItem {...formItemLayout} label="Product Code">
-        {getFieldDecorator('code', {
-          initialValue: item.code,
-          rules: [{
-            required: true,
-            message: 'Required'
-          }]
-        })(
-          <Input disabled />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Product Name">
-        {getFieldDecorator('name', {
-          initialValue: item.name,
-          rules: [{
-            required: true,
-            message: 'Required'
-          }]
-        })(
-          <Input disabled />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Price">
-        {getFieldDecorator('price', {
-          initialValue: item.price,
-          rules: [{
-            required: true,
-            message: 'Required',
-            pattern: /^([0-9.]{0,13})$/i
-          }]
-        })(
-          <InputNumber
-            min={0}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Qty">
-        {getFieldDecorator('qty', {
-          initialValue: item.qty,
-          rules: [{
-            required: true,
-            message: 'Required',
-            pattern: /^([0-9]{0,13})$/i
-          }]
-        })(
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Disc1(%)">
-        {getFieldDecorator('disc1', {
-          initialValue: item.disc1,
-          rules: [{
-            required: true,
-            message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i
-          }]
-        })(
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            max={100}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Disc2(%)">
-        {getFieldDecorator('disc2', {
-          initialValue: item.disc2,
-          rules: [{
-            required: true,
-            message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i
-          }]
-        })(
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            max={100}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Disc3(%)">
-        {getFieldDecorator('disc3', {
-          initialValue: item.disc3,
-          rules: [{
-            required: true,
-            message: 'Invalid',
-            pattern: /^([0-9.]{0,5})$/i
-          }]
-        })(
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            max={100}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Discount Nominal" help="Total - Diskon Nominal">
-        {getFieldDecorator('discount', {
-          initialValue: item.discount,
-          rules: [{
-            required: true,
-            message: 'Invalid',
-            pattern: /^([0-9.]{0,13})$/i
-          }]
-        })(
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            max={item.price * item.qty}
-            onBlur={value => handleTotalChange(value)}
-          />
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Total">
-        {getFieldDecorator('total', {
-          initialValue: item.total,
-          rules: [{
-            required: true,
-            message: 'Required'
-          }]
-        })(
-          <Input disabled />
-        )}
-      </FormItem>
-      <Row>
-        <Col span={6}>
-          <Button type="primary" onClick={handleClick} disabled={!!item.bundleId}> Change </Button>
-        </Col>
-        <Col span={6}>
-          <Button type="danger" onClick={handleDelete}> Delete </Button>
-        </Col>
-      </Row>
-    </Form>
+    <Modal
+      footer={[
+        (<Button type="danger" onClick={handleDelete} disabled={!(item.bundleId !== undefined && item.bundleId !== null)}>Void</Button>),
+        (<Button type="danger" onClick={handleDelete} disabled={(item.bundleId !== undefined && item.bundleId !== null)}>Delete</Button>),
+        (<Button type="primary" onClick={handleClick}>Submit</Button>)
+      ]}
+      {...modalProps}
+    >
+      <Form>
+        <FormItem {...formItemLayout} label="no">
+          {getFieldDecorator('no', {
+            initialValue: item.no,
+            rules: [{
+              required: true,
+              message: 'Required'
+            }]
+          })(
+            <Input disabled />
+          )
+          }
+        </FormItem>
+        <FormItem {...formItemLayout} label="Price">
+          {getFieldDecorator('price', {
+            initialValue: item.price,
+            rules: [{
+              required: true,
+              message: 'Required',
+              pattern: /^([0-9.]{0,13})$/i
+            }]
+          })(
+            <InputNumber
+              min={0}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Qty">
+          {getFieldDecorator('qty', {
+            initialValue: item.qty,
+            rules: [{
+              required: true,
+              message: 'Required',
+              pattern: /^([0-9]{0,13})$/i
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Disc1(%)">
+          {getFieldDecorator('disc1', {
+            initialValue: item.disc1,
+            rules: [{
+              required: true,
+              message: 'Invalid',
+              pattern: /^([0-9.]{0,5})$/i
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              max={100}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Disc2(%)">
+          {getFieldDecorator('disc2', {
+            initialValue: item.disc2,
+            rules: [{
+              required: true,
+              message: 'Invalid',
+              pattern: /^([0-9.]{0,5})$/i
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              max={100}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Disc3(%)">
+          {getFieldDecorator('disc3', {
+            initialValue: item.disc3,
+            rules: [{
+              required: true,
+              message: 'Invalid',
+              pattern: /^([0-9.]{0,5})$/i
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              max={100}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Discount Nominal" help="Total - Diskon Nominal">
+          {getFieldDecorator('discount', {
+            initialValue: item.discount,
+            rules: [{
+              required: true,
+              message: 'Invalid',
+              pattern: /^([0-9.]{0,13})$/i
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              max={item.price * item.qty}
+              onBlur={value => handleTotalChange(value)}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Total">
+          {getFieldDecorator('total', {
+            initialValue: item.total,
+            rules: [{
+              required: true,
+              message: 'Required'
+            }]
+          })(
+            <Input disabled />
+          )}
+        </FormItem>
+      </Form>
+    </Modal>
   )
 }
 
