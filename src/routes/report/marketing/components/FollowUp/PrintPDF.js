@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { formatDate } from 'utils'
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -17,11 +18,16 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         let data = rows[key]
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
-          { text: data.count1, alignment: 'right', fontSize: 11 },
-          { text: data.count2, alignment: 'right', fontSize: 11 },
-          { text: data.count3, alignment: 'right', fontSize: 11 },
-          { text: data.count4, alignment: 'right', fontSize: 11 }
+          { text: formatDate(data.lastCall, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: data.memberName, alignment: 'left', fontSize: 11 },
+          { text: data.mobileNumber, alignment: 'left', fontSize: 11 },
+          { text: data.transNo, alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.transDate, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: data.productCode, alignment: 'left', fontSize: 11 },
+          { text: data.productName, alignment: 'left', fontSize: 11 },
+          { text: data.customerSatisfaction, alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.postService, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason || ''}`, alignment: 'left', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -31,10 +37,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
 
   // Declare Variable
-  let count1 = listTrans.reduce((cnt, o) => cnt + o.count1, 0)
-  let count2 = listTrans.reduce((cnt, o) => cnt + o.count2, 0)
-  let count3 = listTrans.reduce((cnt, o) => cnt + o.count3, 0)
-  let count4 = listTrans.reduce((cnt, o) => cnt + o.count4, 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -64,13 +66,13 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN PENJUALAN PER JAM',
+            text: 'LAPORAN FOLLOW UP PRODUCT',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -101,7 +103,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 740, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -130,12 +132,30 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableHeader = [
     [
+      { fontSize: 12, text: 'NO', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FOLLOW UP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA CUSTOMER', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO HP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'HASIL FOLLOW UP', colSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: '', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'Product/Service Offering', rowSpan: 2, style: 'tableHeader', alignment: 'center' }
+    ],
+    [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'TGL FOLLOW UP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO HP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'FEEDBACK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'JADWAL ULANG', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'OFFERING', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -144,23 +164,14 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   } catch (e) {
     console.log(e)
   }
-  const tableFooter = [
-    [
-      { text: 'Total', colSpan: 2, alignment: 'center', fontSize: 12 },
-      {},
-      { text: count1, alignment: 'right', fontSize: 12 },
-      { text: count2, alignment: 'right', fontSize: 12 },
-      { text: count3, alignment: 'right', fontSize: 12 },
-      { text: count4, alignment: 'right', fontSize: 12 }
-    ]
-  ]
+  const tableFooter = []
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '17%', '19%', '19%', '19%', '19%'],
+    width: ['4%', '8%', '10%', '9%', '7%', '8%', '9%', '11%', '13%', '8%', '13%'],
     pageMargins: [50, 130, 50, 60],
-    pageSize: 'A4',
+    pageSize: { width: 842, height: 1430 },
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',

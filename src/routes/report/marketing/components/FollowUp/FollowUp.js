@@ -54,9 +54,9 @@ const Report = ({ dispatch, marketingReport, loading, app }) => {
       dispatch({
         type: 'marketingReport/queryHourly',
         payload: {
-          fromDate: data.transDate.from,
-          toDate: data.transDate.to,
-          ...data
+          fromDate: data.transDate[0],
+          toDate: data.transDate[1],
+          data
         }
       })
       // dispatch({

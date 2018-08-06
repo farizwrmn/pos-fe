@@ -17,27 +17,27 @@ const Browse = ({ transTime, ...browseProps }) => {
       render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: '',
-      dataIndex: 'count1',
-      key: 'count1',
+      title: 'Last Call',
+      dataIndex: 'lastCall',
+      key: 'lastCall',
       className: styles.alignRight
     },
     {
-      title: '',
-      dataIndex: 'count2',
-      key: 'count2',
+      title: 'Member',
+      dataIndex: 'memberName',
+      key: 'memberName',
       className: styles.alignRight
     },
     {
-      title: '',
-      dataIndex: 'count3',
-      key: 'count3',
+      title: 'Contact',
+      dataIndex: 'mobileNumber',
+      key: 'mobileNumber',
       className: styles.alignRight
     },
     {
-      title: '',
-      dataIndex: 'count4',
-      key: 'count4',
+      title: 'Customer Satisfaction',
+      dataIndex: 'customerSatisfaction',
+      key: 'customerSatisfaction',
       className: styles.alignRight
     }
   ]
@@ -48,7 +48,6 @@ const Browse = ({ transTime, ...browseProps }) => {
         style={{ clear: 'both' }}
         {...browseProps}
         bordered
-        scroll={{ x: 1000, y: 300 }}
         columns={columns}
         simple
         size="small"
