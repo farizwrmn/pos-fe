@@ -27,7 +27,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           { text: data.productName, alignment: 'left', fontSize: 11 },
           { text: data.customerSatisfaction, alignment: 'left', fontSize: 11 },
           { text: formatDate(data.postService, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
-          { text: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason || ''}`, alignment: 'left', fontSize: 11 }
+          { text: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason ? `/ ${data.denyOfferingReason}` : ''}`, alignment: 'left', fontSize: 11 }
         ]
         body.push(row)
       }

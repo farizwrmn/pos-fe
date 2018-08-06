@@ -56,7 +56,7 @@ const Report = ({ dispatch, marketingReport, loading, app }) => {
         payload: {
           fromDate: data.transDate[0],
           toDate: data.transDate[1],
-          data
+          ...data
         }
       })
       // dispatch({

@@ -51,7 +51,6 @@ const Browse = ({ transTime, ...browseProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.transNo}
       />
     </div>
   )

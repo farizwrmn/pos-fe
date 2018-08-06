@@ -8,6 +8,7 @@ const { apiFollowUp } = config.rest
 export async function queryHourly (params) {
   const apiHeaderToken = crypt.apiheader()
   // params.storeId = lstorage.getCurrentUserStore()
+  params.field = 'lastCall,memberName,mobileNumber,transNo,transDate,productCode,productName,customerSatisfaction,postService,acceptOfferingReason,denyOfferingReason'
   const url = `${apiFollowUp}/detail`
   return request({
     url,
