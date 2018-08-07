@@ -297,7 +297,7 @@ export default modelExtend(pageModel, {
               price: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -317,7 +317,7 @@ export default modelExtend(pageModel, {
               sellingPrice: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -335,7 +335,7 @@ export default modelExtend(pageModel, {
               price: data.sellingPrice,
               discount: data.discount,
               disc1: data.disc1,
-              disc2: data.disc1,
+              disc2: data.disc2,
               disc3: data.disc3,
               total: data.total
             })
@@ -387,7 +387,7 @@ export default modelExtend(pageModel, {
               price: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -407,7 +407,7 @@ export default modelExtend(pageModel, {
               sellingPrice: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -425,7 +425,7 @@ export default modelExtend(pageModel, {
               price: data.sellingPrice,
               discount: data.discount,
               disc1: data.disc1,
-              disc2: data.disc1,
+              disc2: data.disc2,
               disc3: data.disc3,
               total: data.total
             })
