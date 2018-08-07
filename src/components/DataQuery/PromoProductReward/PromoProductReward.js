@@ -9,6 +9,7 @@ const PromoProductReward = ({
   className,
   loading,
   currentId = null,
+  enableChoosePromoDetail,
   columnsRules = [
     {
       title: 'type',
@@ -148,12 +149,12 @@ const PromoProductReward = ({
           <h2>Promo Detail</h2>
         </Col>
         <Col span={1} offset={12}>
-          <Button
+          {enableChoosePromoDetail && <Button
             type="primary"
             onClick={() => choosePromo()}
           >
             Choose
-          </Button>
+          </Button>}
         </Col>
       </Row>
     )

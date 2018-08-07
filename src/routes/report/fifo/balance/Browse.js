@@ -154,7 +154,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.transNo}
+        // rowKey={record => record.transNo}
         dataSource={dataSource}
       />
     </div>

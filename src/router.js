@@ -783,6 +783,19 @@ const Routers = function ({ history, app }) {
             }, 'purchase-history')
           }
         }, {
+          path: 'monitor/followup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/followUp'))
+              registerModel(app, require('./models/marketing/promo'))
+              registerModel(app, require('./models/marketing/bundlingRules'))
+              registerModel(app, require('./models/marketing/bundlingReward'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/service'))
+              cb(null, require('./routes/monitor/followUp'))
+            }, 'follow-up')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

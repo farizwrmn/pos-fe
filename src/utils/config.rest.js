@@ -27,7 +27,8 @@ module.exports = {
     apiTools: '/tools',
     apiPromo: '/promo',
     apiCashierUsers: '/cashiers/users',
-    apiCashRegister: '/cashiers/cashregisters'
+    apiCashRegister: '/cashiers/cashregisters',
+    apiFollowUp: '/followup'
   },
   api: {
     getIpAddress: '/utils/ipaddr',

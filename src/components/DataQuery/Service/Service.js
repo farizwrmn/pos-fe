@@ -39,6 +39,8 @@ const Service = ({
     }
   ],
   isModal = true,
+  enableFilter = true,
+  showPagination = true,
   onRowClick,
   service,
   ...tableProps
@@ -102,7 +104,7 @@ const Service = ({
         footer={null}
         {...tableProps}
       >
-        <Form layout="inline">
+        {enableFilter && <Form layout="inline">
           <FormItem>
             <Input placeholder="Search Service"
               value={searchText}
@@ -118,10 +120,10 @@ const Service = ({
             <Button onClick={handleReset}>Reset</Button>
           </FormItem>
           <Link target="_blank" to={'/master/service'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
-        </Form>
+        </Form>}
         <Table
           {...tableProps}
-          pagination={pagination}
+          pagination={showPagination ? pagination : false}
           dataSource={list}
           bordered
           scroll={{ x: 500, y: 388 }}
@@ -134,7 +136,7 @@ const Service = ({
       </Modal>}
       {!isModal &&
         (<div>
-          <Form layout="inline">
+          {enableFilter && <Form layout="inline">
             <FormItem>
               <Input
                 placeholder="Search Service"
@@ -152,10 +154,10 @@ const Service = ({
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
             <Link target="_blank" to={'/master/service'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
-          </Form>
+          </Form>}
           <Table
             {...tableProps}
-            pagination={pagination}
+            pagination={showPagination ? pagination : false}
             dataSource={list}
             bordered
             scroll={{ x: 500, y: 388 }}
