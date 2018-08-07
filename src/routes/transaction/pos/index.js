@@ -1301,6 +1301,8 @@ const Pos = ({
           productId: dataServiceFiltered[n].productId,
           bundleId: dataServiceFiltered[n].bundleId,
           bundleName: dataServiceFiltered[n].bundleName,
+          employeeId: dataServiceFiltered[n].employeeId,
+          employeeName: dataServiceFiltered[n].employeeName,
           disc1: dataServiceFiltered[n].disc1,
           disc2: dataServiceFiltered[n].disc2,
           disc3: dataServiceFiltered[n].disc3,
