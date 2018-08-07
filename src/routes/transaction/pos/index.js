@@ -2064,7 +2064,7 @@ const Pos = ({
                 </FormItem>
               </Form>
             </Panel>
-            <Panel header="Mechanic Info" key="2">
+            <Panel header="Employee Info" key="2">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
                   <Input value={mechanicInformation.employeeName} disabled />
