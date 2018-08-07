@@ -105,7 +105,7 @@ const Call = ({
           <DataTable {...tableProps} />
         </Col>
       </Row>
-      <Button className="button-right-side" size="large" onClick={memberInfo.customerSatisfaction ? nextStep : submitCall}>{memberInfo.customerSatisfaction ? 'Next' : 'Submit'}</Button>
+      <Button className="button-right-side" size="large" onClick={memberInfo.customerSatisfaction ? () => nextStep(2) : submitCall}>{memberInfo.customerSatisfaction ? 'Next' : 'Submit'}</Button>
       {memberInfo.status !== '1' && <Button className="button-right-side" size="large" onClick={showModalPending}>Pending</Button>}
     </div>
   )

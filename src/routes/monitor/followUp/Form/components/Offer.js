@@ -67,7 +67,7 @@ const Offer = ({
         </div>
       }
       {
-        memberInfo.status === '1' && <Button className="button-right-side" size="large" onClick={nextStep}>Next</Button>
+        memberInfo.status === '1' && <Button className="button-right-side" size="large" onClick={() => nextStep(3)}>Next</Button>
       }
     </div>
   )

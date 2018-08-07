@@ -269,10 +269,7 @@ export default modelExtend(pageModel, {
     },
 
     nextStep (state, { payload }) {
-      let currentStep = state.currentStep + 1
-      if (payload !== undefined) {
-        currentStep = payload
-      }
+      let currentStep = payload
       return { ...state, currentStep }
     }
   }

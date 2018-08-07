@@ -3,7 +3,7 @@ import { Row, Col } from 'antd'
 import moment from 'moment'
 import styles from './index.less'
 import DataTable from './DataTable'
-import { Button } from '../../../../../../node_modules/antd/lib/radio';
+import { Button } from '../../../../../../node_modules/antd/lib/radio'
 
 const columns = {
   xs: { span: 24 },

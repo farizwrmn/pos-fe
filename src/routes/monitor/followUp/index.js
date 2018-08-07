@@ -170,29 +170,31 @@ const FollowUp = ({
     },
     nextStep (key) {
       dispatch({ type: 'followup/nextStep', payload: key })
-      dispatch({
-        type: 'promo/query',
-        payload: {
-          storeId: lstorage.getCurrentUserStore(),
-          name: null
-        }
-      })
-      dispatch({
-        type: 'productstock/query',
-        payload: {
-          page: 1,
-          pageSize: 5,
-          order: '-createdAt'
-        }
-      })
-      dispatch({
-        type: 'service/query',
-        payload: {
-          page: 1,
-          pageSize: 5,
-          order: '-createdAt'
-        }
-      })
+      if (key === 2) {
+        dispatch({
+          type: 'promo/query',
+          payload: {
+            storeId: lstorage.getCurrentUserStore(),
+            name: null
+          }
+        })
+        dispatch({
+          type: 'productstock/query',
+          payload: {
+            page: 1,
+            pageSize: 5,
+            order: '-createdAt'
+          }
+        })
+        dispatch({
+          type: 'service/query',
+          payload: {
+            page: 1,
+            pageSize: 5,
+            order: '-createdAt'
+          }
+        })
+      }
     },
     showModalPending () {
       dispatch({
