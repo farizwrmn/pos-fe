@@ -66,7 +66,7 @@ const LovButton = ({
         className="button-width01"
         onClick={handleMechanicBrowse}
       >
-        Mechanic
+        Employee
       </Button>
       <ButtonGroup>
         <Button
