@@ -1,0 +1,199 @@
+/**
+ * Created by boo on 9/19/17.
+ */
+import React from 'react'
+import PropTypes from 'prop-types'
+import moment from 'moment'
+import { BasicReport } from 'components'
+import { formatDate } from 'utils'
+
+const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
+  // Declare Function
+  const createTableBody = (tabledata) => {
+    let body = []
+    const rows = tabledata
+    let count = 1
+    for (let key in rows) {
+      if (rows.hasOwnProperty(key)) {
+        let data = rows[key]
+        let row = [
+          { text: count, alignment: 'center', fontSize: 11 },
+          { text: formatDate(data.lastCall, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: data.memberName, alignment: 'left', fontSize: 11 },
+          { text: data.mobileNumber, alignment: 'left', fontSize: 11 },
+          { text: data.transNo, alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.transDate, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: data.productCode, alignment: 'left', fontSize: 11 },
+          { text: data.productName, alignment: 'left', fontSize: 11 },
+          { text: data.customerSatisfaction, alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.postService, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
+          { text: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason ? `/ ${data.denyOfferingReason}` : ''}`, alignment: 'left', fontSize: 11 }
+        ]
+        body.push(row)
+      }
+      count += 1
+    }
+    return body
+  }
+
+  // Declare Variable
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10]
+    },
+    subheader: {
+      fontSize: 16,
+      bold: true,
+      margin: [0, 10, 0, 5]
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15]
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black'
+    }
+  }
+
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN FOLLOW UP PRODUCT',
+            style: 'header',
+            fontSize: 18,
+            alignment: 'center'
+          },
+          {
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
+          },
+          {
+            columns: [
+              {
+                text: `\nPERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`,
+                fontSize: 12,
+                alignment: 'left'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'center'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    margin: [50, 12, 50, 30]
+  }
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [50, 30, 50, 0],
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1330, y2: 5, lineWidth: 0.5 }]
+        },
+        {
+          columns: [
+            {
+              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY HH:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left'
+            },
+            {
+              text: `Dicetak oleh: ${user.username}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'center'
+            },
+            {
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
+    }
+  }
+  const tableHeader = [
+    [
+      { fontSize: 12, text: 'NO', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FOLLOW UP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA CUSTOMER', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO HP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'HASIL FOLLOW UP', colSpan: 2, style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: '', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'Product/Service Offering', rowSpan: 2, style: 'tableHeader', alignment: 'center' }
+    ],
+    [
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FOLLOW UP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO HP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TGL FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'FEEDBACK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'JADWAL ULANG', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'OFFERING', style: 'tableHeader', alignment: 'center' }
+    ]
+  ]
+  let tableBody = []
+  try {
+    tableBody = createTableBody(listTrans)
+  } catch (e) {
+    console.log(e)
+  }
+  const tableFooter = []
+
+  // Declare additional Props
+  const pdfProps = {
+    className: 'button-width02 button-extra-large bgcolor-blue',
+    width: ['4%', '8%', '10%', '9%', '7%', '8%', '9%', '11%', '13%', '8%', '13%'],
+    pageMargins: [50, 130, 50, 60],
+    pageSize: { width: 842, height: 1430 },
+    pageOrientation: 'landscape',
+    tableStyle: styles,
+    layout: 'noBorder',
+    tableHeader,
+    tableBody,
+    tableFooter,
+    data: listTrans,
+    header,
+    footer
+  }
+
+  return (
+    <BasicReport {...pdfProps} />
+  )
+}
+
+PrintPDF.propTypes = {
+  listTrans: PropTypes.array,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object.isRequired,
+  fromDate: PropTypes.string.isRequired,
+  toDate: PropTypes.string
+}
+
+export default PrintPDF
