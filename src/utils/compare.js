@@ -14,6 +14,23 @@ const compareExistsById = (listSource, resultList) => {
   }
 }
 
+const compareExistsByIdAndQty = (listSource, resultList) => {
+  let currentExists = []
+  for (let n = 0; n < (resultList || []).length; n += 1) {
+    // jika productId dan qty sama
+    // ada digunakan di pospromo untuk check rules sudah memenuhi syarat
+    currentExists = listSource.filter(x => x.productId === resultList[n].productId && x.qty >= resultList[n].qty && (x.bundleId === undefined || x.bundleId === null))
+  }
+  if ((currentExists || []).length === (resultList || []).length) {
+    return {
+      status: true
+    }
+  }
+  return {
+    status: false
+  }
+}
+
 const compareBundleExists = (listSource, resultList) => {
   let currentExists = []
   currentExists = listSource.filter(x => x.bundleId === resultList.id)
@@ -50,6 +67,7 @@ const compareBundleItemExists = (listSource, resultList) => {
 
 module.exports = {
   compareExistsById,
+  compareExistsByIdAndQty,
   compareBundleExists,
   compareBundleItemExists
 }

@@ -15,6 +15,16 @@ const List = ({ ...tableProps, editList }) => {
       key: 'id'
     },
     {
+      title: 'CashierTrans',
+      dataIndex: 'cashierTransId',
+      key: 'cashierTransId'
+    },
+    {
+      title: 'Cashier Name',
+      dataIndex: 'cashierName',
+      key: 'cashierName'
+    },
+    {
       title: 'Type',
       dataIndex: 'typeCode',
       key: 'typeCode'

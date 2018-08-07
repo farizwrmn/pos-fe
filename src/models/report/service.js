@@ -13,6 +13,8 @@ export default {
     fromDate: '',
     toDate: '',
     productCode: 'ALL TYPE',
+    activeKey: '1',
+    filterModalVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -26,9 +28,18 @@ export default {
       history.listen((location) => {
         switch (location.pathname) {
           case '/report/service/summary':
-            dispatch({
-              type: 'setListNull'
-            })
+            {
+              const { activeKey } = location.query
+              dispatch({
+                type: 'setListNull'
+              })
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: activeKey || '1'
+                }
+              })
+            }
             break
           case '/report/service/history':
             dispatch({

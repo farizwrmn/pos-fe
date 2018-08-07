@@ -29,11 +29,12 @@ const column = {
 
 const FormCounter = ({
   item = {},
-  listAccountCode,
+  listAccountCodeLov,
   onSubmit,
   onCancel,
   modalType,
   button,
+  queryEditItem,
   showParent,
   form: {
     getFieldDecorator,
@@ -60,14 +61,28 @@ const FormCounter = ({
     }
   }
 
-  const listOptions = (listAccountCode || []).length > 0 ? (listAccountCode || []).map(c => <Option key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
+  const handleClickTree = (event, id) => {
+    Modal.confirm({
+      title: 'Edit item ?',
+      content: `You're gonna edit item ${event}`,
+      onOk () {
+        resetFields()
+        queryEditItem(event, id)
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
+  }
+
+  const listOptions = (listAccountCodeLov || []).length > 0 ? (listAccountCodeLov || []).map(c => <Option key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
 
   const handleCancel = () => {
     onCancel()
     resetFields()
   }
 
-  const menuTree = arrayToTree((listAccountCode || []).filter(_ => _.id !== null), 'id', 'accountParentId')
+  const menuTree = arrayToTree((listAccountCodeLov || []).filter(_ => _.id !== null), 'id', 'accountParentId')
   const levelMap = {}
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {
@@ -80,7 +95,7 @@ const FormCounter = ({
             key={item.accountCode}
             title={(
               <div
-                // onClick={() => handleClickTree(item.accountCode, item.id)}
+                onClick={() => handleClickTree(item.accountCode, item.id)}
                 value={item.accountCode}
               >
                 {item.accountName} ({item.accountCode})
@@ -96,7 +111,7 @@ const FormCounter = ({
           key={item.accountCode}
           title={(
             <div
-              // onClick={() => handleClickTree(item.accountCode, item.id)}
+              onClick={() => handleClickTree(item.accountCode, item.id)}
               value={item.accountCode}
             >{item.accountName} ({item.accountCode})
             </div>
@@ -116,6 +131,7 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.accountParentId = data.accountParentId.key
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -158,11 +174,14 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={40} />)}
           </FormItem>
           <FormItem label="Parent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountParentId', {
-              initialValue: item.accountParentId,
+              initialValue: item ? {
+                key: item.accountParentId,
+                name: item.accountParentName
+              } : null,
               rules: [
                 {
                   required: false
@@ -174,6 +193,7 @@ const FormCounter = ({
               optionFilterProp="children"
               placeholder="Parent of category"
               onFocus={getData}
+              labelInValue
               filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
             >{listOptions}
             </Select>)}
@@ -183,7 +203,7 @@ const FormCounter = ({
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
-        {(listAccountCode || []).length > 0 &&
+        {(listAccountCodeLov || []).length > 0 &&
           <div>
             <strong style={{ fontSize: '15' }}> Current Account </strong>
             <br />

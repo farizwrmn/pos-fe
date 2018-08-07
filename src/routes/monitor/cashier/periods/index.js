@@ -77,12 +77,13 @@ const History = ({
         }
       })
     },
-    onSearch () {
+    onSearch (query) {
       dispatch({
-        type: 'cashier/getCashRegisterByStore',
+        type: 'cashier/query',
         payload: {
           page: 1,
-          params: { cashierId: '', storeId: '', from: '', to: '' }
+          pageSize: 10,
+          q: query === '' ? null : query
         }
       })
     },
@@ -119,7 +120,7 @@ const History = ({
       dispatch({
         type: 'cashier/query',
         payload: {
-          q: searchText,
+          q: searchText === '' ? null : searchText,
           page: page.current,
           pageSize: page.pageSize
         }

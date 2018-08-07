@@ -6,7 +6,7 @@ import { query as queryRules } from '../../services/marketing/bundlingRules'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 
-const { compareExistsById, compareBundleExists } = compare
+const { compareExistsById, compareBundleExists, compareExistsByIdAndQty } = compare
 
 export default modelExtend(pageModel, {
   namespace: 'pospromo',
@@ -17,7 +17,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     searchText: null,
     typeModal: null,
-    modalPromoVibible: false,
+    modalPromoVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * addPosPromo ({ payload = {} }, { call, put }) {
-      const { bundleId, currentBundle, currentProduct, currentService, ...other } = payload
+      const { bundleId, currentBundle, currentProduct, currentService, reject, resolve, ...other } = payload
       const data = yield call(query, { id: bundleId })
       const dataRules = yield call(queryRules, { bundleId, ...other })
       const dataReward = yield call(queryReward, { bundleId, ...other })
@@ -50,36 +50,85 @@ export default modelExtend(pageModel, {
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P')
         if (item && dataRules.data && dataReward.data) {
           const resultCompareBundle = compareBundleExists(currentBundle, item)
-          const resultCompareRulesProduct = compareExistsById(currentProduct, itemRulesProduct)
-          const resultCompareRulesService = compareExistsById(currentService, itemRulesService)
+          const resultCompareRulesProductRequired = compareExistsByIdAndQty(currentProduct, itemRulesProduct)
+          const resultCompareRulesServiceRequired = compareExistsByIdAndQty(currentService, itemRulesService)
+          // const resultCompareRulesProduct = compareExistsById(currentProduct, itemRulesProduct)
+          // const resultCompareRulesService = compareExistsById(currentService, itemRulesService)
           const resultCompareRewardProduct = compareExistsById(currentProduct, itemRewardProduct)
           const resultCompareRewardService = compareExistsById(currentService, itemRewardService)
-          const result = resultCompareRulesProduct.data || resultCompareRulesService.data || resultCompareRewardProduct.data || resultCompareRewardService.data
-          const status = resultCompareRulesProduct.status || resultCompareRulesService.status || resultCompareRewardProduct.status || resultCompareRewardService.status
-
-          if (resultCompareBundle.status && item.applyMultiple === '0') {
-            Modal.warning({
-              title: 'Cannot Apply Multiple to this promo',
-              content: 'Call your stock administrator for this issue'
-            })
-          } else if (status) {
-            const confirmPromise = () => {
-              const data = new Promise((resolve, reject) => {
-                Modal.confirm({
-                  title: `Promo's Item ${result.productName} is exists in transaction`,
-                  content: 'Do you want to add promo belong to exists item ?',
-                  onOk () {
-                    resolve()
-                  },
-                  onCancel () {
-                    reject()
+          const result = resultCompareRewardProduct.data || resultCompareRewardService.data
+          const status = resultCompareRewardProduct.status || resultCompareRewardService.status
+          if (resultCompareRulesProductRequired.status && resultCompareRulesServiceRequired.status) {
+            if (resultCompareBundle.status && item.applyMultiple === '0') {
+              Modal.warning({
+                title: 'Cannot Apply Multiple to this promo',
+                content: 'Call your stock administrator for this issue'
+              })
+            } else if (status) {
+              const confirmPromise = () => {
+                const data = new Promise((resolve, reject) => {
+                  Modal.confirm({
+                    title: `Promo's Item ${result.productName} is exists in transaction`,
+                    content: 'Do you want to add promo belong to exists item ?',
+                    onOk () {
+                      resolve()
+                    },
+                    onCancel () {
+                      reject()
+                    }
+                  })
+                })
+                return data
+              }
+              yield confirmPromise()
+              if (!resultCompareBundle.status) {
+                yield put({
+                  type: 'setBundleNeverExists',
+                  payload: {
+                    currentBundle,
+                    item
                   }
                 })
-              })
-              return data
-            }
-            yield confirmPromise()
-            if (!resultCompareBundle.status) {
+                yield put({
+                  type: 'setProductPos',
+                  payload: {
+                    currentProduct,
+                    currentReward: itemRewardProduct
+                  }
+                })
+                yield put({
+                  type: 'setServicePos',
+                  payload: {
+                    currentProduct: currentService,
+                    currentReward: itemRewardService
+                  }
+                })
+                payload.resolve('done')
+              } else if (resultCompareBundle.status && item.applyMultiple === '1') {
+                yield put({
+                  type: 'setBundleAlreadyExists',
+                  payload: {
+                    currentBundle,
+                    item
+                  }
+                })
+                yield put({
+                  type: 'setProductPos',
+                  payload: {
+                    currentProduct,
+                    currentReward: itemRewardProduct
+                  }
+                })
+                yield put({
+                  type: 'setServicePos',
+                  payload: {
+                    currentProduct: currentService,
+                    currentReward: itemRewardService
+                  }
+                })
+              }
+              payload.resolve('done')
+            } else if (!resultCompareBundle.status) {
               yield put({
                 type: 'setBundleNeverExists',
                 payload: {
@@ -101,6 +150,7 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              payload.resolve('done')
             } else if (resultCompareBundle.status && item.applyMultiple === '1') {
               yield put({
                 type: 'setBundleAlreadyExists',
@@ -123,50 +173,12 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              payload.resolve('done')
             }
-          } else if (!resultCompareBundle.status) {
-            yield put({
-              type: 'setBundleNeverExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-            yield put({
-              type: 'setProductPos',
-              payload: {
-                currentProduct,
-                currentReward: itemRewardProduct
-              }
-            })
-            yield put({
-              type: 'setServicePos',
-              payload: {
-                currentProduct: currentService,
-                currentReward: itemRewardService
-              }
-            })
-          } else if (resultCompareBundle.status && item.applyMultiple === '1') {
-            yield put({
-              type: 'setBundleAlreadyExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-            yield put({
-              type: 'setProductPos',
-              payload: {
-                currentProduct,
-                currentReward: itemRewardProduct
-              }
-            })
-            yield put({
-              type: 'setServicePos',
-              payload: {
-                currentProduct: currentService,
-                currentReward: itemRewardService
-              }
+          } else {
+            Modal.warning({
+              title: 'Rules validation',
+              content: 'Please check your required Rules Item'
             })
           }
         } else {
@@ -176,6 +188,7 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
+        payload.reject('error')
         throw data
       }
     },
@@ -245,7 +258,8 @@ export default modelExtend(pageModel, {
         payload: {}
       })
     },
-    * setProductPos ({ payload = {} }, { put }) {
+    * setProductPos ({ payload = {} }, { select, put }) {
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
       Array.prototype.remove = function () {
@@ -275,13 +289,15 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
               price: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -293,13 +309,15 @@ export default modelExtend(pageModel, {
               productId: currentReward[n].productId,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -310,12 +328,14 @@ export default modelExtend(pageModel, {
               name: data.name,
               bundleId: data.bundleId,
               bundleName: data.bundleName,
+              employeeId: data.employeeId,
+              employeeName: data.employeeName,
               typeCode: 'P',
               qty: data.qty,
               price: data.sellingPrice,
               discount: data.discount,
               disc1: data.disc1,
-              disc2: data.disc1,
+              disc2: data.disc2,
               disc3: data.disc3,
               total: data.total
             })
@@ -328,7 +348,8 @@ export default modelExtend(pageModel, {
         payload: {}
       })
     },
-    * setServicePos ({ payload = {} }, { put }) {
+    * setServicePos ({ payload = {} }, { select, put }) {
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
       Array.prototype.remove = function () {
@@ -358,13 +379,15 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
               qty: filteredProduct[0].qty + currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
               price: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -376,13 +399,15 @@ export default modelExtend(pageModel, {
               productId: currentReward[n].productId,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: currentReward[n].productName,
               typeCode: 'S',
               qty: currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
-              disc2: currentReward[n].disc1,
+              disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
@@ -393,12 +418,14 @@ export default modelExtend(pageModel, {
               name: data.name,
               bundleId: data.bundleId,
               bundleName: data.bundleName,
+              employeeId: data.employeeId,
+              employeeName: data.employeeName,
               typeCode: 'S',
               qty: data.qty,
               price: data.sellingPrice,
               discount: data.discount,
               disc1: data.disc1,
-              disc2: data.disc1,
+              disc2: data.disc2,
               disc3: data.disc3,
               total: data.total
             })

@@ -53,6 +53,8 @@ const formPayment = ({
   curTotalDiscount,
   curRounding,
   listAmount,
+  cashierInformation,
+  cashierBalance,
   form: {
     getFieldDecorator,
     validateFields,
@@ -68,6 +70,8 @@ const formPayment = ({
         return
       }
       const data = {
+        cashierTransId: cashierInformation.id,
+        cashierName: cashierInformation.cashierName,
         ...getFieldsValue()
       }
       if (modalType === 'add') {
@@ -95,6 +99,8 @@ const formPayment = ({
   }
 
   const listProps = {
+    cashierBalance,
+    cashierInformation,
     dataSource: listAmount,
     editList (data) {
       editItem(data)

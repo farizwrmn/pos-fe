@@ -41,8 +41,9 @@ const ListQueue = ({ pos, dispatch }) => {
         phone: trans.phone
       })
       arrayMechanic.push({
-        mechanicCode: trans.mechanicCode,
-        mechanicName: trans.mechanicName
+        employeeId: trans.employeeId,
+        employeeCode: trans.employeeCode,
+        employeeName: trans.employeeName
       })
       Reflect.deleteProperty(queue, useQueue)
       localStorage.removeItem('lastMeter')
@@ -133,11 +134,11 @@ const ListQueue = ({ pos, dispatch }) => {
               },
               {
                 title: 'Mechanic',
-                dataIndex: 'mechanicName'
+                dataIndex: 'employeeName'
               },
               {
                 title: 'Mechanic ID',
-                dataIndex: 'mechanicCode'
+                dataIndex: 'employeeCode'
               },
               {
                 title: 'Point',

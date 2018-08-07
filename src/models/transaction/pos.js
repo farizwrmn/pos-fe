@@ -1,3 +1,4 @@
+import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
@@ -9,7 +10,7 @@ import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../
 import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryCurrentOpenCashRegister, cashRegister } from '../../services/setting/cashier'
+import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
 
@@ -62,6 +63,7 @@ export default {
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
     cashierInformation: {},
+    cashierBalance: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -100,28 +102,31 @@ export default {
     showListReminder: false,
     paymentListActiveKey: '1',
     modalAddUnit: false,
-    modalAddMember: false
+    modalAddMember: false,
+    currentCashier: {}
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/pos') {
+        const userId = lstorage.getStorageKey('udi')[1]
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-          const userId = lstorage.getStorageKey('udi')[1]
-          dispatch({
-            type: 'showShiftModal',
-            payload: memberUnitInfo
-          })
+          if (location.pathname !== '/transaction/pos/payment') {
+            dispatch({
+              type: 'showShiftModal',
+              payload: memberUnitInfo
+            })
+            dispatch({
+              type: 'getServiceReminder'
+            })
+          }
           dispatch({
             type: 'loadDataPos',
             payload: {
               cashierId: userId,
               status: 'O'
             }
-          })
-          dispatch({
-            type: 'getServiceReminder'
           })
           // dispatch({
           //   type: 'getCashierInformation',
@@ -136,6 +141,13 @@ export default {
               endPeriod: infoStore.endPeriod
             }
           })
+          dispatch({
+            type: 'loadDataPos',
+            payload: {
+              cashierId: userId,
+              status: 'O'
+            }
+          })
         } else if (location.pathname === '/monitor/service/history') {
           dispatch({
             type: 'getServiceReminder'
@@ -144,6 +156,20 @@ export default {
             type: 'updateState',
             payload: {
               listUnitUsage: []
+            }
+          })
+        }
+      })
+
+      history.listen(() => {
+        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
+        const userId = lstorage.getStorageKey('udi')[1]
+        if (match) {
+          dispatch({
+            type: 'loadDataPos',
+            payload: {
+              cashierId: userId,
+              status: 'O'
             }
           })
         }
@@ -193,6 +219,8 @@ export default {
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
           bundleName: ary[n].bundleName,
+          employeeId: ary[n].employeeId,
+          employeeName: ary[n].employeeName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -250,6 +278,8 @@ export default {
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
           bundleName: ary[n].bundleName,
+          employeeId: ary[n].employeeId,
+          employeeName: ary[n].employeeName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -530,13 +560,29 @@ export default {
       const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
       if (currentRegister.success) {
         const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInformation,
-            dataCashierTrans: cashierInformation
+        if (cashierInformation) {
+          const cashierBalance = yield call(queryCashierTransSource, { id: cashierInformation.id })
+          if (cashierBalance.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                cashierInformation,
+                dataCashierTrans: cashierInformation,
+                cashierBalance: cashierBalance.data.total[0] ? cashierBalance.data.total[0] : {}
+              }
+            })
+          } else {
+            throw cashierBalance
           }
-        })
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              cashierInformation,
+              dataCashierTrans: cashierInformation
+            }
+          })
+        }
       } else {
         throw currentRegister
       }
@@ -965,6 +1011,7 @@ export default {
     },
 
     * cashRegister ({ payload = {} }, { call, put }) {
+      const userId = lstorage.getStorageKey('udi')[1]
       const data = yield call(cashRegister, payload)
       if (data.success) {
         localStorage.setItem('cashierNo', data.cashregisters.cashierId)
@@ -973,6 +1020,13 @@ export default {
           payload: {
             cashierInformation: data.cashregisters,
             dataCashierTrans: data.cashregisters
+          }
+        })
+        yield put({
+          type: 'loadDataPos',
+          payload: {
+            cashierId: userId,
+            status: 'O'
           }
         })
         yield put({
@@ -1086,6 +1140,8 @@ export default {
             productId: ary[n].productId,
             bundleId: ary[n].bundleId,
             bundleName: ary[n].bundleName,
+            employeeId: ary[n].employeeId,
+            employeeName: ary[n].employeeName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1178,6 +1234,8 @@ export default {
             productId: ary[n].productId,
             bundleId: ary[n].bundleId,
             bundleName: ary[n].bundleName,
+            empoyeeId: ary[n].empoyeeId,
+            empoyeeName: ary[n].empoyeeName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1239,8 +1297,9 @@ export default {
         gender: memberInfo.gender,
         id: memberInfo.id,
         phone: memberInfo.phone,
-        mechanicCode: mechanic.mechanicCode,
-        mechanicName: mechanic.mechanicName
+        employeeId: mechanic.employeeId,
+        employeeCode: mechanic.employeeCode,
+        employeeName: mechanic.employeeName
       })
       const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
       if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&

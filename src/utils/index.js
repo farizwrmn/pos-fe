@@ -124,7 +124,8 @@ const messageInfo = (info, type = 'info', duration = 3) => {
 const formatDate = (text, format) => {
   if (text && format) return moment(text, format).format('DD-MMM-YYYY')
   if (text) return moment(text).format('DD-MMM-YYYY')
-  return ''
+  if (text === null) return ''
+  return moment().format('DD-MMM-YYYY')
 }
 
 const posTotal = (data) => {

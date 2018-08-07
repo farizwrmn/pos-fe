@@ -1,0 +1,141 @@
+/**
+ * Created by Veirry on 25/04/2018.
+ */
+import {
+  queryHourly,
+  queryHour
+} from '../../services/report/marketing'
+
+export default {
+  namespace: 'marketingReport',
+
+  state: {
+    listTrans: [],
+    fromDate: '',
+    toDate: '',
+    activeKey: '1',
+    transTime: {},
+    selectedBrand: [],
+    tableHeader: [],
+    filterModalVisible: false,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      showTotal: total => `Total ${total} Records`,
+      current: 1,
+      total: null
+    }
+  },
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        const { activeKey } = location.query
+        if (location.pathname === '/report/pos/monthly') {
+          dispatch({
+            type: 'setListNull'
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '1'
+            }
+          })
+        }
+      })
+    }
+  },
+  effects: {
+    * queryHourly ({ payload = {} }, { call, put }) {
+      const { fromDate, toDate, ...other } = payload
+      const data = yield call(queryHourly, other)
+      if (data.success) {
+        const transTime = {
+          ...payload
+        }
+        yield put({
+          type: 'querySuccessHourly',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            transTime,
+            fromDate,
+            toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryHour ({ payload = {} }, { call, put }) {
+      const { fromDate, toDate, ...other } = payload
+      const data = yield call(queryHour, other)
+      if (data.success) {
+        const transTime = {
+          ...payload
+        }
+        yield put({
+          type: 'querySuccessHourly',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            transTime,
+            fromDate,
+            toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    }
+  },
+  reducers: {
+    querySuccessHourly (state, action) {
+      const { listTrans, pagination, transTime, tmpList, fromDate, toDate } = action.payload
+
+      return {
+        ...state,
+        transTime,
+        listTrans,
+        fromDate,
+        toDate,
+        tmpList,
+        filterModalVisible: false,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    },
+    setDate (state, action) {
+      return { ...state, fromDate: action.payload.from, toDate: action.payload.to, ...action.payload }
+    },
+    setListNull (state) {
+      return {
+        ...state,
+        list: [],
+        listTrans: [],
+        listDaily: [],
+        listPOS: [],
+        listPOSDetail: [],
+        listPOSCompareSvsI: [],
+        diffDay: 0,
+        selectedBrand: [],
+        tableHeader: [],
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: total => `Total ${total} Records`,
+          current: 1,
+          total: null
+        }
+      }
+    }
+  }
+}

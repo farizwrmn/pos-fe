@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cashier = ({ cashier, user, loading, dispatch, location }) => {
-  const { listCashier, modalType, currentItem, activeKey } = cashier
+  const { listCashier, modalType, currentItem, activeKey, pagination } = cashier
   const { list } = user
   const filterProps = {
     onFilterChange (value) {
@@ -25,8 +25,20 @@ const Cashier = ({ cashier, user, loading, dispatch, location }) => {
 
   const listProps = {
     dataSource: listCashier,
+    pagination,
     loading: loading.effects['cashier/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({

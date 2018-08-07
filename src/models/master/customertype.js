@@ -41,6 +41,8 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
+        } else if (pathname === '/setting/configure') {
+          dispatch({ type: 'querySellprice' })
         }
       })
     }

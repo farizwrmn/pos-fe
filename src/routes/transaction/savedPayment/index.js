@@ -9,7 +9,7 @@ import ModalCancel from './ModalCancel'
 
 const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
   const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, tmpListPayment, posData } = pos
+    pagination, modalPrintVisible, tmpListPayment, posData, cashierInformation } = pos
   const { companyInfo } = payment
   const { storeInfo } = app
 
@@ -107,7 +107,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,
           lastMeter: listPaymentDetail.lastMeter,
-          mechanicName: data.mechanicPrint.employeeName,
+          employeeName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
           userName: listPaymentDetail.cashierId,
@@ -150,6 +150,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
     width: 90,
+    cashierInformation,
     loading: loading.effects['pos/queryHistory'],
     pagination,
     location,

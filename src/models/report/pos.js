@@ -10,7 +10,9 @@ import {
   queryPOS,
   queryPOSDetail,
   queryTurnOver,
-  queryPOSCompareSvsI
+  queryPOSCompareSvsI,
+  queryHourly,
+  queryHour
 } from '../../services/report/pos'
 
 export default {
@@ -30,8 +32,11 @@ export default {
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
+    activeKey: '1',
+    transTime: {},
     selectedBrand: [],
     tableHeader: [],
+    filterModalVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -43,6 +48,19 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
+        dispatch({
+          type: 'updateState',
+          payload: {
+            activeKey: activeKey || '1',
+            list: [],
+            listTrans: [],
+            listDaily: [],
+            listPOS: [],
+            listPOSDetail: [],
+            listPOSCompareSvsI: []
+          }
+        })
         if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
           dispatch({
             type: 'setListNull'
@@ -239,6 +257,52 @@ export default {
       } else {
         throw data
       }
+    },
+    * queryHourly ({ payload = {} }, { call, put }) {
+      const { fromDate, toDate, ...other } = payload
+      const data = yield call(queryHourly, other)
+      if (data.success) {
+        const transTime = {
+          ...payload
+        }
+        yield put({
+          type: 'querySuccessHourly',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            transTime,
+            fromDate,
+            toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryHour ({ payload = {} }, { call, put }) {
+      const { fromDate, toDate, ...other } = payload
+      const data = yield call(queryHour, other)
+      if (data.success) {
+        const transTime = {
+          ...payload
+        }
+        yield put({
+          type: 'querySuccessHourly',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            transTime,
+            fromDate,
+            toDate
+          }
+        })
+      } else {
+        throw data
+      }
     }
   },
   reducers: {
@@ -284,6 +348,23 @@ export default {
         fromDate,
         toDate,
         tmpList,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    querySuccessHourly (state, action) {
+      const { listTrans, pagination, transTime, tmpList, fromDate, toDate } = action.payload
+
+      return {
+        ...state,
+        transTime,
+        listTrans,
+        fromDate,
+        toDate,
+        tmpList,
+        filterModalVisible: false,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -25,18 +25,15 @@ const ModalBrowse = ({
     {
       title: 'Cashier ID',
       dataIndex: 'cashierId',
-      key: 'cashierId',
-      width: '100px'
+      key: 'cashierId'
     }, {
       title: 'Cashier Name',
-      dataIndex: 'employeeName',
-      key: 'employeeName',
-      width: '140px'
+      dataIndex: 'cashierName',
+      key: 'cashierName'
     }, {
       title: 'Cashier',
       dataIndex: 'isCashierActive',
       key: 'isCashierActive',
-      width: '200px',
       render: text =>
         (<span>
           <Tag color={text ? 'blue' : 'red'}>
@@ -47,7 +44,6 @@ const ModalBrowse = ({
       title: 'Employee',
       dataIndex: 'isEmployeeActive',
       key: 'isEmployeeActive',
-      width: '70px',
       render: text =>
         (<span>
           <Tag color={text ? 'blue' : 'red'}>

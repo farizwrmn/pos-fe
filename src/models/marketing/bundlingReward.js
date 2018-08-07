@@ -12,7 +12,7 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     listReward: [],
-    modalPromoVibible: false,
+    modalPromoVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,

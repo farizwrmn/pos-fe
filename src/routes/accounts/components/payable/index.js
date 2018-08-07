@@ -7,8 +7,14 @@ import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
 const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
-  const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, posData } = pos
+  const {
+    listPaymentDetail,
+    invoiceCancel,
+    modalCancelVisible,
+    memberPrint,
+    mechanicPrint,
+    modalPrintVisible,
+    posData } = pos
   const { listPayment, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
@@ -102,7 +108,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,
           lastMeter: listPaymentDetail.lastMeter,
-          mechanicName: data.mechanicPrint.employeeName,
+          employeeName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
           userName: listPaymentDetail.cashierId,
@@ -146,8 +152,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     tmpDataSource: tmpListPayment,
     width: 90,
     size: 'small',
-    loading: loading.effects['pos/queryHistory'],
-    pagination,
+    loading: loading.effects['accountPayment/queryPurchase'],
     location,
     onSearchChange (data) {
       dispatch({

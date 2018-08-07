@@ -2,6 +2,16 @@ import { request, config, crypt } from '../../utils'
 
 const { cashier } = config.api
 
+export async function queryCode (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${cashier}/account/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'sort,accountParentCode'

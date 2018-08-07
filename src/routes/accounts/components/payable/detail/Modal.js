@@ -205,7 +205,7 @@ const modal = ({
                 initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C',
+                    required: true,
                     message: 'please insert the value'
                   }
                 ]

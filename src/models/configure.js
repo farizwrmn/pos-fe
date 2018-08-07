@@ -10,6 +10,7 @@ export default modelExtend(pageModel, {
     formHeader: '',
     formInventoryVisible: false,
     formCompanyVisible: false,
+    formProductVisible: false,
     config: {},
     visibilitySave: 'visible',
     visibilityCommit: 'hidden'
@@ -102,8 +103,11 @@ export default modelExtend(pageModel, {
     queryCompany (state, action) {
       return { ...state, ...action.payload, formCompanyVisible: true }
     },
+    queryProduct (state, action) {
+      return { ...state, ...action.payload, formProductVisible: true }
+    },
     close (state) {
-      return { ...state, formInventoryVisible: false, formCompanyVisible: false }
+      return { ...state, formInventoryVisible: false, formCompanyVisible: false, formProductVisible: false }
     },
     saveVisible (state, action) {
       return { ...state, visibilityCommit: action.payload.visibilityCommit, visibilitySave: action.payload.visibilitySave }

@@ -57,7 +57,6 @@ const ModalList = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '640px', y: 388 }}
         columns={columns}
         simple
         size="small"

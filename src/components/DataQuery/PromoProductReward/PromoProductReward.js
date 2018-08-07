@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
+import styles from '../../../themes/index.less'
 
 const width = 500
 const PromoProductReward = ({
@@ -75,6 +76,14 @@ const PromoProductReward = ({
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
+      className: styles.alignRight,
+      width: `${width * 0.15}px`
+    },
+    {
+      title: 'Stock',
+      dataIndex: 'stock',
+      key: 'stock',
+      className: styles.alignRight,
       width: `${width * 0.15}px`
     }
   ],
@@ -130,18 +139,31 @@ const PromoProductReward = ({
   }
 
   const choosePromo = () => {
-    dispatch({
-      type: 'pospromo/addPosPromo',
-      payload: {
-        type: 'all',
-        bundleId: currentId,
-        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-        currentProduct: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
-        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      }
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'pospromo/addPosPromo',
+        payload: {
+          type: 'all',
+          bundleId: currentId,
+          currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+          currentProduct: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+          currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
+          resolve,
+          reject
+        }
+      })
+    }).then((res) => {
+      console.log(res)
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          modalPromoVisible: false
+        }
+      })
+    }).catch((err) => {
+      console.log(err)
     })
   }
-
   const titlePopover = () => {
     return (
       <Row>
@@ -172,9 +194,10 @@ const PromoProductReward = ({
 PromoProductReward.propTypes = {
   form: PropTypes.object.isRequired,
   pospromo: PropTypes.object.isRequired,
+  promo: PropTypes.object.isRequired,
   bundlingRules: PropTypes.object.isRequired,
   bundlingReward: PropTypes.object.isRequired,
   loading: PropTypes.object
 }
 
-export default connect(({ bundlingRules, bundlingReward, pospromo, loading }) => ({ bundlingRules, bundlingReward, pospromo, loading }))(PromoProductReward)
+export default connect(({ bundlingRules, bundlingReward, pospromo, promo, loading }) => ({ bundlingRules, bundlingReward, pospromo, promo, loading }))(PromoProductReward)

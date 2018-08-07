@@ -6,10 +6,9 @@ import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
-const Pos = ({ location, dispatch, loading, accountPayment, pos, app }) => {
+const Pos = ({ location, dispatch, loading, pos, app }) => {
   const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, posData } = pos
-  const { listPayment, tmpListPayment } = accountPayment
+    modalPrintVisible, posData, listPayment, tmpListPayment } = pos
   const { storeInfo } = app
 
   const modalProps = {
@@ -102,7 +101,7 @@ const Pos = ({ location, dispatch, loading, accountPayment, pos, app }) => {
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,
           lastMeter: listPaymentDetail.lastMeter,
-          mechanicName: data.mechanicPrint.employeeName,
+          employeeName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
           userName: listPaymentDetail.cashierId,
@@ -147,7 +146,6 @@ const Pos = ({ location, dispatch, loading, accountPayment, pos, app }) => {
     width: 90,
     size: 'small',
     loading: loading.effects['pos/queryHistory'],
-    pagination,
     location,
     onSearchChange (data) {
       dispatch({
@@ -207,4 +205,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, accountPayment, loading, app }) => ({ pos, accountPayment, loading, app }))(Pos)
+export default connect(({ pos, loading, app }) => ({ pos, loading, app }))(Pos)

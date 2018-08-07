@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ accountCode, loading, dispatch, location, app }) => {
-  const { listAccountCode, pagination, modalType, currentItem, activeKey } = accountCode
+  const { listAccountCode, listAccountCodeLov, pagination, modalType, currentItem, activeKey } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -90,12 +90,26 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
   const formProps = {
     modalType,
     item: currentItem,
-    listAccountCode,
+    listAccountCodeLov,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
         type: `accountCode/${modalType}`,
         payload: data
+      })
+    },
+    queryEditItem (code, id) {
+      dispatch({
+        type: 'accountCode/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+      dispatch({
+        type: 'accountCode/queryEditItem',
+        payload: {
+          id
+        }
       })
     },
     showParent () {

@@ -142,6 +142,8 @@ export default {
               storeId,
               transNo: trans,
               bundleId: dataPos[key].bundleId,
+              employeeId: dataPos[key].employeeId,
+              employeeName: dataPos[key].employeeName,
               productId: dataPos[key].productId,
               productCode: dataPos[key].code,
               productName: dataPos[key].name,
@@ -175,7 +177,7 @@ export default {
               transDate: cashierInformation.period,
               transTime: payload.transTime,
               total: payload.grandTotal,
-              lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
+              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
               creditCardNo: payload.creditCardNo,
               creditCardType: payload.creditCardType,
               creditCardCharge: payload.creditCardCharge,
@@ -232,12 +234,12 @@ export default {
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
-                  transDatePrint: moment(cashierInformation.period).format('DD-MM-YYYY'),
+                  transDatePrint: moment(cashierInformation.period, 'YYYY-MM-DD').format('DD-MM-YYYY'),
                   company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
                   gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
                   phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
                   address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-                  lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+                  lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
                   lastTransNo: trans,
                   totalChange: payload.totalChange,
                   unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
@@ -249,7 +251,7 @@ export default {
                   memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
                   memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
                   memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-                  mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+                  employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
                   technicianId: payload.technicianId,
                   curShift: payload.curShift,
                   printNo: 1,
@@ -670,7 +672,7 @@ export default {
 
                     [{ text: 'Customer', fontSize: headerFontSize }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: headerFontSize }, {}, { text: 'Type/Tahun', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
 
-                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Mechanic', fontSize: headerFontSize }, ':', { text: (payload.mechanicName || '').toString().toUpperCase(), fontSize: headerFontSize }]
+                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Mechanic', fontSize: headerFontSize }, ':', { text: (payload.employeeName || '').toString().toUpperCase(), fontSize: headerFontSize }]
                   ]
                 },
                 layout: 'noBorders'

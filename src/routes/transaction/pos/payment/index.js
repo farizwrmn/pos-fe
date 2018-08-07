@@ -2,12 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { configMain } from 'utils'
+import { configMain, isEmptyObject, color } from 'utils'
 import {
   Form,
   // Table,
-  Row, Col,
-  // Card,
+  Row,
+  Col,
+  Card,
   // Cascader,
   Button,
   Modal
@@ -28,7 +29,27 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     itemPayment,
     woNumber,
     companyInfo } = payment
-  const { memberInformation, mechanicInformation, curTotalDiscount, curTotal, curRounding, curShift, curCashierNo } = pos
+  const { memberInformation,
+    mechanicInformation,
+    curTotalDiscount,
+    curTotal,
+    curRounding,
+    curShift,
+    curCashierNo,
+    cashierInformation,
+    cashierBalance } = pos
+  let currentCashier = {
+    cashierId: null,
+    employeeName: null,
+    shiftId: null,
+    shiftName: null,
+    counterId: null,
+    counterName: null,
+    period: null,
+    status: null,
+    cashActive: null
+  }
+  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   const { user, setting } = app
   const { listOpts } = paymentOpts
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
@@ -145,9 +166,9 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               rounding: curRounding,
               memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
               memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-              mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
+              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
               memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-              technicianId: mechanicInformation.mechanicCode,
+              technicianId: mechanicInformation.employeeCode,
               curShift,
               printNo: 1,
               point: parseFloat((parseFloat(curTotal) - parseFloat(curTotalDiscount)) / 10000, 10),
@@ -227,6 +248,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     curRounding,
     totalPayment,
     totalChange,
+    cashierInformation,
+    cashierBalance,
     onSubmit (data) {
       dispatch({
         type: 'payment/addMethod',
@@ -267,6 +290,17 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
   return (
     <div className="content-inner">
+      <Row>
+        <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
+          <Row>
+            <Col span={2}># {currentCashier.id} </Col>
+            <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
+            <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
+            <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
+            <Col md={5} lg={5}>Date : {currentCashier.period}</Col>
+          </Row>
+        </Card>
+      </Row>
       {listOpts.length > 0 && <div>
         <Row style={{ marginBottom: 16 }}>
           <Col span={24}>

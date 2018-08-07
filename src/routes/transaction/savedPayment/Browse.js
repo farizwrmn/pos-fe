@@ -12,14 +12,14 @@ const FormItem = Form.Item
 const { prefix } = configMain
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,
+  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod,
   form: { getFieldDecorator } }) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
-      if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod) {
+      if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
         onShowCancelModal(record)
       } else {
         Modal.warning({
@@ -33,7 +33,7 @@ const BrowseGroup = ({
     const reg = new RegExp(e, 'gi')
     let newData
     newData = tmpDataSource.map((record) => {
-      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierId || '').match(reg)
+      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierName || '').match(reg)
       if (!match) {
         return null
       }
@@ -68,9 +68,15 @@ const BrowseGroup = ({
       render: text => text.toLocaleString()
     },
     {
+      title: 'Cashier ID',
+      dataIndex: 'cashierTransId',
+      key: 'cashierTransId',
+      width: 100
+    },
+    {
       title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId',
+      dataIndex: 'cashierName',
+      key: 'cashierName',
       width: 100
     },
     {
@@ -134,7 +140,7 @@ const BrowseGroup = ({
           type="primary"
           menuOptions={[
             { key: '1', name: 'Print', icon: 'printer' },
-            { key: '2', name: 'Void', icon: 'delete' }
+            { key: '2', name: 'Void', icon: 'delete', disabled: record.cashierTransId !== cashierInformation.id }
           ]}
         />)
       }

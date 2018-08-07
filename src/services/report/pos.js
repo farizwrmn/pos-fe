@@ -29,6 +29,30 @@ export async function queryTrans (params) {
   })
 }
 
+export async function queryHourly (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `${posReport}/hourly`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryHour (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `${posReport}/hour`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

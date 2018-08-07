@@ -9,9 +9,10 @@ import FormPayment from './FormPayment'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
-const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
+const Detail = ({ paymentDetail, paymentOpts, pos, dispatch }) => {
   const { listDetail, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const { listOpts } = paymentOpts
+  const { cashierInformation } = pos
   const content = []
   for (let key in data[0]) {
     if ({}.hasOwnProperty.call(data[0], key)) {
@@ -88,6 +89,7 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
   const formProps = {
     data,
     listAmount,
+    cashierInformation,
     openModal (e) {
       dispatch({
         type: 'paymentDetail/updateState',
@@ -148,8 +150,9 @@ const Detail = ({ paymentDetail, paymentOpts, dispatch }) => {
 }
 
 Detail.propTypes = {
-  paymentDetail: PropTypes.object,
-  paymentOpts: PropTypes.object
+  paymentDetail: PropTypes.object.isRequired,
+  paymentOpts: PropTypes.object.isRequired,
+  pos: PropTypes.object.isRequired
 }
 
-export default connect(({ paymentDetail, paymentOpts, dispatch, loading }) => ({ paymentDetail, paymentOpts, dispatch, loading }))(Detail)
+export default connect(({ paymentDetail, pos, paymentOpts, dispatch, loading }) => ({ paymentDetail, pos, paymentOpts, dispatch, loading }))(Detail)

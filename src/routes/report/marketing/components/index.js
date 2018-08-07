@@ -1,3 +1,4 @@
 import Detail from './Detail'
+import FollowUp from './FollowUp'
 
-export { Detail }
+export default { Detail, FollowUp }

@@ -140,7 +140,7 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const checkExists = payload.listReward.filter(el => el.total < 0)
-      if ((payload.listReward || []).length > 0 && (payload.listRules || []).length > 0) {
+      if ((payload.listReward || []).length > 0 || (payload.listRules || []).length > 0) {
         if ((checkExists || []).length === 0) {
           const data = yield call(add, payload)
           if (data.success) {
