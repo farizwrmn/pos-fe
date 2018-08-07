@@ -1,4 +1,4 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
 const { apiFollowUp } = config.rest
 const { posdetail } = config.api
@@ -16,6 +16,7 @@ export async function queryTransactionDetail (params) {
 
 export async function queryHeader (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${apiFollowUp}/header?order=-createdAt`,
     method: 'get',
