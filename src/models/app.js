@@ -186,6 +186,7 @@ export default {
       if (data.success) {
         // yield put({ type: 'query' })
         yield put({ type: 'changePwHide' })
+        messageInfo('Your Password has been successfully updated!')
       } else {
         throw (data)
       }

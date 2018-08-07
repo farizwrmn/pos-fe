@@ -51,6 +51,8 @@ const Product = ({
     }
   ],
   isModal = true,
+  enableFilter = true,
+  showPagination = true,
   onRowClick,
   productstock,
   ...tableProps
@@ -114,7 +116,7 @@ const Product = ({
         footer={null}
         {...tableProps}
       >
-        <Form layout="inline">
+        {enableFilter && <Form layout="inline">
           <FormItem>
             <Input placeholder="Search Product"
               value={searchText}
@@ -129,10 +131,10 @@ const Product = ({
           <FormItem>
             <Button type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
-        </Form>
+        </Form>}
         <Table
           {...tableProps}
-          pagination={pagination}
+          pagination={showPagination ? pagination : false}
           dataSource={list}
           bordered
           scroll={{ x: 500, y: 388 }}
@@ -145,7 +147,7 @@ const Product = ({
       </Modal>}
       {!isModal &&
         (<div>
-          <Form layout="inline">
+          {enableFilter && <Form layout="inline">
             <FormItem>
               <Input
                 placeholder="Search Product"
@@ -163,10 +165,10 @@ const Product = ({
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
             <Link target="_blank" to={'/master/product/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
-          </Form>
+          </Form>}
           <Table
             {...tableProps}
-            pagination={pagination}
+            pagination={showPagination ? pagination : false}
             dataSource={list}
             bordered
             scroll={{ x: 500, y: 388 }}

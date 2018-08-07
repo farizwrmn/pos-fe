@@ -112,6 +112,7 @@ export default modelExtend(pageModel, {
           for (let key in data) sortArrayNullAsc.push(data[key])
           data = arrayToTree(tempData.filter(_ => _.mpid === '-1'), 'menuId', 'mpid')
           for (let key in data) sortArrayNullAsc.push(data[key])
+          sortArrayNullAsc.sort((x, y) => x.menuId - y.menuId)
           yield put({
             type: 'updateState',
             payload: {

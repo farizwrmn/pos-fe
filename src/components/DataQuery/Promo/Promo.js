@@ -16,6 +16,8 @@ const Promo = ({
   visible = false,
   loading,
   onChooseItem,
+  enableChoosePromoDetail = true,
+  showPagination = true,
   columns = [
     {
       title: 'type',
@@ -91,13 +93,14 @@ const Promo = ({
       render: (text, record) => {
         return (
           <div>
-            <PromoProductReward currentId={record.id} onChooseItem={() => onChooseItem(record)} />
+            <PromoProductReward enableChoosePromoDetail={enableChoosePromoDetail} currentId={record.id} onChooseItem={() => onChooseItem(record)} />
           </div >
         )
       }
     }
   ],
   isModal = true,
+  enableFilter = true,
   onRowClick,
   promo,
   ...tableProps
@@ -163,7 +166,7 @@ const Promo = ({
         footer={null}
         {...tableProps}
       >
-        <Form layout="inline">
+        {enableFilter && <Form layout="inline">
           <FormItem>
             <Input placeholder="Search Promo Name"
               value={searchText}
@@ -178,10 +181,10 @@ const Promo = ({
           <FormItem>
             <Button type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
-        </Form>
+        </Form>}
         <Table
           {...tableProps}
-          pagination={pagination}
+          pagination={showPagination ? pagination : false}
           dataSource={list}
           loading={loading.effects['promo/query']}
           bordered
@@ -195,7 +198,7 @@ const Promo = ({
       </Modal>}
       {!isModal &&
         (<div>
-          <Form layout="inline">
+          {enableFilter && <Form layout="inline">
             <FormItem>
               <Input
                 placeholder="Search Product"
@@ -213,10 +216,10 @@ const Promo = ({
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
             <Link target="_blank" to={'/master/product/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
-          </Form>
+          </Form>}
           <Table
             {...tableProps}
-            pagination={pagination}
+            pagination={showPagination ? pagination : false}
             dataSource={list}
             loading={loading.effects['promo/query']}
             bordered

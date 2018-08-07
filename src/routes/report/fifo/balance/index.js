@@ -11,7 +11,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, fifoReport, productcategory, productbrand, app }) => {
+const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, loading }) => {
   const { period, year, activeKey, listProduct } = fifoReport
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -23,7 +23,8 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app }) =>
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
-    activeKey
+    activeKey,
+    loading: loading.effects['fifoReport/queryCard']
   }
 
   const filterProps = {
@@ -137,4 +138,4 @@ Report.propTypes = {
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ fifoReport, productcategory, productbrand, app }) => ({ fifoReport, productcategory, productbrand, app }))(Report)
+export default connect(({ fifoReport, productcategory, productbrand, app, loading }) => ({ fifoReport, productcategory, productbrand, app, loading }))(Report)

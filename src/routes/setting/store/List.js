@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Tree, Card, Modal, Button } from 'antd'
+import styles from './index.less'
 
 const TreeNode = Tree.TreeNode
 
@@ -38,7 +39,7 @@ const List = ({ listStore, editItem, modalEdit, onSelectMenu, onCancelSelect }) 
   return (
     <div>
       {modalEdit.visible && <Modal {...modalProps}>Do you want to edit {modalEdit.item.title}?</Modal>}
-      <Card title="Stores" style={{ height: 500, overflowY: 'auto' }}>
+      <Card title="Stores" className={styles.card}>
         <Tree
           className="draggable-tree"
         >

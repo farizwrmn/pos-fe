@@ -1036,15 +1036,16 @@ export default {
             curCashierNo: payload.cashierNo
           }
         })
-      } else {
+      } else if (data.statusCode === 422) {
         Modal.warning({
           title: 'Warning',
           content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
         })
-        // Modal.warning({
-        //   title: 'Warning',
-        //   content: `Report error ${data.message}` || 'Report error'
-        // })
+      } else if (data.statusCode === 409) {
+        Modal.warning({
+          title: 'Warning',
+          content: (<p>{data.message}</p>)
+        })
       }
     },
 

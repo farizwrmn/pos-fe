@@ -1,18 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Row, Col, DatePicker } from 'antd'
+import { Form, Row, Col, DatePicker, Input } from 'antd'
 
-// const Search = Input.Search
+const Search = Input.Search
 const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 
-// const searchBarLayout = {
-//   xs: { span: 24 },
-//   sm: { span: 12 },
-//   md: { span: 12 },
-//   lg: { span: 12 }
-// }
+const searchBarLayout = {
+  xs: { span: 24 },
+  sm: { span: 12 },
+  md: { span: 12 },
+  lg: { span: 12 }
+}
 
 const filterItemLayout = {
   xs: { span: 12 },
@@ -23,30 +23,30 @@ const filterItemLayout = {
 
 const Filter = ({
   filterChange,
-  // filterTransNo,
+  filterTransNo,
   period,
   form: {
     getFieldDecorator,
-    // getFieldsValue,
+    getFieldsValue,
     resetFields
   }
 }) => {
-  // const data = {
-  //   ...getFieldsValue()
-  // }
+  const data = {
+    ...getFieldsValue()
+  }
 
   const handleChangeDate = (date, dateString) => {
     filterChange(dateString)
     resetFields(['transNo'])
   }
 
-  // const searchTransNo = (transNo) => {
-  //   if (transNo.length > 0) {
-  //     filterTransNo(transNo)
-  //   } else {
-  //     filterChange(data.period)
-  //   }
-  // }
+  const searchTransNo = (transNo) => {
+    if (transNo.length > 0) {
+      filterTransNo(transNo)
+    } else {
+      filterChange(data.period)
+    }
+  }
 
   const disabledDate = (current) => {
     return current > moment().endOf('day')
@@ -61,7 +61,7 @@ const Filter = ({
           )}
         </FormItem>
       </Col>
-      {/* <Col {...searchBarLayout} >
+      <Col {...searchBarLayout} >
         <FormItem >
           {getFieldDecorator('transNo')(
             <Search
@@ -70,7 +70,7 @@ const Filter = ({
             />
           )}
         </FormItem>
-      </Col> */}
+      </Col>
     </Row>
   )
 }

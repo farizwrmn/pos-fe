@@ -32,11 +32,10 @@ const Approve = ({ cashier, dispatch, loading }) => {
     Modal.confirm({
       content: `Approve this request to open cashier period for ${item.cashierId}`,
       onOk () {
-        console.log(item)
-        // dispatch({
-        //   type: 'cashier/approveRequestOpenCashRegister',
-        //   payload: { id: item.id, storeId: item.storeId }
-        // })
+        dispatch({
+          type: 'cashier/approveRequestOpenCashRegister',
+          payload: { id: item.id, storeId: item.storeId }
+        })
       },
       onCancel () { }
     })
