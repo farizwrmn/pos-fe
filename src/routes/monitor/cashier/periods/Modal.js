@@ -28,8 +28,8 @@ const ModalBrowse = ({
       key: 'cashierId'
     }, {
       title: 'Cashier Name',
-      dataIndex: 'employeeName',
-      key: 'employeeName'
+      dataIndex: 'cashierName',
+      key: 'cashierName'
     }, {
       title: 'Cashier',
       dataIndex: 'isCashierActive',

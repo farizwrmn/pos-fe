@@ -258,7 +258,8 @@ export default modelExtend(pageModel, {
         payload: {}
       })
     },
-    * setProductPos ({ payload = {} }, { put }) {
+    * setProductPos ({ payload = {} }, { select, put }) {
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
       Array.prototype.remove = function () {
@@ -288,6 +289,8 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
@@ -306,6 +309,8 @@ export default modelExtend(pageModel, {
               productId: currentReward[n].productId,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
@@ -323,6 +328,8 @@ export default modelExtend(pageModel, {
               name: data.name,
               bundleId: data.bundleId,
               bundleName: data.bundleName,
+              employeeId: data.employeeId,
+              employeeName: data.employeeName,
               typeCode: 'P',
               qty: data.qty,
               price: data.sellingPrice,
@@ -341,7 +348,8 @@ export default modelExtend(pageModel, {
         payload: {}
       })
     },
-    * setServicePos ({ payload = {} }, { put }) {
+    * setServicePos ({ payload = {} }, { select, put }) {
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
       Array.prototype.remove = function () {
@@ -371,6 +379,8 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
               qty: filteredProduct[0].qty + currentReward[n].qty,
               sellingPrice: currentReward[n].sellingPrice,
@@ -389,6 +399,8 @@ export default modelExtend(pageModel, {
               productId: currentReward[n].productId,
               bundleId: currentReward[n].bundleId,
               bundleName: currentReward[n].bundleName,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: currentReward[n].productName,
               typeCode: 'S',
               qty: currentReward[n].qty,
@@ -406,6 +418,8 @@ export default modelExtend(pageModel, {
               name: data.name,
               bundleId: data.bundleId,
               bundleName: data.bundleName,
+              employeeId: data.employeeId,
+              employeeName: data.employeeName,
               typeCode: 'S',
               qty: data.qty,
               price: data.sellingPrice,

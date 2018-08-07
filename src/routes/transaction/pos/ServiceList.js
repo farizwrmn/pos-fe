@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, InputNumber, Form, Modal } from 'antd'
+import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -15,6 +16,7 @@ const PaymentList = ({
   onChooseItem,
   onChangeTotalItem,
   itemService,
+  listMechanic,
   form: {
     getFieldDecorator,
     validateFields,
@@ -32,9 +34,15 @@ const PaymentList = ({
     data.productId = itemService.productId
     data.code = itemService.code
     data.name = itemService.name
-    onChangeTotalItem(data)
+    if (data.employee) {
+      data.employeeId = data.employee.key
+      data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
+    }
+    const { employee, ...other } = data
+    onChangeTotalItem(other)
     return data
   }
+  const listOptions = listMechanic.map(x => (<Option key={x.id} value={x.id}>{x.employeeName} ({x.employeeId})</Option>))
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -45,9 +53,14 @@ const PaymentList = ({
       }
       data.typeCode = itemService.typeCode
       data.productId = itemService.productId
+      if (data.employee) {
+        data.employeeId = data.employee.key
+        data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
+      }
       data.code = itemService.code
       data.name = itemService.name
-      onChooseItem(data)
+      const { employee, ...other } = data
+      onChooseItem(other)
     })
   }
 
@@ -79,6 +92,32 @@ const PaymentList = ({
       {...modalProps}
     >
       <Form>
+        <FormItem {...formItemLayout} label="Employee">
+          {getFieldDecorator('employee', {
+            initialValue: itemService.employeeId ? {
+              key: itemService.employeeId,
+              name: itemService.employeeName
+            } :
+              {
+                key: null,
+                name: null
+              },
+            rules: [{
+              required: false,
+              message: 'Required'
+            }]
+          })(
+            <Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Choose an employee"
+              labelInValue
+              filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+            >{listOptions}
+            </Select>
+          )}
+        </FormItem>
         <FormItem {...formItemLayout} label="no">
           {getFieldDecorator('no', {
             initialValue: itemService.no,
@@ -88,8 +127,7 @@ const PaymentList = ({
             }]
           })(
             <Input disabled />
-          )
-          }
+          )}
         </FormItem>
         <FormItem {...formItemLayout} label="Price">
           {getFieldDecorator('price', {

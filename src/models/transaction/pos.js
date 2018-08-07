@@ -219,6 +219,8 @@ export default {
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
           bundleName: ary[n].bundleName,
+          employeeId: ary[n].employeeId,
+          employeeName: ary[n].employeeName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -276,6 +278,8 @@ export default {
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
           bundleName: ary[n].bundleName,
+          employeeId: ary[n].employeeId,
+          employeeName: ary[n].employeeName,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -1135,6 +1139,8 @@ export default {
             productId: ary[n].productId,
             bundleId: ary[n].bundleId,
             bundleName: ary[n].bundleName,
+            employeeId: ary[n].employeeId,
+            employeeName: ary[n].employeeName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1227,6 +1233,8 @@ export default {
             productId: ary[n].productId,
             bundleId: ary[n].bundleId,
             bundleName: ary[n].bundleName,
+            empoyeeId: ary[n].empoyeeId,
+            empoyeeName: ary[n].empoyeeName,
             disc1: ary[n].disc1,
             disc2: ary[n].disc2,
             disc3: ary[n].disc3,
@@ -1288,8 +1296,9 @@ export default {
         gender: memberInfo.gender,
         id: memberInfo.id,
         phone: memberInfo.phone,
-        mechanicCode: mechanic.mechanicCode,
-        mechanicName: mechanic.mechanicName
+        employeeId: mechanic.employeeId,
+        employeeCode: mechanic.employeeCode,
+        employeeName: mechanic.employeeName
       })
       const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
       if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('member') === null &&

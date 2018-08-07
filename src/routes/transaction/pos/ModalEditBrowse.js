@@ -4,7 +4,7 @@ import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
 
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { pagination, itemPayment, itemService, modalType, isMotion } = pos
+  const { pagination, listMechanic, itemPayment, itemService, modalType, isMotion } = pos
   let title = ''
   if (modalType === 'modalPayment') {
     title = `Edit ${itemPayment.code} - ${itemPayment.name}`
@@ -22,6 +22,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
     itemService: modalType === 'modalService' ? itemService : {},
     isMotion,
     totalItem,
+    listMechanic,
     onChooseItem (item) {
       onChooseItem(item)
     },

@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, InputNumber, Form, Modal } from 'antd'
+import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -15,6 +16,7 @@ const PaymentList = ({
   DeleteItem,
   onChangeTotalItem,
   item,
+  listMechanic,
   form: {
     getFieldDecorator,
     validateFields,
@@ -33,9 +35,15 @@ const PaymentList = ({
     data.code = item.code
     data.name = item.name
     data.typeCode = item.typeCode
-    onChangeTotalItem(data)
+    if (data.employee) {
+      data.employeeId = data.employee.key
+      data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
+    }
+    const { employee, ...other } = data
+    onChangeTotalItem(other)
     return data
   }
+  const listOptions = listMechanic.map(x => (<Option key={x.id} value={x.id}>{x.employeeName} ({x.employeeId})</Option>))
   const handleClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -46,9 +54,14 @@ const PaymentList = ({
       }
       data.typeCode = item.typeCode
       data.productId = item.productId
+      if (data.employee) {
+        data.employeeId = data.employee.key
+        data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
+      }
       data.code = item.code
       data.name = item.name
-      onChooseItem(data)
+      const { employee, ...other } = data
+      onChooseItem(other)
     })
   }
   const handleDelete = () => {
@@ -69,7 +82,6 @@ const PaymentList = ({
       }
     })
   }
-
   return (
     <Modal
       footer={[
@@ -80,6 +92,32 @@ const PaymentList = ({
       {...modalProps}
     >
       <Form>
+        <FormItem {...formItemLayout} label="Employee">
+          {getFieldDecorator('employee', {
+            initialValue: item.employeeId ? {
+              key: item.employeeId,
+              name: item.employeeName
+            } :
+              {
+                key: null,
+                name: null
+              },
+            rules: [{
+              required: false,
+              message: 'Required'
+            }]
+          })(
+            <Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Choose an employee"
+              labelInValue
+              filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+            >{listOptions}
+            </Select>
+          )}
+        </FormItem>
         <FormItem {...formItemLayout} label="no">
           {getFieldDecorator('no', {
             initialValue: item.no,

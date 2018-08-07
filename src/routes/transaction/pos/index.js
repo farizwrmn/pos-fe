@@ -332,18 +332,38 @@ const Pos = ({
       })
     },
     handlePromoBrowse () {
-      dispatch({
-        type: 'promo/query',
-        payload: {
-          storeId: lstorage.getCurrentUserStore()
-        }
-      })
-      dispatch({
-        type: 'promo/updateState',
-        payload: {
-          modalPromoVisible: true
-        }
-      })
+      if (Object.assign(mechanicInformation || {}).length !== 0) {
+        dispatch({
+          type: 'promo/query',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        dispatch({
+          type: 'promo/updateState',
+          payload: {
+            modalPromoVisible: true
+          }
+        })
+      } else {
+        Modal.info({
+          title: 'Mechanic Information is not found',
+          content: 'Insert Mechanic',
+          onOk () {
+            dispatch({ type: 'pos/hideProductModal' })
+            dispatch({
+              type: 'pos/getMechanics'
+            })
+
+            dispatch({
+              type: 'pos/showMechanicModal',
+              payload: {
+                modalType: 'browseMechanic'
+              }
+            })
+          }
+        })
+      }
     },
     handleQueue () {
       if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('service_detail') === null) {
@@ -489,6 +509,9 @@ const Pos = ({
 
   const modalEditPayment = (record) => {
     dispatch({
+      type: 'pos/getMechanics'
+    })
+    dispatch({
       type: 'pos/showPaymentModal',
       payload: {
         item: record,
@@ -498,6 +521,9 @@ const Pos = ({
   }
 
   const modalEditService = (record) => {
+    dispatch({
+      type: 'pos/getMechanics'
+    })
     dispatch({
       type: 'pos/showServiceListModal',
       payload: {
@@ -664,7 +690,7 @@ const Pos = ({
       infoCashRegister.desc = '* The open cash register date is different from current date'
       infoCashRegister.dotVisible = true
     }
-    infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
+    infoCashRegister.Caption = infoCashRegister.title + (infoCashRegister.desc || '')
     infoCashRegister.CaptionObject =
       (<span style={{ color: infoCashRegister.titleColor }}>
         <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
@@ -940,11 +966,12 @@ const Pos = ({
       localStorage.removeItem('mechanic')
       let arrayProd = []
       arrayProd.push({
-        mechanicName: item.employeeName,
-        mechanicCode: item.employeeId
+        employeeId: item.id,
+        employeeName: item.employeeName,
+        employeeCode: item.employeeId
       })
       localStorage.setItem('mechanic', JSON.stringify(arrayProd))
-      dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: item } })
+      dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: arrayProd[0] || {} } })
       dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
       dispatch({ type: 'pos/hideMechanicModal' })
     }
@@ -971,7 +998,7 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
     onChooseItem (item) {
-      if ((memberInformation || []).length !== 0 && (mechanicInformation || []).length !== 0) {
+      if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
@@ -987,6 +1014,8 @@ const Pos = ({
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: 1,
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
@@ -1002,6 +1031,8 @@ const Pos = ({
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: 1,
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
@@ -1095,58 +1126,85 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
-      let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      let arrayProd = listByCode
-      const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
-      if (checkExists.length === 0) {
-        arrayProd.push({
-          no: arrayProd.length + 1,
-          code: item.serviceCode,
-          productId: item.id,
-          name: item.serviceName,
-          qty: curQty,
-          typeCode: 'S',
-          price: item.serviceCost,
-          discount: 0,
-          disc1: 0,
-          disc2: 0,
-          disc3: 0,
-          total: item.serviceCost * curQty
-        })
+      if (Object.assign(mechanicInformation || {}).length !== 0) {
+        let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        let arrayProd = listByCode
+        const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        if (checkExists.length === 0) {
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            code: item.serviceCode,
+            productId: item.id,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            name: item.serviceName,
+            qty: curQty,
+            typeCode: 'S',
+            price: item.serviceCost,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.serviceCost * curQty
+          })
 
-        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
 
-        dispatch({
-          type: 'pos/queryServiceSuccessByCode',
-          payload: {
-            listByCode: item,
-            curRecord: curRecord + 1
-          }
-        })
+          dispatch({
+            type: 'pos/queryServiceSuccessByCode',
+            payload: {
+              listByCode: item,
+              curRecord: curRecord + 1
+            }
+          })
 
-        let successModal = Modal.info({
-          title: 'Success add service',
-          content: 'Service has been added in Service`s Tab'
-        })
+          let successModal = Modal.info({
+            title: 'Success add service',
+            content: 'Service has been added in Service`s Tab'
+          })
 
-        dispatch({
-          type: 'pos/hideServiceModal'
-        })
+          dispatch({
+            type: 'pos/hideServiceModal'
+          })
 
-        setTimeout(() => successModal.destroy(), 1000)
+          setTimeout(() => successModal.destroy(), 1000)
 
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            paymentListActiveKey: '2'
-          }
-        })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '2'
+            }
+          })
 
-        setCurBarcode('', 1)
+          setCurBarcode('', 1)
+        } else {
+          Modal.warning({
+            title: 'Cannot add product',
+            content: 'Already Exists in list'
+          })
+        }
       } else {
-        Modal.warning({
-          title: 'Cannot add product',
-          content: 'Already Exists in list'
+        Modal.info({
+          title: 'Mechanic Information is not found',
+          content: 'Insert Mechanic',
+          onOk () {
+            dispatch({
+              type: 'pos/updateState',
+              payload: {
+                modalServiceVisible: false
+              }
+            })
+            dispatch({
+              type: 'pos/getMechanics'
+            })
+
+            dispatch({
+              type: 'pos/showMechanicModal',
+              payload: {
+                modalType: 'browseMechanic'
+              }
+            })
+          }
         })
       }
     }
@@ -1223,6 +1281,8 @@ const Pos = ({
           productId: dataProductFiltered[n].productId,
           bundleId: dataProductFiltered[n].bundleId,
           bundleName: dataProductFiltered[n].bundleName,
+          employeeId: dataProductFiltered[n].employeeId,
+          employeeName: dataProductFiltered[n].employeeName,
           disc1: dataProductFiltered[n].disc1,
           disc2: dataProductFiltered[n].disc2,
           disc3: dataProductFiltered[n].disc3,
@@ -1435,138 +1495,6 @@ const Pos = ({
       } else if (keyShortcut[17] && keyShortcut[75]) { // shortcut modified quantity (Ctrl + Shift + Q)
         handleDiscount(5, value)
       }
-      // else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[76]) { // shortcut untuk Closing Cashier (Ctrl + Shift + L)
-      //   let curData = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-
-      //   let curQueue1 = (localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')))
-      //   let curQueue2 = (localStorage.getItem('queue2') === null ? [] : JSON.parse(localStorage.getItem('queue2')))
-      //   let curQueue3 = (localStorage.getItem('queue3') === null ? [] : JSON.parse(localStorage.getItem('queue3')))
-
-      //   keyShortcut[17] = false
-      //   keyShortcut[16] = false
-      //   keyShortcut[76] = false
-
-      //   if (JSON.stringify(curData) === '[]' && JSON.stringify(curQueue1) === '[]' && JSON.stringify(curQueue2) === '[]' && JSON.stringify(curQueue3) === '[]') {
-      //     Modal.confirm({
-      //       title: 'Are you sure want to close this Cashier?',
-      //       content: 'This Operation cannot be undone...!',
-      //       onOk () {
-      //         dispatch({
-      //           type: 'pos/setCloseCashier',
-      //           payload: {
-      //             total: 0,
-      //             totalCreditCard: 0,
-      //             status: 'C',
-      //             cashierNo: curCashierNo,
-      //             shift: curShift,
-      //             transDate: getDate(3)
-      //           }
-      //         })
-
-      //         // dispatch({
-      //         //   type: 'pos/showShiftModal',
-      //         // })
-      //       },
-      //       onCancel () {
-      //         console.log('cancel')
-      //       }
-      //     })
-      //   } else {
-      //     Modal.warning({
-      //       title: 'Warning',
-      //       content: 'Cannot closed cashier when having transaction...!'
-      //     })
-      //   }
-      // }
-      // else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[85]) { // shortcut for insertQueue (Ctrl + Shift + U)
-      //   keyShortcut[17] = false
-      //   keyShortcut[16] = false
-      //   keyShortcut[85] = false
-
-      //   let arrayProd = []
-
-      //   const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
-      //   const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : ''
-      //   const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-
-      //   let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-      //   let memberInformation
-      //   if (JSON.stringify(listByCode) === '[]') {
-      //     memberInformation = listByCode.slice()
-      //   } else {
-      //     memberInformation = listByCode
-      //   }
-      //   const memberInfo = memberInformation ? JSON.parse(memberInformation)[0] : []
-
-      //   // start-mechanicInfo
-      //   const mechanicInfo = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic')) : []
-      //   const mechanic = mechanicInfo[0]
-      //   // end-mechanicInfo
-
-      //   arrayProd.push({
-      //     cashier_trans,
-      //     memberCode: memberInfo.memberCode,
-      //     memberName: memberInfo.memberName,
-      //     point: memberInfo.point,
-      //     memberUnit,
-      //     lastMeter,
-      //     mechanicCode: mechanic.mechanicCode,
-      //     mechanicName: mechanic.mechanicName
-      //   })
-      //   if (localStorage.getItem('cashier_trans') === null) {
-      //     Modal.warning({
-      //       title: 'Warning',
-      //       content: 'Transaction Not Found...!'
-      //     })
-      //   } else if (localStorage.getItem('queue1') === null) {
-      //     localStorage.setItem('queue1', JSON.stringify(arrayProd))
-      //     localStorage.removeItem('cashier_trans')
-      //     localStorage.removeItem('service_detail')
-      //     localStorage.removeItem('member')
-      //     localStorage.removeItem('memberUnit')
-      //     localStorage.removeItem('mechanic')
-      //     localStorage.removeItem('lastMeter')
-      //     dispatch({
-      //       type: 'pos/insertQueue',
-      //       payload: {
-      //         queue: '1'
-      //       }
-      //     })
-      //   } else if (localStorage.getItem('queue2') === null) {
-      //     localStorage.setItem('queue2', JSON.stringify(arrayProd))
-      //     localStorage.removeItem('cashier_trans')
-      //     localStorage.removeItem('service_detail')
-      //     localStorage.removeItem('member')
-      //     localStorage.removeItem('memberUnit')
-      //     localStorage.removeItem('mechanic')
-      //     localStorage.removeItem('lastMeter')
-      //     dispatch({
-      //       type: 'pos/insertQueue',
-      //       payload: {
-      //         queue: '2'
-      //       }
-      //     })
-      //   } else if (localStorage.getItem('queue3') === null) {
-      //     localStorage.setItem('queue3', JSON.stringify(arrayProd))
-      //     localStorage.removeItem('cashier_trans')
-      //     localStorage.removeItem('service_detail')
-      //     localStorage.removeItem('member')
-      //     localStorage.removeItem('memberUnit')
-      //     localStorage.removeItem('mechanic')
-      //     localStorage.removeItem('lastMeter')
-      //     dispatch({
-      //       type: 'pos/insertQueue',
-      //       payload: {
-      //         queue: '3'
-      //       }
-      //     })
-      //   } else {
-      //     Modal.warning({
-      //       title: 'Warning',
-      //       content: 'Queues are full, Please finish previous transaction first...!'
-      //     })
-      //   }
-      // }
     } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
       if (kodeUtil === 'barcode') {
         dispatch({
@@ -1843,6 +1771,12 @@ const Pos = ({
                       render: text => text
                     },
                     {
+                      title: 'Employee',
+                      dataIndex: 'employeeName',
+                      width: '100px',
+                      render: text => text
+                    },
+                    {
                       title: 'Code',
                       dataIndex: 'code',
                       width: '100px'
@@ -1927,6 +1861,12 @@ const Pos = ({
                       title: 'Promo',
                       dataIndex: 'bundleName',
                       width: '121px',
+                      render: text => text
+                    },
+                    {
+                      title: 'Employee',
+                      dataIndex: 'employeeName',
+                      width: '100px',
                       render: text => text
                     },
                     {
@@ -2127,10 +2067,10 @@ const Pos = ({
             <Panel header="Mechanic Info" key="2">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName ? mechanicInformation.employeeName : mechanicInformation.mechanicCode} disabled />
+                  <Input value={mechanicInformation.employeeName} disabled />
                 </FormItem>
                 <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeId ? mechanicInformation.employeeId : mechanicInformation.mechanicName} disabled />
+                  <Input value={mechanicInformation.employeeCode} disabled />
                 </FormItem>
               </Form>
             </Panel>

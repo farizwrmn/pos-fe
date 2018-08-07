@@ -101,7 +101,7 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
           phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
           policeNo: listPaymentDetail.policeNo,
           lastMeter: listPaymentDetail.lastMeter,
-          mechanicName: data.mechanicPrint.employeeName,
+          employeeName: data.mechanicPrint.employeeName,
           address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
           cashierId: listPaymentDetail.cashierId,
           userName: listPaymentDetail.cashierId,
