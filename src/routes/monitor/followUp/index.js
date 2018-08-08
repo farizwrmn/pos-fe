@@ -52,6 +52,18 @@ const FollowUp = ({
     end,
     q,
     openCloseModalFilter,
+    onResetDataFilter () {
+      dispatch({
+        type: 'followup/updateState',
+        payload: {
+          status: [0, 2, 3, 4]
+        }
+      })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname
+      }))
+    },
     onSubmitDataFilter (data) {
       openCloseModalFilter()
       if (!data.start && !data.end && !data.status && !data.nextCall && !data.postService) return false

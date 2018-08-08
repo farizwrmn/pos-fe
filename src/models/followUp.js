@@ -71,13 +71,14 @@ export default modelExtend(pageModel, {
       if (!(start && end)) {
         time = yield call(getDateTime, { id: 'date' })
       }
-      const state = yield select(({ followup }) => followup)
+      const defaultStatus = yield select(({ followup }) => followup.status)
+      const defaultField = yield select(({ followup }) => followup.field)
       yield put({
         type: 'updateState',
         payload: {
           start: start || moment().startOf('month').format('YYYY-MM-DD'),
           end: end || moment(time.data).format('YYYY-MM-DD'),
-          status: status || state.status
+          status: status || defaultStatus
         }
       })
       start = start || moment().startOf('month').format('YYYY-MM-DD')
@@ -85,8 +86,8 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'queryHeader',
         payload: {
-          status: status || state.status,
-          field: state.field,
+          status: status || defaultStatus,
+          field: defaultField,
           transDate: [start, end],
           ...other
         }
