@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { lstorage } from 'utils'
-import { routerRedux } from 'dva/router'
 import { pageModel } from './common'
 import {
   queryTransactionDetail, queryHeader, updateStatusToZero, updateStatusToTwo,
@@ -28,7 +27,9 @@ export default modelExtend(pageModel, {
     modalPending: false,
     modalAcceptOffer: false,
     modalDenyOffer: false,
-    currentStep: 0
+    currentStep: 0,
+    field: 'posId,memberName,gender,transDate,transNo,status,storeName',
+    status: [0, 2, 3, 4]
   },
 
   subscriptions: {
@@ -36,17 +37,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { start, end, q, status, ...other } = location.query
         if (location.pathname === '/monitor/followup') {
-          let field = 'posId,memberName,gender,transDate,transNo,status,storeName'
-          dispatch({
-            type: 'updateState',
-            payload: {
-              q: null
-            }
-          })
-          let transDate = [(start || moment().startOf('month').format('YYYY-MM-DD')), (end || moment().format('YYYY-MM-DD'))]
-          let payload = { ...other, transDate }
           if (q && q !== '') {
-            payload = { ...other, q }
+            dispatch({ type: 'queryHeader', payload: { q, ...other } })
             dispatch({
               type: 'updateState',
               payload: {
@@ -58,32 +50,47 @@ export default modelExtend(pageModel, {
           } else {
             dispatch({
               type: 'getDate',
-              payload: { start, end }
+              payload: { start, end, status, ...other }
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                q: ''
+              }
             })
           }
-          if (status) {
-            payload = Object.assign(payload, { status })
-          } else {
-            payload = Object.assign(payload, { status: [0, 2, 3, 4] })
-          }
-          dispatch({ type: 'queryHeader', payload: Object.assign(payload, { field }) })
         }
       })
     }
   },
 
   effects: {
-    * getDate ({ payload }, { call, put }) {
-      const time = yield call(getDateTime, { id: 'date' })
-      if (time.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            start: payload.start || moment().startOf('month').format('YYYY-MM-DD'),
-            end: payload.end || moment(time.data).format('YYYY-MM-DD')
-          }
-        })
+    * getDate ({ payload }, { select, call, put }) {
+      let { start, end, status, ...other } = payload
+      let time
+      if (!(start && end)) {
+        time = yield call(getDateTime, { id: 'date' })
       }
+      const state = yield select(({ followup }) => followup)
+      yield put({
+        type: 'updateState',
+        payload: {
+          start: start || moment().startOf('month').format('YYYY-MM-DD'),
+          end: end || moment(time.data).format('YYYY-MM-DD'),
+          status: status || state.status
+        }
+      })
+      start = start || moment().startOf('month').format('YYYY-MM-DD')
+      end = end || moment(time.data).format('YYYY-MM-DD')
+      yield put({
+        type: 'queryHeader',
+        payload: {
+          status: status || state.status,
+          field: state.field,
+          transDate: [start, end],
+          ...other
+        }
+      })
     },
 
     * queryHeader ({ payload }, { call, put }) {
@@ -120,11 +127,9 @@ export default modelExtend(pageModel, {
     * updateStatusToZero ({ payload }, { call, put }) {
       const data = yield call(updateStatusToZero, payload)
       if (data.success) {
-        const details = yield call(queryTransactionDetail, { id: data.data.transNo, storeId: data.data.storeId })
         const { pathname } = location
-        yield put(routerRedux.push({
-          pathname
-        }))
+        window.history.pushState('', '', pathname)
+        const details = yield call(queryTransactionDetail, { id: data.data.transNo, storeId: data.data.storeId })
         yield put({
           type: 'updateState',
           payload: {

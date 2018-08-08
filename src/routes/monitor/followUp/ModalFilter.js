@@ -48,7 +48,7 @@ const ModalFilter = ({
           {getFieldDecorator('period', {
             initialValue: [moment().startOf('month'), moment(new Date(), 'YYYY-MM-DD')]
           })(
-            <RangePicker disabledDate={disabledDate} />
+            <RangePicker allowClear={false} disabledDate={disabledDate} />
           )}
         </FormItem>
         <FormItem label="Status" hasFeedback {...formItemLayout}>
