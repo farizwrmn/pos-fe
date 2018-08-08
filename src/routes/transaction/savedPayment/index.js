@@ -60,9 +60,12 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+            total: ((
+              (data.data[n].sellingPrice * data.data[n].qty) * // price * qty
+              (1 - (data.data[n].disc1 / 100)) * // -disc1
+              (1 - (data.data[n].disc2 / 100)) * // -disc2
+              (1 - (data.data[n].disc3 / 100))) - // -disc3
+              data.data[n].discount)
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
           let productId = '-'
@@ -77,9 +80,12 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+            total: ((
+              (data.data[n].sellingPrice * data.data[n].qty) * // price * qty
+              (1 - (data.data[n].disc1 / 100)) * // -disc1
+              (1 - (data.data[n].disc2 / 100)) * // -disc2
+              (1 - (data.data[n].disc3 / 100))) - // -disc3
+              data.data[n].discount)
           })
         }
       }

@@ -1,7 +1,7 @@
 /**
  * Created by Veirry on 18/09/2017.
  */
-import { query as queryReport, queryMechanic } from '../../services/report/service'
+import { query as queryReport, queryDetail, queryMechanic } from '../../services/report/service'
 
 export default {
   namespace: 'serviceReport',
@@ -53,12 +53,7 @@ export default {
   },
   effects: {
     * query ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryReport, payload)
-      } else {
-        data = yield call(queryReport)
-      }
+      const data = yield call(queryReport, payload)
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -73,48 +68,75 @@ export default {
           type: 'updateState',
           payload: {
             fromDate: payload.from,
-            toDate: payload.to
+            toDate: payload.to,
+            filterModalVisible: false
           }
         })
+      } else {
+        throw data
+      }
+    },
+    * queryDetail ({ payload }, { call, put }) {
+      const data = yield call(queryDetail, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            fromDate: payload.from,
+            toDate: payload.to,
+            filterModalVisible: false
+          }
+        })
+      } else {
+        throw data
       }
     },
     * queryService ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryMechanic, payload)
+      const data = yield call(queryMechanic, payload)
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
             listService: data.data
           }
         })
+      } else {
+        throw data
       }
     },
     * queryMechanic ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryMechanic, payload)
-        if (data.success) {
-          yield put({
-            type: 'querySuccessMechanic',
-            payload: {
-              list: data.data,
-              listMechanic: data.data,
-              fromDate: payload.from,
-              toDate: payload.to,
-              pagination: {
-                total: data.total
-              }
+      const data = yield call(queryMechanic, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessMechanic',
+          payload: {
+            list: data.data,
+            listMechanic: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total
             }
-          })
-          yield put({
-            type: 'updateState',
-            payload: {
-              fromDate: payload.from,
-              toDate: payload.to
-            }
-          })
-        }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            fromDate: payload.from,
+            toDate: payload.to
+          }
+        })
+      } else {
+        throw data
       }
     }
   },

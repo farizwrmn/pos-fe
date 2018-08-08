@@ -17,28 +17,28 @@ const Browse = ({ transTime, ...browseProps }) => {
       render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: 'Last Call',
-      dataIndex: 'lastCall',
-      key: 'lastCall',
-      className: styles.alignRight
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Member',
-      dataIndex: 'memberName',
-      key: 'memberName',
-      className: styles.alignRight
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode'
     },
     {
-      title: 'Contact',
-      dataIndex: 'mobileNumber',
-      key: 'mobileNumber',
-      className: styles.alignRight
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
     },
     {
-      title: 'Customer Satisfaction',
-      dataIndex: 'customerSatisfaction',
-      key: 'customerSatisfaction',
-      className: styles.alignRight
+      title: 'Netto',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      className: styles.alignRight,
+      render: (text, record) => {
+        return parseFloat(record.DPP) + parseFloat(record.PPN)
+      }
     }
   ]
 

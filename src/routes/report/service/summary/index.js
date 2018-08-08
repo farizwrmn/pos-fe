@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
-import { Mechanic, Trans } from '../components'
+import { Mechanic, Trans, Item } from '../components'
 
 const TabPane = Tabs.TabPane
 
@@ -45,9 +45,9 @@ const Report = ({ serviceReport, dispatch }) => {
         <TabPane tab="By Mechanic" key="2">
           {activeKey === '2' && <Mechanic />}
         </TabPane>
-        {/* <TabPane tab="By Item" key="3">
+        <TabPane tab="By Item" key="3">
           {activeKey === '3' && <Item />}
-        </TabPane> */}
+        </TabPane>
       </Tabs>
     </div>
   )
