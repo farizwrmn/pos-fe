@@ -78,7 +78,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN SERVICE EMPLOYEE',
+            text: 'LAPORAN SERVICE EMPLOYEE ITEM',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
