@@ -35,7 +35,13 @@ export default {
           dispatch({
             type: 'setListNull'
           })
-        } else if (location.pathname === '/report/accounts/payment') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: '1'
+            }
+          })
+        } else if (location.pathname === '/report/accounts/payable') {
           dispatch({
             type: 'updateState',
             payload: {
