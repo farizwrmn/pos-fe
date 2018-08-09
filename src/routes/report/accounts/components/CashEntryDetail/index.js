@@ -38,8 +38,8 @@ const Report = ({ dispatch, cashEntryReport, app }) => {
           from,
           to,
           type: 'detail',
-          field: 'id,transNo',
-          fielddetail: 'id,reference,transNo,transNoId,transDate,typeName,accountDetailCode,accountName,description,amountIn,amountOut',
+          field: 'id,transNo,transDate,reference,amountIn,amountOut',
+          fielddetail: 'id,reference,transNo,transNoId,transDate,type,accountDetailCode,accountName,description,amountIn,amountOut',
           order: 'transDate,transNo,id'
         }
       })
