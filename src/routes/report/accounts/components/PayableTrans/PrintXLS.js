@@ -88,7 +88,7 @@ const PrintXLS = ({ listTrans, from, to, storeInfo }) => {
           { value: (data.beginValue || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.nettoTotal || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
 
-          { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.printDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.paid || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.bankName || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.checkNo || ''), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },

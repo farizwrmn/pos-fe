@@ -27,7 +27,7 @@ export async function queryPaymentAP (params) {
 export async function queryPaymentAPGroup (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
-  params.sort_by = '+invoiceDate,-paid,+memberName'
+  params.order = '+invoiceDate,-paid,+memberName'
   return request({
     url: `${paymentOpts}/report/ap/group`,
     method: 'get',
