@@ -13,6 +13,7 @@ const TabPane = Tabs.TabPane
 const ProductStock = ({ productstock, dispatch, location, app }) => {
   const { listItem, update, showPDFModal, mode, activeKey,
     showModalProduct, modalProductType, period, listSticker,
+    aliases,
     selectedSticker } = productstock
   const { user, storeInfo } = app
   const changeTab = (key) => {
@@ -53,6 +54,7 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
   }
 
   const printProps = {
+    aliases,
     user,
     storeInfo
   }
@@ -72,6 +74,8 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
   }
 
   const stickerProps = {
+    dispatch,
+    aliases,
     showModalProduct,
     listItem,
     update,
@@ -166,10 +170,10 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Sticker" key="0" >
-          <Sticker {...stickerProps} />
+          {activeKey === '0' && <Sticker {...stickerProps} />}
         </TabPane>
         <TabPane tab="Shelf" key="1" >
-          <Shelf {...stickerProps} />
+          {activeKey === '1' && <Shelf {...stickerProps} />}
         </TabPane>
       </Tabs>
     </div >
