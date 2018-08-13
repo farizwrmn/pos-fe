@@ -41,7 +41,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
           { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
 
-          { text: formatDate(data.printDate), alignment: 'left', fontSize: 11 },
+          { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
           { text: (data.bankName || ''), alignment: 'right', fontSize: 11 },
           { text: (data.checkNo || ''), alignment: 'right', fontSize: 11 },
