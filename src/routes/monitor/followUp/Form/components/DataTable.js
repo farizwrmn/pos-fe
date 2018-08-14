@@ -13,7 +13,6 @@ const DataTable = ({ ...tableProps, headers }) => {
     <Table {...tableProps}
       columns={columns}
       bordered
-      simple
       rowKey={record => record.id}
     />
   )

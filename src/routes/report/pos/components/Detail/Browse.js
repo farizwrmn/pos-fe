@@ -70,18 +70,15 @@ const Browse = ({ ...browseProps }) => {
   ]
 
   return (
-    <div>
-      <Table
-        style={{ clear: 'both' }}
-        {...browseProps}
-        bordered
-        scroll={{ x: 1200, y: 700 }}
-        columns={columns}
-        simple
-        size="small"
-        rowKey={record => record.id}
-      />
-    </div>
+    <Table
+      {...browseProps}
+      bordered
+      scroll={{ x: 1200, y: 700 }}
+      columns={columns}
+      simple
+      size="small"
+      rowKey={record => record.id}
+    />
   )
 }
 

@@ -9,7 +9,6 @@ import PrintXLS from './PrintXLS'
 import FormMobile from './FormMobile'
 
 const TabPane = Tabs.TabPane
-// const ButtonGroup = Button.Group
 
 const formCustomer = ({
   item = {},
@@ -17,21 +16,19 @@ const formCustomer = ({
   onActivate,
   disabled,
   clickBrowse,
-  activeKey,
   modalType,
   dataCustomer,
-  changeTab,
   modalAddUnit,
   addUnit,
   openModal,
   confirmAddUnit,
   cancelUnit,
   confirmSendUnit,
-  ...listProps,
-  ...filterProps,
-  ...printProps,
-  ...tabProps,
-  ...mobileProps
+  filterProps,
+  printProps,
+  tabProps,
+  mobileProps,
+  listProps
 }) => {
   const { show } = filterProps
   const { onShowHideSearch,
@@ -39,6 +36,8 @@ const formCustomer = ({
     listPrintAllCustomer,
     changed,
     mode,
+    activeKey,
+    changeTab,
     customerLoading,
     showPDFModal,
     onShowPDFModal,

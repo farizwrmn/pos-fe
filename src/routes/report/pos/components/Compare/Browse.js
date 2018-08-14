@@ -91,17 +91,14 @@ const Browse = ({ selectedBrand, diffDay, tableHeader, ...browseProps }) => {
   }
 
   return (
-    <div>
-      <Table
-        style={{ clear: 'both' }}
-        {...browseProps}
-        bordered
-        scroll={{ x: '555', y: 300 }}
-        columns={columns}
-        simple
-        size="small"
-      />
-    </div>
+    <Table
+      {...browseProps}
+      bordered
+      scroll={{ x: '555', y: 300 }}
+      columns={columns}
+      simple
+      size="small"
+    />
   )
 }
 

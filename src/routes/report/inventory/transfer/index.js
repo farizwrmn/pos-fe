@@ -24,7 +24,7 @@ const Report = ({ inventoryReport, dispatch }) => {
     })
   }
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => onChangeTab(key)} type="card">
         <TabPane tab="Transfer In" key="0">{activeKey === '0' && <TransferIn />}</TabPane>
         <TabPane tab="Transfer Out" key="1">{activeKey === '1' && <TransferOut />}</TabPane>

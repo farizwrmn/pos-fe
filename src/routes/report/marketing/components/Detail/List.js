@@ -76,18 +76,15 @@ const List = ({ ...listProps }) => {
   ]
 
   return (
-    <div>
-      <Table
-        style={{ clear: 'both' }}
-        {...listProps}
-        bordered
-        scroll={{ x: 1200 }}
-        columns={columns}
-        simple
-        size="small"
-        rowKey={record => record.transNoId}
-      />
-    </div>
+    <Table
+      {...listProps}
+      bordered
+      scroll={{ x: 1200 }}
+      columns={columns}
+      simple
+      size="small"
+      rowKey={record => record.transNoId}
+    />
   )
 }
 

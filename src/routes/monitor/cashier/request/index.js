@@ -79,7 +79,7 @@ const Request = ({ cashier, dispatch, loading }) => {
     }
   }
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={requestActiveTabKey} onChange={key => changeTab(key)}>
         <TabPane tab="Form" key="0" disabled={!Object.keys(currentItem).length}>
           <FormRequest {...formProps} />

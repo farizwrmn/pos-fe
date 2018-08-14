@@ -195,7 +195,7 @@ const History = ({
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       {modalVisible && <ModalBrowse {...modalProps} />}
       <Row>
         <Col {...leftColumn}>

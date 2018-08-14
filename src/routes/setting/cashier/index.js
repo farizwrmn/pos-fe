@@ -122,7 +122,7 @@ const Cashier = ({ cashier, user, loading, dispatch, location }) => {
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}

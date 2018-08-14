@@ -227,6 +227,30 @@ const Routers = function ({ history, app }) {
             }, 'master-bank')
           }
         }, {
+          path: 'master/car/brand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/car'))
+              cb(null, require('./routes/master/car/brand/'))
+            }, 'master-car-brand')
+          }
+        }, {
+          path: 'master/car/model',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/car'))
+              cb(null, require('./routes/master/car/model/'))
+            }, 'master-car-model')
+          }
+        }, {
+          path: 'master/car/type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/car'))
+              cb(null, require('./routes/master/car/type/'))
+            }, 'master-car-type')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

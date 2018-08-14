@@ -20,7 +20,7 @@ const History = ({ history, dispatch }) => {
     dispatch(routerRedux.push(path))
   }
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={path} onChange={path => changeTab(path)}>
         <TabPane tab="POS" key="/transaction/pos/history"><Pos /></TabPane>
         <TabPane tab="Purchase" key="/transaction/purchase/history"><PurchaseHistory /></TabPane>

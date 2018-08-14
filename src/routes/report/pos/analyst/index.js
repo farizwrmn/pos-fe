@@ -17,7 +17,7 @@ const Report = ({ dispatch }) => {
   }
   return (
     <div className="content-inner">
-      <Tabs onChange={callback} type="card" style={{ clear: 'both' }}>
+      <Tabs onChange={callback} type="card" >
         <TabPane tab="Turnover" key="1"><Turnover /></TabPane>
       </Tabs>
     </div>

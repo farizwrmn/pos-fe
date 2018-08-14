@@ -270,7 +270,7 @@ const FollowUp = ({
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Form" key="0" disabled={_.isEmpty(currentItem)}>
           {activeKey === '0' && <Form {...formProps} />}
