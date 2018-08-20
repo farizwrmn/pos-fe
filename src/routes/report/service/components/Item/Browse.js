@@ -43,16 +43,13 @@ const Browse = ({ transTime, ...browseProps }) => {
   ]
 
   return (
-    <div>
-      <Table
-        style={{ clear: 'both' }}
-        {...browseProps}
-        bordered
-        columns={columns}
-        simple
-        size="small"
-      />
-    </div>
+    <Table
+      {...browseProps}
+      bordered
+      columns={columns}
+      simple
+      size="small"
+    />
   )
 }
 

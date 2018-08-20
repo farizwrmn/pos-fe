@@ -37,7 +37,7 @@ const Report = ({ serviceReport, dispatch }) => {
     }
   }
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs {...tabsProps}>
         <TabPane tab="By Trans" key="1">
           {activeKey === '1' && <Trans />}

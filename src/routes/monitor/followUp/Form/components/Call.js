@@ -48,7 +48,7 @@ const Call = ({
     dataSource: details,
     pagination: false,
     headers: ['Type', 'Promo', 'Item', 'Qty', 'Total'],
-    onRowDoubleClick (record) {
+    onRowClick (record) {
       if (!memberInfo.customerSatisfaction) showModalFeedback(record)
     }
   }

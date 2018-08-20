@@ -32,7 +32,7 @@ const Report = ({ marketingReport, location, dispatch }) => {
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs {...tabProps}>
         <TabPane tab="FollowUp" key="1">
           {activeKey === '1' && <FollowUp />}

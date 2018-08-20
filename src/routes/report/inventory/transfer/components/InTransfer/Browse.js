@@ -59,17 +59,14 @@ const Browse = ({ ...browseProps }) => {
   ]
 
   return (
-    <div>
-      <Table
-        style={{ clear: 'both' }}
-        {...browseProps}
-        bordered
-        scroll={{ x: 730, y: 300 }}
-        columns={columns}
-        simple
-        size="small"
-      />
-    </div>
+    <Table
+      {...browseProps}
+      bordered
+      scroll={{ x: 730, y: 300 }}
+      columns={columns}
+      simple
+      size="small"
+    />
   )
 }
 

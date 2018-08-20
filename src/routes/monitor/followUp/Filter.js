@@ -13,21 +13,21 @@ const formItemLayout = {
     xs: { span: 5 },
     sm: { span: 4 },
     md: { span: 4 },
-    lg: { span: 3 }
+    lg: { span: 2 }
   },
   wrapperCol: {
     xs: { span: 19 },
     sm: { span: 14 },
     md: { span: 14 },
-    lg: { span: 10 }
+    lg: { span: 12 }
   }
 }
 
 const leftColumn = {
   xs: 24,
-  sm: 12,
+  sm: 11,
   md: 12,
-  lg: 12,
+  lg: 14,
   style: {
     marginBottom: 10
   }
@@ -35,9 +35,9 @@ const leftColumn = {
 
 const rightColumn = {
   xs: 24,
-  sm: 12,
+  sm: 13,
   md: 12,
-  lg: 12
+  lg: 10
 }
 
 const Filter = ({
@@ -45,6 +45,7 @@ const Filter = ({
   onSearchByKeyword,
   openCloseModalFilter,
   onSubmitDataFilter,
+  onResetDataFilter,
   modalFilter,
   start,
   end,
@@ -96,7 +97,8 @@ const Filter = ({
       </Col>
       <Col {...rightColumn} >
         <div className={styles.filterWrapper}>
-          <Button size="large" className={styles.btnFilter} onClick={openCloseModalFilter}>Filter</Button>
+          <Button size="large" type="danger" onClick={onResetDataFilter}>Reset</Button>
+          <Button size="large" onClick={openCloseModalFilter}>Filter</Button>
           {modalFilter && <ModalFilter {...modalProps} />}
           <FormItem className={styles.formSearch}>
             {getFieldDecorator('q', { initialValue: q })(

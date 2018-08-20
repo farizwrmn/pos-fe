@@ -21,7 +21,8 @@ const ModalFilter = ({
   onCheckDataSubmit,
   form: {
     getFieldDecorator,
-    getFieldsValue
+    getFieldsValue,
+    getFieldValue
   }
 }) => {
   const submitFilter = () => {
@@ -39,6 +40,7 @@ const ModalFilter = ({
       data.postService[1] = moment(data.postService[1]).format('YYYY-MM-DD')
     }
     delete data.period
+    if (!data.status) data.status = [0, 1, 2, 3, 4]
     onCheckDataSubmit(data)
   }
   return (
@@ -48,14 +50,16 @@ const ModalFilter = ({
           {getFieldDecorator('period', {
             initialValue: [moment().startOf('month'), moment(new Date(), 'YYYY-MM-DD')]
           })(
-            <RangePicker disabledDate={disabledDate} />
+            <RangePicker allowClear={false} disabledDate={disabledDate} />
           )}
         </FormItem>
-        <FormItem label="Status" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('status', {
-            initialValue: '0'
-          })(
-            <Select allowClear>
+        <FormItem label="Status"
+          hasFeedback
+          help={(getFieldValue('status') || '').length > 0 ? `${(getFieldValue('status') || '').length} status` : 'clear all for selecting all status'}
+          {...formItemLayout}
+        >
+          {getFieldDecorator('status')(
+            <Select mode="multiple" allowClear>
               <Option value="0" >Not Called</Option>
               <Option value="1" >Called</Option>
               <Option value="2" >In Progress</Option>

@@ -27,7 +27,7 @@ const Report = ({ sellpriceReport, dispatch }) => {
     })
   }
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => onChangeTab(key)} type="card">
         <TabPane tab="SellPrice" key="0">
           {activeKey === '0' && <PriceHeader />}

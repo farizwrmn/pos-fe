@@ -129,7 +129,7 @@ const CashRegister = ({
     <Table bordered
       pagination={false}
       scroll={{ x: '840px', y: 350 }}
-      style={{ margin: '0px 5px', backgroundColor: '#FFF', maxHeight: '180px' }}
+      style={{ margin: '0px 5px', backgroundColor: '#FFF' }}
       columns={columnsCashRegister}
       dataSource={listCashRegister || []}
       onRowDoubleClick={record => onRowDoubleClick(record)}
@@ -149,7 +149,7 @@ const CashRegister = ({
         <div className="service-reminders">{dataCashRegister}</div>
       </TabPane>
       <TabPane tab="Detail" key="1" disabled={!listCashRegisterDetails.length}>
-        <div className="service-reminders">{dataDetail}</div>
+        {activeKey === '1' && <div className="service-reminders">{dataDetail}</div>}
       </TabPane>
     </Tabs>
   )

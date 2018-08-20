@@ -45,7 +45,7 @@ const Filter = ({ onDateChange, dispatch, onListReset, form: { resetFields, getF
   }
 
   return (
-    <Row style={{ clear: 'both' }}>
+    <Row>
       <Col {...leftColumn} >
         <FilterItem label="Trans Date">
           {getFieldDecorator('rangePicker')(

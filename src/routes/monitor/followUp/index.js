@@ -16,8 +16,14 @@ const FollowUp = ({
 }) => {
   const { activeKey, currentItem, listFollowUpHeader, pagination, start, end, q,
     modalFilter, currentStep, listTransactionDetail, modalFeedback, currentFeedback,
-    itemFeedbacks, modalPending, modalAcceptOffer, modalDenyOffer } = followup
+    itemFeedbacks, modalPending, modalAcceptOffer, modalDenyOffer, status } = followup
   const changeTab = (key) => {
+    if (key === '1') {
+      dispatch({
+        type: 'followup/getDate',
+        payload: { start, end, status: [0, 2, 3, 4] }
+      })
+    }
     dispatch({
       type: 'followup/updateState',
       payload: {
@@ -29,10 +35,6 @@ const FollowUp = ({
         pending: false
       }
     })
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname
-    }))
   }
 
   const openCloseModalFilter = () => {
@@ -50,9 +52,29 @@ const FollowUp = ({
     end,
     q,
     openCloseModalFilter,
+    onResetDataFilter () {
+      dispatch({
+        type: 'followup/updateState',
+        payload: {
+          status: [0, 2, 3, 4]
+        }
+      })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname
+      }))
+    },
     onSubmitDataFilter (data) {
       openCloseModalFilter()
       if (!data.start && !data.end && !data.status && !data.nextCall && !data.postService) return false
+      dispatch({
+        type: 'followup/updateState',
+        payload: {
+          status: data.status,
+          start: data.start,
+          end: data.end
+        }
+      })
       const { pathname } = location
       dispatch(routerRedux.push({
         pathname,
@@ -60,6 +82,12 @@ const FollowUp = ({
       }))
     },
     onFilterPeriod (start, end) {
+      dispatch({
+        type: 'followup/updateState',
+        payload: {
+          status: [0, 2, 3, 4]
+        }
+      })
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
@@ -95,7 +123,8 @@ const FollowUp = ({
         page: page.current,
         pageSize: page.pageSize,
         start,
-        end
+        end,
+        status
       }
       if (start && end && !q) {
         dispatch(routerRedux.push({
@@ -241,7 +270,7 @@ const FollowUp = ({
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Form" key="0" disabled={_.isEmpty(currentItem)}>
           {activeKey === '0' && <Form {...formProps} />}

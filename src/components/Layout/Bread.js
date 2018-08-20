@@ -90,14 +90,14 @@ const Bread = ({ menu, changeRole }) => {
   return (
     <div className={styles.bread}>
       <Row>
-        <Col xs={4} sm={6} md={8} lg={10} xl={12}>
+        <Col xs={4} sm={10} md={8} lg={10} xl={12}>
           {window.screen.width >= 768 &&
             <Breadcrumb>
               {breads}
             </Breadcrumb>
           }
         </Col>
-        <Col xs={20} sm={18} md={16} lg={14} xl={12}>
+        <Col xs={20} sm={14} md={16} lg={14} xl={12}>
           <div className={styles.currentStore}>
             <Col span={22}>
               <span>{currentStoreName}</span>

@@ -272,11 +272,11 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
-    ...tabProps,
-    ...filterProps,
-    ...modalProps,
-    ...listProps,
-    ...mobileProps,
+    tabProps,
+    filterProps,
+    modalProps,
+    listProps,
+    mobileProps,
     modalType,
     modalAddUnit,
     addUnit,

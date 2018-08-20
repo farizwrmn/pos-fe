@@ -13,7 +13,7 @@ const Promo = ({ promo }) => {
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={changeTab}>
         <TabPane tab="Detail" key="0"><Detail /></TabPane>
       </Tabs>

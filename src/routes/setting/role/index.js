@@ -147,7 +147,6 @@ const Role = ({ role, dispatch }) => {
   }
 
   const listProps = {
-    style: { clear: 'both' },
     scroll: { x: (200 * roles.length) },
     pagination: false,
     columns,

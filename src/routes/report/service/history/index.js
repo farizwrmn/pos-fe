@@ -90,7 +90,7 @@ const ServiceHistory = ({ serviceReport, service, employee, dispatch, app, loadi
   }
 
   return (
-    <div className="content-inner" style={{ clear: 'both' }}>
+    <div className="content-inner">
       <Filter {...filterProps} />
       <List {...listProps} />
     </div>

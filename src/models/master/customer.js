@@ -293,7 +293,7 @@ export default modelExtend(pageModel, {
           } else {
             arrayProd = JSON.parse(listByCode.slice())
           }
-          let item = payload.data
+          let item = data.member
           arrayProd.push({
             memberCode: item.memberCode,
             memberName: item.memberName,
