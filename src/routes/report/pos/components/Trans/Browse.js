@@ -2,7 +2,6 @@
  * Created by Veirry on 17/09/2017.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import moment from 'moment'
 import { numberFormat } from 'utils'
@@ -72,11 +71,6 @@ const Browse = ({ ...browseProps }) => {
       rowKey={record => record.transNo}
     />
   )
-}
-
-Browse.propTypes = {
-  location: PropTypes.object,
-  onExportExcel: PropTypes.func
 }
 
 export default Browse

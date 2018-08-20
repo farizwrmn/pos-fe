@@ -20,11 +20,12 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    currentCashier: { id: null, status: '' },
     modalType: 'add',
     activeKey: '0',
     activeTabKeyClose: '1',
     listCashier: [],
-    cashierInfo: [],
+    cashierInfo: {},
     listCashRegister: [],
     listCashTransSummary: {},
     listCashTransDetail: {},
@@ -65,6 +66,8 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'getClosedCashRegister', payload: { ...other } })
         } else if (pathname === '/monitor/cashier/approve') {
           dispatch({ type: 'getRequestedCashRegister' })
+        } else if (pathname === '/report/pos/summary') {
+          dispatch({ type: 'resetFilter' })
         }
       })
     }
@@ -103,9 +106,18 @@ export default modelExtend(pageModel, {
             }
           }
         })
-        message.success('Double click the row to see the details')
+        if (location.pathname === '/monitor/cashier/periods') message.success('Double click the row to see the details')
       } else {
-        message.error('No Data!')
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCashRegister: [],
+            pagination: {
+              total: 0
+            }
+          }
+        })
+        if (location.pathname === '/monitor/cashier/periods') message.error('No Data!')
       }
     },
 
@@ -457,6 +469,15 @@ export default modelExtend(pageModel, {
       return { ...state, currentItem }
     },
 
+    resetFilter (state) {
+      return {
+        ...state,
+        cashierInfo: {},
+        currentCashier: { id: null, status: '' },
+        listCashRegister: []
+      }
+    },
+
     refreshPage (state) {
       return {
         ...state,
@@ -465,7 +486,7 @@ export default modelExtend(pageModel, {
         activeKey: '0',
         activeTabKeyClose: '1',
         listCashier: [],
-        cashierInfo: [],
+        cashierInfo: {},
         listCashRegister: [],
         listCashTransSummary: {},
         listCashTransDetail: {},

@@ -4,49 +4,77 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import moment from 'moment'
+import { ModalFilter } from 'components'
 import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, loading, posReport, app }) => {
-  const { listTrans, fromDate, toDate, productCode } = posReport
+  const { listTrans, fromDate, toDate, modalFilterPOSByCancel } = posReport
   const { user, storeInfo } = app
+
+  const showFilter = () => {
+    dispatch({
+      type: 'posReport/updateState',
+      payload: {
+        modalFilterPOSByCancel: !modalFilterPOSByCancel
+      }
+    })
+  }
+
   const browseProps = {
     dataSource: listTrans,
-    listTrans,
-    storeInfo,
-    loading: loading.effects['posReport/query'],
-    productCode,
-    onListReset () {
-      dispatch({
-        type: 'posReport/setListNull'
-      })
-    }
+    loading: loading.effects['posReport/queryTransCancel']
   }
+
   const filterProps = {
     listTrans,
     user,
     storeInfo,
-    dispatch,
     fromDate,
     toDate,
-    productCode,
+    showFilter,
     onListReset () {
       dispatch({
         type: 'posReport/setListNull'
       })
-    },
-    onDateChange (from, to) {
       dispatch({
-        type: 'posReport/queryTransCancel',
-        payload: {
-          from,
-          to
-        }
+        type: 'cashier/resetFilter'
       })
     }
   }
+
+  const modalProps = {
+    visible: modalFilterPOSByCancel,
+    date: [moment(fromDate, 'YYYY-MM-DD'), moment(toDate, 'YYYY-MM-DD')],
+    title: 'Filter',
+    onCancel () {
+      showFilter()
+    },
+    onSubmitFilter (data) {
+      const { date, ...other } = data
+      dispatch({
+        type: 'posReport/queryTransCancel',
+        payload: {
+          from: moment(date[0]).format('YYYY-MM-DD'),
+          to: moment(date[1]).format('YYYY-MM-DD'),
+          ...other
+        }
+      })
+      dispatch({
+        type: 'posReport/setDate',
+        payload: {
+          from: moment(date[0]).format('YYYY-MM-DD'),
+          to: moment(date[1]).format('YYYY-MM-DD')
+        }
+      })
+      showFilter()
+    }
+  }
+
   return (
     <div className="content-inner">
+      {modalFilterPOSByCancel && <ModalFilter {...modalProps} />}
       <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>

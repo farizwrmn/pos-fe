@@ -14,6 +14,7 @@ import layer from './layer'
 import Notification from './Notification'
 import Reminder from './Reminder'
 import CashRegister from './CashRegister'
+import ModalFilter from './ModalFilter'
 
 
 export {
@@ -37,5 +38,6 @@ export {
   RepeatReportMergeCell,
   Notification,
   Reminder,
-  CashRegister
+  CashRegister,
+  ModalFilter
 }

@@ -3,13 +3,24 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
-import { Button, DatePicker, Select, Row, Col, Icon, Form } from 'antd'
+import { ModalFilter } from 'components'
+import { Button, Select, Row, Col, Icon, Form } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { RangePicker } = DatePicker
+const FormItem = Form.Item
 const Option = Select.Option
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
+}
 
 const leftColumn = {
   xs: 24,
@@ -28,100 +39,102 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({
+  showFilter,
+  listDaily,
+  listDailyTempCategories,
+  listDailyTempBrands,
+  selectCategory,
+  selectBrand,
+  onListReset,
+  modalProps,
+  ...printProps,
+  form: {
+    getFieldDecorator,
+    resetFields
+  } }) => {
+  const { modalFilterPOSByDaily, onDateChange } = modalProps
+  const { brand, category } = printProps
   let optionCategory = []
   let optionBrand = []
-  if (listDaily.length > 0) {
-    let myArray = listDaily
-    let category = _.groupBy(myArray, 'categoryName')
-    let brand = _.groupBy(myArray, 'brandName')
-    for (let i = 0; i < Object.keys(category).length; i += 1) {
-      optionCategory.push(<Option key={Object.keys(category)[i].toString(36)}>{Object.keys(category)[i].toString(36)}</Option>)
-    }
-    for (let i = 0; i < Object.keys(brand).length; i += 1) {
-      optionBrand.push(<Option key={Object.keys(brand)[i].toString(36)}>{Object.keys(brand)[i].toString(36)}</Option>)
+  if (listDailyTempCategories && listDailyTempCategories.length) {
+    let myArray = listDailyTempCategories
+    let categories = _.groupBy(myArray, 'categoryName')
+    for (let i = 0; i < Object.keys(categories).length; i += 1) {
+      optionCategory.push(<Option key={Object.keys(categories)[i].toString(36)}>{Object.keys(categories)[i].toString(36)}</Option>)
     }
   }
-
-  const handleChange = () => {
-    const data = getFieldsValue()
-    data.mode = 'pbc'
-    data.from = data.rangePicker[0].format('YYYY-MM-DD')
-    data.to = data.rangePicker[1].format('YYYY-MM-DD')
-    onFilterChange(data)
+  if (listDailyTempBrands && listDailyTempBrands.length) {
+    let brands = _.groupBy(listDailyTempBrands, 'brandName')
+    for (let i = 0; i < Object.keys(brands).length; i += 1) {
+      optionBrand.push(<Option key={Object.keys(brands)[i].toString(36)}>{Object.keys(brands)[i].toString(36)}</Option>)
+    }
   }
 
   const handleReset = () => {
-    const fields = getFieldsValue()
-    for (let item in fields) {
-      if ({}.hasOwnProperty.call(fields, item)) {
-        if (fields[item] instanceof Array) {
-          fields[item] = []
-        } else {
-          fields[item] = undefined
-        }
-      }
-    }
-    setFieldsValue(fields)
-    resetFields()
     onListReset()
-  }
-
-  const handleChangeDate = (value) => {
-    handleReset()
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
   }
 
   const printOpts = {
     listDaily,
     ...printProps
   }
-  return (
-    <Row>
-      <Col {...leftColumn}>
-        <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker')(
-            <RangePicker size="large"
-              onChange={value => handleChangeDate(value)}
-              format="DD-MMM-YYYY"
-            />
-          )}
-        </FilterItem>
-        <FilterItem label="Category">
-          {getFieldDecorator('category')(
+
+  const changeCategory = (value) => {
+    resetFields(['brand'])
+    selectCategory(value)
+  }
+
+  const changeBrand = (value) => {
+    selectBrand(value)
+  }
+
+  const modalOpts = {
+    ...modalProps,
+    onDateChange,
+    fields: (
+      <Form layout="vertical">
+        <FormItem label="Category" {...formItemLayout}>
+          {getFieldDecorator('category', {
+            initialValue: category !== 'ALL CATEGORY' ? category : null
+          })(
             <Select
               mode="default"
               allowClear
-              onBlur={() => handleChange()}
-              style={{ width: '100%', height: '32px', marginTop: '5px' }}
+              onChange={value => changeCategory(value)}
             >
               {optionCategory}
             </Select>
           )}
-        </FilterItem>
-        <FilterItem label="Brand">
-          {getFieldDecorator('brand')(
+        </FormItem>
+        <FormItem label="Brand" {...formItemLayout}>
+          {getFieldDecorator('brand', {
+            initialValue: brand !== 'ALL BRAND' ? brand : null
+          })(
             <Select
-              mode="combobox"
+              mode="default"
               allowClear
-              style={{ width: '100%', height: '32px' }}
+              onChange={value => changeBrand(value)}
             >
               {optionBrand}
             </Select>
           )}
-        </FilterItem>
-      </Col>
+        </FormItem>
+      </Form>
+    )
+  }
+
+  return (
+    <Row>
+      {modalFilterPOSByDaily && <ModalFilter {...modalOpts} />}
+      <Col {...leftColumn} />
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
-        <Button
+        <Button type="dashed"
           size="large"
-          style={{ marginLeft: '5px' }}
-          type="primary"
           className="button-width02 button-extra-large"
-          onClick={() => handleChange()}
+          onClick={() => showFilter()}
         >
-          <Icon type="search" className="icon-large" />
+          <Icon type="filter" className="icon-large" />
         </Button>
         <Button type="dashed"
           size="large"
@@ -138,9 +151,9 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
 }
 
 Filter.propTypes = {
-  form: PropTypes.object.isRequired,
-  filter: PropTypes.object,
-  onFilterChange: PropTypes.func
+  onListReset: PropTypes.func.isRequired,
+  showFilter: PropTypes.func,
+  listDaily: PropTypes.array
 }
 
 export default Form.create()(Filter)

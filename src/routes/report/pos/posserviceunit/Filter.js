@@ -3,14 +3,10 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
 import moment from 'moment'
-import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Row, Col, Icon } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
-
-const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -29,7 +25,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ showFilter, onListReset, listTrans, ...printProps }) => {
   const construct = (dataSales) => {
     let result = []
     let formatSales = []
@@ -86,18 +82,7 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
     return tempListTrans
   }
 
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
-  }
-
   const handleReset = () => {
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname
-    }))
-    resetFields()
     onListReset()
   }
 
@@ -108,14 +93,15 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
 
   return (
     <Row >
-      <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker')(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
-          )}
-        </FilterItem>
-      </Col>
+      <Col {...leftColumn} />
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large"
+          onClick={() => showFilter()}
+        >
+          <Icon type="filter" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
@@ -131,12 +117,9 @@ const Filter = ({ onDateChange, dispatch, onListReset, listTrans, form: { resetF
 }
 
 Filter.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
-  filter: PropTypes.object,
-  onFilterChange: PropTypes.func.isRequired,
   onListReset: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func.isRequired
+  showFilter: PropTypes.func,
+  listTrans: PropTypes.array.isRequired
 }
 
-export default Form.create()(Filter)
+export default Filter

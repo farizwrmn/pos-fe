@@ -1,0 +1,6 @@
+{
+  "name": "ModalFilter",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ModalFilter.js"
+}
