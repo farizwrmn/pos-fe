@@ -66,7 +66,6 @@ const List = ({ ...tableProps, editList }) => {
         scroll={{ x: 500 }}
         columns={columns}
         simple
-        rowKey={record => record.id}
         onRowClick={record => handleMenuClick(record)}
       />
     </div>
