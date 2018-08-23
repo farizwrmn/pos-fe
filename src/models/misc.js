@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
         if (location.pathname === '/setting/misc') {
           dispatch({
             type: 'query',
@@ -27,6 +28,8 @@ export default modelExtend(pageModel, {
           })
         } else if (location.pathname === '/transaction/pos/payment') {
           dispatch({ type: 'misc/lovFullCode', payload: { code: 'PAYMENT' } })
+        } else if (location.pathname === '/master/customer' && activeKey === '2') {
+          dispatch({ type: 'lov', payload: { code: 'IDTYPE' } })
         }
       })
     }
@@ -142,22 +145,26 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     querySuccessLov (state, action) {
       const { listLov, pagination, code } = action.payload
-      return { ...state,
+      return {
+        ...state,
         code,
         listLov,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     updateState (state, { payload }) {
       return {

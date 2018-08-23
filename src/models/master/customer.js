@@ -225,6 +225,26 @@ export default modelExtend(pageModel, {
     * activateMember ({ payload = {} }, { call, put }) {
       const result = yield call(srvActivateMember, payload)
       if (result.success) {
+        let member = {
+          memberCode: result.data.memberCode,
+          memberName: result.data.memberName,
+          memberGroupId: payload.memberGroupId,
+          memberTypeId: payload.memberTypeId,
+          cityId: payload.cityId,
+          idType: payload.idType,
+          idNo: payload.idNo,
+          address01: payload.address01,
+          phoneNumber: payload.phoneNumber,
+          mobileNumber: payload.mobileNumber,
+          gender: payload.gender
+        }
+        yield put({
+          type: 'edit',
+          payload: {
+            id: result.data.memberCode,
+            data: member
+          }
+        })
         yield put({
           type: 'responseActivateMember',
           payload
@@ -259,7 +279,6 @@ export default modelExtend(pageModel, {
       }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        // yield put({ type: 'query' })
         success()
         if (payload.modalType === 'add') {
           yield put({
@@ -343,7 +362,8 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ customer }) => customer.currentItem.memberCode)
-      const newCustomer = { ...payload, id }
+      let newCustomer = { ...payload, id }
+      if (!id) newCustomer = { ...payload }
       const data = yield call(edit, newCustomer)
       if (data.success) {
         success()

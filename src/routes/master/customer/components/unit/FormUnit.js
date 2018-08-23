@@ -236,7 +236,7 @@ const FormUnit = ({
           initialValue: item.machineNo
         })(<Input maxLength={20} />)}
       </FormItem>
-      <FormItem label="Expiration Month" hasFeedback {...formItemLayout}>
+      <FormItem label="Expiration Date" hasFeedback {...formItemLayout}>
         {getFieldDecorator('expired', {
           initialValue: item.expired ? moment(item.expired, 'YYYY-MM-DD') : null
         })(<MonthPicker format="MMM-YYYY" placeholder="Select period" />)}
