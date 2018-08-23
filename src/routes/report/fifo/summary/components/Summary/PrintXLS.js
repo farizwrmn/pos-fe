@@ -104,7 +104,6 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       }
       start += 1
     }
-    console.log(typeof inTransitQty)
     tableFooter.push(
       [
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
