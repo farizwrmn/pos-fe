@@ -99,8 +99,8 @@ export async function remove (params) {
 
 export async function queryHistories (params) {
   const apiHeaderToken = crypt.apiheader()
-  const storeId = lstorage.getCurrentUserStore()
-  params.storeId = storeId
+  // const storeId = lstorage.getCurrentUserStore()
+  // params.storeId = storeId
   return request({
     url: purchase,
     method: 'get',
@@ -111,9 +111,12 @@ export async function queryHistories (params) {
 
 export async function queryHistory (params) {
   const apiHeaderToken = crypt.apiheader()
+  // const storeId = lstorage.getCurrentUserStore()
+  // params.storeId = storeId
   return request({
     url: `${purchase}/transNo/${encodeURIComponent(params.transNo)}`,
     method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }

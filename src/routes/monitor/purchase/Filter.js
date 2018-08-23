@@ -24,7 +24,6 @@ const filterItemLayout = {
 const Filter = ({
   filterChange,
   filterTransNo,
-  period,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -56,7 +55,7 @@ const Filter = ({
     <Row>
       <Col {...filterItemLayout} >
         <FormItem >
-          {getFieldDecorator('period', { initialValue: moment.utc(period, 'YYYY-MM') })(
+          {getFieldDecorator('period', { initialValue: moment(new Date(), 'YYYY-MM') })(
             <MonthPicker disabledDate={disabledDate} onChange={handleChangeDate} placeholder="Select Period" />
           )}
         </FormItem>

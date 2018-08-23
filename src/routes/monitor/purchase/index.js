@@ -42,7 +42,7 @@ const PurchaseHistory = ({ purchase, loading, dispatch }) => {
   }
 
   return (
-    <div>
+    <div className="content-inner">
       <Filter {...filterProps} />
       <List {...listProps} />
     </div>
