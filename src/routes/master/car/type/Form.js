@@ -1,6 +1,5 @@
 import React from 'react'
 import { Input, Row, Col, Button, Form, Modal, Select } from 'antd'
-import debounce from 'lodash/debounce'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -27,7 +26,7 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormType = ({ item, listModel, onSubmit, onCancel, formType, callModel, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields } }) => {
+const FormType = ({ item, listModel, onSubmit, onCancel, formType, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields } }) => {
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -63,10 +62,6 @@ const FormType = ({ item, listModel, onSubmit, onCancel, formType, callModel, fo
 
   const models = (listModel && listModel.length) ? listModel.map(x => (<Option value={x.id}>{x.modelName}</Option>)) : []
 
-  const fetchModel = (value) => {
-    callModel(value)
-  }
-
   return (
     <Form layout="horizontal">
       <Row>
@@ -80,8 +75,7 @@ const FormType = ({ item, listModel, onSubmit, onCancel, formType, callModel, fo
               autoFocus
               placeholder="Select Model"
               optionFilterProp="children"
-              filterOption={false}
-              onSearch={debounce(fetchModel, 200)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {models}
             </Select>)}

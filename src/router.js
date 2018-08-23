@@ -419,7 +419,7 @@ const Routers = function ({ history, app }) {
         //       cb(null, require('./routes/transaction/history/'))
         //     }, 'transaction-history')
         //   }
-        // }, 
+        // },
         {
           path: 'report/service/history',
           getComponent (nextState, cb) {

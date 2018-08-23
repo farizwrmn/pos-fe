@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import { Tabs, Button, Icon, Dropdown, Row, Col, Menu, Modal } from 'antd'
 import { DataTable } from './../components'
 import FormType from './Form'
@@ -9,7 +10,7 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const Type = ({ car, app, loading, dispatch }) => {
+const Type = ({ car, app, loading, dispatch, location }) => {
   const { listType, listModel, activeKey, pagination, currentItem, formType, printType,
     changed, showPrintModal, listPrintAllTypes, queryLoading } = car
   const { user, storeInfo } = app
@@ -23,19 +24,17 @@ const Type = ({ car, app, loading, dispatch }) => {
         formType: 'add'
       }
     })
-    dispatch({ type: 'car/queryTypesOfCars' })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: key === '1' ? { ...query, activeKey: key } : { activeKey: key }
+    }))
   }
 
   const formProps = {
     item: currentItem,
     listModel,
     formType,
-    callModel (q) {
-      dispatch({
-        type: 'car/queryTypesOfCars',
-        payload: { q }
-      })
-    },
     onSubmit (data) {
       let id = currentItem.id
       if (id) {
@@ -52,6 +51,13 @@ const Type = ({ car, app, loading, dispatch }) => {
           currentItem: {}
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 1
+        }
+      }))
     }
   }
 
@@ -62,13 +68,15 @@ const Type = ({ car, app, loading, dispatch }) => {
     headers: [{ title: 'Name', key: 'typeName' }],
     module: 'type',
     onChange (page) {
-      dispatch({
-        type: 'car/queryTypesOfCars',
-        payload: {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           page: page.current,
           pageSize: page.pageSize
         }
-      })
+      }))
     },
     editItem (item) {
       dispatch({
@@ -79,6 +87,13 @@ const Type = ({ car, app, loading, dispatch }) => {
           formType: 'edit'
         }
       })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
     },
     deleteItem (id) {
       dispatch({
@@ -90,13 +105,26 @@ const Type = ({ car, app, loading, dispatch }) => {
 
   const filterProps = {
     onSearchByKeyword (q) {
-      dispatch({
-        type: 'car/queryTypesOfCars',
-        payload: { q }
-      })
+      const { query, pathname } = location
+      const { activeKey } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey,
+          q
+        }
+      }))
     },
     onResetFilter () {
-      dispatch({ type: 'car/queryTypesOfCars' })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          activeKey: 1,
+          pageSize: query.pageSize || 10
+        }
+      }))
     }
   }
   const clickBrowse = () => {
@@ -106,6 +134,11 @@ const Type = ({ car, app, loading, dispatch }) => {
         activeKey: '1'
       }
     })
+    const { pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: { activeKey: 1 }
+    }))
   }
 
   const onShowPrintModal = (printType) => {
