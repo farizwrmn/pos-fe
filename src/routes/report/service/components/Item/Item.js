@@ -18,7 +18,7 @@ const Report = ({ dispatch, serviceReport, loading, app }) => {
     user,
     fromDate,
     toDate,
-    loading: loading.effects['marketingReport/queryHourly']
+    loading: loading.effects['serviceReport/queryDetail']
   }
 
   const filterProps = {

@@ -33,9 +33,7 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    console.log(typeof fields, 'handleFields', fields)
     const { createdAt, customSearch } = fields
-    console.log('customSearch', customSearch)
     let finalObj = {}
     let tempText = []
     if (customSearch) {
@@ -45,7 +43,6 @@ const Filter = ({
         console.log(tempText[0][i])
         tempText[1] = tempText[0][i].split('=')
         tempText[2] = `{"${tempText[1][0]}":"${tempText[1][1]}"}`
-        console.log(typeof tempText[2], 'tempText[2]', tempText[2])
         console.log(JSON.parse(tempText[2]))
         finalObj = Object.assign(finalObj, JSON.parse(tempText[2]))
       }
