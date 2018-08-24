@@ -24,7 +24,7 @@ const ModalSticker = ({
     getFieldsValue
   }
 }) => {
-  let listItemName = listItem.length > 0 ? listItem.map(x => x.productName) : []
+  let listItemName = listItem.length > 0 ? listItem.map(x => `${x.productName} (${x.productCode})`) : []
 
   let productNames = listItem.length > 0 ? listItem.map(x => (<Option key={x.productName}>{x.productName}</Option>)) : []
 
@@ -91,7 +91,7 @@ const ModalSticker = ({
         return false
       }
       if (Object.keys(selectedSticker).length === 0) {
-        const listProduct = listItem.filter(x => x.productName === data.name)[0]
+        const listProduct = listItem.find(x => `${x.productName} (${x.productCode})` === data.name)
         data.info = listProduct
         getItem(data)
       } else {
