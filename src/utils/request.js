@@ -7,6 +7,7 @@ import { message } from 'antd'
 // import { YQL, CORS } from './config'
 import { getDomainBE, getPortBE, removeItemKey } from './lstorage'
 import { apiPrefix } from '../utils/config.rest'
+import crypt from './crypt'
 
 const fetch = (options) => {
   let {
@@ -55,7 +56,6 @@ const fetch = (options) => {
   //   url = `http://query.yahooapis.com/v1/public/yql?q=select * from json where url='${options.url}?${encodeURIComponent(qs.stringify(options.data))}'&format=json`
   //   data = null
   // }
-
   switch (method.toLowerCase()) {
     case 'get':
       return axios.get(url, {
@@ -116,14 +116,49 @@ export default function request (options) {
     //   }
     // }
   }
-
+  axios.interceptors.request.use((config) => {
+    config.metadata = { startTime: new Date() }
+    return config
+  }, (error) => {
+    return Promise.reject(error)
+  })
+  // axios.interceptors.response.use((response) => {
+  //   response.config.metadata.endTime = new Date()
+  //   response.duration = response.config.metadata.endTime - response.config.metadata.startTime
+  //   console.log(response.config.url, `${(response.duration / 1000)} seconds`, response)
+  //   return response
+  // }, (error) => {
+  //   return Promise.reject(error)
+  // })
+  // console.log('axios', myInterceptor)
+  // axios.interceptors.request.eject(myInterceptor)
   return fetch(options).then((response) => {
+    response.config.metadata.endTime = new Date()
     const { statusText, status } = response
     let data = options.fetchType === 'YQL' ? response.data.query.results.json : response.data
     if (data instanceof Array) {
       data = {
         list: data
       }
+    }
+    const getLocation = (href) => {
+      let l = document.createElement('a')
+      l.href = href
+      return l
+    }
+    response.duration = response.config.metadata.endTime - response.config.metadata.startTime
+    if (getLocation(response.config.url).pathname.substr(0, 14) === '/api/v1/report') {
+      const apiHeaderToken = crypt.apiheader()
+      request({
+        url: '/log/report',
+        method: 'post',
+        data: {
+          url: response.config.url,
+          params: JSON.stringify(response.config.params),
+          duration: response.duration
+        },
+        headers: apiHeaderToken
+      })
     }
 
     return Promise.resolve({
