@@ -6,8 +6,8 @@ import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
-import Sticker from './Sticker'
-import Shelf from './Shelf'
+// import Sticker from './Sticker'
+// import Shelf from './Shelf'
 import PrintPDF from './PrintPDF'
 import PrintShelf from './PrintShelf'
 import PrintSticker from './PrintSticker'
@@ -16,9 +16,25 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, listItem, update, changed, listPrintAllStock, showPDFModal, mode, display, isChecked, modalType, currentItem, activeKey,
-    disable, show, showModalProduct, modalProductType, period, listSticker,
-    selectedSticker, pagination, stockLoading } = productstock
+  const { list,
+    // listItem, update,
+    changed,
+    listPrintAllStock,
+    showPDFModal,
+    mode,
+    display,
+    isChecked,
+    modalType,
+    currentItem,
+    activeKey,
+    disable,
+    show,
+    // showModalProduct, modalProductType, period,
+    listSticker,
+    // selectedSticker,
+    pagination,
+    stockLoading
+  } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
@@ -307,110 +323,110 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       break
   }
 
-  const stickerProps = {
-    showModalProduct,
-    listItem,
-    update,
-    period,
-    listSticker,
-    modalProductType,
-    selectedSticker,
-    onShowModalProduct (key) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          showModalProduct: true,
-          modalProductType: key,
-          selectedSticker: {}
-        }
-      })
-    },
-    onSelectSticker (sticker) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          update: true,
-          selectedSticker: sticker
-        }
-      })
-    },
-    onCloseModalProduct () {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          update: false,
-          showModalProduct: false,
-          modalProductType: '',
-          listItem: [],
-          period: []
-        }
-      })
-    },
-    onAutoSearch (value) {
-      if (value.length < 1) {
-        dispatch({
-          type: 'productstock/updateState',
-          payload: {
-            listItem: []
-          }
-        })
-      } else if (value.length > 0) {
-        dispatch({
-          type: 'productstock/queryItem',
-          payload: {
-            q: value
-          }
-        })
-      }
-    },
-    addSticker (sticker) {
-      dispatch({
-        type: 'productstock/addSticker',
-        payload: {
-          sticker
-        }
-      })
-    },
-    deleteSticker (sticker) {
-      dispatch({
-        type: 'productstock/deleteSticker',
-        payload: {
-          sticker
-        }
-      })
-    },
-    updateSticker (selectedRecord, changedRecord) {
-      dispatch({
-        type: 'productstock/updateSticker',
-        payload: {
-          selectedRecord, changedRecord
-        }
-      })
-    },
-    onSearchUpdateSticker (value) {
-      if (value.updatedAt.length !== 0) {
-        dispatch({
-          type: 'productstock/queryItem',
-          payload: {
-            ...value
-          }
-        })
-      } else {
-        dispatch({
-          type: 'productstock/updateState',
-          payload: {
-            listItem: []
-          }
-        })
-      }
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          period: value.updatedAt
-        }
-      })
-    }
-  }
+  // const stickerProps = {
+  //   showModalProduct,
+  //   listItem,
+  //   update,
+  //   period,
+  //   listSticker,
+  //   modalProductType,
+  //   selectedSticker,
+  //   onShowModalProduct (key) {
+  //     dispatch({
+  //       type: 'productstock/updateState',
+  //       payload: {
+  //         showModalProduct: true,
+  //         modalProductType: key,
+  //         selectedSticker: {}
+  //       }
+  //     })
+  //   },
+  //   onSelectSticker (sticker) {
+  //     dispatch({
+  //       type: 'productstock/updateState',
+  //       payload: {
+  //         update: true,
+  //         selectedSticker: sticker
+  //       }
+  //     })
+  //   },
+  //   onCloseModalProduct () {
+  //     dispatch({
+  //       type: 'productstock/updateState',
+  //       payload: {
+  //         update: false,
+  //         showModalProduct: false,
+  //         modalProductType: '',
+  //         listItem: [],
+  //         period: []
+  //       }
+  //     })
+  //   },
+  //   onAutoSearch (value) {
+  //     if (value.length < 1) {
+  //       dispatch({
+  //         type: 'productstock/updateState',
+  //         payload: {
+  //           listItem: []
+  //         }
+  //       })
+  //     } else if (value.length > 0) {
+  //       dispatch({
+  //         type: 'productstock/queryItem',
+  //         payload: {
+  //           q: value
+  //         }
+  //       })
+  //     }
+  //   },
+  //   addSticker (sticker) {
+  //     dispatch({
+  //       type: 'productstock/addSticker',
+  //       payload: {
+  //         sticker
+  //       }
+  //     })
+  //   },
+  //   deleteSticker (sticker) {
+  //     dispatch({
+  //       type: 'productstock/deleteSticker',
+  //       payload: {
+  //         sticker
+  //       }
+  //     })
+  //   },
+  //   updateSticker (selectedRecord, changedRecord) {
+  //     dispatch({
+  //       type: 'productstock/updateSticker',
+  //       payload: {
+  //         selectedRecord, changedRecord
+  //       }
+  //     })
+  //   },
+  //   onSearchUpdateSticker (value) {
+  //     if (value.updatedAt.length !== 0) {
+  //       dispatch({
+  //         type: 'productstock/queryItem',
+  //         payload: {
+  //           ...value
+  //         }
+  //       })
+  //     } else {
+  //       dispatch({
+  //         type: 'productstock/updateState',
+  //         payload: {
+  //           listItem: []
+  //         }
+  //       })
+  //     }
+  //     dispatch({
+  //       type: 'productstock/updateState',
+  //       payload: {
+  //         period: value.updatedAt
+  //       }
+  //     })
+  //   }
+  // }
 
   return (
     <div className="content-inner" >
@@ -425,12 +441,12 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
           <Filter {...filterProps} />
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="Sticker" key="2" >
+        {/* <TabPane tab="Sticker" key="2" >
           <Sticker {...stickerProps} />
         </TabPane>
         <TabPane tab="Shelf" key="3" >
           <Shelf {...stickerProps} />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div >
   )
