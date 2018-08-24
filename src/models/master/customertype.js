@@ -43,7 +43,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/setting/configure') {
           dispatch({ type: 'querySellprice' })
-        }
+        } else if (pathname === '/master/customer' && activeKey === '2') dispatch({ type: 'customertype/query' })
       })
     }
   },

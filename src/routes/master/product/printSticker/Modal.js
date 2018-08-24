@@ -81,6 +81,7 @@ const ModalSticker = ({
       const data = {
         ...getFieldsValue()
       }
+      data.qty = data.qty || 1
       if (listItemName.indexOf(data.name) === -1 && !update) {
         message.warning('Please select the correct product!')
         return false
@@ -106,7 +107,6 @@ const ModalSticker = ({
   }
 
   let currentPeriod = period.length > 0 ? [moment(period[0]), moment(period[1])] : []
-
   let fieldName
   if (modalProductType === 'all' || update) {
     fieldName = (<AutoComplete {...autoCompleteProps} />)

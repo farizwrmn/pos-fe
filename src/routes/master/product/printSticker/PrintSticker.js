@@ -10,7 +10,7 @@ const PrintSticker = ({ user, stickers }) => {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           let row = []
-          const maxStringPerRow = tableBody[key].name.substr(0, 20).toString()
+          const maxStringPerRow = tableBody[key].name.slice(0, 20).toString()
           row.push({ text: maxStringPerRow, style: 'productName' })
           row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
           body.push(row)
@@ -33,21 +33,8 @@ const PrintSticker = ({ user, stickers }) => {
     productName: {
       fontSize: 10,
       alignment: 'center'
-    },
-    headerStoreName: {
-      fontSize: 18,
-      margin: [45, 15, 0, 0]
-    },
-    headerTitle: {
-      fontSize: 16,
-      margin: [45, 2, 0, 0]
     }
   }
-
-  // const header = [
-  //   { text: `${storeInfo.name}`, style: 'headerStoreName' },
-  //   { text: 'LAPORAN DAFTAR HARGA STOK BARANG', style: 'headerTitle' }
-  // ]
 
   const footer = (currentPage, pageCount) => {
     return {
@@ -112,15 +99,13 @@ const PrintSticker = ({ user, stickers }) => {
   }
 
   const pdfProps = {
-    name: 'Print Sticker',
+    name: 'Print',
     width: [130, 130, 130, 130, 130, 130],
     pageSize: { width: 890, height: 615 },
     pageOrientation: 'landscape',
     pageMargins: [25, 10, 25, 70],
     tableStyle: styles,
     tableBody: getList,
-    // companyLogo: logo,
-    // header,
     footer
   }
 
@@ -131,7 +116,6 @@ const PrintSticker = ({ user, stickers }) => {
 
 PrintSticker.propTypes = {
   user: PropTypes.object,
-  storeInfo: PropTypes.object,
   dataSource: PropTypes.object
 }
 

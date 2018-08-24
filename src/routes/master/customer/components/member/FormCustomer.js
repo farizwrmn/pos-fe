@@ -179,7 +179,6 @@ const FormCustomer = ({
             >{childrenType}
             </Select>)}
           </FormItem>
-
           <FormItem label="Member Code" hasFeedback {...formItemLayout}>
             <Row style={{ padding: '0px' }}>
               <Col lg={18} md={24}>

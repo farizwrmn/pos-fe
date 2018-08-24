@@ -4,20 +4,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import moment from 'moment'
+import { ModalFilter } from 'components'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, posReport, app }) => {
-  const { listTrans, fromDate, toDate, productCode } = posReport
+const Report = ({ dispatch, loading, posReport, app }) => {
+  const { listTrans, fromDate, toDate, modalFilterPOSByTrans } = posReport
   const { user, storeInfo } = app
+
+  const showFilter = () => {
+    dispatch({
+      type: 'posReport/updateState',
+      payload: {
+        modalFilterPOSByTrans: !modalFilterPOSByTrans
+      }
+    })
+  }
+
   const browseProps = {
     dataSource: listTrans,
-    listTrans,
-    storeInfo,
-    user,
-    fromDate,
-    toDate,
-    productCode
+    loading: loading.effects['posReport/queryTrans']
   }
 
   const filterProps = {
@@ -26,32 +33,48 @@ const Report = ({ dispatch, posReport, app }) => {
     storeInfo,
     fromDate,
     toDate,
-    productCode,
+    showFilter,
     onListReset () {
       dispatch({
         type: 'posReport/setListNull'
       })
+      dispatch({
+        type: 'cashier/resetFilter'
+      })
+    }
+  }
+
+  const modalProps = {
+    visible: modalFilterPOSByTrans,
+    date: [moment(fromDate, 'YYYY-MM-DD'), moment(toDate, 'YYYY-MM-DD')],
+    title: 'Filter',
+    onCancel () {
+      showFilter()
     },
-    onDateChange (from, to) {
+    onSubmitFilter (data) {
+      const { date, ...other } = data
       dispatch({
         type: 'posReport/queryTrans',
         payload: {
-          from,
-          to
+          from: moment(date[0]).format('YYYY-MM-DD'),
+          to: moment(date[1]).format('YYYY-MM-DD'),
+          ...other
         }
       })
       dispatch({
         type: 'posReport/setDate',
         payload: {
-          from,
-          to
+          from: moment(date[0]).format('YYYY-MM-DD'),
+          to: moment(date[1]).format('YYYY-MM-DD')
         }
       })
+      showFilter()
     }
   }
 
   return (
     <div className="content-inner">
+      {modalFilterPOSByTrans && <ModalFilter {...modalProps} />}
       <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>
@@ -64,4 +87,4 @@ Report.propTyps = {
   posReport: PropTypes.object
 }
 
-export default connect(({ posReport, app }) => ({ posReport, app }))(Report)
+export default connect(({ posReport, loading, app }) => ({ posReport, loading, app }))(Report)

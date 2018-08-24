@@ -107,6 +107,7 @@ const formCustomer = ({
     // memberStatus,
     ...mobileProps
   }
+
   const formOpts = {
     modalType,
     modalAddUnit,
@@ -152,10 +153,6 @@ formCustomer.propTypes = {
   form: PropTypes.object,
   disabled: PropTypes.string,
   item: PropTypes.object,
-  listGroup: PropTypes.object.isRequired,
-  listType: PropTypes.object.isRequired,
-  listCity: PropTypes.object.isRequired,
-  listIdType: PropTypes.object.isRequired,
   checkMember: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   clickBrowse: PropTypes.func.isRequired,

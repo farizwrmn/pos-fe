@@ -25,7 +25,7 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormBrand = ({ item, formType, onSubmit, onCancel, form: { getFieldDecorator, getFieldsValue, validateFields } }) => {
+const FormBrand = ({ item, formType, onSubmit, onCancel, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields } }) => {
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -52,6 +52,7 @@ const FormBrand = ({ item, formType, onSubmit, onCancel, form: { getFieldDecorat
         title: 'Do you want to save this item?',
         onOk () {
           onSubmit(data)
+          resetFields()
         },
         onCancel () { }
       })

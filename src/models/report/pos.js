@@ -1,6 +1,7 @@
 /**
  * Created by Veirry on 25/04/2018.
  */
+import moment from 'moment'
 import {
   query as queryReport,
   queryTrans,
@@ -22,11 +23,13 @@ export default {
     list: [],
     listTrans: [],
     listDaily: [],
+    listDailyTempBrands: [],
+    listDailyTempCategories: [],
     listPOS: [],
     listPOSDetail: [],
     listPOSCompareSvsI: [],
-    fromDate: '',
-    toDate: '',
+    fromDate: moment().format('YYYY-MM-DD'),
+    toDate: moment().format('YYYY-MM-DD'),
     paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
     diffDay: 0,
     category: 'ALL CATEGORY',
@@ -37,6 +40,12 @@ export default {
     selectedBrand: [],
     tableHeader: [],
     filterModalVisible: false,
+    modalFilterPOSByTrans: false,
+    modalFilterPOSByCancel: false,
+    modalFilterPOSByDaily: false,
+    modalFilterPOSByDetail: false,
+    modalFilterPOSByProductAndService: false,
+    modalFilterPOSByUnit: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -158,6 +167,33 @@ export default {
         }
       })
     },
+
+    * queryDailyGetCategories ({ payload }, { call, put }) {
+      let data = yield call(queryPosDaily, payload)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listDailyTempCategories: data.data,
+          fromDate: payload.from,
+          toDate: payload.to
+        }
+      })
+    },
+
+    * queryDailyRetrieveBrands ({ payload }, { call, put }) {
+      let data = yield call(queryPosDaily, payload)
+      yield put({
+        type: 'querySuccessDaily',
+        payload: {
+          listDailyTempBrands: data.data,
+          fromDate: payload.from,
+          toDate: payload.to,
+          category: payload.category,
+          brand: 'ALL BRAND'
+        }
+      })
+    },
+
     * queryPOS ({ payload }, { call, put }) {
       let data = yield call(queryPOS, payload)
       if (data.success) {
@@ -412,12 +448,19 @@ export default {
         list: [],
         listTrans: [],
         listDaily: [],
+        listDailyTemp: [],
+        listDailyTempBrands: [],
+        listDailyTempCategories: [],
+        category: 'ALL CATEGORY',
+        brand: 'ALL BRAND',
         listPOS: [],
         listPOSDetail: [],
         listPOSCompareSvsI: [],
         diffDay: 0,
         selectedBrand: [],
         tableHeader: [],
+        fromDate: moment().format('YYYY-MM-DD'),
+        toDate: moment().format('YYYY-MM-DD'),
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

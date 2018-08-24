@@ -12,7 +12,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
           let row = []
           const maxStringPerRow1 = tableBody[key].name.slice(0, 28).toString()
           let maxStringPerRow2 = ' '
-          if (tableBody[key].name.slice(29, 56).toString().length > 0) {
+          if (tableBody[key].name.slice(28, 56).toString().length > 0) {
             maxStringPerRow2 = tableBody[key].name.slice(28, 56).toString()
           }
           row.push({ text: maxStringPerRow1, style: 'productName', alignment: 'left' })
@@ -67,21 +67,8 @@ const PrintShelf = ({ stickers, user, aliases }) => {
       fontSize: 12,
       margin: [5, 3, 0, 0],
       alignment: 'left'
-    },
-    headerStoreName: {
-      fontSize: 18,
-      margin: [45, 15, 0, 0]
-    },
-    headerTitle: {
-      fontSize: 16,
-      margin: [45, 2, 0, 0]
     }
   }
-
-  // const header = [
-  //   { text: `${storeInfo.name}`, style: 'headerStoreName' },
-  //   { text: 'LAPORAN DAFTAR STOK BARANG', style: 'headerTitle' }
-  // ]
 
   const footer = (currentPage, pageCount) => {
     return {
@@ -153,7 +140,6 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     pageMargins: [25, 10, 25, 70],
     tableStyle: styles,
     tableBody: getList,
-    // header,
     footer
   }
 
@@ -164,7 +150,6 @@ const PrintShelf = ({ stickers, user, aliases }) => {
 
 PrintShelf.propTypes = {
   user: PropTypes.object,
-  storeInfo: PropTypes.object,
   stickers: PropTypes.object
 }
 

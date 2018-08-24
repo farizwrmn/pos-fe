@@ -61,6 +61,8 @@ export default modelExtend(pageModel, {
               listItem: []
             }
           })
+        } else if (pathname === '/master/product/sticker') {
+          if (!activeKey) dispatch({ type: 'refreshView' })
         }
       })
     }
@@ -276,6 +278,7 @@ export default modelExtend(pageModel, {
     refreshView (state) {
       return {
         ...state,
+        activeKey: '0',
         modalType: 'add',
         currentItem: {}
       }

@@ -3,13 +3,9 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
-import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Row, Col, Icon } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
-
-const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -28,32 +24,22 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, dispatch, onListReset, form: { resetFields, getFieldDecorator }, ...printProps }) => {
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
-  }
-
+const Filter = ({ showFilter, onListReset, ...printProps }) => {
   const handleReset = () => {
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname
-    }))
-    resetFields()
     onListReset()
   }
 
   return (
     <Row >
-      <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker')(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
-          )}
-        </FilterItem>
-      </Col>
+      <Col {...leftColumn} />
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large"
+          onClick={() => showFilter()}
+        >
+          <Icon type="filter" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
@@ -69,12 +55,8 @@ const Filter = ({ onDateChange, dispatch, onListReset, form: { resetFields, getF
 }
 
 Filter.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
-  filter: PropTypes.object,
-  onFilterChange: PropTypes.func.isRequired,
   onListReset: PropTypes.func.isRequired,
-  onDateChange: PropTypes.func
+  showFilter: PropTypes.func
 }
 
-export default Form.create()(Filter)
+export default Filter

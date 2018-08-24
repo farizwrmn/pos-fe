@@ -29,7 +29,7 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/setting/store') dispatch({ type: 'query' })
-        if (pathname === '/master/city') {
+        else if (pathname === '/master/city') {
           if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
-        }
+        } else if (pathname === '/master/customer' && activeKey === '2') dispatch({ type: 'city/query' })
       })
     }
   },

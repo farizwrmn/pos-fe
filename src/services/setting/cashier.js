@@ -55,7 +55,6 @@ export async function queryCurrentOpenCashRegister (params) {
 
 export async function queryCashRegisterByStore (params) {
   const apiHeaderToken = crypt.apiheader()
-
   let url
   let paramCashierId = 0
   let paramStoreId = 0
@@ -74,7 +73,7 @@ export async function queryCashRegisterByStore (params) {
   } else {
     url = `${apiCashierUsers}/${paramCashierId}/periods/store/${paramStoreId}`
   }
-  if (periods) {
+  if (periods && periods.length) {
     paramPeriods[0] = moment(periods[0]).format('YYYY-MM-DD')
     paramPeriods[1] = moment(periods[1]).format('YYYY-MM-DD')
     url = `${url}?period=${paramPeriods}&`

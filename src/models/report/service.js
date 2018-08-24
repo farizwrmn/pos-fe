@@ -1,6 +1,7 @@
 /**
  * Created by Veirry on 18/09/2017.
  */
+import moment from 'moment'
 import { query as queryReport, queryDetail, queryMechanic } from '../../services/report/service'
 
 export default {
@@ -10,11 +11,12 @@ export default {
     list: [],
     listMechanic: [],
     listService: [],
-    fromDate: '',
-    toDate: '',
+    fromDate: moment().format('YYYY-MM-DD'),
+    toDate: moment().format('YYYY-MM-DD'),
     productCode: 'ALL TYPE',
     activeKey: '1',
     filterModalVisible: false,
+    modalFilterServiceByTrans: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,

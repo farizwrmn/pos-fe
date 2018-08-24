@@ -1,6 +1,5 @@
 import React from 'react'
 import { Input, Row, Col, Button, Form, Modal, Select } from 'antd'
-import debounce from 'lodash/debounce'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -27,7 +26,7 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormModel = ({ item, formType, listBrand, onSubmit, onCancel, callBrand, form: { getFieldDecorator, getFieldsValue, validateFields } }) => {
+const FormModel = ({ item, formType, listBrand, onSubmit, onCancel, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields } }) => {
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -54,6 +53,7 @@ const FormModel = ({ item, formType, listBrand, onSubmit, onCancel, callBrand, f
         title: 'Do you want to save this item?',
         onOk () {
           onSubmit(data)
+          resetFields()
         },
         onCancel () { }
       })
@@ -61,10 +61,6 @@ const FormModel = ({ item, formType, listBrand, onSubmit, onCancel, callBrand, f
   }
 
   const brands = (listBrand && listBrand.length) ? listBrand.map(x => (<Option value={x.id}>{x.brandName}</Option>)) : []
-
-  const fetchBrand = (value) => {
-    callBrand(value)
-  }
 
   return (
     <Form layout="horizontal">
@@ -79,8 +75,7 @@ const FormModel = ({ item, formType, listBrand, onSubmit, onCancel, callBrand, f
               autoFocus
               placeholder="Select Brand"
               optionFilterProp="children"
-              filterOption={false}
-              onSearch={debounce(fetchBrand, 200)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {brands}
             </Select>)}

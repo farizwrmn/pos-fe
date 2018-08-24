@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Checkbox, Tabs, Table } from 'antd'
+import { Form, Input, Button, Row, Col, Checkbox, Tabs, Table, Radio, Select } from 'antd'
 import ModalBrowse from './Modal'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -19,6 +20,21 @@ const formItemLayout = {
   }
 }
 
+const formMandatoryField = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 10 },
+    md: { span: 9 },
+    lg: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+    md: { span: 14 },
+    lg: { span: 14 }
+  }
+}
+
 const ModalMobile = ({
   form: {
     getFieldDecorator,
@@ -26,6 +42,11 @@ const ModalMobile = ({
     getFieldsValue,
     resetFields
   },
+  onSubmitMobileUser,
+  listGroup,
+  listType,
+  listIdType,
+  listCity,
   onActivate,
   dataCustomer,
   checkMemberCardId,
@@ -75,7 +96,8 @@ const ModalMobile = ({
         id: dataCustomer.id,
         memberCardId: data.memberCardId
       }
-      onActivate(params)
+      console.log(params, 'params')
+      // onActivate(params)
       resetFields()
     })
   }
@@ -93,6 +115,7 @@ const ModalMobile = ({
   }
 
   const handleCheckMemberCardId = () => {
+    document.getElementById('mandatory').removeAttribute('style')
     checkMemberCardId(getFieldsValue().memberCardId)
   }
   const handleCheckExisting = (checked) => {
@@ -105,8 +128,21 @@ const ModalMobile = ({
     openModal()
   }
   const handleActivate = () => {
-    activateMember(getFieldsValue())
+    validateFields((errors) => {
+      if (errors) {
+        document.getElementById('mandatory').style.color = 'red'
+        return
+      }
+      let data = getFieldsValue()
+      activateMember(data)
+      resetFields()
+    })
   }
+
+  const childrenGroup = listGroup.length > 0 ? listGroup.map(group => <Option value={group.id} key={group.id}>{group.groupName}</Option>) : []
+  const childrenType = listType.length > 0 ? listType.map(type => <Option value={type.id} key={type.id}>{type.typeName}</Option>) : []
+  const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
+  const childrenCity = listCity.length > 0 ? listCity.map(city => <Option value={city.id} key={city.id}>{city.cityName}</Option>) : []
 
   return (
     <div>
@@ -155,7 +191,7 @@ const ModalMobile = ({
         </FormItem>
 
         <section className="tab-card-box">
-          <div className="tab-card-container">
+          <div className="tab-card-container tab-card-mobile">
             <Tabs defaultActiveKey="1" type="card">
               <TabPane tab="data Member" key="1">
                 <Row className="ant-form-item">
@@ -185,7 +221,128 @@ const ModalMobile = ({
               <TabPane tab="data Booking" key="3">
                 <Table columns={columnBooking} dataSource={dataBooking} />
               </TabPane>
-              <TabPane tab="data Existing" key="4" disabled />
+              <TabPane tab={<div id="mandatory">data Mandatory <span style={{ color: 'red' }}>*</span></div>} key="4">
+                <Row>
+                  <Col xs={24} sm={12} md={12} lg={12} >
+                    <FormItem label="Group Name" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('memberGroupId', {
+                        rules: [{ required: true }]
+                      })(<Select
+                        showSearch
+                        autoFocus
+                        placeholder="Select Group Name"
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >{childrenGroup}
+                      </Select>)}
+                    </FormItem>
+                    <FormItem label="Type Name" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('memberTypeId', {
+                        rules: [
+                          {
+                            required: true
+                          }
+                        ]
+                      })(<Select
+                        showSearch
+                        placeholder="Select Type Name"
+                        optionFilterProp="children"
+                        mode="default"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >{childrenType}
+                      </Select>)}
+                    </FormItem>
+                    <FormItem label="ID Type" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('idType', {
+                        rules: [
+                          {
+                            required: true
+                          }
+                        ]
+                      })(<Select
+                        optionFilterProp="children"
+                        mode="default"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >{childrenLov}
+                      </Select>)}
+                    </FormItem>
+                    <FormItem label="ID No" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('idNo', {
+                        rules: [
+                          {
+                            required: true,
+                            pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                            message: 'a-Z & 0-9'
+                          }
+                        ]
+                      })(<Input maxLength={30} />)}
+                    </FormItem>
+                    <FormItem label="Address" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('address01', {
+                        rules: [
+                          {
+                            required: true,
+                            pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
+                            message: 'a-Z & 0-9'
+                          }
+                        ]
+                      })(<Input maxLength={50} />)}
+                    </FormItem>
+                  </Col>
+                  <Col xs={24} sm={12} md={12} lg={12} >
+                    <FormItem label="City" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('cityId', {
+                        rules: [
+                          {
+                            required: true
+                          }
+                        ]
+                      })(<Select
+                        optionFilterProp="children"
+                        mode="default"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >{childrenCity}
+                      </Select>)}
+                    </FormItem>
+                    <FormItem label="Phone Number" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('phoneNumber', {
+                        rules: [
+                          {
+                            required: true,
+                            pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                            message: 'Input a Phone No.[xxxx xxxx xxxx]'
+                          }
+                        ]
+                      })(<Input />)}
+                    </FormItem>
+                    <FormItem label="Mobile Number" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('mobileNumber', {
+                        rules: [
+                          {
+                            required: true,
+                            pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                            message: 'mobile number is not valid'
+                          }
+                        ]
+                      })(<Input />)}
+                    </FormItem>
+                    <FormItem label="Gender" hasFeedback {...formMandatoryField}>
+                      {getFieldDecorator('gender', {
+                        rules: [
+                          {
+                            required: true
+                          }
+                        ]
+                      })(
+                        <Radio.Group>
+                          <Radio value="M">Male</Radio>
+                          <Radio value="F">Female</Radio>
+                        </Radio.Group>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+              </TabPane>
             </Tabs>
           </div>
         </section>
@@ -208,7 +365,7 @@ const ModalMobile = ({
           </Col>
         </FormItem>
       </Form>
-    </div>
+    </div >
   )
 }
 

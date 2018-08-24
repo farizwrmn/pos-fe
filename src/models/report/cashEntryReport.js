@@ -1,6 +1,7 @@
 /**
  * Created by Veirry on 02/07/2018.
  */
+import moment from 'moment'
 import { queryTrans } from '../../services/report/cashEntryReport'
 
 export default {
@@ -9,10 +10,12 @@ export default {
   state: {
     listTrans: [],
     listDetail: [],
-    from: '',
-    to: '',
+    from: moment().format('YYYY-MM-DD'),
+    to: moment().format('YYYY-MM-DD'),
     date: null,
     activeKey: '1',
+    modalFilterCashEntryByTrans: false,
+    modalFilterCashEntryByDetail: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -72,6 +75,8 @@ export default {
       return {
         ...state,
         listTrans: [],
+        from: moment().format('YYYY-MM-DD'),
+        to: moment().format('YYYY-MM-DD'),
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

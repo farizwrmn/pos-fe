@@ -1,3 +1,4 @@
+import { routerRedux } from 'dva/router'
 import { message, Modal } from 'antd'
 import {
   queryBrandsOfCars, addBrandOfCars, updateBrandOfCars, deleteBrandOfCars,
@@ -15,7 +16,7 @@ export default {
   state: {
     currentItem: {},
     formType: 'add',
-    activeKey: '1',
+    activeKey: '0',
     listBrand: [],
     listModel: [],
     listType: [],
@@ -38,18 +39,19 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey, ...other } = location.query
+        dispatch({
+          type: 'updateState',
+          payload: {
+            activeKey: activeKey || '0'
+          }
+        })
         if (location.pathname === '/master/car/brand') {
-          dispatch({
-            type: 'queryBrandsOfCars'
-          })
+          if (activeKey === '1') dispatch({ type: 'queryBrandsOfCars', payload: other })
         } else if (location.pathname === '/master/car/model') {
-          dispatch({
-            type: 'queryModelsOfCars'
-          })
+          dispatch({ type: 'queryModelsOfCars', payload: other })
         } else if (location.pathname === '/master/car/type') {
-          dispatch({
-            type: 'queryTypesOfCars'
-          })
+          dispatch({ type: 'queryTypesOfCars', payload: other })
         }
       })
     }
@@ -116,7 +118,6 @@ export default {
       if (data.success) {
         success('Brand')
         yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryBrandsOfCars' })
       } else {
         yield put({
           type: 'updateState',
@@ -132,8 +133,14 @@ export default {
       const data = yield call(updateBrandOfCars, payload)
       if (data.success) {
         success('Brand')
-        yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryBrandsOfCars' })
+        yield put({ type: 'updateSuccess' })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
         yield put({
           type: 'updateState',
@@ -197,7 +204,7 @@ export default {
       const active = yield select(({ car }) => car.activeKey)
       let data
       if (active === '0' && location.pathname === '/master/car/model') {
-        data = yield call(queryBrandsOfCars, (!_.isEmpty(payload.q) && payload.q !== '') ? payload : {})
+        data = yield call(queryBrandsOfCars, { type: 'all' })
         if (data.success) {
           yield put({
             type: 'updateState',
@@ -235,7 +242,6 @@ export default {
       if (data.success) {
         success('Model')
         yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryModelsOfCars' })
       } else {
         yield put({
           type: 'updateState',
@@ -251,8 +257,14 @@ export default {
       const data = yield call(updateModelOfCars, payload)
       if (data.success) {
         success('Model')
-        yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryModelsOfCars' })
+        yield put({ type: 'updateSuccess' })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
         yield put({
           type: 'updateState',
@@ -316,7 +328,7 @@ export default {
       const active = yield select(({ car }) => car.activeKey)
       let data
       if (active === '0' && location.pathname === '/master/car/type') {
-        data = yield call(queryModelsOfCars, (!_.isEmpty(payload.q) && payload.q !== '') ? payload : {})
+        data = yield call(queryModelsOfCars, { type: 'all' })
         if (data.success) {
           yield put({
             type: 'updateState',
@@ -354,7 +366,6 @@ export default {
       if (data.success) {
         success('Type')
         yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryTypesOfCars' })
       } else {
         yield put({
           type: 'updateState',
@@ -370,8 +381,14 @@ export default {
       const data = yield call(updateTypeOfCars, payload)
       if (data.success) {
         success('Type')
-        yield put({ type: 'saveSuccess' })
-        yield put({ type: 'queryTypesOfCars' })
+        yield put({ type: 'updateSuccess' })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
       } else {
         yield put({
           type: 'updateState',
@@ -408,6 +425,10 @@ export default {
     },
 
     saveSuccess (state) {
+      return { ...state, currentItem: {}, formType: 'add' }
+    },
+
+    updateSuccess (state) {
       return { ...state, currentItem: {}, formType: 'add', activeKey: '1' }
     },
 

@@ -2,8 +2,6 @@ import React from 'react'
 import { Table, Icon, Row, Col, Card } from 'antd'
 import ModalSticker from './Modal'
 
-let tableData = []
-
 const columnList = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -51,7 +49,9 @@ const Sticker = ({
   onShowModalProduct,
   showModalProduct,
   listSticker,
-  pushSticker,
+  addSticker,
+  deleteSticker,
+  updateSticker,
   onSelectSticker,
   ...modalStickerProps
 }) => {
@@ -63,18 +63,15 @@ const Sticker = ({
   const deleteItem = (record) => {
     const getRecord = listSticker.map(item => item.name).indexOf(record.name)
     listSticker.splice(getRecord, 1)
-    pushSticker(listSticker)
+    deleteSticker(record)
   }
 
   const getItem = (record) => {
-    tableData.push(record)
-    pushSticker(tableData)
+    addSticker(record)
   }
 
   const changeItem = (firstRecord, lastRecord) => {
-    const find = listSticker.findIndex(x => x.name === firstRecord.name)
-    listSticker[find] = lastRecord
-    pushSticker(listSticker)
+    updateSticker(firstRecord, lastRecord)
   }
 
   const handleRowClick = (record) => {
@@ -109,7 +106,7 @@ const Sticker = ({
   }]
 
   const tableProps = {
-    dataSource: listSticker || [],
+    dataSource: listSticker,
     columns,
     pagination: false,
     style: {

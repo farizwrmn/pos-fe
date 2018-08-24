@@ -22,8 +22,12 @@ const History = ({ history, dispatch }) => {
   return (
     <div className="content-inner">
       <Tabs activeKey={path} onChange={path => changeTab(path)}>
-        <TabPane tab="POS" key="/transaction/pos/history"><Pos /></TabPane>
-        <TabPane tab="Purchase" key="/transaction/purchase/history"><PurchaseHistory /></TabPane>
+        <TabPane tab="POS" key="/transaction/pos/history">
+          {path === '/transaction/pos/history' && <Pos />}
+        </TabPane>
+        <TabPane tab="Purchase" key="/transaction/purchase/history">
+          {path === '/transaction/purchase/history' && <PurchaseHistory />}
+        </TabPane>
       </Tabs>
     </div>
   )

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Tabs, Modal } from 'antd'
+import { Tabs } from 'antd'
 import Sticker from './Sticker'
 import Shelf from './Shelf'
 import PrintShelf from './PrintShelf'
@@ -11,7 +11,7 @@ import PrintSticker from './PrintSticker'
 const TabPane = Tabs.TabPane
 
 const ProductStock = ({ productstock, dispatch, location, app }) => {
-  const { listItem, update, showPDFModal, mode, activeKey,
+  const { listItem, update, activeKey,
     showModalProduct, modalProductType, period, listSticker,
     aliases,
     selectedSticker } = productstock
@@ -37,37 +37,20 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
     }))
   }
 
-  const PDFModalProps = {
-    visible: showPDFModal,
-    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
-    width: 375,
-    onCancel () {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          showPDFModal: false,
-          changed: false,
-          listPrintAllStock: []
-        }
-      })
-    }
-  }
-
   const printProps = {
     aliases,
     user,
     storeInfo
   }
 
-  let printmode
 
   let moreButtonTab
   switch (activeKey) {
     case '0':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
+      moreButtonTab = (<PrintSticker stickers={listSticker} user={user} {...printProps} />)
       break
     case '1':
-      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
+      moreButtonTab = (<PrintShelf stickers={listSticker} user={user} {...printProps} />)
       break
     default:
       break
@@ -97,6 +80,7 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
       dispatch({
         type: 'productstock/updateState',
         payload: {
+          update: true,
           selectedSticker: sticker
         }
       })
@@ -130,11 +114,27 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
         })
       }
     },
-    pushSticker (stickers) {
+    addSticker (sticker) {
       dispatch({
-        type: 'productstock/updateState',
+        type: 'productstock/addSticker',
         payload: {
-          listSticker: stickers
+          sticker
+        }
+      })
+    },
+    deleteSticker (sticker) {
+      dispatch({
+        type: 'productstock/deleteSticker',
+        payload: {
+          sticker
+        }
+      })
+    },
+    updateSticker (selectedRecord, changedRecord) {
+      dispatch({
+        type: 'productstock/updateSticker',
+        payload: {
+          selectedRecord, changedRecord
         }
       })
     },
@@ -165,9 +165,6 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
 
   return (
     <div className="content-inner" >
-      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
-        {printmode}
-      </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Sticker" key="0" >
           {activeKey === '0' && <Sticker {...stickerProps} />}

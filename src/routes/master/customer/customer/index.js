@@ -5,11 +5,16 @@ import { routerRedux } from 'dva/router'
 import ModalMobile from './ModalMobile'
 import Tab from './Tab'
 
-const Customer = ({ customer, loading, dispatch, location, app }) => {
+const Customer = ({ customer, loading, customergroup, customertype, city, misc, dispatch, location, app }) => {
   const { list, pagination, display, modalMobile, isChecked, modalType, currentItem, activeKey,
     show, modalVisible, dataCustomer, listPrintAllCustomer, showPDFModal, mode, changed,
     customerLoading, modalAddUnit, addUnit, checkMember } = customer
   const { user, storeInfo } = app
+  const { listGroup } = customergroup
+  const { listType } = customertype
+  const { listCity } = city
+  const { listLov, code } = misc
+  const listIdType = listLov && listLov[code] ? listLov[code] : []
   const filterProps = {
     display,
     isChecked,
@@ -226,6 +231,10 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
 
   const mobileProps = {
     customer,
+    listGroup,
+    listType,
+    listIdType,
+    listCity,
     location,
     modalVisible,
     visible: modalVisible,
@@ -240,7 +249,6 @@ const Customer = ({ customer, loading, dispatch, location, app }) => {
         }
       })
     },
-
     checkMemberCardId (payload) {
       dispatch({
         type: 'customer/queryMemberStatus',
@@ -357,4 +365,4 @@ Customer.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ customer, customerunit, loading, app }) => ({ customer, customerunit, loading, app }))(Customer)
+export default connect(({ customer, customerunit, customergroup, customertype, city, misc, loading, app }) => ({ customer, customerunit, customergroup, customertype, city, misc, loading, app }))(Customer)

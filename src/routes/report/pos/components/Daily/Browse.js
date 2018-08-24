@@ -2,7 +2,6 @@
  * Created by Veirry on 09/09/2017.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
 
@@ -56,11 +55,6 @@ const Browse = ({ ...browseProps }) => {
       size="small"
     />
   )
-}
-
-Browse.propTypes = {
-  location: PropTypes.object,
-  onExportExcel: PropTypes.func
 }
 
 export default Browse

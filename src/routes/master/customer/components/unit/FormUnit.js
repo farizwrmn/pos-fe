@@ -1,9 +1,10 @@
 import React from 'react'
 import moment from 'moment'
-import { Form, Input, InputNumber, Select, Modal, message, Button } from 'antd'
+import { Form, Input, InputNumber, Select, Modal, message, Button, DatePicker } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const { MonthPicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -129,6 +130,7 @@ const FormUnit = ({
         other.merk = other.merk.label
         other.model = other.model.label
         if (other.type) other.type = other.type.label
+        other.expired = moment(other.expired).endOf('day').format('YYYY-MM-DD')
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
@@ -233,6 +235,11 @@ const FormUnit = ({
         {getFieldDecorator('machineNo', {
           initialValue: item.machineNo
         })(<Input maxLength={20} />)}
+      </FormItem>
+      <FormItem label="Expiration Date" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('expired', {
+          initialValue: item.expired ? moment(item.expired, 'YYYY-MM-DD') : null
+        })(<MonthPicker format="MMM-YYYY" placeholder="Select period" />)}
       </FormItem>
       {(modalType === 'edit' || modalType === 'add') &&
         <FormItem {...tailFormItemLayout}>
