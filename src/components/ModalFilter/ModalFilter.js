@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { lstorage } from 'utils'
+import { lstorage, formatDate } from 'utils'
 import { Form, Modal, DatePicker, Button, Select } from 'antd'
 import List from './List'
 
@@ -164,7 +164,7 @@ const ModalFilter = ({
       buttonName = `${name.slice(0, 17)}...`
     }
   }
-  const cashierTrans = (listCashRegister && listCashRegister.length) ? listCashRegister.map(x => (<Option value={x.id}>{`${x.shiftName}-${x.counterName}`}</Option>)) : []
+  const cashierTrans = (listCashRegister && listCashRegister.length) ? listCashRegister.map(x => (<Option value={x.id}>{`(${formatDate(x.period)}) ${x.shiftName}-${x.counterName}`}</Option>)) : []
 
   let props = {
     ...modalProps,
@@ -187,7 +187,7 @@ const ModalFilter = ({
   }
 
   return (
-    <Modal {...props}>
+    <Modal {...props} className="modal-browse-fix-size">
       {modalVisible && <List {...modalListProps} />}
       <Form layout="vertical">
         <FormItem label="Trans Date" {...formItemLayout}>
@@ -219,7 +219,7 @@ const ModalFilter = ({
           {getFieldDecorator('cashierTransId', {
             initialValue: currentCashier.id || ((listCashRegister && listCashRegister.length) ? listCashRegister[0].id : null)
           })(
-            <Select disabled={!(listCashRegister && listCashRegister.length)}>
+            <Select allowClear disabled={!(listCashRegister && listCashRegister.length)}>
               {cashierTrans}
             </Select>
           )}
