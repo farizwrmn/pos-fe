@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, DatePicker, Row, Select, Col, Icon, Form, Input } from 'antd'
 import { FilterItem } from 'components'
+import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
@@ -29,7 +30,7 @@ const rightColumn = {
 
 const { MonthPicker } = DatePicker
 
-const Filter = ({ onDateChange, listGroup, showCustomerGroup, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator },
+const Filter = ({ onDateChange, listGroup, showCustomerGroup, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldValue, getFieldDecorator },
   childrenGroup = (listGroup || []).map(group => <Option value={group.id} key={group.id}>{group.groupName}</Option>),
   ...printProps
 }) => {
@@ -38,9 +39,10 @@ const Filter = ({ onDateChange, listGroup, showCustomerGroup, onListReset, form:
       if (errors) return
       const data = getFieldsValue()
       // const to = value[1].format('YYYY-MM-DD')
-      data.period = data.date.format('M')
-      data.year = data.date.format('Y')
-      onDateChange(data)
+      data.from = moment(getFieldValue('rangePicker'), 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
+      data.to = moment(getFieldValue('rangePicker'), 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+      const { rangePicker, ...other } = data
+      onDateChange(other)
     })
   }
 
@@ -67,7 +69,7 @@ const Filter = ({ onDateChange, listGroup, showCustomerGroup, onListReset, form:
     <Row>
       <Col {...leftColumn} >
         <FilterItem label="Periode" hasFeedback>
-          {getFieldDecorator('date', {
+          {getFieldDecorator('rangePicker', {
             rules: [{ required: true }]
           })(
             <MonthPicker size="large" />

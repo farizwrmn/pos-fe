@@ -18,9 +18,16 @@ const Browse = ({ ...browseProps }) => {
       width: '155px'
     },
     {
-      title: 'Date',
+      title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate',
+      width: '175px',
+      render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
+    },
+    {
+      title: 'Receive Date',
+      dataIndex: 'receiveDate',
+      key: 'receiveDate',
       width: '175px',
       render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },

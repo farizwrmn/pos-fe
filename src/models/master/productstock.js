@@ -33,7 +33,15 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
-    stockLoading: false
+    stockLoading: false,
+    aliases: {
+      check1: true,
+      check2: true,
+      price1: 'sellPrice',
+      price2: 'distPrice01',
+      alias1: 'Non-Member',
+      alias2: 'Member'
+    }
   },
 
   subscriptions: {

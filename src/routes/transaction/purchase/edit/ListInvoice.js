@@ -88,19 +88,25 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: '25%'
+      width: 580 * (25 / 100)
     },
     {
       title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '45%'
+      width: 580 * (25 / 100)
+    },
+    {
+      title: 'Receive Date',
+      dataIndex: 'receiveDate',
+      key: 'receiveDate',
+      width: 580 * (25 / 100)
     },
     {
       title: 'SupplierName',
       dataIndex: 'supplierName',
       key: 'supplierName',
-      width: '30%'
+      width: 580 * (25 / 100)
     }
   ]
 
@@ -136,7 +142,6 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 500, y: 388 }}
         columns={columns}
         simple
         size="small"

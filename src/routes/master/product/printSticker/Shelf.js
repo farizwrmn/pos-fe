@@ -1,6 +1,8 @@
 import React from 'react'
-import { Table, Icon, Row, Col, Card } from 'antd'
+import { Table, Icon, Row, Col, Card, Form, Input, Button, Checkbox } from 'antd'
 import ModalSticker from './Modal'
+
+const FormItem = Form.Item
 
 const columnList = {
   sm: { span: 24 },
@@ -92,6 +94,12 @@ const Shelf = ({
   deleteSticker,
   updateSticker,
   onSelectSticker,
+  aliases,
+  dispatch,
+  form: {
+    getFieldsValue,
+    getFieldDecorator
+  },
   ...modalStickerProps
 }) => {
   let totalQty = 0
@@ -169,14 +177,14 @@ const Shelf = ({
           <p style={labelStyle}>{x.name.slice(20, 40).length > 0 ? x.name.slice(20, 40) : '\u00A0'}</p>
           <Row>
             <Col md={12}>
-              <p style={priceStyle}>Rp. {parseInt(x.info.sellPrice, 0).toLocaleString()}</p>
-              <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice01, 0).toLocaleString()}</p>
+              {aliases.check1 && (<p style={priceStyle}>Rp. {parseInt(x.info[aliases.price1], 0).toLocaleString()}</p>)}
+              {aliases.check2 && (<p style={distPriceStyleLeft}>Rp. {parseInt(x.info[aliases.price2], 0).toLocaleString()}</p>)}
               <p style={distPriceStyleLeft}><br /></p>
               {/* <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice02, 0).toLocaleString()}</p> */}
             </Col>
             <Col md={12}>
-              <p style={sellPriceStyle}>(Non-Member)</p>
-              <p style={distPriceStyleRight}>(Member)</p>
+              {aliases.check1 && (<p style={sellPriceStyle}>{aliases.alias1}</p>)}
+              {aliases.check2 && (<p style={distPriceStyleRight}>{aliases.alias2}</p>)}
               {/* <p style={sellPriceStyle}>(Sellprice)</p> */}
               {/* <p style={distPriceStyleRight}>(Dist price 01)</p> */}
               {/* <p style={distPriceStyleRight}>(Dist price 02)</p> */}
@@ -189,9 +197,62 @@ const Shelf = ({
     })
   }
 
+  const handleSubmit = () => {
+    const { alias1, alias2, check1, check2, ...other } = aliases
+    const data = {
+      ...getFieldsValue(),
+      ...other
+    }
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        aliases: data
+      }
+    })
+  }
+
   return (
     <Row>
       <Col {...columnList}>
+        <Form layout="inline">
+          <FormItem label="Alias 1">
+            <Col span={5}>
+              {getFieldDecorator('check1', {
+                initialValue: aliases.check1
+              })(
+                <Checkbox defaultChecked={aliases.check1} />
+              )}
+            </Col>
+            <Col span={19}>
+              {getFieldDecorator('alias1', {
+                initialValue: aliases.alias1
+              })(
+                <Input />
+              )}
+            </Col>
+          </FormItem>
+          <FormItem label="Alias 2">
+            <Row>
+              <Col span={5}>
+                {getFieldDecorator('check2', {
+                  initialValue: aliases.check2
+                })(
+                  <Checkbox defaultChecked={aliases.check2} />
+                )}
+              </Col>
+              <Col span={19}>
+                {getFieldDecorator('alias2', {
+                  initialValue: aliases.alias2
+                })(
+                  <Input />
+                )}
+              </Col>
+            </Row>
+          </FormItem>
+          <Row>
+            <Button style={{ margin: '8px 0' }} onClick={() => handleSubmit()} type="primary">Change</Button>
+          </Row>
+        </Form>
         <div style={divStyle}>
           <h2 style={{ padding: '10px 0 0 15px' }}>
             Products
@@ -212,4 +273,4 @@ const Shelf = ({
   )
 }
 
-export default Shelf
+export default Form.create()(Shelf)

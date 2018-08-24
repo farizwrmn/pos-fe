@@ -18,7 +18,7 @@ const Report = ({ dispatch, serviceReport, loading, app }) => {
     user,
     fromDate,
     toDate,
-    loading: loading.effects['marketingReport/queryHourly']
+    loading: loading.effects['serviceReport/queryDetail']
   }
 
   const filterProps = {
@@ -50,10 +50,11 @@ const Report = ({ dispatch, serviceReport, loading, app }) => {
     },
     onDateChange (data) {
       dispatch({
-        type: 'serviceReport/queryHourly',
+        type: 'serviceReport/queryDetail',
         payload: {
-          fromDate: data.transDate[0],
-          toDate: data.transDate[1],
+          field: 'technicianCode,technicianName,employeeDetailCode,employeeDetailName,transNo,transDate,typeCode,productName,productCode,qty,sellingPrice,discount,disc1,disc2,disc3,DPP,PPN',
+          order: 'transDate,transNo,id',
+          type: 'all',
           ...data
         }
       })

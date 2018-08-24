@@ -60,7 +60,7 @@ const Report = ({ dispatch, loading, cashEntryReport, app }) => {
           from: moment(date[0]).format('YYYY-MM-DD'),
           to: moment(date[1]).format('YYYY-MM-DD'),
           type: 'detail',
-          field: 'id,transNo',
+          field: 'id,transNo,transDate,reference,amountIn,amountOut',
           fielddetail: 'id,reference,transNo,transNoId,transDate,type,accountDetailCode,accountName,description,amountIn,amountOut',
           order: 'transDate,transNo,id',
           ...other

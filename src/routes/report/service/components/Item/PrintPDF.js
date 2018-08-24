@@ -5,9 +5,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { formatDate } from 'utils'
+import { formatDate, numberFormat, posTotal } from 'utils'
 
-const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+
+const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -16,18 +18,28 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const totalPrice = (data.sellingPrice * data.qty)
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: formatDate(data.lastCall, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
-          { text: data.memberName, alignment: 'left', fontSize: 11 },
-          { text: data.mobileNumber, alignment: 'left', fontSize: 11 },
-          { text: data.transNo, alignment: 'left', fontSize: 11 },
+          { text: (data.technicianCode || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.technicianName || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.employeeDetailCode || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.employeeDetailName || ''), alignment: 'left', fontSize: 11 },
+
+          { text: (data.transNo || ''), alignment: 'left', fontSize: 11 },
           { text: formatDate(data.transDate, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
-          { text: data.productCode, alignment: 'left', fontSize: 11 },
-          { text: data.productName, alignment: 'left', fontSize: 11 },
-          { text: data.customerSatisfaction, alignment: 'left', fontSize: 11 },
-          { text: formatDate(data.postService, 'YYYY-MM-DD'), alignment: 'left', fontSize: 11 },
-          { text: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason ? `/ ${data.denyOfferingReason}` : ''}`, alignment: 'left', fontSize: 11 }
+          { text: (data.typeCode || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.productCode || ''), alignment: 'left', fontSize: 11 },
+          { text: (data.productName || ''), alignment: 'left', fontSize: 11 },
+
+          { text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.sellingPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(posTotal(data)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(totalPrice - posTotal(data)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.DPP), alignment: 'right', fontSize: 11 },
+
+          { text: formatNumberIndonesia(data.PPN), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0)), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -66,7 +78,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN FOLLOW UP PRODUCT',
+            text: 'LAPORAN SERVICE EMPLOYEE ITEM',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -132,44 +144,71 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TGL FOLLOW UP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA CUSTOMER', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO HP', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'KODE PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA PRODUK', rowSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'HASIL FOLLOW UP', colSpan: 2, style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', rowSpan: 2, alignment: 'center' },
-      { fontSize: 12, text: 'Product/Service Offering', rowSpan: 2, style: 'tableHeader', alignment: 'center' }
-    ],
-    [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TGL FOLLOW UP', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA CUSTOMER', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO HP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'INV EMP CODE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'INV EMP NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'ITEM EMP CODE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'ITEM EMP NAME', style: 'tableHeader', alignment: 'center' },
+
       { fontSize: 12, text: 'NO FAKTUR', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TGL FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TYPE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'KODE PRODUK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'FEEDBACK', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'JADWAL ULANG', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'OFFERING', style: 'tableHeader', alignment: 'center' }
+
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DISCOUNT', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
+
+      { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
   try {
-    tableBody = createTableBody(listTrans)
+    tableBody = createTableBody(list)
   } catch (e) {
     console.log(e)
   }
-  const tableFooter = []
+  let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
+  let price = (list || []).reduce((cnt, data) => cnt + parseFloat(data.sellingPrice || 0), 0)
+  let total = (list || []).reduce((cnt, data) => cnt + posTotal(data), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + ((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)), 0)
+  let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
+  let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
+  let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)
+
+  const tableFooter = [
+    [
+      { text: 'TOTAL', colSpan: 10, alignment: 'center', fontSize: 11 },
+      {},
+      {},
+      {},
+      {},
+
+      {},
+      {},
+      {},
+      {},
+      {},
+
+      { text: `${formatNumberIndonesia(qty)}`, alignment: 'right', fontSize: 11 },
+      { text: `${formatNumberIndonesia(price)}`, alignment: 'right', fontSize: 11 },
+      { text: `${formatNumberIndonesia(total)}`, alignment: 'right', fontSize: 11 },
+      { text: `${formatNumberIndonesia(discount)}`, alignment: 'right', fontSize: 11 },
+      { text: `${formatNumberIndonesia(dpp)}`, alignment: 'right', fontSize: 11 },
+
+      { text: `${formatNumberIndonesia(ppn)}`, alignment: 'right', fontSize: 11 },
+      { text: `${formatNumberIndonesia(netto)}`, alignment: 'right', fontSize: 11 }
+    ]
+  ]
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '8%', '10%', '9%', '7%', '8%', '9%', '11%', '13%', '8%', '13%'],
+    // width: ['4%', '8%', '10%', '9%', '7%', '8%', '9%', '11%', '13%', '8%', '13%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: { width: 842, height: 1430 },
     pageOrientation: 'landscape',
@@ -178,7 +217,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     tableHeader,
     tableBody,
     tableFooter,
-    data: listTrans,
+    data: list,
     header,
     footer
   }
@@ -189,7 +228,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
 }
 
 PrintPDF.propTypes = {
-  listTrans: PropTypes.array,
+  list: PropTypes.array,
   user: PropTypes.object,
   storeInfo: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,

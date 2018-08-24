@@ -1,6 +1,6 @@
 const APIV1 = '/api/v1'
 const APIHOST = 'localhost' // '192.168.80.64'
-const APIPORT = 5557
+const APIPORT = 6402
 const APIURL = `http://${APIHOST}:${APIPORT}`
 
 module.exports = {
@@ -26,6 +26,7 @@ module.exports = {
     apiMobile: '/mobile',
     apiTools: '/tools',
     apiPromo: '/promo',
+    apiLog: '/log',
     apiCashierUsers: '/cashiers/users',
     apiCashRegister: '/cashiers/cashregisters',
     apiFollowUp: '/followup'

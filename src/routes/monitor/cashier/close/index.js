@@ -90,8 +90,8 @@ const CloseCashRegister = ({
   }
   if (listCashTransSummary) {
     if (listCashTransSummary.hasOwnProperty('data')) {
-      summary.total.cashIn = listCashTransSummary.total[0].cashIn
-      summary.total.cashOut = listCashTransSummary.total[0].cashOut
+      summary.total.cashIn = listCashTransSummary.total[0].cashIn || 0
+      summary.total.cashOut = listCashTransSummary.total[0].cashOut || 0
     }
   }
   summary.total.cashOnHand = (summary.total.openingCash + summary.total.cashIn) - summary.total.cashOut
@@ -127,8 +127,8 @@ const CloseCashRegister = ({
               id: cashierInfo.id,
               desc: getFieldValue('periodDesc'),
               openingCash: cashierInfo.openingBalance,
-              cashIn: listCashTransSummary ? listCashTransSummary.total[0].cashIn : 0,
-              cashOut: listCashTransSummary ? listCashTransSummary.total[0].cashOut : 0,
+              cashIn: listCashTransSummary.total[0].cashIn ? listCashTransSummary.total[0].cashIn : 0,
+              cashOut: listCashTransSummary.total[0].cashOut ? listCashTransSummary.total[0].cashOut : 0,
               closingBalance: (parseFloat(cashierInfo.openingBalance) + (listCashTransSummary ? (listCashTransSummary.total[0].cashIn || 0) : 0)) - (listCashTransSummary ? (listCashTransSummary.total[0].cashOut || 0) : 0)
             }
           })

@@ -128,7 +128,7 @@ const BasicReport = ({
             value: sheet.getCell(`${getPosition(j)}${line}`).value = tableFooter[i][j].value,
             alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableFooter[i][j].alignment,
             font: sheet.getCell(`${getPosition(j)}${line}`).font = tableFooter[i][j].font,
-            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableBody[i][j].value, 2)
+            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableFooter[i][j].value, 2)
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableFooter[i][j].border
           })
         }

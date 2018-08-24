@@ -18,18 +18,20 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        let row = []
-        row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.supplierName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.taxType || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.total), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.discount), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.dpp), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.ppn), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.rounding), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.netto), alignment: 'right', fontSize: 11 })
+        let row = [
+          { text: count, alignment: 'center', fontSize: 11 },
+          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: moment(data.receiveDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: (data.supplierName || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.taxType || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.total), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.discount), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.dpp), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.ppn), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.rounding), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.netto), alignment: 'right', fontSize: 11 }
+        ]
         body.push(row)
       }
       count += 1
@@ -141,7 +143,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TANGGAL FAKTUR', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TANGGAL TERIMA', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'SUPPLIER', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PAJAK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
@@ -165,6 +168,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       {},
       {},
       {},
+      {},
       { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(discountTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
@@ -177,7 +181,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['3%', '10%', '7%', '14%', '8%', '10%', '9%', '10%', '10%', '8%', '10%'],
+    width: ['3%', '10%', '7%', '7%', '13%', '8%', '9%', '8%', '9%', '9%', '8%', '10%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A3',
     pageOrientation: 'landscape',

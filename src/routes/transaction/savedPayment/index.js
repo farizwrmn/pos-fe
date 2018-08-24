@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { posTotal } from 'utils'
 import moment from 'moment'
 import Browse from './Browse'
 import Modal from './Modal'
@@ -43,9 +44,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+            total: posTotal(data.data[n])
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
           let productId = data.data[n].serviceCode
@@ -60,9 +59,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+            total: posTotal(data.data[n])
           })
         } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
           let productId = '-'
@@ -77,9 +74,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
             disc1: data.data[n].disc1,
             disc2: data.data[n].disc2,
             disc3: data.data[n].disc3,
-            total: (data.data[n].qty * data.data[n].sellingPrice) - (data.data[n].discount) -
-              ((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) - (((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) -
-              ((((data.data[n].qty * data.data[n].sellingPrice) * (data.data[n].disc1 / 100)) * (data.data[n].disc2 / 100)) * (data.data[n].disc3 / 100))
+            total: posTotal(data.data[n])
           })
         }
       }

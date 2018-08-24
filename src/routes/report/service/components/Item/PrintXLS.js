@@ -5,9 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicExcelReport } from 'components'
-import { formatDate } from 'utils'
+import { formatDate, posTotal } from 'utils'
 
-const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
+const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
   const styles = {
     title: {
       name: 'Courier New',
@@ -55,19 +55,29 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const totalPrice = (data.sellingPrice * data.qty)
         let row = [
-          { value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (start || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: formatDate(data.lastCall, 'YYYY-MM-DD'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.memberName, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.mobileNumber, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.transNo, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.technicianCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.technicianName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.employeeDetailCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.employeeDetailName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+
+          { value: (data.transNo || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: formatDate(data.transDate, 'YYYY-MM-DD'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.productCode, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.productName, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.customerSatisfaction, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: formatDate(data.postService, 'YYYY-MM-DD'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: `${data.acceptOfferingReason || ''} ${data.denyOfferingReason ? `/ ${data.denyOfferingReason}` : ''}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder }
+          { value: (data.typeCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+
+          { value: data.qty || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.sellingPrice || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: posTotal(data) || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: totalPrice - posTotal(data), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.DPP, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+
+          { value: data.PPN, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         body.push(row)
       }
@@ -77,7 +87,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN FOLLOW UP PRODUCT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN SERVICE EMPLOYEE ITEM', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
@@ -86,27 +96,68 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     [
       { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TGL FOLLOW UP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NAMA CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO HP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'INV EMP CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'INV EMP NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ITEM EMP NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'ITEM EMP NAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+
       { value: 'NO FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TGL FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TYPE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'FEEDBACK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'JADWAL ULANG', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'OFFERING', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+
+      { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'PRICE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DISCOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DPP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+
+      { value: 'PPN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
 
   let tableBody
   try {
-    tableBody = createTableBody(listTrans)
+    tableBody = createTableBody(list)
   } catch (e) {
     console.log(e)
   }
 
-  const tableFooter = []
+  let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
+  let price = (list || []).reduce((cnt, data) => cnt + parseFloat(data.sellingPrice || 0), 0)
+  let total = (list || []).reduce((cnt, data) => cnt + posTotal(data), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + ((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)), 0)
+  let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
+  let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
+  let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)
+
+  const tableFooter = [
+    [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
+      { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+
+      { value: qty, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: price, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: total, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: discount, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: dpp, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+
+      { value: ppn, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: netto, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
+  ]
 
   // Declare additional Props
   const XLSProps = {
@@ -114,7 +165,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     paperSize: 9,
     orientation: 'portrait',
     formatStyle: styles,
-    data: listTrans,
+    data: list,
     title,
     tableHeader,
     tableBody,
@@ -129,7 +180,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
 
 PrintXLS.propTypes = {
   location: PropTypes.object,
-  listTrans: PropTypes.array,
+  list: PropTypes.array,
   fromDate: PropTypes.string,
   toDate: PropTypes.string,
   storeInfo: PropTypes.object

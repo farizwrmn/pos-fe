@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReportCard } from 'components'
 
-const PrintShelf = ({ stickers, user }) => {
+const PrintShelf = ({ stickers, user, aliases }) => {
   const createTableBody = (tableBody) => {
     let body = []
     for (let key in tableBody) {
@@ -17,18 +17,22 @@ const PrintShelf = ({ stickers, user }) => {
           }
           row.push({ text: maxStringPerRow1, style: 'productName', alignment: 'left' })
           row.push({ text: maxStringPerRow2, style: 'productName', alignment: 'left' })
-          row.push({
-            columns: [
-              { text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' },
-              { text: '(Non-Member)', style: 'info', margin: [0, 12, 0, 0] }
-            ]
-          })
-          row.push({
-            columns: [
-              { text: `Rp ${(tableBody[key].info.distPrice01 || 0).toLocaleString()}`, style: 'others' },
-              { text: '(Member)', style: 'info', margin: [0, 5, 0, 0] }
-            ]
-          })
+          if (aliases.check1) {
+            row.push({
+              columns: [
+                { text: `Rp ${(tableBody[key].info[aliases.price1] || 0).toLocaleString()}`, style: 'sellPrice' },
+                { text: aliases.alias1, style: 'info', margin: [0, 12, 0, 0] }
+              ]
+            })
+          }
+          if (aliases.check2) {
+            row.push({
+              columns: [
+                { text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`, style: 'others' },
+                { text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] }
+              ]
+            })
+          }
           row.push({
             columns: [
               { text: ' ', style: 'others' },

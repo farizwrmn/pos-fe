@@ -31,13 +31,7 @@ const Filter = ({ onListReset, ...printProps }) => {
 
   return (
     <Row >
-      <Col {...leftColumn} >
-        {/* <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker')(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
-          )}
-        </FilterItem> */}
-      </Col>
+      <Col {...leftColumn} />
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button type="dashed"
           size="large"

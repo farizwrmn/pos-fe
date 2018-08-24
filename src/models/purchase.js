@@ -135,14 +135,17 @@ export default modelExtend(pageModel, {
       function hdlChangePercent (payload) {
         const data = payload.head
         let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
-        let ppnType = data.taxType
+        let ppnType = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
         const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
         const x = dataProduct
         for (let key = 0; key < (x || []).length; key += 1) {
           const total = (x[key].qty * x[key].price)
-          const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
+          const discPercentItem = (1 - ((x[key].disc1 / 100)))
+          const discNominalItem = x[key].discount
+          const discPercentInvoice = (1 - (data.discInvoicePercent / 100))
+          const totalSellingPrice = (x[key].qty * x[key].price)
+          const discItem = ((totalSellingPrice * discPercentItem) - discNominalItem) * discPercentInvoice
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-          console.log('totalDpp', totalDpp)
           x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
           x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
           x[key].total = x[key].dpp + x[key].ppn
@@ -381,33 +384,47 @@ export default modelExtend(pageModel, {
     * getInvoiceDetail ({ payload }, { call, put }) {
       localStorage.setItem('taxType', payload.taxType)
       const data = yield call(queryDetail, { transNo: payload.transNo })
-      let arrayProd = []
-      for (let n = 0; n < data.data.length; n += 1) {
-        arrayProd.push({
-          no: arrayProd.length + 1,
-          id: data.data[n].id,
-          code: data.data[n].productId,
-          productCode: data.data[n].productCode,
-          name: data.data[n].productName,
-          qty: data.data[n].qty,
-          price: data.data[n].purchasePrice,
-          discount: data.data[n].discNominal,
-          disc1: data.data[n].discPercent,
-          dpp: data.data[n].dpp,
-          ppn: data.data[n].ppn,
-          total: data.data[n].dpp + data.data[n].ppn,
-          ket: 'edit'
+      if (data.success) {
+        let arrayProd = []
+        for (let n = 0; n < data.data.length; n += 1) {
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            id: data.data[n].id,
+            code: data.data[n].productId,
+            productCode: data.data[n].productCode,
+            name: data.data[n].productName,
+            qty: data.data[n].qty,
+            price: data.data[n].purchasePrice,
+            discount: data.data[n].discNominal,
+            disc1: data.data[n].discPercent,
+            dpp: data.data[n].dpp,
+            ppn: data.data[n].ppn,
+            total: data.data[n].dpp + data.data[n].ppn,
+            ket: 'edit'
+          })
+        }
+        localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+        localStorage.removeItem('purchase_void')
+        yield put({
+          type: 'hideProductModal'
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            curHead: {
+              discInvoiceNominal: payload.discInvoiceNominal,
+              discInvoicePercent: payload.discInvoicePercent,
+              taxType: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
+            }
+          }
+        })
+        yield put({
+          type: 'setTransNo',
+          payload
+        })
+      } else {
+        throw data
       }
-      localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-      localStorage.removeItem('purchase_void')
-      yield put({
-        type: 'hideProductModal'
-      })
-      yield put({
-        type: 'setTransNo',
-        payload
-      })
     },
     * deleteList ({ payload }, { put }) {
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))

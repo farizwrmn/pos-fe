@@ -13,8 +13,9 @@ const TabPane = Tabs.TabPane
 const ProductStock = ({ productstock, dispatch, location, app }) => {
   const { listItem, update, activeKey,
     showModalProduct, modalProductType, period, listSticker,
+    aliases,
     selectedSticker } = productstock
-  const { user } = app
+  const { user, storeInfo } = app
   const changeTab = (key) => {
     dispatch({
       type: 'productstock/updateState',
@@ -36,19 +37,28 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
     }))
   }
 
+  const printProps = {
+    aliases,
+    user,
+    storeInfo
+  }
+
+
   let moreButtonTab
   switch (activeKey) {
     case '0':
-      moreButtonTab = (<PrintSticker stickers={listSticker} user={user} />)
+      moreButtonTab = (<PrintSticker stickers={listSticker} user={user} {...printProps} />)
       break
     case '1':
-      moreButtonTab = (<PrintShelf stickers={listSticker} user={user} />)
+      moreButtonTab = (<PrintShelf stickers={listSticker} user={user} {...printProps} />)
       break
     default:
       break
   }
 
   const stickerProps = {
+    dispatch,
+    aliases,
     showModalProduct,
     listItem,
     update,
@@ -157,10 +167,10 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
     <div className="content-inner" >
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Sticker" key="0" >
-          <Sticker {...stickerProps} />
+          {activeKey === '0' && <Sticker {...stickerProps} />}
         </TabPane>
         <TabPane tab="Shelf" key="1" >
-          <Shelf {...stickerProps} />
+          {activeKey === '1' && <Shelf {...stickerProps} />}
         </TabPane>
       </Tabs>
     </div >
@@ -171,7 +181,8 @@ ProductStock.propTypes = {
   productstock: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
+  app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ productstock, app, loading }) => ({ productstock, app, loading }))(ProductStock)
+export default connect(({ productstock, loading, app }) => ({ productstock, loading, app }))(ProductStock)

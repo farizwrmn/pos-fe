@@ -200,9 +200,9 @@ const modal = ({
             </FormItem>
           </Col>
           <Col lg={12} md={12} sm={24}>
-            <FormItem label="Print Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('printDate', {
-                initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
+            <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transDate', {
+                initialValue: moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss'),
                 rules: [
                   {
                     required: true,

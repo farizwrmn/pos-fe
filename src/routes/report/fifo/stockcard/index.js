@@ -60,13 +60,13 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
           yearPeriod
         }
       })
-      dispatch({
-        type: 'fifoReport/queryProductCode',
-        payload: {
-          period: month,
-          year: yearPeriod
-        }
-      })
+      // dispatch({
+      //   type: 'fifoReport/queryProductCode',
+      //   payload: {
+      //     period: month,
+      //     year: yearPeriod
+      //   }
+      // })
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
