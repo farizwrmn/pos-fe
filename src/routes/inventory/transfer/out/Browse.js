@@ -4,7 +4,7 @@ import { Modal } from 'antd'
 import ListProduct from './ListProductLock'
 import ListInvoice from './ListInvoice'
 
-const Browse = ({ searchText, modalInvoiceVisible, onChange, modalProductVisible, listInvoice, tmpInvoiceList, onInvoiceHeader, onChooseInvoice, location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
+const Browse = ({ searchText, showProductQty, modalInvoiceVisible, onChange, modalProductVisible, listInvoice, tmpInvoiceList, onInvoiceHeader, onChooseInvoice, location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { listProduct, pagination, itemPayment, itemService, modalType, isMotion } = pos
   const width = '80%'
   const modalOpts = {
@@ -14,10 +14,7 @@ const Browse = ({ searchText, modalInvoiceVisible, onChange, modalProductVisible
 
   const listProps = {
     dataSource: modalInvoiceVisible ? listInvoice : listProductLock,
-    loading: loading.effects[(
-      modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts'
-        : 'transferOut/getInvoiceDetailPurchase'
-    )],
+    loading,
     pagination: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? pagination : null,
     tmpInvoiceList,
     searchText,
@@ -31,6 +28,9 @@ const Browse = ({ searchText, modalInvoiceVisible, onChange, modalProductVisible
       if (modalType === 'browseProductLock' || modalType === 'browseProductFree') {
         onChange(e)
       }
+    },
+    showProductQty (id) {
+      showProductQty(id)
     },
     onChooseItem (item) {
       onChooseItem(item)

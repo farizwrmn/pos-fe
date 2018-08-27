@@ -165,6 +165,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         }
       })
     },
+    showProductQty (data) {
+      dispatch({
+        type: 'pos/showProductQty',
+        payload: {
+          data
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'pos/hideProductModal'

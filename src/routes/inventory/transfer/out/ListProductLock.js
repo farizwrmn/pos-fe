@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag, Button, Input, Form } from 'antd'
+import { Table, Icon, Tag, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
 import styles from '../../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
+const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...tableProps }) => {
   const { searchText } = pos
+  const { dataSource } = tableProps
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -83,6 +84,19 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
       }
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'count',
+      key: 'count',
+      width: '50px',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loading.effects['pos/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
     }
   ]
 
@@ -104,12 +118,23 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
         <FormItem>
           <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
         </FormItem>
+        <FormItem>
+          <Button
+            size="small"
+            onClick={() => showProductQty(dataSource)}
+            loading={loading.effects['pos/showProductQty']}
+            disabled={loading.effects['pos/showProductQty']}
+          >
+            Show Qty
+          </Button>
+        </FormItem>
       </Form>
 
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '640px', y: 388 }}
+        loading={loading.effects['pos/getProducts'] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct']}
+        scroll={{ x: '690px', y: 388 }}
         columns={columns}
         simple
         size="small"
