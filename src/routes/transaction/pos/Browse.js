@@ -11,7 +11,7 @@ import ListQueue from './ListQueue'
 // import ServiceList from './ServiceList'
 import ListAsset from './ListAsset'
 
-const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
+const Browse = ({ location, showProductQty, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { listMember, listAsset, pagination, listMechanic, listProduct, listService, itemPayment, itemService, modalType, isMotion } = pos
   const width = (modalType === 'modalPayment' || modalType === 'modalService') ? '45%' : '80%'
   const modalOpts = {
@@ -29,12 +29,11 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
                 modalType === 'browseService' ? listService : listMember
     ),
     // loading: loading.effects[(modalType==='browse' ? 'pos/query' : (modalType==='browseMechanic' ? 'pos/queryMechanic' : (modalType==='browseService' ? 'pos/queryService' : '')))],
-    loading: loading.effects[(
+    loading: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? loading : loading.effects[(
       modalType === 'browseMember' ? 'pos/getMembers' :
         modalType === 'browseMechanic' ? 'pos/getMechanics' :
-          modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
-            modalType === 'browseService' ? 'pos/getServices' : 'pos/queryMember'
-    )] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct'],
+          modalType === 'browseService' ? 'pos/getServices' : 'pos/queryMember'
+    )],
     pagination,
     location,
     item: modalType === 'modalPayment' ? itemPayment : {},
@@ -46,6 +45,9 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
     },
     onChooseItem (item) {
       onChooseItem(item)
+    },
+    showProductQty (id) {
+      showProductQty(id)
     },
     DeleteItem (item) {
       DeleteItem(item)

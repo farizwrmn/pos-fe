@@ -1003,6 +1003,14 @@ const Pos = ({
       })
     },
     onCancel () { dispatch({ type: 'pos/hideProductModal' }) },
+    showProductQty (data) {
+      dispatch({
+        type: 'pos/showProductQty',
+        payload: {
+          data
+        }
+      })
+    },
     onChooseItem (item) {
       if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []

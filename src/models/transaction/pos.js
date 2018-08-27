@@ -66,8 +66,6 @@ export default {
     cashierInformation: {},
     cashierBalance: {},
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
       current: 1,
       pageSize: 10,
       total: 0
@@ -753,7 +751,34 @@ export default {
         // throw data
       }
     },
-
+    * showProductQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      for (let n = 0; n < (data || []).length; n += 1) {
+        const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data[n].id })
+        if (listProductData.success && (listProductData.data || []).length > 0) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[0].id) {
+              return {
+                ...x,
+                count: listProductData.data[0].count
+              }
+            }
+            return {
+              ...x,
+              count: 0
+            }
+          })
+        }
+      }
+      yield put({
+        type: 'queryGetProductsSuccess',
+        payload: {
+          productInformation: data,
+          tmpProductList: data
+        }
+      })
+    },
     * checkQuantityEditProduct ({ payload }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
@@ -966,6 +991,12 @@ export default {
       let newData = data.data
       if (data.success) {
         yield put({
+          type: 'showProductQty',
+          payload: {
+            data: newData
+          }
+        })
+        yield put({
           type: 'queryGetProductsSuccess',
           payload: {
             productInformation: newData,
@@ -977,7 +1008,7 @@ export default {
           payload: {
             pagination: {
               total: data.total,
-              page: Number(data.page) || 1,
+              current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10
             }
           }
