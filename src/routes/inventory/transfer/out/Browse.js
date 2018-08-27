@@ -4,25 +4,34 @@ import { Modal } from 'antd'
 import ListProduct from './ListProductLock'
 import ListInvoice from './ListInvoice'
 
-const Browse = ({ modalInvoiceVisible, modalProductVisible, listInvoice, tmpInvoiceList, onInvoiceHeader, onChooseInvoice, location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listProduct, itemPayment, itemService, modalType, isMotion } = pos
+const Browse = ({ searchText, modalInvoiceVisible, onChange, modalProductVisible, listInvoice, tmpInvoiceList, onInvoiceHeader, onChooseInvoice, location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
+  const { listProduct, pagination, itemPayment, itemService, modalType, isMotion } = pos
   const width = '80%'
   const modalOpts = {
     ...modalProps
   }
-  let listProductLock = listProduct.filter(el => el.count > 0)
+  let listProductLock = listProduct
+
   const listProps = {
     dataSource: modalInvoiceVisible ? listInvoice : listProductLock,
     loading: loading.effects[(
       modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts'
-        : 'pos/queryMember'
+        : 'transferOut/getInvoiceDetailPurchase'
     )],
+    pagination: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? pagination : null,
+    tmpInvoiceList,
+    searchText,
     location,
     item: modalType === 'modalPayment' ? itemPayment : {},
     itemService: modalType === 'modalService' ? itemService : {},
     isMotion,
     totalItem,
     onInvoiceHeader,
+    onChange (e) {
+      if (modalType === 'browseProductLock' || modalType === 'browseProductFree') {
+        onChange(e)
+      }
+    },
     onChooseItem (item) {
       onChooseItem(item)
     },

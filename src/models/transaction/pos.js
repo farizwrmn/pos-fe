@@ -7,7 +7,7 @@ import * as cashierService from '../../services/cashier'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
-import { queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
+import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
@@ -26,6 +26,7 @@ export default {
     listCashier: [],
     listPayment: [],
     listPaymentDetail: [],
+    listProductData: [],
     listMember: [],
     listAsset: [],
     listUnit: [],
@@ -561,7 +562,7 @@ export default {
       if (currentRegister.success) {
         const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
         if (cashierInformation) {
-          const cashierBalance = yield call(queryCashierTransSource, { id: cashierInformation.id })
+          const cashierBalance = yield call(queryCashierTransSource, cashierInformation)
           if (cashierBalance.success) {
             yield put({
               type: 'updateState',
@@ -783,7 +784,7 @@ export default {
       const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       // Call Products
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
       const listProduct = listProductData.data
       let tempListProduct = []
       function getSetting (setting) {
@@ -834,6 +835,11 @@ export default {
             payload: data
           })
         }
+      } else {
+        Modal.warning({
+          title: 'Out of stock',
+          content: 'Out Of Stock'
+        })
       }
     },
 
@@ -867,7 +873,7 @@ export default {
       const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       // Call Products
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const listProductData = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
       const listProduct = listProductData.data
       let tempListProduct = []
       function getSetting (setting) {
@@ -927,30 +933,36 @@ export default {
           yield put({ type: 'pos/hideProductModal' })
           setTimeout(() => successModal.destroy(), 1000)
         }
+      } else {
+        Modal.warning({
+          title: 'Out of stock',
+          content: 'Out Of Stock'
+        })
+      }
+    },
+
+    * getListProductData (payload, { call, put }) {
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProductData: data.data
+          }
+        })
       }
     },
 
     * getProducts ({ payload }, { call, put }) {
-      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      let data = {}
-      if (payload.outOfStock) {
-        data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        // yield put({
-        //   type: 'showProductModal',
-        //   payload: {
-        //     modalType: 'browseProductFree'
-        //   }
-        // })
-      } else {
-        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-        data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-        // yield put({
-        //   type: 'showProductModal',
-        //   payload: {
-        //     modalType: 'browseProductLock'
-        //   }
-        // })
-      }
+      // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      // let data = {}
+      // if (payload.outOfStock) {
+      //   data = yield call(queryProductStock, payload)
+      // } else {
+      //   data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      // }
+      const data = yield call(queryProductStock, payload)
       let newData = data.data
       if (data.success) {
         yield put({
@@ -958,6 +970,16 @@ export default {
           payload: {
             productInformation: newData,
             tmpProductList: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: data.total,
+              page: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
           }
         })
       } else {

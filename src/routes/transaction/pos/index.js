@@ -303,9 +303,9 @@ const Pos = ({
     },
     handleProductBrowse () {
       // get products data
-      let json = setting.Inventory
-      let jsondata = JSON.stringify(eval(`(${json})`))
-      const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+      // let json = setting.Inventory
+      // let jsondata = JSON.stringify(eval(`(${json})`))
+      // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
       dispatch({
         type: 'pos/showProductModal',
         payload: {
@@ -315,7 +315,7 @@ const Pos = ({
       dispatch({
         type: 'pos/getProducts',
         payload: {
-          outOfStock
+          active: 1
         }
       })
     },
@@ -906,6 +906,12 @@ const Pos = ({
           setting
         }
       })
+      // dispatch({
+      //   type: 'pos/updateState',
+      //   payload: {
+      //     modalProductVisible: false
+      //   }
+      // })
       // dispatch({ type: 'pos/paymentEdit', payload: data })
     },
     onChangeTotalItem (data) {
@@ -987,12 +993,12 @@ const Pos = ({
     wrapClassName: 'vertical-center-modal',
     onChange (e) {
       dispatch({
-        type: 'pos/updateState',
+        type: 'pos/getProducts',
         payload: {
-          pagination: {
-            current: Number(e.current),
-            pageSize: Number(e.pageSize)
-          }
+          q: searchText === '' ? null : searchText,
+          active: 1,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
         }
       })
     },
@@ -1054,6 +1060,8 @@ const Pos = ({
             type: 'pos/updateState',
             payload: {
               paymentListActiveKey: '1'
+              // ,
+              // modalProductVisible: false
             }
           })
         } else {

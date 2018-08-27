@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
   const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
-  const { modalProductVisible, listProduct } = pos
+  const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
   const { user, storeInfo } = app
@@ -131,6 +131,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     const totalLocal = (Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)) + Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
     const Quantity = (arrData.concat(Queue)).concat(Cashier)
     const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+    const listProduct = listProductData
     const tempListProduct = listProduct.filter(el => el.productId === data.productId)
     const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
     if (totalQty > totalListProduct) {
@@ -148,10 +149,22 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     pos,
     listInvoice,
     tmpInvoiceList,
+    searchText,
     modalProductVisible,
     visible: modalProductVisible || modalInvoiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getProducts',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          active: 1,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'pos/hideProductModal'
@@ -167,8 +180,11 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       dispatch({
         type: 'pos/getProducts',
         payload: {
-          outOfStock: 0
+          active: 1
         }
+      })
+      dispatch({
+        type: 'pos/getListProductData'
       })
       dispatch({
         type: 'pos/showProductModal',
@@ -408,7 +424,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       dispatch({
         type: 'pos/queryProducts',
         payload: {
-          outOfStock: 0
+          active: 1
         }
       })
       dispatch({

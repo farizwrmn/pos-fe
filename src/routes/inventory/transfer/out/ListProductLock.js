@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button, Input, Form } from 'antd'
+import { Table, Tag, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
 import styles from '../../../../themes/index.less'
 
 const FormItem = Form.Item
 
 const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
-  const { searchText, tmpProductList } = pos
+  const { searchText } = pos
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -26,20 +26,27 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/onProductSearch',
+      type: 'pos/getProducts',
       payload: {
-        searchText,
-        tmpProductList
+        q: searchText === '' ? null : searchText,
+        active: 1,
+        page: 1
       }
     })
   }
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/onProductReset',
+      type: 'pos/updateState',
       payload: {
-        searchText: '',
-        tmpProductList
+        searchText: ''
+      }
+    })
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        page: 1,
+        active: 1
       }
     })
   }
@@ -69,12 +76,13 @@ const ListProduct = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       className: styles.alignRight,
       render: text => text.toLocaleString()
     }, {
-      title: 'QTY',
-      dataIndex: 'count',
-      key: 'count',
-      width: '70px',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      width: '100px',
+      render: (text) => {
+        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
     }
   ]
 

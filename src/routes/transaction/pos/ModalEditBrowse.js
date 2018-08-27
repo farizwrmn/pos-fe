@@ -18,6 +18,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
     location,
     width: '45%',
     title,
+    loading,
     item: modalType === 'modalPayment' ? itemPayment : {},
     itemService: modalType === 'modalService' ? itemService : {},
     isMotion,

@@ -17,7 +17,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
   const modalOpts = {
     ...modalProps
   }
-  let listProductLock = listProduct.filter(el => el.count > 0)
+  let listProductLock = listProduct
   let listProductFree = listProduct
   const listProps = {
     dataSource: (
@@ -34,7 +34,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
         modalType === 'browseMechanic' ? 'pos/getMechanics' :
           modalType === 'browseProductLock' || modalType === 'browseProductFree' ? 'pos/getProducts' :
             modalType === 'browseService' ? 'pos/getServices' : 'pos/queryMember'
-    )],
+    )] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct'],
     pagination,
     location,
     item: modalType === 'modalPayment' ? itemPayment : {},
