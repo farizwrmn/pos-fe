@@ -56,6 +56,15 @@ const Report = ({ dispatch, loading, posReport, app }) => {
     onSubmitFilter (data) {
       const { date, ...other } = data
       dispatch({
+        type: 'posReport/queryPOS',
+        payload: {
+          startPeriod: moment(date[0]).format('YYYY-MM-DD'),
+          endPeriod: moment(date[1]).format('YYYY-MM-DD'),
+          ...other,
+          status: 'A'
+        }
+      })
+      dispatch({
         type: 'posReport/queryPOSDetail',
         payload: {
           from: moment(date[0]).format('YYYY-MM-DD'),
