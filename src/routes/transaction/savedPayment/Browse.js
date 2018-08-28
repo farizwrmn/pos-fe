@@ -140,7 +140,7 @@ const BrowseGroup = ({
           type="primary"
           menuOptions={[
             { key: '1', name: 'Print', icon: 'printer' },
-            { key: '2', name: 'Void', icon: 'delete', disabled: record.cashierTransId !== cashierInformation.id }
+            { key: '2', name: 'Void', icon: 'delete' }
           ]}
         />)
       }

@@ -754,30 +754,33 @@ export default {
     * showProductQty ({ payload }, { call, put }) {
       let { data } = payload
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      for (let n = 0; n < (data || []).length; n += 1) {
-        const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data[n].id })
-        if (listProductData.success && (listProductData.data || []).length > 0) {
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
           data = data.map((x) => {
-            if (x.id === listProductData.data[0].id) {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
               return {
-                ...x,
-                count: listProductData.data[0].count
+                ...other,
+                ...listProductData.data[n]
               }
             }
-            return {
-              ...x,
-              count: 0
-            }
+            return x
           })
         }
+
+        yield put({
+          type: 'queryGetProductsSuccess',
+          payload: {
+            productInformation: data,
+            tmpProductList: data
+          }
+        })
+      } else {
+        throw listProductData
       }
-      yield put({
-        type: 'queryGetProductsSuccess',
-        payload: {
-          productInformation: data,
-          tmpProductList: data
-        }
-      })
     },
     * checkQuantityEditProduct ({ payload }, { call, put }) {
       const { data } = payload
