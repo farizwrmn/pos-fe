@@ -14,7 +14,7 @@ const Browse = ({ searchText, showProductQty, modalInvoiceVisible, onChange, mod
 
   const listProps = {
     dataSource: modalInvoiceVisible ? listInvoice : listProductLock,
-    loading,
+    loading: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? loading : loading.effects['transferOut/getInvoiceDetailPurchase'],
     pagination: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? pagination : null,
     tmpInvoiceList,
     searchText,

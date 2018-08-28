@@ -206,6 +206,12 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/getInvoice'
       })
       dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalType: 'modalInvoice'
+        }
+      })
+      dispatch({
         type: 'transferOut/updateState',
         payload: {
           modalInvoiceVisible: true

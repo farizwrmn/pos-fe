@@ -10,7 +10,7 @@ const FormItem = Form.Item
 const Warning = Modal.confirm
 const { prefix } = configMain
 
-const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, dispatch, ...tableProps }) => {
+const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...tableProps }) => {
   const handleMenuClick = (record) => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
     if (record.transDate < storeInfo.startPeriod) {
