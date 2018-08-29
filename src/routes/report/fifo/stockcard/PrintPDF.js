@@ -46,6 +46,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       [
         { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'CREATED', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TIPE', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'MASUK', style: 'tableHeader', alignment: 'center' },
@@ -69,39 +70,43 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
         let data = rows[key]
         countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
         countAmountValue = ((parseFloat(countAmountValue) || 0) + (parseFloat(data.sAmount) || 0)) - (parseFloat(data.sAmount) || 0)
-        let row = []
-        row.push({ text: counter, alignment: 'center', fontSize: 11 })
-        row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.transType.toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.pQty) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.pPrice) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.pAmount) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.sQty) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.sPrice) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.sAmount) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(countQtyValue), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia((parseFloat(data.pAmount) || 0) - (parseFloat(data.sAmount) || 0)), alignment: 'right', fontSize: 11 })
+        let row = [
+          { text: counter, alignment: 'center', fontSize: 11 },
+          { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: moment(data.createdAt).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: data.transType.toString(), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.pQty) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.pPrice) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.pAmount) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.sQty) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.sPrice) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.sAmount) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(countQtyValue), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia((parseFloat(data.pAmount) || 0) - (parseFloat(data.sAmount) || 0)), alignment: 'right', fontSize: 11 }
+        ]
         body.push(row)
       }
       counter += 1
     }
 
-    let totalRow = []
-    totalRow.push({ text: 'Total', colSpan: 4, alignment: 'center', fontSize: 12 })
-    totalRow.push({})
-    totalRow.push({})
-    totalRow.push({})
-    totalRow.push({ text: formatNumberIndonesia(inQty), alignment: 'right', fontSize: 12 })
-    totalRow.push({})
-    totalRow.push({ text: formatNumberIndonesia(inAmount), alignment: 'right', fontSize: 12 })
-    totalRow.push({ text: formatNumberIndonesia(outQty), alignment: 'right', fontSize: 12 })
-    totalRow.push({})
-    totalRow.push({ text: formatNumberIndonesia(outAmount), alignment: 'right', fontSize: 12 })
-    totalRow.push({})
-    totalRow.push({ text: formatNumberIndonesia((inAmount - outAmount)), alignment: 'right', fontSize: 12 })
+    let totalRow = [
+      { text: 'Total', colSpan: 5, alignment: 'center', fontSize: 12 },
+      {},
+      {},
+      {},
+      {},
+      { text: formatNumberIndonesia(inQty), alignment: 'right', fontSize: 12 },
+      {},
+      { text: formatNumberIndonesia(inAmount), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(outQty), alignment: 'right', fontSize: 12 },
+      {},
+      { text: formatNumberIndonesia(outAmount), alignment: 'right', fontSize: 12 },
+      {},
+      { text: formatNumberIndonesia((inAmount - outAmount)), alignment: 'right', fontSize: 12 }
+    ]
     body.push(totalRow)
-    width.push(['4%', '8%', '12%', '5%', '6%', '10%', '10%', '6%', '10%', '10%', '7%', '12%'])
+    width.push(['4%', '8%', '8%', '12%', '5%', '5%', '9%', '9%', '5%', '9%', '9%', '6%', '9%'])
     return body
   }
 
