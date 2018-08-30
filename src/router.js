@@ -612,6 +612,25 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/tools/maintenance'))
+              cb(null, require('./routes/tools/maintenance/'))
+            }, 'tools-maintenance')
+          }
+        }, {
+          path: 'tools/maintenance/posheader',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              cb(null, require('./routes/tools/maintenance/'))
+            }, 'tools-maintenance')
+          }
+        }, {
+          path: 'tools/maintenance/inventory',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))

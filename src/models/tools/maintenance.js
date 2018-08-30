@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     optionPos: [],
     listTrans: [],
     listMember: [],
+    path: '/tools/maintenance/posheader',
     period: {
       period: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('MM'),
       year: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('YYYY')
@@ -26,6 +27,15 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname === '/tools/maintenance/posheader') {
+          dispatch({ type: 'updateState', payload: { path: '/tools/maintenance/posheader' } })
+        } else if (location.pathname === '/tools/maintenance/inventory') {
+          dispatch({ type: 'updateState', payload: { path: '/tools/maintenance/inventory' } })
+        }
+      })
+    }
   },
 
   effects: {
