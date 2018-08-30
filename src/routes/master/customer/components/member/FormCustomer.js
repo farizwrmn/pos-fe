@@ -8,22 +8,24 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 13 },
-    sm: { span: 8 },
-    md: { span: 8 }
+    xs: { span: 12 },
+    sm: { span: 6 },
+    md: { span: 11 },
+    lg: { span: 7 }
   },
   wrapperCol: {
-    xs: { span: 11 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    xs: { span: 12 },
+    sm: { span: 11 },
+    md: { span: 13 },
+    lg: { span: 14 }
   }
 }
 
 const column = {
+  xs: { span: 24 },
   sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  md: { span: 12 },
+  lg: { span: 12 }
 }
 
 const FormCustomer = ({
@@ -45,8 +47,6 @@ const FormCustomer = ({
   showCity,
   defaultMember,
   onCancel,
-  // onCancelMobile,
-  // showMobileModal,
   form: {
     getFieldsValue,
     getFieldDecorator,
@@ -97,11 +97,6 @@ const FormCustomer = ({
     })
   }
 
-  // const OpenMobileModal = () => {
-  // showMobileModal(getFieldsValue())
-  // resetFields()
-  // }
-
   const GetDefaultMember = () => {
     defaultMember()
     resetFields()
@@ -118,13 +113,13 @@ const FormCustomer = ({
         offset: modalType === 'edit' || item.memberCodeDisable ? 10 : 18
       },
       sm: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 16 : 20
+        offset: modalType === 'edit' || item.memberCodeDisable ? 11 : 15
       },
       md: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 16 : 20
+        offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 20
       },
       lg: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 19 : 21
+        offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 21
       }
     }
   }
@@ -133,11 +128,6 @@ const FormCustomer = ({
     onCancel()
     resetFields()
   }
-
-  // const handleCancelMobile = () => {
-  //   onCancelMobile()
-  //   resetFields()
-  // }
 
   return (
     <Form layout="horizontal">
@@ -181,7 +171,7 @@ const FormCustomer = ({
           </FormItem>
           <FormItem label="Member Code" hasFeedback {...formItemLayout}>
             <Row style={{ padding: '0px' }}>
-              <Col lg={18} md={24}>
+              <Col xs={24} sm={20} md={18} lg={18}>
                 {getFieldDecorator('memberCode', {
                   initialValue: item.memberCode,
                   rules: [
@@ -193,10 +183,7 @@ const FormCustomer = ({
                   ]
                 })(<Input placeholder={(setting.memberCode || memberCodeDisable) ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : (setting.memberCode ? setting.memberCode : memberCodeDisable)} style={{ height: '32px' }} maxLength={16} />)}
               </Col>
-              <Col lg={6} md={24}>
-                {/* <Tooltip placement="bottomLeft" title="Get member from mobile user">
-                    <Button disabled={modalType === 'edit'} style={{ height: '32px' }} type="primary" icon="mobile" onClick={OpenMobileModal} />
-                  </Tooltip> */}
+              <Col xs={24} sm={4} md={6} lg={6}>
                 <Tooltip placement="bottomLeft" title="Get Default Code">
                   <Button disabled={item.memberCode ? item.memberCode : setting.memberCode} style={{ height: '32px' }} type="dashed" icon="check" onClick={GetDefaultMember} />
                 </Tooltip>
@@ -372,7 +359,6 @@ const FormCustomer = ({
       {(modalType === 'edit' || modalType === 'add') &&
         <FormItem {...tailFormItemLayout}>
           {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          {/* {item.memberCodeDisable && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancelMobile}>Cancel</Button>} */}
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>}
       {modalType === 'addMember' && <div style={{ textAlign: 'right' }}>

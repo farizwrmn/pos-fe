@@ -12,7 +12,7 @@ const FormItem = Form.Item
 const formItemLayout = {
   labelCol: {
     xs: { span: 8 },
-    sm: { span: 8 },
+    sm: { span: 7 },
     md: { span: 7 }
   },
   wrapperCol: {
@@ -23,8 +23,9 @@ const formItemLayout = {
 }
 
 const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
+  xs: { span: 24 },
+  sm: { span: 12 },
+  md: { span: 12 },
   lg: { span: 12 },
   xl: { span: 12 }
 }
@@ -36,9 +37,7 @@ const FormCounter = ({
   modalShow,
   modalShowList,
   resetListItem,
-  // onCancel,
   listItem,
-  // modalType,
   modalVisible,
   modalProps,
   listDetailProps,
@@ -58,10 +57,6 @@ const FormCounter = ({
   inputType = getFieldValue('type')
 }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  // const handleCancel = () => {
-  //   onCancel()
-  //   resetFields()
-  // }
 
   const handleSubmit = () => {
     validateFields((errors) => {

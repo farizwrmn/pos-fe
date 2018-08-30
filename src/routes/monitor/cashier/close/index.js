@@ -10,33 +10,27 @@ const confirm = Modal.confirm
 const warning = Modal.warning
 
 const formItemLayout = {
-  labelCol: { span: 7 },
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 7 },
+    md: { span: 7 },
+    lg: { span: 7 }
+  },
   wrapperCol: {
-    xs: { span: 12, offset: 4 },
-    sm: { span: 12, offset: 4 },
-    md: { span: 9 },
+    xs: { span: 16 },
+    sm: { span: 17 },
+    md: { span: 17 },
     lg: { span: 9 }
-  }
-}
-
-const formItemLayout2 = {
-  labelCol: { span: 7 },
-  wrapperCol: {
-    xs: { span: 12, offset: 4 },
-    sm: { span: 12, offset: 4 },
-    md: { span: 13 },
-    lg: { span: 13 }
   }
 }
 
 const column = {
   xs: { span: 24 },
-  sm: { span: 24 },
+  sm: { span: 12 },
   md: { span: 12 },
   lg: { span: 12 },
   xl: { span: 12 }
 }
-
 
 const CloseCashRegister = ({
   cashier,
@@ -158,6 +152,11 @@ const CloseCashRegister = ({
             })(<DatePicker size="large" style={{ width: '100%' }} disabled />
             )}
           </FormItem>
+          <FormItem label="Description" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('periodDesc', {
+              initialValue: cashierInfo.periodDesc || `Closing ${cashierInfo.period || 'nothing'}`
+            })(<Input />)}
+          </FormItem>
         </Col>
         <Col {...column}>
           <FormItem label="Shift" hasFeedback {...formItemLayout}>
@@ -171,15 +170,6 @@ const CloseCashRegister = ({
               initialValue: cashierInfo.counterName || '',
               rules: [{ required: true }]
             })(<Input disabled />)}
-          </FormItem>
-        </Col>
-      </Row>
-      <Row type="flex" justify="start">
-        <Col {...column}>
-          <FormItem label="Description" hasFeedback {...formItemLayout2}>
-            {getFieldDecorator('periodDesc', {
-              initialValue: cashierInfo.periodDesc || `Closing ${cashierInfo.period || 'nothing'}`
-            })(<Input />)}
           </FormItem>
         </Col>
       </Row>

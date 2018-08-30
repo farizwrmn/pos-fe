@@ -16,7 +16,7 @@ const Option = Select.Option
 const ButtonGroup = Button.Group
 
 const formItemLayout = {
-  labelCol: { span: 11 },
+  labelCol: { span: 10 },
   wrapperCol: { span: 12 },
   style: { marginBottom: 5 }
 }
@@ -196,7 +196,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   return (
     <Form style={{ padding: 3 }}>
       <Row>
-        <Col xs={24} sm={24} md={10} lg={12} xl={14}>
+        <Col xs={24} sm={24} md={15} lg={12} xl={12}>
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1', '2']}>
             <Panel header="Invoice Information" key="1" style={customPanelStyle}>
               <Row>
@@ -299,7 +299,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
             </Panel>
           </Collapse>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+        <Col xs={24} sm={24} md={9} lg={12} xl={12}>
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1']}>
             <Panel header="Search Supplier" key="1" style={customPanelStyle}>
               <FormItem label="Search" {...formItemLayout}>

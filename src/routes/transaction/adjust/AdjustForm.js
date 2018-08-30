@@ -133,7 +133,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
   return (
     <Form style={{ padding: 3 }}>
       <Row>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Trans No" {...formItemLayout}>
             {getFieldDecorator('transNo', {
               initialValue: lastTrans,
@@ -143,7 +143,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             })(<Input disabled maxLength={25} />)}
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('transType', {
               rules: [{
@@ -160,7 +160,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             )}
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Date" {...formItemLayout}>
             {getFieldDecorator('transDate', {
               rules: [{
@@ -169,7 +169,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             })(<DatePicker format={dateFormat} />)}
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('reference', {
               rules: [{
@@ -180,9 +180,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             })(<Input maxLength={40} />)}
           </FormItem>
         </Col>
-      </Row>
-      <Row>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Memo" {...formItemLayout1}>
             {getFieldDecorator('memo', {
               rules: [{
@@ -191,7 +189,7 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Employee" {...formItemLayout}>
             {getFieldDecorator('employeeName', {
               rules: [{
@@ -208,12 +206,13 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
             )}
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={0} sm={24} md={24} lg={0} xl={0} />
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="PIC" {...formItemLayout}>
             <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
           </FormItem>
         </Col>
-        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="PIC ID" {...formItemLayout}>
             <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
           </FormItem>

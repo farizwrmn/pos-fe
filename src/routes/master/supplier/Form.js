@@ -48,7 +48,7 @@ const formSupplier = ({
         offset: modalType === 'edit' ? 10 : 18
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 16 : 20
       },
       md: {
         offset: modalType === 'edit' ? 15 : 19
@@ -133,7 +133,8 @@ const formSupplier = ({
                   message: 'max: 99999'
                 }
               ]
-            })(<InputNumber min={0} maxLength={5} placeholder="day(s)" style={{ width: '36%' }} />)}
+            })(<InputNumber min={0} maxLength={5} style={{ width: '36%' }} />)}
+            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>day(s)</span>
           </FormItem>
           <FormItem label="Address 1" hasFeedback {...formItemLayout}>
             {getFieldDecorator('address01', {

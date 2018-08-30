@@ -7,19 +7,6 @@ import { FilterItem } from 'components'
 const Search = Input.Search
 const { RangePicker } = DatePicker
 
-const ColProps = {
-  xs: 24,
-  sm: 12,
-  style: {
-    marginBottom: 16
-  }
-}
-
-const TwoColProps = {
-  ...ColProps,
-  xl: 96
-}
-
 const Filter = ({
   onFilterChange,
   filter,
@@ -83,17 +70,17 @@ const Filter = ({
 
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+      <Col xs={{ span: 24 }} sm={{ span: 9 }} md={{ span: 8 }} lg={6} style={{ marginBottom: 8 }}>
         {getFieldDecorator('typeName', { initialValue: typeName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
+      <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={9} style={{ marginBottom: 8 }}>
         <FilterItem label="Createtime" >
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
             <RangePicker disabledDate={disabledDate} style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
           )}
         </FilterItem>
       </Col>
-      <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
+      <Col span={24} style={{ marginBottom: 8 }}>
         <div style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div >
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
@@ -106,10 +93,7 @@ const Filter = ({
 }
 
 Filter.propTypes = {
-  isChecked: PropTypes.bool,
-  switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  display: PropTypes.string,
   filter: PropTypes.object,
   show: PropTypes.bool,
   onFilterChange: PropTypes.func,

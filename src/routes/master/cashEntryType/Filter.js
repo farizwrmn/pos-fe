@@ -6,10 +6,10 @@ const Search = Input.Search
 const FormItem = Form.Item
 
 const searchBarLayout = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  xs: { span: 15 },
+  sm: { span: 7 },
+  md: { span: 7 },
+  lg: { span: 6 }
 }
 
 const Filter = ({
@@ -21,18 +21,18 @@ const Filter = ({
 }) => {
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
+    if (field.q === undefined || field.q === '') delete field.q
     onFilterChange(field)
   }
 
   return (
     <Row>
-      <Col span={12} />
+      <Col xs={9} sm={17} md={17} lg={18} />
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('counterName')(
+          {getFieldDecorator('q')(
             <Search
-              placeholder="Search Counter"
+              placeholder="Search Cash Entry Type"
               onSearch={() => handleSubmit()}
             />
           )}

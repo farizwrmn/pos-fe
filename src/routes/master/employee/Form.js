@@ -51,10 +51,10 @@ const formEmployee = ({
         offset: modalType === 'edit' ? 10 : 19
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 16 : 20
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 18
+        offset: modalType === 'edit' ? 15 : 19
       },
       lg: {
         offset: modalType === 'edit' ? 13 : 18

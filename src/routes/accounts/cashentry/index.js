@@ -389,10 +389,10 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
             <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
               <Row>
                 <Col span={2}># {currentCashier.id} </Col>
-                <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
-                <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
-                <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
-                <Col md={5} lg={5}>Date : {currentCashier.period}</Col>
+                <Col sm={5} md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
+                <Col sm={5} md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
+                <Col sm={5} md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
+                <Col sm={5} md={5} lg={5}>Date : {currentCashier.period}</Col>
               </Row>
             </Card>
           </Row>

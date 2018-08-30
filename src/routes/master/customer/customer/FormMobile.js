@@ -96,8 +96,7 @@ const ModalMobile = ({
         id: dataCustomer.id,
         memberCardId: data.memberCardId
       }
-      console.log(params, 'params')
-      // onActivate(params)
+      onActivate(params)
       resetFields()
     })
   }
@@ -128,16 +127,18 @@ const ModalMobile = ({
     openModal()
   }
   const handleActivate = () => {
+    let data = getFieldsValue()
     validateFields((errors) => {
       if (errors) {
         document.getElementById('mandatory').style.color = 'red'
         return
       }
-      let data = getFieldsValue()
       activateMember(data)
-      resetFields()
     })
+    resetFields()
   }
+
+  let notRequired = (!checkMember.existingSearchButtonDisable && !!dataCustomer.memberCode)
 
   const childrenGroup = listGroup.length > 0 ? listGroup.map(group => <Option value={group.id} key={group.id}>{group.groupName}</Option>) : []
   const childrenType = listType.length > 0 ? listType.map(type => <Option value={type.id} key={type.id}>{type.typeName}</Option>) : []
@@ -221,12 +222,12 @@ const ModalMobile = ({
               <TabPane tab="data Booking" key="3">
                 <Table columns={columnBooking} dataSource={dataBooking} />
               </TabPane>
-              <TabPane tab={<div id="mandatory">data Mandatory <span style={{ color: 'red' }}>*</span></div>} key="4">
+              <TabPane tab={<div id="mandatory">data Mandatory {!notRequired && <span style={{ color: 'red' }}>*</span>}</div>} key="4">
                 <Row>
                   <Col xs={24} sm={12} md={12} lg={12} >
                     <FormItem label="Group Name" hasFeedback {...formMandatoryField}>
                       {getFieldDecorator('memberGroupId', {
-                        rules: [{ required: true }]
+                        rules: [{ required: !notRequired }]
                       })(<Select
                         showSearch
                         autoFocus
@@ -238,11 +239,7 @@ const ModalMobile = ({
                     </FormItem>
                     <FormItem label="Type Name" hasFeedback {...formMandatoryField}>
                       {getFieldDecorator('memberTypeId', {
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
+                        rules: [{ required: !notRequired }]
                       })(<Select
                         showSearch
                         placeholder="Select Type Name"
@@ -254,11 +251,7 @@ const ModalMobile = ({
                     </FormItem>
                     <FormItem label="ID Type" hasFeedback {...formMandatoryField}>
                       {getFieldDecorator('idType', {
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
+                        rules: [{ required: !notRequired }]
                       })(<Select
                         optionFilterProp="children"
                         mode="default"
@@ -270,7 +263,7 @@ const ModalMobile = ({
                       {getFieldDecorator('idNo', {
                         rules: [
                           {
-                            required: true,
+                            required: !notRequired,
                             pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
                             message: 'a-Z & 0-9'
                           }
@@ -281,7 +274,7 @@ const ModalMobile = ({
                       {getFieldDecorator('address01', {
                         rules: [
                           {
-                            required: true,
+                            required: !notRequired,
                             pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
                             message: 'a-Z & 0-9'
                           }
@@ -294,7 +287,7 @@ const ModalMobile = ({
                       {getFieldDecorator('cityId', {
                         rules: [
                           {
-                            required: true
+                            required: !notRequired
                           }
                         ]
                       })(<Select
@@ -308,7 +301,7 @@ const ModalMobile = ({
                       {getFieldDecorator('phoneNumber', {
                         rules: [
                           {
-                            required: true,
+                            required: !notRequired,
                             pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                             message: 'Input a Phone No.[xxxx xxxx xxxx]'
                           }
@@ -319,7 +312,7 @@ const ModalMobile = ({
                       {getFieldDecorator('mobileNumber', {
                         rules: [
                           {
-                            required: true,
+                            required: !notRequired,
                             pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                             message: 'mobile number is not valid'
                           }
@@ -328,11 +321,7 @@ const ModalMobile = ({
                     </FormItem>
                     <FormItem label="Gender" hasFeedback {...formMandatoryField}>
                       {getFieldDecorator('gender', {
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
+                        rules: [{ required: !notRequired }]
                       })(
                         <Radio.Group>
                           <Radio value="M">Male</Radio>

@@ -13,8 +13,18 @@ const FormItem = Form.Item
 const Option = Select.Option
 const { prefix } = configMain
 const formItemLayout = {
-  labelCol: { span: 11 },
-  wrapperCol: { span: 12 },
+  labelCol: {
+    xs: { span: 9 },
+    sm: { span: 8 },
+    md: { span: 8 },
+    lg: { span: 5 }
+  },
+  wrapperCol: {
+    xs: { span: 15 },
+    sm: { span: 16 },
+    md: { span: 16 },
+    lg: { span: 15 }
+  },
   style: { marginBottom: 5 }
 }
 const formItemLayout1 = {
@@ -117,7 +127,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
       <Row style={{ padding: '10px' }}>
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Row>
-            <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+            <Col xs={24} sm={12} md={12} lg={12} xl={14}>
               <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transNo', {
                   initialValue: transNo === null ? '' : transNo.transNo,
@@ -151,7 +161,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
                 </Select>)}
               </FormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+            <Col xs={24} sm={12} md={12} lg={12} xl={14}>
               <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('invoiceType', {
                   initialValue: transNo === null ? '' : transNo.invoiceType,

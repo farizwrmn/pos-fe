@@ -425,6 +425,17 @@ body {
     }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+    :global {
+        .ant-modal-wrap {
+            .ant-modal.modal-browse-fix-size {
+                margin:0 auto;
+                width: 520px !important;
+            }
+        }
+    }
+}
+
 @media (max-width: 767px) {
      :global {
         .navbar {

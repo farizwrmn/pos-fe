@@ -13,6 +13,20 @@ const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = configMain
 
+const leftColumn = {
+  xs: 12,
+  sm: 16,
+  md: 16,
+  lg: 17
+}
+
+const rightColumn = {
+  xs: 24,
+  sm: 8,
+  md: 8,
+  lg: 7
+}
+
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
   form: { getFieldDecorator }, ...browseProps }) => {
@@ -134,7 +148,7 @@ const BrowseGroup = ({
   return (
     <Form>
       <Row style={{ marginBottom: '10px' }}>
-        <Col xl={12} lg={12} md={12}>
+        <Col {...leftColumn}>
           <FormItem hasFeedBack >
             {getFieldDecorator('typeCode', {
               initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
@@ -144,7 +158,7 @@ const BrowseGroup = ({
             })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
-        <Col xl={12} lg={12} md={12} style={{ float: 'center' }}>
+        <Col {...rightColumn}>
           <FormItem>
             <Search
               placeholder="Search Invoice"

@@ -45,20 +45,18 @@ class SelectItem extends React.Component {
       options.push(<Option value={list[key][componentKey]}>{list[key][componentValue]}</Option>)
     }
     return (
-      <span>
-        <Select
-          mode={mode || 'combobox'}
-          value={state.option}
-          style={style || { width: '100%' }}
-          onChange={this.handleChange}
-          placeholder={placeholder || ''}
-          allowClear={allowClear || true}
-          size={size}
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {options}
-        </Select>
-      </span>
+      <Select
+        mode={mode || 'combobox'}
+        value={state.option}
+        style={style || { width: '100%' }}
+        onChange={this.handleChange}
+        placeholder={placeholder || ''}
+        allowClear={allowClear || true}
+        size={size}
+        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+      >
+        {options}
+      </Select>
     )
   }
 }
