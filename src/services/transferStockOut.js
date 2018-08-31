@@ -14,6 +14,42 @@ export async function query (params) {
   })
 }
 
+export async function queryHpokok (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.active = 1
+  return request({
+    url: `${transfer}/hpokok/out/detail`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryChangeHpokokTransferOut (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.active = 1
+  return request({
+    url: `${transfer}/hpokok/out/change`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryChangeHpokokTransferIn (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.active = 1
+  return request({
+    url: `${transfer}/hpokok/in/change`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryByTrans (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

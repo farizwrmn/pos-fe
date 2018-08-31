@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
 import { configMain, lstorage, color } from 'utils'
-import { query, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
+import { query, queryHpokok, queryChangeHpokokTransferOut, queryChangeHpokokTransferIn, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
 import { query as queryInvoice, queryDetail as queryDetailInvoice } from '../services/purchase'
 import {
@@ -25,8 +25,12 @@ export default modelExtend(pageModel, {
     listTrans: [],
     listItem: [],
     listStore: [],
+    listHeader: [],
+    listChangeTransferOut: [],
+    listChangeTransferIn: [],
     currentItem: {},
     currentItemList: {},
+    filterSearch: {},
     modalVisible: false,
     modalConfirmVisible: false,
     modalInvoiceVisible: false, // purchase modal visible
@@ -46,10 +50,9 @@ export default modelExtend(pageModel, {
     pagination: {
       // showSizeChanger: true,
       // showQuickJumper: true,
-      showTotal: total => `Total ${total} Records`,
       current: 1,
       total: null,
-      pageSize: 5
+      pageSize: 10
     }
   },
 
@@ -89,6 +92,86 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+    * queryHpokok ({ payload = {} }, { call, put }) {
+      const data = yield call(queryHpokok, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessTransferOut',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            filterSearch: payload,
+            searchText: payload.q
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryHeader ({ payload = {} }, { call, put }) {
+      payload.type = 'all'
+      const data = yield call(queryHpokok, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessHeader',
+          payload: {
+            listHeader: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryChangeHpokokTransferOut ({ payload = {} }, { call, put }) {
+      const data = yield call(queryChangeHpokokTransferOut, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessChangeTransferOut',
+          payload: {
+            listChangeTransferOut: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryChangeHpokokTransferIn ({ payload = {} }, { call, put }) {
+      const data = yield call(queryChangeHpokokTransferIn, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessChangeTransferIn',
+          payload: {
+            listChangeTransferIn: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
       }
     },
     * querySequence ({ payload }, { call, put }) {
@@ -312,11 +395,55 @@ export default modelExtend(pageModel, {
     querySuccessTransferOut (state, action) {
       const {
         listSuppliers,
+        listTrans,
         pagination
       } = action.payload
       return {
         ...state,
-        listSuppliers,
+        listSuppliers: listSuppliers || [],
+        listTrans: listTrans || [],
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    querySuccessHeader (state, action) {
+      const {
+        listHeader,
+        pagination
+      } = action.payload
+      return {
+        ...state,
+        listHeader: listHeader || [],
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    querySuccessChangeTransferOut (state, action) {
+      const {
+        listChangeTransferOut,
+        pagination
+      } = action.payload
+      return {
+        ...state,
+        listChangeTransferOut: listChangeTransferOut || [],
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+    querySuccessChangeTransferIn (state, action) {
+      const {
+        listChangeTransferIn,
+        pagination
+      } = action.payload
+      return {
+        ...state,
+        listChangeTransferIn: listChangeTransferIn || [],
         pagination: {
           ...state.pagination,
           ...pagination

@@ -631,9 +631,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/tools/maintenance'))
-              registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/tools/maintenance/'))
             }, 'tools-maintenance')
           }
