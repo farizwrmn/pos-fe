@@ -1,0 +1,83 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Table } from 'antd'
+import { DropOption } from 'components'
+import { formatDate } from 'utils'
+import styles from '../../../themes/index.less'
+
+const List = ({ ...tableProps, viewHeader }) => {
+  const handleMenuClick = (record, e) => {
+    if (e.key === '1') {
+      viewHeader(record)
+    }
+  }
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'memberName',
+      key: 'memberName'
+    },
+    {
+      title: 'Police No',
+      dataIndex: 'policeNo',
+      key: 'policeNo'
+    },
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      render: text => formatDate(text)
+    },
+    {
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text) => {
+        switch (text) {
+          case '0':
+            return 'In Progress'
+          case '1':
+            return 'Done'
+          default:
+            break
+        }
+      }
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      width: 100,
+      fixed: 'right',
+      className: styles.alignCenter,
+      render: (text, record) => {
+        return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
+          menuOptions={[
+            { key: '1', name: 'View', icon: 'eye-o' }
+          ]}
+        />)
+      }
+    }
+  ]
+
+  return (
+    <div>
+      <Table {...tableProps}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 1000 }}
+      />
+    </div>
+  )
+}
+
+List.propTypes = {
+  view: PropTypes.func
+}
+
+export default List

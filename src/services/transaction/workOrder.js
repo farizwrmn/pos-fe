@@ -1,4 +1,4 @@
-import { request, config, crypt } from 'utils'
+import { request, config, crypt, lstorage } from 'utils'
 
 const { workOrder } = config.api
 
@@ -68,6 +68,28 @@ export async function deleteWOCategory (params) {
   return request({
     url: `${workOrder}/category/${params.id}`,
     method: 'delete',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryWOHeader (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.order = '-createdAt'
+  return request({
+    url: `${workOrder}/header`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function addWOHeaderAndChecklist (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${workOrder}/main/header`,
+    method: 'post',
+    data: params,
     headers: apiHeaderToken
   })
 }

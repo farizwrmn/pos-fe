@@ -346,6 +346,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-booking-history-detail')
           }
         }, {
+          path: 'transaction/work-order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/workOrder'))
+              cb(null, require('./routes/transaction/workOrder/'))
+            }, 'transaction-work-order')
+          }
+        }, {
           path: 'report/pos/summary',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

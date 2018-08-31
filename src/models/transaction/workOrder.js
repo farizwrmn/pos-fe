@@ -1,8 +1,11 @@
+import moment from 'moment'
 import { message } from 'antd'
 import {
   queryWOCustomFields, addWOCustomFields, editWOCustomFields, deleteWOCustomFields,
-  queryWOCategory, addWOCategory, deleteWOCategory
+  queryWOCategory, addWOCategory, deleteWOCategory,
+  queryWOHeader
 } from '../../services/transaction/workOrder'
+import { getDateTime } from '../../services/setting/time'
 
 const success = (type) => {
   message.success(`${type} has saved!`)
@@ -12,6 +15,14 @@ export default {
   namespace: 'workorder',
 
   state: {
+    activeKey: '1',
+    start: moment().startOf('month').format('YYYY-MM-DD'),
+    end: moment().format('YYYY-MM-DD'),
+    q: '',
+    modalFilter: false,
+    status: [0, 1],
+    listWOHeader: [],
+    currentStep: 0,
     currentItem: {},
     formType: 'add',
     modalEdit: { visible: false, item: {} },
@@ -29,6 +40,30 @@ export default {
           dispatch({ type: 'queryWOCustomFields' })
         } else if (location.pathname === '/master/work-order/category') {
           dispatch({ type: 'queryWOCategory' })
+        } else if (location.pathname === '/transaction/work-order') {
+          const { start, end, q, status, ...other } = location.query
+          if (q && q !== '') {
+            dispatch({ type: 'queryWOHeader', payload: { q, ...other } })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                start: null,
+                end: null,
+                q
+              }
+            })
+          } else {
+            dispatch({
+              type: 'getDate',
+              payload: { start, end, status, ...other }
+            })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                q: ''
+              }
+            })
+          }
         }
       })
     }
@@ -168,6 +203,52 @@ export default {
       const data = yield call(deleteWOCategory, payload)
       if (data.success) {
         console.log(data.message)
+      } else {
+        throw data
+      }
+    },
+
+    * getDate ({ payload }, { select, call, put }) {
+      let { start, end, status, ...other } = payload
+      let time
+      if (!(start && end)) {
+        time = yield call(getDateTime, { id: 'date' })
+      }
+      const defaultStatus = yield select(({ workorder }) => workorder.status)
+      yield put({
+        type: 'updateState',
+        payload: {
+          start: start || moment().startOf('month').format('YYYY-MM-DD'),
+          end: end || moment(time.data).format('YYYY-MM-DD'),
+          status: status || defaultStatus
+        }
+      })
+      start = start || moment().startOf('month').format('YYYY-MM-DD')
+      end = end || moment(time.data).format('YYYY-MM-DD')
+      yield put({
+        type: 'queryWOHeader',
+        payload: {
+          status: status || defaultStatus,
+          transDate: [start, end],
+          ...other
+        }
+      })
+    },
+
+    * queryWOHeader ({ payload }, { call, put }) {
+      const data = yield call(queryWOHeader, { ...payload })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listWOHeader: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
       } else {
         throw data
       }
