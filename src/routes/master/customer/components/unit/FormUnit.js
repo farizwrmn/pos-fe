@@ -130,7 +130,7 @@ const FormUnit = ({
         other.merk = other.merk.label
         other.model = other.model.label
         if (other.type) other.type = other.type.label
-        other.expired = moment(other.expired).endOf('day').format('YYYY-MM-DD')
+        if (other.epxired) other.expired = moment(other.expired).endOf('day').format('YYYY-MM-DD')
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
@@ -204,7 +204,7 @@ const FormUnit = ({
           {models}
         </Select>)}
       </FormItem>
-      <FormItem label="Tipe" hasFeedback {...formItemLayout}>
+      <FormItem label="Type" hasFeedback {...formItemLayout}>
         {getFieldDecorator('type', {
           initialValue: item.type ? getType : getTypeNull,
           valuePropName: 'value'
@@ -221,17 +221,17 @@ const FormUnit = ({
           {types}
         </Select>)}
       </FormItem>
-      <FormItem label="Tahun" hasFeedback {...formItemLayout}>
+      <FormItem label="Year" hasFeedback {...formItemLayout}>
         {getFieldDecorator('year', {
           initialValue: item.year
         })(<InputNumber maxLength={4} min={1769} max={y} />)}
       </FormItem>
-      <FormItem label="No Rangka" hasFeedback {...formItemLayout}>
+      <FormItem label="Chassis No" hasFeedback {...formItemLayout}>
         {getFieldDecorator('chassisNo', {
           initialValue: item.chassisNo
         })(<Input maxLength={20} />)}
       </FormItem>
-      <FormItem label="No Mesin" hasFeedback {...formItemLayout}>
+      <FormItem label="Machine No" hasFeedback {...formItemLayout}>
         {getFieldDecorator('machineNo', {
           initialValue: item.machineNo
         })(<Input maxLength={20} />)}

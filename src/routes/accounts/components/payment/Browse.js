@@ -12,20 +12,17 @@ const FormItem = Form.Item
 const { prefix } = configMain
 
 const leftColumn = {
-  xs: 24,
-  sm: 12,
-  md: 12,
-  lg: 12,
-  style: {
-    marginBottom: 10
-  }
+  xs: 12,
+  sm: 16,
+  md: 16,
+  lg: 17
 }
 
 const rightColumn = {
   xs: 24,
-  sm: 12,
-  md: 12,
-  lg: 12
+  sm: 8,
+  md: 8,
+  lg: 7
 }
 
 const BrowseGroup = ({
@@ -149,7 +146,7 @@ const BrowseGroup = ({
       <Row>
         <Col {...leftColumn}>
           <FormItem hasFeedBack >
-            {getFieldDecorator('typeCode', {
+            {getFieldDecorator('period', {
               initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
               rules: [{
                 required: true

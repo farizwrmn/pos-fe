@@ -197,7 +197,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
   }
 
   return (
-    <div className="content-inner">
+    <div>
       <Browse {...browseProps} />
       <Modal {...modalProps} />
       <ModalCancel {...modalCancelProps} />

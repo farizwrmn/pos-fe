@@ -9,15 +9,15 @@ const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
+    xs: { span: 10 },
     sm: { span: 8 },
-    md: { span: 7 },
+    md: { span: 8 },
     lg: { span: 7 }
   },
   wrapperCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 9 },
+    xs: { span: 14 },
+    sm: { span: 14 },
+    md: { span: 14 },
     lg: { span: 9 }
   }
 }
@@ -190,7 +190,7 @@ const History = ({
   return (
     <div className="content-inner">
       {modalVisible && <ModalBrowse {...modalProps} />}
-      <Row type="flex" justify="start" className="collapse-form-reminder">
+      <Row className="collapse-form-reminder">
         <Col {...column}>
           <FormItem label="Member Code" hasFeedback {...formItemLayout}>
             <Button type="primary" size="large" onClick={openModal} style={{ marginBottom: 15, width: '100%' }}>{buttonName}</Button>

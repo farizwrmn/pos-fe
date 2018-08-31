@@ -46,9 +46,7 @@ const Filter = ({
   customerInfo,
   openModal,
   onResetClick,
-  // resetHistory,
   onSearchClick,
-  // memberInfo,
   ...modalProps,
   ...printProps,
   form: {
@@ -148,7 +146,7 @@ const Filter = ({
     componentKey: 'policeNo',
     componentValue: 'policeNo',
     allowClear: true,
-    style: { width: 195, maxHeight: 80, overflow: 'scroll' },
+    style: { width: 195, overflow: 'scroll' },
     placeholder: 'Select a plat'
   }
   const serviceTypeProps = {
@@ -157,7 +155,7 @@ const Filter = ({
     componentKey: 'miscName',
     componentValue: 'miscDesc',
     allowClear: true,
-    style: { width: 195, maxHeight: 80, overflow: 'scroll' },
+    style: { width: 195, overflow: 'scroll' },
     placeholder: 'Select service type'
   }
 

@@ -7,18 +7,18 @@ const Search = Input.Search
 const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 
-const searchBarLayout = {
-  xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 }
-}
-
 const filterItemLayout = {
   xs: { span: 12 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 }
+  sm: { span: 16 },
+  md: { span: 16 },
+  lg: { span: 17 }
+}
+
+const searchBarLayout = {
+  xs: { span: 24 },
+  sm: { span: 8 },
+  md: { span: 8 },
+  lg: { span: 7 }
 }
 
 const Filter = ({

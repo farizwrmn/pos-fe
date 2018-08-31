@@ -11,6 +11,20 @@ const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = configMain
 
+const filterItemLayout = {
+  xs: { span: 12 },
+  sm: { span: 16 },
+  md: { span: 16 },
+  lg: { span: 17 }
+}
+
+const searchBarLayout = {
+  xs: { span: 24 },
+  sm: { span: 8 },
+  md: { span: 8 },
+  lg: { span: 7 }
+}
+
 const BrowseGroup = ({
   dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod,
   form: { getFieldDecorator } }) => {
@@ -159,9 +173,9 @@ const BrowseGroup = ({
   return (
     <Form>
       <Row style={{ marginBottom: '10px' }}>
-        <Col xl={12} lg={12} md={12}>
+        <Col {...filterItemLayout} >
           <FormItem hasFeedBack >
-            {getFieldDecorator('typeCode', {
+            {getFieldDecorator('period', {
               initialValue: moment(new Date(), 'YYYYMM'),
               rules: [{
                 required: true
@@ -169,7 +183,7 @@ const BrowseGroup = ({
             })(<MonthPicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
-        <Col xl={12} lg={12} md={12} style={{ float: 'center' }}>
+        <Col {...searchBarLayout}>
           <FormItem>
             <Search
               placeholder="Search Invoice"

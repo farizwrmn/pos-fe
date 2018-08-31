@@ -1,12 +1,20 @@
 import React from 'react'
 import moment from 'moment'
-import { Table, Button, Icon } from 'antd'
+import { DropOption } from 'components'
+import { Table, Icon } from 'antd'
 import styles from '../../../themes/index.less'
 
 const List = ({ ...tableProps, printInvoice }) => {
   const printPurchaseHistory = (record) => {
     printInvoice(record.transNo)
   }
+
+  const hdlDropOptionClick = (record, e) => {
+    if (e.key === '1') {
+      printPurchaseHistory(record)
+    }
+  }
+
   const columns = [
     {
       title: 'Date',
@@ -56,10 +64,15 @@ const List = ({ ...tableProps, printInvoice }) => {
     {
       title: <Icon type="setting" />,
       key: 'operation',
-      width: 70,
       fixed: 'right',
-      render: (record) => {
-        return <Button type="primary" onClick={() => printPurchaseHistory(record)}>Print</Button>
+      width: 75,
+      render: (text, record) => {
+        return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
+          type="primary"
+          menuOptions={[
+            { key: '1', name: 'Print', icon: 'printer' }
+          ]}
+        />)
       }
     }
   ]

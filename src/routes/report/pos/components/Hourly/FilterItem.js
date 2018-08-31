@@ -60,96 +60,94 @@ const FilterItem = ({ onDateChange, onListReset, form: { getFieldsValue, validat
   }
 
   return (
-    <div>
-      <Modal {...modalOpts}>
-        <Form layout="horizontal">
-          <FormItem label="Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transDate', {
-              initialValue: [moment(formatDate(), 'DD-MMM-YYYY').add('-1', 'months'), moment(formatDate(), 'DD-MMM-YYYY')],
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<RangePicker format="DD-MMM-YYYY" />
-            )}
-          </FormItem>
-          <FormItem label="Trans Time 1" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transTime1', {
-              initialValue: moment('08:01', format),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />
-            )}
-            {getFieldDecorator('transTime2', {
-              initialValue: getFieldValue('transTime1') ? moment(getFieldValue('transTime1'), format).add('2', 'hours').add('-1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-          </FormItem>
-          <FormItem label="Trans Time 2" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transTime3', {
-              initialValue: moment(getFieldValue('transTime2'), format).add('1', 'minutes'),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-            {getFieldDecorator('transTime4', {
-              initialValue: getFieldValue('transTime3') ? moment(getFieldValue('transTime3'), format).add('2', 'hours').add('-1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-          </FormItem>
-          <FormItem label="Trans Time 3" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transTime5', {
-              initialValue: getFieldValue('transTime4') ? moment(getFieldValue('transTime4'), format).add('1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-            {getFieldDecorator('transTime6', {
-              initialValue: getFieldValue('transTime5') ? moment(getFieldValue('transTime5'), format).add('3', 'hours').add('-1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-          </FormItem>
-          <FormItem label="Trans Time 4" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transTime7', {
-              initialValue: getFieldValue('transTime6') ? moment(getFieldValue('transTime6'), format).add('1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-            {getFieldDecorator('transTime8', {
-              initialValue: getFieldValue('transTime7') ? moment(getFieldValue('transTime7'), format).add('3', 'hours').add('-1', 'minutes') : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<TimePicker format={format} />)}
-          </FormItem>
-        </Form>
-      </Modal>
-    </div>
+    <Modal {...modalOpts} className="modal-browse-fix-size">
+      <Form layout="horizontal">
+        <FormItem label="Date" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transDate', {
+            initialValue: [moment(formatDate(), 'DD-MMM-YYYY').add('-1', 'months'), moment(formatDate(), 'DD-MMM-YYYY')],
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<RangePicker format="DD-MMM-YYYY" />
+          )}
+        </FormItem>
+        <FormItem label="Trans Time 1" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transTime1', {
+            initialValue: moment('08:01', format),
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />
+          )}
+          {getFieldDecorator('transTime2', {
+            initialValue: getFieldValue('transTime1') ? moment(getFieldValue('transTime1'), format).add('2', 'hours').add('-1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+        </FormItem>
+        <FormItem label="Trans Time 2" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transTime3', {
+            initialValue: moment(getFieldValue('transTime2'), format).add('1', 'minutes'),
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+          {getFieldDecorator('transTime4', {
+            initialValue: getFieldValue('transTime3') ? moment(getFieldValue('transTime3'), format).add('2', 'hours').add('-1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+        </FormItem>
+        <FormItem label="Trans Time 3" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transTime5', {
+            initialValue: getFieldValue('transTime4') ? moment(getFieldValue('transTime4'), format).add('1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+          {getFieldDecorator('transTime6', {
+            initialValue: getFieldValue('transTime5') ? moment(getFieldValue('transTime5'), format).add('3', 'hours').add('-1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+        </FormItem>
+        <FormItem label="Trans Time 4" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('transTime7', {
+            initialValue: getFieldValue('transTime6') ? moment(getFieldValue('transTime6'), format).add('1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+          {getFieldDecorator('transTime8', {
+            initialValue: getFieldValue('transTime7') ? moment(getFieldValue('transTime7'), format).add('3', 'hours').add('-1', 'minutes') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<TimePicker format={format} />)}
+        </FormItem>
+      </Form>
+    </Modal>
   )
 }
 

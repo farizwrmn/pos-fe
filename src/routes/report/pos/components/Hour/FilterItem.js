@@ -48,7 +48,7 @@ const FilterItem = ({ onDateChange, onListReset, form: { getFieldsValue, validat
 
   return (
     <div>
-      <Modal {...modalOpts}>
+      <Modal {...modalOpts} className="modal-browse-fix-size">
         <Form layout="horizontal">
           <FormItem label="Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('transDate', {

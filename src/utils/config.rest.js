@@ -83,6 +83,7 @@ module.exports = {
     creditCharge: '/creditCharge',
     setting: '/setting',
     mobileBooking: '/mobile/booking',
-    paymentOpts: '/payment'
+    paymentOpts: '/payment',
+    workOrder: '/wo'
   }
 }
