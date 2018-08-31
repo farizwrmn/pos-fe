@@ -251,6 +251,23 @@ const Routers = function ({ history, app }) {
             }, 'master-car-type')
           }
         }, {
+          path: 'master/work-order/custom-fields',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/workOrder'))
+              cb(null, require('./routes/master/workOrder/CustomFields/'))
+            }, 'master-category-work-order')
+          }
+        }, {
+          path: 'master/work-order/category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/workOrder'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/workOrder/Category/'))
+            }, 'master-category-work-order')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
