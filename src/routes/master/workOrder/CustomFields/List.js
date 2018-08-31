@@ -45,13 +45,13 @@ const List = ({ list, showEditModal, onEdit, modalEdit, deleteField }) => {
           levelMap[item.id] = item.fieldParentId
         }
         return (
-          <TreeNode key={item.id} title={(<div onClick={() => handleClickTree(item)} value={item.id}>{`${item.id}. ${item.fieldName}`}</div>)}>
+          <TreeNode key={item.id} title={(<div onClick={() => handleClickTree(item)} value={item.id}>{`${item.sortingIndex}. ${item.fieldName}`}</div>)}>
             {getMenus(item.children)}
           </TreeNode>
         )
       }
       return (
-        <TreeNode key={item.id} title={(<div onClick={() => handleClickTree(item)} value={item.id}>{`${item.id}. ${item.fieldName}`}</div>)}>
+        <TreeNode key={item.id} title={(<div onClick={() => handleClickTree(item)} value={item.id}>{`${item.sortingIndex}. ${item.fieldName}`}</div>)}>
           {(!menuTree.includes(item)) && item.name}
         </TreeNode>
       )

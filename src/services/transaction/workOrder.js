@@ -4,7 +4,6 @@ const { workOrder } = config.api
 
 export async function queryWOCustomFields (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.order = 'sortingIndex'
   params.type = 'all'
   return request({
     url: `${workOrder}/field`,
