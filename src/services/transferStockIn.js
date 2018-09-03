@@ -34,6 +34,27 @@ export async function queryTrans (params) {
     headers: apiHeaderToken
   })
 }
+export async function queryChangeHpokokTransferIn (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  params.active = 1
+  return request({
+    url: `${transfer}/hpokok/in/change`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function updateTransferInHpokok (params) {
+  let url = `${transfer}/in/detail/${params.id}`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'post',
+    headers: apiHeaderToken
+  })
+}
 
 export async function add (params) {
   let url = `${transfer}/in`

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { lstorage } from 'utils'
 import { Modal, Button, Input, Form, Row, Col, DatePicker, message } from 'antd'
 import ModalBrowse from './ModalBrowse'
 import ListInvoiceDetail from './ListInvoiceDetail'
@@ -36,7 +35,7 @@ const FormEdit = ({
   period,
   year,
   modalVisible,
-  form: { getFieldDecorator, validateFields, getFieldValue, getFieldsValue, resetFields, setFieldsValue },
+  form: { getFieldDecorator, validateFields, getFieldValue, getFieldsValue, setFieldsValue },
   ...formEditProps
 }) => {
   const setItemForForm = (e) => {
@@ -87,18 +86,24 @@ const FormEdit = ({
         title: 'Warning',
         content: 'Action cannot be undone',
         onOk () {
-          data.storeId = lstorage.getCurrentUserStore()
-          data.transNo = item.transNo
-          data.memberCode = data.memberId
-          data.woReference = data.woReference === null || data.woReference === '' ? null : data.woReference
           onOk(data)
-          setFormItem({})
-          resetFields()
         },
         onCancel () {
           console.log('cancel')
         }
       })
+    })
+  }
+  const resetTransfer = () => {
+    setFieldsValue({
+      transferOutId: null,
+      transNo: null
+    })
+  }
+  const resetProduct = () => {
+    setFieldsValue({
+      productId: null,
+      productName: null
     })
   }
 
@@ -109,8 +114,16 @@ const FormEdit = ({
       message.warning('Choose product and period')
       return
     }
+    if (e === 'product') {
+      resetTransfer()
+    }
     const data = getFieldsValue()
     onShowModal(e, data)
+  }
+
+  const changeMonthPicker = () => {
+    resetTransfer()
+    resetProduct()
   }
 
   return (
@@ -124,7 +137,7 @@ const FormEdit = ({
                   required: true
                 }
               ]
-            })(<MonthPicker style={{ width: '189px' }} placeholder="Select Period" />)}
+            })(<MonthPicker onChange={() => changeMonthPicker()} style={{ width: '189px' }} placeholder="Select Period" />)}
           </FormItem>
           <FormItem label="Product" hasFeedback {...formItemLayout}>
             <Row>

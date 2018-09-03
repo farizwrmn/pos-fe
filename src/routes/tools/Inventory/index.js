@@ -148,7 +148,7 @@ const Maintenance = ({ loading, dispatch, maintenance, pos, transferOut }) => {
         })
       } else if (e === 'transfer') {
         const { productId, period } = data
-        let endDate = moment(period).format('YYYY-MM-DD')
+        let endDate = moment(period).endOf('month').format('YYYY-MM-DD')
         let startDate = moment(endDate, 'YYYY-MM-DD').startOf('month').format('YYYY-MM-DD')
         dispatch({
           type: 'transferOut/queryHpokok',
@@ -177,11 +177,8 @@ const Maintenance = ({ loading, dispatch, maintenance, pos, transferOut }) => {
     },
     onOk (data) {
       dispatch({
-        type: 'maintenance/update',
-        payload: {
-          id: data.transNoId,
-          data
-        }
+        type: 'transferOut/updateTransfer',
+        payload: data
       })
     }
   }
