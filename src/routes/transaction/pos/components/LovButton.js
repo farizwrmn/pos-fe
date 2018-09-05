@@ -13,7 +13,8 @@ const LovButton = ({
   handleProductBrowse,
   handleServiceBrowse,
   handleQueue,
-  handlePromoBrowse
+  handlePromoBrowse,
+  handleWorkOrderBrowse
 }) => {
   const objectSize = () => {
     let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
@@ -30,6 +31,15 @@ const LovButton = ({
   }
   return (
     <div>
+      <ButtonGroup style={{ marginRight: 8 }}>
+        <Button
+          type="primary"
+          size="large"
+          onClick={handleWorkOrderBrowse}
+        >
+          Work Order
+        </Button>
+      </ButtonGroup>
       <ButtonGroup>
         <Button
           type="primary"
@@ -113,7 +123,7 @@ const LovButton = ({
           Queue
         </Button>
       </Badge>
-    </div>
+    </div >
   )
 }
 

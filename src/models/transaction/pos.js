@@ -4,6 +4,7 @@ import { Modal } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
+import { queryWOHeader } from '../../services/transaction/workOrder'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
@@ -36,6 +37,7 @@ export default {
     listUnitUsage: [],
     posData: [],
     listByCode: [],
+    listWOHeader: [],
     listQueue: localStorage.getItem('queue1') === null ? [] : JSON.parse(localStorage.getItem('queue1')),
     memberPrint: [],
     mechanicPrint: [],
@@ -981,7 +983,24 @@ export default {
         })
       }
     },
-
+    * queryWOHeader ({ payload }, { call, put }) {
+      const data = yield call(queryWOHeader, { status: '0', ...payload })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listWOHeader: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
     * getProducts ({ payload }, { call, put }) {
       // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       // let data = {}

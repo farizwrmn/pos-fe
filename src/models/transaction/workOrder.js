@@ -310,8 +310,8 @@ export default {
           payload: {
             listWOHeader: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
           }

@@ -82,6 +82,7 @@ const Pos = ({
     // curShift,
     modalQueueVisible,
     modalVoidSuspendVisible,
+    modalWorkOrderVisible,
     listUnitUsage,
     showAlert,
     cashierBalance,
@@ -328,6 +329,19 @@ const Pos = ({
         type: 'pos/showServiceModal',
         payload: {
           modalType: 'browseService'
+        }
+      })
+    },
+    handleWorkOrderBrowse () {
+      dispatch({
+        type: 'pos/queryWOHeader'
+      })
+
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalType: 'browseWorkOrder',
+          modalWorkOrderVisible: true
         }
       })
     },
@@ -808,6 +822,42 @@ const Pos = ({
           listAsset: []
         }
       })
+    }
+  }
+  const modalWorkOrderProps = {
+    location,
+    loading,
+    dispatch,
+    pos,
+    visible: modalWorkOrderVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/queryWOHeader',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalWorkOrderVisible: false
+        }
+      })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          listWOHeader: []
+        }
+      })
+    },
+    onChooseItem (item) {
+      console.log('item', item)
     }
   }
 
@@ -1740,6 +1790,7 @@ const Pos = ({
             <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
+            {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
