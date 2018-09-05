@@ -167,6 +167,7 @@ export default {
               dataPos: arrayProd,
               dataBundle,
               transNo: trans,
+              taxType: companySetting,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
               technicianId: payload.technicianId,
