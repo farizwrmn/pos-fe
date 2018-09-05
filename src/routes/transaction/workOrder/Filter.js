@@ -47,18 +47,14 @@ const Filter = ({
   onSubmitDataFilter,
   onResetDataFilter,
   modalFilter,
-  start,
-  end,
   q,
   form: {
     getFieldDecorator,
     resetFields
   }
 }) => {
-  const handleChangeDate = (date) => {
-    let start = moment(date[0]).format('YYYY-MM-DD')
-    let end = moment(date[1]).format('YYYY-MM-DD')
-    onFilterPeriod(start, end)
+  const handleChangeDate = (date, dateString) => {
+    onFilterPeriod(dateString)
     resetFields(['q'])
   }
 
@@ -87,11 +83,10 @@ const Filter = ({
   return (
     <Row >
       <Col {...leftColumn} >
-        <FormItem label="Period" {...formItemLayout}>
-          {getFieldDecorator('period', {
-            initialValue: (start && end) ? [moment(start), moment(end)] : []
+        <FormItem label="Wo Date" {...formItemLayout}>
+          {getFieldDecorator('woDate', {
           })(
-            <RangePicker allowClear={false} disabledDate={disabledDate} onChange={handleChangeDate} />
+            <RangePicker format="YYYY-MM-DD" allowClear={false} disabledDate={disabledDate} onChange={handleChangeDate} />
           )}
         </FormItem>
       </Col>

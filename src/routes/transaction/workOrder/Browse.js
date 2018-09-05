@@ -13,6 +13,16 @@ const List = ({ ...tableProps, viewHeader }) => {
   }
   const columns = [
     {
+      title: 'Wo No',
+      dataIndex: 'woNo',
+      key: 'woNo'
+    },
+    {
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
       title: 'Name',
       dataIndex: 'memberName',
       key: 'memberName'
@@ -23,25 +33,26 @@ const List = ({ ...tableProps, viewHeader }) => {
       key: 'policeNo'
     },
     {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
+      title: 'Wo Date',
+      dataIndex: 'woDate',
+      key: 'woDate',
       render: text => formatDate(text)
     },
     {
-      title: 'Trans No',
-      dataIndex: 'transNo',
-      key: 'transNo'
+      title: 'Trans Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      render: text => formatDate(text)
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (text) => {
-        switch (text) {
-          case '0':
+        switch (Number(text)) {
+          case 0:
             return 'In Progress'
-          case '1':
+          case 1:
             return 'Done'
           default:
             break

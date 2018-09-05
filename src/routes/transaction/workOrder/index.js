@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
@@ -8,9 +9,24 @@ import Browse from './Browse'
 
 const TabPane = Tabs.TabPane
 
-const WorkOrder = ({ workorder, dispatch, loading }) => {
-  const { activeKey, currentItem, pagination, start, end, q,
-    modalFilter, status, listWOHeader, currentStep } = workorder
+const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, loading }) => {
+  const {
+    activeKey,
+    pagination,
+    q,
+    currentItem,
+    modalFilter,
+    status,
+    formCustomFieldType,
+    formMainType,
+    listWOHeader,
+    currentStep,
+    listWorkOrderCategory,
+    listCustomFields
+  } = workorder
+
+  const { listUnit } = customerunit
+  const { listCustomer } = customer
 
   const openCloseModalFilter = () => {
     dispatch({
@@ -23,8 +39,6 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
 
   const filterProps = {
     modalFilter,
-    start,
-    end,
     q,
     openCloseModalFilter,
     onResetDataFilter () {
@@ -41,22 +55,20 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
     },
     onSubmitDataFilter (data) {
       openCloseModalFilter()
-      if (!data.start && !data.end && !data.status && !data.nextCall && !data.postService) return false
-      dispatch({
-        type: 'workorder/updateState',
-        payload: {
-          status: data.status,
-          start: data.start,
-          end: data.end
-        }
-      })
-      const { pathname } = location
+      // dispatch({
+      //   type: 'workorder/updateState',
+      //   payload: data
+      // })
+      const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
-        query: data
+        query: {
+          ...data,
+          ...query
+        }
       }))
     },
-    onFilterPeriod (start, end) {
+    onFilterPeriod (woDate) {
       dispatch({
         type: 'workorder/updateState',
         payload: {
@@ -68,8 +80,7 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
         pathname,
         query: {
           ...query,
-          start,
-          end
+          woDate
         }
       }))
     },
@@ -97,34 +108,26 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
         ...query,
         page: page.current,
         pageSize: page.pageSize,
-        start,
-        end,
         status
       }
-      if (start && end && !q) {
-        dispatch(routerRedux.push({
-          pathname,
-          query: contentQuery
-        }))
-      } else {
-        contentQuery = {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-          q
-        }
-        dispatch(routerRedux.push({
-          pathname,
-          query: contentQuery
-        }))
-      }
+      dispatch(routerRedux.push({
+        pathname,
+        query: contentQuery
+      }))
     },
     viewHeader (record) {
       dispatch({
         type: 'workorder/updateState',
         payload: {
           currentItem: record,
-          activeKey: '0'
+          activeKey: '0',
+          currentStep: 0
+        }
+      })
+      dispatch({
+        type: 'workorder/setCheckList',
+        payload: {
+          woId: record.id
         }
       })
       const { pathname } = location
@@ -132,14 +135,170 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
     }
   }
 
+  const changeTab = (key) => {
+    const { pathname } = location
+    dispatch({
+      type: 'workorder/updateState',
+      payload: {
+        formMainType: 'add',
+        listCustomFields: [],
+        formCustomFieldType: true,
+        currentItem: {},
+        currentStep: 0,
+        listWorkOrderCategory: [],
+        listWorkOrderCategoryTemp: []
+      }
+    })
+    dispatch({
+      type: 'workorder/querySequence'
+    })
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        activeKey: key
+      }
+    }))
+  }
+
   const formProps = {
-    currentStep
+    listCustomer,
+    listUnit,
+    formMainType,
+    formCustomFieldType,
+    transData: currentItem,
+    loading: loading.effects['workorder/queryWOCategory'],
+    loadingButton: loading,
+    dataSource: listWorkOrderCategory,
+    listWorkOrderCategory,
+    listCustomFields,
+    currentStep,
+    CancelWo () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          formMainType: 'add',
+          formCustomFieldType: true
+        }
+      })
+      dispatch({
+        type: 'workorder/querySequence'
+      })
+      dispatch({
+        type: 'queryWOCategory',
+        payload: {
+          field: 'id,productCategoryId,categoryCode,categoryName,categoryParentId,categoryParentCode,categoryParentName'
+        }
+      })
+      dispatch({
+        type: 'queryWOCustomFields',
+        payload: {
+          field: 'id,fieldName,sortingIndex,fieldParentId,fieldParentName'
+        }
+      })
+    },
+    WorkOrder () {
+      dispatch({
+        type: 'workorder/nextStep',
+        payload: 0
+      })
+    },
+    customField () {
+      dispatch({
+        type: 'workorder/nextStep',
+        payload: 1
+      })
+    },
+    onSubmitWo (data, check) {
+      dispatch({
+        type: 'workorder/addWorkOrder',
+        payload: {
+          header: data,
+          check
+        }
+      })
+    },
+    onSubmitFields (data) {
+      dispatch({
+        type: 'workorder/addWorkOrderFields',
+        payload: {
+          detail: data
+        }
+      })
+    },
+    nextStep (key) {
+      dispatch({
+        type: 'workorder/nextStep',
+        payload: key
+      })
+    },
+    search (value, type) {
+      const searchValue = !!value
+      if (!searchValue) return
+      if (value && value !== '') {
+        switch (type) {
+          case 'memberId':
+            dispatch({
+              type: 'customer/query',
+              payload: {
+                q: value,
+                pageSize: 5
+              }
+            })
+            break
+          default:
+        }
+      }
+    },
+    getCustomerUnit (data) {
+      const dataCustomerUnit = !!data
+      if (!dataCustomerUnit) return
+      if (data.title) {
+        dispatch({
+          type: 'customerunit/query',
+          payload: {
+            code: data.title
+          }
+        })
+      }
+    },
+    resetAssetList () {
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          listUnit: []
+        }
+      })
+    },
+    editListItem (id, value, type) {
+      const newListCategory = listWorkOrderCategory.map((x) => {
+        if (x.id === Number(id)) {
+          if (type === 'radio') {
+            return {
+              ...x,
+              value
+            }
+          } else if (type === 'input') {
+            return {
+              ...x,
+              memo: value
+            }
+          }
+        }
+        return x
+      })
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          listWorkOrderCategory: newListCategory
+        }
+      })
+    }
   }
 
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} type="card">
-        <TabPane tab="Form" key="0" disabled={_.isEmpty(currentItem)}>
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
+        <TabPane tab={`Form (${(formMainType || '').toUpperCase()})`} key="0">
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
@@ -154,4 +313,12 @@ const WorkOrder = ({ workorder, dispatch, loading }) => {
     </div>
   )
 }
-export default connect(({ workorder, loading }) => ({ workorder, loading }))(WorkOrder)
+
+WorkOrder.propTypes = {
+  customerunit: PropTypes.object.isRequired,
+  customer: PropTypes.object.isRequired,
+  workorder: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
+}
+
+export default connect(({ workorder, customer, customerunit, loading }) => ({ workorder, customer, customerunit, loading }))(WorkOrder)

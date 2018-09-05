@@ -23,6 +23,28 @@ export async function addWOCustomFields (params) {
   })
 }
 
+export async function addWorkOrderHeader (params) {
+  params.header.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${workOrder}/main/header`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function addWorkOrderDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${workOrder}/main/detail`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+
 export async function editWOCustomFields (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

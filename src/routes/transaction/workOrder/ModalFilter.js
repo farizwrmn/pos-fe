@@ -1,6 +1,6 @@
 import React from 'react'
-import moment from 'moment'
 import { Form, Modal, DatePicker, Select } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -27,30 +27,37 @@ const ModalFilter = ({
 }) => {
   const submitFilter = () => {
     let data = getFieldsValue()
-    if (data.period.length) {
-      data.start = moment(data.period[0]).format('YYYY-MM-DD')
-      data.end = moment(data.period[1]).format('YYYY-MM-DD')
+    if (data.transDate) {
+      data.transDate = data.transDate.map(x => moment(x).format('YYYY-MM-DD'))
     }
-    if (data.timeIn) {
-      data.timeIn[0] = moment(data.timeIn[0]).format('YYYY-MM-DD')
-      data.timeIn[1] = moment(data.timeIn[1]).format('YYYY-MM-DD')
+    if (data.woDate) {
+      data.woDate = data.woDate.map(x => moment(x).format('YYYY-MM-DD'))
     }
-    if (data.timeOut) {
-      data.timeOut[0] = moment(data.timeOut[0]).format('YYYY-MM-DD')
-      data.timeOut[1] = moment(data.timeOut[1]).format('YYYY-MM-DD')
-    }
-    delete data.period
-    if (!data.status) data.status = [0, 1]
     onCheckDataSubmit(data)
   }
   return (
     <Modal {...modalProps} onOk={submitFilter}>
       <Form layout="horizontal">
-        <FormItem label="Period" {...formItemLayout}>
-          {getFieldDecorator('period', {
-            initialValue: [moment().startOf('month'), moment(new Date(), 'YYYY-MM-DD')]
+        <FormItem label="Trans Date" {...formItemLayout}>
+          {getFieldDecorator('transDate', {
+            rules: [
+              {
+                required: false
+              }
+            ]
           })(
-            <RangePicker allowClear={false} disabledDate={disabledDate} />
+            <RangePicker format="YYYY-MM-DD" allowClear={false} disabledDate={disabledDate} />
+          )}
+        </FormItem>
+        <FormItem label="WO Date" {...formItemLayout}>
+          {getFieldDecorator('woDate', {
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(
+            <RangePicker format="YYYY-MM-DD" allowClear={false} disabledDate={disabledDate} />
           )}
         </FormItem>
         <FormItem label="Status"
@@ -63,16 +70,6 @@ const ModalFilter = ({
               <Option value="0" >In Progress</Option>
               <Option value="1" >Done</Option>
             </Select>
-          )}
-        </FormItem>
-        <FormItem label="Time In" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('timeIn')(
-            <RangePicker />
-          )}
-        </FormItem>
-        <FormItem label="Time Out" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('timeOut')(
-            <RangePicker />
           )}
         </FormItem>
       </Form>

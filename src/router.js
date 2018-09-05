@@ -349,6 +349,8 @@ const Routers = function ({ history, app }) {
           path: 'transaction/work-order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/transaction/workOrder'))
               cb(null, require('./routes/transaction/workOrder/'))
             }, 'transaction-work-order')

@@ -1,11 +1,14 @@
 import moment from 'moment'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import {
   queryWOCustomFields, addWOCustomFields, editWOCustomFields, deleteWOCustomFields,
   queryWOCategory, addWOCategory, deleteWOCategory,
-  queryWOHeader
+  queryWOHeader, addWorkOrderHeader, addWorkOrderDetail
 } from '../../services/transaction/workOrder'
 import { getDateTime } from '../../services/setting/time'
+import { query as querySequence } from '../../services/sequence'
+import { queryWoCheck, queryWODetail } from '../../services/transaction/workOrderCheck'
 
 const success = (type) => {
   message.success(`${type} has saved!`)
@@ -15,7 +18,8 @@ export default {
   namespace: 'workorder',
 
   state: {
-    activeKey: '1',
+    activeKey: '0',
+    formType: 'add',
     start: moment().startOf('month').format('YYYY-MM-DD'),
     end: moment().format('YYYY-MM-DD'),
     q: '',
@@ -24,11 +28,11 @@ export default {
     listWOHeader: [],
     currentStep: 0,
     currentItem: {},
-    formType: 'add',
+    formMainType: 'add',
+    formCustomFieldType: true,
     modalEdit: { visible: false, item: {} },
     listCustomFields: [],
     checkAllCategories: false,
-    defaultQueryField: ['id', 'productCategoryId', 'categoryCode', 'categoryName'],
     listWorkOrderCategory: [],
     listWorkOrderCategoryTemp: []
   },
@@ -39,30 +43,39 @@ export default {
         if (location.pathname === '/master/work-order/custom-fields') {
           dispatch({ type: 'queryWOCustomFields' })
         } else if (location.pathname === '/master/work-order/category') {
-          dispatch({ type: 'queryWOCategory' })
+          dispatch({
+            type: 'queryWOCategory',
+            payload: {
+              field: 'id,productCategoryId,categoryCode,categoryName'
+            }
+          })
         } else if (location.pathname === '/transaction/work-order') {
-          const { start, end, q, status, ...other } = location.query
-          if (q && q !== '') {
-            dispatch({ type: 'queryWOHeader', payload: { q, ...other } })
+          const { activeKey, ...other } = location.query
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
+          if (activeKey !== '1') {
             dispatch({
-              type: 'updateState',
+              type: 'querySequence'
+            })
+            dispatch({
+              type: 'queryWOCategory',
               payload: {
-                start: null,
-                end: null,
-                q
+                field: 'id,productCategoryId,categoryCode,categoryName,categoryParentId,categoryParentCode,categoryParentName'
               }
             })
-          } else {
             dispatch({
-              type: 'getDate',
-              payload: { start, end, status, ...other }
-            })
-            dispatch({
-              type: 'updateState',
+              type: 'queryWOCustomFields',
               payload: {
-                q: ''
+                field: 'id,fieldName,sortingIndex,fieldParentId,fieldParentName'
               }
             })
+          }
+          if (activeKey === '1') {
+            dispatch({ type: 'queryWOHeader', payload: other })
           }
         }
       })
@@ -70,6 +83,61 @@ export default {
   },
 
   effects: {
+    * querySequence ({ payload = {} }, { call, put }) {
+      const seqDetail = {
+        seqCode: 'WO',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
+      }
+      const sequence = yield call(querySequence, seqDetail)
+      if (sequence.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {
+              woNo: sequence.data
+            }
+          }
+        })
+      }
+    },
+
+    * setCheckList ({ payload = {} }, { call, put }) {
+      const data = yield call(queryWoCheck, payload)
+      const dataField = yield call(queryWODetail, payload)
+      if (!dataField.success) {
+        throw dataField
+      }
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listWorkOrderCategory: data.data,
+            listCustomFields: dataField.data,
+            listWorkOrderCategoryTemp: [],
+            formMainType: 'edit',
+            formCustomFieldType: false
+          }
+        })
+        if ((dataField.data || []).length === 0) {
+          yield put({
+            type: 'queryWOCustomFields',
+            payload: {
+              field: 'id,fieldName,sortingIndex,fieldParentId,fieldParentName'
+            }
+          })
+          yield put({
+            type: 'updateState',
+            payload: {
+              formCustomFieldType: true // jika belum pernah isi custom field
+            }
+          })
+        }
+      } else {
+        throw data
+      }
+    },
+
     * queryWOCustomFields ({ payload = {} }, { call, put }) {
       const data = yield call(queryWOCustomFields, payload)
       if (data.success) {
@@ -148,15 +216,14 @@ export default {
       }
     },
 
-    * queryWOCategory (payload, { select, call, put }) {
-      let field = yield select(({ workorder }) => workorder.defaultQueryField)
-      field = field.join(',')
+    * queryWOCategory ({ payload }, { call, put }) {
+      const { field } = payload
       const data = yield call(queryWOCategory, { field, type: 'all' })
       if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
-            listWorkOrderCategory: data.data,
+            listWorkOrderCategory: data.data || [],
             listWorkOrderCategoryTemp: data.data
           }
         })
@@ -252,6 +319,49 @@ export default {
       } else {
         throw data
       }
+    },
+    // main work order
+    * addWorkOrder ({ payload = {} }, { call, put }) {
+      const data = yield call(addWorkOrderHeader, payload)
+      if (data.success) {
+        yield put({
+          type: 'setCheckList',
+          payload: {
+            woId: data.data.id
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentStep: 1,
+            currentItem: data.data
+          }
+        })
+        success('Work Order')
+      } else {
+        throw data
+      }
+    },
+    * addWorkOrderFields ({ payload = {} }, { call, put }) {
+      const data = yield call(addWorkOrderDetail, payload)
+      if (data.success) {
+        yield put({
+          type: 'setCheckList',
+          payload: {
+            woId: data.data.id
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentStep: 2,
+            formCustomFieldType: false
+          }
+        })
+        success('Work Order Data')
+      } else {
+        throw data
+      }
     }
   },
 
@@ -324,6 +434,10 @@ export default {
         ...state,
         modalEdit: { visible: !state.modalEdit.visible, item: payload }
       }
+    },
+
+    nextStep (state, { payload }) {
+      return { ...state, currentStep: payload }
     }
   }
 }

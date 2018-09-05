@@ -89,6 +89,15 @@ export default modelExtend(pageModel, {
               }
             })
             break
+          case '/transaction/work-order': {
+            const key = !!activeKey
+            if (!key || activeKey === '0') {
+              dispatch({
+                type: 'query'
+              })
+            }
+            break
+          }
           case '/master/customer':
             if (!activeKey) dispatch({ type: 'refreshView' })
             if (activeKey === '1') dispatch({ type: 'query', payload: other })

@@ -1,9 +1,9 @@
 import React from 'react'
 import Form from './Form'
 
-const WO = ({ ...formProps }) => {
+const CustomFields = ({ ...formProps }) => {
   return <Form {...formProps} />
 }
 
-export default WO
+export default CustomFields
 
