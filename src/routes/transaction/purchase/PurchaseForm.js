@@ -243,7 +243,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                       }]
                     })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
                   </FormItem>
-                  <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
+                  {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('invoiceType', {
                       rules: [{
                         required: true,
@@ -253,7 +253,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                       <Option value="C">CASH</Option>
                       <Option value="K">KREDIT</Option>
                     </Select>))}
-                  </FormItem>
+                  </FormItem> */}
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={14}>
                   <FormItem label="Has Receive" hasFeedback {...formItemLayout}>

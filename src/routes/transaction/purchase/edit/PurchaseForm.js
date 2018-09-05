@@ -162,7 +162,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
               </FormItem>
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} xl={14}>
-              <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
+              {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('invoiceType', {
                   initialValue: transNo === null ? '' : transNo.invoiceType,
                   rules: [{
@@ -173,7 +173,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
                   <Option value="C">CASH</Option>
                   <Option value="K">KREDIT</Option>
                 </Select>))}
-              </FormItem>
+              </FormItem> */}
               <FormItem label="Disc Inv(%)" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discInvoicePercent', {
                   initialValue: transNo === null ? '' : transNo.discInvoicePercent,
