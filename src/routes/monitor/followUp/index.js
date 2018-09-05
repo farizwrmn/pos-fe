@@ -114,7 +114,7 @@ const FollowUp = ({
 
   const browseProps = {
     dataSource: listFollowUpHeader,
-    loading: loading.effects['followup/queryHeader'],
+    loading: loading.effects['followup/queryHeader'] || loading.effects['followup/updateStatusToZero'],
     pagination,
     onChange (page) {
       const { query, pathname } = location

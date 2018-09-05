@@ -711,6 +711,7 @@ const Pos = ({
     cashierId: user.userid,
     infoCashRegister,
     dispatch,
+    loading,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     getCashier () {

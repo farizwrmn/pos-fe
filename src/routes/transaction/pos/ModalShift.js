@@ -16,7 +16,7 @@ const formItemLayout = {
   }
 }
 
-const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, infoCashRegister, dispatch, listCashier, cashierId, onBack, onOk, form: {
+const ModalShift = ({ loading, currentCashier, findShift, listShift, findCounter, listCounter, getCashier, item, infoCashRegister, dispatch, listCashier, cashierId, onBack, onOk, form: {
   getFieldDecorator,
   validateFields,
   getFieldsValue
@@ -68,7 +68,7 @@ const ModalShift = ({ currentCashier, findShift, listShift, findCounter, listCou
       {...modalOpts}
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
-        <Button key="submit" type="primary" size="large" onClick={handleOk}>
+        <Button disabled={loading.effects['pos/cashRegister']} key="submit" type="primary" size="large" onClick={handleOk}>
           Confirm
         </Button>
       ]}

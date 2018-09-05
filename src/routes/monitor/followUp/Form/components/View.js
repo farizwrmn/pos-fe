@@ -97,7 +97,6 @@ const View = ({
         </Col>
       </Row>
       <Button className="button-right-side" size="large" onClick={() => updateHeaderStatus(memberInfo.id)}>Call</Button>
-      <Button className="button-right-side" size="large">Export Form</Button>
     </div>
   )
 }
