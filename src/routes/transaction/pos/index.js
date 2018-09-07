@@ -48,6 +48,7 @@ const Pos = ({
   unit,
   app,
   promo,
+  workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment }) => {
   const { setting } = app
   const { listShift } = shift
@@ -198,6 +199,7 @@ const Pos = ({
 
   const formWoProps = {
     usingWo,
+    dispatch,
     woNumber,
     formItemLayout: {
       labelCol: {
@@ -232,6 +234,7 @@ const Pos = ({
   }
 
   const lovButtonProps = {
+    workOrderItem,
     handleMemberBrowse () {
       // get member data
       dispatch({
@@ -412,7 +415,8 @@ const Pos = ({
       const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
       const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-      if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+      if (service.length > 0 && (woNumber === '' || woNumber === null) && !workorder.id) {
         Modal.warning({
           title: 'Service Validation',
           content: 'You are giving service without WorkOrder'
@@ -430,7 +434,7 @@ const Pos = ({
           return
         }
       }
-      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null)) {
+      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
         Modal.warning({
           title: 'Unit Validation',
           content: 'You are inserting Member Unit without Work Order'
@@ -472,6 +476,17 @@ const Pos = ({
         type: 'pos/updateState',
         payload: {
           modalVoidSuspendVisible: true
+        }
+      })
+    },
+    handleCancel () {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'pos/removeTrans'
+          })
         }
       })
     }
@@ -857,7 +872,58 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
-      console.log('item', item)
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          let object = {
+            id: item.id,
+            woNo: item.woNo,
+            timeIn: item.timeIn
+          }
+          let arrayProd = []
+
+          arrayProd.push({
+            memberCode: item.memberCode,
+            memberName: item.memberName,
+            address01: item.address01,
+            point: 0,
+            id: item.memberId,
+            memberTypeId: item.memberTypeId,
+            memberSellPrice: item.memberSellPrice,
+            memberPendingPayment: item.memberPendingPayment,
+            gender: item.gender,
+            phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
+          })
+
+          let memberUnit = {
+            id: item.policeNoId,
+            policeNo: item.policeNo,
+            merk: item.merk,
+            model: item.model,
+            type: item.type,
+            year: item.year,
+            chassisNo: item.chassisNo,
+            machineNo: item.machineNo,
+            expired: item.expired
+          }
+
+          localStorage.setItem('member', JSON.stringify(arrayProd))
+          localStorage.setItem('memberUnit', JSON.stringify(memberUnit))
+
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              memberUnitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+              memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
+              modalWorkOrderVisible: false
+            }
+          })
+          localStorage.setItem('workorder', JSON.stringify(object))
+        }
+      })
     }
   }
 
@@ -881,7 +947,7 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member', [])
+      localStorage.removeItem('member')
       localStorage.removeItem('memberUnit')
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 

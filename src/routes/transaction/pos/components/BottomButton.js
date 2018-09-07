@@ -5,7 +5,8 @@ import { Row, Col, Button } from 'antd'
 const LovButton = ({
   handlePayment,
   handleSuspend,
-  handleVoidPromo
+  handleVoidPromo,
+  handleCancel
 }) => {
   return (
     <div>
@@ -43,6 +44,15 @@ const LovButton = ({
                 onClick={handleVoidPromo}
               >
                 Void Promo
+              </Button>
+            </Col>
+            <Col md={8} lg={4} xl={4}>
+              <Button
+                style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40 }}
+                type="danger"
+                onClick={handleCancel}
+              >
+                Cancel
               </Button>
             </Col>
           </Row>

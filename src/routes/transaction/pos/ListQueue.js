@@ -29,6 +29,11 @@ const ListQueue = ({ pos, dispatch }) => {
     } else {
       const trans = listOfQueue[0]
       let arrayMember = []
+      let arrayWorkOrder = {
+        id: trans.woId,
+        woNo: trans.woNo,
+        timeIn: trans.timeIn
+      }
       let arrayMechanic = []
       arrayMember.push({
         memberCode: trans.memberCode,
@@ -48,6 +53,7 @@ const ListQueue = ({ pos, dispatch }) => {
         employeeName: trans.employeeName
       })
       Reflect.deleteProperty(queue, useQueue)
+      localStorage.removeItem('workorder')
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('mechanic')
       localStorage.removeItem('member')
@@ -75,6 +81,7 @@ const ListQueue = ({ pos, dispatch }) => {
       }
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
+      localStorage.setItem('workorder', JSON.stringify(arrayWorkOrder))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))

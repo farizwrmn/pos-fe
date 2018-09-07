@@ -1,9 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Form, Input, Button } from 'antd'
+import moment from 'moment'
+import { Form, Modal, Input, Button } from 'antd'
 
 const FormItem = Form.Item
 
+const formItemLayout = {
+  labelCol: {
+    span: 6
+  },
+  wrapperCol: {
+    span: 18
+  },
+  style: {
+    marginBottom: '5px'
+  }
+}
 // const formItemLayout = {
 //   labelCol: {
 //     span: 6,
@@ -20,53 +32,69 @@ const FormItem = Form.Item
 const PurchaseList = ({
   // listSequence,
   // generateSequence,
+  dispatch,
   notUsingWo,
   woNumber,
   usingWo,
-  formItemLayout,
+  currentItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   form: {
-    getFieldDecorator,
-    resetFields
+    getFieldDecorator
+    // resetFields
   }
 }) => {
-  // const getSequence = () => {
-  //   const pad = (n, width, z) => {
-  //     z = z || '0'
-  //     n = n + ''
-  //     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
-  //   }
-  //   let maxNumber = pad(parseFloat(listSequence.seqValue), listSequence.maxNumber)
-  //   let concatSequence = listSequence.seqCode + moment(listSequence.seqDate, 'YYYY-MM-DD').format('YYMM') + maxNumber
-  //   return concatSequence
-  // }
-  // const onGenerate = () => {
-  //   resetFields()
-  //   generateSequence('WO')
-  // }
   const notUsing = (e) => {
     const { value } = e.target
     notUsingWo(false, value)
   }
-  const disableUsingWo = () => {
-    resetFields()
-    notUsingWo(false, null)
+  const handleCancel = () => {
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        dispatch({
+          type: 'pos/removeTrans'
+        })
+      }
+    })
   }
+  // const disableUsingWo = () => {
+  //   resetFields()
+  //   notUsingWo(false, null)
+  // }
   return (
     <Form layout="horizontal">
-      <FormItem label="Ref" help={woNumber === '' || woNumber === null ? 'you are not using Work Order' : 'you are using Work Order'} {...formItemLayout}>
-        <Row>
-          <Col span={20}>
-            {getFieldDecorator('woReference', {
-              initialValue: woNumber
-            })(<Input disabled={usingWo} maxLength={30} onChange={value => notUsing(value)} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
-          </Col>
-          {/* <Col span={7}>
-            <Button onClick={() => onGenerate()} type="primary" style={{ width: '100%', height: '32px' }}>Auto</Button>
-          </Col> */}
-          <Col span={4}>
-            <Button icon="close" onClick={() => disableUsingWo()} type="danger" size="large" style={{ width: '100%' }} />
-          </Col>
-        </Row>
+      {!currentItem.id && (<FormItem label="Ref" {...formItemLayout}>
+        {getFieldDecorator('woReference', {
+          initialValue: woNumber
+        })(<Input
+          disabled={usingWo}
+          maxLength={30}
+          onChange={value => notUsing(value)}
+          style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }}
+        />)}
+      </FormItem>)}
+      <FormItem label="Wo No" {...formItemLayout}>
+        {getFieldDecorator('woNo', {
+          initialValue: currentItem.woNo
+        })(<Input
+          disabled={!!currentItem.id}
+          maxLength={30}
+          onChange={value => notUsing(value)}
+          style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }}
+        />)}
+      </FormItem>
+      <FormItem label="Time In" {...formItemLayout}>
+        {getFieldDecorator('timeIn', {
+          initialValue: currentItem.timeIn ? moment.utc(currentItem.timeIn).format('YYYY-MM-DD HH:mm:ss') : null
+        })(<Input
+          disabled={!!currentItem.id}
+          maxLength={30}
+          onChange={value => notUsing(value)}
+          style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }}
+        />)}
+      </FormItem>
+      <FormItem label="" {...formItemLayout}>
+        <Button onClick={handleCancel} type="danger">Clear WorkOrder</Button>
       </FormItem>
     </Form>
   )

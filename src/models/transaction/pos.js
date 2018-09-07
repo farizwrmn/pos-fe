@@ -1343,6 +1343,7 @@ export default {
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       const bundle_promo = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
       const woNumber = localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
+      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : null
 
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
       let memberInformation
@@ -1365,6 +1366,9 @@ export default {
         point: memberInfo.point,
         memberTypeId: memberInfo.memberTypeId,
         woNumber,
+        woId: workorder.id,
+        woNo: workorder.woNo,
+        timeIn: workorder.timeIn,
         memberUnit,
         policeNo,
         lastMeter,
@@ -1420,6 +1424,27 @@ export default {
         }
       }
     },
+    * removeTrans (payload, { put }) {
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('lastMeter')
+      localStorage.removeItem('woNumber')
+      localStorage.removeItem('bundle_promo')
+      localStorage.removeItem('workorder')
+      yield put({
+        type: 'updateState',
+        payload: {
+          mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
+          lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
+          memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
+          memberUnitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null },
+          curCashierNo: localStorage.getItem('cashierNo')
+        }
+      })
+    },
     * insertQueue ({ payload }, { put }) {
       Modal.info({
         title: 'Payment Suspend',
@@ -1433,6 +1458,7 @@ export default {
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')
+      localStorage.removeItem('workorder')
       let woNumber = localStorage.getItem('woNumber')
       yield put({
         type: 'setAllNull'

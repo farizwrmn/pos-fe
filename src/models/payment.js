@@ -186,6 +186,7 @@ export default {
               discount: payload.totalDiscount,
               rounding: payload.rounding,
               paid: payload.totalPayment,
+              woId: localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')).id : null,
               paymentVia: payload.paymentVia,
               policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
               policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
@@ -804,6 +805,7 @@ export default {
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')
           localStorage.removeItem('lastMeter')
+          localStorage.removeItem('workorder')
           localStorage.removeItem('woNumber')
           localStorage.removeItem('bundle_promo')
         } catch (e) {

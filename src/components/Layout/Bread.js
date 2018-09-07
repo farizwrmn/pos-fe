@@ -77,6 +77,7 @@ const Bread = ({ menu, changeRole }) => {
         localStorage.removeItem('cashier_trans')
         localStorage.removeItem('queue')
         localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
         localStorage.removeItem('memberUnit')
         localStorage.removeItem('mechanic')
         localStorage.removeItem('service_detail')

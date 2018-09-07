@@ -14,7 +14,8 @@ const LovButton = ({
   handleServiceBrowse,
   handleQueue,
   handlePromoBrowse,
-  handleWorkOrderBrowse
+  handleWorkOrderBrowse,
+  workOrderItem
 }) => {
   const objectSize = () => {
     let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
@@ -45,6 +46,7 @@ const LovButton = ({
           type="primary"
           size="large"
           onClick={handleMemberBrowse}
+          disabled={workOrderItem.id}
         >
           Member
         </Button>
@@ -54,6 +56,7 @@ const LovButton = ({
             size="large"
             icon="plus-square-o"
             onClick={handleAddMember}
+            disabled={workOrderItem.id}
             className="button-width02"
           />
         </Tooltip>
@@ -63,11 +66,12 @@ const LovButton = ({
           type="primary"
           size="large"
           onClick={handleAssetBrowse}
+          disabled={workOrderItem.id}
         >
           Asset
         </Button>
         <Tooltip title="add Asset">
-          <Button type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
+          <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
         </Tooltip>
       </ButtonGroup>
       <Button type="primary"
