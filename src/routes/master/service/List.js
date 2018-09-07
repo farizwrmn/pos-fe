@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 import styles from '../../../themes/index.less'
@@ -50,6 +50,17 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Type',
       dataIndex: 'serviceTypeId',
       key: 'serviceTypeId'
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: text =>
+        (<span>
+          <Tag color={Number(text) ? 'blue' : 'red'}>
+            {Number(text) ? 'Active' : 'Non-Active'}
+          </Tag>
+        </span>)
     },
     {
       title: 'Created',

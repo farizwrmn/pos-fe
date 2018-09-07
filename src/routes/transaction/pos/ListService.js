@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Table, Button, Input, Form } from 'antd'
+import { Table, Button, Input, Form, Tag } from 'antd'
 import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
@@ -28,7 +28,8 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     dispatch({
       type: 'pos/getServices',
       payload: {
-        q: searchText
+        q: searchText,
+        active: 1
       }
     })
   }
@@ -44,7 +45,8 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
     dispatch({
       type: 'pos/getServices',
       payload: {
-        page: 1
+        page: 1,
+        active: 1
       }
     })
   }
@@ -74,7 +76,20 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       dataIndex: 'serviceName',
       key: 'serviceName',
       width: 400
-    }, {
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      width: 125,
+      render: text =>
+        (<span>
+          <Tag color={Number(text) ? 'blue' : 'red'}>
+            {Number(text) ? 'Active' : 'Non-Active'}
+          </Tag>
+        </span>)
+    },
+    {
       title: 'Service Cost',
       dataIndex: 'serviceCost',
       key: 'serviceCost',

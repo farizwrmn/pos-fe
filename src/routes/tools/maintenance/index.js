@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
 import PosHeader from '../posHeader'
 import Inventory from '../Inventory'
+// import InventoryProduct from '../InventoryProduct'
 
 const TabPane = Tabs.TabPane
 
@@ -28,6 +29,9 @@ const Maintenance = ({ maintenance, dispatch }) => {
         <TabPane tab="Recalculate Inventory" key="/tools/maintenance/inventory">
           {path === '/tools/maintenance/inventory' && <Inventory />}
         </TabPane>
+        {/* <TabPane tab="Recalculate Product" key="/tools/maintenance/inventoryproduct">
+          {path === '/tools/maintenance/inventoryproduct' && <InventoryProduct />}
+        </TabPane> */}
       </Tabs>
     </div>
   )

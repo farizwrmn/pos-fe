@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Select, Row, Col, Modal, message } from 'antd'
+import { Form, Input, InputNumber, Checkbox, Button, Select, Row, Col, Modal, message } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -155,6 +155,12 @@ const formService = ({
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >{serviceType}
             </Select>)}
+          </FormItem>
+          <FormItem label="Status" {...formItemLayout}>
+            {getFieldDecorator('active', {
+              valuePropName: 'checked',
+              initialValue: item.active ? !!Number(item.active) : true
+            })(<Checkbox>Active</Checkbox>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

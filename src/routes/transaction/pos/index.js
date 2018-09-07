@@ -325,7 +325,10 @@ const Pos = ({
     },
     handleServiceBrowse () {
       dispatch({
-        type: 'pos/getServices'
+        type: 'pos/getServices',
+        payload: {
+          active: 1
+        }
       })
 
       dispatch({
@@ -1248,6 +1251,7 @@ const Pos = ({
         type: 'pos/getServices',
         payload: {
           q: searchText === '' ? null : searchText,
+          active: 1,
           page: Number(e.current),
           pageSize: Number(e.pageSize)
         }
