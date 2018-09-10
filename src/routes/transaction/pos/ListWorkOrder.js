@@ -25,7 +25,7 @@ const ListWorkOrder = ({ onChooseItem, pos, dispatch, location, ...tableProps })
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/getMembers',
+      type: 'pos/queryWOHeader',
       payload: {
         q: searchText === '' ? null : searchText,
         page: 1
@@ -41,7 +41,7 @@ const ListWorkOrder = ({ onChooseItem, pos, dispatch, location, ...tableProps })
       }
     })
     dispatch({
-      type: 'pos/getMembers',
+      type: 'pos/queryWOHeader',
       payload: {
         page: 1
       }
@@ -96,7 +96,7 @@ const ListWorkOrder = ({ onChooseItem, pos, dispatch, location, ...tableProps })
     <div>
       <Form layout="inline">
         <FormItem>
-          <Input placeholder="Search Member Name"
+          <Input placeholder="Search Work Order"
             value={searchText}
             size="small"
             onChange={e => handleChange(e)}
