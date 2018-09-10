@@ -88,7 +88,7 @@ const FormWO = ({
       <Row>
         <Col sm={13} md={14} lg={10}>
           <Form layout="horizontal">
-            <FormItem label="Customer" hasFeedback {...formItemLayout}>
+            <FormItem label="Work Order No" hasFeedback {...formItemLayout}>
               <Input disabled={disabled} value={transData.woNo} />
             </FormItem>
             <FormItem label="Customer" hasFeedback {...formItemLayout}>
