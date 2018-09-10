@@ -6,6 +6,8 @@ import { Tabs } from 'antd'
 import Form from './Form'
 import Filter from './Filter'
 import Browse from './Browse'
+import ModalUnit from './ModalUnit'
+import ModalMember from './ModalMember'
 
 const TabPane = Tabs.TabPane
 
@@ -22,9 +24,11 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
     listWOHeader,
     currentStep,
     listWorkOrderCategory,
-    listCustomFields
+    listCustomFields,
+    modalAddUnit
   } = workorder
 
+  const { modalAddMember } = customer
   const { listUnit } = customerunit
   const { listCustomer } = customer
 
@@ -160,6 +164,43 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
     }))
   }
 
+  const modaladdMemberProps = {
+    item: customer.currentItem,
+    modalAddMember,
+    cancelMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: false
+        }
+      })
+    }
+  }
+
+  const modalAddUnitProps = {
+    modalAddUnit,
+    confirmSendUnit (data) {
+      dispatch({
+        type: 'customerunit/add',
+        payload: data
+      })
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalAddUnit: false
+        }
+      })
+    },
+    cancelUnit () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalAddUnit: false
+        }
+      })
+    }
+  }
+
   const formProps = {
     listCustomer,
     listUnit,
@@ -171,7 +212,16 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
     dataSource: listWorkOrderCategory,
     listWorkOrderCategory,
     listCustomFields,
+    dispatch,
     currentStep,
+    handleAddMember () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalAddMember: true
+        }
+      })
+    },
     CancelWo () {
       dispatch({
         type: 'workorder/updateState',
@@ -297,6 +347,8 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
 
   return (
     <div className="content-inner">
+      {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
+      {modalAddMember && <ModalMember {...modaladdMemberProps} />}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab={`Form (${(formMainType || '').toUpperCase()})`} key="0">
           {activeKey === '0' && <Form {...formProps} />}

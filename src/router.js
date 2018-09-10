@@ -351,6 +351,12 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/transaction/workOrder'))
               cb(null, require('./routes/transaction/workOrder/'))
             }, 'transaction-work-order')
@@ -360,6 +366,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
+              registerModel(app, require('./models/report/woReport'))
               registerModel(app, require('./models/setting/cashier'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))

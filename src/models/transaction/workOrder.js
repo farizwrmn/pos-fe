@@ -24,6 +24,7 @@ export default {
     end: moment().format('YYYY-MM-DD'),
     q: '',
     modalFilter: false,
+    modalAddUnit: false,
     status: [0, 1],
     listWOHeader: [],
     currentStep: 0,

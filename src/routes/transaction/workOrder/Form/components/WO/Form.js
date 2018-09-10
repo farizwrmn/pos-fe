@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Form, Input, DatePicker, Select, Button, Checkbox } from 'antd'
+import { Row, Col, Modal, Form, Input, DatePicker, Select, Button, Checkbox } from 'antd'
 import moment from 'moment'
 import List from './List'
 
@@ -36,6 +36,8 @@ const FormWO = ({
   onSubmitWo,
   customField,
   formMainType,
+  dispatch,
+  handleAddMember,
   form: {
     getFieldDecorator,
     validateFields,
@@ -80,7 +82,33 @@ const FormWO = ({
     if (type === 'memberId') {
       resetAsset()
     }
-    search(value, type)
+    search(value.key ? '' : value, type)
+  }
+
+  const handleAddMemberAsset = () => {
+    if (getFieldValue('memberId').label) {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalAddUnit: true
+        }
+      })
+      let member = getFieldValue('memberId')
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: member.title, name: member.label }
+          }
+        }
+      })
+    } else {
+      Modal.warning({
+        title: 'Member Information is not found',
+        content: 'Insert Member'
+      })
+    }
   }
 
   return (
@@ -92,48 +120,62 @@ const FormWO = ({
               <Input disabled={disabled} value={transData.woNo} />
             </FormItem>
             <FormItem label="Customer" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('memberId', {
-                initialValue: transData.memberId ? {
-                  key: transData.memberId,
-                  label: `${transData.memberName} (${transData.memberCode})`,
-                  title: transData.memberCode
-                } : {},
-                rules: [
-                  { required: true }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                onChange={value => handleChange(value, 'memberId')}
-                onSearch={value => handleChange(value, 'memberId')}
-                optionFilterProp="children"
-                disabled={disabled}
-                labelInValue
-                placeholder="Type some text"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-              >{customerOpt}
-              </Select>)}
+              <Row>
+                <Col span={20}>
+                  {getFieldDecorator('memberId', {
+                    initialValue: transData.memberId ? {
+                      key: transData.memberId,
+                      label: `${transData.memberName} (${transData.memberCode})`,
+                      title: transData.memberCode
+                    } : {},
+                    rules: [
+                      { required: true }
+                    ]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    onChange={value => handleChange(value, 'memberId')}
+                    onSearch={value => handleChange(value, 'memberId')}
+                    optionFilterProp="children"
+                    disabled={disabled}
+                    labelInValue
+                    placeholder="Type some text"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  >{customerOpt}
+                  </Select>)}
+                </Col>
+                <Col span={4}>
+                  <Button type="primary" shape="circle" icon="plus" onClick={handleAddMember} />
+                </Col>
+              </Row>
             </FormItem>
             <FormItem label="Asset" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('policeNoId', {
-                initialValue: transData.policeNoId ? {
-                  key: transData.policeNoId,
-                  label: `${transData.policeNo} (${transData.merk})`
-                } : {},
-                rules: [{ required: true }]
-              })(<Select
-                showSearch
-                allowClear
-                placeholder="Choose member unit"
-                onChange={handleChange}
-                optionFilterProp="children"
-                disabled={disabled}
-                labelInValue
-                onFocus={() => getCustomerUnit(getFieldValue('memberId'))}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {assetOpt}
-              </Select>)}
+              <Row>
+                <Col span={20}>
+                  {getFieldDecorator('policeNoId', {
+                    initialValue: transData.policeNoId ? {
+                      key: transData.policeNoId,
+                      label: `${transData.policeNo} (${transData.merk})`
+                    } : {},
+                    rules: [{ required: true }]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    placeholder="Choose member unit"
+                    onChange={handleChange}
+                    optionFilterProp="children"
+                    disabled={disabled}
+                    labelInValue
+                    onFocus={() => getCustomerUnit(getFieldValue('memberId'))}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {assetOpt}
+                  </Select>)}
+                </Col>
+                <Col span={4}>
+                  <Button type="primary" shape="circle" icon="plus" onClick={handleAddMemberAsset} />
+                </Col>
+              </Row>
             </FormItem>
             <FormItem label="Time In" hasFeedback {...formItemLayout}>
               {getFieldDecorator('timeIn', {
