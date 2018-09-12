@@ -61,6 +61,12 @@ const Report = ({ dispatch, posReport, loading, app }) => {
           ...data
         }
       })
+      dispatch({
+        type: 'posReport/updateState',
+        payload: {
+          filterModalVisible: false
+        }
+      })
       // dispatch({
       //   type: 'posReport/setDate',
       //   payload: {
