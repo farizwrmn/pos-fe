@@ -366,7 +366,6 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
-              registerModel(app, require('./models/report/woReport'))
               registerModel(app, require('./models/setting/cashier'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
