@@ -77,7 +77,7 @@ const PurchaseList = ({
         {getFieldDecorator('woNo', {
           initialValue: currentItem.woNo
         })(<Input
-          disabled={!!currentItem.id}
+          disabled
           maxLength={30}
           onChange={value => notUsing(value)}
           style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }}
@@ -87,7 +87,7 @@ const PurchaseList = ({
         {getFieldDecorator('timeIn', {
           initialValue: currentItem.timeIn ? moment.utc(currentItem.timeIn).format('YYYY-MM-DD HH:mm:ss') : null
         })(<Input
-          disabled={!!currentItem.id}
+          disabled
           maxLength={30}
           onChange={value => notUsing(value)}
           style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }}
