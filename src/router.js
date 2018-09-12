@@ -346,6 +346,22 @@ const Routers = function ({ history, app }) {
             }, 'transaction-booking-history-detail')
           }
         }, {
+          path: 'report/purchaseinvoice/summary',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/purchaseinvoice'))
+              cb(null, require('./routes/report/purchaseinvoice/'))
+            }, 'transaction-booking-history-detail')
+          }
+        }, {
+          path: 'transaction/booking/:id/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/bookinghistory'))
+              cb(null, require('./routes/transaction/booking/history/'))
+            }, 'transaction-booking-history-detail')
+          }
+        }, {
           path: 'transaction/work-order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -366,7 +382,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
-              registerModel(app, require('./models/report/woReport'))
+              // registerModel(app, require('./models/report/woReport'))
               registerModel(app, require('./models/setting/cashier'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
@@ -640,6 +656,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/supplier'))
               cb(null, require('./routes/accounts/bankentry/'))
             }, 'finance-bank-entry')
+          }
+        },
+        {
+          path: 'tools/maintenance/inventoryproduct',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/transferOut'))
+              cb(null, require('./routes/tools/maintenance/'))
+            }, 'tools-maintenance')
           }
         }, {
           path: 'tools/maintenance',
