@@ -1343,7 +1343,7 @@ export default {
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       const bundle_promo = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
       const woNumber = localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
-      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : null
+      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
 
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
       let memberInformation
