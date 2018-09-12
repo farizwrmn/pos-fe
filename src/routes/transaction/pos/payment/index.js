@@ -104,6 +104,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
       onOk () {
         const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
         const dataPos = product.concat(service)
         let checkProductId = false
         for (let n = 0; n < dataPos.length; n += 1) {
@@ -127,7 +128,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           })
           return
         }
-        if (service.length > 0 && (woNumber === '' || woNumber === null)) {
+        if (service.length > 0 && (woNumber === '' || woNumber === null) && !workorder.id) {
           Modal.warning({
             title: 'Service Validation',
             content: 'You are giving service without WorkOrder'
