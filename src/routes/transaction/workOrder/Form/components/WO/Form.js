@@ -1,6 +1,5 @@
 import React from 'react'
 import { Row, Col, Modal, Form, Input, DatePicker, Select, Button, Checkbox } from 'antd'
-import moment from 'moment'
 import List from './List'
 
 const FormItem = Form.Item
@@ -179,12 +178,12 @@ const FormWO = ({
             </FormItem>
             <FormItem label="Time In" hasFeedback {...formItemLayout}>
               {getFieldDecorator('timeIn', {
-                initialValue: moment.utc(moment(transData.timeIn).format('YYYY-MM-DD HH:mm:ss')) || moment.utc(),
                 rules: [{
                   required: true
                 }]
               })(
-                <DatePicker disabled={disabled} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />)}
+                <DatePicker disabled={disabled} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />
+              )}
             </FormItem>
             <FormItem label="Take Away" {...formItemLayout}>
               {getFieldDecorator('takeAway', {
