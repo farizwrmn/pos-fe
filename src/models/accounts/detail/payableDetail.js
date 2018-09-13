@@ -61,6 +61,7 @@ export default {
       }
     },
     * queryPurchaseDetail ({ payload }, { call, put }) {
+      const { transNo, storeId } = payload
       yield put({
         type: 'updateState',
         payload: {
@@ -69,7 +70,7 @@ export default {
           listAmount: []
         }
       })
-      const data = yield call(queryDetail, { transNo: payload.transNo })
+      const data = yield call(queryDetail, { transNo, storeId })
       let dataPurchase = []
       for (let n = 0; n < (data.data || []).length; n += 1) {
         dataPurchase.push({
@@ -83,9 +84,8 @@ export default {
           netto: data.data[n].netto || 0
         })
       }
-      const { id, ...other } = payload
-      const invoiceInfo = yield call(queryHistory, payload)
-      const payment = yield call(queryPaymentSplit, other)
+      const invoiceInfo = yield call(queryHistory, { transNo, storeId })
+      const payment = yield call(queryPaymentSplit, { transNo, storeId })
       let dataPayment = []
       for (let n = 0; n < (payment.data || []).length; n += 1) {
         dataPayment.push({

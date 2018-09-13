@@ -32,7 +32,6 @@ const Request = ({ cashier, dispatch, loading }) => {
     pagination,
     onChange (page) {
       const { query, pathname } = location
-      console.log(query)
       dispatch(routerRedux.push({
         pathname,
         query: {
