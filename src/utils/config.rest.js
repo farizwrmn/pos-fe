@@ -68,6 +68,7 @@ module.exports = {
     fiforeport: '/report/fifo',
     servicereport: '/report/service',
     bundlingReport: '/report/bundling/daily',
+    woReport: '/report/wo',
     purchase: '/purchase',
     purchaseDetail: '/purchasedetail',
     adjust: '/adjust',
