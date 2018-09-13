@@ -14,7 +14,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     listStore: [],
-    setting: { cashRegisterPeriods: { active: false, autoClose: false }, selectedShift: [], selectedCounter: [], memberCode: false },
+    setting: { cashRegisterPeriods: { active: true, autoClose: false }, selectedShift: [], selectedCounter: [], memberCode: true },
     modalType: 'add',
     modalEdit: { visible: false, item: {} }
   },
@@ -25,7 +25,8 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/setting/store') {
           dispatch({ type: 'getAllStores' })
           dispatch({ type: 'refreshSetting' })
-        } else if (location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
+        } else if (location.pathname === '/transaction/work-order' || location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
+          // } else if (location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
           dispatch({ type: 'showStore', payload: { id: lstorage.getCurrentUserStore() } })
         }
       })
