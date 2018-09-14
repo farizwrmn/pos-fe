@@ -238,7 +238,7 @@ const FormUnit = ({
       </FormItem>
       <FormItem label="Expiration Date" hasFeedback {...formItemLayout}>
         {getFieldDecorator('expired', {
-          initialValue: item.expired ? moment.utc(item.expired, 'YYYY-MM-DD').format('MMM-YYYY') : null
+          initialValue: item.expired ? moment.utc(item.expired, 'YYYY-MM-DD') : null
         })(<MonthPicker format="MMM-YYYY" placeholder="Select period" />)}
       </FormItem>
       {(modalType === 'edit' || modalType === 'add') &&
