@@ -7,6 +7,5 @@ import Daily from './Daily'
 import Turnover from './Turnover'
 import Detail from './Detail'
 import Compare from './Compare'
-import PeakHour from './PeakHour'
 
-export { Product, Cancel, Trans, Hourly, Hour, Daily, Turnover, Detail, Compare, PeakHour }
+export { Product, Cancel, Trans, Hourly, Hour, Daily, Turnover, Detail, Compare }

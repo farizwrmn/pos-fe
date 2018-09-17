@@ -391,6 +391,17 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-summary')
           }
         }, {
+          path: 'chart/pos',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/pos'))
+              // registerModel(app, require('./models/report/woReport'))
+              registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/setting/cashier'))
+              cb(null, require('./routes/chart/pos/summary'))
+            }, 'report-pos-summary')
+          }
+        }, {
           path: 'report/pos/service',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

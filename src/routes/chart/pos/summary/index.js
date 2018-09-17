@@ -7,7 +7,7 @@ import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 
-import { Cancel, Trans, Daily, Detail, Compare, Hourly, Hour } from '../components'
+import { PeakHour } from '../components'
 
 const TabPane = Tabs.TabPane
 
@@ -30,26 +30,8 @@ const Report = ({ posReport, dispatch, location }) => {
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={callback} type="card">
-        <TabPane tab="By Trans" key="1">
-          {activeKey === '1' && <Trans />}
-        </TabPane>
-        <TabPane tab="Void Invoice" key="2">
-          {activeKey === '2' && <Cancel />}
-        </TabPane>
-        <TabPane tab="History" key="3">
-          {activeKey === '3' && <Daily />}
-        </TabPane>
-        <TabPane tab="Detail" key="4">
-          {activeKey === '4' && <Detail />}
-        </TabPane>
-        <TabPane tab="Compare" key="5">
-          {activeKey === '5' && <Compare />}
-        </TabPane>
-        <TabPane tab="Hourly" key="6">
-          {activeKey === '6' && <Hourly />}
-        </TabPane>
-        <TabPane tab="Hours" key="7">
-          {activeKey === '7' && <Hour />}
+        <TabPane tab="Peak Hour" key="1">
+          {activeKey === '1' && <PeakHour />}
         </TabPane>
       </Tabs>
     </div>
