@@ -170,6 +170,14 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
       if (errors) {
         return
       }
+      const suppinfo = !!supplierInformation.id
+      if (!suppinfo) {
+        Modal.warning({
+          title: 'Supplier Information',
+          content: 'Supplier Information Not Found'
+        })
+        return
+      }
       const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
       const data = {
         ...getFieldsValue(),

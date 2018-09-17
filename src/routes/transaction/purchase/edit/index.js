@@ -25,7 +25,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     listSupplier,
     modalProductVisible,
     modalPurchaseVisible,
-    supplierInformation: supplierInformation || null,
+    supplierInformation: supplierInformation || {},
     tmpSupplierData: listSupplier,
     dataSource: listProduct,
     location,

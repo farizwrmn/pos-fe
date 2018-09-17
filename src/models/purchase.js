@@ -49,6 +49,7 @@ export default modelExtend(pageModel, {
     dataBrowse: localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : [],
     curDiscPercent: 0,
     curDiscNominal: 0,
+    supplierInformation: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
