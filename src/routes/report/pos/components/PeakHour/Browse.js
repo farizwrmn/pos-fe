@@ -16,27 +16,27 @@ const Browse = ({ transTime, ...browseProps }) => {
       render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: transTime.transTime1 ? `${transTime.transTime1} - ${transTime.transTime2}` : null,
-      dataIndex: 'count1',
-      key: 'count1',
+      title: '08:00 - 08:59',
+      dataIndex: 'count8',
+      key: 'count8',
       className: styles.alignRight
     },
     {
-      title: transTime.transTime1 ? `${transTime.transTime3} - ${transTime.transTime4}` : null,
-      dataIndex: 'count2',
-      key: 'count2',
+      title: '09:00 - 09:59',
+      dataIndex: 'count9',
+      key: 'count9',
       className: styles.alignRight
     },
     {
-      title: transTime.transTime1 ? `${transTime.transTime5} - ${transTime.transTime6}` : null,
-      dataIndex: 'count3',
-      key: 'count3',
+      title: '10:00 - 10:59',
+      dataIndex: 'count10',
+      key: 'count10',
       className: styles.alignRight
     },
     {
-      title: transTime.transTime1 ? `${transTime.transTime7} - ${transTime.transTime8}` : null,
-      dataIndex: 'count4',
-      key: 'count4',
+      title: '11:00 - 11:59',
+      dataIndex: 'count11',
+      key: 'count11',
       className: styles.alignRight
     }
   ]

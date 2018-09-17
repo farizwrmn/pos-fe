@@ -53,6 +53,18 @@ export async function queryHour (params) {
   })
 }
 
+export async function queryInterval (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `${posReport}/interval`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

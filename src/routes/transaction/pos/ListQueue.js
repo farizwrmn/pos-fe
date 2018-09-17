@@ -81,7 +81,7 @@ const ListQueue = ({ pos, dispatch }) => {
       }
       localStorage.setItem('lastMeter', trans.lastMeter ? trans.lastMeter : 0)
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
-      localStorage.setItem('workorder', JSON.stringify(arrayWorkOrder))
+      if (arrayWorkOrder.id) localStorage.setItem('workorder', JSON.stringify(arrayWorkOrder))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))

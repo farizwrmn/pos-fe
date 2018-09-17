@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { Sales } from './components'
 import Browse from './Browse'
 import Filter from './Filter'
 import FilterItem from './FilterItem'
@@ -20,7 +21,7 @@ const Report = ({ dispatch, posReport, loading, app }) => {
     toDate,
     productCode,
     transTime,
-    loading: loading.effects['posReport/queryHourly']
+    loading: loading.effects['posReport/queryInterval']
   }
 
   const filterProps = {
@@ -54,7 +55,7 @@ const Report = ({ dispatch, posReport, loading, app }) => {
     },
     onDateChange (data) {
       dispatch({
-        type: 'posReport/queryHourly',
+        type: 'posReport/queryInterval',
         payload: {
           fromDate: data.transDate.from,
           toDate: data.transDate.to,
@@ -76,10 +77,27 @@ const Report = ({ dispatch, posReport, loading, app }) => {
       // })
     }
   }
+  let dataCustomer = []
+  let dataIn = 0
+  for (let n = 0; n < 24; n += 1) {
+    const CustomerIn = listTrans.reduce((prev, next) => parseInt(prev, 10) + parseInt(next[`countIn${n + 1}`], 10), 0)
+    const CustomerOut = listTrans.reduce((prev, next) => parseInt(prev, 10) + parseInt(next[`count${n + 1}`], 10), 0)
+    dataIn += CustomerIn
+    dataIn -= CustomerOut
+    dataCustomer.push({
+      name: n.toString(),
+      title: n.toString(),
+      CustomerIn,
+      CustomerOut,
+      CurrentCustomer: dataIn >= 0 ? dataIn : 0
+    })
+  }
 
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
+      <Sales data={dataCustomer} />
+      <br />
       <Browse {...browseProps} />
       {filterModalVisible && <FilterItem {...filterProps} />}
     </div>

@@ -13,7 +13,8 @@ import {
   queryTurnOver,
   queryPOSCompareSvsI,
   queryHourly,
-  queryHour
+  queryHour,
+  queryInterval
 } from '../../services/report/pos'
 
 export default {
@@ -320,6 +321,29 @@ export default {
     * queryHour ({ payload = {} }, { call, put }) {
       const { fromDate, toDate, ...other } = payload
       const data = yield call(queryHour, other)
+      if (data.success) {
+        const transTime = {
+          ...payload
+        }
+        yield put({
+          type: 'querySuccessHourly',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            transTime,
+            fromDate,
+            toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryInterval ({ payload = {} }, { call, put }) {
+      const { fromDate, toDate, ...other } = payload
+      const data = yield call(queryInterval, other)
       if (data.success) {
         const transTime = {
           ...payload
