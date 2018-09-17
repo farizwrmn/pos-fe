@@ -34,6 +34,7 @@ const FormAdd = ({
   modalProductVisible,
   modalInvoiceVisible,
   button,
+  loadingButton,
   // handleCancel,
   listItem,
   listEmployee,
@@ -208,7 +209,7 @@ const FormAdd = ({
         </Row>
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
         <FormItem>
-          <Button size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>

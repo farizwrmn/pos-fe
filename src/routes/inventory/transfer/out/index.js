@@ -407,6 +407,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     modalProductVisible,
     modalInvoiceVisible,
     modalVisible,
+    loadingButton: loading,
     loading: loading.effects['transferOut/querySequence'],
     disabled: `${formType === 'edit' ? disable : ''}`,
     button: `${formType === 'add' ? 'Add' : 'Update'}`,

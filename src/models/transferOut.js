@@ -7,8 +7,7 @@ import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
 import { query as queryInvoice, queryDetail as queryDetailInvoice } from '../services/purchase'
 import {
-  query as querySequence,
-  increase as increaseSequence
+  query as querySequence
 } from '../services/sequence'
 import { pageModel } from './common'
 
@@ -235,10 +234,6 @@ export default modelExtend(pageModel, {
         }
         if (data.success) {
           success()
-          let increase = yield call(increaseSequence, sequenceData)
-          if (!increase.success) {
-            error(increaseSequence)
-          }
           yield put({
             type: 'updateState',
             payload: {

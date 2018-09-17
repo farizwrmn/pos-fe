@@ -4,7 +4,7 @@ import { Modal, message } from 'antd'
 import { configMain, lstorage } from 'utils'
 import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
 import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
-import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { query as querySequence } from '../services/sequence'
 import { pageModel } from './common'
 import { getDateTime } from '../services/setting/time'
 
@@ -230,10 +230,6 @@ export default modelExtend(pageModel, {
         let data = yield call(add, payload)
         if (data.success) {
           success()
-          let increase = yield call(increaseSequence, sequenceData)
-          if (!increase.success) {
-            error(increaseSequence)
-          }
           yield put({
             type: 'updateState',
             payload: {
