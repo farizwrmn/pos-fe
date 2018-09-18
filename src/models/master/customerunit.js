@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
+import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   queryUnits,
@@ -8,8 +8,10 @@ import {
   editUnit,
   queryCarBrands,
   queryCarModels,
-  queryCarTypes
+  queryCarTypes,
+  querySearchByPlat
 } from '../../services/master/customer'
+import { queryOneUnit } from '../../services/units'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -21,10 +23,12 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    unitItem: {},
     modalType: 'add',
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    searchText: '',
     activeKey: '0',
     disable: '',
     listUnit: [],
@@ -93,6 +97,23 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+    * getMemberAssets ({ payload }, { call, put }) {
+      const data = yield call(querySearchByPlat, payload)
+      if (data.success && data.data.length) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAsset: data.data
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
       }
     },
 
@@ -191,6 +212,23 @@ export default modelExtend(pageModel, {
           }
         })
       }
+    },
+    * lov ({ payload }, { call, put }) {
+      const data = yield call(queryOneUnit, payload)
+
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            unitItem: {
+              policeNoId: data.member.id,
+              ...data.member
+            }
+          }
+        })
+      } else {
+        throw data
+      }
     }
 
   },
@@ -224,6 +262,9 @@ export default modelExtend(pageModel, {
           ...pagination
         }
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     refreshView (state) {

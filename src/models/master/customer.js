@@ -48,8 +48,6 @@ export default modelExtend(pageModel, {
     modalAddMember: false,
     addUnit: { modal: false, info: {} },
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
       current: 1
     }
   },
@@ -181,6 +179,8 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      } else {
+        throw data
       }
     },
 

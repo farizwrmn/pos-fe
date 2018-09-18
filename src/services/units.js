@@ -13,6 +13,17 @@ export async function query (params) {
   })
 }
 
+export async function queryOneUnit (params) {
+  const url = params ? `${customers}/${encodeURIComponent(params.id)}/units/${encodeURIComponent(params.policeNo)}` : null
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'get',
+    // data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryField (member, params) {
   const url = params ? `${customers}/${encodeURIComponent(member.code)}/units` : null
   const apiHeaderToken = crypt.apiheader()

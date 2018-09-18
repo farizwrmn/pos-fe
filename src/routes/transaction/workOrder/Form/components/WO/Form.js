@@ -1,7 +1,9 @@
 import React from 'react'
 import { Row, Col, Modal, Form, Input, DatePicker, Select, Button, Checkbox } from 'antd'
+import { DataQuery } from 'components'
 import List from './List'
 
+const { Customer, Asset } = DataQuery
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -26,6 +28,8 @@ const FormWO = ({
   transData,
   loadingButton,
   getCustomerUnit,
+  modalCustomerVisible,
+  modalCustomerAssetVisible,
   CancelWo,
   search,
   resetAssetList,
@@ -35,8 +39,11 @@ const FormWO = ({
   onSubmitWo,
   customField,
   formMainType,
+  searchText,
   dispatch,
   handleAddMember,
+  handleShowMember,
+  handleShowMemberAsset,
   form: {
     getFieldDecorator,
     validateFields,
@@ -74,6 +81,13 @@ const FormWO = ({
     })
   }
   const resetAsset = () => {
+    dispatch({
+      type: 'customerunit/updateState',
+      payload: {
+        modalCustomerVisible: false,
+        unitItem: {}
+      }
+    })
     resetFields(['policeNoId'])
     resetAssetList()
   }
@@ -81,7 +95,9 @@ const FormWO = ({
     if (type === 'memberId') {
       resetAsset()
     }
-    search(value.key ? '' : value, type)
+    if (value) {
+      search(value.key ? '' : value, type)
+    }
   }
 
   const handleAddMemberAsset = () => {
@@ -110,6 +126,95 @@ const FormWO = ({
     }
   }
 
+  const modalCustomerProps = {
+    location,
+    loading: loadingButton.effects['customer/query'],
+    visible: modalCustomerVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerVisible: false
+        }
+      })
+    },
+    onRowClick (item) {
+      const data = getFieldsValue()
+      data.memberId = item.id
+      data.memberCode = item.memberCode
+      data.memberName = item.memberName
+      data.policeNoId = null
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerVisible: false,
+          currentItem: {
+            woNo: transData.woNo,
+            ...data
+          }
+        }
+      })
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          modalCustomerVisible: false,
+          unitItem: {}
+        }
+      })
+      resetFields()
+    }
+  }
+
+  const modalCustomerAssetProps = {
+    location,
+    loading: loadingButton.effects['customerunit/getMemberAssets'],
+    visible: modalCustomerAssetVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerAssetVisible: false
+        }
+      })
+    },
+    onRowClick (item) {
+      const data = getFieldsValue()
+      data.memberId = item.id
+      data.memberCode = item.memberCode
+      data.memberName = item.memberName
+      data.policeNoId = null
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerAssetVisible: false,
+          currentItem: {
+            woNo: transData.woNo,
+            ...data
+          }
+        }
+      })
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          modalCustomerVisible: false,
+          unitItem: {}
+        }
+      })
+      dispatch({
+        type: 'customerunit/lov',
+        payload: {
+          id: item.memberCode,
+          policeNo: searchText
+        }
+      })
+      resetFields()
+    }
+  }
+
   return (
     <div>
       <Row>
@@ -120,7 +225,7 @@ const FormWO = ({
             </FormItem>
             <FormItem label="Customer" hasFeedback {...formItemLayout}>
               <Row>
-                <Col span={20}>
+                <Col span={16}>
                   {getFieldDecorator('memberId', {
                     initialValue: transData.memberId ? {
                       key: transData.memberId,
@@ -143,19 +248,22 @@ const FormWO = ({
                   >{customerOpt}
                   </Select>)}
                 </Col>
-                <Col span={4}>
+                <Col span={3}>
+                  <Button type="default" shape="circle" icon="bars" onClick={handleShowMember} />
+                </Col>
+                <Col span={3}>
                   <Button type="primary" shape="circle" icon="plus" onClick={handleAddMember} />
                 </Col>
               </Row>
             </FormItem>
             <FormItem label="Asset" hasFeedback {...formItemLayout}>
               <Row>
-                <Col span={20}>
+                <Col span={16}>
                   {getFieldDecorator('policeNoId', {
                     initialValue: transData.policeNoId ? {
                       key: transData.policeNoId,
                       label: `${transData.policeNo} (${transData.merk})`
-                    } : {},
+                    } : { label: null },
                     rules: [{ required: true }]
                   })(<Select
                     showSearch
@@ -171,13 +279,17 @@ const FormWO = ({
                     {assetOpt}
                   </Select>)}
                 </Col>
-                <Col span={4}>
+                <Col span={3}>
+                  <Button type="default" shape="circle" icon="bars" onClick={handleShowMemberAsset} />
+                </Col>
+                <Col span={3}>
                   <Button type="primary" shape="circle" icon="plus" onClick={handleAddMemberAsset} />
                 </Col>
               </Row>
             </FormItem>
             <FormItem label="Time In" hasFeedback {...formItemLayout}>
               {getFieldDecorator('timeIn', {
+                initialValue: transData.timeIn,
                 rules: [{
                   required: true
                 }]
@@ -197,6 +309,8 @@ const FormWO = ({
       {formMainType === 'add' && <Button disabled={loadingButton.effects['workorder/addWorkOrder']} onClick={() => handleSubmit()} type="primary" size="large" style={{ float: 'right', marginBottom: 2, marginTop: 10 }}>Submit</Button>}
       {formMainType === 'edit' && <Button onClick={() => customField()} size="large" style={{ float: 'right', marginBottom: 2, marginTop: 10, marginRight: '8px' }}>Custom field</Button>}
       {formMainType === 'edit' && <Button onClick={() => hdlCancel()} type="primary" size="large" style={{ float: 'right', marginBottom: 2, marginTop: 10, marginRight: '8px' }}>New</Button>}
+      {modalCustomerVisible && <Customer {...modalCustomerProps} />}
+      {modalCustomerAssetVisible && <Asset {...modalCustomerAssetProps} />}
     </div>
   )
 }

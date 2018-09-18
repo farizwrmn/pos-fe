@@ -25,11 +25,13 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
     currentStep,
     listWorkOrderCategory,
     listCustomFields,
-    modalAddUnit
+    modalAddUnit,
+    modalCustomerVisible,
+    modalCustomerAssetVisible
   } = workorder
 
   const { modalAddMember } = customer
-  const { listUnit } = customerunit
+  const { listUnit, unitItem, searchText } = customerunit
   const { listCustomer } = customer
 
   const openCloseModalFilter = () => {
@@ -204,11 +206,17 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
   const formProps = {
     listCustomer,
     listUnit,
+    searchText,
     formMainType,
     formCustomFieldType,
-    transData: currentItem,
+    transData: {
+      ...currentItem,
+      ...unitItem
+    },
     loading: loading.effects['workorder/queryWOCategory'],
     loadingButton: loading,
+    modalCustomerVisible,
+    modalCustomerAssetVisible,
     dataSource: listWorkOrderCategory,
     listWorkOrderCategory,
     listCustomFields,
@@ -219,6 +227,25 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
         type: 'customer/updateState',
         payload: {
           modalAddMember: true
+        }
+      })
+    },
+    handleShowMember () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerVisible: true
+        }
+      })
+      dispatch({
+        type: 'customer/query'
+      })
+    },
+    handleShowMemberAsset () {
+      dispatch({
+        type: 'workorder/updateState',
+        payload: {
+          modalCustomerAssetVisible: true
         }
       })
     },
@@ -291,7 +318,7 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
               type: 'customer/query',
               payload: {
                 q: value,
-                pageSize: 5
+                pageSize: 10
               }
             })
             break
