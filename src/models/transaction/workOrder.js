@@ -24,7 +24,7 @@ export default {
     end: moment().format('YYYY-MM-DD'),
     q: '',
     modalCustomerVisible: false,
-    modalCustomerAssetVisible: true,
+    modalCustomerAssetVisible: false,
     searchText: '',
     modalFilter: false,
     modalAddUnit: false,

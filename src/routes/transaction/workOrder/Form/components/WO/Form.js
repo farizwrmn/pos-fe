@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col, Modal, Form, Input, DatePicker, Select, Button, Checkbox } from 'antd'
 import { DataQuery } from 'components'
+import moment from 'moment'
 import List from './List'
 
 const { Customer, Asset } = DataQuery
@@ -56,6 +57,9 @@ const FormWO = ({
   const listProps = {
     transData,
     ...formProps
+  }
+  const disabledDate = (current) => {
+    return current < moment().add(-2, 'days').endOf('day') || current > moment().add(0, 'days').endOf('day')
   }
   const disabled = (formMainType === 'edit')
   const hdlCancel = () => {
@@ -214,6 +218,12 @@ const FormWO = ({
       resetFields()
     }
   }
+  const formatDate = (value) => {
+    if (value) {
+      return moment.utc(moment(value).utcOffset('+0000').format('YYYY-MM-DD HH:mm:ss')).utcOffset('+0700')
+    }
+    return moment.utc(moment().utcOffset('+0000').format('YYYY-MM-DD HH:mm:ss')).utcOffset('+0700')
+  }
 
   return (
     <div>
@@ -289,12 +299,12 @@ const FormWO = ({
             </FormItem>
             <FormItem label="Time In" hasFeedback {...formItemLayout}>
               {getFieldDecorator('timeIn', {
-                initialValue: transData.timeIn,
+                initialValue: formatDate(transData.timeIn),
                 rules: [{
                   required: true
                 }]
               })(
-                <DatePicker disabled={disabled} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />
+                <DatePicker disabled={disabled} on disabledDate={disabledDate} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />
               )}
             </FormItem>
             <FormItem label="Take Away" {...formItemLayout}>
