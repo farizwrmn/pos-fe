@@ -59,7 +59,23 @@ const FormWO = ({
     ...formProps
   }
   const disabledDate = (current) => {
-    return current < moment().add(-2, 'days').endOf('day') || current > moment().add(0, 'days').endOf('day')
+    return current > moment().add(0, 'days').endOf('day')
+  }
+  const range = (start, end) => {
+    const result = []
+    for (let i = start; i < end; i += 1) {
+      result.push(i)
+    }
+    return result
+  }
+
+
+  const disabledDateTime = () => {
+    return {
+      disabledHours: () => range(parseFloat(moment().format('HH')), 24).splice(2, 22),
+      disabledMinutes: () => range(parseFloat(moment().format('mm')), 60).splice(1, 59),
+      disabledSeconds: () => range(parseFloat(moment().format('ss')), 60).splice(1, 59)
+    }
   }
   const disabled = (formMainType === 'edit')
   const hdlCancel = () => {
@@ -304,7 +320,7 @@ const FormWO = ({
                   required: true
                 }]
               })(
-                <DatePicker disabled={disabled} on disabledDate={disabledDate} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />
+                <DatePicker disabled={disabled} disabledTime={disabledDateTime} disabledDate={disabledDate} style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" placeholder="Select Time" />
               )}
             </FormItem>
             <FormItem label="Take Away" {...formItemLayout}>
