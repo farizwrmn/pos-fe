@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     disable: '',
     searchText: '',
+    advancedForm: true,
     show: 1,
     showModal: false,
     showModalProduct: false,

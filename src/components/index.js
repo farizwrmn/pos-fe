@@ -15,6 +15,7 @@ import Notification from './Notification'
 import Reminder from './Reminder'
 import CashRegister from './CashRegister'
 import ModalFilter from './ModalFilter'
+import FooterToolbar from './FooterToolbar'
 
 
 export {
@@ -39,5 +40,6 @@ export {
   Notification,
   Reminder,
   CashRegister,
-  ModalFilter
+  ModalFilter,
+  FooterToolbar
 }

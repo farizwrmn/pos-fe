@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
+import { Button, Switch, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
 import Form from './Form'
+import AdvancedForm from './AdvancedForm'
 import List from './List'
 import Filter from './Filter'
 // import Sticker from './Sticker'
@@ -33,7 +34,8 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     listSticker,
     // selectedSticker,
     pagination,
-    stockLoading
+    stockLoading,
+    advancedForm
   } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -278,6 +280,15 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
       <Menu.Item key="2"><Button onClick={() => onShowPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
     </Menu>
   )
+  const onChangeSwitch = (checked) => {
+    console.log(`switch to ${checked}`)
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        advancedForm: checked
+      }
+    })
+  }
 
   const printProps = {
     user,
@@ -299,7 +310,12 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
   let moreButtonTab
   switch (activeKey) {
     case '0':
-      moreButtonTab = (<Button onClick={() => clickBrowse()}>Browse</Button>)
+      moreButtonTab = (
+        <div>
+          <Switch defaultChecked={advancedForm} checkedChildren="New" unCheckedChildren="Old" onChange={onChangeSwitch}>Advanced</Switch>
+          <Button onClick={() => clickBrowse()}>Browse</Button>
+        </div>
+      )
       break
     case '1':
       moreButtonTab = (
@@ -429,13 +445,13 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
   // }
 
   return (
-    <div className="content-inner" >
+    <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
       {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
         {printmode}
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
-          <Form {...formProps} />
+          {advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
