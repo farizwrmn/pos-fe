@@ -171,6 +171,23 @@ const Routers = function ({ history, app }) {
             }, 'master-product-sticker')
           }
         }, {
+          path: 'master/product/variant',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/variant'))
+              cb(null, require('./routes/master/product/variant/'))
+            }, 'master-product-variant')
+          }
+        }, {
+          path: 'master/product/specification',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/product/specification/'))
+            }, 'master-product-specification')
+          }
+        }, {
           path: 'master/service',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
