@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, message, Card } from 'antd'
+import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card } from 'antd'
 import { FooterToolbar } from 'components'
 
 const FormItem = Form.Item
@@ -340,7 +340,7 @@ const AdvancedForm = ({
           </Card>
         </Col>
         <Col {...parentRight}>
-          <Card title={<h3>Advance Product Utils</h3>} {...cardProps}>
+          <Card title={<h3>Advance Product Utility</h3>} {...cardProps}>
             <Row>
               <Col {...column}>
                 <FormItem label="Status" {...formItemLayout}>
