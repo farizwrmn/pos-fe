@@ -129,7 +129,7 @@ const AdvancedForm = ({
   const cardProps = {
     bordered: true,
     style: {
-      padding: 14,
+      padding: 8,
       marginLeft: 8,
       marginBottom: 8
     }
