@@ -29,6 +29,10 @@ module.exports = {
     apiLog: '/log',
     apiCashierUsers: '/cashiers/users',
     apiCashRegister: '/cashiers/cashregisters',
+    apiVariant: '/stock/variant',
+    apiSpecification: '/stock/specification',
+    apiVariantStock: '/stock/variantstock',
+    apiSpecificationStock: '/stock/specificationstock',
     apiFollowUp: '/followup'
   },
   api: {

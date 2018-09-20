@@ -39,7 +39,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
-        } else if (pathname === '/master/work-order/category') dispatch({ type: 'query' })
+        } else if (pathname === '/master/work-order/category' || (pathname === '/master/product/specification' && activeKey === 0)) dispatch({ type: 'query' })
       })
     }
   },

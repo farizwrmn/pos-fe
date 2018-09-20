@@ -268,6 +268,12 @@ const AdvancedForm = ({
                 ]
               })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
             </FormItem>
+            <FormItem label="Manage" {...formItemLayout}>
+              <Button.Group>
+                <Button type="primary">Variant</Button>
+                <Button>Specification</Button>
+              </Button.Group>
+            </FormItem>
           </Col>
         </Row>
       </Card>
