@@ -5,6 +5,8 @@ import PromoProductReward from './PromoProductReward'
 import TransferOut from './TransferOut'
 import Customer from './Customer'
 import Asset from './Asset'
+import Variant from './Variant'
+import Specification from './Specification'
 
 export default {
   Product,
@@ -13,5 +15,7 @@ export default {
   PromoProductReward,
   TransferOut,
   Customer,
-  Asset
+  Asset,
+  Variant,
+  Specification
 }

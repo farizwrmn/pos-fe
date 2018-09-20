@@ -35,7 +35,9 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     // selectedSticker,
     pagination,
     stockLoading,
-    advancedForm
+    advancedForm,
+    modalVariantVisible,
+    modalSpecificationVisible
   } = productstock
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -191,6 +193,10 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     modalType,
     mode,
     item: currentItem,
+    loadingButton: loading,
+    modalVariantVisible,
+    modalSpecificationVisible,
+    dispatch,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
@@ -199,6 +205,22 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         payload: {
           id,
           data
+        }
+      })
+    },
+    showVariant () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalVariantVisible: true
+        }
+      })
+    },
+    showSpecification () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalSpecificationVisible: true
         }
       })
     },

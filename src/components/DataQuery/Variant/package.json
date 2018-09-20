@@ -1,0 +1,6 @@
+{
+  "name": "Variant",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Variant.js"
+}

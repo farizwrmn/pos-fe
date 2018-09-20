@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card } from 'antd'
-import { FooterToolbar } from 'components'
+import { DataQuery, FooterToolbar } from 'components'
 
+const { Variant, Specification } = DataQuery
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -44,16 +45,23 @@ const AdvancedForm = ({
   onSubmit,
   onCancel,
   disabled,
+  loadingButton,
+  modalVariantVisible,
+  modalSpecificationVisible,
+  dispatch,
   modalType,
   button,
   listCategory,
   showCategories,
   listBrand,
   showBrands,
+  showVariant,
+  showSpecification,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields,
     setFieldsValue
   }
@@ -140,6 +148,84 @@ const AdvancedForm = ({
     style: { width: '100%' },
     maxLength: 20
   }
+
+  const modalVariantProps = {
+    location,
+    loading: loadingButton.effects['variant/query'],
+    visible: modalVariantVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalVariantVisible: false
+        }
+      })
+    },
+    onRowClick (item) {
+      console.log('item', item)
+
+      // const data = getFieldsValue()
+      // dispatch({
+      //   type: 'productstock/updateState',
+      //   payload: {
+      //     modalVariantVisible: false,
+      //     currentItem: {
+      //       ...data
+      //     }
+      //   }
+      // })
+      // dispatch({
+      //   type: 'customerunit/updateState',
+      //   payload: {
+      //     modalVariantVisible: false,
+      //     unitItem: {}
+      //   }
+      // })
+      // resetFields()
+    }
+  }
+
+  const modalSpecificationProps = {
+    location,
+    loading: loadingButton.effects['specification/query'],
+    visible: modalSpecificationVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalSpecificationVisible: false
+        }
+      })
+    },
+    onRowClick (item) {
+      console.log('item', item)
+
+      // const data = getFieldsValue()
+      // dispatch({
+      //   type: 'productstock/updateState',
+      //   payload: {
+      //     modalVariantVisible: false,
+      //     currentItem: {
+      //       ...data
+      //     }
+      //   }
+      // })
+      // dispatch({
+      //   type: 'customerunit/updateState',
+      //   payload: {
+      //     modalVariantVisible: false,
+      //     unitItem: {}
+      //   }
+      // })
+      // resetFields()
+    }
+  }
+  const handleShowVariant = () => showVariant()
+  const handleShowSpecification = () => showSpecification()
 
   return (
     <Form layout="horizontal">
@@ -270,8 +356,8 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Manage" {...formItemLayout}>
               <Button.Group>
-                <Button type="primary">Variant</Button>
-                <Button>Specification</Button>
+                <Button onClick={handleShowVariant} disabled={!getFieldValue('productCode')} type="primary">Variant</Button>
+                <Button onClick={handleShowSpecification}>Specification</Button>
               </Button.Group>
             </FormItem>
           </Col>
@@ -286,6 +372,7 @@ const AdvancedForm = ({
                   initialValue: item.sellPrice,
                   rules: [
                     {
+                      required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                       message: '0-9'
                     }
@@ -297,6 +384,7 @@ const AdvancedForm = ({
                   initialValue: item.distPrice01,
                   rules: [
                     {
+                      required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                       message: '0-9'
                     }
@@ -308,6 +396,7 @@ const AdvancedForm = ({
                   initialValue: item.distPrice02,
                   rules: [
                     {
+                      required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                       message: '0-9'
                     }
@@ -336,36 +425,12 @@ const AdvancedForm = ({
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Exception" {...formItemLayout}>
-                {getFieldDecorator('exception01', {
-                  valuePropName: 'checked',
-                  initialValue: item.exception01
-                })(<Checkbox>Exception</Checkbox>)}
-              </FormItem>
             </Row>
           </Card>
         </Col>
         <Col {...parentRight}>
           <Card title={<h3>Advance Product Utility</h3>} {...cardProps}>
             <Row>
-              <Col {...column}>
-                <FormItem label="Status" {...formItemLayout}>
-                  {getFieldDecorator('active', {
-                    valuePropName: 'checked',
-                    initialValue: item.active || true
-                  })(<Checkbox>Active</Checkbox>)}
-                </FormItem>
-                <FormItem label="Location 1" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location01', {
-                    initialValue: item.location01
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="Location 2" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location02', {
-                    initialValue: item.location02
-                  })(<Input />)}
-                </FormItem>
-              </Col>
               <Col {...column}>
                 <FormItem label="Track Qty" {...formItemLayout}>
                   {getFieldDecorator('trackQty', {
@@ -383,6 +448,30 @@ const AdvancedForm = ({
                       }
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
+                </FormItem>
+                <FormItem label="Location 1" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('location01', {
+                    initialValue: item.location01
+                  })(<Input />)}
+                </FormItem>
+                <FormItem label="Location 2" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('location02', {
+                    initialValue: item.location02
+                  })(<Input />)}
+                </FormItem>
+              </Col>
+              <Col {...column}>
+                <FormItem label="Status" {...formItemLayout}>
+                  {getFieldDecorator('active', {
+                    valuePropName: 'checked',
+                    initialValue: item.active || true
+                  })(<Checkbox>Active</Checkbox>)}
+                </FormItem>
+                <FormItem label="Sell Under Cost" {...formItemLayout}>
+                  {getFieldDecorator('exception01', {
+                    valuePropName: 'checked',
+                    initialValue: item.exception01
+                  })(<Checkbox>Allow</Checkbox>)}
                 </FormItem>
                 <FormItem label="Image" {...formItemLayout}>
                   {getFieldDecorator('productImage', {
@@ -421,6 +510,8 @@ const AdvancedForm = ({
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
+      {modalVariantVisible && <Variant {...modalVariantProps} />}
+      {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
     </Form>
   )
 }

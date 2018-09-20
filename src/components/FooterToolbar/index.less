@@ -1,17 +1,20 @@
 // @import '~antd/lib/style/themes/default.less';
 
 .toolbar {
-  position: fixed;
+  @media (min-width: 320px) and (max-width: 1199px) {
+    position: fixed !important;
+  }
+  position: inherit;
   width: 100%;
   bottom: 0;
   right: 0;
-  height: 56px;
+  height: 48px;
   line-height: 56px;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.03);
   background: #fff;
   border-top: 1px solid @border-color-split;
-  padding: 12px 120px;
-  z-index: 9;
+  padding: 6px 70px;
+  z-index: 300;
 
   &:after {
     content: '';
