@@ -5,45 +5,44 @@ import { Table, Modal, Form, Input, Button } from 'antd'
 
 const FormItem = Form.Item
 
-const Customer = ({
+const Specification = ({
   dispatch,
   className,
   visible = false,
   columns = [
     {
-      title: 'Member Code',
-      dataIndex: 'memberCode',
-      key: 'memberCode'
-    }, {
-      title: 'Member Name',
-      dataIndex: 'memberName',
-      key: 'memberName'
-    }, {
-      title: 'Address',
-      dataIndex: 'address01',
-      key: 'address01'
-    }, {
-      title: 'Mobile',
-      dataIndex: 'mobileNumber',
-      key: 'mobileNumber'
-    }, {
-      title: 'Type',
-      dataIndex: 'memberTypeName',
-      key: 'memberTypeName'
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode'
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
+    },
+    {
+      title: 'Specification',
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value',
+      key: 'value'
     }
   ],
   isModal = true,
   enableFilter = true,
   showPagination = true,
   onRowClick,
-  customer,
+  specificationStock,
   ...tableProps
 }) => {
-  const { searchText, list, pagination } = customer
+  const { searchText, listSpecificationCode, pagination } = specificationStock
   // const { pagination } = tableProps
   const handleSearch = () => {
     dispatch({
-      type: 'customer/query',
+      type: 'specificationStock/query',
       payload: {
         page: 1,
         pageSize: 10,
@@ -55,7 +54,7 @@ const Customer = ({
     const { value } = e.target
 
     dispatch({
-      type: 'customer/updateState',
+      type: 'specificationStock/updateState',
       payload: {
         searchText: value
       }
@@ -63,7 +62,7 @@ const Customer = ({
   }
   const handleReset = () => {
     dispatch({
-      type: 'customer/query',
+      type: 'specificationStock/query',
       payload: {
         page: 1,
         pageSize: pagination.pageSize,
@@ -71,7 +70,7 @@ const Customer = ({
       }
     })
     dispatch({
-      type: 'customer/updateState',
+      type: 'specificationStock/updateState',
       payload: {
         searchText: null
       }
@@ -79,7 +78,7 @@ const Customer = ({
   }
   const changeProduct = (page) => {
     dispatch({
-      type: 'customer/query',
+      type: 'specificationStock/query',
       payload: {
         q: searchText,
         page: page.current,
@@ -93,7 +92,7 @@ const Customer = ({
       {isModal && <Modal
         className={className}
         visible={visible}
-        title="Search Member"
+        title="Search Specification"
         width="80%"
         height="80%"
         footer={null}
@@ -101,7 +100,7 @@ const Customer = ({
       >
         {enableFilter && <Form layout="inline">
           <FormItem>
-            <Input placeholder="Search Member"
+            <Input placeholder="Search Specification"
               value={searchText}
               onChange={e => handleChange(e)}
               onPressEnter={handleSearch}
@@ -118,7 +117,7 @@ const Customer = ({
         <Table
           {...tableProps}
           pagination={showPagination ? pagination : false}
-          dataSource={list}
+          dataSource={listSpecificationCode}
           bordered
           columns={columns}
           simple
@@ -131,7 +130,7 @@ const Customer = ({
           {enableFilter && <Form layout="inline">
             <FormItem>
               <Input
-                placeholder="Search Member"
+                placeholder="Search Specification"
                 autoFocus
                 value={searchText}
                 onChange={e => handleChange(e)}
@@ -149,7 +148,7 @@ const Customer = ({
           <Table
             {...tableProps}
             pagination={showPagination ? pagination : false}
-            dataSource={list}
+            dataSource={listSpecificationCode}
             bordered
             columns={columns}
             simple
@@ -162,9 +161,9 @@ const Customer = ({
   )
 }
 
-Customer.propTypes = {
+Specification.propTypes = {
   form: PropTypes.object.isRequired,
-  customer: PropTypes.object.isRequired
+  specificationStock: PropTypes.object.isRequired
 }
 
-export default connect(({ customer }) => ({ customer }))(Customer)
+export default connect(({ specificationStock }) => ({ specificationStock }))(Specification)

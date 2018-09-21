@@ -1,21 +1,21 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/variant'
+import { query, add, edit, remove } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Variant has been saved')
+  message.success('specificationStock has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'variant',
+  namespace: 'specificationStock',
 
   state: {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listVariant: [],
+    listSpecificationCode: [],
     pagination: {
       current: 1
     }
@@ -54,7 +54,24 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listVariant: data.data,
+            listSpecificationCode: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessCounter',
+          payload: {
+            listSpecificationCode: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -104,7 +121,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ variant }) => variant.currentItem.id)
+      const id = yield select(({ specificationStock }) => specificationStock.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -139,10 +156,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listVariant, pagination } = action.payload
+      const { listSpecificationCode, pagination } = action.payload
       return {
         ...state,
-        listVariant,
+        listSpecificationCode,
         pagination: {
           ...state.pagination,
           ...pagination

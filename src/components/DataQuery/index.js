@@ -7,6 +7,7 @@ import Customer from './Customer'
 import Asset from './Asset'
 import Variant from './Variant'
 import Specification from './Specification'
+import Stock from './Stock'
 
 export default {
   Product,
@@ -17,5 +18,6 @@ export default {
   Customer,
   Asset,
   Variant,
-  Specification
+  Specification,
+  Stock
 }

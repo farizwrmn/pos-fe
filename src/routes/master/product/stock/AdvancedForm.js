@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card } from 'antd'
+import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 
-const { Variant, Specification } = DataQuery
+const { Variant, Specification, Stock } = DataQuery
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -48,15 +48,19 @@ const AdvancedForm = ({
   loadingButton,
   modalVariantVisible,
   modalSpecificationVisible,
+  modalProductVisible,
   dispatch,
   modalType,
   button,
   listCategory,
   showCategories,
   listBrand,
+  listVariant,
   showBrands,
   showVariant,
+  showVariantId,
   showSpecification,
+  showProductModal,
   form: {
     getFieldDecorator,
     validateFields,
@@ -94,9 +98,22 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
+      console.log('errors', errors)
       const data = {
         ...getFieldsValue()
       }
+      if (!getFieldValue('variant') && getFieldValue('useVariant') && !item.productParentId) {
+        message.warning('Must Choose Product')
+        return
+      }
+      if (getFieldValue('useVariant') && !data.variantId.key) {
+        message.warning('Must Choose Variant')
+        return
+      }
+      data.variantId = data.variantId ? data.variantId.key : null
+      data.variantName = data.variantId ? data.variantId.label : null
+      data.productParentId = item.productParentId
+      data.productParentName = item.productParentName
       data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
       data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
       data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
@@ -126,8 +143,13 @@ const AdvancedForm = ({
     showCategories()
   }
 
+  const variant = () => {
+    showVariantId()
+  }
+
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
+  const productVariant = (listVariant || []).length > 0 ? listVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
   const changeProductCode = (e) => {
     const { value } = e.target
@@ -224,8 +246,58 @@ const AdvancedForm = ({
       // resetFields()
     }
   }
-  const handleShowVariant = () => showVariant()
-  const handleShowSpecification = () => showSpecification()
+
+  const modalProductProps = {
+    location,
+    loading: loadingButton,
+    visible: modalProductVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
+    },
+    onRowClick (item) {
+      const data = getFieldsValue()
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalProductVisible: false,
+          currentItem: {
+            ...data,
+            productParentId: item.id,
+            productParentName: item.productName
+          }
+        }
+      })
+    }
+  }
+  const handleShowVariant = () => {
+    dispatch({
+      type: 'variantStock/queryLov'
+    })
+    showVariant()
+  }
+  const handleShowSpecification = () => {
+    dispatch({
+      type: 'specificationStock/queryLov'
+    })
+    showSpecification()
+  }
+
+  const handleShowProduct = () => {
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        page: 1
+      }
+    })
+    showProductModal()
+  }
 
   return (
     <Form layout="horizontal">
@@ -288,42 +360,14 @@ const AdvancedForm = ({
               >{productBrand}
               </Select>)}
             </FormItem>
+            <FormItem label="Manage" {...formItemLayout}>
+              <Button.Group>
+                {modalType === 'edit' && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
+                <Button onClick={handleShowSpecification}>Specification</Button>
+              </Button.Group>
+            </FormItem>
           </Col>
           <Col {...column}>
-            {/* <FormItem label="Dummy Code" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('dummyCode', {
-                initialValue: item.dummyCode,
-                rules: [
-                  {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[A-Za-z0-9-._/]{3,30}$/i : /^[A-Za-z0-9-.() _/]{3,30}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input maxLength={30} />)}
-            </FormItem>
-            <FormItem label="Dummy Name" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('dummyName', {
-                initialValue: item.dummyName,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input maxLength={50} />)}
-            </FormItem>
-            <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('otherName01', {
-                initialValue: item.otherName01
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="Similar Name 2" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('otherName02', {
-                initialValue: item.otherName02
-              })(<Input />)}
-            </FormItem> */}
             <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode01', {
                 initialValue: item.barCode01
@@ -334,32 +378,58 @@ const AdvancedForm = ({
                 initialValue: item.barCode02
               })(<Input />)}
             </FormItem>
-            <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('usageTimePeriod', {
-                initialValue: item.usageTimePeriod,
-                rules: [
-                  {
-                    pattern: /^(?:0|[1-9][0-9]{0,10})$/,
-                    message: '0-9'
-                  }
-                ]
-              })(<InputNumber {...InputNumberProps} min={0} maxLength={10} placeholder="day(s)" style={{ width: '36%' }} />)}
-              {getFieldDecorator('usageMileage', {
-                initialValue: item.usageMileage,
-                rules: [
-                  {
-                    pattern: /^(?:0|[1-9][0-9]{0,15})$/,
-                    message: '0-9'
-                  }
-                ]
-              })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
-            </FormItem>
-            <FormItem label="Manage" {...formItemLayout}>
-              <Button.Group>
-                <Button onClick={handleShowVariant} disabled={!getFieldValue('productCode')} type="primary">Variant</Button>
-                <Button onClick={handleShowSpecification}>Specification</Button>
-              </Button.Group>
-            </FormItem>
+
+            {modalType === 'add' &&
+              <FormItem
+                label="Use Variant"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('useVariant', {
+                  valuePropName: 'checked',
+                  initialValue: item.useVariant
+                })(<Checkbox>Use Variant</Checkbox>)}
+              </FormItem>}
+
+            {modalType === 'add' && getFieldValue('useVariant') &&
+              (
+                <div>
+                  <FormItem
+                    validateStatus={!getFieldValue('variant') && !item.productParentId ? 'error' : ''}
+                    help={!getFieldValue('variant') && !item.productParentId ? 'Must Choose Product' : ''}
+                    label="Variant"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('variant', {
+                      valuePropName: 'checked',
+                      initialValue: item.variant ? item.variant : modalType === 'add'
+                    })(<Checkbox>{getFieldValue('variant') ? 'New' : 'Old'} Product</Checkbox>)}
+                    {!getFieldValue('variant') &&
+                      (<span>
+                        <Button type="primary" onClick={handleShowProduct}>Product</Button>
+                        <br />
+                        {item.productParentName ? `Variant of "${item.productParentName}" ${getFieldValue('variantId') ? `as ${getFieldValue('variantId').label || ''}` : ''}` : ''}
+                      </span>)}
+                  </FormItem>
+                  <FormItem label="Variant Name" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('variantId', {
+                      initialValue: item.variant ? { key: item.variantId, label: item.variantName } : {},
+                      rules: [
+                        {
+                          required: true
+                        }
+                      ]
+                    })(<Select
+                      showSearch
+                      allowClear
+                      onFocus={() => variant()}
+                      optionFilterProp="children"
+                      labelInValue
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                    >{productVariant}
+                    </Select>)}
+                  </FormItem>
+                </div>
+              )}
           </Col>
         </Row>
       </Card>
@@ -443,6 +513,7 @@ const AdvancedForm = ({
                     initialValue: item.alertQty,
                     rules: [
                       {
+                        required: getFieldValue('trackQty'),
                         pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                         message: '0-9'
                       }
@@ -467,7 +538,7 @@ const AdvancedForm = ({
                     initialValue: item.active || true
                   })(<Checkbox>Active</Checkbox>)}
                 </FormItem>
-                <FormItem label="Sell Under Cost" {...formItemLayout}>
+                <FormItem label="Under Cost" {...formItemLayout}>
                   {getFieldDecorator('exception01', {
                     valuePropName: 'checked',
                     initialValue: item.exception01
@@ -483,6 +554,26 @@ const AdvancedForm = ({
                       </Button>
                     </Upload>
                   )}
+                </FormItem>
+                <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('usageTimePeriod', {
+                    initialValue: item.usageTimePeriod,
+                    rules: [
+                      {
+                        pattern: /^(?:0|[1-9][0-9]{0,10})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber {...InputNumberProps} min={0} maxLength={10} placeholder="day(s)" style={{ width: '36%' }} />)}
+                  {getFieldDecorator('usageMileage', {
+                    initialValue: item.usageMileage,
+                    rules: [
+                      {
+                        pattern: /^(?:0|[1-9][0-9]{0,15})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
                 </FormItem>
                 {/* <FormItem label="Aspect Ratio" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('aspectRatio', {
@@ -512,6 +603,7 @@ const AdvancedForm = ({
       </FooterToolbar>
       {modalVariantVisible && <Variant {...modalVariantProps} />}
       {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
+      {modalProductVisible && <Stock {...modalProductProps} />}
     </Form>
   )
 }

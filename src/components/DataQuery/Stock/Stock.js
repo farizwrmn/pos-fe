@@ -1,41 +1,76 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Table, Modal, Form, Input, Button } from 'antd'
+import { Table, Modal, Tag, Form, Input, Button, Icon } from 'antd'
+import { numberFormat } from 'utils'
+import styles from '../../../themes/index.less'
+
+const { formatNumberIndonesia } = numberFormat
 
 const FormItem = Form.Item
 
-const Variant = ({
+const Stock = ({
   dispatch,
   className,
+  loading,
   visible = false,
   columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id'
+    },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode'
-    }, {
+    },
+    {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName'
-    }, {
-      title: 'Variant',
-      dataIndex: 'name',
-      key: 'name'
+    },
+    {
+      title: 'Sell Price',
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
+      className: styles.alignRight,
+      render: text => formatNumberIndonesia(text)
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text) => {
+        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'count',
+      key: 'count',
+      width: '50px',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loading.effects['pos/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
     }
   ],
   isModal = true,
   enableFilter = true,
   showPagination = true,
   onRowClick,
-  variantStock,
+  pos,
   ...tableProps
 }) => {
-  const { searchText, listVariantStock, pagination } = variantStock
+  const { searchText, listProduct, pagination } = pos
   // const { pagination } = tableProps
   const handleSearch = () => {
     dispatch({
-      type: 'variantStock/query',
+      type: 'pos/getProducts',
       payload: {
         page: 1,
         pageSize: 10,
@@ -47,7 +82,7 @@ const Variant = ({
     const { value } = e.target
 
     dispatch({
-      type: 'variantStock/updateState',
+      type: 'pos/updateState',
       payload: {
         searchText: value
       }
@@ -55,15 +90,13 @@ const Variant = ({
   }
   const handleReset = () => {
     dispatch({
-      type: 'variantStock/query',
+      type: 'pos/getProducts',
       payload: {
-        page: 1,
-        pageSize: pagination.pageSize,
-        q: null
+        page: 1
       }
     })
     dispatch({
-      type: 'variantStock/updateState',
+      type: 'pos/updateState',
       payload: {
         searchText: null
       }
@@ -71,11 +104,11 @@ const Variant = ({
   }
   const changeProduct = (page) => {
     dispatch({
-      type: 'variantStock/query',
+      type: 'pos/getProducts',
       payload: {
-        q: searchText,
-        page: page.current,
-        pageSize: page.pageSize
+        q: searchText === '' ? null : searchText,
+        page: Number(page.current),
+        pageSize: Number(page.pageSize)
       }
     })
   }
@@ -85,7 +118,6 @@ const Variant = ({
       {isModal && <Modal
         className={className}
         visible={visible}
-        title="Search Variant"
         width="80%"
         height="80%"
         footer={null}
@@ -93,7 +125,7 @@ const Variant = ({
       >
         {enableFilter && <Form layout="inline">
           <FormItem>
-            <Input placeholder="Search Variant"
+            <Input placeholder="Search Product"
               value={searchText}
               onChange={e => handleChange(e)}
               onPressEnter={handleSearch}
@@ -104,17 +136,19 @@ const Variant = ({
             <Button type="primary" onClick={handleSearch}>Search</Button>
           </FormItem>
           <FormItem>
-            <Button onClick={handleReset}>Reset</Button>
+            <Button type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
         </Form>}
         <Table
           {...tableProps}
           pagination={showPagination ? pagination : false}
-          dataSource={listVariantStock}
+          dataSource={listProduct}
+          loading={loading.effects['pos/getProducts']}
           bordered
           columns={columns}
           simple
           onChange={changeProduct}
+          rowKey={record => record.id}
           onRowClick={onRowClick}
         />
       </Modal>}
@@ -123,7 +157,7 @@ const Variant = ({
           {enableFilter && <Form layout="inline">
             <FormItem>
               <Input
-                placeholder="Search Variant"
+                placeholder="Search Product"
                 autoFocus
                 value={searchText}
                 onChange={e => handleChange(e)}
@@ -141,11 +175,13 @@ const Variant = ({
           <Table
             {...tableProps}
             pagination={showPagination ? pagination : false}
-            dataSource={listVariantStock}
+            dataSource={listProduct}
             bordered
+            loading={loading.effects['pos/getProducts']}
             columns={columns}
             simple
             onChange={changeProduct}
+            rowKey={record => record.id}
             onRowClick={onRowClick}
           />
         </div>)
@@ -154,9 +190,10 @@ const Variant = ({
   )
 }
 
-Variant.propTypes = {
+Stock.propTypes = {
   form: PropTypes.object.isRequired,
-  variantStock: PropTypes.object.isRequired
+  pos: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired
 }
 
-export default connect(({ variantStock }) => ({ variantStock }))(Variant)
+export default connect(({ pos, loading }) => ({ pos, loading }))(Stock)

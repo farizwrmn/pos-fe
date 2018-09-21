@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/master/productstock'
+import { add as addVariantStock } from '../../services/master/variantStock'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -143,6 +144,16 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
+        let loadData = {}
+        if (payload.data.useVariant) {
+          loadData = {
+            productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,
+            productId: data.stock.id,
+            variantId: payload.data.variantId
+          }
+          console.log('loadData', loadData)
+          yield call(addVariantStock, loadData)
+        }
         // yield put({ type: 'query' })
         success()
         yield put({

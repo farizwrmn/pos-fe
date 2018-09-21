@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/variant'
+import { query, add, edit, remove } from '../../services/master/variantStock'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -9,13 +9,13 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'variant',
+  namespace: 'variantStock',
 
   state: {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listVariant: [],
+    listVariantStock: [],
     pagination: {
       current: 1
     }
@@ -54,7 +54,24 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listVariant: data.data,
+            listVariantStock: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessCounter',
+          payload: {
+            listVariantStock: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -104,7 +121,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ variant }) => variant.currentItem.id)
+      const id = yield select(({ variantStock }) => variantStock.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -139,10 +156,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listVariant, pagination } = action.payload
+      const { listVariantStock, pagination } = action.payload
       return {
         ...state,
-        listVariant,
+        listVariantStock,
         pagination: {
           ...state.pagination,
           ...pagination

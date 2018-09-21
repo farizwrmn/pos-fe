@@ -16,7 +16,7 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ variant, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list,
     // listItem, update,
     changed,
@@ -37,8 +37,10 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
     stockLoading,
     advancedForm,
     modalVariantVisible,
-    modalSpecificationVisible
+    modalSpecificationVisible,
+    modalProductVisible
   } = productstock
+  const { listVariant } = variant
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const { user, storeInfo } = app
@@ -190,12 +192,14 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
   const formProps = {
     listCategory,
     listBrand,
+    listVariant,
     modalType,
     mode,
     item: currentItem,
     loadingButton: loading,
     modalVariantVisible,
     modalSpecificationVisible,
+    modalProductVisible,
     dispatch,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -216,11 +220,28 @@ const ProductStock = ({ productstock, productcategory, productbrand, loading, di
         }
       })
     },
+    showVariantId () {
+      dispatch({
+        type: 'variant/query',
+        payload: {
+          type: 'all',
+          field: 'id,name'
+        }
+      })
+    },
     showSpecification () {
       dispatch({
         type: 'productstock/updateState',
         payload: {
           modalSpecificationVisible: true
+        }
+      })
+    },
+    showProductModal () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalProductVisible: true
         }
       })
     },
@@ -494,10 +515,11 @@ ProductStock.propTypes = {
   productstock: PropTypes.object,
   productcategory: PropTypes.object,
   productbrand: PropTypes.object,
+  variant: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ productstock, productcategory, productbrand, loading, app }) => ({ productstock, productcategory, productbrand, loading, app }))(ProductStock)
+export default connect(({ productstock, productcategory, productbrand, variant, loading, app }) => ({ productstock, productcategory, productbrand, variant, loading, app }))(ProductStock)

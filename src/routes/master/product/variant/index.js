@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Variant = ({ variant, loading, dispatch, location, app }) => {
-  const { listAccountCode, pagination, modalType, currentItem, activeKey } = variant
+  const { listVariant, pagination, modalType, currentItem, activeKey } = variant
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -24,7 +24,7 @@ const Variant = ({ variant, loading, dispatch, location, app }) => {
   }
 
   const listProps = {
-    dataSource: listAccountCode,
+    dataSource: listVariant,
     user,
     storeInfo,
     pagination,
@@ -75,7 +75,7 @@ const Variant = ({ variant, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'variant/updateState', payload: { listAccountCode: [] } })
+    dispatch({ type: 'variant/updateState', payload: { listVariant: [] } })
   }
 
   const clickBrowse = () => {
