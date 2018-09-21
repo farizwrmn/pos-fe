@@ -74,6 +74,7 @@ const Stock = ({
       payload: {
         page: 1,
         pageSize: 10,
+        lov: 'variant',
         q: searchText
       }
     })
@@ -92,7 +93,8 @@ const Stock = ({
     dispatch({
       type: 'pos/getProducts',
       payload: {
-        page: 1
+        page: 1,
+        lov: 'variant'
       }
     })
     dispatch({
@@ -107,6 +109,7 @@ const Stock = ({
       type: 'pos/getProducts',
       payload: {
         q: searchText === '' ? null : searchText,
+        lov: 'variant',
         page: Number(page.current),
         pageSize: Number(page.pageSize)
       }

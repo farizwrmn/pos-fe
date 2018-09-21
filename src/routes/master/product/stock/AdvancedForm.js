@@ -98,7 +98,6 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      console.log('errors', errors)
       const data = {
         ...getFieldsValue()
       }
@@ -293,11 +292,13 @@ const AdvancedForm = ({
     dispatch({
       type: 'pos/getProducts',
       payload: {
-        page: 1
+        page: 1,
+        lov: 'variant'
       }
     })
     showProductModal()
   }
+  const variantIdFromItem = !!item.variantId
 
   return (
     <Form layout="horizontal">
@@ -379,18 +380,18 @@ const AdvancedForm = ({
               })(<Input />)}
             </FormItem>
 
-            {modalType === 'add' &&
+            {(modalType === 'add' || !(variantIdFromItem)) &&
               <FormItem
                 label="Use Variant"
                 {...formItemLayout}
               >
                 {getFieldDecorator('useVariant', {
                   valuePropName: 'checked',
-                  initialValue: item.useVariant
+                  initialValue: item.useVariant || !!item.variantId
                 })(<Checkbox>Use Variant</Checkbox>)}
               </FormItem>}
 
-            {modalType === 'add' && getFieldValue('useVariant') &&
+            {(modalType === 'add' || !(variantIdFromItem)) && getFieldValue('useVariant') &&
               (
                 <div>
                   <FormItem
@@ -401,7 +402,7 @@ const AdvancedForm = ({
                   >
                     {getFieldDecorator('variant', {
                       valuePropName: 'checked',
-                      initialValue: item.variant ? item.variant : modalType === 'add'
+                      initialValue: (item.variant ? item.variant : modalType === 'add') || !!item.variantId
                     })(<Checkbox>{getFieldValue('variant') ? 'New' : 'Old'} Product</Checkbox>)}
                     {!getFieldValue('variant') &&
                       (<span>
