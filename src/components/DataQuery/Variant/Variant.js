@@ -25,6 +25,7 @@ const Variant = ({
     }
   ],
   isModal = true,
+  item = {},
   enableFilter = true,
   showPagination = true,
   onRowClick,
@@ -32,16 +33,20 @@ const Variant = ({
   ...tableProps
 }) => {
   const { searchText, listVariantStock, pagination } = variantStock
+
   // const { pagination } = tableProps
   const handleSearch = () => {
-    dispatch({
-      type: 'variantStock/query',
-      payload: {
-        page: 1,
-        pageSize: 10,
-        q: searchText
-      }
-    })
+    if (item.productParentId) {
+      dispatch({
+        type: 'variantStock/query',
+        payload: {
+          page: 1,
+          pageSize: 10,
+          q: searchText,
+          productParentId: item.productParentId
+        }
+      })
+    }
   }
   const handleChange = (e) => {
     const { value } = e.target
@@ -54,14 +59,17 @@ const Variant = ({
     })
   }
   const handleReset = () => {
-    dispatch({
-      type: 'variantStock/query',
-      payload: {
-        page: 1,
-        pageSize: pagination.pageSize,
-        q: null
-      }
-    })
+    if (item.productParentId) {
+      dispatch({
+        type: 'variantStock/query',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: null,
+          productParentId: item.productParentId
+        }
+      })
+    }
     dispatch({
       type: 'variantStock/updateState',
       payload: {
@@ -70,14 +78,17 @@ const Variant = ({
     })
   }
   const changeProduct = (page) => {
-    dispatch({
-      type: 'variantStock/query',
-      payload: {
-        q: searchText,
-        page: page.current,
-        pageSize: page.pageSize
-      }
-    })
+    if (item.productParentId) {
+      dispatch({
+        type: 'variantStock/query',
+        payload: {
+          q: searchText,
+          productParentId: item.productParentId,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      })
+    }
   }
 
   return (

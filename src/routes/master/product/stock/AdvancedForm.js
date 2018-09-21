@@ -49,6 +49,7 @@ const AdvancedForm = ({
   modalVariantVisible,
   modalSpecificationVisible,
   modalProductVisible,
+  editItemProductById,
   dispatch,
   modalType,
   button,
@@ -109,6 +110,10 @@ const AdvancedForm = ({
         message.warning('Must Choose Variant')
         return
       }
+      data.categoryName = data.categoryId ? data.categoryId.label : null
+      data.categoryId = data.categoryId ? data.categoryId.key : null
+      data.brandName = data.brandId ? data.brandId.label : null
+      data.brandId = data.brandId ? data.brandId.key : null
       data.variantId = data.variantId ? data.variantId.key : null
       data.variantName = data.variantId ? data.variantId.label : null
       data.productParentId = item.productParentId
@@ -172,7 +177,8 @@ const AdvancedForm = ({
 
   const modalVariantProps = {
     location,
-    loading: loadingButton.effects['variant/query'],
+    item,
+    loading: loadingButton.effects['variantStock/query'] || loadingButton.effects['productstock/queryItemById'],
     visible: modalVariantVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -185,7 +191,7 @@ const AdvancedForm = ({
       })
     },
     onRowClick (item) {
-      console.log('item', item)
+      editItemProductById(item)
 
       // const data = getFieldsValue()
       // dispatch({
@@ -262,6 +268,10 @@ const AdvancedForm = ({
     },
     onRowClick (item) {
       const data = getFieldsValue()
+      data.brandName = data.brandId.label
+      data.brandId = data.brandId.key
+      data.categoryName = data.categoryId.label
+      data.categoryId = data.categoryId.key
       dispatch({
         type: 'productstock/updateState',
         payload: {
@@ -277,9 +287,13 @@ const AdvancedForm = ({
   }
   const handleShowVariant = () => {
     dispatch({
-      type: 'variantStock/queryLov'
+      type: 'variantStock/query',
+      payload: {
+        type: 'all',
+        productParentId: item.productParentId
+      }
     })
-    showVariant()
+    showVariant(item)
   }
   const handleShowSpecification = () => {
     dispatch({
@@ -329,41 +343,50 @@ const AdvancedForm = ({
                 ]
               })(<Input maxLength={50} />)}
             </FormItem>
-            <FormItem label="Category ID" hasFeedback {...formItemLayout}>
+            <FormItem label="Category" hasFeedback {...formItemLayout}>
               {getFieldDecorator('categoryId', {
-                initialValue: item.categoryId,
+                initialValue: item.categoryId ? {
+                  key: item.categoryId,
+                  label: item.categoryName
+                } : {},
                 rules: [
                   {
                     required: true
                   }
                 ]
               })(<Select
-                optionFilterProp="children"
+                showSearch
                 onFocus={() => category()}
-                mode="default"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >{productCategory}
               </Select>)}
             </FormItem>
-            <FormItem label="Merk" hasFeedback {...formItemLayout}>
+            <FormItem label="Brand" hasFeedback {...formItemLayout}>
               {getFieldDecorator('brandId', {
-                initialValue: item.brandId,
+                initialValue: item.brandId ? {
+                  key: item.brandId,
+                  label: item.brandName
+                } : {},
                 rules: [
                   {
                     required: true
                   }
                 ]
               })(<Select
-                optionFilterProp="children"
+                showSearch
+                allowClear
                 onFocus={() => brand()}
-                mode="default"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >{productBrand}
               </Select>)}
             </FormItem>
             <FormItem label="Manage" {...formItemLayout}>
               <Button.Group>
-                {modalType === 'edit' && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
+                {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
                 <Button onClick={handleShowSpecification}>Specification</Button>
               </Button.Group>
             </FormItem>
@@ -380,18 +403,18 @@ const AdvancedForm = ({
               })(<Input />)}
             </FormItem>
 
-            {(modalType === 'add' || !(variantIdFromItem)) &&
+            {(modalType === 'add' || !variantIdFromItem) &&
               <FormItem
                 label="Use Variant"
                 {...formItemLayout}
               >
                 {getFieldDecorator('useVariant', {
                   valuePropName: 'checked',
-                  initialValue: item.useVariant || !!item.variantId
+                  initialValue: !!item.useVariant || !!item.variantId
                 })(<Checkbox>Use Variant</Checkbox>)}
               </FormItem>}
 
-            {(modalType === 'add' || !(variantIdFromItem)) && getFieldValue('useVariant') &&
+            {(modalType === 'add' || !variantIdFromItem) && getFieldValue('useVariant') &&
               (
                 <div>
                   <FormItem
@@ -506,7 +529,7 @@ const AdvancedForm = ({
                 <FormItem label="Track Qty" {...formItemLayout}>
                   {getFieldDecorator('trackQty', {
                     valuePropName: 'checked',
-                    initialValue: item.trackQty
+                    initialValue: !!item.trackQty
                   })(<Checkbox>Track</Checkbox>)}
                 </FormItem>
                 <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
@@ -536,13 +559,13 @@ const AdvancedForm = ({
                 <FormItem label="Status" {...formItemLayout}>
                   {getFieldDecorator('active', {
                     valuePropName: 'checked',
-                    initialValue: item.active || true
+                    initialValue: !!item.active
                   })(<Checkbox>Active</Checkbox>)}
                 </FormItem>
                 <FormItem label="Under Cost" {...formItemLayout}>
                   {getFieldDecorator('exception01', {
                     valuePropName: 'checked',
-                    initialValue: item.exception01
+                    initialValue: !!item.exception01
                   })(<Checkbox>Allow</Checkbox>)}
                 </FormItem>
                 <FormItem label="Image" {...formItemLayout}>

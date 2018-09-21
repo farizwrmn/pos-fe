@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/master/productstock'
+import { query, queryById, add, edit, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { pageModel } from './../common'
 
@@ -130,6 +130,20 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryItemById ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.productstock)
@@ -151,7 +165,6 @@ export default modelExtend(pageModel, {
             productId: data.stock.id,
             variantId: payload.data.variantId
           }
-          console.log('loadData', loadData)
           yield call(addVariantStock, loadData)
         }
         // yield put({ type: 'query' })
@@ -179,7 +192,16 @@ export default modelExtend(pageModel, {
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
+      let loadData = {}
       if (data.success) {
+        if (payload.data.useVariant) {
+          loadData = {
+            productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,
+            productId: data.stock.id,
+            variantId: payload.data.variantId
+          }
+          yield call(addVariantStock, loadData)
+        }
         success()
         yield put({
           type: 'updateState',

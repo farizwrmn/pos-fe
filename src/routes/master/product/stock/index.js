@@ -220,6 +220,30 @@ const ProductStock = ({ variant, productstock, productcategory, productbrand, lo
         }
       })
     },
+    editItemProductById (item) {
+      dispatch({
+        type: 'productstock/queryItemById',
+        payload: {
+          id: item.productCode
+        }
+      })
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalType: 'edit',
+          modalVariantVisible: false,
+          activeKey: '0',
+          disable: 'disabled'
+        }
+      })
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+    },
     showVariantId () {
       dispatch({
         type: 'variant/query',
