@@ -49,6 +49,7 @@ const AdvancedForm = ({
   modalVariantVisible,
   modalSpecificationVisible,
   modalProductVisible,
+  listVariantStock,
   editItemProductById,
   dispatch,
   modalType,
@@ -89,10 +90,36 @@ const AdvancedForm = ({
     }
   }
 
+  const onChangeCheckBox = (e) => {
+    if (e.target.checked) {
+      dispatch({
+        type: 'variantStock/updateState',
+        payload: {
+          listVariantStock: []
+        }
+      })
+    }
+  }
+
   const handleCancel = () => {
     onCancel()
+    dispatch({
+      type: 'variantStock/updateState',
+      payload: {
+        listVariantStock: []
+      }
+    })
     resetFields()
   }
+  const existVariant = listVariantStock.map(x => x.variantId)
+
+  const availableVariant = listVariant.map((x) => {
+    console.log('x', x, existVariant.indexOf(x.id))
+    if (existVariant.indexOf(x.id) > -1) {
+      return {}
+    }
+    return x
+  }).filter(x => !!x.id)
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -114,8 +141,8 @@ const AdvancedForm = ({
       data.categoryId = data.categoryId ? data.categoryId.key : null
       data.brandName = data.brandId ? data.brandId.label : null
       data.brandId = data.brandId ? data.brandId.key : null
-      data.variantId = data.variantId ? data.variantId.key : null
       data.variantName = data.variantId ? data.variantId.label : null
+      data.variantId = data.variantId ? data.variantId.key : null
       data.productParentId = item.productParentId
       data.productParentName = item.productParentName
       data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
@@ -153,7 +180,7 @@ const AdvancedForm = ({
 
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
-  const productVariant = (listVariant || []).length > 0 ? listVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
+  const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
   const changeProductCode = (e) => {
     const { value } = e.target
@@ -191,7 +218,13 @@ const AdvancedForm = ({
       })
     },
     onRowClick (item) {
-      editItemProductById(item)
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          editItemProductById(item)
+        }
+      })
 
       // const data = getFieldsValue()
       // dispatch({
@@ -268,6 +301,7 @@ const AdvancedForm = ({
     },
     onRowClick (item) {
       const data = getFieldsValue()
+      data.variantId = null
       data.brandName = data.brandId.label
       data.brandId = data.brandId.key
       data.categoryName = data.categoryId.label
@@ -283,17 +317,28 @@ const AdvancedForm = ({
           }
         }
       })
+      dispatch({
+        type: 'variantStock/query',
+        payload: {
+          type: 'all',
+          productParentId: item.id
+        }
+      })
     }
   }
   const handleShowVariant = () => {
-    dispatch({
-      type: 'variantStock/query',
-      payload: {
-        type: 'all',
-        productParentId: item.productParentId
-      }
-    })
-    showVariant(item)
+    if (item.variantId) {
+      dispatch({
+        type: 'variantStock/query',
+        payload: {
+          type: 'all',
+          productParentId: item.productParentId
+        }
+      })
+      showVariant(item)
+    } else {
+      message.info("this product doensn't have variant")
+    }
   }
   const handleShowSpecification = () => {
     dispatch({
@@ -312,7 +357,7 @@ const AdvancedForm = ({
     })
     showProductModal()
   }
-  const variantIdFromItem = !!item.variantId
+  const variantIdFromItem = modalType === 'edit' && !!item.variantId
 
   return (
     <Form layout="horizontal">
@@ -387,7 +432,7 @@ const AdvancedForm = ({
             <FormItem label="Manage" {...formItemLayout}>
               <Button.Group>
                 {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
-                <Button onClick={handleShowSpecification}>Specification</Button>
+                <Button disabled={!getFieldValue('categoryId')} onClick={handleShowSpecification}>Specification</Button>
               </Button.Group>
             </FormItem>
           </Col>
@@ -426,7 +471,7 @@ const AdvancedForm = ({
                     {getFieldDecorator('variant', {
                       valuePropName: 'checked',
                       initialValue: (item.variant ? item.variant : modalType === 'add') || !!item.variantId
-                    })(<Checkbox>{getFieldValue('variant') ? 'New' : 'Old'} Product</Checkbox>)}
+                    })(<Checkbox onChange={onChangeCheckBox}>{getFieldValue('variant') ? 'New' : 'Old'} Product</Checkbox>)}
                     {!getFieldValue('variant') &&
                       (<span>
                         <Button type="primary" onClick={handleShowProduct}>Product</Button>

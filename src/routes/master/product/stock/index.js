@@ -16,7 +16,8 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ variant, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+  const { listVariantStock } = variantStock
   const { list,
     // listItem, update,
     changed,
@@ -190,6 +191,7 @@ const ProductStock = ({ variant, productstock, productcategory, productbrand, lo
   }
 
   const formProps = {
+    listVariantStock,
     listCategory,
     listBrand,
     listVariant,
@@ -537,6 +539,7 @@ const ProductStock = ({ variant, productstock, productcategory, productbrand, lo
 
 ProductStock.propTypes = {
   productstock: PropTypes.object,
+  variantStock: PropTypes.object,
   productcategory: PropTypes.object,
   productbrand: PropTypes.object,
   variant: PropTypes.object,
@@ -546,4 +549,4 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ productstock, productcategory, productbrand, variant, loading, app }) => ({ productstock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

@@ -5,8 +5,8 @@ import { query, queryById, add, edit, remove } from '../../services/master/produ
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { pageModel } from './../common'
 
-const success = () => {
-  message.success('Stock Product has been saved')
+const success = (messages) => {
+  message.success(messages)
 }
 
 export default modelExtend(pageModel, {
@@ -168,7 +168,7 @@ export default modelExtend(pageModel, {
           yield call(addVariantStock, loadData)
         }
         // yield put({ type: 'query' })
-        success()
+        success('Stock Product has been saved')
         yield put({
           type: 'updateState',
           payload: {
@@ -197,28 +197,63 @@ export default modelExtend(pageModel, {
         if (payload.data.useVariant) {
           loadData = {
             productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,
+            productParentName: payload.data.productParentName,
             productId: data.stock.id,
-            variantId: payload.data.variantId
+            productName: payload.data.productName,
+            variantId: payload.data.variantId,
+            variantName: payload.data.variantName
           }
-          yield call(addVariantStock, loadData)
+          const dataVariant = yield call(addVariantStock, loadData)
+          if (dataVariant.success) {
+            success('Stock Product has been saved')
+            success('Variant Product has been saved')
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalType: 'add',
+                currentItem: {},
+                activeKey: '1'
+              }
+            })
+            const { pathname } = location
+            yield put(routerRedux.push({
+              pathname,
+              query: {
+                activeKey: '1'
+              }
+            }))
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                currentItem: {
+                  ...payload.data,
+                  variantId: null,
+                  variantName: null
+                }
+              }
+            })
+            throw dataVariant
+          }
+        } else {
+          success('Stock Product has been saved')
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {},
+              activeKey: '1'
+            }
+          })
+          const { pathname } = location
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '1'
+            }
+          }))
+          yield put({ type: 'query' })
         }
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
