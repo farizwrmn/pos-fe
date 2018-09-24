@@ -9,16 +9,50 @@ const Specification = ({
   dispatch,
   className,
   visible = false,
-  columns = [
+  isModal = true,
+  enableFilter = true,
+  showPagination = true,
+  onRowClick,
+  specification,
+  specificationStock,
+  modalType,
+  editListItem,
+  ...tableProps
+}) => {
+  let searchText = null
+  let listSpecificationCode = []
+  let pagination = {}
+  if (modalType === 'add') {
+    searchText = specification.searchText
+    listSpecificationCode = specification.listSpecification
+    pagination = specification.pagination
+  } else if (modalType === 'edit') {
+    searchText = specificationStock.searchText
+    listSpecificationCode = specificationStock.listSpecificationCode
+    pagination = specificationStock.pagination
+  }
+
+  const handleChangeInput = (e) => {
+    const { name, id, value } = e.target
+    editListItem(name || id, value)
+  }
+
+  const InputComponent = (text, record) => (
+    <div key={record.id} onClick={(e) => { e.stopPropagation() }} >
+      <Input placeholder="Insert a value" key={record.id} id={record.id} value={record.value || null} onChange={value => handleChangeInput(value)} />
+    </div>
+  )
+
+  const columns = [
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode'
+      title: 'Category Code',
+      dataIndex: 'categoryCode',
+      key: 'categoryCode'
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName'
+      title: 'Category Name',
+      dataIndex: 'categoryName',
+      key: 'categoryName'
     },
     {
       title: 'Specification',
@@ -28,18 +62,13 @@ const Specification = ({
     {
       title: 'Value',
       dataIndex: 'value',
-      key: 'value'
+      key: 'value',
+      render: (text, record) => {
+        return InputComponent(null, record)
+      }
     }
-  ],
-  isModal = true,
-  enableFilter = true,
-  showPagination = true,
-  onRowClick,
-  specificationStock,
-  ...tableProps
-}) => {
-  const { searchText, listSpecificationCode, pagination } = specificationStock
-  // const { pagination } = tableProps
+  ]
+
   const handleSearch = () => {
     dispatch({
       type: 'specificationStock/query',
@@ -92,7 +121,7 @@ const Specification = ({
       {isModal && <Modal
         className={className}
         visible={visible}
-        title="Search Specification"
+        title="Specification"
         width="80%"
         height="80%"
         footer={null}
@@ -163,7 +192,8 @@ const Specification = ({
 
 Specification.propTypes = {
   form: PropTypes.object.isRequired,
-  specificationStock: PropTypes.object.isRequired
+  specificationStock: PropTypes.object.isRequired,
+  specification: PropTypes.object.isRequired
 }
 
-export default connect(({ specificationStock }) => ({ specificationStock }))(Specification)
+export default connect(({ specificationStock, specification }) => ({ specificationStock, specification }))(Specification)

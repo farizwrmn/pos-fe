@@ -16,7 +16,7 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ specification, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listVariantStock } = variantStock
   const { list,
     // listItem, update,
@@ -41,6 +41,8 @@ const ProductStock = ({ variant, variantStock, productstock, productcategory, pr
     modalSpecificationVisible,
     modalProductVisible
   } = productstock
+  const { listSpecification } = specification
+  const { listSpecificationCode } = specificationStock
   const { listVariant } = variant
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -114,6 +116,13 @@ const ProductStock = ({ variant, variantStock, productstock, productcategory, pr
       }))
     },
     editItem (item) {
+      dispatch({
+        type: 'specificationStock/query',
+        payload: {
+          productId: item.id
+        }
+      })
+
       dispatch({
         type: 'productstock/updateState',
         payload: {
@@ -191,6 +200,8 @@ const ProductStock = ({ variant, variantStock, productstock, productcategory, pr
   }
 
   const formProps = {
+    listSpecification,
+    listSpecificationCode,
     listVariantStock,
     listCategory,
     listBrand,
@@ -538,6 +549,8 @@ const ProductStock = ({ variant, variantStock, productstock, productcategory, pr
 }
 
 ProductStock.propTypes = {
+  specification: PropTypes.object,
+  specificationStock: PropTypes.object,
   productstock: PropTypes.object,
   variantStock: PropTypes.object,
   productcategory: PropTypes.object,
@@ -549,4 +562,4 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

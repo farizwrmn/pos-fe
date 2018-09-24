@@ -62,6 +62,8 @@ const AdvancedForm = ({
   showVariant,
   showVariantId,
   showSpecification,
+  listSpecification,
+  listSpecificationCode,
   showProductModal,
   form: {
     getFieldDecorator,
@@ -109,12 +111,24 @@ const AdvancedForm = ({
         listVariantStock: []
       }
     })
+
+    dispatch({
+      type: 'specificationStock/updateState',
+      payload: {
+        listSpecificationCode: []
+      }
+    })
+    dispatch({
+      type: 'specification/updateState',
+      payload: {
+        listSpecification: []
+      }
+    })
     resetFields()
   }
   const existVariant = listVariantStock.map(x => x.variantId)
 
   const availableVariant = listVariant.map((x) => {
-    console.log('x', x, existVariant.indexOf(x.id))
     if (existVariant.indexOf(x.id) > -1) {
       return {}
     }
@@ -170,8 +184,35 @@ const AdvancedForm = ({
     showBrands()
   }
 
+  const handleShowSpecification = () => {
+    showSpecification()
+  }
+
   const category = () => {
+    dispatch({
+      type: 'specificationStock/updateState',
+      payload: {
+        listSpecificationCode: []
+      }
+    })
+    dispatch({
+      type: 'specification/updateState',
+      payload: {
+        listSpecification: []
+      }
+    })
     showCategories()
+  }
+
+  const handleChangeCategoryId = (e) => {
+    if (modalType === 'add' && e.key && listSpecification.length === 0) {
+      dispatch({
+        type: 'specification/query',
+        payload: {
+          categoryId: e.key
+        }
+      })
+    }
   }
 
   const variant = () => {
@@ -251,8 +292,46 @@ const AdvancedForm = ({
     location,
     loading: loadingButton.effects['specification/query'],
     visible: modalSpecificationVisible,
+    modalType,
+    enableFilter: false,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
+    editListItem (id, value) {
+      let newListSpecificationStock = []
+      if (modalType === 'add') {
+        newListSpecificationStock = listSpecification.map((x) => {
+          if (x.id === Number(id)) {
+            return {
+              ...x,
+              value
+            }
+          }
+          return x
+        })
+        dispatch({
+          type: 'specification/updateState',
+          payload: {
+            listSpecification: newListSpecificationStock
+          }
+        })
+      } else if (modalType === 'edit') {
+        newListSpecificationStock = listSpecificationCode.map((x) => {
+          if (x.id === Number(id)) {
+            return {
+              ...x,
+              value
+            }
+          }
+          return x
+        })
+        dispatch({
+          type: 'specificationStock/updateState',
+          payload: {
+            listSpecificationCode: newListSpecificationStock
+          }
+        })
+      }
+    },
     onCancel () {
       dispatch({
         type: 'productstock/updateState',
@@ -340,12 +419,6 @@ const AdvancedForm = ({
       message.info("this product doensn't have variant")
     }
   }
-  const handleShowSpecification = () => {
-    dispatch({
-      type: 'specificationStock/queryLov'
-    })
-    showSpecification()
-  }
 
   const handleShowProduct = () => {
     dispatch({
@@ -401,7 +474,9 @@ const AdvancedForm = ({
                 ]
               })(<Select
                 showSearch
+                allowClear
                 onFocus={() => category()}
+                onChange={handleChangeCategoryId}
                 optionFilterProp="children"
                 labelInValue
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
@@ -429,10 +504,10 @@ const AdvancedForm = ({
               >{productBrand}
               </Select>)}
             </FormItem>
-            <FormItem label="Manage" {...formItemLayout}>
+            <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
               <Button.Group>
                 {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
-                <Button disabled={!getFieldValue('categoryId')} onClick={handleShowSpecification}>Specification</Button>
+                <Button disabled={getFieldValue('categoryId') ? !getFieldValue('categoryId').key : null} onClick={handleShowSpecification}>Specification</Button>
               </Button.Group>
             </FormItem>
           </Col>

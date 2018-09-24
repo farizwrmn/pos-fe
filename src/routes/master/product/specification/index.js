@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Specification = ({ specification, productcategory, loading, dispatch, location, app }) => {
-  const { listAccountCode, pagination, modalType, currentItem, activeKey } = specification
+  const { listSpecification, pagination, modalType, currentItem, activeKey } = specification
   const { listCategory } = productcategory
   const { user, storeInfo } = app
   const filterProps = {
@@ -25,7 +25,7 @@ const Specification = ({ specification, productcategory, loading, dispatch, loca
   }
 
   const listProps = {
-    dataSource: listAccountCode,
+    dataSource: listSpecification,
     user,
     storeInfo,
     pagination,
@@ -76,7 +76,7 @@ const Specification = ({ specification, productcategory, loading, dispatch, loca
         activeKey: key
       }
     }))
-    dispatch({ type: 'specification/updateState', payload: { listAccountCode: [] } })
+    dispatch({ type: 'specification/updateState', payload: { listSpecification: [] } })
   }
 
   const clickBrowse = () => {
