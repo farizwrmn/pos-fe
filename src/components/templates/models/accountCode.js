@@ -26,7 +26,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/master/account') {
           dispatch({
@@ -35,7 +35,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') dispatch({ type: 'query', ...other })
           if (activeKey === '0') {
             dispatch({
               type: 'query',
@@ -60,8 +60,8 @@ export default modelExtend(pageModel, {
           payload: {
             listAccountCode: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
           }
