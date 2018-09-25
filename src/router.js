@@ -158,6 +158,13 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/productbrand'))
               cb(null, require('./routes/master/product/stock/'))
             }, 'master-product-stock')

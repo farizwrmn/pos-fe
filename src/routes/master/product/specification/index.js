@@ -31,14 +31,14 @@ const Specification = ({ specification, productcategory, loading, dispatch, loca
     pagination,
     loading: loading.effects['specification/query'],
     location,
-    onChange (page) {
+    onChange (page, pageSize) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
           ...query,
-          page: page.current,
-          pageSize: page.pageSize
+          page: page.current || page,
+          pageSize: page.pageSize || pageSize
         }
       }))
     },
