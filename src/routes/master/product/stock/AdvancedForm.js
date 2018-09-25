@@ -100,6 +100,8 @@ const AdvancedForm = ({
           listVariantStock: []
         }
       })
+    } else {
+      resetFields(['variantId'])
     }
   }
 
@@ -403,6 +405,7 @@ const AdvancedForm = ({
           productParentId: item.id
         }
       })
+      resetFields(['variantId'])
     }
   }
   const handleShowVariant = () => {
@@ -475,6 +478,7 @@ const AdvancedForm = ({
               })(<Select
                 showSearch
                 allowClear
+                disabled={modalType === 'edit'}
                 onFocus={() => category()}
                 onChange={handleChangeCategoryId}
                 optionFilterProp="children"
@@ -679,7 +683,7 @@ const AdvancedForm = ({
                 <FormItem label="Status" {...formItemLayout}>
                   {getFieldDecorator('active', {
                     valuePropName: 'checked',
-                    initialValue: !!item.active
+                    initialValue: item.active === undefined ? true : item.active
                   })(<Checkbox>Active</Checkbox>)}
                 </FormItem>
                 <FormItem label="Under Cost" {...formItemLayout}>

@@ -1,6 +1,6 @@
 import { request, config, crypt } from '../../utils'
 
-const { apiSpecificationStock } = config.rest
+const { apiSpecificationStock, apiSpecificationInsertStock } = config.rest
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -16,6 +16,16 @@ export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${apiSpecificationStock}`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function addSome (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiSpecificationInsertStock}`,
     method: 'post',
     data: params,
     headers: apiHeaderToken

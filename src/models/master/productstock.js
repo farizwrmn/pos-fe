@@ -3,6 +3,7 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, queryById, add, edit, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
+import { addSome as addSomeSpecificationStock } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
 
 const success = (messages) => {
@@ -155,7 +156,10 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
+    * add ({ payload }, { call, put, select }) {
+      const modalType = yield select(({ productstock }) => productstock.modalType)
+      const listSpecification = yield select(({ specification }) => specification.listSpecification)
+
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         let loadData = {}
@@ -167,6 +171,18 @@ export default modelExtend(pageModel, {
           }
           yield call(addVariantStock, loadData)
         }
+        let listSpecificationCode = []
+        if (modalType === 'add') {
+          listSpecificationCode = listSpecification.map((x) => {
+            return {
+              productId: data.stock.id,
+              specificationId: x.id,
+              name: x.name,
+              value: x.value
+            }
+          })
+        }
+        yield call(addSomeSpecificationStock, { data: listSpecificationCode })
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
         yield put({
