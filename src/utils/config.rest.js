@@ -33,6 +33,7 @@ module.exports = {
     apiSpecification: '/stock/specification',
     apiVariantStock: '/stock/variantstock',
     apiSpecificationStock: '/stock/specificationstock',
+    apiSpecificationInsertStock: '/stock/specificationinsstock',
     apiFollowUp: '/followup'
   },
   api: {

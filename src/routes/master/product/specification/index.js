@@ -91,6 +91,7 @@ const Specification = ({ specification, productcategory, loading, dispatch, loca
   const formProps = {
     modalType,
     listCategory,
+    listProps,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
@@ -100,17 +101,26 @@ const Specification = ({ specification, productcategory, loading, dispatch, loca
       })
     },
     onCancel () {
+      dispatch({
+        type: 'specification/updateState',
+        payload: {
+          modalType: 'add',
+          currentItem: {}
+        }
+      })
+    },
+    getItemById (id) {
       const { pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: '1'
+          activeKey: 0
         }
       }))
       dispatch({
-        type: 'specification/updateState',
+        type: 'specification/queryById',
         payload: {
-          currentItem: {}
+          id
         }
       })
     },

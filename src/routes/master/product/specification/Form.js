@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Modal, Select } from 'antd'
+import ListTree from './ListTree'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -34,6 +35,8 @@ const FormCounter = ({
   showCategories,
   productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : [],
   button,
+  listProps,
+  getItemById,
   form: {
     getFieldDecorator,
     validateFields,
@@ -41,6 +44,14 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const editItemById = (id) => {
+    getItemById(id)
+    resetFields()
+  }
+  const listOpts = {
+    editItemById,
+    ...listProps
+  }
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -72,6 +83,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.categoryName = data.categoryId.label
+      data.categoryId = data.categoryId.key
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -95,17 +108,23 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Category" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryId', {
-              initialValue: item.categoryId,
+              initialValue: item.categoryId ? {
+                key: item.categoryId,
+                label: item.categoryName
+              } : {},
               rules: [
                 {
                   required: true
                 }
               ]
             })(<Select
-              optionFilterProp="children"
+              showSearch
+              allowClear
+              disabled={modalType === 'edit'}
               onFocus={() => category()}
-              mode="default"
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              optionFilterProp="children"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >{productCategory}
             </Select>)}
           </FormItem>
@@ -123,6 +142,9 @@ const FormCounter = ({
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
+        </Col>
+        <Col {...column}>
+          <ListTree {...listOpts} />
         </Col>
       </Row>
     </Form>

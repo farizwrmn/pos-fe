@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/specification'
+import { query, queryById, add, edit, remove } from '../../services/master/specification'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -33,16 +32,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-          if (activeKey === '0') {
-            dispatch({
-              type: 'query',
-              payload: {
-                type: 'all',
-                field: 'id,categoryCode,categoryName,name,createdBy,createdAt,updatedBy,updatedAt'
-              }
-            })
-          }
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -64,6 +54,31 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryById ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success) {
+        yield put({
+          type: 'editItem',
+          payload: {
+            item: data.data
+          }
+        })
+        // yield put({
+        //   type: 'querySuccessCounter',
+        //   payload: {
+        //     listSpecification: data.data,
+        //     pagination: {
+        //       current: Number(data.page) || 1,
+        //       pageSize: Number(data.pageSize) || 10,
+        //       total: data.total
+        //     }
+        //   }
+        // })
+      } else {
+        throw data
       }
     },
 
@@ -91,7 +106,7 @@ export default modelExtend(pageModel, {
           type: 'query',
           payload: {
             type: 'all',
-            field: 'id,categoryCode,categoryName,name,createdBy,createdAt,updatedBy,updatedAt'
+            field: 'id,categoryId,categoryCode,categoryName,name,createdBy,createdAt,updatedBy,updatedAt'
           }
         })
       } else {
@@ -116,16 +131,9 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {},
-            activeKey: '1'
+            activeKey: '0'
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
         yield put({ type: 'query' })
       } else {
         yield put({
