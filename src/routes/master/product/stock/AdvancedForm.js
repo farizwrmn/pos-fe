@@ -191,6 +191,22 @@ const AdvancedForm = ({
   }
 
   const category = () => {
+    // dispatch({
+    //   type: 'specificationStock/updateState',
+    //   payload: {
+    //     listSpecificationCode: []
+    //   }
+    // })
+    // dispatch({
+    //   type: 'specification/updateState',
+    //   payload: {
+    //     listSpecification: []
+    //   }
+    // })
+    showCategories()
+  }
+
+  const handleChangeCategoryId = (e) => {
     dispatch({
       type: 'specificationStock/updateState',
       payload: {
@@ -203,11 +219,7 @@ const AdvancedForm = ({
         listSpecification: []
       }
     })
-    showCategories()
-  }
-
-  const handleChangeCategoryId = (e) => {
-    if (modalType === 'add' && e.key && listSpecification.length === 0) {
+    if (modalType === 'add' && (e || {}).key) {
       dispatch({
         type: 'specification/query',
         payload: {
