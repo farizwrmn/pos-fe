@@ -7,7 +7,7 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => {
+const Report = ({ dispatch, posReport, productbrand, productcategory, app, loading }) => {
   const { listPOSCompareSvsI, tableHeader, fromDate, toDate, productCode, category, brand, paramDate, diffDay, selectedBrand } = posReport
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -18,6 +18,7 @@ const Report = ({ dispatch, posReport, productbrand, productcategory, app }) => 
     tableHeader,
     listPOSCompareSvsI,
     storeInfo,
+    loading: loading.effects['posReport/queryCompareSalesInventory'],
     selectedBrand,
     user,
     fromDate,
@@ -117,8 +118,8 @@ Report.propTypes = {
   app: PropTypes.object,
   posReport: PropTypes.object,
   productbrand: PropTypes.object,
-  productcategory: PropTypes.object
-
+  productcategory: PropTypes.object,
+  loading: PropTypes.object.isRequired
 }
 
-export default connect(({ posReport, productbrand, productcategory, app }) => ({ posReport, productbrand, productcategory, app }))(Report)
+export default connect(({ posReport, productbrand, loading, productcategory, app }) => ({ posReport, productbrand, loading, productcategory, app }))(Report)

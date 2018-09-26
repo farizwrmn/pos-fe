@@ -165,10 +165,12 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
             rules: [{ required: true }]
           })(
             <Select
-              mode="default"
+              showSearch
               allowClear
-              labelInValue
               onFocus={() => category()}
+              optionFilterProp="children"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               style={{ width: '100%', height: '32px', marginTop: '5px' }}
             >
               {productCategory}
@@ -184,6 +186,7 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
               onSelect={value => onSelectBrand(value)}
               onDeselect={value => onDeselectBrand(value)}
               onFocus={() => brand()}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               style={{ width: '100%' }}
             >
               {productBrand}
