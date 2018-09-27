@@ -46,6 +46,9 @@ export default modelExtend(pageModel, {
       price2: 'distPrice01',
       alias1: 'Non-Member',
       alias2: 'Member'
+    },
+    pagination: {
+      current: 1
     }
   },
 
