@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message, Modal } from 'antd'
 import { posTotal } from 'utils'
 import { query as querySequence } from '../../services/sequence'
+import { query as queryStock } from '../../services/master/productstock'
 import { query, add, edit, remove, cancel } from '../../services/marketing/bundling'
 import { query as queryRules } from '../../services/marketing/bundlingRules'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
@@ -100,6 +101,43 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * querySomeProducts ({ payload }, { select, call, put }) {
+      const data = yield call(queryStock, { id: payload.selectedRowKeys, field: 'id,productCode,productName', type: 'all' })
+      let listRules = yield select(({ bundling }) => bundling.listRules)
+      if (data.success) {
+        for (let n = 0; n < data.data.length; n += 1) {
+          const exists = listRules.filter(el => el.productId === parseFloat(data.data[n].id))
+          if (exists.length === 0) {
+            listRules.push({
+              no: listRules.length + 1,
+              productId: data.data[n].id,
+              productCode: data.data[n].productCode,
+              productName: data.data[n].productName,
+              type: 'P',
+              qty: 1
+            })
+          } else {
+            listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listRules,
+            modalProductVisible: false
+          }
+        })
+        yield put({
+          type: 'productstock/updateState',
+          payload: {
+            selectedRowKeys: []
           }
         })
       } else {

@@ -42,6 +42,15 @@ export default modelExtend(pageModel, {
               }
             })
           }
+        } else if (pathname === '/marketing/promo') {
+          dispatch({
+            type: 'query',
+            payload: {
+              field: 'id,name',
+              type: 'all',
+              ...other
+            }
+          })
         }
       })
     }

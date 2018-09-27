@@ -1,0 +1,6 @@
+{
+  "name": "ProductFilter",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ProductFilter.js"
+}

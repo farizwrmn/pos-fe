@@ -1,4 +1,5 @@
 import Product from './Product'
+import ProductFilter from './ProductFilter'
 import Service from './Service'
 import Promo from './Promo'
 import PromoProductReward from './PromoProductReward'
@@ -11,6 +12,7 @@ import Stock from './Stock'
 
 export default {
   Product,
+  ProductFilter,
   Service,
   Promo,
   PromoProductReward,

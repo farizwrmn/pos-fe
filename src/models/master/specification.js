@@ -15,6 +15,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listSpecification: [],
+    modalShowSpecificationLovModalVisible: false,
     pagination: {
       current: 1
     }
