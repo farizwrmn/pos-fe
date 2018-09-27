@@ -166,6 +166,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
     />
   )
   const confirmPurchase = () => {
+    hdlChangePercent()
     validateFields((errors) => {
       if (errors) {
         return
