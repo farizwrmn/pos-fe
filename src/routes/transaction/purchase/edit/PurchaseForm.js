@@ -70,7 +70,6 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      console.log('totalDpp', totalDpp)
       x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
@@ -79,6 +78,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
     onDiscPercent(x, data)
   }
   const confirmPurchase = () => {
+    hdlChangePercent()
     validateFields((errors) => {
       if (errors) {
         return
@@ -87,7 +87,8 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      onOk(transNo, dataPurchase, dataVoid, data)
+      const newDataPurchase = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
+      onOk(transNo, newDataPurchase, dataVoid, data)
       resetFields()
     })
   }
