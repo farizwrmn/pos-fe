@@ -222,18 +222,22 @@ const FormCounter = ({
       ary.remove(arrayProd[id])
       arrayProd = []
       for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
+        const data = {
           no: n + 1,
           type: ary[n].type,
           productId: ary[n].productId,
           productCode: ary[n].productCode,
           productName: ary[n].productName,
           qty: ary[n].qty,
+          sellPrice: ary[n].sellPrice,
+          sellingPrice: ary[n].sellingPrice,
           discount: ary[n].discount,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3
-        })
+        }
+        data.total = posTotal(data)
+        arrayProd.push(data)
       }
       deleteList(arrayProd, 1)
     }

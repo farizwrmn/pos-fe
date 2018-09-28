@@ -141,15 +141,22 @@ export default modelExtend(pageModel, {
           for (let n = 0; n < data.data.length; n += 1) {
             const exists = listReward.filter(el => el.productId === parseFloat(data.data[n].id))
             if (exists.length === 0) {
-              listReward.push({
+              const tempData = {
                 no: listReward.length + 1,
                 productId: data.data[n].id,
                 productCode: data.data[n].productCode,
                 productName: data.data[n].productName,
                 sellPrice: data.data[n].sellPrice,
                 type: 'P',
-                qty: 1
-              })
+                qty: 1,
+                sellingPrice: data.data[n].sellPrice,
+                discount: 0,
+                disc1: 0,
+                disc2: 0,
+                disc3: 0
+              }
+              tempData.total = posTotal(tempData)
+              listReward.push(tempData)
             } else {
               listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
             }
