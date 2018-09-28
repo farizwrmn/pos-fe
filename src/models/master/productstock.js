@@ -185,7 +185,9 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        yield call(addSomeSpecificationStock, { data: listSpecificationCode })
+        if ((listSpecificationCode || []).length > 0) {
+          yield call(addSomeSpecificationStock, { data: listSpecificationCode })
+        }
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
         yield put({
