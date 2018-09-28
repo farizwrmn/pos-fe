@@ -34,7 +34,8 @@ module.exports = {
     apiVariantStock: '/stock/variantstock',
     apiSpecificationStock: '/stock/specificationstock',
     apiSpecificationInsertStock: '/stock/specificationinsstock',
-    apiFollowUp: '/followup'
+    apiFollowUp: '/followup',
+    apiSequence: '/sequences'
   },
   api: {
     getIpAddress: '/utils/ipaddr',

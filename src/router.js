@@ -758,6 +758,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-user')
           }
         }, {
+          path: 'setting/sequence',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/sequence'))
+              cb(null, require('./routes/setting/sequence/'))
+            }, 'setting-sequence')
+          }
+        }, {
           path: 'setting/cashier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -920,6 +928,9 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/service'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/specification'))
               cb(null, require('./routes/marketing/bundling'))
             }, 'marketing-bundling')
           }

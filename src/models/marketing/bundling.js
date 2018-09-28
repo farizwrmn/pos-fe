@@ -109,31 +109,59 @@ export default modelExtend(pageModel, {
     },
 
     * querySomeProducts ({ payload }, { select, call, put }) {
-      const data = yield call(queryStock, { id: payload.selectedRowKeys, field: 'id,productCode,productName', type: 'all' })
+      const data = yield call(queryStock, { id: payload.selectedRowKeys, field: 'id,productCode,productName,sellPrice', type: 'all' })
       let listRules = yield select(({ bundling }) => bundling.listRules)
+      let listReward = yield select(({ bundling }) => bundling.listReward)
+      let typeModal = yield select(({ bundling }) => bundling.typeModal)
       if (data.success) {
-        for (let n = 0; n < data.data.length; n += 1) {
-          const exists = listRules.filter(el => el.productId === parseFloat(data.data[n].id))
-          if (exists.length === 0) {
-            listRules.push({
-              no: listRules.length + 1,
-              productId: data.data[n].id,
-              productCode: data.data[n].productCode,
-              productName: data.data[n].productName,
-              type: 'P',
-              qty: 1
-            })
-          } else {
-            listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
+        if (typeModal === 'Rules') {
+          for (let n = 0; n < data.data.length; n += 1) {
+            const exists = listRules.filter(el => el.productId === parseFloat(data.data[n].id))
+            if (exists.length === 0) {
+              listRules.push({
+                no: listRules.length + 1,
+                productId: data.data[n].id,
+                productCode: data.data[n].productCode,
+                productName: data.data[n].productName,
+                type: 'P',
+                qty: 1
+              })
+            } else {
+              listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
+            }
           }
+          yield put({
+            type: 'updateState',
+            payload: {
+              listRules,
+              modalProductVisible: false
+            }
+          })
+        } else if (typeModal === 'Reward') {
+          for (let n = 0; n < data.data.length; n += 1) {
+            const exists = listReward.filter(el => el.productId === parseFloat(data.data[n].id))
+            if (exists.length === 0) {
+              listReward.push({
+                no: listReward.length + 1,
+                productId: data.data[n].id,
+                productCode: data.data[n].productCode,
+                productName: data.data[n].productName,
+                sellPrice: data.data[n].sellPrice,
+                type: 'P',
+                qty: 1
+              })
+            } else {
+              listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
+            }
+          }
+          yield put({
+            type: 'updateState',
+            payload: {
+              listReward,
+              modalProductVisible: false
+            }
+          })
         }
-        yield put({
-          type: 'updateState',
-          payload: {
-            listRules,
-            modalProductVisible: false
-          }
-        })
         yield put({
           type: 'productstock/updateState',
           payload: {

@@ -1,21 +1,21 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/accountCode'
+import { query, add, edit, remove } from '../../services/setting/sequence'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Sequence has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'accountCode',
+  namespace: 'settingSequence',
 
   state: {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listAccountCode: [],
+    listSequence: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/setting/sequence') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -49,7 +49,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listAccountCode: data.data,
+            listSequence: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -71,7 +71,6 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
-      console.log('data', data)
       if (data.success) {
         success()
         yield put({
@@ -131,10 +130,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+      const { listSequence, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listSequence,
         pagination: {
           ...state.pagination,
           ...pagination
