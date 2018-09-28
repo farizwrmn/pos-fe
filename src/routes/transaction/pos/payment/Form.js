@@ -74,6 +74,7 @@ const formPayment = ({
         cashierName: cashierInformation.cashierName,
         ...getFieldsValue()
       }
+      data.amount = parseFloat(data.amount)
       if (modalType === 'add') {
         data.id = listAmount.length + 1
         Modal.confirm({

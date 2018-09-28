@@ -846,12 +846,66 @@ export default {
 
     addMethod (state, action) {
       let { listAmount } = state
+      const exists = listAmount.filter(x => x.typeCode === action.payload.data.typeCode)
+      if (exists.length > 0 && action.payload.data.typeCode === 'C') {
+        Modal.info({
+          title: 'Payment Already Exists and Added',
+          content: 'Please Check Payment'
+        })
+        state.listAmount[exists[0].id - 1].amount = parseFloat(state.listAmount[exists[0].id - 1].amount) + parseFloat(action.payload.data.amount || 0)
+        return { ...state }
+      }
       listAmount.push(action.payload.data)
       return { ...state, listAmount }
     },
 
     editMethod (state, action) {
       let { listAmount } = state
+      const exists = listAmount.filter(x => x.typeCode === action.payload.data.typeCode)
+      if (exists[0].id !== action.payload.data.id && exists.length > 0 && action.payload.data.typeCode === 'C') {
+        Modal.info({
+          title: 'Payment Already Exists and Added',
+          content: 'Please Check Payment'
+        })
+        state.listAmount[exists[0].id - 1].amount = parseFloat(state.listAmount[exists[0].id - 1].amount) + parseFloat(action.payload.data.amount || 0)
+
+        Array.prototype.remove = function () {
+          let what
+          let a = arguments
+          let L = a.length
+          let ax
+          while (L && this.length) {
+            what = a[L -= 1]
+            while ((ax = this.indexOf(what)) !== -1) {
+              this.splice(ax, 1)
+            }
+          }
+          return this
+        }
+        let arrayProd = state.listAmount
+        let ary = arrayProd
+        ary.remove(arrayProd[action.payload.data.id - 1])
+        arrayProd = []
+        for (let n = 0; n < ary.length; n += 1) {
+          arrayProd.push({
+            id: n + 1,
+            amount: ary[n].amount,
+            cardName: ary[n].cardName,
+            cardNo: ary[n].cardNo,
+            cashierName: ary[n].cashierName,
+            cashierTransId: ary[n].cashierTransId,
+            description: ary[n].description,
+            printDate: ary[n].printDate,
+            typeCode: ary[n].typeCode
+          })
+        }
+        return {
+          ...state,
+          listAmount: arrayProd,
+          modalType: 'add',
+          itemPayment: {}
+        }
+      }
       listAmount[action.payload.data.id - 1] = (action.payload.data)
       return { ...state, listAmount, ...action.payload }
     },
