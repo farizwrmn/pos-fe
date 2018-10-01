@@ -90,23 +90,13 @@ const PromoProductReward = ({
   onRowClick,
   bundlingRules,
   bundlingReward,
+  pos,
   ...tableProps
 }) => {
-  const { listRules } = bundlingRules
   const { listReward } = bundlingReward
+  const { listRules } = bundlingRules
   const content = (
     <div>
-      <h3>Rules</h3>
-      <Table
-        {...tableProps}
-        dataSource={listRules}
-        loading={loading.effects['bundlingRules/query']}
-        scroll={{ x: 500, y: 388 }}
-        columns={columnsRules}
-        simple
-        rowKey={record => record.id}
-        onRowClick={onRowClick}
-      />
       <h3>Reward</h3>
       <Table
         {...tableProps}
@@ -114,6 +104,17 @@ const PromoProductReward = ({
         loading={loading.effects['bundlingReward/query']}
         scroll={{ x: 500, y: 388 }}
         columns={columnsReward}
+        simple
+        rowKey={record => record.id}
+        onRowClick={onRowClick}
+      />
+      <h3>Rules</h3>
+      <Table
+        {...tableProps}
+        dataSource={listRules}
+        loading={loading.effects['bundlingRules/query']}
+        scroll={{ x: 500, y: 388 }}
+        columns={columnsRules}
         simple
         rowKey={record => record.id}
         onRowClick={onRowClick}
@@ -192,6 +193,7 @@ const PromoProductReward = ({
 }
 
 PromoProductReward.propTypes = {
+  pos: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   pospromo: PropTypes.object.isRequired,
   promo: PropTypes.object.isRequired,
@@ -200,4 +202,4 @@ PromoProductReward.propTypes = {
   loading: PropTypes.object
 }
 
-export default connect(({ bundlingRules, bundlingReward, pospromo, promo, loading }) => ({ bundlingRules, bundlingReward, pospromo, promo, loading }))(PromoProductReward)
+export default connect(({ pos, bundlingRules, bundlingReward, pospromo, promo, loading }) => ({ pos, bundlingRules, bundlingReward, pospromo, promo, loading }))(PromoProductReward)

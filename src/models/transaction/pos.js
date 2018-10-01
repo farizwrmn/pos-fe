@@ -1837,7 +1837,7 @@ export default {
       return { ...state, ...action.payload, modalProductVisible: true }
     },
     hideProductModal (state) {
-      return { ...state, modalProductVisible: false }
+      return { ...state, modalProductVisible: false, listProduct: [], tmpProductList: [] }
     },
 
 

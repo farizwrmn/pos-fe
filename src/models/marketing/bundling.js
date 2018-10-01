@@ -158,7 +158,7 @@ export default modelExtend(pageModel, {
               tempData.total = posTotal(tempData)
               listReward.push(tempData)
             } else {
-              listRules[exists[0].no - 1].qty = listRules[exists[0].no - 1].qty + 1
+              listReward[exists[0].no - 1].qty = listReward[exists[0].no - 1].qty + 1
             }
           }
           yield put({
