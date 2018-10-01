@@ -3,7 +3,7 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, queryById, add, edit, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
-import { addSome as addSomeSpecificationStock } from '../../services/master/specificationStock'
+import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
 
 const success = (messages) => {
@@ -211,10 +211,35 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
+      const productId = yield select(({ productstock }) => productstock.currentItem.id)
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
+      let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
+      const typeInput = yield select(({ specificationStock }) => specificationStock.typeInput)
       let loadData = {}
       if (data.success) {
+        if ((listSpecificationCode || []).length > 0) {
+          if (typeInput === 'edit') {
+            for (let n = 0; n < listSpecificationCode.length; n += 1) {
+              yield call(editSpecificationStock, {
+                id: listSpecificationCode[n].id,
+                productId: listSpecificationCode[n].productId,
+                specificationId: listSpecificationCode[n].specificationId,
+                value: listSpecificationCode[n].value
+              })
+            }
+          } else if (typeInput === 'add') {
+            listSpecificationCode = listSpecificationCode.map((x) => {
+              return {
+                productId,
+                specificationId: x.id,
+                name: x.name,
+                value: x.value
+              }
+            })
+            yield call(addSomeSpecificationStock, { data: listSpecificationCode })
+          }
+        }
         if (payload.data.useVariant) {
           loadData = {
             productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,

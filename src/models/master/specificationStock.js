@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from '../../services/master/specificationStock'
+import { query as querySpecification } from '../../services/master/specification'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    typeInput: 'edit',
     listSpecificationCode: [],
     pagination: {
       current: 1
@@ -49,19 +51,63 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSpecificationCode: []
+        }
+      })
       const data = yield call(query, payload)
       if (data.success) {
-        yield put({
-          type: 'querySuccessCounter',
-          payload: {
-            listSpecificationCode: data.data,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total
+        if (data.data.length > 0) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              typeInput: 'edit'
             }
+          })
+          yield put({
+            type: 'querySuccessCounter',
+            payload: {
+              listSpecificationCode: data.data,
+              pagination: {
+                current: Number(data.page) || 1,
+                pageSize: Number(data.pageSize) || 10,
+                total: data.total
+              }
+            }
+          })
+        } else {
+          const dataSpecification = yield call(querySpecification, { categoryId: payload.categoryId })
+          if (dataSpecification.success && (dataSpecification.data || []).length > 0) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                typeInput: 'add'
+              }
+            })
+            yield put({
+              type: 'querySuccessCounter',
+              payload: {
+                listSpecificationCode: dataSpecification.data,
+                pagination: {
+                  current: Number(dataSpecification.page) || 1,
+                  pageSize: Number(dataSpecification.pageSize) || 10,
+                  total: dataSpecification.total
+                }
+              }
+            })
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                typeInput: 'edit'
+              }
+            })
           }
-        })
+        }
+      } else {
+        throw data
       }
     },
 

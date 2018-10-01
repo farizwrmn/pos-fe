@@ -119,7 +119,8 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
       dispatch({
         type: 'specificationStock/query',
         payload: {
-          productId: item.id
+          productId: item.id,
+          categoryId: item.categoryId
         }
       })
 
