@@ -235,7 +235,9 @@ const ProductFilter = ({
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
             <FormItem>
-              {getFieldDecorator('variantId')(
+              {getFieldDecorator('variantId', {
+                initialValue: {}
+              })(
                 <Select
                   showSearch
                   allowClear
