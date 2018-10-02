@@ -28,13 +28,9 @@ const decrypt = (text, rdmtxt) => {
 }
 
 const apiheader = () => {
-  try {
-    const idToken = localStorage.getItem(`${prefix}iKen`)
-    apiHeader.Authorization = `JWT ${idToken}`
-    return apiHeader
-  } catch (err) {
-    return null
-  }
+  const idToken = localStorage.getItem(`${prefix}iKen`)
+  apiHeader.Authorization = `JWT ${idToken}`
+  return apiHeader
 }
 
 module.exports = {

@@ -1,8 +1,8 @@
 const compareExistsById = (listSource, resultList) => {
   let currentExists
   for (let n = 0; n < (resultList || []).length; n += 1) {
-    currentExists = listSource.filter(x => x.productId === resultList[n].productId)
-    if ((currentExists || []).length > 0) {
+    currentExists = (listSource || []).filter(x => x.productId === resultList[n].productId)
+    if ((currentExists).length > 0) {
       return {
         status: true,
         data: resultList[n]
@@ -19,9 +19,9 @@ const compareExistsByIdAndQty = (listSource, resultList) => {
   for (let n = 0; n < (resultList || []).length; n += 1) {
     // jika productId dan qty sama
     // ada digunakan di pospromo untuk check rules sudah memenuhi syarat
-    currentExists = listSource.filter(x => x.productId === resultList[n].productId && x.qty >= resultList[n].qty && (x.bundleId === undefined || x.bundleId === null))
+    currentExists = (listSource || []).filter(x => x.productId === resultList[n].productId && x.qty >= resultList[n].qty && (x.bundleId === undefined || x.bundleId === null))
   }
-  if ((currentExists || []).length === (resultList || []).length) {
+  if (currentExists.length === (resultList || []).length) {
     return {
       status: true
     }
@@ -33,9 +33,9 @@ const compareExistsByIdAndQty = (listSource, resultList) => {
 
 const compareBundleExists = (listSource, resultList) => {
   let currentExists = []
-  currentExists = listSource.filter(x => x.bundleId === resultList.id)
+  currentExists = (listSource || []).filter(x => x.bundleId === resultList.id)
   // Jika Pernah ada
-  if ((currentExists || []).length > 0) {
+  if ((currentExists).length > 0) {
     return {
       status: true,
       data: currentExists
@@ -52,8 +52,8 @@ const compareBundleExists = (listSource, resultList) => {
 const compareBundleItemExists = (listSource, resultList) => {
   let currentExists = []
   for (let n = 0; n < (resultList || []).length; n += 1) {
-    currentExists = listSource.filter(x => x.bundleId === resultList[n].bundleId && x.productId === resultList[n].productId)
-    if ((currentExists || []).length > 0) {
+    currentExists = (listSource || []).filter(x => x.bundleId === resultList[n].bundleId && x.productId === resultList[n].productId)
+    if (currentExists.length > 0) {
       return {
         status: true,
         data: resultList

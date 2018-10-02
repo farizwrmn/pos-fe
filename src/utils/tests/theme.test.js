@@ -1,5 +1,7 @@
-module.exports = {
-  color: {
+import { color } from '../theme'
+
+it('Should return color', () => {
+  expect(color).toEqual({
     lightgrey: '#D3D3D3',
     charcoal: '#494949',
     orange: '#FFA500',
@@ -46,5 +48,5 @@ module.exports = {
     warning: '#fac450',
     normal: '#108ee9',
     error: '#f50'
-  }
-}
+  })
+})
