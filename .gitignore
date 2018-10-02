@@ -13,3 +13,5 @@ Dockerfile
 .dockerignore
 .vscode
 public
+build/
+coverage/

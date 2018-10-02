@@ -63,6 +63,9 @@
       "SwitchCase": 1
     }]
   },
+  "env": {
+    "jest": true
+  },
   "parser": "babel-eslint",
   "globals": {
     "window": true,
