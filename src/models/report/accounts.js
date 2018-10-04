@@ -54,12 +54,7 @@ export default {
   },
   effects: {
     * queryTrans ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryPaymentWithPOS, payload)
-      } else {
-        data = yield call(queryPaymentWithPOS)
-      }
+      const data = yield call(queryPaymentWithPOS, payload)
       yield put({
         type: 'querySuccessTrans',
         payload: {
