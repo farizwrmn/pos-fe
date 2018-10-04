@@ -18,6 +18,7 @@ const modal = ({
   item = {},
   data,
   listAmount,
+  cashierInformation,
   curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0),
   options,
   form: {
@@ -40,6 +41,7 @@ const modal = ({
         transNo: data[0].transNo,
         storeId: data[0].storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
+        cashierTransId: cashierInformation.id,
         ...getFieldsValue()
       }
       onOk(item)

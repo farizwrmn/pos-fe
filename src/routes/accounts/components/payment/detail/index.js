@@ -31,6 +31,7 @@ const Detail = ({ paymentDetail, paymentOpts, pos, dispatch }) => {
     width: '68%',
     data,
     listAmount,
+    cashierInformation,
     options: listOpts,
     visible: modalVisible,
     onOk (e) {
