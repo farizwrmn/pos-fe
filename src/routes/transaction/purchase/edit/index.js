@@ -46,6 +46,14 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         }
       })
     },
+    showSupplier () {
+      dispatch({
+        type: 'purchase/querySupplier',
+        payload: {
+          type: 'all'
+        }
+      })
+    },
     onChange (e) {
       dispatch({
         type: 'purchase/getProducts',
@@ -210,8 +218,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
 }
 
 Purchase.propTypes = {
-  purchase: PropTypes.isRequired,
-  location: PropTypes.isRequired,
+  purchase: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.isRequired
 }

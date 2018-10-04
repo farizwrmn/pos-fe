@@ -32,7 +32,7 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 }
 }
 
-const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   const getDiscTotal = (g) => {
     const data = { ...getFieldsValue() }
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
@@ -87,6 +87,10 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
+      if (data.supplierCode) {
+        data.supplierName = data.supplierCode.label
+        data.supplierCode = data.supplierCode.key
+      }
       const newDataPurchase = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       onOk(transNo, newDataPurchase, dataVoid, data)
       resetFields()
@@ -94,7 +98,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
   }
   const hdlBrowseProduct = () => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-    if (transNo === null) {
+    if (!transNo.transNo) {
       Modal.warning({
         title: 'Cannot Find Invoice',
         content: 'Choose Invoice first'
@@ -123,6 +127,20 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
     ...purchaseProps
   }
 
+  const purchaseOpts = {
+    onChooseInvoice (item) {
+      resetFields()
+      onChooseInvoice(item)
+    },
+    ...purchaseProps
+  }
+
+  const brand = () => {
+    showSupplier()
+  }
+
+  const supplierData = (listSupplier || []).length > 0 ? listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>) : []
+
   return (
     <Form style={{ padding: 3 }}>
       <Row style={{ padding: '10px' }}>
@@ -131,7 +149,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
             <Col xs={24} sm={12} md={12} lg={12} xl={14}>
               <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transNo', {
-                  initialValue: transNo === null ? '' : transNo.transNo,
+                  initialValue: transNo.transNo,
                   rules: [{
                     required: true,
                     message: 'Required',
@@ -141,7 +159,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
-                  initialValue: transNo === null ? '' : moment.utc(transNo.transDate, 'YYYY-MM-DD'),
+                  initialValue: transNo.transDate ? moment.utc(transNo.transDate, 'YYYY-MM-DD') : null,
                   rules: [{
                     required: true,
                     message: 'Required'
@@ -150,7 +168,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
               </FormItem>
               <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxType', {
-                  initialValue: transNo === null ? '' : transNo.taxType,
+                  initialValue: transNo.taxType,
                   rules: [{
                     required: true,
                     message: 'Required'
@@ -165,7 +183,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
             <Col xs={24} sm={12} md={12} lg={12} xl={14}>
               {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('invoiceType', {
-                  initialValue: transNo === null ? '' : transNo.invoiceType,
+                  initialValue: transNo.invoiceType,
                   rules: [{
                     required: true,
                     message: 'Required'
@@ -177,7 +195,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
               </FormItem> */}
               <FormItem label="Disc Inv(%)" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discInvoicePercent', {
-                  initialValue: transNo === null ? '' : transNo.discInvoicePercent,
+                  initialValue: transNo.discInvoicePercent,
                   rules: [{
                     required: true,
                     pattern: /^([0-9.-]{0,5})$/i,
@@ -192,7 +210,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
               </FormItem>
               <FormItem label="Disc NML(N)" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discInvoiceNominal', {
-                  initialValue: transNo === null ? '' : transNo.discInvoiceNominal,
+                  initialValue: transNo.discInvoiceNominal,
                   rules: [{
                     required: true,
                     pattern: /^([0-9.-]{0,19})$/i,
@@ -205,6 +223,26 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
                   min={0}
                 />)}
               </FormItem>
+              <FormItem label="Supplier" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('supplierCode', {
+                  initialValue: transNo.supplierCode ? {
+                    key: transNo.supplierCode,
+                    label: transNo.supplierName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  onFocus={() => brand()}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{supplierData}
+                </Select>)}
+              </FormItem>
             </Col>
           </Row>
         </Col>
@@ -213,7 +251,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
         <Col span={24}>
           <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
           <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
-          {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          {modalProductVisible && <ModalBrowse {...purchaseOpts} />}
           <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>
         </Col>
       </Row>
@@ -249,7 +287,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
                 message: 'Rounding is not defined',
                 required: true
               }]
-            })((<Input disabled={transNo === null ? false : transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
+            })((<Input disabled={transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
         <Row>
@@ -259,7 +297,7 @@ const PurchaseForm = ({ onDiscPercent, disableButton, dataBrowse, rounding, onOk
         </Row>
       </div>
       <div style={{ marginBottom: '150px' }}>
-        <Button disabled={(disableButton || false) || (transNo === null ? false : transNo.readOnly)} type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
+        <Button disabled={(disableButton || false) || (transNo.readOnly)} type="primary" size="large" onClick={confirmPurchase} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
       </div>
     </Form>
   )

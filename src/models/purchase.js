@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
     tmpSupplierData: [],
     item: {},
     tempo: 0,
-    transNo: null,
+    transNo: {},
     discNML: 0,
     discPRC: 0,
     rounding: 0,
@@ -761,7 +761,7 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: true }
     },
     resetBrowse (state) {
-      return { ...state, dataBrowse: [], supplierInformation: [], transNo: null }
+      return { ...state, dataBrowse: [], supplierInformation: [], transNo: {} }
     },
     searchHide (state) {
       return { ...state, searchVisible: false }
