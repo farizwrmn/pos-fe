@@ -71,10 +71,15 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
-              activeKey: activeKey || '0'
+              activeKey: activeKey || '0',
+              listReward: [],
+              listRules: [],
+              listBundling: []
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          }
           // dispatch({
           //   type: 'query',
           //   payload: {
