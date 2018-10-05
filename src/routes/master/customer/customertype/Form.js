@@ -128,7 +128,7 @@ const formCustomerType = ({
                   message: '0-9'
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} />)}
+            })(<InputNumber max={100} style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="Discount 2" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discPct02', {
@@ -140,7 +140,7 @@ const formCustomerType = ({
                   message: '0-9'
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} />)}
+            })(<InputNumber max={100} style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="Discount 3" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discPct03', {
@@ -152,7 +152,7 @@ const formCustomerType = ({
                   message: '0-9'
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} />)}
+            })(<InputNumber max={100} style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="Discount Nominal" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discNominal', {
