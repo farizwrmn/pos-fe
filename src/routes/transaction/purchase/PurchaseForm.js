@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button, Icon } from 'antd'
+import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button } from 'antd'
 import moment from 'moment'
 import { configMain, numberFormat } from 'utils'
 import Browse from './Browse'
@@ -335,7 +335,6 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
         <Col span={24}>
           <ButtonGroup size="large">
             <Button type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
-            <Button type="primary"><Icon type="plus-square-o" /></Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
         </Col>
