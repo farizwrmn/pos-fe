@@ -58,7 +58,19 @@ export default {
           dispatch({
             type: 'updateState',
             payload: {
+              searchText: '',
+              listCustomFields: [],
+              listWorkOrderCategory: [],
+              listWorkOrderCategoryTemp: [],
               activeKey: activeKey || '0'
+            }
+          })
+          dispatch({
+            type: 'customerunit/updateState',
+            payload: {
+              unitItem: {},
+              listUnit: [],
+              searchText: ''
             }
           })
           if (activeKey !== '1') {

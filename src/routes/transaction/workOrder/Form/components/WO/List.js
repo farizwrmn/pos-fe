@@ -4,8 +4,8 @@ import { Table, Input, Radio, Card } from 'antd'
 
 const RadioGroup = Radio.Group
 
-const ListItem = ({ listWorkOrderCategory, transData, editListItem, ...tableProps }) => {
-  const editable = !!transData.id
+const ListItem = ({ formMainType, listWorkOrderCategory, transData, editListItem, ...tableProps }) => {
+  const editable = (formMainType !== 'add' && !!transData.id)
   const handleChange = (e, type) => {
     const { name, id, value } = e.target
     editListItem(name || id, value, type)

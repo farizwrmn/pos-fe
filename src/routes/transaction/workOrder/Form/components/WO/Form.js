@@ -41,6 +41,7 @@ const FormWO = ({
   customField,
   formMainType,
   searchText,
+  resetAssetState,
   dispatch,
   handleAddMember,
   handleShowMember,
@@ -55,6 +56,7 @@ const FormWO = ({
   ...formProps
 }) => {
   const listProps = {
+    formMainType,
     transData,
     ...formProps
   }
@@ -78,7 +80,37 @@ const FormWO = ({
     }
   }
   const disabled = (formMainType === 'edit')
+  const handleResetForm = () => {
+    resetAssetState()
+    dispatch({
+      type: 'workorder/updateState',
+      payload: {
+        searchText: '',
+        listCustomFields: [],
+        listWorkOrderCategory: [],
+        listWorkOrderCategoryTemp: [],
+        activeKey: '0'
+      }
+    })
+    dispatch({
+      type: 'workorder/querySequence'
+    })
+    dispatch({
+      type: 'workorder/queryWOCategory',
+      payload: {
+        field: 'id,productCategoryId,categoryCode,categoryName,categoryParentId,categoryParentCode,categoryParentName'
+      }
+    })
+    dispatch({
+      type: 'workorder/queryWOCustomFields',
+      payload: {
+        field: 'id,fieldName,sortingIndex,fieldParentId,fieldParentName'
+      }
+    })
+  }
   const hdlCancel = () => {
+    handleResetForm()
+    resetAssetState()
     CancelWo()
     resetFields()
   }

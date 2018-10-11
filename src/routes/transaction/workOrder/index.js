@@ -222,6 +222,16 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
     listCustomFields,
     dispatch,
     currentStep,
+    resetAssetState () {
+      dispatch({
+        type: 'customerunit/updateState',
+        payload: {
+          unitItem: {},
+          listUnit: [],
+          searchText: ''
+        }
+      })
+    },
     handleAddMember () {
       dispatch({
         type: 'customer/updateState',
