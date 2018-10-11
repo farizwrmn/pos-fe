@@ -233,9 +233,19 @@ const Pos = ({
     }
   }
 
+  const resetSelectText = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        searchText: ''
+      }
+    })
+  }
+
   const lovButtonProps = {
     workOrderItem,
     handleMemberBrowse () {
+      resetSelectText()
       // get member data
       dispatch({
         type: 'pos/getMembers'
@@ -249,6 +259,7 @@ const Pos = ({
       })
     },
     handleAddMember () {
+      resetSelectText()
       dispatch({
         type: 'customer/updateState',
         payload: {
@@ -257,6 +268,7 @@ const Pos = ({
       })
     },
     handleAddAsset () {
+      resetSelectText()
       if (memberInformation.length !== 0) {
         dispatch({
           type: 'pos/updateState',
@@ -282,6 +294,7 @@ const Pos = ({
       }
     },
     handleAssetBrowse () {
+      resetSelectText()
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -293,6 +306,7 @@ const Pos = ({
       })
     },
     handleMechanicBrowse () {
+      resetSelectText()
       // get mechanic data
       dispatch({
         type: 'pos/getMechanics'
@@ -306,6 +320,7 @@ const Pos = ({
       })
     },
     handleProductBrowse () {
+      resetSelectText()
       // get products data
       // let json = setting.Inventory
       // let jsondata = JSON.stringify(eval(`(${json})`))
@@ -324,6 +339,7 @@ const Pos = ({
       })
     },
     handleServiceBrowse () {
+      resetSelectText()
       dispatch({
         type: 'pos/getServices',
         payload: {
@@ -339,6 +355,7 @@ const Pos = ({
       })
     },
     handleWorkOrderBrowse () {
+      resetSelectText()
       dispatch({
         type: 'pos/queryWOHeader'
       })
@@ -352,6 +369,7 @@ const Pos = ({
       })
     },
     handlePromoBrowse () {
+      resetSelectText()
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         dispatch({
           type: 'promo/query',
@@ -386,6 +404,7 @@ const Pos = ({
       }
     },
     handleQueue () {
+      resetSelectText()
       if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('service_detail') === null) {
         dispatch({
           type: 'pos/changeQueue',
