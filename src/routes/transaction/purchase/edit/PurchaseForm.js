@@ -237,6 +237,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                 })(<Select
                   showSearch
                   onFocus={() => brand()}
+                  onBlur={hdlChangePercent}
                   optionFilterProp="children"
                   labelInValue
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
@@ -287,7 +288,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                 message: 'Rounding is not defined',
                 required: true
               }]
-            })((<Input disabled={transNo.readOnly} onChange={_value => hdlChangeRounding(_value)} />))}
+            })((<Input disabled={transNo.readOnly} onBlur={hdlChangePercent} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
         <Row>

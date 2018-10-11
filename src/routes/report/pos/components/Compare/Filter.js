@@ -178,7 +178,9 @@ const Filter = ({ onDateChange, onSearch, listPOSCompareSvsI, onListReset,
           )}
         </FormItem>
         <FormItem label="Brand" {...formItemLayout}>
-          {getFieldDecorator('brand')(
+          {getFieldDecorator('brand', {
+            rules: [{ required: true }]
+          })(
             <Select
               className="select-multiple-brand"
               mode="multiple"
