@@ -76,7 +76,7 @@ const ModalSticker = ({
   const modalProps = {
     visible: showModalProduct,
     title: !update ? (modalProductType === 'all' ? 'All Product' : 'Update Product') : 'Edit Product',
-    width: 250,
+    width: 400,
     onOk () {
       const data = {
         ...getFieldsValue()
