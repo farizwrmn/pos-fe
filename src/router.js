@@ -128,6 +128,14 @@ const Routers = function ({ history, app }) {
             }, 'master-customerunit')
           }
         }, {
+          path: 'master/loyalty',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/loyaltySetting'))
+              cb(null, require('./routes/master/customer/loyaltySetting/'))
+            }, 'master-loyalty-setting')
+          }
+        }, {
           path: 'master/supplier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -726,16 +734,16 @@ const Routers = function ({ history, app }) {
             }, 'tools-maintenance')
           }
         }, {
-        //   path: 'tools/maintenance/beginning',
-        //   getComponent (nextState, cb) {
-        //     require.ensure([], (require) => {
-        //       registerModel(app, require('./models/tools/maintenance'))
-        //       registerModel(app, require('./models/transaction/pos'))
-        //       registerModel(app, require('./models/transferOut'))
-        //       cb(null, require('./routes/tools/maintenance/'))
-        //     }, 'tools-maintenance')
-        //   }
-        // }, {
+          //   path: 'tools/maintenance/beginning',
+          //   getComponent (nextState, cb) {
+          //     require.ensure([], (require) => {
+          //       registerModel(app, require('./models/tools/maintenance'))
+          //       registerModel(app, require('./models/transaction/pos'))
+          //       registerModel(app, require('./models/transferOut'))
+          //       cb(null, require('./routes/tools/maintenance/'))
+          //     }, 'tools-maintenance')
+          //   }
+          // }, {
           path: 'tools/sellprice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
