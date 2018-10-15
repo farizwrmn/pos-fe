@@ -95,7 +95,7 @@ const FormCounter = ({
           >
             {getFieldDecorator('active', {
               valuePropName: 'checked',
-              initialValue: item.active === undefined ? true : item.active
+              initialValue: Number(item.active) === undefined ? true : Number(item.active)
             })(<Checkbox>Active</Checkbox>)}
           </FormItem>
           <FormItem

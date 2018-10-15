@@ -36,7 +36,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'active',
       key: 'active',
       render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+        return <Tag color={Number(text) ? 'blue' : 'red'}>{Number(text) ? 'Active' : 'Non-Active'}</Tag>
       }
     },
     {
