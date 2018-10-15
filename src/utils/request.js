@@ -170,11 +170,13 @@ export default function request (options) {
   }).catch((error) => {
     const { response } = error
     let msg
+    let dat
     let statusCode
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      msg = data.detail || statusText
+      msg = data.message || statusText
+      dat = data.data || {}
     } else {
       statusCode = 600
       if (Object.prototype.hasOwnProperty.call(error, 'message')) {
@@ -183,6 +185,6 @@ export default function request (options) {
         msg = error
       }
     }
-    return { success: false, statusCode, message: msg }
+    return { success: false, statusCode, message: msg, data: dat }
   })
 }

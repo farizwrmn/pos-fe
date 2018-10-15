@@ -36,7 +36,8 @@ const FormCounter = ({
     validateFields,
     getFieldsValue,
     resetFields,
-    getFieldValue
+    getFieldValue,
+    setFieldsValue
   }
 }) => {
   const handleCancel = () => {
@@ -52,6 +53,7 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      if (modalType === 'edit') data.id = item.id
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -70,10 +72,16 @@ const FormCounter = ({
   }
 
   const disabledDateStartFrom = (current) => {
-    if (getFieldValue('startFrom')) {
-      return current < moment(getFieldValue('startFrom')).add('1', 'days')
+    if (getFieldValue('startDate')) {
+      return current < moment(getFieldValue('startDate'))
     }
     return true
+  }
+
+  const changeStartDate = () => {
+    setFieldsValue({
+      expirationDate: null
+    })
   }
 
   return (
@@ -126,14 +134,14 @@ const FormCounter = ({
       <Row>
         <Col {...column}>
           <FormItem label="Start From" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('startFrom', {
-              initialValue: item.startFrom ? moment(item.startFrom) : null,
+            {getFieldDecorator('startDate', {
+              initialValue: item.startDate ? moment(item.startDate) : null,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<DatePicker disabledDate={disabledDate} />)}
+            })(<DatePicker onChange={changeStartDate} disabledDate={disabledDate} />)}
           </FormItem>
           <FormItem label="Expiration Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('expirationDate', {
@@ -182,8 +190,8 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
-      {modalType === 'edit' && <Button type="danger" style={{ float: 'right', margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
       <Button style={{ float: 'right' }} type="primary" onClick={handleSubmit}>{button}</Button>
+      {modalType === 'edit' && <Button type="danger" style={{ float: 'right', margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
     </Form>
   )
 }

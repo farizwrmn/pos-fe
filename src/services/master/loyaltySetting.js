@@ -13,6 +13,15 @@ export async function query (params) {
   })
 }
 
+export async function queryActive () {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${apiLoyalty}active`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -43,15 +43,9 @@ const Counter = ({ loyaltySetting, loading, dispatch, location, app }) => {
     },
     editItem (item) {
       const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
       dispatch({
         type: 'loyaltySetting/editItem',
-        payload: { item }
+        payload: { item, pathname }
       })
     },
     deleteItem (id) {

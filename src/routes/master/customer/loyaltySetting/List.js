@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
+import moment from 'moment'
 
 const confirm = Modal.confirm
 
@@ -21,19 +22,54 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Start Date',
+      dataIndex: 'startDate',
+      key: 'startDate'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Expired',
+      dataIndex: 'expirationDate',
+      key: 'expirationDate'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text) => {
+        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
+    },
+    {
+      title: 'Created',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'createdBy',
+          key: 'createdBy'
+        },
+        {
+          title: 'Time',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+          render: text => (text ? moment(text).format('DD-MMM-YYYY') : '')
+        }
+      ]
+    },
+    {
+      title: 'Updated',
+      children: [
+        {
+          title: 'By',
+          dataIndex: 'updatedBy',
+          key: 'updatedBy'
+        },
+        {
+          title: 'Time',
+          dataIndex: 'updatedAt',
+          key: 'updatedAt',
+          render: text => (text ? moment(text).format('DD-MMM-YYYY') : '')
+        }
+      ]
     },
     {
       title: 'Operation',
