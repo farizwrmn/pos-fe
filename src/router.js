@@ -375,15 +375,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/purchaseinvoice'))
               cb(null, require('./routes/report/purchaseinvoice/'))
-            }, 'transaction-booking-history-detail')
-          }
-        }, {
-          path: 'transaction/booking/:id/history',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transaction/bookinghistory'))
-              cb(null, require('./routes/transaction/booking/history/'))
-            }, 'transaction-booking-history-detail')
+            }, 'transaction-purchase-invoice-summary')
           }
         }, {
           path: 'transaction/work-order',
@@ -441,7 +433,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/pos'))
               registerModel(app, require('./models/setting/cashier'))
               cb(null, require('./routes/report/pos/posserviceunit'))
-            }, 'report-pos-service')
+            }, 'report-pos-unit')
           }
         }, {
           path: 'report/pos/analyst',
@@ -734,6 +726,16 @@ const Routers = function ({ history, app }) {
             }, 'tools-maintenance')
           }
         }, {
+        //   path: 'tools/maintenance/beginning',
+        //   getComponent (nextState, cb) {
+        //     require.ensure([], (require) => {
+        //       registerModel(app, require('./models/tools/maintenance'))
+        //       registerModel(app, require('./models/transaction/pos'))
+        //       registerModel(app, require('./models/transferOut'))
+        //       cb(null, require('./routes/tools/maintenance/'))
+        //     }, 'tools-maintenance')
+        //   }
+        // }, {
           path: 'tools/sellprice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
