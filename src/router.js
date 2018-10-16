@@ -128,12 +128,12 @@ const Routers = function ({ history, app }) {
             }, 'master-customerunit')
           }
         }, {
-          path: 'master/loyalty',
+          path: 'marketing/loyalty',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/loyaltySetting'))
               cb(null, require('./routes/master/customer/loyaltySetting/'))
-            }, 'master-loyalty-setting')
+            }, 'marketing-loyalty-setting')
           }
         }, {
           path: 'master/supplier',
