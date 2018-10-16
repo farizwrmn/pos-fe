@@ -27,7 +27,8 @@ it('Should render Config Rest', () =>
     apiSpecificationStock: '/stock/specificationstock',
     apiSpecificationInsertStock: '/stock/specificationinsstock',
     apiFollowUp: '/followup',
-    apiSequence: '/sequences'
+    apiSequence: '/sequences',
+    apiLoyalty: '/loyalty'
   })
 )
 
