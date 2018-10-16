@@ -58,6 +58,7 @@ export default {
     modalVisible: false,
     modalPrintVisible: false,
     modalCancelVisible: false,
+    modalPointVisible: false,
     itemPayment: {},
     itemService: {},
     visiblePopover: false,

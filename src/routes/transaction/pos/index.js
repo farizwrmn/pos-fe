@@ -16,6 +16,7 @@ import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
+import ModalPoint from './ModalPoint'
 
 const { dayByNumber } = calendar
 const { Promo } = DataQuery
@@ -84,6 +85,7 @@ const Pos = ({
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalWorkOrderVisible,
+    modalPointVisible,
     listUnitUsage,
     showAlert,
     cashierBalance,
@@ -837,6 +839,7 @@ const Pos = ({
         address01: item.address01,
         point: item.point ? item.point : 0,
         id: item.id,
+        memberTypeName: item.memberTypeName,
         memberTypeId: item.memberTypeId,
         memberSellPrice: item.memberSellPrice,
         memberPendingPayment: item.memberPendingPayment,
@@ -913,6 +916,7 @@ const Pos = ({
             address01: item.address01,
             point: 0,
             id: item.memberId,
+            memberTypeName: item.memberTypeName,
             memberTypeId: item.memberTypeId,
             memberSellPrice: item.memberSellPrice,
             memberPendingPayment: item.memberPendingPayment,
@@ -944,6 +948,31 @@ const Pos = ({
             }
           })
           localStorage.setItem('workorder', JSON.stringify(object))
+        }
+      })
+    }
+  }
+
+  const modalPointProps = {
+    title: 'Use Cashback',
+    visible: modalPointVisible,
+    item: memberInformation || {},
+    onOk (data) {
+      const itemStorage = [data]
+      localStorage.setItem('member', JSON.stringify(itemStorage))
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalPointVisible: false,
+          memberInformation: data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalPointVisible: false
         }
       })
     }
@@ -985,6 +1014,7 @@ const Pos = ({
         address01: item.address01,
         point: item.point ? item.point : 0,
         id: item.id,
+        memberTypeName: item.memberTypeName,
         memberTypeId: item.memberTypeId,
         memberSellPrice: item.memberSellPrice,
         memberPendingPayment: item.memberPendingPayment,
@@ -1714,6 +1744,15 @@ const Pos = ({
     return data
   }
 
+  const showModalPoint = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalPointVisible: true
+      }
+    })
+  }
+
   const hdlPopoverClose = () => {
     dispatch({ type: 'pos/modalPopoverClose' })
   }
@@ -1879,6 +1918,7 @@ const Pos = ({
             <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
+            {modalPointVisible && <ModalPoint {...modalPointProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
@@ -2254,10 +2294,20 @@ const Pos = ({
           </Row>
         </Card>
       </Row>
+      {memberInformation.memberTypeName && <div className="wrapper-switcher">
+        <Button onClick={showModalPoint} className="btn-member">
+          <span>
+            <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
+            <p>{memberInformation.point || 0} points</p>
+          </span>
+        </Button>
+      </div>}
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
-          <a className="btn-switcher" onClick={onShowReminder}><Icon type="tool" />Service History</a>
+          <Button className="btn-switcher" onClick={onShowReminder}>
+            <h2><Icon type="setting" />{'   History'}</h2>
+          </Button>
           <Reminder {...reminderProps} />
         </div>
       }

@@ -193,7 +193,6 @@ export default {
               change: payload.totalChange,
               woReference: payload.woNumber
             }
-            const point = parseInt((payload.grandTotal / 10000), 10)
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
               // const data_detail = yield call(createDetail, {
@@ -257,7 +256,6 @@ export default {
                   technicianId: payload.technicianId,
                   curShift: payload.curShift,
                   printNo: 1,
-                  point,
                   companyInfo: payload.companyInfo,
                   curCashierNo: payload.curCashierNo,
                   cashierId: payload.cashierId,
