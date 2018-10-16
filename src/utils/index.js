@@ -13,6 +13,7 @@ import calendar from './calendar'
 import ip from './ip'
 import numberFormat from './numberFormat'
 import compare from './compare'
+import variables from './variables'
 
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
@@ -163,5 +164,6 @@ module.exports = {
   numberFormat,
   posTotal,
   calendar,
-  compare
+  compare,
+  variables
 }

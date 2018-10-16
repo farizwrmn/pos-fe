@@ -37,7 +37,9 @@ const ModalPoint = ({
         gender: item.gender,
         phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       }
-      newItem.usePoint = data.usePoint
+      if (item.point > 0 && data.usePoint <= item.point) {
+        newItem.usePoint = data.usePoint
+      }
       onOk(newItem)
     })
   }

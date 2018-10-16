@@ -1,10 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
+import { variables } from 'utils'
 import { query, add, edit, remove } from '../../services/master/customer'
 import { query as queryMobile, srvGetMemberStatus, srvActivateMember } from '../../services/mobile/member'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
+
+const { reArrangeMember } = variables
 
 const success = () => {
   message.success('Customer has been saved')
@@ -324,19 +327,8 @@ export default modelExtend(pageModel, {
             arrayProd = JSON.parse(listByCode.slice())
           }
           let item = data.member
-          arrayProd.push({
-            memberCode: item.memberCode,
-            memberName: item.memberName,
-            address01: item.address01,
-            point: item.point ? item.point : 0,
-            id: item.id,
-            memberTypeName: item.memberTypeName,
-            memberTypeId: item.memberTypeId,
-            memberSellPrice: item.memberSellPrice,
-            memberPendingPayment: item.memberPendingPayment,
-            gender: item.gender,
-            phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
-          })
+          const newItem = reArrangeMember(item)
+          arrayProd.push(newItem)
           localStorage.setItem('member', JSON.stringify(arrayProd))
         }
         const increase = yield call(increaseSequence, seqDetail)

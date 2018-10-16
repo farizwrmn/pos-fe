@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain, isEmptyObject, lstorage, color, calendar } from 'utils'
+import { configMain, variables, isEmptyObject, lstorage, color, calendar } from 'utils'
 import { Reminder, DataQuery } from 'components'
 import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
 import Browse from './Browse'
@@ -18,6 +18,7 @@ import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
 import ModalPoint from './ModalPoint'
 
+const { reArrangeMember, reArrangeMemberId } = variables
 const { dayByNumber } = calendar
 const { Promo } = DataQuery
 const { prefix } = configMain
@@ -833,24 +834,13 @@ const Pos = ({
       } else {
         arrayProd = JSON.parse(listByCode.slice())
       }
-      arrayProd.push({
-        memberCode: item.memberCode,
-        memberName: item.memberName,
-        address01: item.address01,
-        point: item.point ? item.point : 0,
-        id: item.id,
-        memberTypeName: item.memberTypeName,
-        memberTypeId: item.memberTypeId,
-        memberSellPrice: item.memberSellPrice,
-        memberPendingPayment: item.memberPendingPayment,
-        gender: item.gender,
-        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
-      })
+      const newItem = reArrangeMember(item)
+      arrayProd.push(newItem)
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({
         type: 'pos/queryGetMemberSuccess',
-        payload: { memberInformation: item }
+        payload: { memberInformation: newItem }
       })
       dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
@@ -909,20 +899,8 @@ const Pos = ({
             timeIn: item.timeIn
           }
           let arrayProd = []
-
-          arrayProd.push({
-            memberCode: item.memberCode,
-            memberName: item.memberName,
-            address01: item.address01,
-            point: 0,
-            id: item.memberId,
-            memberTypeName: item.memberTypeName,
-            memberTypeId: item.memberTypeId,
-            memberSellPrice: item.memberSellPrice,
-            memberPendingPayment: item.memberPendingPayment,
-            gender: item.gender,
-            phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
-          })
+          let newItem = reArrangeMemberId(item)
+          arrayProd.push(newItem)
 
           let memberUnit = {
             id: item.policeNoId,
@@ -1008,24 +986,13 @@ const Pos = ({
       } else {
         arrayProd = JSON.parse(listByCode.slice())
       }
-      arrayProd.push({
-        memberCode: item.memberCode,
-        memberName: item.memberName,
-        address01: item.address01,
-        point: item.point ? item.point : 0,
-        id: item.id,
-        memberTypeName: item.memberTypeName,
-        memberTypeId: item.memberTypeId,
-        memberSellPrice: item.memberSellPrice,
-        memberPendingPayment: item.memberPendingPayment,
-        gender: item.gender,
-        phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
-      })
+      let newItem = reArrangeMember(item)
+      arrayProd.push(newItem)
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({
         type: 'pos/queryGetMemberSuccess',
-        payload: { memberInformation: item }
+        payload: { memberInformation: newItem }
       })
       dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
