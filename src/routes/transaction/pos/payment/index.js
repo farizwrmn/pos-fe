@@ -169,6 +169,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
               employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
               memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+              usePoint: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].usePoint : 0,
               technicianId: mechanicInformation.employeeCode,
               curShift,
               printNo: 1,

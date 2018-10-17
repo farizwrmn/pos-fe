@@ -108,11 +108,6 @@ export default {
             title: 'Payment Fail',
             content: 'Member Id is Undefined'
           })
-        } else if (payload.phone === undefined) {
-          Modal.error({
-            title: 'Payment Fail',
-            content: 'Phone is Undefined'
-          })
         } else if (payload.policeNo === undefined) {
           Modal.error({
             title: 'Payment Fail',
@@ -153,20 +148,50 @@ export default {
               discount: dataPos[key].discount,
               disc1: dataPos[key].disc1,
               disc2: dataPos[key].disc2,
-              disc3: dataPos[key].disc3
+              disc3: dataPos[key].disc3,
+              totalPrice
             })
           }
-
+          const grandTotal = arrayProd.reduce((cnt, o) => cnt + o.totalPrice, 0)
+          const newArrayProd = arrayProd.map((x) => {
+            const portion = (x.totalPrice / grandTotal)
+            const discountLoyalty = (portion * (payload.usePoint || 0))
+            const totalPrice = x.totalPrice - discountLoyalty
+            const dpp = totalPrice / (companySetting === 'I' ? 1.1 : 1)
+            const ppn = (companySetting === 'I' ? totalPrice / 11 : companySetting === 'S' ? totalPrice * 0.1 : 0)
+            return {
+              storeId: x.storeId,
+              transNo: x.transNo,
+              bundleId: x.bundleId,
+              employeeId: x.employeeId,
+              employeeName: x.employeeName,
+              productId: x.productId,
+              productCode: x.productCode,
+              productName: x.productName,
+              qty: x.qty,
+              typeCode: x.typeCode,
+              sellingPrice: x.sellingPrice,
+              DPP: dpp,
+              PPN: ppn,
+              discountLoyalty,
+              discount: x.discount,
+              disc1: x.disc1,
+              disc2: x.disc2,
+              disc3: x.disc3
+            }
+          })
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
             const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
-              dataPos: arrayProd,
+              dataPos: newArrayProd,
               dataBundle,
               transNo: trans,
               taxType: companySetting,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
+              discountLoyalty: payload.usePoint || 0,
+              usePoint: payload.usePoint || 0,
               technicianId: payload.technicianId,
               cashierTransId: cashierInformation.id,
               transDate: cashierInformation.period,
@@ -200,6 +225,7 @@ export default {
                   // transDate2: payload.transDate2,
                   lastPoint: responsInsertPos.lastPoint,
                   gettingPoint: responsInsertPos.gettingPoint,
+                  discountLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].usePoint : 0,
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,

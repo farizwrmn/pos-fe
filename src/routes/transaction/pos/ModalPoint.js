@@ -62,7 +62,14 @@ const ModalPoint = ({
           <Row>
             <Col lg={10} md={24}>
               {getFieldDecorator('usePoint', {
-                initialValue: item.usePoint || 0
+                initialValue: item.usePoint || 0,
+                rules: [
+                  {
+                    required: true,
+                    pattern: /^[0-9]+$/i,
+                    message: 'Cannot fill by decimal'
+                  }
+                ]
               })(<InputNumber min={0} max={item.point || 0} />)}
             </Col>
             <Col lg={14}>

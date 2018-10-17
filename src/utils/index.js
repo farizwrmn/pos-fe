@@ -14,7 +14,9 @@ import ip from './ip'
 import numberFormat from './numberFormat'
 import compare from './compare'
 import variables from './variables'
+import total from './total'
 
+const { posTotal } = total
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
   return this.replace(/-(\w)/g, (...args) => {
@@ -129,14 +131,6 @@ const formatDate = (text, format) => {
   return moment().format('DD-MMM-YYYY')
 }
 
-const posTotal = (data) => {
-  let H1 = ((parseFloat(data.sellingPrice) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
-  let H2 = H1 * (1 - (data.disc2 / 100))
-  let H3 = H2 * (1 - (data.disc3 / 100))
-  let TOTAL = H3 - data.discount
-  return TOTAL
-}
-
 const isEmptyObject = (obj) => {
   if (!obj) {
     return true
@@ -165,5 +159,6 @@ module.exports = {
   posTotal,
   calendar,
   compare,
-  variables
+  variables,
+  total
 }
