@@ -1,7 +1,6 @@
 import { Modal } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage } from 'utils'
-import { addSome } from '../services/payment/payment'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -120,7 +119,6 @@ export default {
             content: 'Unit is Undefined'
           })
         } else {
-          // let data = yield call(queryLastTransNo, payload.periode)
           let arrayProd = []
           const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -161,7 +159,6 @@ export default {
 
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
-            // const cashierInformation = (cashier.data || []).length > 0 ? cashier.data[0] : {}
             const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
               dataPos: arrayProd,
@@ -171,9 +168,6 @@ export default {
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
               technicianId: payload.technicianId,
-              // cashierNo: cashierInformation.counterId,
-              // cashierId: cashierInformation.cashierId,
-              // shift: cashierInformation.shiftId,
               cashierTransId: cashierInformation.id,
               transDate: cashierInformation.period,
               transTime: payload.transTime,
@@ -191,40 +185,12 @@ export default {
               policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
               policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
               change: payload.totalChange,
-              woReference: payload.woNumber
+              woReference: payload.woNumber,
+              listAmount: payload.listAmount
             }
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
-              // const data_detail = yield call(createDetail, {
-              //   data: arrayProd,
-              //   transNo: trans
-              // })
-              // if (data_detail.success) {
-              // try {
-              //   const transNoIncrease = yield call(increaseSequence, invoice)
-              //   console.log('transNoincrease', transNoIncrease)
-              // } catch (e) {
-              //   Modal.warning({
-              //     title: 'Something went wrong',
-              //     content: `Call your IT support, message: ${e}`
-              //   })
-              // }
-              let dataPayment
-              try {
-                dataPayment = yield call(addSome, {
-                  head: {
-                    transNo: trans,
-                    storeId: lstorage.getCurrentUserStore(),
-                    storeIdPayment: lstorage.getCurrentUserStore()
-                  },
-                  data: payload.listAmount
-                })
-              } catch (e) {
-                Modal.warning({
-                  title: 'Something went wrong',
-                  content: `Call your IT support, message: ${e}`
-                })
-              }
+              const responsInsertPos = data_create.pos
 
               yield put({
                 type: 'printPayment',
@@ -232,6 +198,8 @@ export default {
                   periode: payload.periode,
                   // transDate: payload.transDate,
                   // transDate2: payload.transDate2,
+                  lastPoint: responsInsertPos.lastPoint,
+                  gettingPoint: responsInsertPos.gettingPoint,
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
@@ -267,20 +235,10 @@ export default {
               yield put({
                 type: 'pos/setAllNull'
               })
-              // const data_cashier_trans_update = yield call(updateCashierTrans, {
-              //   total: ((parseInt(payload.grandTotal, 10) - parseInt(payload.totalDiscount, 10)) + parseInt(payload.rounding, 10)),
-              //   totalCreditCard: payload.totalCreditCard,
-              //   status: 'O',
-              //   cashierNo: payload.curCashierNo,
-              //   shift: payload.curShift
-              //   // transDate: payload.transDate2
-              // })
-              if (dataPayment.success) {
-                Modal.info({
-                  title: 'Information',
-                  content: 'Transaction has been saved...!'
-                })
-              }
+              Modal.info({
+                title: 'Information',
+                content: 'Transaction has been saved...!'
+              })
               // }
             } else {
               Modal.error({
