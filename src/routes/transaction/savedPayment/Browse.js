@@ -115,30 +115,6 @@ const BrowseGroup = ({
       onFilter: (value, record) => record.status.indexOf(value) === 0
     },
     {
-      title: 'Payment',
-      dataIndex: 'paymentVia',
-      key: 'paymentVia',
-      width: 100,
-      filters: [{
-        text: 'CASH',
-        value: 'C'
-      }, {
-        text: 'Pending',
-        value: 'P'
-      }, {
-        text: 'Card',
-        value: 'K'
-      }],
-      filterMultiple: false,
-      onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
-      render: text =>
-        (<span>
-          <Tag color={text === 'C' ? 'blue' : text === 'P' ? 'red' : 'green'}>
-            {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
-          </Tag>
-        </span>)
-    },
-    {
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',

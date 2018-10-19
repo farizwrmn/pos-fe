@@ -90,7 +90,6 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      console.log('edit', payload)
       const userId = yield select(({ user }) => user.currentItem.userId)
       const newUser = { ...payload, userId }
       const data = yield call(edit, newUser)

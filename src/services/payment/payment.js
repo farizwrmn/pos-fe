@@ -65,7 +65,6 @@ export async function addSome (params) {
 }
 
 export async function cancelPayment (params) {
-  console.log('params', params)
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentOpts}/cancel`,

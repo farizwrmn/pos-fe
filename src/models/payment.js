@@ -480,7 +480,6 @@ export default {
       const unitInfo = payload.unitInfo // header faktur
       const countCurrentPoint = (unitInfo.lastPoint + unitInfo.gettingPoint) - unitInfo.discountLoyalty
       const companyInfo = payload.companyInfo
-      console.log('companyInfo', companyInfo)
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)

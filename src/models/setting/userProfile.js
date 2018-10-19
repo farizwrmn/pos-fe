@@ -90,14 +90,11 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      console.log('edit', payload)
       const userId = yield select(({ user }) => user.currentItem.userId)
       const newUser = { ...payload, userId }
       const data = yield call(edit, newUser)
       yield put({ type: 'activeTab', payload: { activeTab: payload.activeTab } })
       if (data.success) {
-        console.log('edituser', data)
-        console.log('edituser1', data.user.isTOTP)
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
         yield put({ type: 'app/query' })
@@ -130,12 +127,14 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { list, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     querySuccessTotp (state, action) {
       const { totp, mode } = action.payload
@@ -143,7 +142,8 @@ export default modelExtend(pageModel, {
       // console.log('querySuccessTotp', state.totpChecked)
       // console.log('querySuccessTotpv', totp)
       if (mode === 'load') state.totpChecked = totp.isTotp
-      return { ...state,
+      return {
+        ...state,
         totp
       }
     },
@@ -175,7 +175,8 @@ export default modelExtend(pageModel, {
       return { ...state, searchVisible: false }
     },
     modalIsEmployeeChange (state, action) {
-      return { ...state,
+      return {
+        ...state,
         ...action.payload,
         disabledItem: {
           userId: (state.modalType !== 'add' ? !state.disabledItem.userId : state.disabledItem.userId),

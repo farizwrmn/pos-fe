@@ -8,7 +8,6 @@ const FormItem = Form.Item
 
 const ListProductFree = ({ onChooseItem, pos, dispatch, ...listProps }) => {
   const { searchText, tmpProductList } = pos
-  console.log('props', listProps)
   const handleMenuClick = (record) => {
     onChooseItem(record)
   }

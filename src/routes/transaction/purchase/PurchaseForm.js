@@ -70,7 +70,6 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   }
 
   const hdlChangePercent = () => {
-    console.log('change')
     const data = {
       ...getFieldsValue()
     }

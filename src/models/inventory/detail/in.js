@@ -69,8 +69,6 @@ export default {
             }
           })
         }
-        console.log('dataInvoice', dataInvoice)
-        console.log('dataInvoice', dataDetail)
       } else {
         Modal.warning({
           title: 'Something went wrong',

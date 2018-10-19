@@ -17,10 +17,8 @@ const Company = ({
   config,
   onOk,
   changeVisible,
-  listSellprice,
   form: { getFieldDecorator, validateFields, getFieldsValue }
 }) => {
-  console.log('listSellprice', listSellprice)
   Object.compare = function (obj1, obj2) {
     // Loop through properties in object 1
     for (let p in obj1) {
