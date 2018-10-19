@@ -101,29 +101,29 @@ const BrowseGroup = ({
       filterMultiple: false,
       onFilter: (value, record) => record.status.indexOf(value) === 0
     },
-    {
-      title: 'Payment',
-      dataIndex: 'paymentVia',
-      key: 'paymentVia',
-      filters: [{
-        text: 'CASH',
-        value: 'C'
-      }, {
-        text: 'Pending',
-        value: 'P'
-      }, {
-        text: 'Card',
-        value: 'K'
-      }],
-      filterMultiple: false,
-      onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
-      render: text =>
-        (<span>
-          <Tag color={text === 'C' ? 'blue' : text === 'P' ? 'red' : 'green'}>
-            {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
-          </Tag>
-        </span>)
-    },
+    // {
+    //   title: 'Payment',
+    //   dataIndex: 'paymentVia',
+    //   key: 'paymentVia',
+    //   filters: [{
+    //     text: 'CASH',
+    //     value: 'C'
+    //   }, {
+    //     text: 'Pending',
+    //     value: 'P'
+    //   }, {
+    //     text: 'Card',
+    //     value: 'K'
+    //   }],
+    //   filterMultiple: false,
+    //   onFilter: (value, record) => record.paymentVia.indexOf(value) === 0,
+    //   render: text =>
+    //     (<span>
+    //       <Tag color={text === 'C' ? 'blue' : text === 'P' ? 'red' : 'green'}>
+    //         {text === 'C' ? 'CASH' : text === 'P' ? 'PENDING' : 'CARD'}
+    //       </Tag>
+    //     </span>)
+    // },
     {
       title: 'Created By',
       dataIndex: 'createdBy',
