@@ -39,6 +39,11 @@ const formItemLayout = {
   }
 }
 
+const formItemLayout1 = {
+  labelCol: { span: 10 },
+  wrapperCol: { span: 11 }
+}
+
 const Pos = ({
   location,
   customer,
@@ -92,6 +97,7 @@ const Pos = ({
     cashierBalance,
     showListReminder,
     listServiceReminder,
+    curTotalDiscount,
     paymentListActiveKey,
     modalAddUnit,
     cashierInformation
@@ -158,8 +164,10 @@ const Pos = ({
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
   let dataPos = product.concat(service)
   let a = dataPos
-  let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0).toLocaleString()
-  let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0).toLocaleString()
+  let usagePoint = memberInformation.usePoint || 0
+  const totalDiscount = usagePoint + curTotalDiscount
+  let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
+  let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
   // const getDate = (mode) => {
   //   let today = new Date()
   //   let dd = today.getDate()
@@ -1840,6 +1848,8 @@ const Pos = ({
     }, 1000)
   }
 
+  const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+
   return (
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
@@ -1898,20 +1908,6 @@ const Pos = ({
             {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
-            <Form layout="inline">
-              <Row>
-                <Col lg={{ span: 10 }} md={24}>
-                  <FormItem label="Qty" {...formItemLayout}>
-                    <Input value={totalQty} style={{ fontSize: 24, marginBottom: 8 }} />
-                  </FormItem>
-                </Col>
-                <Col lg={{ span: 10, offset: 4 }} md={24}>
-                  <FormItem label="Total" {...formItemLayout}>
-                    <Input value={totalPayment} style={{ fontSize: 24, marginBottom: 8 }} />
-                  </FormItem>
-                </Col>
-              </Row>
-            </Form>
 
             <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
               <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
@@ -2186,6 +2182,32 @@ const Pos = ({
                 />
               </TabPane>
             </Tabs>
+
+            <Form>
+              <div style={{ float: 'right' }}>
+
+                <Row>
+                  <FormItem label="Total Qty" {...formItemLayout1}>
+                    <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
+                  </FormItem>
+                </Row>
+                <Row>
+                  <FormItem label="Total" {...formItemLayout1}>
+                    <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
+                  </FormItem>
+                </Row>
+                <Row>
+                  <FormItem label="Discount" {...formItemLayout1}>
+                    <Input value={totalDiscount.toLocaleString()} style={{ fontSize: 20 }} />
+                  </FormItem>
+                </Row>
+                <Row>
+                  <FormItem label="Netto" {...formItemLayout1}>
+                    <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
+                  </FormItem>
+                </Row>
+              </div>
+            </Form>
           </Card>
         </Col>
         <Col lg={6} md={4}>
@@ -2265,7 +2287,7 @@ const Pos = ({
         <Button onClick={showModalPoint} className="btn-member">
           <span>
             <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
-            <p>{memberInformation.point || 0} points</p>
+            <p>{(memberInformation.point || 0).toLocaleString()} points</p>
           </span>
         </Button>
       </div>}

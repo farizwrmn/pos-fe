@@ -185,6 +185,7 @@ export default {
       dataPos[payload.no - 1] = payload
       localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
       yield put({ type: 'hidePaymentModal' })
+      yield put({ type: 'setCurTotal' })
     },
 
     * serviceEdit ({ payload }, { put }) {
@@ -192,6 +193,7 @@ export default {
       dataPos[payload.no - 1] = payload
       localStorage.setItem('service_detail', JSON.stringify(dataPos))
       yield put({ type: 'hideServiceModal' })
+      yield put({ type: 'setCurTotal' })
     },
 
     * paymentDelete ({ payload }, { put }) {
@@ -375,6 +377,7 @@ export default {
             listPaymentDetail: {
               id: payload.data.transNo,
               cashierId: payload.data.cashierId,
+              cashierName: PosData.pos.cashierName,
               policeNo: payload.data.policeNo,
               lastMeter: payload.data.lastMeter,
               data: data.pos,
@@ -383,7 +386,10 @@ export default {
               type: PosData.pos.type,
               year: PosData.pos.year,
               chassisNo: PosData.pos.chassisNo,
-              machineNo: PosData.pos.machineNo
+              machineNo: PosData.pos.machineNo,
+              discountLoyalty: PosData.pos.discountLoyalty, // discountLoyalty, lastPoint, gettingPoint
+              lastPoint: PosData.pos.lastPoint,
+              gettingPoint: PosData.pos.gettingPoint
             },
             memberPrint: (member.data || ''), // data member
             companyPrint: (company.data || ''), // data company

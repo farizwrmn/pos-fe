@@ -26,7 +26,7 @@ const searchBarLayout = {
 }
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod,
+  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod, loading,
   form: { getFieldDecorator } }) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
@@ -192,7 +192,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} bordered columns={columns} dataSource={dataSource} />
+      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} bordered columns={columns} dataSource={dataSource} loading={loading} />
     </Form>
   )
 }

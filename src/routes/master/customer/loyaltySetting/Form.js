@@ -108,6 +108,8 @@ const FormCounter = ({
               initialValue: item.setValue,
               rules: [
                 {
+                  pattern: /^(\d{1,3}|\d{0,3}\.\d{1,2})$/i,
+                  message: 'Decimal 2 place',
                   required: true
                 }
               ]

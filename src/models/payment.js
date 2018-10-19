@@ -216,16 +216,14 @@ export default {
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
               const responsInsertPos = data_create.pos
-
+              const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
               yield put({
                 type: 'printPayment',
                 payload: {
                   periode: payload.periode,
                   // transDate: payload.transDate,
                   // transDate2: payload.transDate2,
-                  lastPoint: responsInsertPos.lastPoint,
-                  gettingPoint: responsInsertPos.gettingPoint,
-                  discountLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].usePoint : 0,
+
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
@@ -237,7 +235,12 @@ export default {
                   lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
                   lastTransNo: trans,
                   totalChange: payload.totalChange,
-                  unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+                  unitInfo: {
+                    ...memberUnit,
+                    lastPoint: responsInsertPos.lastPoint,
+                    gettingPoint: responsInsertPos.gettingPoint,
+                    discountLoyalty: responsInsertPos.discountLoyalty
+                  },
                   totalDiscount: payload.totalDiscount,
                   policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
                   rounding: payload.rounding,
@@ -290,7 +293,6 @@ export default {
       const transNo = yield call(querySequence, payload)
       const company = yield call(querySetting, { settingCode: 'Company' })
       localStorage.setItem('transNo', transNo.data)
-      console.log('transNo', transNo.data)
       yield put({
         type: 'lastTransNo',
         payload: transNo.data
@@ -475,10 +477,14 @@ export default {
       const tableHeaderFontSize = 12
       const headerFontSize = 11
       const payload = action.payload
+      const unitInfo = payload.unitInfo // header faktur
+      const countCurrentPoint = (unitInfo.lastPoint + unitInfo.gettingPoint) - unitInfo.discountLoyalty
       const companyInfo = payload.companyInfo
+      console.log('companyInfo', companyInfo)
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
+      let Discount = merge.reduce((cnt, o) => cnt + ((o.price * o.qty) - o.total), 0)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
       if (merge.length !== []) {
         const createPdfLineItems = (tabledata, payload, node) => {
@@ -629,7 +635,7 @@ export default {
                 ]
               },
               {
-                canvas: [{ type: 'line', x1: 0, y1: 0, x2: 733, y2: 0, lineWidth: 0.5 }]
+                canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
               },
               {
                 columns: [
@@ -686,17 +692,30 @@ export default {
                   {
                     columns: [
                       {
-                        stack: [
-                          { fontSize: bottomFontSize, text: `Terbilang : ${terbilang(Total).toUpperCase()}RUPIAH`, alignment: 'left' },
-                          { fontSize: additionalFontSize, text: '* Harga sudah termasuk PPN 10%', alignment: 'left' }
-                        ]
+                        table: {
+                          widths: ['20%', '1%', '79%'],
+                          body: [
+                            [{ text: 'Terbilang', fontSize: headerFontSize }, ':', { text: `${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`, fontSize: headerFontSize }],
+                            [{ text: 'Point', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastPoint} + ${unitInfo.gettingPoint} - ${unitInfo.discountLoyalty} = ${countCurrentPoint}`, fontSize: headerFontSize }]
+                          ]
+                        },
+                        layout: 'noBorders'
                       },
-                      { fontSize: bottomFontSize, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' }
+                      {
+                        table: {
+                          widths: ['59%', '20%', '1%', '20%'],
+                          body: [
+                            [{}, { text: 'TOTAL', fontSize: headerFontSize }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }],
+                            [{}, { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }]
+                          ]
+                        },
+                        layout: 'noBorders'
+                      }
                     ]
                   },
                   {
                     columns: [
-                      { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(payload.userName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] },
+                      { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' },
                       { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
                     ]
                   },
@@ -834,7 +853,6 @@ export default {
           title: 'Payment Already Exists and Added',
           content: 'Please Check Payment'
         })
-        state.listAmount[exists[0].id - 1].amount = parseFloat(state.listAmount[exists[0].id - 1].amount) + parseFloat(action.payload.data.amount || 0)
         return { ...state }
       }
       listAmount.push(action.payload.data)
@@ -844,46 +862,13 @@ export default {
     editMethod (state, action) {
       let { listAmount } = state
       const exists = listAmount.filter(x => x.typeCode === action.payload.data.typeCode)
-      if (exists[0].id !== action.payload.data.id && exists.length > 0 && action.payload.data.typeCode === 'C') {
+      if ((exists[0] || {}).id !== action.payload.data.id && exists.length > 0 && action.payload.data.typeCode === 'C') {
         Modal.info({
           title: 'Payment Already Exists and Added',
           content: 'Please Check Payment'
         })
-        state.listAmount[exists[0].id - 1].amount = parseFloat(state.listAmount[exists[0].id - 1].amount) + parseFloat(action.payload.data.amount || 0)
-
-        Array.prototype.remove = function () {
-          let what
-          let a = arguments
-          let L = a.length
-          let ax
-          while (L && this.length) {
-            what = a[L -= 1]
-            while ((ax = this.indexOf(what)) !== -1) {
-              this.splice(ax, 1)
-            }
-          }
-          return this
-        }
-        let arrayProd = state.listAmount
-        let ary = arrayProd
-        ary.remove(arrayProd[action.payload.data.id - 1])
-        arrayProd = []
-        for (let n = 0; n < ary.length; n += 1) {
-          arrayProd.push({
-            id: n + 1,
-            amount: ary[n].amount,
-            cardName: ary[n].cardName,
-            cardNo: ary[n].cardNo,
-            cashierName: ary[n].cashierName,
-            cashierTransId: ary[n].cashierTransId,
-            description: ary[n].description,
-            printDate: ary[n].printDate,
-            typeCode: ary[n].typeCode
-          })
-        }
         return {
           ...state,
-          listAmount: arrayProd,
           modalType: 'add',
           itemPayment: {}
         }

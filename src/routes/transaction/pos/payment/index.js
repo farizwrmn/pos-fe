@@ -96,7 +96,10 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
     return `${h}:${m}:${s}`
   }
-
+  const usagePoint = memberInformation.usePoint || 0
+  const totalDiscount = usagePoint + curTotalDiscount
+  const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
+  const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const confirmPayment = () => {
     Modal.confirm({
       title: 'Save Payment',
@@ -113,7 +116,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
             break
           }
         }
-        if ((memberInformation.memberPendingPayment === '1' ? false : listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) < parseFloat(curTotal) + parseFloat(curRounding))) {
+        if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
           Modal.error({
             title: 'Payment pending restricted',
             content: 'This member type cannot allow to pending'
@@ -244,6 +247,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   const formPaymentProps = {
     listAmount,
     modalType,
+    memberInformation,
     item: itemPayment,
     curTotal,
     curTotalDiscount,

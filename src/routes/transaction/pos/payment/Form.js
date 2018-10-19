@@ -51,6 +51,7 @@ const formPayment = ({
   curTotal,
   modalType,
   curTotalDiscount,
+  memberInformation,
   curRounding,
   listAmount,
   cashierInformation,
@@ -151,9 +152,12 @@ const formPayment = ({
       cardNo: null
     })
   }
-
-  const curNetto = (parseFloat(curTotal) + parseFloat(curRounding))
+  const usagePoint = memberInformation.usePoint || 0
+  const totalDiscount = usagePoint + curTotalDiscount
+  const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  const curChange = curPayment - curNetto > 0 ? curPayment - curNetto : 0
+  const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding)
 
   return (
     <Form layout="horizontal">
@@ -170,7 +174,7 @@ const formPayment = ({
           </FormItem>
           <FormItem label="Amount" hasFeedback {...formItemLayout}>
             {getFieldDecorator('amount', {
-              initialValue: item.amount ? item.amount : (parseFloat(curTotal, 10) + parseFloat(curRounding, 10)) - curPayment > 0 ? (parseFloat(curTotal, 10) + parseFloat(curRounding, 10)) - curPayment : 0,
+              initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
               rules: [
                 {
                   required: true,
@@ -248,17 +252,20 @@ const formPayment = ({
         <Col lg={8} md={12} sm={24} />
         <Col lg={8} md={12} sm={24} />
         <Col lg={8} md={12} sm={24}>
+          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
+            <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
+          </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
-            <Input value={curTotalDiscount} defaultValue="0" style={{ width: '100%', fontSize: '17pt' }} size="large" />
+            <Input value={totalDiscount.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-            <Input value={curRounding} defaultValue="0" style={{ width: '100%', fontSize: '17pt' }} size="large" />
+            <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-            <Input value={curPayment - curNetto} style={{ width: '100%', fontSize: '17pt' }} size="large" />
+            <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-            <Input value={parseFloat(curTotal) + parseFloat(curRounding)} style={{ width: '100%', fontSize: '17pt' }} size="large" />
+            <Input value={curNetto.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
         </Col>
       </Row>
