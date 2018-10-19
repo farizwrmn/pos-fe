@@ -55,15 +55,15 @@ const List = ({ ...tableProps, editList }) => {
       key: 'discount',
       width: 72,
       className: styles.alignRight,
-      render: (text, record) => ((record.qty * record.sellingPrice) - (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount)).toLocaleString()
+      render: (text, record) => ((record.qty * record.sellingPrice) - ((((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount) - record.discountLoyalty)).toLocaleString()
     },
     {
       title: 'Netto',
-      dataIndex: 'transNo',
-      key: 'transNo',
+      dataIndex: 'netto',
+      key: 'netto',
       width: 72,
       className: styles.alignRight,
-      render: (text, record) => (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount).toLocaleString()
+      render: (text, record) => (((record.qty * record.sellingPrice) * (1 - (record.disc1 / 100)) * (1 - (record.disc2 / 100)) * (1 - (record.disc3 / 100))) - record.discount - record.discountLoyalty).toLocaleString()
     }
 
   ]

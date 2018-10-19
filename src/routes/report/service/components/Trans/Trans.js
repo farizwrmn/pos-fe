@@ -24,7 +24,7 @@ const Report = ({ dispatch, loading, serviceReport, app }) => {
 
   const browseProps = {
     dataSource: list,
-    loading: loading.effects['posReport/queryTransCancel']
+    loading: loading.effects['serviceReport/query']
   }
 
   const filterProps = {

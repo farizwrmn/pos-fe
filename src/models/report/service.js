@@ -93,8 +93,8 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            fromDate: payload.from,
-            toDate: payload.to,
+            fromDate: payload.transDate[0],
+            toDate: payload.transDate[0],
             filterModalVisible: false
           }
         })

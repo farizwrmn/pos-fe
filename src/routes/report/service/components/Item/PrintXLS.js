@@ -73,7 +73,7 @@ const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
           { value: data.qty || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: data.sellingPrice || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: posTotal(data) || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: totalPrice - posTotal(data), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (totalPrice - posTotal(data)) + data.discountLoyalty, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: data.DPP, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
 
           { value: data.PPN, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
@@ -128,7 +128,7 @@ const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
   let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
   let price = (list || []).reduce((cnt, data) => cnt + parseFloat(data.sellingPrice || 0), 0)
   let total = (list || []).reduce((cnt, data) => cnt + posTotal(data), 0)
-  let discount = (list || []).reduce((cnt, data) => cnt + ((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + ((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)) + data.discountLoyalty, 0)
   let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
   let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
   let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)

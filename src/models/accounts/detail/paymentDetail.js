@@ -80,6 +80,7 @@ export default {
           productName: data.pos[n].productName || data.pos[n].serviceName,
           qty: data.pos[n].qty || 0,
           sellingPrice: data.pos[n].sellingPrice || 0,
+          discountLoyalty: data.pos[n].discountLoyalty || 0,
           discount: data.pos[n].discount || 0,
           disc1: data.pos[n].disc1 || 0,
           disc2: data.pos[n].disc2 || 0,

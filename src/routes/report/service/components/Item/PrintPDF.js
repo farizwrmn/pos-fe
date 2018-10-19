@@ -35,7 +35,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
           { text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.sellingPrice), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(posTotal(data)), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(totalPrice - posTotal(data)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia((totalPrice - posTotal(data)) + data.discountLoyalty), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.DPP), alignment: 'right', fontSize: 11 },
 
           { text: formatNumberIndonesia(data.PPN), alignment: 'right', fontSize: 11 },
@@ -175,7 +175,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
   let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
   let price = (list || []).reduce((cnt, data) => cnt + parseFloat(data.sellingPrice || 0), 0)
   let total = (list || []).reduce((cnt, data) => cnt + posTotal(data), 0)
-  let discount = (list || []).reduce((cnt, data) => cnt + ((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + (((parseFloat(data.sellingPrice) * parseFloat(data.qty)) - posTotal(data)) + data.discountLoyalty), 0)
   let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
   let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
   let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)

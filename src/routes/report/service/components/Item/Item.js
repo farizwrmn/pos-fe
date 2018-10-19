@@ -52,10 +52,16 @@ const Report = ({ dispatch, serviceReport, loading, app }) => {
       dispatch({
         type: 'serviceReport/queryDetail',
         payload: {
-          field: 'technicianCode,technicianName,employeeDetailCode,employeeDetailName,transNo,transDate,typeCode,productName,productCode,qty,sellingPrice,discount,disc1,disc2,disc3,DPP,PPN',
+          field: 'technicianCode,technicianName,employeeDetailCode,employeeDetailName,transNo,transDate,typeCode,productName,productCode,qty,sellingPrice,discountLoyalty,discount,disc1,disc2,disc3,DPP,PPN',
           order: 'transDate,transNo,id',
           type: 'all',
           ...data
+        }
+      })
+      dispatch({
+        type: 'serviceReport/updateState',
+        payload: {
+          filterModalVisible: true
         }
       })
       // dispatch({

@@ -7,10 +7,11 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, serviceReport, app }) => {
+const Report = ({ dispatch, loading, serviceReport, app }) => {
   const { list, fromDate, toDate, productCode } = serviceReport
   const { user, storeInfo } = app
   const browseProps = {
+    loading: loading.effects['serviceReport/queryMechanic'],
     dataSource: list,
     list,
     storeInfo,
@@ -68,8 +69,9 @@ const Report = ({ dispatch, serviceReport, app }) => {
 
 Report.propTyps = {
   dispatch: PropTypes.func,
+  loading: PropTypes.func,
   app: PropTypes.app,
   serviceReport: PropTypes.object
 }
 
-export default connect(({ serviceReport, app }) => ({ serviceReport, app }))(Report)
+export default connect(({ loading, serviceReport, app }) => ({ loading, serviceReport, app }))(Report)

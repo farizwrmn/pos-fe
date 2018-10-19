@@ -33,8 +33,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+      className: styles.alignRight
     },
     {
       title: 'Invoice',
