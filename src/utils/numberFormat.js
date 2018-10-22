@@ -6,8 +6,6 @@ const formatNumberInExcel = (value, decimal) => {
       for (let i = 0; i < decimal; i += 1) {
         defaultFormat += '0'
       }
-    } else {
-      return Error('cannot accept underzero')
     }
     return defaultFormat
   }
@@ -16,9 +14,9 @@ const formatNumberInExcel = (value, decimal) => {
 
 const formatNumberIndonesia = (text) => {
   if (typeof text === 'number') {
-    return (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return (text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   } else if (typeof text === 'string') {
-    return (parseFloat(text)).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return (text || '-').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
   return (parseFloat(text) || '-').toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
