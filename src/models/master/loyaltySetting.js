@@ -126,12 +126,13 @@ export default modelExtend(pageModel, {
       } else {
         if (data.statusCode === 409) {
           Modal.warning({
-            title: `Loyalty ${data.data.startDate} to ${data.data.expirationDate} conflict other program`,
+            title: `Loyalty ${data.data.startDate} to ${data.data.endDate} conflict other program`,
             content: <Row>
               <Col span={8}>
                 <p>Spending</p>
                 <p>New Member</p>
                 <p>Start From</p>
+                <p>End From</p>
                 <p>Expiration</p>
                 <p>Min</p>
                 <p>Max</p>
@@ -143,11 +144,13 @@ export default modelExtend(pageModel, {
                 <p>:</p>
                 <p>:</p>
                 <p>:</p>
+                <p>:</p>
               </Col>
               <Col span={15}>
                 <p>{data.data.setValue}</p>
                 <p>{data.data.newMember}</p>
                 <p>{data.data.startDate}</p>
+                <p>{data.data.endDate}</p>
                 <p>{data.data.expirationDate}</p>
                 <p>{data.data.minPayment}</p>
                 <p>{data.data.maxDiscount}</p>

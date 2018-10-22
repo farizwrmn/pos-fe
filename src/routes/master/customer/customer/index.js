@@ -278,12 +278,16 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
       })
     }
   }
-
+  const printProps = {
+    user,
+    storeInfo
+  }
   const formProps = {
     tabProps,
     filterProps,
     modalProps,
     listProps,
+    printProps,
     mobileProps,
     modalType,
     modalAddUnit,

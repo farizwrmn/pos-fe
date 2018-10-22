@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Checkbox, InputNumber, DatePicker, Modal } from 'antd'
+import { Form, Button, message, Row, Col, Checkbox, InputNumber, DatePicker, Modal } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -52,6 +52,10 @@ const FormCounter = ({
       }
       const data = {
         ...getFieldsValue()
+      }
+      if (!!data.expirationDate && data.expirationDate < data.endDate) {
+        message.warning('Expiration Date cannot lower than End Date')
+        return
       }
       if (modalType === 'edit') data.id = item.id
       Modal.confirm({
@@ -144,6 +148,16 @@ const FormCounter = ({
                 }
               ]
             })(<DatePicker onChange={changeStartDate} disabledDate={disabledDate} />)}
+          </FormItem>
+          <FormItem label="End Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('endDate', {
+              initialValue: item.endDate ? moment(item.endDate) : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker disabledDate={disabledDateStartFrom} />)}
           </FormItem>
           <FormItem label="Expiration Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('expirationDate', {

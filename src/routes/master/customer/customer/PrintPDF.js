@@ -51,7 +51,8 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'KOTA', style: 'tableHeader' },
       { text: 'NO TELEPON', style: 'tableHeader' },
       { text: 'NO PONSEL', style: 'tableHeader' },
-      { text: 'TIPE', style: 'tableHeader' }
+      { text: 'TIPE', style: 'tableHeader' },
+      { text: 'POINT', style: 'tableHeader' }
     ]
   ]
 
@@ -61,16 +62,18 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     for (let key in tableData) {
       if (tableData.hasOwnProperty(key)) {
         let data = tableData[key]
-        let row = []
-        row.push({ text: count, alignment: 'center', style: 'tableBody' })
-        row.push({ text: (data.memberCode || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.memberName || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: moment(data.birthDate).format('DD-MMM-YYYY'), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.cityName || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.memberTypeName || '').toString(), alignment: 'left', style: 'tableBody' })
+        let row = [
+          { text: count, alignment: 'center', style: 'tableBody' },
+          { text: (data.memberCode || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.memberName || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: moment(data.birthDate).format('DD-MMM-YYYY'), alignment: 'left', style: 'tableBody' },
+          { text: (data.address01 || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.cityName || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.phoneNumber || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.mobileNumber || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.memberTypeName || '').toString(), alignment: 'left', style: 'tableBody' },
+          { text: (data.point || '').toString(), alignment: 'left', style: 'tableBody' }
+        ]
         body.push(row)
       }
       count += 1
@@ -125,7 +128,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     className: '',
     name,
     buttonStyle: { background: 'transparent', padding: 0 },
-    width: ['4%', '10%', '15%', '8%', '24%', '7%', '10%', '10%', '11%'],
+    width: ['4%', '10%', '14%', '8%', '22%', '7%', '10%', '10%', '10%', '7%'],
     pageSize: { width: 1000, height: 700 },
     pageOrientation: 'landscape',
     pageMargins: [25, 140, 25, 60],

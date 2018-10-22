@@ -2247,7 +2247,7 @@ const Pos = ({
                 <FormItem label="Code" {...formItemLayout}>
                   <Input value={memberInformation.memberCode} disabled />
                 </FormItem>
-                <FormItem label="Point" {...formItemLayout}>
+                <FormItem label="Cashback" {...formItemLayout}>
                   <Input value={memberInformation.point} disabled />
                 </FormItem>
               </Form>

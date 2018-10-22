@@ -27,6 +27,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'startDate'
     },
     {
+      title: 'End Date',
+      dataIndex: 'endDate',
+      key: 'endDate'
+    },
+    {
       title: 'Expired',
       dataIndex: 'expirationDate',
       key: 'expirationDate'
