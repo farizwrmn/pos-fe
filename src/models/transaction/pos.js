@@ -316,7 +316,7 @@ export default {
 
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccessPayment',
           payload: {
@@ -330,6 +330,8 @@ export default {
             }
           }
         })
+      } else {
+        throw data
       }
     },
 
