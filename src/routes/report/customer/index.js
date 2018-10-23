@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
-import { History, Asset } from './components'
+import { History, Asset, Cashback } from './components'
 
 const TabPane = Tabs.TabPane
 
@@ -32,12 +32,15 @@ const Report = ({ customerReport, location, dispatch }) => {
 
   return (
     <div className="content-inner">
-      <Tabs {...tabProps}>
+      <Tabs activeKey={activeKey} {...tabProps}>
         <TabPane tab="History" key="0">
-          <History />
+          {activeKey === '0' && <History />}
         </TabPane>
         <TabPane tab="Asset" key="1">
-          <Asset />
+          {activeKey === '1' && <Asset />}
+        </TabPane>
+        <TabPane tab="Cashback" key="2">
+          {activeKey === '2' && <Cashback />}
         </TabPane>
       </Tabs>
     </div>

@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { queryCustomerHistory, queryCustomerAsset } from '../../services/report/pos'
 import { queryUnits } from '../../services/master/customer'
+import { queryReportCashback } from '../../services/report/customer'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -10,6 +11,7 @@ export default modelExtend(pageModel, {
     modalVisible: { showChoice: false, showCustomer: false },
     listPoliceNo: [],
     listAsset: [],
+    listCashback: [],
     customerInfo: {},
     listHistory: [],
     from: '',
@@ -37,7 +39,7 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(queryCustomerHistory, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccess',
           payload: {
@@ -54,7 +56,7 @@ export default modelExtend(pageModel, {
     * queryPoliceNo ({ payload = {} }, { call, put }) {
       // const data = yield call(queryCustomerHistory, payload)
       const data = yield call(queryUnits, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'updateState',
           payload: {
@@ -67,13 +69,38 @@ export default modelExtend(pageModel, {
     },
     * queryCustomerAsset ({ payload = {} }, { call, put }) {
       const data = yield call(queryCustomerAsset, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccessAsset',
           payload: {
             listAsset: data.data
           }
         })
+      } else {
+        throw data
+      }
+    },
+
+    * queryCustomerCashbackHistory ({ payload = {} }, { call, put }) {
+      const data = yield call(queryReportCashback, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCashback: data.data
+          }
+        })
+        if (payload.posDate) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              from: payload.posDate[0],
+              to: payload.posDate[1]
+            }
+          })
+        }
+      } else {
+        throw data
       }
     }
 

@@ -36,7 +36,8 @@ module.exports = {
     apiSpecificationInsertStock: '/stock/specificationinsstock',
     apiFollowUp: '/followup',
     apiSequence: '/sequences',
-    apiLoyalty: '/loyalty'
+    apiLoyalty: '/loyalty',
+    apiReportCashback: '/report/cashback'
   },
   api: {
     getIpAddress: '/utils/ipaddr',
