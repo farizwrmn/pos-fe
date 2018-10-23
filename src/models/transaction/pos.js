@@ -6,7 +6,7 @@ import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
-import { query as queryMembers, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
+import { query as queryMembers, queryPointById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
@@ -1503,6 +1503,30 @@ export default {
             listUnitUsage: []
           }
         })
+      }
+    },
+
+    * syncCustomerPoint ({ payload = {} }, { call, put }) {
+      if (payload.memberId) {
+        const data = yield call(queryPointById, payload)
+        if (data.success) {
+          let dataMember = localStorage.getItem('member')
+          dataMember = dataMember ? JSON.parse(dataMember)[0] : null
+          if (dataMember) {
+            dataMember.point = data.data
+            const newDataMember = []
+            newDataMember.push(dataMember)
+            localStorage.setItem('member', JSON.stringify(newDataMember))
+            yield put({
+              type: 'updateState',
+              payload: {
+                memberInformation: dataMember
+              }
+            })
+          }
+        } else {
+          throw data
+        }
       }
     },
 

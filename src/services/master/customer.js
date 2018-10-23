@@ -23,6 +23,17 @@ export async function queryByCode (params) {
   })
 }
 
+export async function queryPointById (params) {
+  const url = `${customers}/point/${params.memberId}`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'get',
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryUnits (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params ? `${customers}/${params.memberCode}/units` : customers

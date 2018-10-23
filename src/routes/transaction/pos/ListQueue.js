@@ -83,6 +83,12 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.setItem('mechanic', JSON.stringify(arrayMechanic))
       if (arrayWorkOrder.id) localStorage.setItem('workorder', JSON.stringify(arrayWorkOrder))
       localStorage.setItem('member', JSON.stringify(arrayMember))
+      dispatch({
+        type: 'pos/syncCustomerPoint',
+        payload: {
+          memberId: trans.id
+        }
+      })
       localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
       localStorage.setItem('bundle_promo', JSON.stringify(trans.bundle_promo))

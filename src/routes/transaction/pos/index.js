@@ -850,6 +850,12 @@ const Pos = ({
         type: 'pos/queryGetMemberSuccess',
         payload: { memberInformation: newItem }
       })
+      dispatch({
+        type: 'pos/syncCustomerPoint',
+        payload: {
+          memberId: newItem.id
+        }
+      })
       dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
       dispatch({
@@ -924,7 +930,12 @@ const Pos = ({
 
           localStorage.setItem('member', JSON.stringify(arrayProd))
           localStorage.setItem('memberUnit', JSON.stringify(memberUnit))
-
+          dispatch({
+            type: 'pos/syncCustomerPoint',
+            payload: {
+              memberId: newItem.id
+            }
+          })
           dispatch({
             type: 'pos/updateState',
             payload: {
@@ -951,6 +962,12 @@ const Pos = ({
         payload: {
           modalPointVisible: false,
           memberInformation: data
+        }
+      })
+      dispatch({
+        type: 'pos/syncCustomerPoint',
+        payload: {
+          memberId: data.id
         }
       })
     },
@@ -998,6 +1015,12 @@ const Pos = ({
       arrayProd.push(newItem)
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
+      dispatch({
+        type: 'pos/syncCustomerPoint',
+        payload: {
+          memberId: newItem.id
+        }
+      })
       dispatch({
         type: 'pos/queryGetMemberSuccess',
         payload: { memberInformation: newItem }
