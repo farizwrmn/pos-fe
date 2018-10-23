@@ -695,7 +695,7 @@ export default {
                           widths: ['20%', '1%', '79%'],
                           body: [
                             [{ text: 'Terbilang', fontSize: headerFontSize }, ':', { text: `${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`, fontSize: headerFontSize }],
-                            [{ text: 'Point', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastPoint} + ${unitInfo.gettingPoint} - ${unitInfo.discountLoyalty} = ${countCurrentPoint}`, fontSize: headerFontSize }]
+                            [{ text: 'Cashback', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastPoint} + ${unitInfo.gettingPoint} - ${unitInfo.discountLoyalty} = ${countCurrentPoint}`, fontSize: headerFontSize }]
                           ]
                         },
                         layout: 'noBorders'
