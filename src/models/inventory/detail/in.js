@@ -1,8 +1,10 @@
 import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
-import { lstorage } from 'utils'
+import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { queryTrans, queryDetail, voidTrans } from '../../../services/transferStockIn.js'
+
+const { stockMinusAlert } = alertModal
 
 export default {
 
@@ -95,10 +97,14 @@ export default {
           title: 'Transaction has been canceled'
         })
       } else {
-        Modal.warning({
-          title: 'Something went wrong',
-          content: data.message
-        })
+        if (data.data && (data.data || []).length > 0) {
+          stockMinusAlert(data)
+        } else {
+          Modal.warning({
+            title: 'Something went wrong',
+            content: data.message
+          })
+        }
         yield put({
           type: 'updateState',
           payload: {

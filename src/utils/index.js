@@ -15,6 +15,7 @@ import numberFormat from './numberFormat'
 import compare from './compare'
 import variables from './variables'
 import total from './total'
+import alertModal from './alertModal'
 
 const { posTotal } = total
 // 连字符转驼峰 - hyphenToHump
@@ -160,5 +161,6 @@ module.exports = {
   calendar,
   compare,
   variables,
-  total
+  total,
+  alertModal
 }

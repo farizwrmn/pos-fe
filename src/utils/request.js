@@ -172,9 +172,11 @@ export default function request (options) {
     let msg
     let dat
     let statusCode
+    let detail = ''
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
+      detail = data.detail
       msg = data.message || statusText
       dat = data.data || {}
     } else {
@@ -185,6 +187,6 @@ export default function request (options) {
         msg = error
       }
     }
-    return { success: false, statusCode, message: msg, data: dat }
+    return { success: false, detail, statusCode, message: msg, data: dat }
   })
 }
