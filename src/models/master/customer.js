@@ -237,28 +237,28 @@ export default modelExtend(pageModel, {
     * activateMember ({ payload = {} }, { call, put }) {
       const result = yield call(srvActivateMember, payload)
       if (result.success) {
-        if (payload.memberCode !== 'code') {
-          let member = {
-            memberCode: result.data.memberCode,
-            memberName: result.data.memberName,
-            memberGroupId: payload.memberGroupId,
-            memberTypeId: payload.memberTypeId,
-            cityId: payload.cityId,
-            idType: payload.idType,
-            idNo: payload.idNo,
-            address01: payload.address01,
-            phoneNumber: payload.phoneNumber,
-            mobileNumber: payload.mobileNumber,
-            gender: payload.gender
-          }
-          yield put({
-            type: 'edit',
-            payload: {
-              id: result.data.memberCode,
-              data: member
-            }
-          })
-        }
+        // if (payload.memberCode !== 'code') {
+        // let member = {
+        //   memberCode: result.data.memberCode,
+        //   memberName: result.data.memberName,
+        //   memberGroupId: payload.memberGroupId,
+        //   memberTypeId: payload.memberTypeId,
+        //   cityId: payload.cityId,
+        //   idType: payload.idType,
+        //   idNo: payload.idNo,
+        //   address01: payload.address01,
+        //   phoneNumber: payload.phoneNumber,
+        //   mobileNumber: payload.mobileNumber,
+        //   gender: payload.gender
+        // }
+        // yield put({
+        //   type: 'edit',
+        //   payload: {
+        //     id: result.data.memberCode,
+        //     data: member
+        //   }
+        // })
+        // }
         yield put({
           type: 'responseActivateMember',
           payload
