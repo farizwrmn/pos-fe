@@ -79,7 +79,6 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
 
   return (
     <Table
-      scroll={{ x: 800 }}
       columns={columns}
       simple
       bordered
