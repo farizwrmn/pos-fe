@@ -1,12 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import { lstorage, configMain } from 'utils'
+import { lstorage, configMain, alertModal } from 'utils'
 import moment from 'moment'
 import { query, queryDetail, create, editPurchase, remove, queryHistories, queryHistory, queryHistoryDetail } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
 
+const { stockMinusAlert } = alertModal
 const { prefix } = configMain
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
@@ -293,6 +294,14 @@ export default modelExtend(pageModel, {
           yield put({ type: 'changeRounding', payload: 0 })
           yield put({ type: 'query' })
         } else {
+          if (data.data && (data.data || []).length > 0) {
+            stockMinusAlert(data)
+          } else {
+            Modal.warning({
+              title: 'Something went wrong',
+              content: data.message
+            })
+          }
           throw data
         }
       } else {
