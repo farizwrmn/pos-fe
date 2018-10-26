@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { lstorage, configMain } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, createDetail, create, edit, editPurchase, remove, createVoidDetail, queryHistories, queryHistory, queryHistoryDetail } from '../services/purchase'
+import { query, queryDetail, create, editPurchase, remove, queryHistories, queryHistory, queryHistoryDetail } from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
@@ -171,40 +171,32 @@ export default modelExtend(pageModel, {
       const storeId = lstorage.getCurrentUserStore()
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       if ((purchase_detail || []).length !== 0) {
-        const data = yield call(create, { id: payload.transNo, data: payload })
+        let arrayProd = []
+        for (let n = 0; n < purchase_detail.length; n += 1) {
+          arrayProd.push({
+            storeId,
+            transNo: payload.transNo,
+            productId: purchase_detail[n].code,
+            productName: purchase_detail[n].name,
+            qty: purchase_detail[n].qty,
+            purchasePrice: purchase_detail[n].price,
+            DPP: purchase_detail[n].dpp,
+            PPN: purchase_detail[n].ppn,
+            discPercent: purchase_detail[n].disc1,
+            discNominal: purchase_detail[n].discount,
+            transType: payload.transType
+          })
+        }
+        const data = yield call(create, { id: payload.transNo, data: payload, add: arrayProd })
         if (data.success) {
-          let arrayProd = []
-          for (let n = 0; n < purchase_detail.length; n += 1) {
-            arrayProd.push({
-              storeId,
-              transNo: payload.transNo,
-              productId: purchase_detail[n].code,
-              productName: purchase_detail[n].name,
-              qty: purchase_detail[n].qty,
-              purchasePrice: purchase_detail[n].price,
-              DPP: purchase_detail[n].dpp,
-              PPN: purchase_detail[n].ppn,
-              discPercent: purchase_detail[n].disc1,
-              discNominal: purchase_detail[n].discount,
-              transType: payload.transType
-            })
-          }
-          const detail = yield call(createDetail, { id: payload.transNo, data: arrayProd })
-          if (detail.success) {
-            Modal.info({
-              title: 'Transaction Success',
-              content: `Transaction ${payload.transNo} has been saved`
-            })
-            localStorage.removeItem('product_detail')
-            localStorage.removeItem('purchase_void')
-            yield put({ type: 'resetBrowse' })
-            yield put({ type: 'changeRounding', payload: 0 })
-          } else {
-            Modal.warning({
-              title: 'Something went wrong',
-              content: `${JSON.stringify(data.message)}`
-            })
-          }
+          Modal.info({
+            title: 'Transaction Success',
+            content: `Transaction ${payload.transNo} has been saved`
+          })
+          localStorage.removeItem('product_detail')
+          localStorage.removeItem('purchase_void')
+          yield put({ type: 'resetBrowse' })
+          yield put({ type: 'changeRounding', payload: 0 })
         } else {
           Modal.warning({
             title: 'Something went wrong',
@@ -221,86 +213,75 @@ export default modelExtend(pageModel, {
 
     * update ({ payload }, { call, put }) {
       const storeId = lstorage.getCurrentUserStore()
-      let addData = []
-      let editData = []
+      let addData = payload.data.filter(x => x.ket === 'add')
+      let editData = payload.data.filter(x => x.ket === 'edit')
       let voidData = []
-      for (let n = 0; n < (payload.data || []).length; n += 1) {
-        if (payload.data[n].ket === 'add') {
-          addData.push(payload.data[n])
-        } else if (payload.data[n].ket === 'edit') {
-          editData.push(payload.data[n])
-        }
-      }
       if ((payload.dataVoid || []).length > 0) {
-        for (let n = 0; n < (payload.dataVoid || []).length; n += 1) {
-          voidData.push({
+        voidData = payload.dataVoid.map((dataVoidMap) => {
+          return ({
             storeId,
             transNo: payload.id.transNo,
-            productId: payload.dataVoid[n].code,
-            productName: payload.dataVoid[n].name,
-            qty: payload.dataVoid[n].qty,
-            purchasePrice: payload.dataVoid[n].price,
-            DPP: payload.dataVoid[n].dpp,
-            PPN: payload.dataVoid[n].ppn,
-            discPercent: payload.dataVoid[n].disc1,
-            discNominal: payload.dataVoid[n].discount
+            productId: dataVoidMap.code,
+            productName: dataVoidMap.name,
+            qty: dataVoidMap.qty,
+            purchasePrice: dataVoidMap.price,
+            DPP: dataVoidMap.dpp,
+            PPN: dataVoidMap.ppn,
+            discPercent: dataVoidMap.disc1,
+            discNominal: dataVoidMap.discount
           })
-        }
-        yield call(createVoidDetail, { id: payload.id.transNo, data: voidData })
+        })
+        // yield call(createVoidDetail, { id: payload.id.transNo, data: voidData })
       }
-      let data = ''
-      let dataAdd = ''
       let arrayProdAdd = []
       let arrayProdEdit = []
-      if (addData.length > 0) {
-        for (let n = 0; n < addData.length; n += 1) {
-          if (payload.id.taxType === 'I') {
-            addData[n].ppn = 0.1 * addData[n].price
-          } else if (payload.id.taxType === 'E') {
-            addData[n].ppn = 0
-          }
-          arrayProdAdd.push({
-            storeId,
-            transNo: payload.id.transNo,
-            productId: addData[n].code,
-            productName: addData[n].name,
-            qty: addData[n].qty,
-            purchasePrice: addData[n].price,
-            DPP: addData[n].dpp,
-            PPN: addData[n].ppn,
-            discPercent: addData[n].disc1,
-            discNominal: addData[n].discount,
-            void: addData[n].void
-          })
+      arrayProdAdd = addData.map((dataArrayProdAddtMap) => {
+        if (payload.id.taxType === 'I') {
+          dataArrayProdAddtMap.ppn = 0.1 * dataArrayProdAddtMap.price
+        } else if (payload.id.taxType === 'E') {
+          dataArrayProdAddtMap.ppn = 0
         }
-      }
-
-      for (let n = 0; n < editData.length; n += 1) {
-        arrayProdEdit.push({
+        return ({
           storeId,
           transNo: payload.id.transNo,
-          id: editData[n].id,
-          productId: editData[n].code,
-          productName: editData[n].name,
-          qty: editData[n].qty,
-          purchasePrice: editData[n].price,
-          DPP: editData[n].dpp,
-          PPN: editData[n].ppn,
-          discPercent: editData[n].disc1,
-          discNominal: editData[n].discount,
-          void: editData[n].void
+          id: dataArrayProdAddtMap.id,
+          productId: dataArrayProdAddtMap.code,
+          productName: dataArrayProdAddtMap.name,
+          qty: dataArrayProdAddtMap.qty,
+          purchasePrice: dataArrayProdAddtMap.price,
+          DPP: dataArrayProdAddtMap.dpp,
+          PPN: dataArrayProdAddtMap.ppn,
+          discPercent: dataArrayProdAddtMap.disc1,
+          discNominal: dataArrayProdAddtMap.discount,
+          void: dataArrayProdAddtMap.void
         })
-      }
+      })
+      arrayProdEdit = editData.map((dataArrayProdEditMap) => {
+        return ({
+          storeId,
+          transNo: payload.id.transNo,
+          id: dataArrayProdEditMap.id,
+          productId: dataArrayProdEditMap.code,
+          productName: dataArrayProdEditMap.name,
+          qty: dataArrayProdEditMap.qty,
+          purchasePrice: dataArrayProdEditMap.price,
+          DPP: dataArrayProdEditMap.dpp,
+          PPN: dataArrayProdEditMap.ppn,
+          discPercent: dataArrayProdEditMap.disc1,
+          discNominal: dataArrayProdEditMap.discount,
+          void: dataArrayProdEditMap.void
+        })
+      })
+
       if (payload.data.length > 0) {
-        if (addData.length === 0) {
-          data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
-          yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
-        } else if (addData.length > 0) {
-          data = yield call(edit, { id: payload.id.transNo, data: arrayProdEdit })
-          dataAdd = yield call(createDetail, { id: payload.id.transNo, data: arrayProdAdd })
-          yield call(editPurchase, { id: payload.id.transNo, data: payload.e })
-        }
-        if (data.success || dataAdd.success) {
+        const data = yield call(editPurchase, {
+          id: payload.id.transNo,
+          data: payload.e,
+          add: arrayProdAdd,
+          edit: arrayProdEdit,
+          void: voidData
+        })
+        if (data.success) {
           Modal.info({
             title: 'Information',
             content: 'Transaction has been saved...!'
