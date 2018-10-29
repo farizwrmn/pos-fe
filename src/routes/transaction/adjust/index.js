@@ -10,10 +10,13 @@ import AdjustFormEdit from './AdjustFormEdit'
 
 const TabPane = Tabs.TabPane
 
-const Adjust = ({ location, dispatch, adjust, productstock, loading }) => {
+const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
   const {
-    activeKey, lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalType
+    activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalType
   } = adjust
+  const {
+    tmpProductList
+  } = pos
   const {
     modalProductVisible
   } = productstock
@@ -51,7 +54,9 @@ const Adjust = ({ location, dispatch, adjust, productstock, loading }) => {
     templistType,
     disabledItemIn,
     disabledItemOut,
-    onOk (data) {
+    async onOk (data) {
+      data.qty = data.OutQty
+      // checkQuantityBeforeEdit
       dispatch({
         type: 'adjust/adjustEdit',
         payload: data
@@ -225,6 +230,12 @@ const Adjust = ({ location, dispatch, adjust, productstock, loading }) => {
           price: e.sellPrice
         })
         localStorage.setItem('adjust', JSON.stringify(arrayProd))
+        dispatch({
+          type: 'productstock/updateState',
+          payload: {
+            modalProductVisible: false
+          }
+        })
         const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
         dispatch({ type: 'adjust/setDataBrowse', payload: data })
       } else {

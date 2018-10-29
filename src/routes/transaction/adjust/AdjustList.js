@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Input, Form, Col, Row, Modal } from 'antd'
+import { Button, Input, Form, Col, Row, Modal, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -20,6 +20,7 @@ const AdjustList = ({ onOk, onDeleteItem, item, disabledItemIn, disabledItemOut,
         ...getFieldsValue()
       }
       data.Record = item.no
+      data.productId = item.productId
       onOk(data)
       resetFields()
     })
@@ -81,7 +82,7 @@ const AdjustList = ({ onOk, onDeleteItem, item, disabledItemIn, disabledItemOut,
               required: true,
               message: 'Required'
             }]
-          })(<Input disabled={disabledItemIn} />)}
+          })(<InputNumber disabled={disabledItemIn} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Out">
           {getFieldDecorator('OutQty', {
@@ -91,7 +92,7 @@ const AdjustList = ({ onOk, onDeleteItem, item, disabledItemIn, disabledItemOut,
               message: 'Required'
             }]
           })(
-            <Input disabled={disabledItemOut} />
+            <InputNumber disabled={disabledItemOut} />
           )
           }
         </FormItem>

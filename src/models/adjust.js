@@ -1,11 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { lstorage, alertModal } from 'utils'
+import { configMain, lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import { query, queryDetail, create, edit, remove } from '../services/adjust'
 import { pageModel } from './common'
-import { query as queryProducts } from '../services/master/productstock'
+import { query as queryProducts, queryPOSproduct } from '../services/master/productstock'
 import { query as queryTransType } from '../services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
 import { query as querySequence } from '../services/sequence'
@@ -13,6 +13,7 @@ import { getDateTime } from '../services/setting/time'
 import { queryLastActive } from '../services/period'
 
 const { stockMinusAlert } = alertModal
+const { prefix } = configMain
 
 const success = () => {
   message.success('data has been saved')
@@ -262,7 +263,78 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * adjustEdit ({ payload }, { put }) {
+    * adjustEdit ({ payload }, { call, put, select }) {
+      const dataBrowse = yield select(({ adjust }) => adjust.dataBrowse)
+      const activeKey = yield select(({ adjust }) => adjust.activeKey)
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const dataBrowseMap = dataBrowse.map(x => x.productId)
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (dataBrowseMap || []).toString() })
+
+      const getQueueQuantity = () => {
+        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        let tempQueue = []
+        let tempTrans = []
+        for (let n = 0; n < 10; n += 1) {
+          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          if (tempQueue.length > 0) {
+            tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
+          }
+        }
+        if (tempTrans.length > 0) {
+          return tempTrans
+        }
+        console.log('queue is empty, nothing to check')
+        return []
+      }
+
+      const getCashierQuantity = () => {
+        const cashier = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        return cashier
+      }
+
+      const checkQuantityNewProduct = (e) => {
+        const { data } = e
+        const tempQueue = getQueueQuantity()
+        const tempCashier = getCashierQuantity()
+        const Cashier = tempCashier.filter(el => el.productId === data.productId)
+        const Queue = tempQueue.filter(el => el.productId === data.productId)
+        // const item = listItem.filter(el => el.productId === data.productId)
+        let arrData = []
+        arrData.push({ ...data })
+        const listProduct = listProductData.data
+        const totalData = arrData.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+        const totalLocal = (Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)) + Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+        const Quantity = (arrData.concat(Queue)).concat(Cashier)
+        const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+        const tempListProduct = listProduct.filter(el => el.productId === data.productId)
+        const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
+        if (totalQty > totalListProduct) {
+          Modal.warning({
+            title: 'No available stock',
+            content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
+          })
+          return false
+        }
+        return true
+      }
+      const check = {
+        data: payload
+      }
+      if (activeKey === '1') {
+        const checkQuantity = checkQuantityNewProduct(check)
+        if (!checkQuantity) {
+          return
+        }
+      }
+
+      yield put({
+        type: 'pos/showProductQtyByProductId',
+        payload: {
+          data: dataBrowse
+        }
+      })
+
       let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()

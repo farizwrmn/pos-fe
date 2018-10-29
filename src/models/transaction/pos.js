@@ -793,6 +793,37 @@ export default {
         throw listProductData
       }
     },
+    * showProductQtyByProductId ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.productId)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
+              return {
+                ...other,
+                ...listProductData.data[n]
+              }
+            }
+            return x
+          })
+        }
+
+        yield put({
+          type: 'queryGetProductsSuccess',
+          payload: {
+            productInformation: data,
+            tmpProductList: data
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
     * checkQuantityEditProduct ({ payload }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
