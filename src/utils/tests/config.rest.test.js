@@ -28,7 +28,8 @@ it('Should render Config Rest', () =>
     apiSpecificationInsertStock: '/stock/specificationinsstock',
     apiFollowUp: '/followup',
     apiSequence: '/sequences',
-    apiLoyalty: '/loyalty'
+    apiLoyalty: '/loyalty',
+    apiReportCashback: '/report/cashback'
   })
 )
 
