@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { configMain, lstorage, color } from 'utils'
+import { configMain, lstorage, color, alertModal } from 'utils'
 import { query, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -11,6 +11,7 @@ import {
 } from '../services/sequence'
 import { pageModel } from './common'
 
+const { stockMinusAlert } = alertModal
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
@@ -212,46 +213,21 @@ export default modelExtend(pageModel, {
         seqCode: 'MUOUT',
         type: lstorage.getCurrentUserStore() // diganti dengan StoreId
       }
-      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
-      const product = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-      let checkQty = true
-      let underQtyProduct = []
-      for (let key = 0; key < payload.detail.length; key += 1) {
-        if (payload.detail[key].qty > product.data.filter(el => el.productId === payload.detail[key].productId)[0].count) {
-          checkQty = false
-          underQtyProduct.push(payload.detail[key])
-        }
-      }
-      if (checkQty) {
-        let data = {}
-        try {
-          data = yield call(add, payload)
-        } catch (error) {
-          error(error)
-          throw error
-        }
-        if (data.success) {
-          success()
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalConfirmVisible: true
-            }
-          })
-        } else {
-          error(data)
-          throw data
-        }
-      } else {
-        Modal.warning({
-          title: 'Qty is not available',
-          content: `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length > 1 ?
-            `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length} items` :
-            `${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).length} item`} is underQty = \n
-      ${underQtyProduct.map(o => `${o.productCode}(${o.productName})`).toString()}`
+      let data = yield call(add, payload)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalConfirmVisible: true
+          }
         })
+      } else {
+        error(data)
+        stockMinusAlert(data)
+        throw data
       }
     },
     * deleteListState ({ payload }, { put }) {
