@@ -1,12 +1,14 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage } from 'utils'
+import { configMain, lstorage, alertModal } from 'utils'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
+
+const { stockMinusAlert } = alertModal
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -274,6 +276,10 @@ export default {
                 title: 'Error Saving Payment',
                 content: `${JSON.stringify(data_create.message)}`
               })
+              if (data_create.data) {
+                stockMinusAlert(data_create)
+              }
+              throw data_create
             }
           } else {
             Modal.error({
