@@ -10,10 +10,13 @@ import AdjustFormEdit from './AdjustFormEdit'
 
 const TabPane = Tabs.TabPane
 
-const Adjust = ({ location, dispatch, adjust, loading }) => {
+const Adjust = ({ location, dispatch, adjust, productstock, loading }) => {
   const {
-    activeKey, lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalProductVisible, modalType
+    activeKey, lastTrans, templistType, pagination, tmpProductList, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalType
   } = adjust
+  const {
+    modalProductVisible
+  } = productstock
   const modalProps = {
     loading: loading.effects['adjust/query'],
     visible: modalVisible,
@@ -92,10 +95,12 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
   const adjustProps = {
     ...browseProps,
     item: currentItem,
+    dispatch,
     lastTrans,
     pagination,
     location,
     loading: loading.effects['adjust/add'],
+    loadingButton: loading,
     listType,
     templistType,
     itemEmployee,
@@ -104,6 +109,7 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
     tmpProductList,
     dataSource: listProduct,
     dataBrowse,
+    modalProductVisible,
     visible: modalProductVisible,
     maskClosable: false,
     onOk (data) {
@@ -117,6 +123,14 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
         type: 'adjust/edit',
         payload: {
           data
+        }
+      })
+    },
+    showProductModal () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalProductVisible: true
         }
       })
     },
@@ -305,11 +319,12 @@ const Adjust = ({ location, dispatch, adjust, loading }) => {
 }
 
 Adjust.propTypes = {
-  adjust: PropTypes.object,
+  adjust: PropTypes.object.isRequired,
+  productstock: PropTypes.object.isRequired,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
 
-export default connect(({ adjust, loading }) => ({ adjust, loading }))(Adjust)
+export default connect(({ pos, adjust, productstock, loading }) => ({ pos, adjust, productstock, loading }))(Adjust)

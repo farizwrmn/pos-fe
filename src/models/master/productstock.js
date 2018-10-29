@@ -30,6 +30,7 @@ export default modelExtend(pageModel, {
     listPrintAllStock: [],
     modalVariantVisible: false,
     modalSpecificationVisible: false,
+    modalProductVisible: false,
     listItem: [],
     listSticker: [],
     update: false,
@@ -346,6 +347,10 @@ export default modelExtend(pageModel, {
 
     pushSticker (state, { payload }) {
       state.listSticker.push()
+      return { ...state, ...payload }
+    },
+
+    updateState (state, { payload }) {
       return { ...state, ...payload }
     },
 

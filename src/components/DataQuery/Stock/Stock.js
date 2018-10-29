@@ -63,6 +63,7 @@ const Stock = ({
   enableFilter = true,
   showPagination = true,
   onRowClick,
+  lov,
   pos,
   ...tableProps
 }) => {
@@ -74,7 +75,7 @@ const Stock = ({
       payload: {
         page: 1,
         pageSize: 10,
-        lov: 'variant',
+        lov: lov || 'variant',
         q: searchText
       }
     })
@@ -94,7 +95,7 @@ const Stock = ({
       type: 'pos/getProducts',
       payload: {
         page: 1,
-        lov: 'variant'
+        lov: lov || 'variant'
       }
     })
     dispatch({
@@ -109,7 +110,7 @@ const Stock = ({
       type: 'pos/getProducts',
       payload: {
         q: searchText === '' ? null : searchText,
-        lov: 'variant',
+        lov: lov || 'variant',
         page: Number(page.current),
         pageSize: Number(page.pageSize)
       }
@@ -195,6 +196,7 @@ const Stock = ({
 
 Stock.propTypes = {
   form: PropTypes.object.isRequired,
+  lov: PropTypes.string,
   pos: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired
 }

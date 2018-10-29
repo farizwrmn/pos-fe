@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, message, Input, Popover, Button, Table, Icon, Row, Col, DatePicker, Cascader, AutoComplete } from 'antd'
+import {
+  Form, message, Input, Button,
+  // Popover, Table, Icon,
+  Row, Col, DatePicker, Cascader, AutoComplete
+} from 'antd'
+import { DataQuery } from 'components'
 import { lstorage } from 'utils'
 import Browse from './Browse'
-import styles from '../../../themes/index.less'
+// import styles from '../../../themes/index.less'
 
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
-const { Search } = Input
+const { Stock } = DataQuery
+// const { Search } = Input
 
 const formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 9 }, md: { span: 9 }, lg: { span: 8 } },
@@ -20,7 +26,7 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 }
 }
-const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, item,
+const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, showProductModal, lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, item,
   popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...adjustProps }) => {
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
@@ -43,22 +49,22 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
     onGetEmployee(e)
   }
 
-  const hdlSearch = (e) => {
-    onSearchProduct(e, tmpProductList)
-  }
+  // const hdlSearch = (e) => {
+  //   onSearchProduct(e, tmpProductList)
+  // }
 
-  const hidePopover = () => {
-    onHidePopover()
-  }
+  // const hidePopover = () => {
+  //   onHidePopover()
+  // }
 
-  const handleChangeSearch = (e) => {
-    const { value } = e.target
-    onChangeSearch(value)
-  }
+  // const handleChangeSearch = (e) => {
+  //   const { value } = e.target
+  //   onChangeSearch(value)
+  // }
 
-  const handleMenuClick = (e) => {
-    onChooseItem(e)
-  }
+  // const handleMenuClick = (e) => {
+  //   onChooseItem(e)
+  // }
   const changeCascader = (e) => {
     const value = e[0]
     const variable = templistType.filter(x => x.code === value)
@@ -92,44 +98,75 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
     message.warning('Transaction has been canceled and reset')
     onResetAll()
   }
-  const columns = [
-    {
-      title: 'code',
-      dataIndex: 'productCode',
-      key: 'productCode',
-      width: '25%'
+  // const columns = [
+  //   {
+  //     title: 'code',
+  //     dataIndex: 'productCode',
+  //     key: 'productCode',
+  //     width: '25%'
+  //   },
+  //   {
+  //     title: 'Product',
+  //     dataIndex: 'productName',
+  //     key: 'productName',
+  //     width: '55%'
+  //   },
+  //   {
+  //     title: 'Cost',
+  //     dataIndex: 'costPrice',
+  //     key: 'costPrice',
+  //     width: '20%',
+  //     className: styles.alignRight,
+  //     render: text => text.toLocaleString()
+  //   }
+  // ]
+  // const contentPopover = (
+  //   <Table
+  //     pagination={pagination}
+  //     scroll={{ x: 600, y: 150 }}
+  //     columns={columns}
+  //     dataSource={dataSource}
+  //     simple
+  //     // locale={{
+  //     //   emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
+  //     // }}
+  //     size="small"
+  //     rowKey={record => record.productCode}
+  //     onRowClick={record => handleMenuClick(record)}
+  //     {...adjustProps}
+  //   />
+  // )
+
+  const handleShowProduct = () => {
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        page: 1
+      }
+    })
+    showProductModal()
+  }
+
+  const modalProductProps = {
+    location,
+    loading: loadingButton,
+    visible: modalProductVisible,
+    maskClosable: false,
+    lov: 'list',
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
     },
-    {
-      title: 'Product',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: '55%'
-    },
-    {
-      title: 'Cost',
-      dataIndex: 'costPrice',
-      key: 'costPrice',
-      width: '20%',
-      className: styles.alignRight,
-      render: text => text.toLocaleString()
+    onRowClick (item) {
+      onChooseItem(item)
     }
-  ]
-  const contentPopover = (
-    <Table
-      pagination={pagination}
-      scroll={{ x: 600, y: 150 }}
-      columns={columns}
-      dataSource={dataSource}
-      simple
-      // locale={{
-      //   emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
-      // }}
-      size="small"
-      rowKey={record => record.productCode}
-      onRowClick={record => handleMenuClick(record)}
-      {...adjustProps}
-    />
-  )
+  }
+
   return (
     <Form style={{ padding: 3 }}>
       <Row>
@@ -218,19 +255,10 @@ const AdjustForm = ({ pagination, lastTrans, loadData, changeDisabledItem, templ
           </FormItem>
         </Col>
       </Row>
-      <div style={{ marginTop: 30 }}>
-        <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
-          <Search prefix={<Icon type="barcode" />}
-            autoFocus
-            size="large"
-            placeholder="Search Product By Code or Name"
-            onEnter={value => hdlSearch(value)}
-            onSearch={value => hdlSearch(value)}
-            onChange={_value => handleChangeSearch(_value)}
-          />
-        </Popover>
-      </div>
-      <div>
+      <br />
+      <Button type="primary" size="large" onClick={handleShowProduct} style={{ marginBottom: '8px' }}>Product</Button>
+      {modalProductVisible && <Stock {...modalProductProps} />}
+      <div style={{ marginBottom: '8px' }}>
         <Browse {...adjustProps} />
       </div>
       <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>

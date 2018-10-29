@@ -358,6 +358,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/adjust'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/transaction/adjust/'))
             }, 'transaction-adjust')
           }
