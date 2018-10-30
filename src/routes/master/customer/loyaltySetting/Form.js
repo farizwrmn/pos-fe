@@ -90,7 +90,7 @@ const FormCounter = ({
 
   return (
     <Form layout="horizontal">
-      <h1>Point / Cashback</h1>
+      <h1>Cashback</h1>
       <Row>
         <Col {...column}>
           <FormItem

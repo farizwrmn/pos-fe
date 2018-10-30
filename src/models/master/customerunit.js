@@ -208,7 +208,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listType: data.data
+            listType: []
           }
         })
       }

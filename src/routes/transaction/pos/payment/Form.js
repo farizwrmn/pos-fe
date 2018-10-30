@@ -50,7 +50,7 @@ const formPayment = ({
   cancelEdit,
   curTotal,
   modalType,
-  curTotalDiscount,
+  // curTotalDiscount,
   memberInformation,
   curRounding,
   listAmount,
@@ -153,7 +153,7 @@ const formPayment = ({
     })
   }
   const usagePoint = memberInformation.usePoint || 0
-  const totalDiscount = usagePoint + curTotalDiscount
+  const totalDiscount = usagePoint
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const curChange = curPayment - curNetto > 0 ? curPayment - curNetto : 0

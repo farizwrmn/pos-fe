@@ -97,7 +97,7 @@ const Pos = ({
     cashierBalance,
     showListReminder,
     listServiceReminder,
-    curTotalDiscount,
+    // curTotalDiscount,
     paymentListActiveKey,
     modalAddUnit,
     cashierInformation
@@ -165,7 +165,7 @@ const Pos = ({
   let dataPos = product.concat(service)
   let a = dataPos
   let usagePoint = memberInformation.usePoint || 0
-  const totalDiscount = usagePoint + curTotalDiscount
+  const totalDiscount = usagePoint
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
   let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
   // const getDate = (mode) => {
