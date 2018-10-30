@@ -25,7 +25,7 @@ const app = dva({
       } else if (error.success) {
         message.info(error.message)
       } else if (error.hasOwnProperty('detail')) {
-        if (error.detail.substring(0, 5) === 'Login') {
+        if (error.statusCode === '401') {
           message.info(error.message)
         } else {
           message.error(error.message)
