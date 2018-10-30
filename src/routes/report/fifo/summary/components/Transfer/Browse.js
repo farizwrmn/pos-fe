@@ -10,41 +10,35 @@ const Browse = ({ ...browseProps }) => {
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
-      width: '200px'
+      key: 'productCode'
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName',
-      width: '200px'
+      key: 'productName'
     },
     {
       title: 'Transfer In',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
-      width: '150px',
       render: text => text.toLocaleString()
     },
     {
       title: 'Transfer Out',
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
-      width: '150px',
       render: text => text.toLocaleString()
     },
     {
       title: 'In Transfer',
       dataIndex: 'inTransferQty',
       key: 'inTransferQty',
-      width: '150px',
       render: text => text.toLocaleString()
     },
     {
       title: 'In Transit',
       dataIndex: 'inTransitQty',
       key: 'inTransitQty',
-      width: '150px',
       render: text => text.toLocaleString()
     }
   ]
@@ -53,7 +47,6 @@ const Browse = ({ ...browseProps }) => {
     <Table
       {...browseProps}
       bordered
-      scroll={{ x: '1000px', y: 300 }}
       columns={columns}
       simple
       size="small"
