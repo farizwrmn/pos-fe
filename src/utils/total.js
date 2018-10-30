@@ -1,4 +1,23 @@
 const posTotal = (data) => {
+  if (data.sellingPrice === null || data.sellingPrice === undefined) {
+    throw new Error('SellingPrice cannot be null')
+  }
+  if (data.qty === null || data.qty === undefined) {
+    throw new Error('qty cannot be null')
+  }
+  if (data.discount === null || data.discount === undefined) {
+    throw new Error('disc1 cannot be null')
+  }
+  if (data.disc1 === null || data.disc1 === undefined) {
+    throw new Error('disc1 cannot be null')
+  }
+  if (data.disc2 === null || data.disc2 === undefined) {
+    throw new Error('disc2 cannot be null')
+  }
+  if (data.disc3 === null || data.disc3 === undefined) {
+    throw new Error('disc3 cannot be null')
+  }
+
   let H1 = ((parseFloat(data.sellingPrice) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
   let H2 = H1 * (1 - (data.disc2 / 100))
   let H3 = H2 * (1 - (data.disc3 / 100))
