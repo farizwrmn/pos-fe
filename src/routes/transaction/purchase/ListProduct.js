@@ -106,7 +106,6 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
         onRowClick={_record => handleMenuClick(_record)}
       />
     </div>

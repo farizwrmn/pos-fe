@@ -31,6 +31,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       payload: {
         page: 1,
         pageSize: pagination.pageSize,
+        active: 1,
         q: searchText
       }
     })
@@ -42,6 +43,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       payload: {
         page: 1,
         pageSize: pagination.pageSize,
+        active: 1,
         q: null
       }
     })
@@ -109,7 +111,6 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
         onRowClick={_record => handleMenuClick(_record)}
       />
     </div>

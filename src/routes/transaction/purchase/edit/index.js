@@ -60,6 +60,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         payload: {
           page: e.current,
           pageSize: e.pageSize,
+          active: 1,
           q: searchText === '' ? null : searchText
         }
       })
@@ -78,7 +79,10 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     },
     handleBrowseProduct () {
       dispatch({
-        type: 'purchase/getProducts'
+        type: 'purchase/getProducts',
+        payload: {
+          active: 1
+        }
       })
 
       dispatch({

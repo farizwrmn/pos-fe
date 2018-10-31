@@ -52,11 +52,7 @@ export default modelExtend(pageModel, {
     curDiscNominal: 0,
     supplierInformation: {},
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      showTotal: total => `Total ${total} Records`,
-      current: 1,
-      total: null
+      current: 1
     },
     datePicker: '',
     purchaseHistory: {},
@@ -332,9 +328,9 @@ export default modelExtend(pageModel, {
           payload: {
             productInformation: newData,
             pagination: {
-              total: data.total,
-              pageSize: data.pageSize,
-              current: data.page
+              total: Number(data.total || 0),
+              pageSize: Number(data.pageSize || 10),
+              current: Number(data.page || 1)
             }
           }
         })
@@ -360,7 +356,7 @@ export default modelExtend(pageModel, {
             dataInvoice,
             tmpInvoiceList: dataInvoice,
             pagination: {
-              total: dataDetail.total
+              total: Number(dataDetail.total || 0)
             }
           }
         })
@@ -524,8 +520,8 @@ export default modelExtend(pageModel, {
             listPurchaseHistories: data.data,
             pagination: {
               current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
-              total: data.total
+              pageSize: Number(payload.pageSize) || 10,
+              total: Number(data.total || 0)
             }
           }
         })
