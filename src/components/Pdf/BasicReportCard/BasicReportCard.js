@@ -12,6 +12,7 @@ const BasicReportCard = ({
   pageOrientation = 'portrait',
   tableStyle,
   tableBody = [],
+  height,
   header = {},
   footer = {}
   // companyLogo
@@ -47,7 +48,9 @@ const BasicReportCard = ({
           {
             writable: true,
             table: {
+              dontBreakRows: true,
               widths: width,
+              heights: height,
               body: content
             }
           }

@@ -42,7 +42,7 @@ const PrintSticker = ({ user, stickers }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 790, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -100,10 +100,10 @@ const PrintSticker = ({ user, stickers }) => {
 
   const pdfProps = {
     name: 'Print',
-    width: [130, 130, 130, 130, 130, 130],
-    pageSize: { width: 890, height: 615 },
+    width: [124, 124, 124, 124, 124, 124],
+    pageSize: 'A4',
     pageOrientation: 'landscape',
-    pageMargins: [25, 10, 25, 70],
+    pageMargins: [17, 70, 17, 70],
     tableStyle: styles,
     tableBody: getList,
     footer

@@ -9,14 +9,15 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
-          let row = []
-          const maxStringPerRow1 = tableBody[key].name.slice(0, 28).toString()
+          const maxStringPerRow1 = tableBody[key].info.productName.slice(0, 28).toString()
           let maxStringPerRow2 = ' '
-          if (tableBody[key].name.slice(28, 56).toString().length > 0) {
-            maxStringPerRow2 = tableBody[key].name.slice(28, 56).toString()
+          if (tableBody[key].info.productName.toString().length > 28) {
+            maxStringPerRow2 = tableBody[key].info.productName.slice(28, 56).toString()
           }
-          row.push({ text: maxStringPerRow1, style: 'productName', alignment: 'left' })
-          row.push({ text: maxStringPerRow2, style: 'productName', alignment: 'left' })
+          let row = [
+            { text: maxStringPerRow1, style: 'productName', alignment: 'left' },
+            { text: maxStringPerRow2, style: 'productName', alignment: 'left' }
+          ]
           if (aliases.check1) {
             row.push({
               columns: [
@@ -33,15 +34,8 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               ]
             })
           }
-          row.push({
-            columns: [
-              { text: ' ', style: 'others' },
-              { text: ' ', style: 'info', margin: [0, 5, 0, 0] }
-              // { text: `Rp ${(tableBody[key].info.distPrice02 || 0).toLocaleString()}`, style: 'others' },
-              // { text: '(Dist price 02)', style: 'info', margin: [0, 5, 0, 0] }
-            ]
-          })
-          row.push({ text: (tableBody[key].info.productCode || '').toString(), style: 'others', alignment: 'left' })
+          // row.push({ text: ' ', style: 'info', margin: [0, 0, 0, 0] })
+          row.push({ text: `(${(tableBody[key].info.productCode || '').toString()})`, style: 'others', alignment: 'left' })
           body.push(row)
         }
       }
@@ -56,11 +50,11 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     sellPrice: {
       bold: true,
       alignment: 'left',
-      fontSize: 19,
-      margin: [5, 3, 0, 0]
+      fontSize: 15,
+      margin: [5, 5, 0, 0]
     },
     productName: {
-      fontSize: 15,
+      fontSize: 13,
       margin: [5, 0, 0, 0]
     },
     others: {
@@ -76,7 +70,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 732, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -135,9 +129,10 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const pdfProps = {
     name: 'Print',
     width: [260, 260, 260],
-    pageSize: { width: 870, height: 590 },
+    height: 99,
+    pageSize: 'A4',
     pageOrientation: 'landscape',
-    pageMargins: [25, 10, 25, 70],
+    pageMargins: [17, 70, 17, 70],
     tableStyle: styles,
     tableBody: getList,
     footer
