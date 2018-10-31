@@ -505,7 +505,7 @@ export default {
               col_2: { fontSize: tableHeaderFontSize, text: code, style: 'tableHeader', alignment: 'center' },
               col_3: { fontSize: tableHeaderFontSize, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
               col_4: { fontSize: tableHeaderFontSize, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-              col_5: { fontSize: tableHeaderFontSize, text: '@HET', style: 'tableHeader', alignment: 'center' },
+              col_5: { fontSize: tableHeaderFontSize, text: 'HARGA', style: 'tableHeader', alignment: 'center' },
               col_6: { fontSize: tableHeaderFontSize, text: 'DISKON', style: 'tableHeader', alignment: 'center' },
               col_7: { fontSize: tableHeaderFontSize, text: 'SUB (RP)', style: 'tableHeader', alignment: 'center' }
             }
