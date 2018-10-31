@@ -152,8 +152,8 @@ const formPayment = ({
       cardNo: null
     })
   }
-  const usagePoint = memberInformation.usePoint || 0
-  const totalDiscount = usagePoint
+  const usageLoyalty = memberInformation.useLoyalty || 0
+  const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const curChange = curPayment - curNetto > 0 ? curPayment - curNetto : 0

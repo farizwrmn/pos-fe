@@ -26,15 +26,15 @@ const List = ({ ...tableProps, dataSource }) => {
       render: text => <p style={{ textAlign: 'left' }}>{text ? moment(text).format('DD-MMM-YYYY') : null}</p>
     },
     {
-      title: 'Point IN',
-      dataIndex: 'pointIn',
-      key: 'pointIn',
+      title: 'Cashback IN',
+      dataIndex: 'cashbackIn',
+      key: 'cashbackIn',
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
-      title: 'Point OUT',
-      dataIndex: 'pointOut',
-      key: 'pointOut',
+      title: 'Cashback OUT',
+      dataIndex: 'cashbackOut',
+      key: 'cashbackOut',
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {

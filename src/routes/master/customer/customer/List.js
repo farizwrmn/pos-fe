@@ -42,9 +42,9 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'memberTypeName'
     },
     {
-      title: 'POINT',
-      dataIndex: 'point',
-      key: 'point',
+      title: 'Cashback',
+      dataIndex: 'cashback',
+      key: 'cashback',
       render: text => (text || '').toLocaleString()
     },
     {

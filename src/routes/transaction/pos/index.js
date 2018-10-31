@@ -16,7 +16,7 @@ import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
-import ModalPoint from './ModalPoint'
+import ModalCashback from './ModalCashback'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { dayByNumber } = calendar
@@ -91,7 +91,7 @@ const Pos = ({
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalWorkOrderVisible,
-    modalPointVisible,
+    modalCashbackVisible,
     listUnitUsage,
     showAlert,
     cashierBalance,
@@ -164,8 +164,8 @@ const Pos = ({
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
   let dataPos = product.concat(service)
   let a = dataPos
-  let usagePoint = memberInformation.usePoint || 0
-  const totalDiscount = usagePoint
+  let usageLoyalty = memberInformation.useLoyalty || 0
+  const totalDiscount = usageLoyalty
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
   let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
   // const getDate = (mode) => {
@@ -851,7 +851,7 @@ const Pos = ({
         payload: { memberInformation: newItem }
       })
       dispatch({
-        type: 'pos/syncCustomerPoint',
+        type: 'pos/syncCustomerCashback',
         payload: {
           memberId: newItem.id
         }
@@ -931,7 +931,7 @@ const Pos = ({
           localStorage.setItem('member', JSON.stringify(arrayProd))
           localStorage.setItem('memberUnit', JSON.stringify(memberUnit))
           dispatch({
-            type: 'pos/syncCustomerPoint',
+            type: 'pos/syncCustomerCashback',
             payload: {
               memberId: newItem.id
             }
@@ -950,9 +950,9 @@ const Pos = ({
     }
   }
 
-  const modalPointProps = {
+  const modalCashbackProps = {
     title: 'Use Cashback',
-    visible: modalPointVisible,
+    visible: modalCashbackVisible,
     item: memberInformation || {},
     onOk (data) {
       const itemStorage = [data]
@@ -960,12 +960,12 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalPointVisible: false,
+          modalCashbackVisible: false,
           memberInformation: data
         }
       })
       dispatch({
-        type: 'pos/syncCustomerPoint',
+        type: 'pos/syncCustomerCashback',
         payload: {
           memberId: data.id
         }
@@ -975,7 +975,7 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalPointVisible: false
+          modalCashbackVisible: false
         }
       })
     }
@@ -1016,7 +1016,7 @@ const Pos = ({
 
       localStorage.setItem('member', JSON.stringify(arrayProd))
       dispatch({
-        type: 'pos/syncCustomerPoint',
+        type: 'pos/syncCustomerCashback',
         payload: {
           memberId: newItem.id
         }
@@ -1742,11 +1742,11 @@ const Pos = ({
     return data
   }
 
-  const showModalPoint = () => {
+  const showModalCashback = () => {
     dispatch({
       type: 'pos/updateState',
       payload: {
-        modalPointVisible: true
+        modalCashbackVisible: true
       }
     })
   }
@@ -1918,7 +1918,7 @@ const Pos = ({
             <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
-            {modalPointVisible && <ModalPoint {...modalPointProps} />}
+            {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
@@ -2271,7 +2271,7 @@ const Pos = ({
                   <Input value={memberInformation.memberCode} disabled />
                 </FormItem>
                 <FormItem label="Cashback" {...formItemLayout}>
-                  <Input value={memberInformation.point} disabled />
+                  <Input value={memberInformation.cashback} disabled />
                 </FormItem>
               </Form>
             </Panel>
@@ -2307,10 +2307,10 @@ const Pos = ({
         </Card>
       </Row>
       {memberInformation.memberTypeName && <div className="wrapper-switcher">
-        <Button onClick={showModalPoint} className="btn-member">
+        <Button onClick={showModalCashback} className="btn-member">
           <span>
             <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
-            <p>{(memberInformation.point || 0).toLocaleString()} points</p>
+            <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
           </span>
         </Button>
       </div>}

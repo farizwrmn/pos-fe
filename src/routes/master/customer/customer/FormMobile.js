@@ -207,7 +207,7 @@ const ModalMobile = ({
                 </Row>
                 <Row className="ant-form-item">
                   <Col xs={20} sm={16} md={12} lg={8} xl={4} offset="1">
-                    <Input disabled addonBefore="Point   " placeholder="member point" value={dataMember.point} />
+                    <Input disabled addonBefore="Cashback" placeholder="member cashback" value={dataMember.cashback} />
                   </Col>
                 </Row>
                 <Row className="ant-form-item">

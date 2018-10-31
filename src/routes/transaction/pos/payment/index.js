@@ -96,8 +96,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
     return `${h}:${m}:${s}`
   }
-  const usagePoint = memberInformation.usePoint || 0
-  const totalDiscount = usagePoint + curTotalDiscount
+  const usageLoyalty = memberInformation.useLoyalty || 0
+  const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const confirmPayment = () => {
@@ -172,11 +172,10 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
               employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
               memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-              usePoint: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].usePoint : 0,
+              useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
               technicianId: mechanicInformation.employeeCode,
               curShift,
               printNo: 1,
-              point: parseFloat((parseFloat(curTotal) - parseFloat(curTotalDiscount)) / 10000, 10),
               curCashierNo,
               cashierId: user.userid,
               userName: user.username,
@@ -228,7 +227,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   //       technicianId: mechanicInformation.mechanicCode,
   //       curShift,
   //       printNo: 1,
-  //       point: parseInt((parseInt(curTotal, 10) - parseInt(curTotalDiscount, 10)) / 10000, 10),
   //       curCashierNo,
   //       cashierId: user.userid,
   //       userName: user.username,

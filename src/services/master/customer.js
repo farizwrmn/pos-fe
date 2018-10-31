@@ -23,8 +23,8 @@ export async function queryByCode (params) {
   })
 }
 
-export async function queryPointById (params) {
-  const url = `${customers}/point/${params.memberId}`
+export async function queryCashbackById (params) {
+  const url = `${customers}/cashback/${params.memberId}`
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
@@ -103,17 +103,6 @@ export async function edit (params) {
 export async function editUnit (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${customers}/${params.code}/units/${params.id}` : customers
-  return request({
-    url,
-    method: 'put',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function editPoint (params) {
-  const url = params.memberCode ? `${customers}/${encodeURIComponent(params.memberCode)}/points` : null
-  const apiHeaderToken = crypt.apiheader()
   return request({
     url,
     method: 'put',

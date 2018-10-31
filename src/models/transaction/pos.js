@@ -6,7 +6,7 @@ import { configMain, lstorage } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
-import { query as queryMembers, queryPointById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
+import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryProductByCode as queryProductCode } from '../../services/master/productstock'
 import { query as queryService, queryServiceByCode } from '../../services/master/service'
@@ -58,7 +58,7 @@ export default {
     modalVisible: false,
     modalPrintVisible: false,
     modalCancelVisible: false,
-    modalPointVisible: false,
+    modalCashbackVisible: false,
     itemPayment: {},
     itemService: {},
     visiblePopover: false,
@@ -339,29 +339,24 @@ export default {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
-      if (cancel) {
-        const data = yield call(queryPos, payload)
-        if (data) {
-          Modal.info({
-            title: 'Info',
-            content: `Invoice No ${payload.transNo} Has Been Cancel...!`
-          })
-          yield put({
-            type: 'hidePrintModal'
-          })
-          yield put({
-            type: 'querySuccessPayment',
-            payload: {
-              listPayment: data.data,
-              pagination: {
-                current: Number(payload.page) || 1,
-                pageSize: Number(payload.pageSize) || 5,
-                // pageSizeOptions: ['5','10','20','50'],
-                total: data.total
-              }
-            }
-          })
-        }
+      if (cancel.success) {
+        const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
+        yield put({
+          type: 'queryHistory',
+          payload: {
+            startPeriod: infoStore.startPeriod,
+            endPeriod: infoStore.endPeriod
+          }
+        })
+        Modal.info({
+          title: 'Info',
+          content: `Invoice No ${payload.transNo} Has Been Cancel...!`
+        })
+        yield put({
+          type: 'hidePrintModal'
+        })
+      } else {
+        throw cancel
       }
     },
 
@@ -389,9 +384,9 @@ export default {
               year: PosData.pos.year,
               chassisNo: PosData.pos.chassisNo,
               machineNo: PosData.pos.machineNo,
-              discountLoyalty: PosData.pos.discountLoyalty, // discountLoyalty, lastPoint, gettingPoint
-              lastPoint: PosData.pos.lastPoint,
-              gettingPoint: PosData.pos.gettingPoint
+              discountLoyalty: PosData.pos.discountLoyalty, // discountLoyalty, lastCashback, gettingCashback
+              lastCashback: PosData.pos.lastCashback,
+              gettingCashback: PosData.pos.gettingCashback
             },
             memberPrint: (member.data || ''), // data member
             companyPrint: (company.data || ''), // data company
@@ -1403,7 +1398,7 @@ export default {
         bundle_promo,
         memberCode: memberInfo.memberCode,
         memberName: memberInfo.memberName,
-        point: memberInfo.point,
+        cashback: memberInfo.cashback,
         memberTypeId: memberInfo.memberTypeId,
         woNumber,
         woId: workorder.id,
@@ -1537,14 +1532,14 @@ export default {
       }
     },
 
-    * syncCustomerPoint ({ payload = {} }, { call, put }) {
+    * syncCustomerCashback ({ payload = {} }, { call, put }) {
       if (payload.memberId) {
-        const data = yield call(queryPointById, payload)
+        const data = yield call(queryCashbackById, payload)
         if (data.success) {
           let dataMember = localStorage.getItem('member')
           dataMember = dataMember ? JSON.parse(dataMember)[0] : null
           if (dataMember) {
-            dataMember.point = data.data
+            dataMember.cashback = data.data
             const newDataMember = []
             newDataMember.push(dataMember)
             localStorage.setItem('member', JSON.stringify(newDataMember))

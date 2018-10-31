@@ -157,7 +157,7 @@ export default {
           const grandTotal = arrayProd.reduce((cnt, o) => cnt + o.totalPrice, 0)
           const newArrayProd = arrayProd.map((x) => {
             const portion = (x.totalPrice / grandTotal)
-            const discountLoyalty = (portion * (payload.usePoint || 0))
+            const discountLoyalty = (portion * (payload.useLoyalty || 0))
             const totalPrice = x.totalPrice - discountLoyalty
             const dpp = totalPrice / (companySetting === 'I' ? 1.1 : 1)
             const ppn = (companySetting === 'I' ? totalPrice / 11 : companySetting === 'S' ? totalPrice * 0.1 : 0)
@@ -192,8 +192,8 @@ export default {
               taxType: companySetting,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
-              discountLoyalty: payload.usePoint || 0,
-              usePoint: payload.usePoint || 0,
+              discountLoyalty: payload.useLoyalty || 0,
+              useLoyalty: payload.useLoyalty || 0,
               technicianId: payload.technicianId,
               cashierTransId: cashierInformation.id,
               transDate: cashierInformation.period,
@@ -239,8 +239,8 @@ export default {
                   totalChange: payload.totalChange,
                   unitInfo: {
                     ...memberUnit,
-                    lastPoint: responsInsertPos.lastPoint,
-                    gettingPoint: responsInsertPos.gettingPoint,
+                    lastCashback: responsInsertPos.lastCashback,
+                    gettingCashback: responsInsertPos.gettingCashback,
                     discountLoyalty: responsInsertPos.discountLoyalty
                   },
                   totalDiscount: payload.totalDiscount,
@@ -484,7 +484,7 @@ export default {
       const headerFontSize = 11
       const payload = action.payload
       const unitInfo = payload.unitInfo // header faktur
-      const countCurrentPoint = (unitInfo.lastPoint + unitInfo.gettingPoint) - unitInfo.discountLoyalty
+      const countCurrentCashback = (unitInfo.lastCashback + unitInfo.gettingCashback) - unitInfo.discountLoyalty
       const companyInfo = payload.companyInfo
       const dataPos = payload.dataPos
       const dataService = payload.dataService
@@ -701,7 +701,7 @@ export default {
                           widths: ['20%', '1%', '79%'],
                           body: [
                             [{ text: 'Terbilang', fontSize: headerFontSize }, ':', { text: `${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`, fontSize: headerFontSize }],
-                            [{ text: 'Cashback', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastPoint} + ${unitInfo.gettingPoint} - ${unitInfo.discountLoyalty} = ${countCurrentPoint}`, fontSize: headerFontSize }]
+                            [{ text: 'Cashback', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize }]
                           ]
                         },
                         layout: 'noBorders'

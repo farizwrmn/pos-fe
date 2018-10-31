@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Modal, Row, Col } from 'antd'
+import { Form, InputNumber, Modal, Row } from 'antd'
 
 const FormItem = Form.Item
 
@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 10 }
 }
 
-const ModalPoint = ({
+const ModalCashback = ({
   item = {},
   onOk,
   onCancel,
@@ -28,7 +28,7 @@ const ModalPoint = ({
         memberCode: item.memberCode,
         memberName: item.memberName,
         address01: item.address01,
-        point: item.point ? item.point : 0,
+        cashback: item.cashback ? item.cashback : 0,
         id: item.id,
         memberTypeName: item.memberTypeName,
         memberTypeId: item.memberTypeId,
@@ -37,8 +37,8 @@ const ModalPoint = ({
         gender: item.gender,
         phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
       }
-      if (item.point > 0 && data.usePoint <= item.point) {
-        newItem.usePoint = data.usePoint
+      if (item.cashback > 0 && data.useLoyalty <= item.cashback) {
+        newItem.useLoyalty = data.useLoyalty
       }
       onOk(newItem)
     })
@@ -58,32 +58,27 @@ const ModalPoint = ({
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
-        <FormItem label="Point" hasFeedback {...formItemLayout}>
+        <FormItem label="Cashback" hasFeedback {...formItemLayout}>
           <Row>
-            <Col lg={10} md={24}>
-              {getFieldDecorator('usePoint', {
-                initialValue: item.usePoint || 0,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^[0-9]+$/i,
-                    message: 'Cannot fill by decimal'
-                  }
-                ]
-              })(<InputNumber min={0} max={item.point || 0} />)}
-            </Col>
-            <Col lg={14}>
-              <h2>/ {item.point || 0} points</h2>
-            </Col>
+            {getFieldDecorator('useLoyalty', {
+              initialValue: item.useLoyalty || 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^[0-9]+$/i,
+                  message: 'Cannot fill by decimal'
+                }
+              ]
+            })(<InputNumber min={0} max={item.cashback || 0} />)}
           </Row>
-
+          <h4>{(item.cashback - (item.useLoyalty || 0)) || 0} remains</h4>
         </FormItem>
       </Form>
     </Modal>
   )
 }
 
-ModalPoint.propTypes = {
+ModalCashback.propTypes = {
   form: PropTypes.object.isRequired,
   memberInformation: PropTypes.object.isRequired,
   type: PropTypes.string,
@@ -91,4 +86,4 @@ ModalPoint.propTypes = {
   onOk: PropTypes.func
 }
 
-export default Form.create()(ModalPoint)
+export default Form.create()(ModalCashback)

@@ -38,7 +38,7 @@ const ListQueue = ({ pos, dispatch }) => {
       arrayMember.push({
         memberCode: trans.memberCode,
         memberName: trans.memberName,
-        point: trans.point,
+        cashback: trans.cashback,
         memberTypeId: trans.memberTypeId,
         id: trans.id,
         address01: trans.address01,
@@ -84,7 +84,7 @@ const ListQueue = ({ pos, dispatch }) => {
       if (arrayWorkOrder.id) localStorage.setItem('workorder', JSON.stringify(arrayWorkOrder))
       localStorage.setItem('member', JSON.stringify(arrayMember))
       dispatch({
-        type: 'pos/syncCustomerPoint',
+        type: 'pos/syncCustomerCashback',
         payload: {
           memberId: trans.id
         }
@@ -156,8 +156,8 @@ const ListQueue = ({ pos, dispatch }) => {
                 dataIndex: 'employeeCode'
               },
               {
-                title: 'Point',
-                dataIndex: 'point'
+                title: 'Cashback',
+                dataIndex: 'cashback'
               }
             ]}
             dataSource={listQueue}

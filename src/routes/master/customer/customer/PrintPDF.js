@@ -52,7 +52,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'NO TELEPON', style: 'tableHeader' },
       { text: 'NO PONSEL', style: 'tableHeader' },
       { text: 'TIPE', style: 'tableHeader' },
-      { text: 'POINT', style: 'tableHeader' }
+      { text: 'CASHBACK', style: 'tableHeader' }
     ]
   ]
 
@@ -72,7 +72,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
           { text: (data.phoneNumber || '').toString(), alignment: 'left', style: 'tableBody' },
           { text: (data.mobileNumber || '').toString(), alignment: 'left', style: 'tableBody' },
           { text: (data.memberTypeName || '').toString(), alignment: 'left', style: 'tableBody' },
-          { text: (data.point || '').toString(), alignment: 'left', style: 'tableBody' }
+          { text: (data.cashback || '').toString(), alignment: 'left', style: 'tableBody' }
         ]
         body.push(row)
       }

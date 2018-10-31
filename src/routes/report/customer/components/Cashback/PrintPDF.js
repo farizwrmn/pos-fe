@@ -20,8 +20,8 @@ const PrintPDF = ({ customerInfo, listCashback, user, storeInfo, from, to }) => 
           { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.posDate ? moment(data.posDate).format('DD-MMM-YYYY') : '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.expirationDate ? moment(data.expirationDate).format('DD-MMM-YYYY') : '').toString(), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.pointIn || ''), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.pointOut || ''), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.cashbackIn || ''), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.cashbackOut || ''), alignment: 'right', fontSize: 11 },
           { text: (data.memo || ''), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -32,8 +32,8 @@ const PrintPDF = ({ customerInfo, listCashback, user, storeInfo, from, to }) => 
   }
 
   // Declare Variable
-  let pointInTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.pointIn), 0)
-  let pointOutTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.pointOut), 0)
+  let cashbackInTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.cashbackIn), 0)
+  let cashbackOutTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.cashbackOut), 0)
 
   const styles = {
     header: {
@@ -151,8 +151,8 @@ const PrintPDF = ({ customerInfo, listCashback, user, storeInfo, from, to }) => 
       {},
       {},
       {},
-      { text: formatNumberIndonesia(pointInTotal), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(pointOutTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(cashbackInTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(cashbackOutTotal), alignment: 'right', fontSize: 12 },
       {}
     ]
   ]

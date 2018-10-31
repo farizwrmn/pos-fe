@@ -4,8 +4,8 @@ import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ customerInfo, listCashback, from, to, storeInfo }) => {
-  let pointInTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.pointIn), 0)
-  let pointOutTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.pointOut), 0)
+  let cashbackInTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.cashbackIn), 0)
+  let cashbackOutTotal = listCashback.reduce((cnt, o) => cnt + parseFloat(o.cashbackOut), 0)
 
   const styles = {
     title: {
@@ -59,8 +59,8 @@ const PrintXLS = ({ customerInfo, listCashback, from, to, storeInfo }) => {
           { value: (data.transNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.posDate ? moment(data.posDate).format('DD-MMM-YYYY') : ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.expirationDate ? moment(data.expirationDate).format('DD-MMM-YYYY') : ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.pointIn || ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.pointOut || ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.cashbackIn || ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.cashbackOut || ''), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: data.memo, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         body.push(row)
@@ -111,8 +111,8 @@ const PrintXLS = ({ customerInfo, listCashback, from, to, storeInfo }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: pointInTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: pointOutTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: cashbackInTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: cashbackOutTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
   ]
 
