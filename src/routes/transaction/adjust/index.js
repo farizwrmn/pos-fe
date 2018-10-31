@@ -236,7 +236,7 @@ const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
             modalProductVisible: false
           }
         })
-        const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
+        const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
         dispatch({ type: 'adjust/setDataBrowse', payload: data })
       } else {
         Modal.warning({
@@ -259,7 +259,7 @@ const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
       const variable = templistType.filter(x => x.code === value)
       const { miscVariable } = variable[0]
       let disabledItem = {}
-      let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
+      let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       if (miscVariable === 'IN') {
         disabledItem.disabledItemOut = true
         disabledItem.disabledItemIn = false

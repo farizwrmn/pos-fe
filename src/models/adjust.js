@@ -75,7 +75,7 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'setDataBrowse',
-            payload: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : null
+            payload: localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
           })
         }
       })
@@ -335,7 +335,7 @@ export default modelExtend(pageModel, {
         }
       })
 
-      let dataPos = (localStorage.getItem('adjust') === null ? [] : JSON.parse(localStorage.getItem('adjust')))
+      let dataPos = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()
         arrayProd[payload.Record - 1].price = parseFloat(payload.price)
@@ -347,7 +347,7 @@ export default modelExtend(pageModel, {
     },
 
     * adjustDelete ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : [])
+      let dataPos = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       if (dataPos.length > 0) {
         let arrayProd = dataPos.slice()
         Array.prototype.remove = function () {

@@ -52,7 +52,7 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
       const variable = templistType.filter(x => x.code === value)
       const { miscVariable } = variable[0]
       let disabledItem = {}
-      let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
+      let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
       if (miscVariable === 'IN') {
         disabledItem.disabledItemOut = true
         disabledItem.disabledItemIn = false

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, Button, DatePicker, Cascader } from 'antd'
+import { Form, Modal, Input, Row, Button, DatePicker, Cascader } from 'antd'
 import moment from 'moment'
 import Browse from './Browse'
 
@@ -8,14 +8,18 @@ const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
 // const { Search } = Input
-
+const formItemLayout1 = {
+  labelCol: { xs: { span: 24 }, sm: { span: 9 }, md: { span: 9 }, lg: { span: 8 } },
+  wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
+  style: { marginBottom: 3 }
+}
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 }
 }
 
 const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-  popoverVisible, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
+  popoverVisible, dataBrowse, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
   if (item) {
     itemEmployee.employeeId = item.picId
     itemEmployee.employeeName = item.pic
@@ -108,8 +112,14 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
   // )
   const adjustOpts = {
     item,
+    dataBrowse,
     ...adjustProps
   }
+
+  const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
+  const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
+  const totalPrice = dataBrowse.reduce((prev, next) => prev + (next.price || 0), 0)
+
   return (
     <Form style={{ padding: 3 }}>
       <FormItem label="Trans No" {...formItemLayout}>
@@ -161,6 +171,25 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
       <FormItem>
         <Browse {...adjustOpts} />
       </FormItem>
+      <Form>
+        <div style={{ float: 'right' }}>
+          <Row>
+            <FormItem label="Total In" {...formItemLayout1}>
+              <Input value={totalQtyIn.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+          <Row>
+            <FormItem label="Total Out" {...formItemLayout1}>
+              <Input value={totalQtyOut.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+          <Row>
+            <FormItem label="Total Price" {...formItemLayout1}>
+              <Input value={totalPrice.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+        </div>
+      </Form>
       <FormItem {...formItemLayout}>
         <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
         {/* <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button> */}

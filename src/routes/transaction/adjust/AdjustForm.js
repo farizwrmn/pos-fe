@@ -27,7 +27,11 @@ const formItemLayout1 = {
   style: { marginBottom: 3 }
 }
 const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, showProductModal, lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, item,
-  popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...adjustProps }) => {
+  popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dataBrowse, ...adjustProps }) => {
+  const adjustOpts = {
+    dataBrowse,
+    ...adjustProps
+  }
   const handleButtonSaveClick = () => {
     validateFields((errors) => {
       if (errors) {
@@ -70,7 +74,7 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
     const variable = templistType.filter(x => x.code === value)
     const { miscVariable } = variable[0]
     let disabledItem = {}
-    let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : {}
+    let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
     if (miscVariable === 'IN') {
       disabledItem.disabledItemOut = true
       disabledItem.disabledItemIn = false
@@ -167,6 +171,10 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
     }
   }
 
+  const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
+  const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
+  const totalPrice = dataBrowse.reduce((prev, next) => prev + ((next.price * next.In) + (next.price * next.Out)), 0)
+
   return (
     <Form style={{ padding: 3 }}>
       <Row>
@@ -259,8 +267,27 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
       <Button type="primary" size="large" onClick={handleShowProduct} style={{ marginBottom: '8px' }}>Product</Button>
       {modalProductVisible && <Stock {...modalProductProps} />}
       <div style={{ marginBottom: '8px' }}>
-        <Browse {...adjustProps} />
+        <Browse {...adjustOpts} />
       </div>
+      <Form>
+        <div style={{ float: 'right' }}>
+          <Row>
+            <FormItem label="Total In" {...formItemLayout1}>
+              <Input value={totalQtyIn.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+          <Row>
+            <FormItem label="Total Out" {...formItemLayout1}>
+              <Input value={totalQtyOut.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+          <Row>
+            <FormItem label="Total Price" {...formItemLayout1}>
+              <Input value={totalPrice.toLocaleString()} style={{ fontSize: 20 }} />
+            </FormItem>
+          </Row>
+        </div>
+      </Form>
       <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
       <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
     </Form>
