@@ -821,16 +821,16 @@ const Pos = ({
         }
       })
     },
-    onChange (e) {
-      dispatch({
-        type: 'pos/getMemberAssets',
-        payload: {
-          license: searchText === '' ? null : searchText,
-          page: Number(e.current),
-          pageSize: Number(e.pageSize)
-        }
-      })
-    },
+    // onChange (e) {
+    //   dispatch({
+    //     type: 'pos/getMemberAssets',
+    //     payload: {
+    //       license: searchText === '' ? null : searchText,
+    //       page: Number(e.current),
+    //       pageSize: Number(e.pageSize)
+    //     }
+    //   })
+    // },
     onChooseItem (item) {
       localStorage.removeItem('member', [])
       localStorage.removeItem('memberUnit')

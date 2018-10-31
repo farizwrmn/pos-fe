@@ -10,10 +10,16 @@ const ListAsset = ({ onChooseItem, dispatch, location, pos, ...tableProps }) => 
 
   const columns = [
     {
+      title: 'Police No',
+      dataIndex: 'policeNo',
+      key: 'policeNo'
+    },
+    {
       title: 'Member Code',
       dataIndex: 'memberCode',
       key: 'memberCode'
-    }, {
+    },
+    {
       title: 'Member Name',
       dataIndex: 'memberName',
       key: 'memberName'
@@ -21,7 +27,8 @@ const ListAsset = ({ onChooseItem, dispatch, location, pos, ...tableProps }) => 
       title: 'Address',
       dataIndex: 'address01',
       key: 'address01'
-    }, {
+    },
+    {
       title: 'Mobile',
       dataIndex: 'mobileNumber',
       key: 'mobileNumber'
@@ -87,7 +94,7 @@ const ListAsset = ({ onChooseItem, dispatch, location, pos, ...tableProps }) => 
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.memberCode}
+        rowKey={record => record.memberUnitId}
         onRowClick={record => handleMenuClick(record)}
       />
     </div>
