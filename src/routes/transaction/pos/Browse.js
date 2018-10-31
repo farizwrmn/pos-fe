@@ -36,7 +36,8 @@ const Browse = ({ location, showProductQty, onChange, dispatch, pos, loading, De
       modalType === 'browseMember' ? 'pos/getMembers' :
         modalType === 'browseWorkOrder' ? 'pos/queryWOHeader' :
           modalType === 'browseMechanic' ? 'pos/getMechanics' :
-            modalType === 'browseService' ? 'pos/getServices' : 'pos/queryMember'
+            modalType === 'browseService' ? 'pos/getServices' :
+              modalType === 'browseAsset' ? 'pos/getMemberAssets' : 'pos/queryMember'
     )],
     pagination,
     location,

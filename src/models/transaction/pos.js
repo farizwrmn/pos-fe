@@ -622,6 +622,16 @@ export default {
             listAsset: data.data
           }
         })
+        yield put({
+          type: 'queryGetMembersSuccess',
+          payload: {
+            pagination: {
+              total: Number(data.total) || 0,
+              current: Number(data.page) || 0,
+              pageSize: Number(data.pageSize) || 0
+            }
+          }
+        })
       } else {
         const modal = Modal.warning({
           title: 'Warning',

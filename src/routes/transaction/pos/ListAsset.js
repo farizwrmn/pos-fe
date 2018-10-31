@@ -50,9 +50,9 @@ const ListAsset = ({ onChooseItem, dispatch, location, pos, ...tableProps }) => 
 
   const handleReset = () => {
     dispatch({
-      type: 'pos/updateState',
+      type: 'pos/getMemberAssets',
       payload: {
-        listAsset: [],
+        license: '',
         searchText: ''
       }
     })
