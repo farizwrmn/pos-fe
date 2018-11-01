@@ -173,7 +173,7 @@ export default {
               sellingPrice: x.sellingPrice,
               DPP: dpp,
               PPN: ppn,
-              discountLoyalty,
+              discountLoyalty: discountLoyalty || 0,
               discount: x.discount,
               disc1: x.disc1,
               disc2: x.disc2,
