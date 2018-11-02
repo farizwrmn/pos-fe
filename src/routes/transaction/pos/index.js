@@ -686,52 +686,6 @@ const Pos = ({
     setCurBarcode('', 1)
   }
 
-  const handleVoid = (value) => {
-    if (value) {
-      if (value < (curRecord)) {
-        Modal.confirm({
-          title: `Are you sure want to void/delete item Record ${value}?`,
-          content: 'This Operation cannot be undone...!',
-          onOk () {
-            let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
-            let arrayProd = dataPos.slice()
-
-            arrayProd[value - 1].price = 0
-            arrayProd[value - 1].qty = 0
-            arrayProd[value - 1].disc1 = 0
-            arrayProd[value - 1].disc2 = 0
-            arrayProd[value - 1].disc3 = 0
-            arrayProd[value - 1].discount = 0
-            arrayProd[value - 1].total = 0
-
-            localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
-
-            dispatch({
-              type: 'pos/setCurTotal'
-            })
-          },
-          onCancel () { }
-        })
-      } else {
-        const modal = Modal.warning({
-          title: 'Warning',
-          content: 'Record is out of range...!'
-        })
-
-        setTimeout(() => modal.destroy(), 1000)
-      }
-    } else {
-      const modal = Modal.warning({
-        title: 'Warning',
-        content: 'Please define Record to be Void...!'
-      })
-
-      setTimeout(() => modal.destroy(), 1000)
-    }
-
-    setCurBarcode('', 1)
-  }
-
   // const cashActive = (currentCashier.cashActive || 0) !== 0
 
   let infoCashRegister = {}
@@ -1552,20 +1506,21 @@ const Pos = ({
     if (e.key === '+') {
       setCurBarcode('', value)
     } else if (e.key === 'Enter') {
-      if (kodeUtil === 'barcode') {
-        if (value) {
-          dispatch({
-            type: 'pos/getStock',
-            payload: {
-              productCode: value,
-              listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty,
-              memberCode: memberInformation.memberCode,
-              curRecord
-            }
-          })
-        }
-      } else if (kodeUtil === 'member') {
+      // if (kodeUtil === 'barcode') {
+      //   if (value) {
+      //     dispatch({
+      //       type: 'pos/getStock',
+      //       payload: {
+      //         productCode: value,
+      //         listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
+      //         curQty,
+      //         memberCode: memberInformation.memberCode,
+      //         curRecord
+      //       }
+      //     })
+      //   }
+      // } else
+      if (kodeUtil === 'member') {
         if (value) {
           dispatch({ type: 'pos/getMember', payload: { memberCode: value } })
 
@@ -1596,19 +1551,6 @@ const Pos = ({
             infoUtil: 'Product'
           }
         })
-      } else if (kodeUtil === 'service') {
-        if (value) {
-          dispatch({
-            type: 'pos/getService',
-            payload: {
-              serviceId: value,
-              listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
-              curQty,
-              memberCode: memberInformation.memberCode,
-              curRecord
-            }
-          })
-        }
       } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
         if (value) {
           // dispatch({
@@ -1628,6 +1570,20 @@ const Pos = ({
           }
         })
       }
+      // else if (kodeUtil === 'service') {
+      //   if (value) {
+      //     dispatch({
+      //       type: 'pos/getService',
+      //       payload: {
+      //         serviceId: value,
+      //         listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
+      //         curQty,
+      //         memberCode: memberInformation.memberCode,
+      //         curRecord
+      //       }
+      //     })
+      //   }
+      // }
 
       if (kodeUtil !== 'refund') {
         setCurBarcode('', 1)
@@ -1699,8 +1655,6 @@ const Pos = ({
           }
         })
       }
-    } else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
-      handleVoid(value)
     } else if (e.keyCode === '120') { // Tombol F9 untuk void/hapus all item
       Modal.confirm({
         title: 'Are you sure want to void/delete all items?',
@@ -1726,6 +1680,9 @@ const Pos = ({
         }
       })
     }
+    // else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
+    //   handleVoid(value)
+    // }
   }
 
   const dataTrans = () => {
