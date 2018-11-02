@@ -2,10 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Modal, Tag, Form, Input, Button, Icon } from 'antd'
-import { numberFormat } from 'utils'
 import styles from '../../../themes/index.less'
-
-const { formatNumberIndonesia } = numberFormat
 
 const FormItem = Form.Item
 
@@ -15,6 +12,14 @@ const Stock = ({
   loading,
   visible = false,
   columns = [
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text) => {
+        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
+    },
     {
       title: 'ID',
       dataIndex: 'id',
@@ -35,15 +40,21 @@ const Stock = ({
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
-      render: text => formatNumberIndonesia(text)
+      render: text => text.toLocaleString()
     },
     {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
-      }
+      title: 'Dist Price 01',
+      dataIndex: 'distPrice01',
+      key: 'distPrice01',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
+    },
+    {
+      title: 'Dist Price 02',
+      dataIndex: 'distPrice02',
+      key: 'distPrice02',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Qty',

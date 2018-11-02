@@ -60,25 +60,34 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '10%'
+      render: text => text.toLocaleString()
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
-      width: '25%'
-    },
-    {
+      key: 'productCode'
+    }, {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName',
-      width: '45%'
-    },
-    {
+      key: 'productName'
+    }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '20%',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
+    },
+    {
+      title: 'Dist Price 01',
+      dataIndex: 'distPrice01',
+      key: 'distPrice01',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
+    },
+    {
+      title: 'Dist Price 02',
+      dataIndex: 'distPrice02',
+      key: 'distPrice02',
       className: styles.alignRight,
       render: text => text.toLocaleString()
     }
@@ -107,7 +116,6 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 500, y: 388 }}
         columns={columns}
         simple
         size="small"

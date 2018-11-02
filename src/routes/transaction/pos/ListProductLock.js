@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Icon, Tag, Button, Input, Form } from 'antd'
+import { Table, Icon, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
 import styles from '../../../themes/index.less'
 
@@ -57,40 +57,43 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '70px'
+      render: text => text.toLocaleString()
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
-      key: 'productCode',
-      width: '100px'
-    }, {
+      key: 'productCode'
+    },
+    {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName',
-      width: '200px'
-    }, {
+      key: 'productName'
+    },
+    {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '100px',
       className: styles.alignRight,
       render: text => text.toLocaleString()
     },
     {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      width: '100px',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
-      }
+      title: 'Dist Price 01',
+      dataIndex: 'distPrice01',
+      key: 'distPrice01',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
+    },
+    {
+      title: 'Dist Price 02',
+      dataIndex: 'distPrice02',
+      key: 'distPrice02',
+      className: styles.alignRight,
+      render: text => text.toLocaleString()
     },
     {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',
-      width: '50px',
       className: styles.alignRight,
       render: (text) => {
         if (!loading.effects['pos/showProductQty']) {
@@ -135,7 +138,6 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
         {...tableProps}
         bordered
         loading={loading.effects['pos/getProducts'] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct']}
-        scroll={{ x: '690px', y: 388 }}
         columns={columns}
         simple
         size="small"
