@@ -495,6 +495,8 @@ export default {
       let Discount = merge.reduce((cnt, o) => cnt + (((o.sellPrice || o.price) * o.qty) - o.total), 0)
       let SubTotal = merge.reduce((cnt, o) => cnt + (o.price * o.qty), 0)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
+      const nettoValue = (Total - (unitInfo.discountLoyalty || 0))
+      const terbilangString = nettoValue > 0 ? `${terbilang(nettoValue)} RUPIAH` : 'NOL RUPIAH'
       if (merge.length !== []) {
         const createPdfLineItems = (tabledata, payload, node) => {
           let code = ''
@@ -706,15 +708,20 @@ export default {
                       height: '12',
                       body: [
                         [
-                          { text: 'Terbilang', fontSize: additionalFontSize }, ':', { text: `${(`${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`).substring(0, 35)}...`, fontSize: headerFontSize },
+                          { text: 'Terbilang', fontSize: additionalFontSize }, ':', { text: terbilangString.toUpperCase().substring(0, 38), fontSize: headerFontSize },
                           { text: 'Diterima oleh', fontSize: bottomFontSize, alignment: 'center', margin: [0, 1, 0, 0] },
                           { text: 'SubTotal', fontSize: headerFontSize }, ':', { text: `Rp ${(SubTotal).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
                         ],
 
                         [
-                          { text: 'Cashback', fontSize: additionalFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize },
+                          {}, {}, { text: terbilangString.toUpperCase().substring(38, 96), fontSize: headerFontSize },
                           {},
                           { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                        ],
+                        [
+                          { text: 'Cashback', fontSize: additionalFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize },
+                          {},
+                          { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
                         ]
                       ]
                     },
@@ -737,13 +744,12 @@ export default {
                         [
                           { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' }, {}, {},
                           {},
-                          { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
-                        ],
-
-                        [
-                          { text: '* Selamat Hari Natal dan Tahun Baru', fontSize: additionalFontSize, alignment: 'left' }, {}, {},
-                          { text: `${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 0, 0, 0] },
                           { text: 'TOTAL', fontSize: headerFontSize, bold: true }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, bold: true }
+                        ],
+                        [
+                          {}, {}, {},
+                          { text: `\n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 0, 0, 0] },
+                          {}, {}, {}
                         ]
 
                       ]
