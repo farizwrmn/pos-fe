@@ -255,7 +255,7 @@ const formPayment = ({
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
             <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
-          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Discount" {...formItemLayout}>
+          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Disc. Cashback" {...formItemLayout}>
             <Input value={totalDiscount.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>

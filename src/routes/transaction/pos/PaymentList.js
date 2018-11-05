@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { posTotal } from 'utils'
 import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
 
 const FormItem = Form.Item
@@ -27,14 +28,12 @@ const PaymentList = ({
 }) => {
   const handleTotalChange = () => {
     const data = getFieldsValue()
-    let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
-    let H2 = H1 * (1 - (data.disc2 / 100))
-    let H3 = H2 * (1 - (data.disc3 / 100))
-    let TOTAL = H3 - data.discount
-    data.total = TOTAL
+    data.sellingPrice = data.price
+    data.total = posTotal(data)
     data.productId = item.productId
     data.code = item.code
     data.name = item.name
+    data.sellPrice = item.sellPrice
     data.typeCode = item.typeCode
     if (data.employee) {
       data.employeeId = data.employee.key
@@ -61,6 +60,7 @@ const PaymentList = ({
       }
       data.code = item.code
       data.name = item.name
+      data.sellPrice = item.sellPrice
       const { employee, ...other } = data
       onChooseItem(other)
     })
