@@ -111,7 +111,7 @@ export default modelExtend(pageModel, {
       } else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Member Not Found...!'
+          content: "Member's Asset Not Found...!"
         })
         setTimeout(() => modal.destroy(), 1000)
       }
