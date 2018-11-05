@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { lstorage } from 'utils'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
 import styles from '../../../themes/index.less'
+
+const { getCashierTrans } = lstorage
 
 const width = 500
 const PromoProductReward = ({
@@ -147,7 +150,7 @@ const PromoProductReward = ({
           type: 'all',
           bundleId: currentId,
           currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-          currentProduct: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+          currentProduct: getCashierTrans(),
           currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
           resolve,
           reject

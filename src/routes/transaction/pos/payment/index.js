@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { configMain, isEmptyObject, color } from 'utils'
+import { configMain, isEmptyObject, color, lstorage } from 'utils'
 import {
   Form,
   // Table,
@@ -16,6 +16,7 @@ import {
 import moment from 'moment'
 import FormPayment from './Form'
 
+const { getCashierTrans } = lstorage
 const { prefix } = configMain
 const FormItem = Form.Item
 
@@ -105,7 +106,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
       title: 'Save Payment',
       content: 'are you sure ?',
       onOk () {
-        const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const product = getCashierTrans()
         const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
         const dataPos = product.concat(service)
@@ -218,7 +219,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   //       totalDiscount: curTotalDiscount,
   //       policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
   //       rounding: curRounding,
-  //       dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+  //       dataPos: getCashierTrans(),
   //       dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
   //       memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
   //       memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',

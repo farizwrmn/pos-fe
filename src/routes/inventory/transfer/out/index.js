@@ -9,6 +9,7 @@ import ModalItem from './Modal'
 import ListTransfer from './ListTransferOut'
 import FilterTransfer from './FilterTransferOut'
 
+const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
@@ -113,15 +114,11 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     return []
   }
 
-  const getCashierQuantity = () => {
-    const cashier = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-    return cashier
-  }
 
   const checkQuantityNewProduct = (e) => {
     const { data } = e
     const tempQueue = getQueueQuantity()
-    const tempCashier = getCashierQuantity()
+    const tempCashier = getCashierTrans()
     const Cashier = tempCashier.filter(el => el.productId === data.productId)
     const Queue = tempQueue.filter(el => el.productId === data.productId)
     // const item = listItem.filter(el => el.productId === data.productId)

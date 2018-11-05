@@ -14,6 +14,7 @@ import { queryLastActive } from '../services/period'
 
 const { stockMinusAlert } = alertModal
 const { prefix } = configMain
+const { getCashierTrans } = lstorage
 
 const success = () => {
   message.success('data has been saved')
@@ -289,7 +290,7 @@ export default modelExtend(pageModel, {
       }
 
       const getCashierQuantity = () => {
-        const cashier = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const cashier = getCashierTrans()
         return cashier
       }
 

@@ -61,7 +61,8 @@
   },
   "jest": {
     "collectCoverage": true,
-    "testRegex": "tests/.*\\.test\\.js$"
+    "testRegex": "tests/.*\\.test\\.js$",
+    "setupFiles": ["./src/utils/browserMocks.js"]
   },
   "pre-commit": [
     "precommit-msg",

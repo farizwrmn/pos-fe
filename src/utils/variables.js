@@ -1,3 +1,6 @@
+import { posTotal } from './total'
+import { getCashierTrans } from './lstorage'
+
 const reArrangeMember = (item) => {
   return {
     memberCode: item.memberCode,
@@ -30,7 +33,36 @@ const reArrangeMemberId = (item) => {
   }
 }
 
+const insertCashierTrans = (dataObject) => {
+  const previousData = getCashierTrans()
+  dataObject.sellingPrice = dataObject.price
+  const total = posTotal(dataObject)
+
+  previousData.push({
+    no: dataObject.no,
+    bundleId: dataObject.bundleId,
+    employeeId: dataObject.employeeId,
+    employeeName: dataObject.employeeName,
+    productId: dataObject.productId,
+    code: dataObject.code,
+    name: dataObject.name,
+    qty: dataObject.qty,
+    typeCode: dataObject.typeCode,
+    sellPrice: dataObject.sellPrice,
+    price: dataObject.price,
+    discount: dataObject.discount,
+    disc1: dataObject.disc1,
+    disc2: dataObject.disc2,
+    disc3: dataObject.disc3,
+    total
+  })
+  localStorage.setItem('cashier_trans', JSON.stringify(previousData))
+
+  return previousData
+}
+
 module.exports = {
   reArrangeMember,
-  reArrangeMemberId
+  reArrangeMemberId,
+  insertCashierTrans
 }

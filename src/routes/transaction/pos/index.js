@@ -22,6 +22,7 @@ const { reArrangeMember, reArrangeMemberId } = variables
 const { dayByNumber } = calendar
 const { Promo } = DataQuery
 const { prefix } = configMain
+const { getCashierTrans } = lstorage
 const Panel = Collapse.Panel
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
@@ -160,7 +161,7 @@ const Pos = ({
   73 => I
   85 => U
    */
-  let product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+  let product = getCashierTrans()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
   let dataPos = product.concat(service)
   let a = dataPos
@@ -416,7 +417,7 @@ const Pos = ({
     },
     handleQueue () {
       resetSelectText()
-      if (localStorage.getItem('cashier_trans') === null && localStorage.getItem('service_detail') === null) {
+      if (getCashierTrans().length === 0 && localStorage.getItem('service_detail') === null) {
         dispatch({
           type: 'pos/changeQueue',
           payload: {
@@ -1134,9 +1135,9 @@ const Pos = ({
     },
     onChooseItem (item) {
       if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
-        let listByCode = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        let listByCode = getCashierTrans()
         let arrayProd = listByCode
-        const checkExists = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')).filter(el => el.code === item.productCode) : []
+        const checkExists = listByCode.filter(el => el.code === item.productCode)
         if ((checkExists || []).length === 0) {
           // if (listByCode.length === 0) {
           //   arrayProd = listByCode.slice()
@@ -1153,6 +1154,7 @@ const Pos = ({
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: 1,
+            sellPrice: item.sellPrice,
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
@@ -1170,6 +1172,7 @@ const Pos = ({
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: 1,
+            sellPrice: item.sellPrice,
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
@@ -1404,7 +1407,7 @@ const Pos = ({
     },
     onVoid (id) {
       const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
-      const dataProduct = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const dataProduct = getCashierTrans()
       const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       const dataBundleFiltered = dataBundle.filter(x => x.bundleId !== id)
       const dataProductFiltered = dataProduct.filter(x => x.bundleId !== id)
@@ -1512,7 +1515,7 @@ const Pos = ({
       //       type: 'pos/getStock',
       //       payload: {
       //         productCode: value,
-      //         listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
+      //         listByCode: getCashierTrans()
       //         curQty,
       //         memberCode: memberInformation.memberCode,
       //         curRecord
@@ -1576,7 +1579,7 @@ const Pos = ({
       //       type: 'pos/getService',
       //       payload: {
       //         serviceId: value,
-      //         listByCode: (localStorage.getItem('cashier_trans') === null ? [] : localStorage.getItem('cashier_trans')),
+      //         listByCode: getCashierTrans()
       //         curQty,
       //         memberCode: memberInformation.memberCode,
       //         curRecord
@@ -1683,11 +1686,6 @@ const Pos = ({
     // else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
     //   handleVoid(value)
     // }
-  }
-
-  const dataTrans = () => {
-    let product = localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans'))
-    return (product)
   }
 
   const dataService = () => {
@@ -1896,7 +1894,7 @@ const Pos = ({
                   pagination={{ pageSize: 5 }}
                   bordered
                   size="small"
-                  scroll={{ x: '1400px', y: '220px' }}
+                  scroll={{ x: '1258px', y: '220px' }}
                   locale={{
                     emptyText: 'Your Payment List'
                   }}
@@ -1904,19 +1902,7 @@ const Pos = ({
                     {
                       title: 'No',
                       dataIndex: 'no',
-                      width: '41px'
-                    },
-                    {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '121px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
+                      width: '35px'
                     },
                     {
                       title: 'Code',
@@ -1926,7 +1912,7 @@ const Pos = ({
                     {
                       title: 'Product Name',
                       dataIndex: 'name',
-                      width: '200px'
+                      width: '160px'
                     },
                     {
                       title: 'Q',
@@ -1937,49 +1923,68 @@ const Pos = ({
                     },
                     {
                       title: 'Price',
-                      dataIndex: 'price',
-                      width: '100px',
+                      dataIndex: 'sellPrice',
+                      width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
-                      width: '90px',
+                      width: '65px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
-                      width: '90px',
+                      width: '65px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
-                      width: '90px',
+                      width: '65px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
-                      width: '100px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
+                      title: 'D. Member',
+                      dataIndex: 'price',
+                      width: '75px',
+                      className: styles.alignRight,
+                      render: (text, record) => ((Math.max(0, record.sellPrice - record.price) || 0) * record.qty).toLocaleString()
+                    },
+                    {
                       title: 'Total',
                       dataIndex: 'total',
-                      width: '100px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Employee',
+                      dataIndex: 'employeeName',
+                      width: '100px',
+                      render: text => text
+                    },
+                    {
+                      title: 'Promo',
+                      dataIndex: 'bundleName',
+                      width: '100px',
+                      render: text => text
                     }
                   ]}
                   onRowClick={record => modalEditPayment(record)}
-                  dataSource={dataTrans()}
+                  dataSource={getCashierTrans()}
                   style={{ marginBottom: 16 }}
                 />
               </TabPane>
@@ -1989,7 +1994,7 @@ const Pos = ({
                   pagination={{ pageSize: 5 }}
                   bordered
                   size="small"
-                  scroll={{ x: '1400px', y: '220px' }}
+                  scroll={{ x: '1037px', y: '220px' }}
                   locale={{
                     emptyText: 'Your Payment List'
                   }}
@@ -2000,26 +2005,14 @@ const Pos = ({
                       width: '41px'
                     },
                     {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '121px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
-                    },
-                    {
                       title: 'Code',
                       dataIndex: 'code',
                       width: '100px'
                     },
                     {
-                      title: 'Service Name',
+                      title: 'Product Name',
                       dataIndex: 'name',
-                      width: '200px'
+                      width: '160px'
                     },
                     {
                       title: 'Q',
@@ -2030,36 +2023,36 @@ const Pos = ({
                     },
                     {
                       title: 'Price',
-                      dataIndex: 'price',
-                      width: '100px',
+                      dataIndex: 'sellPrice',
+                      width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
                     },
                     {
                       title: 'Disc1(%)',
                       dataIndex: 'disc1',
-                      width: '90px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
-                      width: '90px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
-                      width: '90px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
-                      width: '100px',
+                      width: '75px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
                     },
@@ -2069,6 +2062,18 @@ const Pos = ({
                       width: '100px',
                       className: styles.alignRight,
                       render: text => (text || 0).toLocaleString()
+                    },
+                    {
+                      title: 'Employee',
+                      dataIndex: 'employeeName',
+                      width: '100px',
+                      render: text => text
+                    },
+                    {
+                      title: 'Promo',
+                      dataIndex: 'bundleName',
+                      width: '121px',
+                      render: text => text
                     }
                   ]}
                   onRowClick={_record => modalEditService(_record)}
@@ -2177,7 +2182,7 @@ const Pos = ({
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem label="Discount" {...formItemLayout1}>
+                  <FormItem label="Disc. Cashback" {...formItemLayout1}>
                     <Input value={totalDiscount.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
                 </Row>

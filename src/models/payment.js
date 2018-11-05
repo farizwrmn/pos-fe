@@ -9,6 +9,7 @@ import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const { stockMinusAlert } = alertModal
+const { getCashierTrans } = lstorage
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -117,13 +118,15 @@ export default {
           })
         } else {
           let arrayProd = []
-          const product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+          const product = getCashierTrans()
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
           const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
           const trans = transNo.data
           const storeId = lstorage.getCurrentUserStore()
           const companySetting = JSON.parse((payload.setting.Company || '{}')).taxType
+
+          // Akan di ganti variables
           for (let key = 0; key < dataPos.length; key += 1) {
             const totalPrice = ((
               (dataPos[key].price * dataPos[key].qty) * // price * qty
@@ -246,7 +249,7 @@ export default {
                   totalDiscount: payload.totalDiscount,
                   policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
                   rounding: payload.rounding,
-                  dataPos: localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : [],
+                  dataPos: getCashierTrans(),
                   dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
                   memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
                   memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
@@ -489,7 +492,8 @@ export default {
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
-      let Discount = merge.reduce((cnt, o) => cnt + ((o.price * o.qty) - o.total), 0)
+      let Discount = merge.reduce((cnt, o) => cnt + (((o.sellPrice || o.price) * o.qty) - o.total), 0)
+      let SubTotal = merge.reduce((cnt, o) => cnt + (o.price * o.qty), 0)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
       if (merge.length !== []) {
         const createPdfLineItems = (tabledata, payload, node) => {
@@ -515,29 +519,31 @@ export default {
           for (let key in headers) {
             if (headers.hasOwnProperty(key)) {
               let header = headers[key]
-              let row = []
-              row.push(header.col_1)
-              row.push(header.col_2)
-              row.push(header.col_3)
-              row.push(header.col_4)
-              row.push(header.col_5)
-              row.push(header.col_6)
-              row.push(header.col_7)
+              let row = [
+                header.col_1,
+                header.col_2,
+                header.col_3,
+                header.col_4,
+                header.col_5,
+                header.col_6,
+                header.col_7
+              ]
               body.push(row)
             }
           }
           for (let key in rows) {
             if (rows.hasOwnProperty(key)) {
               let data = rows[key]
-              let totalDisc = (data.price * data.qty) - data.total
-              let row = []
-              row.push({ text: (data.no || '').toString(), alignment: 'center', fontSize: tableContentFontSize })
-              row.push({ text: (data.code || '').toString(), alignment: 'left', fontSize: tableContentFontSize })
-              row.push({ text: (data.name || '').toString(), alignment: 'left', fontSize: tableContentFontSize })
-              row.push({ text: (data.qty || 0).toString(), alignment: 'center', fontSize: tableContentFontSize })
-              row.push({ text: `${(data.price || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
-              row.push({ text: `${(totalDisc || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
-              row.push({ text: `${(data.total || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize })
+              let totalDisc = ((data.sellPrice || data.price) * data.qty) - data.total
+              let row = [
+                { text: (data.no || '').toString(), alignment: 'center', fontSize: tableContentFontSize },
+                { text: (data.code || '').toString(), alignment: 'left', fontSize: tableContentFontSize },
+                { text: (data.name || '').toString(), alignment: 'left', fontSize: tableContentFontSize },
+                { text: (data.qty || 0).toString(), alignment: 'center', fontSize: tableContentFontSize },
+                { text: `${(data.sellPrice ? data.sellPrice : data.price || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize },
+                { text: `${(totalDisc || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize },
+                { text: `${(data.total || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize }
+              ]
               body.push(row)
             }
           }
@@ -695,35 +701,96 @@ export default {
                     canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
                   },
                   {
-                    columns: [
-                      {
-                        table: {
-                          widths: ['20%', '1%', '79%'],
-                          body: [
-                            [{ text: 'Terbilang', fontSize: headerFontSize }, ':', { text: `${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`, fontSize: headerFontSize }],
-                            [{ text: 'Cashback', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize }]
-                          ]
-                        },
-                        layout: 'noBorders'
-                      },
-                      {
-                        table: {
-                          widths: ['59%', '20%', '1%', '20%'],
-                          body: [
-                            [{}, { text: 'TOTAL', fontSize: headerFontSize }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }],
-                            [{}, { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }]
-                          ]
-                        },
-                        layout: 'noBorders'
-                      }
-                    ]
+                    table: {
+                      widths: ['15%', '1%', '32%', '24%', '12%', '1%', '15%'],
+                      height: '12',
+                      body: [
+                        [
+                          { text: 'Terbilang', fontSize: additionalFontSize }, ':', { text: `${(`${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`).substring(0, 35)}...`, fontSize: headerFontSize },
+                          { text: 'Diterima oleh', fontSize: bottomFontSize, alignment: 'center', margin: [0, 1, 0, 0] },
+                          { text: 'SubTotal', fontSize: headerFontSize }, ':', { text: `Rp ${(SubTotal).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                        ],
+
+                        [
+                          { text: 'Cashback', fontSize: additionalFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize },
+                          {},
+                          { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                        ]
+                      ]
+                    },
+                    layout: {
+                      hLineWidth: () => 0,
+                      vLineWidth: () => 0,
+                      hLineColor: () => '',
+                      vLineColor: () => '',
+                      paddingLeft: () => 0,
+                      paddingRight: () => 0,
+                      paddingTop: () => 0,
+                      paddingBottom: () => 0
+                    }
                   },
                   {
-                    columns: [
-                      { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' },
-                      { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 5, 0, 0] }
-                    ]
+                    table: {
+                      widths: ['30%', '1%', '17%', '24%', '12%', '1%', '15%'],
+                      height: '12',
+                      body: [
+                        [
+                          { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' }, {}, {},
+                          {},
+                          { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                        ],
+
+                        [
+                          { text: '* Selamat Hari Natal dan Tahun Baru', fontSize: additionalFontSize, alignment: 'left' }, {}, {},
+                          { text: `${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 0, 0, 0] },
+                          { text: 'TOTAL', fontSize: headerFontSize, bold: true }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, bold: true }
+                        ]
+
+                      ]
+                    },
+                    layout: {
+                      hLineWidth: () => 0,
+                      vLineWidth: () => 0,
+                      hLineColor: () => '',
+                      vLineColor: () => '',
+                      paddingLeft: () => 0,
+                      paddingRight: () => 0,
+                      paddingTop: () => 0,
+                      paddingBottom: () => 0
+                    }
                   },
+                  // {
+                  //   columns: [
+                  //     {
+                  //       table: {
+                  //         widths: ['20%', '1%', '79%'],
+                  //         body: [
+                  //           [{ text: 'Terbilang', fontSize: headerFontSize }, ':', { text: `${terbilang(Total - (unitInfo.discountLoyalty || 0)).toUpperCase()}RUPIAH`, fontSize: headerFontSize }],
+                  //           [{ text: 'Cashback', fontSize: headerFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize }]
+                  //         ]
+                  //       },
+                  //       layout: 'noBorders'
+                  //     },
+                  //     { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'right', margin: [0, 5, 0, 0] },
+                  //     {
+                  //       table: {
+                  //         widths: ['20%', '39%', '1%', '40%'],
+                  //         body: [
+                  //           [{}, { text: 'SubTotal', fontSize: headerFontSize }, ':', { text: `Rp ${(SubTotal).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }],
+                  //           [{}, { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }],
+                  //           [{}, { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }],
+                  //           [{}, { text: 'TOTAL', fontSize: headerFontSize, bold: true }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, bold: true }]
+                  //         ]
+                  //       },
+                  //       layout: 'noBorders'
+                  //     }
+                  //   ]
+                  // },
+                  // {
+                  //   columns: [
+                  //     { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' }
+                  //   ]
+                  // },
                   {
                     columns: [
                       {

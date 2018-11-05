@@ -66,6 +66,10 @@ const getStorageKey = (key) => {
   return pair
 }
 
+const getCashierTrans = () => {
+  return localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+}
+
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -180,5 +184,6 @@ module.exports = {
   getSessionId,
   getDomainBE,
   getPortBE,
-  getIdBE
+  getIdBE,
+  getCashierTrans
 }

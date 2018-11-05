@@ -2,7 +2,7 @@ import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage } from 'utils'
+import { configMain, lstorage, variables } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
@@ -14,6 +14,9 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
+const { insertCashierTrans } = variables
+
+const { getCashierTrans } = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -181,7 +184,7 @@ export default {
 
   effects: {
     * paymentEdit ({ payload }, { put }) {
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       dataPos[payload.no - 1] = payload
       localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
       yield put({ type: 'hidePaymentModal' })
@@ -197,7 +200,7 @@ export default {
     },
 
     * paymentDelete ({ payload }, { put }) {
-      let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
         let what
@@ -830,7 +833,7 @@ export default {
     },
 
     * checkQuantityNewProduct ({ payload }, { call, put }) {
-      const { data, arrayProd } = payload
+      const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
         // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
@@ -900,14 +903,14 @@ export default {
             title: 'Waning Out of stock option',
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
-          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          insertCashierTrans(data)
           yield put({
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
           })
           yield put({ type: 'pos/hideProductModal' })
         } else {
-          localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+          insertCashierTrans(data)
           yield put({
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
@@ -1106,7 +1109,7 @@ export default {
       const memberUnit = localStorage.getItem('memberUnit') ? localStorage.getItem('memberUnit') : ''
       const policeNo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : ''
       const lastMeter = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
-      const cashier_trans = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      const cashier_trans = getCashierTrans()
       const service_detail = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       const bundle_promo = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
       const woNumber = localStorage.getItem('woNumber') ? localStorage.getItem('woNumber') : null
@@ -1306,7 +1309,7 @@ export default {
   reducers: {
     querySuccess (state, action) {
       const { list, pagination, tmpList } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1366,7 +1369,7 @@ export default {
 
     queryServiceSuccess (state, action) {
       const { listService, pagination } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1384,7 +1387,7 @@ export default {
     querySuccessByCode (state, action) {
       const { listByCode, curRecord } = action.payload
 
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1399,7 +1402,7 @@ export default {
     queryServiceSuccessByCode (state, action) {
       const { listByCode, curRecord } = action.payload
 
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1413,7 +1416,7 @@ export default {
 
     queryGetMemberSuccess (state, action) {
       const { memberInformation } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1427,7 +1430,7 @@ export default {
 
     queryGetMembersSuccess (state, action) {
       const { memberInformation, tmpMemberList, ...other } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1449,7 +1452,7 @@ export default {
 
     queryGetServicesSuccess (state, action) {
       const { serviceInformation, tmpServiceList } = action.payload
-      let grandTotal = (JSON.parse(localStorage.getItem('cashier_trans')) || []).reduce((cnt, o) => { return cnt + o.total }, 0)
+      let grandTotal = getCashierTrans().reduce((cnt, o) => cnt + o.total, 0)
 
       return {
         ...state,
@@ -1461,7 +1464,7 @@ export default {
 
     queryGetMechanicSuccess (state, action) {
       const { mechanicInformation } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1474,7 +1477,7 @@ export default {
 
     queryGetMechanicsSuccess (state, action) {
       const { mechanicInformation, tmpMechanicList } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1488,7 +1491,7 @@ export default {
 
     queryGetProductsSuccess (state, action) {
       const { productInformation, tmpProductList } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
       return {
@@ -1501,7 +1504,7 @@ export default {
 
     chooseMemberUnit (state, action) {
       const { policeNo } = action.payload
-      let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+      let dataPos = getCashierTrans()
       let a = dataPos
       let grandTotal = a.reduce((cnt, o) => cnt + o.total, 0)
       return {
@@ -1532,7 +1535,7 @@ export default {
     //   if (!state.dataPosLoaded) {
     //     localStorage.setItem('cashier_trans', action.payload.arrayProd)
 
-    //     let dataPos = (localStorage.getItem('cashier_trans') === null ? [] : JSON.parse(localStorage.getItem('cashier_trans')))
+    //     let dataPos = getCashierTrans()
     //     let a = dataPos
     //     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
 
@@ -1686,7 +1689,7 @@ export default {
     },
 
     setCurTotal (state) {
-      let product = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      let product = getCashierTrans()
       let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       let dataPos = product.concat(service)
       let a = dataPos
