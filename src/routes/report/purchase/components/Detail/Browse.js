@@ -28,7 +28,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'qty',
       width: '50px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Unit Price',
@@ -36,7 +36,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'purchasePrice',
       width: '100px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Discount',
@@ -44,7 +44,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'totalDiscount',
       width: '100px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Total',
@@ -52,7 +52,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'netto',
       width: '100px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Grand Total',
@@ -60,7 +60,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'grandtotal',
       width: '100px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

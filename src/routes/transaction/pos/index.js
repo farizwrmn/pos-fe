@@ -1919,7 +1919,7 @@ const Pos = ({
                       dataIndex: 'qty',
                       width: '40px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Price',
@@ -1933,28 +1933,28 @@ const Pos = ({
                       dataIndex: 'disc1',
                       width: '65px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
                       width: '65px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
                       width: '65px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'D. Member',
@@ -1968,7 +1968,7 @@ const Pos = ({
                       dataIndex: 'total',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Employee',
@@ -2019,7 +2019,7 @@ const Pos = ({
                       dataIndex: 'qty',
                       width: '40px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Price',
@@ -2033,35 +2033,35 @@ const Pos = ({
                       dataIndex: 'disc1',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc2(%)',
                       dataIndex: 'disc2',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc3(%)',
                       dataIndex: 'disc3',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Disc',
                       dataIndex: 'discount',
                       width: '75px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Total',
                       dataIndex: 'total',
                       width: '100px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Employee',
@@ -2127,7 +2127,7 @@ const Pos = ({
                       dataIndex: 'qty',
                       width: '40px',
                       className: styles.alignRight,
-                      render: text => (text || 0).toLocaleString()
+                      render: text => (text || '-').toLocaleString()
                     },
                     {
                       title: 'Period',

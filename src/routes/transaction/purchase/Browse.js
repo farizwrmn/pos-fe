@@ -26,49 +26,49 @@ const Browse = ({
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Disc %',
       dataIndex: 'disc1',
       key: 'disc1',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Disc NML',
       dataIndex: 'discount',
       key: 'discount',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'DPP',
       dataIndex: 'dpp',
       key: 'dpp',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'PPN',
       dataIndex: 'ppn',
       key: 'ppn',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Ket',

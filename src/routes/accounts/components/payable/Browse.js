@@ -78,7 +78,7 @@ const BrowseGroup = ({
     //   width: 140,
     //   className: styles.alignRight,
     //   sorter: (a, b) => a.lastMeter - b.lastMeter,
-    //   render: text => text.toLocaleString()
+    //   render: text => (text || '-').toLocaleString()
     // },
     {
       title: 'Due Date',

@@ -24,7 +24,7 @@ const ListItem = ({ ...tableProps }) => {
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Description',

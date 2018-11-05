@@ -65,7 +65,7 @@ const List = ({ onChooseItem, isMotion, pos, dispatch, location, ...tableProps }
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

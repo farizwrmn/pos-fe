@@ -28,21 +28,21 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
       dataIndex: 'price',
       key: 'price',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'In',
       dataIndex: 'In',
       key: 'In',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Out',
       dataIndex: 'Out',
       key: 'Out',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

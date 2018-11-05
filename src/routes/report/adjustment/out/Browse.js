@@ -37,7 +37,7 @@ const Browse = ({ ...browseProps }) => {
       key: 'qtyOut',
       width: '100px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Price',

@@ -38,14 +38,14 @@ const List = ({ ...tableProps, printInvoice }) => {
       dataIndex: 'discInvoicePercent',
       key: 'discInvoicePercent',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Disc(N)',
       dataIndex: 'discInvoiceNominal',
       key: 'discInvoiceNominal',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Term',

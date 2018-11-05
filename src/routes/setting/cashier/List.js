@@ -43,7 +43,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'openingCash',
       key: 'openingCash',
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Created',

@@ -62,28 +62,28 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Cost Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Dist 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Dist 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Track Qty',
@@ -98,7 +98,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'alertQty',
       key: 'alertQty',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Exception',
@@ -146,7 +146,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           dataIndex: 'usageMileage',
           key: 'usageMileage',
           className: styles.alignRight,
-          render: text => (text || 0).toLocaleString()
+          render: text => (text || '-').toLocaleString()
         }
       ]
     },

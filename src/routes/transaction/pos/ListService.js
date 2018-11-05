@@ -95,7 +95,7 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       key: 'serviceCost',
       width: 125,
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
   return (

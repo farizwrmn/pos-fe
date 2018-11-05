@@ -57,7 +57,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Product Code',
@@ -72,21 +72,21 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Dist Price 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Dist Price 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

@@ -53,13 +53,13 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
-      // render: text => text.toLocaleString()
+      // render: text => (text || '-').toLocaleString()
       render (text, record) {
         return {
           props: {
             style: { background: record.color }
           },
-          children: <div>{text.toLocaleString()}</div>
+          children: <div>{(text || '-').toLocaleString()}</div>
         }
       }
     },

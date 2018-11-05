@@ -79,7 +79,7 @@ const BrowseGroup = ({
       width: 120,
       className: styles.alignRight,
       sorter: (a, b) => a.lastMeter - b.lastMeter,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Cashier ID',

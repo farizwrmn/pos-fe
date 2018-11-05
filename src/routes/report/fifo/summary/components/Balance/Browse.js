@@ -16,37 +16,37 @@ const Browse = ({ ...browseProps }) => {
       title: 'Begin',
       dataIndex: 'beginQty',
       key: 'beginQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Purchase Qty',
       dataIndex: 'purchaseQty',
       key: 'purchaseQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Adjust IN',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'POS Qty',
       dataIndex: 'posQty',
       key: 'posQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Adjust OUT',
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Count',
       dataIndex: 'count',
       key: 'count',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

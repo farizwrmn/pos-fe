@@ -41,7 +41,7 @@ const Reminder = ({
             color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
           }
         },
-        children: <div>{text.toLocaleString()}</div>
+        children: <div>{(text || '-').toLocaleString()}</div>
       }
     }
   }, {
@@ -57,7 +57,7 @@ const Reminder = ({
             color: (localStorage.getItem('lastMeter') || 0) >= record.checkMileage ? '#ffffff' : '#666'
           }
         },
-        children: <div>{text.toLocaleString()} days</div>
+        children: <div>{(text || '-').toLocaleString()} days</div>
       }
     }
   }]

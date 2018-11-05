@@ -72,6 +72,9 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
   const changeCascader = (e) => {
     const value = e[0]
     const variable = templistType.filter(x => x.code === value)
+    if (!variable[0]) {
+      return
+    }
     const { miscVariable } = variable[0]
     let disabledItem = {}
     let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
@@ -121,7 +124,7 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
   //     key: 'costPrice',
   //     width: '20%',
   //     className: styles.alignRight,
-  //     render: text => text.toLocaleString()
+  //     render: text => (text || '-').toLocaleString()
   //   }
   // ]
   // const contentPopover = (

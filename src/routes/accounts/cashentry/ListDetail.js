@@ -21,14 +21,14 @@ const Browse = ({
       dataIndex: 'amountIn',
       key: 'amountIn',
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Credit',
       dataIndex: 'amountOut',
       key: 'amountOut',
       className: styles.alignRight,
-      render: text => (text || 0).toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Description',

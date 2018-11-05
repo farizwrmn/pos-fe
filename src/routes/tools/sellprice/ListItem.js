@@ -15,7 +15,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       key: 'no',
       render (text) {
         return {
-          children: <div style={{ textAlign: 'right' }}>{(text || '').toLocaleString()}</div>
+          children: <div style={{ textAlign: 'right' }}>{(text || '-').toLocaleString()}</div>
         }
       }
     },
@@ -25,7 +25,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       key: 'productCode',
       render (text) {
         return {
-          children: <div>{text.toLocaleString()}</div>
+          children: <div>{(text || '-').toLocaleString()}</div>
         }
       }
     },
@@ -35,7 +35,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       key: 'productName',
       render (text) {
         return {
-          children: <div>{text.toLocaleString()}</div>
+          children: <div>{(text || '-').toLocaleString()}</div>
         }
       }
     },
@@ -50,7 +50,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
         return {
           children: <div style={{ textAlign: 'right' }}>
             {`${(record.prevSellPrice || 0).toLocaleString()} to `}
-            <strong style={{ fontSize: '14px' }}>{`${text.toLocaleString()} `}</strong>
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
             ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
           </div>
         }
@@ -67,7 +67,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
         return {
           children: <div style={{ textAlign: 'right' }}>
             {`${(record.prevDistPrice01 || 0).toLocaleString()} to `}
-            <strong style={{ fontSize: '14px' }}>{`${text.toLocaleString()} `}</strong>
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
             ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
           </div>
         }
@@ -84,7 +84,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
         return {
           children: <div style={{ textAlign: 'right' }}>
             {`${(record.prevDistPrice02 || 0).toLocaleString()} to `}
-            <strong style={{ fontSize: '14px' }}>{`${text.toLocaleString()} `}</strong>
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
             ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
           </div>
         }

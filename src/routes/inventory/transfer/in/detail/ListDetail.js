@@ -31,7 +31,7 @@ const List = ({ ...tableProps, editList }) => {
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

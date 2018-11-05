@@ -21,25 +21,25 @@ const Browse = ({ ...browseProps }) => {
       title: 'Transfer In',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Transfer Out',
       dataIndex: 'adjOutQty',
       key: 'adjOutQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'In Transfer',
       dataIndex: 'inTransferQty',
       key: 'inTransferQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'In Transit',
       dataIndex: 'inTransitQty',
       key: 'inTransitQty',
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

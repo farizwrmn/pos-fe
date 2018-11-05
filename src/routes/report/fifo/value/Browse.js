@@ -20,7 +20,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'beginQty',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Purchase Qty',
@@ -28,7 +28,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'purchaseQty',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Adjust IN',
@@ -36,7 +36,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'adjInQty',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'POS Qty',
@@ -44,7 +44,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'posQty',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Adjust OUT',
@@ -52,7 +52,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'adjOutQty',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Count',
@@ -60,7 +60,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'count',
       width: '150px',
       className: styles.alignRight,
-      render: text => text.toLocaleString()
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

@@ -45,7 +45,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Cashback',
       dataIndex: 'cashback',
       key: 'cashback',
-      render: text => (text || '').toLocaleString()
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'ID Type',
