@@ -79,6 +79,7 @@ export default {
           productCode: data.pos[n].productCode || data.pos[n].serviceCode,
           productName: data.pos[n].productName || data.pos[n].serviceName,
           qty: data.pos[n].qty || 0,
+          sellPrice: data.pos[n].sellPrice || 0,
           sellingPrice: data.pos[n].sellingPrice || 0,
           discountLoyalty: data.pos[n].discountLoyalty || 0,
           discount: data.pos[n].discount || 0,

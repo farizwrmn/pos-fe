@@ -122,6 +122,7 @@ const FormCounter = ({
             productCode: type === 'P' ? item.productCode : item.serviceCode,
             productName: type === 'P' ? item.productName : item.serviceName,
             qty: 1,
+            sellPrice: type === 'P' ? item.sellPrice : item.serviceCost,
             sellingPrice: type === 'P' ? item.sellPrice : item.serviceCost,
             discount: 0,
             disc1: 0,

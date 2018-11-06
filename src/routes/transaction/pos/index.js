@@ -956,52 +956,61 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('member')
-      localStorage.removeItem('memberUnit')
-      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'pos/removeTrans'
+          })
+          localStorage.removeItem('member')
+          localStorage.removeItem('memberUnit')
+          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
-      let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
-      } else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
-      let newItem = reArrangeMember(item)
-      arrayProd.push(newItem)
-
-      localStorage.setItem('member', JSON.stringify(arrayProd))
-      dispatch({
-        type: 'pos/syncCustomerCashback',
-        payload: {
-          memberId: newItem.id
-        }
-      })
-      dispatch({
-        type: 'pos/queryGetMemberSuccess',
-        payload: { memberInformation: newItem }
-      })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
-      dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
-      dispatch({
-        type: 'pos/hideMemberModal'
-      })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showListReminder: false
-        }
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          addUnit: {
-            modal: false,
-            info: { id: item.id, name: item.memberName }
+          let arrayProd
+          if (JSON.stringify(listByCode) === '[]') {
+            arrayProd = listByCode.slice()
+          } else {
+            arrayProd = JSON.parse(listByCode.slice())
           }
+          let newItem = reArrangeMember(item)
+          arrayProd.push(newItem)
+
+          localStorage.setItem('member', JSON.stringify(arrayProd))
+          dispatch({
+            type: 'pos/syncCustomerCashback',
+            payload: {
+              memberId: newItem.id
+            }
+          })
+          dispatch({
+            type: 'pos/queryGetMemberSuccess',
+            payload: { memberInformation: newItem }
+          })
+          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+          dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
+          dispatch({
+            type: 'pos/hideMemberModal'
+          })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              showListReminder: false
+            }
+          })
+          dispatch({
+            type: 'customer/updateState',
+            payload: {
+              addUnit: {
+                modal: false,
+                info: { id: item.id, name: item.memberName }
+              }
+            }
+          })
+
+          setCurBarcode('', 1)
         }
       })
-
-      setCurBarcode('', 1)
     }
   }
 
@@ -1281,6 +1290,7 @@ const Pos = ({
             name: item.serviceName,
             qty: curQty,
             typeCode: 'S',
+            sellPrice: item.serviceCost,
             price: item.serviceCost,
             discount: 0,
             disc1: 0,

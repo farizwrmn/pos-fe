@@ -147,6 +147,7 @@ export default {
               productName: dataPos[key].name,
               qty: dataPos[key].qty,
               typeCode: dataPos[key].typeCode,
+              sellPrice: dataPos[key].sellPrice,
               sellingPrice: dataPos[key].price,
               DPP: dpp,
               PPN: ppn,
@@ -175,6 +176,7 @@ export default {
               productName: x.productName,
               qty: x.qty,
               typeCode: x.typeCode,
+              sellPrice: x.sellPrice,
               sellingPrice: x.sellingPrice,
               DPP: dpp,
               PPN: ppn,
@@ -493,7 +495,7 @@ export default {
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
       let Discount = merge.reduce((cnt, o) => cnt + (((o.sellPrice || o.price) * o.qty) - o.total), 0)
-      let SubTotal = merge.reduce((cnt, o) => cnt + (o.price * o.qty), 0)
+      let SubTotal = merge.reduce((cnt, o) => cnt + ((o.sellPrice || o.price) * o.qty), 0)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
       const nettoValue = (Total - (unitInfo.discountLoyalty || 0))
       const terbilangString = nettoValue > 0 ? `${terbilang(nettoValue)} RUPIAH` : 'NOL RUPIAH'
