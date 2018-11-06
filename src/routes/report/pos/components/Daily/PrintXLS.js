@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
 import { saveAs } from 'file-saver'
-import { numberFormat } from 'utils'
+import { numberFormat, selisihMember } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -14,8 +14,8 @@ const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category, brand }) => {
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
-  let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
+  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat((o.sellPrice || o.sellingPrice) * o.qty), 0)
+  let discountTotal = listDaily.reduce((cnt, o) => cnt + (o.totalDiscount + (selisihMember(o) * o.qty)), 0)
   let dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPN), 0)
   let nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
@@ -105,6 +105,7 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
       }
 
       for (let n = 0; n < listDaily.length; n += 1) {
+        const discount = listDaily[n].totalDiscount + (selisihMember(listDaily[n]) * listDaily[n].qty)
         let m = 9 + n
         sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
         sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
@@ -117,10 +118,10 @@ const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category
         sheet.getCell(`D${m}`).numFmt = formatNumberInExcel(parseInt(listDaily[n].qty, 10), 2)
         sheet.getCell(`E${m}`).value = (parseFloat(listDaily[n].total))
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].total), 2)
-        sheet.getCell(`F${m}`).value = (parseFloat(listDaily[n].totalDiscount))
+        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(parseFloat((listDaily[n].sellPrice || listDaily[n].sellingPrice) * listDaily[n].qty), 2)
+        sheet.getCell(`F${m}`).value = discount
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].totalDiscount), 2)
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(discount, 2)
         sheet.getCell(`G${m}`).value = (parseFloat(listDaily[n].DPP))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(parseFloat(listDaily[n].DPP), 2)

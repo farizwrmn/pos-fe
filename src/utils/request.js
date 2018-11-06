@@ -7,7 +7,7 @@ import { message } from 'antd'
 // import { YQL, CORS } from './config'
 import { getDomainBE, getPortBE, removeItemKey } from './lstorage'
 import { apiPrefix } from '../utils/config.rest'
-import crypt from './crypt'
+// import crypt from './crypt'
 
 const fetch = (options) => {
   let {
@@ -148,17 +148,17 @@ export default function request (options) {
     }
     response.duration = response.config.metadata.endTime - response.config.metadata.startTime
     if (getLocation(response.config.url).pathname.substr(0, 14) === '/api/v1/report') {
-      const apiHeaderToken = crypt.apiheader()
-      request({
-        url: '/log/report',
-        method: 'post',
-        data: {
-          url: response.config.url,
-          params: JSON.stringify(response.config.params),
-          duration: response.duration
-        },
-        headers: apiHeaderToken
-      })
+      // const apiHeaderToken = crypt.apiheader()
+      // request({
+      //   url: '/log/report',
+      //   method: 'post',
+      //   data: {
+      //     url: response.config.url,
+      //     params: JSON.stringify(response.config.params),
+      //     duration: response.duration
+      //   },
+      //   headers: apiHeaderToken
+      // })
     }
 
     return Promise.resolve({

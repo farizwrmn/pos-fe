@@ -1,3 +1,5 @@
+import { formatNumberIndonesia } from './numberFormat'
+
 const posTotal = (data) => {
   if (data.sellingPrice === null || data.sellingPrice === undefined) {
     throw new Error('SellingPrice cannot be null')
@@ -25,6 +27,12 @@ const posTotal = (data) => {
   return TOTAL
 }
 
+const selisihMember = item => Math.max(0, (item.sellPrice - item.sellingPrice))
+
+const formatNumbering = string => formatNumberIndonesia(parseFloat(string || 0))
+
 module.exports = {
-  posTotal
+  posTotal,
+  selisihMember,
+  formatNumbering
 }

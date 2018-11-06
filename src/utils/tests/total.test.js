@@ -1,4 +1,4 @@
-import { posTotal } from '../total'
+import { posTotal, selisihMember, formatNumbering } from '../total'
 
 it('Should count pos total 0', () => {
   const data = {
@@ -156,4 +156,20 @@ it('Should throw error disc3 cannot be null', () => {
     disc3: null
   }
   expect(() => posTotal(data)).toThrow()
+})
+
+it('Should return 3500', () => {
+  const data = {
+    sellPrice: 37500,
+    sellingPrice: 34000
+  }
+  expect(selisihMember(data)).toEqual(3500)
+})
+
+it('Should return 3,000.00', () => {
+  expect(formatNumbering(3000)).toEqual('3,000.00')
+})
+
+it("Should return '-' because null inserted", () => {
+  expect(formatNumbering(null)).toEqual('-')
 })

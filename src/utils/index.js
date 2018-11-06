@@ -17,7 +17,7 @@ import variables from './variables'
 import total from './total'
 import alertModal from './alertModal'
 
-const { posTotal } = total
+const { posTotal, selisihMember, formatNumbering } = total
 // 连字符转驼峰 - hyphenToHump
 String.prototype.hyphenToHump = function () {
   return this.replace(/-(\w)/g, (...args) => {
@@ -158,6 +158,8 @@ module.exports = {
   isEmptyObject,
   numberFormat,
   posTotal,
+  selisihMember,
+  formatNumbering,
   calendar,
   compare,
   variables,

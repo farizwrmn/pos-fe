@@ -2,9 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
-import { numberFormat } from 'utils'
-
-const { formatNumberIndonesia } = numberFormat
+import { selisihMember, formatNumbering } from 'utils'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   listData = listData.filter(x => x.items.length > 0)
@@ -39,13 +37,10 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
 
   const createTableBody = (tabledata) => {
     let totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
-    let totalSubTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.total) || 0), 0)
-    let totalDiscount1 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.disc1) || 0), 0)
-    let totalDiscount2 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.disc2) || 0), 0)
-    let totalDiscount3 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.disc3) || 0), 0)
+    let totalSubTotal = tabledata.reduce((cnt, o) => cnt + ((o.sellPrice || o.sellingPrice) * o.qty), 0)
     let totalDiscount4 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discount) || 0), 0)
     let totalDiscountLoyalty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discountLoyalty) || 0), 0)
-    let totalDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
+    let totalDiscount = tabledata.reduce((cnt, o) => cnt + o.totalDiscount + (selisihMember(o) * o.qty), 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
     const diffData = tabledata.reduce((group, item) => {
@@ -110,15 +105,15 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
             { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
             { text: (data.qty || 0), alignment: 'center', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.sellingPrice) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.total) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.disc1) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.disc2) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.disc3) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.discount) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.discountLoyalty) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.totalDiscount) || 0), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.netto) || 0), alignment: 'right', fontSize: 11 }
+            { text: formatNumbering(data.sellPrice), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering((data.sellPrice || data.sellingPrice) * data.qty), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.disc1), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.disc2), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.disc3), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.discount), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.discountLoyalty), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.totalDiscount + (selisihMember(data) * data.qty)), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.netto), alignment: 'right', fontSize: 11 }
           ]
           body.push(row)
         }
@@ -130,16 +125,16 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       { text: 'Total', colSpan: 3, style: 'rowTextFooter' },
       {},
       {},
-      { text: formatNumberIndonesia(totalQty), style: 'rowNumberFooter' },
+      { text: formatNumbering(totalQty), style: 'rowNumberFooter' },
       {},
-      { text: formatNumberIndonesia(totalSubTotal), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscount1), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscount2), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscount3), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscount4), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscountLoyalty), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalDiscount), style: 'rowNumberFooter' },
-      { text: formatNumberIndonesia(totalAfterDiscount), style: 'rowNumberFooter' }
+      { text: formatNumbering(totalSubTotal), style: 'rowNumberFooter' },
+      {},
+      {},
+      {},
+      { text: formatNumbering(totalDiscount4), style: 'rowNumberFooter' },
+      { text: formatNumbering(totalDiscountLoyalty), style: 'rowNumberFooter' },
+      { text: formatNumbering(totalDiscount), style: 'rowNumberFooter' },
+      { text: formatNumbering(totalAfterDiscount), style: 'rowNumberFooter' }
     ]
     body.push(totalRow)
     width.push(['2%', '12%', '16%', '4%', '8%', '8%', '6%', '6%', '6%', '8%', '8%', '8%', '8%'])
