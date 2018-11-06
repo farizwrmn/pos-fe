@@ -1,6 +1,6 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, alertModal } from 'utils'
+import { configMain, lstorage, variables, alertModal } from 'utils'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -10,6 +10,7 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const { stockMinusAlert } = alertModal
 const { getCashierTrans } = lstorage
+const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
 const pdfMake = require('pdfmake/build/pdfmake.js')
@@ -40,6 +41,7 @@ export default {
     },
     numberToString: 0,
     grandTotal: 0,
+    settingInvoice: {},
     creditCardNo: '',
     creditCardTotal: 0,
     typeTrans: ['C'],
@@ -68,12 +70,19 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos/history') {
+          let settingInvoice = {}
+          try {
+            settingInvoice = JSON.parse(getSetting('Invoice'))
+          } catch (error) {
+            console.warn('error settingInvoice', error)
+          }
           dispatch({ type: 'setLastTrans', payload: { seqCode: 'INV', type: lstorage.getCurrentUserStore() } }) // type diganti storeId
           dispatch({
             type: 'updateState',
             payload: {
               listAmount: [],
-              itemPayment: {}
+              itemPayment: {},
+              settingInvoice
             }
           })
           dispatch({
@@ -479,6 +488,9 @@ export default {
     },
 
     printPayment (state, action) {
+      const { settingInvoice } = state
+      const footer1 = settingInvoice.footer1 ? settingInvoice.footer1.substring(0, 67) : ''
+      const footer2 = settingInvoice.footer2 ? settingInvoice.footer2.substring(0, 67) : ''
       const additionalMargin1 = [0, 10, 0, 10]
       const additionalMargin2 = [0, 20, 0, 40]
       const additionalFontSize = 9
@@ -706,25 +718,31 @@ export default {
                   },
                   {
                     table: {
-                      widths: ['15%', '1%', '32%', '24%', '12%', '1%', '15%'],
+                      widths: ['15%', '1%', '32%', '27%', '12%', '1%', '12%'],
                       height: '12',
                       body: [
                         [
                           { text: 'Terbilang', fontSize: additionalFontSize }, ':', { text: terbilangString.toUpperCase().substring(0, 38), fontSize: headerFontSize },
                           { text: 'Diterima oleh', fontSize: bottomFontSize, alignment: 'center', margin: [0, 1, 0, 0] },
-                          { text: 'SubTotal', fontSize: headerFontSize }, ':', { text: `Rp ${(SubTotal).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                          { text: 'SubTotal', fontSize: headerFontSize }, ':', { text: `Rp ${(SubTotal).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, alignment: 'right' }
                         ],
 
                         [
                           {}, {}, { text: terbilangString.toUpperCase().substring(38, 96), fontSize: headerFontSize },
                           {},
-                          { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
+                          { text: 'Anda Hemat', fontSize: headerFontSize }, ':', { text: `Rp ${(Discount + unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, alignment: 'right' }
                         ],
-                        [
-                          { text: 'Cashback', fontSize: additionalFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize },
-                          {},
-                          { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize }
-                        ]
+                        settingInvoice.showCashback ?
+                          [
+                            { text: 'Cashback', fontSize: additionalFontSize }, ':', { text: `${unitInfo.lastCashback} + ${unitInfo.gettingCashback} - ${unitInfo.discountLoyalty} = ${countCurrentCashback}`, fontSize: headerFontSize },
+                            {},
+                            { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, alignment: 'right' }
+                          ] :
+                          [
+                            {}, {}, {},
+                            {},
+                            { text: 'D. Cashback', fontSize: headerFontSize }, ':', { text: `Rp ${(unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, alignment: 'right' }
+                          ]
                       ]
                     },
                     layout: {
@@ -740,16 +758,16 @@ export default {
                   },
                   {
                     table: {
-                      widths: ['30%', '1%', '17%', '24%', '12%', '1%', '15%'],
+                      widths: ['46%', '1%', '1%', '27%', '12%', '1%', '12%'],
                       height: '12',
                       body: [
                         [
-                          { text: '* Harga sudah termasuk PPN 10%', fontSize: additionalFontSize, alignment: 'left' }, {}, {},
+                          { text: footer1, fontSize: additionalFontSize, alignment: 'left' }, {}, {},
                           {},
-                          { text: 'TOTAL', fontSize: headerFontSize, bold: true }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, bold: true }
+                          { text: 'TOTAL', fontSize: headerFontSize, bold: true }, ':', { text: `Rp ${(Total - unitInfo.discountLoyalty).toLocaleString(['ban', 'id'])}`, fontSize: headerFontSize, bold: true, alignment: 'right' }
                         ],
                         [
-                          {}, {}, {},
+                          { text: footer2, fontSize: additionalFontSize, alignment: 'left' }, {}, {},
                           { text: `\n${salutation}${(payload.memberName || '').toString()}`, fontSize: bottomFontSize, alignment: 'center', margin: [0, 0, 0, 0] },
                           {}, {}, {}
                         ]
@@ -814,7 +832,7 @@ export default {
                         alignment: 'center'
                       },
                       {
-                        text: `Dicetak Oleh: ${payload.userName}`,
+                        text: `Dibuat Oleh: ${payload.userName}`,
                         margin: additionalMargin1,
                         fontSize: additionalFontSize,
                         alignment: 'center'

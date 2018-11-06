@@ -905,6 +905,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-role')
           }
         }, {
+          path: 'setting/template',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/template'))
+              cb(null, require('./routes/setting/template/'))
+            }, 'setting-template')
+          }
+        }, {
           path: 'monitor/service/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

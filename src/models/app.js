@@ -133,23 +133,18 @@ export default {
         } else {
           console.log('unexpected error misc')
         }
-        let setting = {}
-        try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }
-        let json = setting.data
-        let arrayProd = []
-        let settingdata = json.map(x => x.settingCode)
-        let settingvalue = setting.data.map(x => x.settingValue)
-        for (let n = 0; n < settingdata.length; n += 1) {
-          arrayProd[settingdata[n]] = settingvalue[n]
-        }
+
+        yield put({
+          type: 'setSetting'
+        })
+
         yield put({
           type: 'updateState',
           payload: {
             user,
             storeInfo,
             permissions,
-            menu,
-            setting: arrayProd
+            menu
           }
         })
         if (location.pathname === '/login') {
@@ -161,6 +156,24 @@ export default {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }
+    },
+    * setSetting (payload, { call, put }) {
+      let setting = {}
+      try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }
+      let json = setting.data
+      let arrayProd = []
+      let settingdata = json.map(x => x.settingCode)
+      let settingvalue = setting.data.map(x => x.settingValue)
+      for (let n = 0; n < settingdata.length; n += 1) {
+        arrayProd[settingdata[n]] = settingvalue[n]
+      }
+      lstorage.setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
+      yield put({
+        type: 'updateState',
+        payload: {
+          setting: arrayProd
+        }
+      })
     },
 
     * logout ({

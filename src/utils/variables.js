@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans } from './lstorage'
+import { getCashierTrans, getItem } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -16,6 +16,10 @@ const reArrangeMember = (item) => {
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
   }
 }
+
+const getSettingLocal = () => getItem('setting')
+
+const getSetting = key => getSettingLocal()[key]
 
 const reArrangeMemberId = (item) => {
   return {
@@ -64,5 +68,6 @@ const insertCashierTrans = (dataObject) => {
 module.exports = {
   reArrangeMember,
   reArrangeMemberId,
-  insertCashierTrans
+  insertCashierTrans,
+  getSetting
 }

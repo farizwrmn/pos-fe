@@ -66,6 +66,9 @@ const getStorageKey = (key) => {
   return pair
 }
 
+const setItem = (key, text) => localStorage.setItem(`${prefix}${key}`, encrypt(text, 'settingPOS'))
+const getItem = key => (localStorage.getItem(`${prefix}${key}`) ? JSON.parse(decrypt(localStorage.getItem(`${prefix}${key}`), 'settingPOS')) : {})
+
 const getCashierTrans = () => {
   return localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
 }
@@ -185,5 +188,7 @@ module.exports = {
   getDomainBE,
   getPortBE,
   getIdBE,
-  getCashierTrans
+  getCashierTrans,
+  setItem,
+  getItem
 }
