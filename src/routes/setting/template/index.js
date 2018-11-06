@@ -51,9 +51,9 @@ const Counter = ({ template, dispatch, location }) => {
         <TabPane tab="Invoice" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
-        <TabPane tab="Report" key="1" >
+        {/* <TabPane tab="Report" key="1" >
           {activeKey === '1' && <Form {...formProps} />}
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   )
