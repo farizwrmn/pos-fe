@@ -6,9 +6,6 @@ import {
 } from '../crypt'
 
 
-import { prefix } from '../config.main'
-import { apiHeader } from '../config.rest'
-
 const crypto = require('crypto')
 
 const algorithm = 'aes-256-ctr'
@@ -32,16 +29,6 @@ const decryptTest = (text, rdmtxt) => {
   }
 }
 
-const apiheaderTest = () => {
-  try {
-    const idToken = localStorage.getItem(`${prefix}iKen`)
-    apiHeader.Authorization = `JWT ${idToken}`
-    return apiHeader
-  } catch (err) {
-    return null
-  }
-}
-
 it('Should render encrypt test', () =>
   expect(encrypt('test')).toEqual(encryptTest('test'))
 )
@@ -55,5 +42,9 @@ it('Should render decrypt error', () =>
 )
 
 it('Should render apiheader test', () =>
-  expect(apiheader()).toEqual(apiheaderTest())
+  expect(apiheader()).toEqual({
+    Accept: 'application/json',
+    Authorization: 'JWT null',
+    'Content-Type': 'application/json'
+  })
 )

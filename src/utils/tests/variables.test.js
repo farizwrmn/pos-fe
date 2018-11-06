@@ -1,9 +1,10 @@
 import {
   reArrangeMember,
   reArrangeMemberId,
-  insertCashierTrans
+  insertCashierTrans,
+  getSetting
 } from '../variables'
-import { getCashierTrans } from '../lstorage'
+import { getCashierTrans, setItem } from '../lstorage'
 
 it('Return Object of Customer Umum with phoneNumber', () => {
   const data = {
@@ -220,4 +221,15 @@ it('Return Object of Customer Umum by memberId without cashback', () => {
     disc3: data.disc3,
     total: data.total
   }])
+})
+
+it('Return Object of Setting Invoice', () => {
+  const arrayProd = []
+  arrayProd.Invoice = {
+    showCashback: false,
+    footer1: '* Harga sudah termasuk PPN 10%',
+    footer2: null
+  }
+  setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
+  expect(getSetting('Invoice')).toEqual(arrayProd.Invoice)
 })

@@ -1,4 +1,4 @@
-import { getCashierTrans, putStorageKey, getIdBE, getDomainBE, getPortBE, removeItemKeys, removeItemKey } from '../lstorage'
+import { getCashierTrans, putStorageKey, removeAllKey, getIdBE, getDomainBE, getPortBE, removeItemKeys, removeItemKey, getItem } from '../lstorage'
 
 it('Return Cashier Trans LocalStorage', () => {
   const arrayItem = [
@@ -56,4 +56,10 @@ it('Should return --- because of removed cdi ', () => {
   removeItemKey('cdi')
   const getPortBeCDI = getPortBE()
   expect(getPortBeCDI).toEqual('---')
+})
+
+it('Should return reset all localStorage ', () => {
+  removeAllKey()
+  const data = getItem('setting')
+  expect(data).toEqual({})
 })

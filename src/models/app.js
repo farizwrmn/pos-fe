@@ -160,13 +160,14 @@ export default {
     * setSetting (payload, { call, put }) {
       let setting = {}
       try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }
-      let json = setting.data
       let arrayProd = []
-      let settingdata = json.map(x => x.settingCode)
-      let settingvalue = setting.data.map(x => x.settingValue)
-      for (let n = 0; n < settingdata.length; n += 1) {
-        arrayProd[settingdata[n]] = settingvalue[n]
-      }
+      setting.data.map((x) => {
+        arrayProd[x.settingCode] = x.settingValue
+        return x.settingValue
+      })
+      // for (let n = 0; n < settingdata.length; n += 1) {
+      //   arrayProd[settingdata[n]] = settingvalue[n]
+      // }
       lstorage.setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
       yield put({
         type: 'updateState',

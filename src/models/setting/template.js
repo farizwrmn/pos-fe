@@ -81,12 +81,6 @@ export default modelExtend(pageModel, {
       if (data.success) {
         success()
         yield put({
-          type: 'updateState',
-          payload: {
-            activeKey: '1'
-          }
-        })
-        yield put({
           type: 'app/setSetting'
         })
         yield put({
@@ -96,7 +90,12 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        throw data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload.data
+          }
+        })
       }
     }
   },
