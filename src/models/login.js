@@ -131,7 +131,6 @@ export default {
       cdi.push(...action.payload.data)
       lstorage.removeItemKeys() // remove items in local storage
       lstorage.putStorageKey('cdi', cdi)
-      console.log('getStorageKey', lstorage.getStorageKey('cdi'))
       return {
         ...state,
         logo: `logo${action.payload.cid}.png`
