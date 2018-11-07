@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Switch, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
+import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
 import Form from './Form'
 import AdvancedForm from './AdvancedForm'
 import List from './List'
@@ -361,15 +361,15 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
       <Menu.Item key="2"><Button onClick={() => onShowPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
     </Menu>
   )
-  const onChangeSwitch = (checked) => {
-    console.log(`switch to ${checked}`)
-    dispatch({
-      type: 'productstock/updateState',
-      payload: {
-        advancedForm: checked
-      }
-    })
-  }
+  // const onChangeSwitch = (checked) => {
+  //   console.log(`switch to ${checked}`)
+  //   dispatch({
+  //     type: 'productstock/updateState',
+  //     payload: {
+  //       advancedForm: checked
+  //     }
+  //   })
+  // }
 
   const printProps = {
     user,
@@ -393,7 +393,7 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     case '0':
       moreButtonTab = (
         <div>
-          <Switch defaultChecked={advancedForm} checkedChildren="New" unCheckedChildren="Old" onChange={onChangeSwitch}>Advanced</Switch>
+          {/* <Switch defaultChecked={advancedForm} checkedChildren="New" unCheckedChildren="Old" onChange={onChangeSwitch}>Advanced</Switch> */}
           <Button onClick={() => clickBrowse()}>Browse</Button>
         </div>
       )
