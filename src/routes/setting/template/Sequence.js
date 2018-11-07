@@ -95,7 +95,7 @@ const FormCounter = ({
               initialValue: item.autoService === undefined ? true : item.autoService
             })(<Checkbox>Auto</Checkbox>)}
           </FormItem>
-          <FormItem label="Employee" {...formItemLayout}>
+          <FormItem label="Employee Code" {...formItemLayout}>
             {getFieldDecorator('autoEmployee', {
               valuePropName: 'checked',
               initialValue: item.autoEmployee === undefined ? true : item.autoEmployee
