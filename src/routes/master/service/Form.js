@@ -33,6 +33,7 @@ const formService = ({
   disabled,
   button,
   listServiceType,
+  settingValue,
   form: {
     getFieldDecorator,
     validateFields,
@@ -104,7 +105,7 @@ const formService = ({
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input disabled={disabled} maxLength={30} autoFocus />)}
+            })(<Input disabled={disabled || settingValue.autoService} maxLength={30} autoFocus />)}
           </FormItem>
           <FormItem label="Service" hasFeedback {...formItemLayout}>
             {getFieldDecorator('serviceName', {

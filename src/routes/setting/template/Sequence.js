@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Checkbox, Modal } from 'antd'
+import { Form, Button, Row, Col, Checkbox, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -66,12 +66,10 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.footer1 = data.footer1 ? data.footer1 : ''
-      data.footer2 = data.footer2 ? data.footer2 : ''
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, 'Invoice')
+          onSubmit(data, 'Sequence')
           // setTimeout(() => {
           resetFields()
           // }, 500)
@@ -85,31 +83,23 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Show Cashback" {...formItemLayout}>
-            {getFieldDecorator('showCashback', {
+          <FormItem label="Member Code" {...formItemLayout}>
+            {getFieldDecorator('autoMember', {
               valuePropName: 'checked',
-              initialValue: item.showCashback === undefined ? true : item.showCashback
-            })(<Checkbox>Active</Checkbox>)}
+              initialValue: item.autoMember === undefined ? true : item.autoMember
+            })(<Checkbox>Auto</Checkbox>)}
           </FormItem>
-          <FormItem label="Footer 1" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('footer1', {
-              initialValue: item.footer1,
-              rules: [
-                {
-                  required: false
-                }
-              ]
-            })(<Input maxLength={67} autoFocus />)}
+          <FormItem label="Service Code" {...formItemLayout}>
+            {getFieldDecorator('autoService', {
+              valuePropName: 'checked',
+              initialValue: item.autoService === undefined ? true : item.autoService
+            })(<Checkbox>Auto</Checkbox>)}
           </FormItem>
-          <FormItem label="Footer 2" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('footer2', {
-              initialValue: item.footer2,
-              rules: [
-                {
-                  required: false
-                }
-              ]
-            })(<Input maxLength={67} />)}
+          <FormItem label="Employee" {...formItemLayout}>
+            {getFieldDecorator('autoEmployee', {
+              valuePropName: 'checked',
+              initialValue: item.autoEmployee === undefined ? true : item.autoEmployee
+            })(<Checkbox disabled>Auto</Checkbox>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

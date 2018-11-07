@@ -25,8 +25,20 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/setting/template') {
+          let type = 'Invoice'
+          switch (activeKey) {
+            case '0':
+              type = 'Invoice'
+              break
+            case '1':
+              type = 'Sequence'
+              break
+            default:
+              type = 'Invoice'
+          }
           dispatch({
-            type: 'setSetting'
+            type: 'setSetting',
+            payload: type
           })
           dispatch({
             type: 'updateState',
@@ -41,10 +53,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * setSetting (payload, { put }) {
+    * setSetting ({ payload }, { put }) {
       let settingInvoice = {}
       try {
-        settingInvoice = JSON.parse(getSetting('Invoice'))
+        settingInvoice = JSON.parse(getSetting(payload))
       } catch (error) {
         console.warn('error invoiceTemplate', error)
       }
@@ -96,6 +108,7 @@ export default modelExtend(pageModel, {
             currentItem: payload.data
           }
         })
+        throw data
       }
     }
   },

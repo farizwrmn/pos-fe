@@ -1,8 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
+import { variables } from 'utils'
 import { query, queryServiceType, add, edit, remove } from '../../services/master/service'
+import { query as querySequence } from '../../services/sequence'
+
 import { pageModel } from './../common'
+
+const { getSetting } = variables
 
 const success = () => {
   message.success('Service has been saved')
@@ -25,6 +30,7 @@ export default modelExtend(pageModel, {
     showPDFModal: false,
     mode: '',
     changed: false,
+    settingValue: {},
     serviceLoading: false
   },
 
@@ -35,15 +41,30 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         switch (pathname) {
           case '/master/service':
-            if (!activeKey) dispatch({ type: 'refreshView' })
-            if (activeKey === '1') dispatch({ type: 'query', payload: other })
-            dispatch({ type: 'queryServiceType' })
-            dispatch({
-              type: 'updateState',
-              payload: {
-                activeKey: activeKey || '0'
+            {
+              if (!activeKey) dispatch({ type: 'refreshView' })
+              if (activeKey === '1') dispatch({ type: 'query', payload: other })
+              let settingValue = {}
+              try {
+                settingValue = JSON.parse(getSetting('Sequence'))
+              } catch (error) {
+                console.warn('error settingInvoice', error)
               }
-            })
+              dispatch({ type: 'queryServiceType' })
+              dispatch({
+                type: 'querySequence',
+                payload: {
+                  settingValue
+                }
+              })
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: activeKey || '0',
+                  settingValue
+                }
+              })
+            }
             break
           case '/report/service/history':
             dispatch({
@@ -70,6 +91,28 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence ({ payload = {} }, { call, put, select }) {
+      const modalType = yield select(({ service }) => service.modalType)
+      if (modalType === 'edit') return
+      const { settingValue } = payload
+      if (!settingValue.autoService) return
+      const seqDetail = {
+        seqCode: 'SVC',
+        type: 1
+      }
+      const sequence = yield call(querySequence, seqDetail)
+      if (sequence.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {
+              serviceCode: sequence.data
+            }
+          }
+        })
+      }
+    },
+
     * checkLengthOfData ({ payload = {} }, { call, put }) {
       yield put({ type: 'showLoading' })
       const data = yield call(query, payload)
@@ -150,6 +193,19 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {}
+          }
+        })
+
+        let settingValue = {}
+        try {
+          settingValue = JSON.parse(getSetting('Sequence'))
+        } catch (error) {
+          console.warn('error settingInvoice', error)
+        }
+        yield put({
+          type: 'querySequence',
+          payload: {
+            settingValue
           }
         })
       } else {

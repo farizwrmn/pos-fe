@@ -12,7 +12,7 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const Service = ({ service, loading, dispatch, location, app }) => {
-  const { list, listServiceType, modalType, currentItem, activeKey, disable, show, pagination,
+  const { list, listServiceType, settingValue, modalType, currentItem, activeKey, disable, show, pagination,
     listPrintAllService, showPDFModal, mode, changed, serviceLoading } = service
   const { user, storeInfo } = app
   const filterProps = {
@@ -177,6 +177,7 @@ const Service = ({ service, loading, dispatch, location, app }) => {
   const formProps = {
     listServiceType,
     modalType,
+    settingValue,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,

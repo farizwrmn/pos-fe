@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
 import Form from './Form'
+import Sequence from './Sequence'
 
 const TabPane = Tabs.TabPane
 
@@ -30,11 +31,11 @@ const Counter = ({ template, dispatch, location }) => {
     modalType,
     item: currentItem,
     button: 'Update',
-    onSubmit (data) {
+    onSubmit (data, key) {
       dispatch({
         type: 'template/edit',
         payload: {
-          id: 'Invoice',
+          id: key,
           data
         }
       })
@@ -51,9 +52,9 @@ const Counter = ({ template, dispatch, location }) => {
         <TabPane tab="Invoice" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
-        {/* <TabPane tab="Report" key="1" >
-          {activeKey === '1' && <Form {...formProps} />}
-        </TabPane> */}
+        <TabPane tab="Sequence" key="1" >
+          {activeKey === '1' && <Sequence {...formProps} />}
+        </TabPane>
       </Tabs>
     </div>
   )
