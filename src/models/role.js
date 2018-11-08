@@ -13,7 +13,8 @@ export default modelExtend(pageModel, {
     originalMenus: [],
     originalRoles: [],
     editRole: '',
-    addRole: false
+    addRole: false,
+    modalPermissionVisible: false
   },
 
   subscriptions: {

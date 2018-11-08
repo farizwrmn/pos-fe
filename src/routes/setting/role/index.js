@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Checkbox, Button, Modal } from 'antd'
 import ModalFrom from './Modal'
+import Permission from './Permission'
 import Filter from './Filter'
 import List from './List'
 import styles from '../../../themes/index.less'
 
-const Role = ({ role, dispatch }) => {
-  const { listRole, roles, originalMenus, originalRoles, editRole, addRole } = role
+const Role = ({ role, loading, permission, dispatch }) => {
+  const { listRole, modalPermissionVisible, roles, originalMenus, originalRoles, editRole, addRole } = role
+  const { listPermission, currentItem, roleId } = permission
 
   let columns = [{
     title: 'Menu',
@@ -41,6 +43,44 @@ const Role = ({ role, dispatch }) => {
     })
   }
 
+  const onEditPermission = (value) => {
+    dispatch({
+      type: 'permission/query',
+      payload: {
+        type: 'all'
+      }
+    })
+    dispatch({
+      type: 'permission/queryCurrentPermission',
+      payload: {
+        type: 'all',
+        role: value
+      }
+    })
+    dispatch({
+      type: 'role/updateState',
+      payload: {
+        modalPermissionVisible: true
+      }
+    })
+  }
+
+  const onClosePermission = () => {
+    dispatch({
+      type: 'permission/updateState',
+      payload: {
+        currentItem: [],
+        roleId: null
+      }
+    })
+    dispatch({
+      type: 'role/updateState',
+      payload: {
+        modalPermissionVisible: false
+      }
+    })
+  }
+
   const deleteRole = (role) => {
     Modal.confirm({
       title: `Do you Want to delete ${role.miscDesc}'s role?`,
@@ -61,7 +101,11 @@ const Role = ({ role, dispatch }) => {
       let checkVariable = roles[key].miscVariable.split(',')
       columns.push(
         {
-          title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key])}>Delete</Button></div>),
+          title: (<div>
+            <Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button>
+            <Button type="danger" disabled={editRole !== roles[key].miscName} onClick={() => deleteRole(roles[key])}>Delete</Button>
+            <Button type="primary" disabled={editRole === roles[key].miscName} onClick={() => onEditPermission(roles[key].miscName)}>Permission</Button>
+          </div>),
           // title: (<div><Button disabled={editRole === roles[key].miscName} onClick={() => enableEditRole(roles[key].miscName)}>Edit</Button> <Button type="danger" disabled onClick={() => deleteRole(roles[key])}>Delete</Button></div>),
           children: [
             {
@@ -153,9 +197,32 @@ const Role = ({ role, dispatch }) => {
     dataSource: listRole
   }
 
+  const permissionProps = {
+    item: currentItem,
+    roleId,
+    loading,
+    listPermission: listPermission || [],
+    visible: modalPermissionVisible,
+    onOk (data) {
+      dispatch({
+        type: 'permission/edit',
+        payload: {
+          data
+        }
+      })
+    },
+    cancelSave () {
+      onClosePermission()
+    },
+    onCancel () {
+      onClosePermission()
+    }
+  }
+
   return (
     <div className="content-inner">
       {addRole && <ModalFrom {...modalProps} />}
+      {modalPermissionVisible && <Permission {...permissionProps} />}
       <Filter {...filterProps} />
       <List {...listProps} />
     </div >
@@ -164,7 +231,9 @@ const Role = ({ role, dispatch }) => {
 
 Role.propTypes = {
   role: PropTypes.object,
+  loading: PropTypes.object.isRequired,
+  permission: PropTypes.object.isRequired,
   dispatch: PropTypes.func
 }
 
-export default connect(({ role }) => ({ role }))(Role)
+export default connect(({ role, permission, loading }) => ({ role, permission, loading }))(Role)

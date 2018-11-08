@@ -91,6 +91,9 @@ module.exports = {
     period: '/period',
     creditCharge: '/creditCharge',
     setting: '/setting',
+    permission: '/permission',
+    permissionrole: '/permissionrole',
+    role: '/role',
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
     workOrder: '/wo'

@@ -9,6 +9,7 @@ import { totp, edit } from '../services/users'
 import * as menusService from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
+import { query as queryPermission } from '../services/permission'
 import { getNotifications, getListNotifications, refreshNotifications } from '../services/dashboard'
 import {
   queryTotalBirthdayPerDate,
@@ -22,6 +23,7 @@ export default {
     user: {},
     storeInfo: {},
     setting: {},
+    permission: {},
     permissions: { visit: [] },
     totpChecked: false,
     totp: { key: '', url: '', isTotp: false },
@@ -139,6 +141,13 @@ export default {
         })
 
         yield put({
+          type: 'setPermission',
+          payload: {
+            role: permissions.role
+          }
+        })
+
+        yield put({
           type: 'updateState',
           payload: {
             user,
@@ -165,9 +174,6 @@ export default {
         arrayProd[x.settingCode] = x.settingValue
         return x.settingValue
       })
-      // for (let n = 0; n < settingdata.length; n += 1) {
-      //   arrayProd[settingdata[n]] = settingvalue[n]
-      // }
       lstorage.setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
       yield put({
         type: 'updateState',
@@ -175,6 +181,38 @@ export default {
           setting: arrayProd
         }
       })
+    },
+
+    * setPermission ({ payload = {} }, { call, put }) {
+      const { role } = payload
+      let roleIdData = yield call(queryPermission, { name: role })
+      if (roleIdData.success && roleIdData.data.length > 0) {
+        roleIdData = roleIdData.data[0]
+      }
+      if (roleIdData.roleId) {
+        const permission = yield call(queryPermission, { roleId: roleIdData.roleId })
+
+        let arrayProd = []
+        permission.data.map((x) => {
+          arrayProd[x['Permission.permissionCode']] = Boolean(parseInt(x.allow, 10))
+          return x['Permission.permissionCode']
+        })
+        lstorage.setItem('permission', JSON.stringify(Object.assign({}, arrayProd)))
+        yield put({
+          type: 'updateState',
+          payload: {
+            permission: arrayProd
+          }
+        })
+      } else {
+        lstorage.setItem('permission', JSON.stringify(Object.assign({}, [])))
+        yield put({
+          type: 'updateState',
+          payload: {
+            permission: []
+          }
+        })
+      }
     },
 
     * logout ({

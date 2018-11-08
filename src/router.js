@@ -900,6 +900,7 @@ const Routers = function ({ history, app }) {
           path: 'setting/role',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/permission/permission'))
               registerModel(app, require('./models/role'))
               cb(null, require('./routes/setting/role/'))
             }, 'setting-role')

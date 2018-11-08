@@ -21,6 +21,10 @@ const getSettingLocal = () => getItem('setting')
 
 const getSetting = key => getSettingLocal()[key]
 
+const getPermissionLocal = () => getItem('permission')
+
+const getPermission = key => getPermissionLocal()[key]
+
 const reArrangeMemberId = (item) => {
   return {
     memberCode: item.memberCode,
@@ -69,5 +73,6 @@ module.exports = {
   reArrangeMember,
   reArrangeMemberId,
   insertCashierTrans,
-  getSetting
+  getSetting,
+  getPermission
 }
