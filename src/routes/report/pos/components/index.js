@@ -7,5 +7,6 @@ import Daily from './Daily'
 import Turnover from './Turnover'
 import Detail from './Detail'
 import Compare from './Compare'
+import PosUnit from './PosUnit'
 
-export { Product, Cancel, Trans, Hourly, Hour, Daily, Turnover, Detail, Compare }
+export { Product, Cancel, Trans, Hourly, Hour, Daily, Turnover, Detail, Compare, PosUnit }

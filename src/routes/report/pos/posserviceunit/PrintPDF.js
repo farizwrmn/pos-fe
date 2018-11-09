@@ -18,14 +18,15 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     for (let key = 0; key < rows.length; key += 1) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        let row = []
-        row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: moment(data.transDate, 'DD-MMM-YYYY').format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.qtyUnit) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.counter) || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.product) + parseFloat(data.service) + parseFloat(data.counter)), alignment: 'right', fontSize: 11 })
+        let row = [
+          { text: count, alignment: 'center', fontSize: 11 },
+          { text: moment(data.transDate, 'DD-MMM-YYYY').format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.qtyUnit) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.counter) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.product) + parseFloat(data.service) + parseFloat(data.counter)), alignment: 'right', fontSize: 11 }
+        ]
         body.push(row)
       }
       count += 1

@@ -67,8 +67,24 @@ export async function queryInterval (params) {
 
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
   const url = `${posreport}/all`
+  return request({
+    url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryAllGroup (params) {
+  const apiHeaderToken = crypt.apiheader()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
+  const url = `${posreport}/allgroup`
   return request({
     url,
     data: params,

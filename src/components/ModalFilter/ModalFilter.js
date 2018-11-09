@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage, formatDate } from 'utils'
 import { Form, Modal, DatePicker, Button, Select } from 'antd'
@@ -28,6 +29,7 @@ const ModalFilter = ({
   fields,
   onSubmitFilter,
   ...modalProps,
+  addOn,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -166,7 +168,7 @@ const ModalFilter = ({
   }
   const cashierTrans = (listCashRegister && listCashRegister.length) ? listCashRegister.map(x => (<Option value={x.id}>{`(${formatDate(x.period)}) ${x.shiftName}-${x.counterName}`}</Option>)) : []
 
-  let props = {
+  let modalOpts = {
     ...modalProps,
     onOk () {
       validateFields((errors) => {
@@ -180,14 +182,15 @@ const ModalFilter = ({
             currentCashier: { id: item.cashierTransId || null, status: item.status }
           }
         })
-        let data = { date: item.date, cashierTransId: item.cashierTransId }
+        let data = { date: item.date, cashierTransId: item.cashierTransId, ...item }
+
         onSubmitFilter(data)
       })
     }
   }
 
   return (
-    <Modal {...props} className="modal-browse-fix-size">
+    <Modal {...modalOpts} className="modal-browse-fix-size">
       {modalVisible && <List {...modalListProps} />}
       <Form layout="vertical">
         <FormItem label="Trans Date" {...formItemLayout}>
@@ -207,7 +210,7 @@ const ModalFilter = ({
         <FormItem label="Status" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
             initialValue: currentCashier.status
-          })(<Select style={{ width: '50%' }} onChange={selectStatus}>
+          })(<Select allowClear style={{ width: '50%' }} onChange={selectStatus}>
             <Option value="O">Open</Option>
             <Option value="C">Close</Option>
             <Option value="R" disabled>Request</Option>
@@ -224,9 +227,21 @@ const ModalFilter = ({
             </Select>
           )}
         </FormItem>
+        {addOn.map(data =>
+          (<FormItem label={data.label} {...formItemLayout}>
+            {getFieldDecorator(data.decorator)(data.component)}
+          </FormItem>))}
       </Form>
     </Modal>
   )
+}
+
+ModalFilter.propTypes = {
+  addOn: PropTypes.array
+}
+
+ModalFilter.defaultProps = {
+  addOn: []
 }
 
 export default connect(({ cashier, loading }) => ({ cashier, loading }))(Form.create()(ModalFilter))

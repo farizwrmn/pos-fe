@@ -2,10 +2,12 @@
  * Created by Veirry on 25/04/2018.
  */
 import moment from 'moment'
+import { variables, lstorage } from 'utils'
 import {
   query as queryReport,
   queryTrans,
   queryAll,
+  queryAllGroup,
   queryTransCancel,
   queryPosDaily,
   queryPOS,
@@ -16,6 +18,8 @@ import {
   queryHour,
   queryInterval
 } from '../../services/report/pos'
+
+const { getPermission } = variables
 
 export default {
   namespace: 'posReport',
@@ -29,6 +33,7 @@ export default {
     listPOS: [],
     listPOSDetail: [],
     listPOSCompareSvsI: [],
+    listStore: lstorage.getListUserStores(),
     fromDate: moment().format('YYYY-MM-DD'),
     toDate: moment().format('YYYY-MM-DD'),
     paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
@@ -38,6 +43,7 @@ export default {
     productCode: 'ALL TYPE',
     activeKey: '1',
     transTime: {},
+    permissionValue: false,
     selectedBrand: [],
     tableHeader: [],
     filterModalVisible: false,
@@ -80,6 +86,13 @@ export default {
             payload: location.query
           })
         } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit' || location.pathname === '/report/pos/summary' || location.pathname === '/report/pos/turnover') {
+          const permissionValue = getPermission('laporan_rekap_penjualan_per_outlet')
+          dispatch({
+            type: 'updateState',
+            payload: {
+              permissionValue
+            }
+          })
           dispatch({
             type: 'setListNull'
           })
@@ -111,17 +124,39 @@ export default {
     },
     * queryTransAll ({ payload }, { call, put }) {
       const data = yield call(queryAll, payload)
-      yield put({
-        type: 'querySuccessTrans',
-        payload: {
-          listTrans: data.data,
-          fromDate: payload.from,
-          toDate: payload.to,
-          pagination: {
-            total: data.total
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total
+            }
           }
-        }
-      })
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryTransAllGroup ({ payload }, { call, put }) {
+      const data = yield call(queryAllGroup, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
     },
     * queryTransCancel ({ payload }, { call, put }) {
       const data = yield call(queryTransCancel, payload)

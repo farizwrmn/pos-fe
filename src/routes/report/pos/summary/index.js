@@ -7,12 +7,12 @@ import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 
-import { Cancel, Trans, Daily, Detail, Compare, Hourly, Hour } from '../components'
+import { Cancel, Trans, Daily, Detail, Compare, Hourly, Hour, PosUnit } from '../components'
 
 const TabPane = Tabs.TabPane
 
 const Report = ({ posReport, dispatch, location }) => {
-  const { activeKey } = posReport
+  const { activeKey, permissionValue } = posReport
   const callback = (key) => {
     dispatch({
       type: 'posReport/setListNull'
@@ -51,6 +51,11 @@ const Report = ({ posReport, dispatch, location }) => {
         <TabPane tab="Hours" key="7">
           {activeKey === '7' && <Hour />}
         </TabPane>
+        {permissionValue === true ?
+          <TabPane tab="Store" key="8">
+            {activeKey === '8' && <PosUnit />}
+          </TabPane>
+          : null}
       </Tabs>
     </div>
   )

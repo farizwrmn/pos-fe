@@ -5,12 +5,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
+import { Select } from 'antd'
 import { ModalFilter } from 'components'
 import Browse from './Browse'
 import Filter from './Filter'
 
+const Option = Select.Option
+
 const Report = ({ dispatch, loading, posReport, app }) => {
-  const { listTrans, fromDate, toDate, modalFilterPOSByUnit } = posReport
+  const { listTrans, listStore, fromDate, toDate, modalFilterPOSByUnit } = posReport
   const { user, storeInfo } = app
 
   const showFilter = () => {
@@ -45,10 +48,23 @@ const Report = ({ dispatch, loading, posReport, app }) => {
     }
   }
 
+  const listOptionStore = listStore.map(x => (<Option value={x.value}>{x.label}</Option>))
+
   const modalProps = {
     visible: modalFilterPOSByUnit,
     date: [moment(fromDate, 'YYYY-MM-DD'), moment(toDate, 'YYYY-MM-DD')],
     title: 'Filter',
+    addOn: [
+      {
+        label: 'Store ID',
+        decorator: 'storeId',
+        component: (
+          <Select mode="multiple" allowClear>
+            {listOptionStore}
+          </Select>
+        )
+      }
+    ],
     onCancel () {
       showFilter()
     },
@@ -75,19 +91,25 @@ const Report = ({ dispatch, loading, posReport, app }) => {
 
   return (
     <div className="content-inner">
-      {modalFilterPOSByUnit && <ModalFilter {...modalProps} />}
+      {modalFilterPOSByUnit &&
+        <ModalFilter {...modalProps} />}
       <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>
   )
 }
 
-Report.propTyps = {
+Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
   posReport: PropTypes.object,
   location: PropTypes.object,
-  loading: PropTypes.object
+  loading: PropTypes.object,
+  listStoreId: PropTypes.array
+}
+
+Report.defaultProps = {
+  listStoreId: []
 }
 
 export default connect(({ loading, posReport, app }) => ({ loading, posReport, app }))(Report)
