@@ -11,9 +11,11 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const Employee = ({ employee, jobposition, city, loading, dispatch, location, app }) => {
+const Employee = ({ employee, jobposition, misc, city, loading, dispatch, location, app }) => {
   const { list, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
   const { listLovJobPosition } = jobposition
+  const { listLov, code } = misc
+  const listIdType = listLov && listLov[code] ? listLov[code] : []
   const { listCity } = city
   const { user, storeInfo } = app
   const filterProps = {
@@ -99,6 +101,15 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
     modalType,
     loading: loading.effects['employee/querySequenceEmployee'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    listIdType,
+    showIdType () {
+      dispatch({
+        type: 'misc/lov',
+        payload: {
+          code: 'IDTYPE'
+        }
+      })
+    },
     onSubmit (id, data) {
       dispatch({
         type: `employee/${modalType}`,
@@ -223,6 +234,7 @@ const Employee = ({ employee, jobposition, city, loading, dispatch, location, ap
 
 Employee.propTypes = {
   employee: PropTypes.object,
+  misc: PropTypes.object.isRequired,
   jobposition: PropTypes.object,
   city: PropTypes.object,
   loading: PropTypes.object,
@@ -231,4 +243,4 @@ Employee.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ employee, jobposition, city, loading, app }) => ({ employee, jobposition, city, loading, app }))(Employee)
+export default connect(({ employee, misc, jobposition, city, loading, app }) => ({ employee, misc, jobposition, city, loading, app }))(Employee)

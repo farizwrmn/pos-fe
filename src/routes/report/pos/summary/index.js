@@ -56,6 +56,9 @@ const Report = ({ posReport, dispatch, location }) => {
             {activeKey === '8' && <PosUnit />}
           </TabPane>
           : null}
+        <TabPane tab="Work Order" key="9">
+          {activeKey === '9' && <Hour />}
+        </TabPane>
       </Tabs>
     </div>
   )

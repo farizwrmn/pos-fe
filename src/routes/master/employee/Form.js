@@ -37,10 +37,13 @@ const formEmployee = ({
   showCities,
   listLovJobPosition,
   listCity,
+  listIdType,
+  showIdType,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
 }) => {
@@ -100,6 +103,7 @@ const formEmployee = ({
 
   const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
   const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
+  const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
 
   return (
     <Form layout="horizontal">
@@ -116,6 +120,35 @@ const formEmployee = ({
                 }
               ]
             })(<Input disabled={disabled} maxLength={15} />)}
+          </FormItem>
+          <FormItem label="ID Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('idType', {
+              initialValue: item.idType,
+              rules: [
+                {
+                  required: !!getFieldValue('idNo')
+                }
+              ]
+            })(<Select
+              allowClear
+              optionFilterProp="children"
+              mode="default"
+              onFocus={showIdType}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >{childrenLov}
+            </Select>)}
+          </FormItem>
+          <FormItem label="ID No" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('idNo', {
+              initialValue: item.idNo,
+              rules: [
+                {
+                  required: false,
+                  pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                  message: 'a-Z & 0-9'
+                }
+              ]
+            })(<Input maxLength={30} />)}
           </FormItem>
           <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('employeeName', {

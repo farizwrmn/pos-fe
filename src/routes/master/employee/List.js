@@ -27,6 +27,16 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'employeeId'
     },
     {
+      title: 'ID Type',
+      dataIndex: 'idType',
+      key: 'idType'
+    },
+    {
+      title: 'ID No',
+      dataIndex: 'idNo',
+      key: 'idNo'
+    },
+    {
       title: 'Name',
       dataIndex: 'employeeName',
       key: 'employeeName'
