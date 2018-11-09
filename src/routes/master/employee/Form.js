@@ -121,6 +121,16 @@ const formEmployee = ({
               ]
             })(<Input disabled={disabled} maxLength={15} />)}
           </FormItem>
+          <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('employeeName', {
+              initialValue: item.employeeName,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input autoFocus />)}
+          </FormItem>
           <FormItem label="ID Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('idType', {
               initialValue: item.idType,
@@ -149,16 +159,6 @@ const formEmployee = ({
                 }
               ]
             })(<Input maxLength={30} />)}
-          </FormItem>
-          <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('employeeName', {
-              initialValue: item.employeeName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input autoFocus />)}
           </FormItem>
           <FormItem label="Position" hasFeedback {...formItemLayout}>
             {getFieldDecorator('positionId', {
