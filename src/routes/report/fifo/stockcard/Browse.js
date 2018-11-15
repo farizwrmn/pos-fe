@@ -82,7 +82,6 @@ const Browse = ({ ...browseProps }) => {
       columns={columns}
       simple
       size="small"
-      rowKey={record => record.transNo}
     />
   )
 }

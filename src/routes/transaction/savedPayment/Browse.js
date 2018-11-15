@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { configMain, alertModal } from 'utils'
 import styles from '../../../themes/index.less'
 
+const { checkPermissionMonthTransaction } = alertModal
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
@@ -33,7 +34,14 @@ const BrowseGroup = ({
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
-      if (moment(record.transDate).format('YYYY-MM-DD') >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
+      const transDate = moment(record.transDate).format('YYYY-MM-DD')
+
+      const checkPermission = checkPermissionMonthTransaction(transDate)
+      if (checkPermission) {
+        return
+      }
+
+      if (transDate >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
         onShowCancelModal(record)
       } else {
         Modal.warning({

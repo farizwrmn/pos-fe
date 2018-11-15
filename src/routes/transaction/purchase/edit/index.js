@@ -9,7 +9,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, searchText, listProduct, pagination, curHead, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
-
   const purchaseProps = {
     date,
     datePicker,

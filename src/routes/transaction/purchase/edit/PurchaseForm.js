@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, numberFormat } from 'utils'
+import { configMain, lstorage, numberFormat, alertModal } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
 
+const { checkPermissionMonthTransaction } = alertModal
 const { formatNumberIndonesia } = numberFormat
 
 const FormItem = Form.Item
@@ -78,6 +79,10 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
     onDiscPercent(x, data)
   }
   const confirmPurchase = () => {
+    const checkPermission = checkPermissionMonthTransaction(transNo.transDate)
+    if (checkPermission) {
+      return
+    }
     hdlChangePercent()
     validateFields((errors) => {
       if (errors) {

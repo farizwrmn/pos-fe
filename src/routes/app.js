@@ -19,7 +19,7 @@ const { prefix, openPages, logo } = configMain
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
-const App = ({ children, dispatch, app, loading, location }) => {
+const App = ({ children, dispatch, app = {}, loading, location }) => {
   const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible,
     visibleItem, visiblePw, navOpenKeys, menu, defaultSidebarColor,
     permissions,
@@ -346,8 +346,12 @@ App.propTypes = {
   children: PropTypes.element.isRequired,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  app: PropTypes.object,
+  app: PropTypes.object.isRequired,
   loading: PropTypes.object
+}
+
+App.defaultProps = {
+  app: {}
 }
 
 export default connect(({ app, loading }) => ({ app, loading }))(App)

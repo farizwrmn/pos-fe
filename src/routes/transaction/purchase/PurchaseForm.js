@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button } from 'antd'
 import moment from 'moment'
-import { configMain, numberFormat } from 'utils'
+import { configMain, numberFormat, alertModal } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
+
+const { checkPermissionMonthTransaction } = alertModal
 
 const { formatNumberIndonesia } = numberFormat
 
@@ -190,7 +192,14 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
         totalPPN: parseInt(totalPpn, 10),
         discTotal: totalDisc
       }
-      if (moment(data.transDate).format('YYYY-MM-DD') >= moment(startPeriod).format('YYYY-MM-DD')) {
+      const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      const formattedStartPeriod = moment(startPeriod).format('YYYY-MM-DD')
+
+      const checkPermission = checkPermissionMonthTransaction(transDate)
+      if (checkPermission) {
+        return
+      }
+      if (transDate >= formattedStartPeriod) {
         onOk(data)
         resetFields()
       } else {

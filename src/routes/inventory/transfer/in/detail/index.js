@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Row, Col, Button, Modal } from 'antd'
-import { lstorage } from 'utils'
+import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import ModalCancel from './ModalCancel'
 import PrintPDF from './PrintPDF'
 import TransDetail from './TransDetail'
 import styles from './index.less'
+
+const { checkPermissionMonthTransaction } = alertModal
 
 const Detail = ({ transferIn, transferInDetail, dispatch, app }) => {
   const { data, listDetail, disableConfirm, showPrint, modalCancelVisible } = transferInDetail
@@ -44,6 +46,10 @@ const Detail = ({ transferIn, transferInDetail, dispatch, app }) => {
   }
 
   const voidTrans = () => {
+    const checkPermission = checkPermissionMonthTransaction(data[0].transDate)
+    if (checkPermission) {
+      return
+    }
     dispatch({
       type: 'transferInDetail/updateState',
       payload: {

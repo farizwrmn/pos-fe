@@ -2,8 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input, Row, Button, DatePicker, Cascader } from 'antd'
 import moment from 'moment'
+import { alertModal } from 'utils'
 import Browse from './Browse'
 
+const { checkPermissionMonthTransaction } = alertModal
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -39,6 +41,10 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
             transType: item.transType,
             pic: itemEmployee !== null ? itemEmployee.employeeName : '',
             picId: itemEmployee !== null ? itemEmployee.employeeId : ''
+          }
+          const checkPermission = checkPermissionMonthTransaction(item.transDate)
+          if (checkPermission) {
+            return
           }
           data.transType = data.transType[0]
           onEdit(data)

@@ -1,5 +1,9 @@
 import { Modal } from 'antd'
+import moment from 'moment'
 import styles from './styles.less'
+import variables from './variables'
+
+const { getPermission } = variables
 
 const stockMinusAlert = (data) => {
   const content = []
@@ -28,6 +32,20 @@ const stockMinusAlert = (data) => {
     })
   )
 }
+
+const checkPermissionMonthTransaction = (transDate) => {
+  const permissionValue = getPermission('post_month_transaction')
+  if (!permissionValue && transDate < moment().startOf('month').format('YYYY-MM-DD')) {
+    Modal.warning({
+      title: 'This transaction is restricted to add or edit',
+      content: 'Use adjustment instead'
+    })
+    return true
+  }
+  return false
+}
+
 module.exports = {
-  stockMinusAlert
+  stockMinusAlert,
+  checkPermissionMonthTransaction
 }

@@ -6,10 +6,11 @@ import {
   Row, Col, DatePicker, Cascader, AutoComplete
 } from 'antd'
 import { DataQuery } from 'components'
-import { lstorage } from 'utils'
+import { lstorage, alertModal } from 'utils'
 import Browse from './Browse'
 // import styles from '../../../themes/index.less'
 
+const { checkPermissionMonthTransaction } = alertModal
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -43,6 +44,12 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
         picId: itemEmployee !== null ? itemEmployee.employeeId : '',
         storeId: lstorage.getCurrentUserStore()
       }
+
+      const checkPermission = checkPermissionMonthTransaction(data.transDate)
+      if (checkPermission) {
+        return
+      }
+
       data.transType = data.transType[0]
       onOk(data)
       resetFields()
