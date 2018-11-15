@@ -490,7 +490,6 @@ const AdvancedForm = ({
               })(<Select
                 showSearch
                 allowClear
-                disabled={modalType === 'edit'}
                 onFocus={() => category()}
                 onChange={handleChangeCategoryId}
                 optionFilterProp="children"
