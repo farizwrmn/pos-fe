@@ -53,7 +53,6 @@ const List = ({ ...tableProps, dataSource }) => {
         columns={columns}
         simple
         footer={() => `Total: ${formatNumberIndonesia(totalPrice)}`}
-        rowKey={record => record.id}
       />
     </div>
   )
