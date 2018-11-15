@@ -138,6 +138,12 @@ const WorkOrder = ({ workorder, customer, customerunit, dispatch, location, load
       })
       const { pathname } = location
       window.history.pushState('', '', pathname)
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'workorder/delete',
+        payload: id
+      })
     }
   }
 

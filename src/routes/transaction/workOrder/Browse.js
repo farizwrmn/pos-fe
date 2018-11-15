@@ -1,14 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Modal, message } from 'antd'
 import { DropOption } from 'components'
 import { formatDate } from 'utils'
 import styles from '../../../themes/index.less'
 
-const List = ({ ...tableProps, viewHeader }) => {
+const confirm = Modal.confirm
+
+const List = ({ ...tableProps, viewHeader, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       viewHeader(record)
+    } else if (e.key === '2') {
+      if (record.status !== 0) {
+        message.error('Cannot delete this work order, status is used')
+        return
+      }
+
+      confirm({
+        title: `Are you sure delete ${record.woNo} ?`,
+        onOk () {
+          deleteItem(record.id)
+        }
+      })
     }
   }
   const columns = [
@@ -68,7 +82,8 @@ const List = ({ ...tableProps, viewHeader }) => {
       render: (text, record) => {
         return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
           menuOptions={[
-            { key: '1', name: 'View', icon: 'eye-o' }
+            { key: '1', name: 'View', icon: 'eye-o' },
+            { key: '2', name: 'Delete', disabled: true }
           ]}
         />)
       }

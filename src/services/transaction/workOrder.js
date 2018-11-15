@@ -114,3 +114,15 @@ export async function addWOHeaderAndChecklist (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function remove (params) {
+  if (!params.id) return
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${workOrder}/header/${params.id}`
+  return request({
+    url,
+    method: 'delete',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

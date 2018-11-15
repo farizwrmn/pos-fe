@@ -4,7 +4,7 @@ import { lstorage } from 'utils'
 import {
   queryWOCustomFields, addWOCustomFields, editWOCustomFields, deleteWOCustomFields,
   queryWOCategory, addWOCategory, deleteWOCategory,
-  queryWOHeader, addWorkOrderHeader, addWorkOrderDetail
+  queryWOHeader, addWorkOrderHeader, addWorkOrderDetail, remove
 } from '../../services/transaction/workOrder'
 import { getDateTime } from '../../services/setting/time'
 import { query as querySequence } from '../../services/sequence'
@@ -12,6 +12,9 @@ import { queryWoCheck, queryWODetail } from '../../services/transaction/workOrde
 
 const success = (type) => {
   message.success(`${type} has saved!`)
+}
+const deleted = () => {
+  message.success('Work order has been deleted!')
 }
 
 export default {
@@ -375,6 +378,16 @@ export default {
           }
         })
         success('Work Order Data')
+      } else {
+        throw data
+      }
+    },
+
+    * delete ({ payload }, { call, put }) {
+      const data = yield call(remove, { id: payload })
+      if (data.success) {
+        deleted()
+        yield put({ type: 'queryWOHeader' })
       } else {
         throw data
       }
