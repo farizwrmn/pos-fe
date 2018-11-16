@@ -96,6 +96,7 @@ module.exports = {
     role: '/role',
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
-    workOrder: '/wo'
+    workOrder: '/wo',
+    maintenance: '/maintenance'
   }
 }

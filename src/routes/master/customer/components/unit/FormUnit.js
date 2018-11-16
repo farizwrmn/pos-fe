@@ -1,10 +1,13 @@
 import React from 'react'
 import moment from 'moment'
+import PropTypes from 'prop-types'
+import { DataQuery } from 'components'
 import { Form, Input, InputNumber, Select, Modal, message, Button, DatePicker } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 const { MonthPicker } = DatePicker
+const { Asset } = DataQuery
 
 const formItemLayout = {
   labelCol: {
@@ -23,6 +26,8 @@ const FormUnit = ({
   modalType,
   customerInfo,
   item,
+  prefix,
+  child,
   addUnit,
   listBrand,
   listModel,
@@ -37,8 +42,13 @@ const FormUnit = ({
   confirmSendUnit,
   cancelUnit,
   resetCars,
+  onCancelAssets,
+  modalCustomerAssetVisible,
+  onRowClick,
   button,
+  dispatch,
   onSubmit,
+  loading = {},
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -125,8 +135,10 @@ const FormUnit = ({
 
       const { memberName, memberTypeName, birthDate, cityName, address01, ...other } = data
 
-      if (customerInfo.memberCode) {
-        other.memberCode = customerInfo.memberCode
+      if (customerInfo.memberCode || item.memberCode) {
+        other.memberUnitId = item.id
+        other.memberId = item.memberId
+        other.memberCode = customerInfo.memberCode || item.memberCode
         other.merk = other.merk.label
         other.model = other.model.label
         if (other.type) other.type = other.type.label
@@ -146,8 +158,31 @@ const FormUnit = ({
     })
   }
 
+  const modalCustomerAssetProps = {
+    location,
+    loading: loading.effects ? loading.effects['customerunit/getMemberAssets'] : false,
+    visible: modalCustomerAssetVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      onCancelAssets()
+    },
+    onRowClick (item) {
+      onRowClick()
+      resetFields()
+      dispatch({
+        type: 'customerunit/lov',
+        payload: {
+          id: item.memberCode,
+          policeNo: item.policeNo
+        }
+      })
+    }
+  }
+
   return (
     <Form>
+      {prefix}
       <FormItem label="Police No" hasFeedback {...formItemLayout}>
         {getFieldDecorator('policeNo', {
           initialValue: item.policeNo,
@@ -158,7 +193,7 @@ const FormUnit = ({
               message: 'A-Z & 0-9'
             }
           ]
-        })(<Input disabled={modalType === 'edit'} maxLength={10} autoFocus />)}
+        })(<Input disabled={modalType === 'edit' && modalType !== 'maintenance'} maxLength={10} autoFocus />)}
       </FormItem>
       <FormItem label="Merk" hasFeedback {...formItemLayout}>
         {getFieldDecorator('merk', {
@@ -241,7 +276,14 @@ const FormUnit = ({
           initialValue: item.expired ? moment.utc(item.expired, 'YYYY-MM-DD') : null
         })(<MonthPicker format="MMM-YYYY" placeholder="Select period" />)}
       </FormItem>
-      {(modalType === 'edit' || modalType === 'add') &&
+      {child.map(data => (
+        <FormItem label={data.label} hasFeedback {...formItemLayout}>
+          {getFieldDecorator(data.name, data.options, {
+            initialValue: data.initialValue
+          })(<Input maxLength={100} />)}
+        </FormItem>
+      ))}
+      {(modalType === 'edit' || modalType === 'add' || modalType === 'maintenance') &&
         <FormItem {...tailFormItemLayout}>
           {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
@@ -250,8 +292,27 @@ const FormUnit = ({
         <Button type="danger" style={{ margin: '0 10px' }} onClick={cancelSendUnit}>Cancel</Button>
         <Button type="primary" onClick={sendUnit}>Save</Button>
       </div>}
+      {modalCustomerAssetVisible && <Asset {...modalCustomerAssetProps} />}
     </Form>
   )
+}
+
+FormUnit.propTypes = {
+  item: PropTypes.object.isRequired,
+  child: PropTypes.array.isRequired,
+  loading: PropTypes.object.isRequired,
+  customerInfo: PropTypes.object.isRequired,
+  modalCustomerAssetVisible: PropTypes.bool.isRequired,
+  onCancelAssets: PropTypes.func,
+  onRowClick: PropTypes.func
+}
+
+FormUnit.defaultProps = {
+  item: {},
+  child: [],
+  loading: {},
+  customerInfo: {},
+  modalCustomerAssetVisible: false
 }
 
 export default Form.create()(FormUnit)

@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { configMain } from 'utils'
-import { Modal, Select } from 'antd'
+import { Modal, Select, message } from 'antd'
 import { query as queryPos, updatePosHeader } from '../../services/payment'
+import { add as addUnitLog } from '../../services/maintenance/customerunit'
 import { pageModel } from '../common'
 
 const { prefix } = configMain
@@ -19,6 +20,7 @@ export default modelExtend(pageModel, {
     optionPos: [],
     listTrans: [],
     listMember: [],
+    modalCustomerAssetVisible: false,
     path: '/tools/maintenance/posheader',
     period: {
       period: moment(infoStore.startPeriod, 'YYYY-MM-DD').format('MM'),
@@ -85,6 +87,26 @@ export default modelExtend(pageModel, {
           title: 'Warning',
           content: 'Something went wrong...!'
         })
+      }
+    },
+    * addCustomerUnitLog ({ payload = {} }, { call, put }) {
+      const data = yield call(addUnitLog, payload)
+      if (data.success) {
+        yield put({
+          type: 'customerunit/updateState',
+          payload: {
+            unitItem: {}
+          }
+        })
+        message.success('Data has been saved!')
+      } else {
+        yield put({
+          type: 'customerunit/updateState',
+          payload: {
+            unitItem: payload
+          }
+        })
+        throw data
       }
     }
   },

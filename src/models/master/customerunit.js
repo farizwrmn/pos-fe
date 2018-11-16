@@ -36,7 +36,10 @@ export default modelExtend(pageModel, {
     listBrand: [],
     listModel: [],
     listType: [],
-    selected: { brand: {}, model: {}, type: {} }
+    selected: { brand: {}, model: {}, type: {} },
+    pagination: {
+      current: 1
+    }
   },
 
   subscriptions: {
@@ -105,7 +108,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listAsset: data.data
+            listAsset: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
           }
         })
       } else {

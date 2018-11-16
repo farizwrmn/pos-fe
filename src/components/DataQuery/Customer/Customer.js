@@ -9,6 +9,7 @@ const FormItem = Form.Item
 const Customer = ({
   dispatch,
   className,
+  addNew,
   visible = false,
   columns = [
     {
@@ -115,7 +116,7 @@ const Customer = ({
           <FormItem>
             <Button onClick={handleReset}>Reset</Button>
           </FormItem>
-          <Link target="_blank" to={'/master/customer'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
+          {addNew && <Link target="_blank" to={'/master/customer'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>}
         </Form>}
         <Table
           {...tableProps}
@@ -147,7 +148,7 @@ const Customer = ({
             <FormItem>
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
-            <Link target="_blank" to={'/master/service'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
+            {addNew && <Link target="_blank" to={'/master/customer'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>}
           </Form>}
           <Table
             {...tableProps}
@@ -168,6 +169,11 @@ const Customer = ({
 Customer.propTypes = {
   form: PropTypes.object.isRequired,
   customer: PropTypes.object.isRequired
+}
+
+Customer.defaultProps = {
+  customer: {},
+  addNew: true
 }
 
 export default connect(({ customer }) => ({ customer }))(Customer)

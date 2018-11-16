@@ -724,7 +724,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
               cb(null, require('./routes/tools/maintenance/'))
-            }, 'tools-maintenance')
+            }, 'tools-maintenance-posheader')
           }
         }, {
           path: 'tools/maintenance/inventory',
@@ -733,8 +733,18 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/tools/maintenance'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/transferOut'))
-              cb(null, require('./routes/tools/maintenance/'))
-            }, 'tools-maintenance')
+              cb(null, require('./routes/tools/Inventory/'))
+            }, 'tools-maintenance-inventory')
+          }
+        }, {
+          path: 'tools/maintenance/customerunit',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customerunit'))
+              cb(null, require('./routes/tools/customerunit/'))
+            }, 'tools-maintenance-customerunit')
           }
         }, {
           //   path: 'tools/maintenance/beginning',

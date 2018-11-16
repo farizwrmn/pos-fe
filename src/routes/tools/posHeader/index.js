@@ -127,7 +127,11 @@ const Maintenance = ({ dispatch, maintenance, pos, payment }) => {
     }
   }
 
-  return <FormEdit {...formEditProps} />
+  return (
+    <div className="content-inner">
+      <FormEdit {...formEditProps} />
+    </div>
+  )
 }
 Maintenance.propTypes = {
   maintenance: PropTypes.object,

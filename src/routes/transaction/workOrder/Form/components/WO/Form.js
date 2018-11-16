@@ -260,7 +260,7 @@ const FormWO = ({
         type: 'customerunit/lov',
         payload: {
           id: item.memberCode,
-          policeNo: searchText
+          policeNo: item.policeNo
         }
       })
       resetFields()

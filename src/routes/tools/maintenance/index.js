@@ -23,6 +23,9 @@ const Maintenance = ({ maintenance, dispatch }) => {
   return (
     <div className="content-inner">
       <Tabs type="card" activeKey={path} onChange={path => changeTab(path)}>
+        <TabPane tab="Customer Unit" key="/tools/maintenance/customerunit">
+          {path === '/tools/maintenance/customerunit' && <Inventory />}
+        </TabPane>
         <TabPane tab="POS header" key="/tools/maintenance/posheader">
           {path === '/tools/maintenance/posheader' && <PosHeader />}
         </TabPane>

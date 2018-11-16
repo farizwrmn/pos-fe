@@ -12,6 +12,11 @@ const Asset = ({
   visible = false,
   columns = [
     {
+      title: 'Police No',
+      dataIndex: 'policeNo',
+      key: 'policeNo'
+    },
+    {
       title: 'Member Code',
       dataIndex: 'memberCode',
       key: 'memberCode'
@@ -39,7 +44,7 @@ const Asset = ({
   customerunit,
   ...tableProps
 }) => {
-  const { searchText, listAsset } = customerunit
+  const { searchText, listAsset, pagination } = customerunit
   // const { pagination } = tableProps
   const handleSearch = () => {
     dispatch({
@@ -60,10 +65,26 @@ const Asset = ({
   }
   const handleReset = () => {
     dispatch({
+      type: 'customerunit/getMemberAssets',
+      payload: {
+        license: '',
+        searchText: ''
+      }
+    })
+  }
+  const handleChangePagination = (page) => {
+    dispatch({
       type: 'customerunit/updateState',
       payload: {
-        listAsset: [],
-        searchText: ''
+        listAsset: []
+      }
+    })
+    dispatch({
+      type: 'customerunit/getMemberAssets',
+      payload: {
+        license: searchText,
+        page: page.current,
+        pageSize: page.pageSize
       }
     })
   }
@@ -103,7 +124,9 @@ const Asset = ({
           bordered
           columns={columns}
           simple
+          pagination={pagination}
           onRowClick={onRowClick}
+          onChange={handleChangePagination}
         />
       </Modal>}
       {!isModal &&
@@ -133,7 +156,9 @@ const Asset = ({
             bordered
             columns={columns}
             simple
+            pagination={pagination}
             onRowClick={onRowClick}
+            onChange={handleChangePagination}
           />
         </div>)
       }
