@@ -260,6 +260,14 @@ const Routers = function ({ history, app }) {
             }, 'master-bank')
           }
         }, {
+          path: 'master/paymentoption',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption'))
+              cb(null, require('./routes/master/paymentOption/'))
+            }, 'master-payment-option')
+          }
+        }, {
           path: 'master/car/brand',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
