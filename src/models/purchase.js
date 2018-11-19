@@ -233,11 +233,6 @@ export default modelExtend(pageModel, {
       let arrayProdAdd = []
       let arrayProdEdit = []
       arrayProdAdd = addData.map((dataArrayProdAddtMap) => {
-        if (payload.id.taxType === 'I') {
-          dataArrayProdAddtMap.ppn = 0.1 * dataArrayProdAddtMap.price
-        } else if (payload.id.taxType === 'E') {
-          dataArrayProdAddtMap.ppn = 0
-        }
         return ({
           storeId,
           transNo: payload.id.transNo,
