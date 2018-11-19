@@ -7,6 +7,7 @@ import {
 } from 'antd'
 import { DataQuery } from 'components'
 import { lstorage, alertModal } from 'utils'
+import moment from 'moment'
 import Browse from './Browse'
 // import styles from '../../../themes/index.less'
 
@@ -45,7 +46,7 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
         storeId: lstorage.getCurrentUserStore()
       }
 
-      const checkPermission = checkPermissionMonthTransaction(data.transDate)
+      const checkPermission = checkPermissionMonthTransaction(moment(data.transDate).format('YYYY-MM-DD'))
       if (checkPermission) {
         return
       }

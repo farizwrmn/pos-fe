@@ -42,7 +42,7 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
             pic: itemEmployee !== null ? itemEmployee.employeeName : '',
             picId: itemEmployee !== null ? itemEmployee.employeeId : ''
           }
-          const checkPermission = checkPermissionMonthTransaction(item.transDate)
+          const checkPermission = checkPermissionMonthTransaction(moment(item.transDate).format('YYYY-MM-DD'))
           if (checkPermission) {
             return
           }
