@@ -148,8 +148,8 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: parseFloat(qtyUnit || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: parseFloat(productTotal || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: parseFloat(serviceTotal || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: parseFloat(productTotal || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: parseFloat(counterTotal || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: parseFloat(productTotal || 0) + parseFloat(serviceTotal || 0) + parseFloat(counterTotal || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
