@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Checkbox } from 'antd'
+import { Form, Input, Button, Select, Row, Col, Modal, Checkbox } from 'antd'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -30,6 +31,7 @@ const FormCounter = ({
   onCancel,
   modalType,
   button,
+  listPayment,
   form: {
     getFieldDecorator,
     validateFields,
@@ -68,6 +70,7 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.parentId = data.parentId ? data.parentId.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -80,11 +83,32 @@ const FormCounter = ({
       })
     })
   }
+  const parentList = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{c.typeName}</Option>) : []
 
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
+          <FormItem label="Parent" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('parentId', {
+              initialValue: item.parentId ? {
+                key: item.parentId,
+                label: item.paymentParentName
+              } : {},
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >{parentList}
+            </Select>)}
+          </FormItem>
           <FormItem label="Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('typeCode', {
               initialValue: item.typeCode,

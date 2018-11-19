@@ -36,6 +36,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          else if (activeKey === '0') dispatch({ type: 'query', payload: { type: 'all', isnull: 'parentId' } })
         }
       })
     }
