@@ -12,7 +12,10 @@ import { Cancel, Trans, Daily, Detail, Compare, Hourly, Hour, PosUnit } from '..
 const TabPane = Tabs.TabPane
 
 const Report = ({ posReport, dispatch, location }) => {
-  const { activeKey, permissionValue } = posReport
+  const {
+    activeKey
+    // permissionValue
+  } = posReport
   const callback = (key) => {
     dispatch({
       type: 'posReport/setListNull'
@@ -51,11 +54,15 @@ const Report = ({ posReport, dispatch, location }) => {
         <TabPane tab="Hours" key="7">
           {activeKey === '7' && <Hour />}
         </TabPane>
-        {permissionValue === true ?
+        {/* {permissionValue === true ?
           <TabPane tab="Store" key="8">
             {activeKey === '8' && <PosUnit />}
           </TabPane>
-          : null}
+          : null} */}
+
+        <TabPane tab="Store" key="8">
+          {activeKey === '8' && <PosUnit />}
+        </TabPane>
         {/* <TabPane tab="Work Order" key="9">
           {activeKey === '9' && <Hour />}
         </TabPane> */}

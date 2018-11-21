@@ -54,6 +54,7 @@ const Inventory = ({
       }
       let dataInventory = {}
       dataInventory.posOrder = {}
+      dataInventory.posOrder.post_month_transaction = (data.post_month_transaction === true || data.post_month_transaction === 1 ? 1 : 0)
       dataInventory.posOrder.outOfStock = (data.outOfStock === true || data.outOfStock === 1 ? 1 : 0)
       dataInventory.posOrder.editPurchase = (data.editPurchase === true || data.editPurchase === 1 ? 1 : 0)
       if (Object.compare(dataInventory, config)) {
@@ -76,6 +77,11 @@ const Inventory = ({
             {getFieldDecorator('outOfStock', {
               initialValue: config.posOrder.outOfStock
             })(<Switch defaultChecked={config.posOrder.outOfStock} />)}
+          </FormItem>
+          <FormItem label="Enable Post Month Edit" {...formItemLayout}>
+            {getFieldDecorator('post_month_transaction', {
+              initialValue: config.posOrder.post_month_transaction
+            })(<Switch defaultChecked={config.posOrder.post_month_transaction} />)}
           </FormItem>
         </Col>
         <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }} />

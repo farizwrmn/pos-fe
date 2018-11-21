@@ -140,12 +140,12 @@ export default {
           type: 'setSetting'
         })
 
-        yield put({
-          type: 'setPermission',
-          payload: {
-            role: permissions.role
-          }
-        })
+        // yield put({
+        //   type: 'setPermission',
+        //   payload: {
+        //     role: permissions.role
+        //   }
+        // })
 
         yield put({
           type: 'updateState',
