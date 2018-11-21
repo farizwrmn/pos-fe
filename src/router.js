@@ -137,6 +137,14 @@ const Routers = function ({ history, app }) {
             }, 'marketing-loyalty-setting')
           }
         }, {
+          path: 'marketing/social',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/social'))
+              cb(null, require('./routes/marketing/social'))
+            }, 'marketing-social-media')
+          }
+        }, {
           path: 'master/supplier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
