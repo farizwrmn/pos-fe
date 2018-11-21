@@ -8,13 +8,16 @@ import {
   Col,
   Modal,
   DatePicker,
-  Select
+  // Select,
+  TreeSelect
 } from 'antd'
+import { arrayToTree } from 'utils'
 import moment from 'moment'
 import List from './List'
 
 const FormItem = Form.Item
-const Option = Select.Option
+const TreeNode = TreeSelect.TreeNode
+// const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -146,18 +149,29 @@ const formPayment = ({
     resetFields()
   }
 
-  const changeMethod = () => {
-    setFieldsValue({
-      cardName: null,
-      cardNo: null
-    })
-  }
+  // const changeMethod = () => {
+  //   setFieldsValue({
+  //     cardName: null,
+  //     cardNo: null
+  //   })
+  // }
   const usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const curChange = curPayment - curNetto > 0 ? curPayment - curNetto : 0
   const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding)
+
+  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children && item.children.length) {
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+      }
+      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+    })
+  }
 
   return (
     <Form layout="horizontal">
@@ -167,9 +181,19 @@ const formPayment = ({
             {getFieldDecorator('typeCode', {
               initialValue: item.typeCode ? item.typeCode : 'C'
             })(
-              <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
-                {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
-              </Select>
+              // <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
+              //   {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
+              // </Select>
+
+              <TreeSelect
+                showSearch
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeNodeFilterProp="title"
+                filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                treeDefaultExpandAll
+              >
+                {getMenus(menuTree)}
+              </TreeSelect>
             )}
           </FormItem>
           <FormItem label="Amount" hasFeedback {...formItemLayout}>

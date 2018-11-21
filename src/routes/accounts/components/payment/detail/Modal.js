@@ -1,11 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { lstorage } from 'utils'
-import { Form, Select, DatePicker, Row, Col, Button, Input, Modal } from 'antd'
+import { arrayToTree, lstorage } from 'utils'
+import {
+  Form,
+  TreeSelect,
+  DatePicker,
+  Row,
+  Col,
+  Button,
+  Input,
+  Modal
+} from 'antd'
 import moment from 'moment'
 
-const Option = Select.Option
 const FormItem = Form.Item
+const TreeNode = TreeSelect.TreeNode
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -64,6 +73,39 @@ const modal = ({
     onOk: handleOk,
     onCancel: handleCancel
   }
+
+  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children && item.children.length) {
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+      }
+      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+    })
+  }
+
+  const changeSelectTypeCode = (value) => {
+    if (value === 'C') {
+      setFieldsValue({
+        bankAccountId: null,
+        cardNo: null,
+        cardName: null,
+        checkNo: null
+      })
+    } else if (value === 'G') {
+      setFieldsValue({
+        cardNo: null,
+        cardName: null,
+        checkNo: null
+      })
+    } else {
+      setFieldsValue({
+        bankAccountId: null,
+        checkNo: null
+      })
+    }
+  }
+
   return (
     <Modal {...modalOpts}>
       <Form>
@@ -73,9 +115,16 @@ const modal = ({
               {getFieldDecorator('typeCode', {
                 initialValue: item.typeCode ? item.typeCode : 'C'
               })(
-                <Select style={{ width: '100%', fontSize: '14pt' }} min={0} maxLength={10}>
-                  {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
-                </Select>
+                <TreeSelect
+                  showSearch
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeNodeFilterProp="title"
+                  filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  treeDefaultExpandAll
+                  onChange={changeSelectTypeCode}
+                >
+                  {getMenus(menuTree)}
+                </TreeSelect>
               )}
             </FormItem>
             <FormItem label="Amount" hasFeedback {...formItemLayout}>

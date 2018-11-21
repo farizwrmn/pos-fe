@@ -258,7 +258,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
     navOpenKeys,
     changeRole (roleCode) {
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
-      dispatch({ type: 'app/setPermission', payload: { role: roleCode } })
+      // dispatch({ type: 'app/setPermission', payload: { role: roleCode } })
       setInterval(() => { window.location.reload() }, 200)
     },
     switchSider () {

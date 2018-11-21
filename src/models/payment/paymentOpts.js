@@ -1,6 +1,7 @@
 import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { query as queryOpts } from '../../services/payment/paymentOptions'
+import { query as queryOptionMaster } from '../../services/master/paymentOption'
 
 export default {
   namespace: 'paymentOpts',
@@ -19,7 +20,11 @@ export default {
         }
         if (location.pathname === '/transaction/pos/payment') {
           dispatch({
-            type: 'queryOpts'
+            type: 'queryOptionMaster',
+            payload: {
+              type: 'all',
+              order: 'sort'
+            }
           })
         }
       })
@@ -27,6 +32,22 @@ export default {
   },
 
   effects: {
+    * queryOptionMaster ({ payload = {} }, { call, put }) {
+      const data = yield call(queryOptionMaster, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listOpts: data.data
+          }
+        })
+      } else {
+        Modal.error({
+          title: 'Cannot find payment method',
+          content: 'Using default setting'
+        })
+      }
+    },
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(queryOpts, payload)
       if (data.success) {

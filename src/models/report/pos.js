@@ -2,7 +2,10 @@
  * Created by Veirry on 25/04/2018.
  */
 import moment from 'moment'
-import { variables, lstorage } from 'utils'
+import {
+  // variables,
+  lstorage
+} from 'utils'
 import {
   query as queryReport,
   queryTrans,
@@ -19,7 +22,7 @@ import {
   queryInterval
 } from '../../services/report/pos'
 
-const { getPermission } = variables
+// const { getPermission } = variables
 
 export default {
   namespace: 'posReport',
@@ -43,7 +46,7 @@ export default {
     productCode: 'ALL TYPE',
     activeKey: '1',
     transTime: {},
-    permissionValue: false,
+    // permissionValue: false,
     selectedBrand: [],
     tableHeader: [],
     filterModalVisible: false,
@@ -86,13 +89,13 @@ export default {
             payload: location.query
           })
         } else if (location.pathname === '/report/pos/service' || location.pathname === '/report/pos/unit' || location.pathname === '/report/pos/summary' || location.pathname === '/report/pos/turnover') {
-          const permissionValue = getPermission('laporan_rekap_penjualan_per_outlet')
-          dispatch({
-            type: 'updateState',
-            payload: {
-              permissionValue
-            }
-          })
+          // const permissionValue = getPermission('laporan_rekap_penjualan_per_outlet')
+          // dispatch({
+          //   type: 'updateState',
+          //   payload: {
+          //     permissionValue
+          //   }
+          // })
           dispatch({
             type: 'setListNull'
           })

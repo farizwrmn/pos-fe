@@ -1,11 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { lstorage } from 'utils'
-import { Form, Select, Tooltip, DatePicker, Row, Col, Button, Input, Modal } from 'antd'
+import { arrayToTree, lstorage } from 'utils'
+import {
+  Form,
+  TreeSelect,
+  Select,
+  Tooltip,
+  DatePicker,
+  Row,
+  Col,
+  Button,
+  Input,
+  Modal
+} from 'antd'
 import moment from 'moment'
 
 const Option = Select.Option
 const FormItem = Form.Item
+const TreeNode = TreeSelect.TreeNode
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -134,7 +146,15 @@ const modal = ({
       })
     }
   }
-
+  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children && item.children.length) {
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+      }
+      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+    })
+  }
   return (
     <Modal {...modalOpts}>
       <Form>
@@ -144,9 +164,16 @@ const modal = ({
               {getFieldDecorator('typeCode', {
                 initialValue: item.typeCode ? item.typeCode : 'C'
               })(
-                <Select onChange={changeSelectTypeCode} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
-                </Select>
+                <TreeSelect
+                  showSearch
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeNodeFilterProp="title"
+                  filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  treeDefaultExpandAll
+                  onChange={changeSelectTypeCode}
+                >
+                  {getMenus(menuTree)}
+                </TreeSelect>
               )}
             </FormItem>
             <Tooltip
