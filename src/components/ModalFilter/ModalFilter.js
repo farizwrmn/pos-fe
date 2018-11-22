@@ -91,7 +91,7 @@ const ModalFilter = ({
         payload: {
           cashierInfo: record,
           modalVisible: false,
-          currentCashier: { id: null, status: '' }
+          currentCashier: { id: null, status: null }
         }
       })
       resetFields(['cashierTransId'])
@@ -152,7 +152,7 @@ const ModalFilter = ({
       dispatch({
         type: 'cashier/updateState',
         payload: {
-          currentCashier: { id: null, status: '' }
+          currentCashier: { id: null, status: null }
         }
       })
     }
