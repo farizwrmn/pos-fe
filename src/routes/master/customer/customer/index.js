@@ -353,7 +353,7 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
   }
 
   return (
-    <div className="content-inner">
+    <div className={activeKey !== '0' ? 'content-inner' : 'content-inner-no-color'}>
       <Tab {...formProps} />
       <ModalMobile {...modalMobileProps} />
     </div>
