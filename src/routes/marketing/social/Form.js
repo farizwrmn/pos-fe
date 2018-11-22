@@ -69,8 +69,9 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-
-      data.url = data.protocol + data.url
+      if (modalType === 'add') {
+        data.url = data.protocol + data.url
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {

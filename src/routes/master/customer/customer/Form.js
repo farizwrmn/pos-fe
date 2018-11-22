@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Icon } from 'antd'
 import ModalUnit from './ModalUnit'
-import { FormCustomer } from '../components'
+import { AdvancedFormMember } from '../components'
 
 const formCustomer = ({
   modalType,
@@ -39,7 +39,7 @@ const formCustomer = ({
     <div>
       {modalAddUnit && <Modal {...modalProps}>Do you want to add asset for {addUnit.info.name}? </Modal>}
       {addUnit.modal && <ModalUnit {...modalUnitProps} />}
-      <FormCustomer {...formCustomerProps} />
+      <AdvancedFormMember {...formCustomerProps} />
     </div>
   )
 }
