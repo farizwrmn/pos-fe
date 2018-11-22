@@ -20,7 +20,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
-    currentCashier: { id: null, status: '' },
+    currentCashier: { id: null, status: null },
     modalType: 'add',
     activeKey: '0',
     activeTabKeyClose: '1',
@@ -473,7 +473,7 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         cashierInfo: {},
-        currentCashier: { id: null, status: '' },
+        currentCashier: { id: null, status: null },
         listCashRegister: []
       }
     },

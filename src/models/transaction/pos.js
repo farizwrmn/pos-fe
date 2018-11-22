@@ -234,6 +234,7 @@ export default {
           discount: ary[n].discount,
           name: ary[n].name,
           price: ary[n].price,
+          sellPrice: ary[n].sellPrice,
           qty: ary[n].qty,
           typeCode: ary[n].typeCode,
           total: ary[n].total
