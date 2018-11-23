@@ -73,7 +73,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
         let row = [
           { value: start.toString(), ...tableBodyNumberStyle },
           { value: '.', ...tableBodyTextStyle },
-          { value: moment(data.transDate, 'DD-MMM-YYYY').format('DD-MMM-YYYY'), ...tableBodyTextStyle },
+          { value: moment(data.transDate, 'YYYY-MM-DD').format('DD-MMM-YYYY'), ...tableBodyTextStyle },
           { value: parseFloat(data.qtyUnit), ...tableBodyNumberStyle },
           { value: parseFloat(data.service), ...tableBodyNumberStyle },
           { value: parseFloat(data.product), ...tableBodyNumberStyle },
