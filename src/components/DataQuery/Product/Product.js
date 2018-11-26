@@ -13,7 +13,21 @@ const Product = ({
   dispatch,
   className,
   visible = false,
-  columns = [
+  isModal = true,
+  enableFilter = true,
+  showPagination = true,
+  onRowClick,
+  productstock,
+  productcategory,
+  productbrand,
+  ...tableProps
+}) => {
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
+  const { searchText, list, pagination, filteredInfo } = productstock
+  // const { pagination } = tableProps
+
+  const columns = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -24,12 +38,28 @@ const Product = ({
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '15%'
+      width: '10%'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '30%'
+      width: '15%'
+    }, {
+      title: 'Category',
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      width: '10%',
+      filteredInfo: filteredInfo.categoryId || null,
+      render: (text, record) => record.categoryName,
+      filters: listCategory.map(x => ({ text: x.categoryName, value: x.id }))
+    }, {
+      title: 'Brand',
+      dataIndex: 'brandId',
+      key: 'brandId',
+      width: '10%',
+      filteredInfo: filteredInfo.brandId || null,
+      render: (text, record) => record.brandName,
+      filters: listBrand.map(x => ({ text: x.brandName, value: x.id }))
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
@@ -49,23 +79,16 @@ const Product = ({
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }
-  ],
-  isModal = true,
-  enableFilter = true,
-  showPagination = true,
-  onRowClick,
-  productstock,
-  ...tableProps
-}) => {
-  const { searchText, list, pagination } = productstock
-  // const { pagination } = tableProps
+  ]
+
   const handleSearch = () => {
     dispatch({
       type: 'productstock/query',
       payload: {
         page: 1,
         pageSize: 10,
-        q: searchText
+        q: searchText,
+        ...filteredInfo
       }
     })
   }
@@ -91,17 +114,25 @@ const Product = ({
     dispatch({
       type: 'productstock/updateState',
       payload: {
-        searchText: null
+        searchText: null,
+        filteredInfo: {}
       }
     })
   }
-  const changeProduct = (page) => {
+  const changeProduct = (page, filters) => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        filteredInfo: filters
+      }
+    })
     dispatch({
       type: 'productstock/query',
       payload: {
         q: searchText,
         page: page.current,
-        pageSize: page.pageSize
+        pageSize: page.pageSize,
+        ...filters
       }
     })
   }
@@ -186,7 +217,18 @@ const Product = ({
 
 Product.propTypes = {
   form: PropTypes.object.isRequired,
-  productstock: PropTypes.object.isRequired
+  productstock: PropTypes.object.isRequired,
+  productcategory: PropTypes.object.isRequired,
+  productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ productstock }) => ({ productstock }))(Product)
+export default connect(
+  ({
+    productstock,
+    productcategory,
+    productbrand }) =>
+    ({
+      productstock,
+      productcategory,
+      productbrand
+    }))(Product)
