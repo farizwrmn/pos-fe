@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/marketing/social'
+import { query, add, edit, remove } from '../../services/marketing/customerSocial'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -9,13 +9,13 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'social',
+  namespace: 'customerSocial',
 
   state: {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listSocial: [],
+    listCustomerSocial: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -24,21 +24,6 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        const { activeKey, ...other } = location.query
-        const { pathname } = location
-        if (pathname === '/marketing/social') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-        } else if (pathname === '/master/customer') dispatch({ type: 'query', payload: { type: 'all' } })
-      })
-    }
   },
 
   effects: {
@@ -49,7 +34,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listSocial: data.data,
+            listCustomerSocial: data.data.map(data => ({ ...data, type: 'edit' })),
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -60,13 +45,38 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
+    * delete ({ payload }, { call }) {
       const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
+      if (!data.success) {
         throw data
       }
+    },
+
+    * deleteItem ({ payload }, { put }) {
+      const { data, index } = payload
+      let arrayProd = data.slice()
+      Array.prototype.remove = function () {
+        let what
+        let a = arguments
+        let L = a.length
+        let ax
+        while (L && this.length) {
+          what = a[L -= 1]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+      let ary = arrayProd
+      ary.remove(arrayProd[index])
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          listCustomerSocial: ary
+        }
+      })
     },
 
     * add ({ payload }, { call, put }) {
@@ -95,7 +105,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ social }) => social.currentItem.id)
+      const id = yield select(({ customerSocial }) => customerSocial.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -130,10 +140,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listSocial, pagination } = action.payload
+      const { listCustomerSocial, pagination } = action.payload
       return {
         ...state,
-        listSocial,
+        listCustomerSocial,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -38,7 +38,8 @@ module.exports = {
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
     apiReportCashback: '/report/cashback',
-    apiSocial: '/social'
+    apiSocial: '/social',
+    apiMemberSocial: '/membersocial'
   },
   api: {
     getIpAddress: '/utils/ipaddr',

@@ -3,6 +3,7 @@ import moment from 'moment'
 import InputMask from 'react-input-mask'
 import { Form, Input, Button, Select, DatePicker, Radio, Row, Col, Tooltip, Modal, Card } from 'antd'
 import { FooterToolbar } from 'components'
+import ModalSocial from './ModalSocial'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -33,8 +34,11 @@ const FormCustomer = ({
   memberCodeDisable,
   setting,
   item,
+  dispatch,
   onSubmit,
   confirmSendMember,
+  modalSocialVisible,
+  modalSocialProps,
   listGroup,
   listType,
   listCity,
@@ -104,23 +108,23 @@ const FormCustomer = ({
   const childrenType = listType.length > 0 ? listType.map(type => <Option value={type.id} key={type.id}>{type.typeName}</Option>) : []
   const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
   const childrenCity = listCity.length > 0 ? listCity.map(city => <Option value={city.id} key={city.id}>{city.cityName}</Option>) : []
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 10 : 18
-      },
-      sm: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 11 : 15
-      },
-      md: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 20
-      },
-      lg: {
-        offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 21
-      }
-    }
-  }
+  // const tailFormItemLayout = {
+  //   wrapperCol: {
+  //     span: 24,
+  //     xs: {
+  //       offset: modalType === 'edit' || item.memberCodeDisable ? 10 : 18
+  //     },
+  //     sm: {
+  //       offset: modalType === 'edit' || item.memberCodeDisable ? 11 : 15
+  //     },
+  //     md: {
+  //       offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 20
+  //     },
+  //     lg: {
+  //       offset: modalType === 'edit' || item.memberCodeDisable ? 18 : 21
+  //     }
+  //   }
+  // }
 
   const handleCancel = () => {
     onCancel()
@@ -134,6 +138,15 @@ const FormCustomer = ({
       marginLeft: 8,
       marginBottom: 8
     }
+  }
+
+  const handleClickSocial = () => {
+    dispatch({
+      type: 'customer/updateState',
+      payload: {
+        modalSocialVisible: true
+      }
+    })
   }
 
   return (
@@ -247,6 +260,9 @@ const FormCustomer = ({
                   }
                 ]
               })(<Input disabled={item.emailDisable || false} />)}
+            </FormItem>
+            <FormItem label="Social Media" hasFeedback {...formItemLayout}>
+              <Button onClick={handleClickSocial} type="primary">Social Media</Button>
             </FormItem>
           </Col>
         </Row>
@@ -374,11 +390,12 @@ const FormCustomer = ({
         </Row>
       </Card>
       <FooterToolbar>
-        <FormItem {...tailFormItemLayout}>
+        <FormItem>
           {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
+      {modalSocialVisible && <ModalSocial {...modalSocialProps} />}
     </Form>
   )
 }

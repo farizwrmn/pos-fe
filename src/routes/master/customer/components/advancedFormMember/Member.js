@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import AdvancedForm from './AdvancedForm'
@@ -11,11 +12,15 @@ const Member = ({
   cancelMember,
   customergroup,
   customertype,
+  customerSocial,
   city,
   misc,
+  social,
   dispatch
 }) => {
-  const { memberCodeDisable } = customer
+  const { listCustomerSocial } = customerSocial
+  const { memberCodeDisable, modalSocialVisible } = customer
+  const { listSocial } = social
   const { setting } = store
   const { listGroup } = customergroup
   const { listType } = customertype
@@ -23,7 +28,72 @@ const Member = ({
   const { listLov, code } = misc
   const listIdType = listLov && listLov[code] ? listLov[code] : []
 
+  const modalSocialProps = {
+    width: '700px',
+    listSocial,
+    listCustomerSocial,
+    title: 'Social Media',
+    visible: modalSocialVisible,
+    addNewRow (data) {
+      data.push({})
+
+      dispatch({
+        type: 'customerSocial/updateState',
+        payload: {
+          listCustomerSocial: data
+        }
+      })
+    },
+    onSubmit (data) {
+      dispatch({
+        type: 'customerSocial/updateState',
+        payload: {
+          listCustomerSocial: data
+        }
+      })
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalSocialVisible: false
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'customer/updateState',
+        payload: {
+          modalSocialVisible: false
+        }
+      })
+      dispatch({
+        type: 'customerSocial/updateState',
+        payload: {
+          listCustomerSocial
+        }
+      })
+    },
+    deleteRow (data, id, index) {
+      if (id) {
+        dispatch({
+          type: 'customerSocial/delete',
+          payload: id
+        })
+      }
+      dispatch({
+        type: 'customerSocial/deleteItem',
+        payload: {
+          data,
+          index
+        }
+      })
+    }
+  }
+
   const formCustomerProps = {
+    listSocial,
+    modalSocialProps,
+    modalSocialVisible,
+    dispatch,
     item,
     memberCodeDisable,
     setting,
@@ -89,6 +159,12 @@ const Member = ({
           currentItem: {}
         }
       })
+      dispatch({
+        type: 'customerSocial/updateState',
+        payload: {
+          listCustomerSocial: []
+        }
+      })
     },
     onCancelMobile () {
       dispatch({
@@ -144,4 +220,16 @@ const Member = ({
   )
 }
 
-export default connect(({ customer, store, pos, customergroup, customertype, city, misc }) => ({ customer, store, pos, customergroup, customertype, city, misc }))(Member)
+Member.propTypes = {
+  customerSocial: PropTypes.object.isRequired,
+  customer: PropTypes.object.isRequired,
+  customergroup: PropTypes.object.isRequired,
+  customertype: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired,
+  pos: PropTypes.object.isRequired,
+  city: PropTypes.object.isRequired,
+  misc: PropTypes.object.isRequired,
+  social: PropTypes.object.isRequired
+}
+
+export default connect(({ customerSocial, customer, store, pos, customergroup, customertype, city, misc, social }) => ({ customerSocial, customer, store, pos, customergroup, customertype, city, misc, social }))(Member)

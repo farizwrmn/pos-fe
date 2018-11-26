@@ -15,6 +15,7 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
   const { listCity } = city
   const { listLov, code } = misc
   const listIdType = listLov && listLov[code] ? listLov[code] : []
+
   const filterProps = {
     display,
     isChecked,
@@ -86,6 +87,12 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
           disable: 'disabled'
         }
       })
+      dispatch({
+        type: 'customerSocial/query',
+        payload: {
+          memberId: item.id
+        }
+      })
       const { pathname } = location
       dispatch(routerRedux.push({
         pathname,
@@ -145,6 +152,12 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
           modalType: 'add',
           currentItem: {},
           disable: ''
+        }
+      })
+      dispatch({
+        type: 'customerSocial/updateState',
+        payload: {
+          listCustomerSocial: []
         }
       })
       const { query, pathname } = location
@@ -361,12 +374,13 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
 }
 
 Customer.propTypes = {
-  customer: PropTypes.object,
-  customerunit: PropTypes.object,
+  customer: PropTypes.object.isRequired,
+  customerunit: PropTypes.object.isRequired,
+  customerSocial: PropTypes.object.isRequired,
   app: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ customer, customerunit, customergroup, customertype, city, misc, loading, app }) => ({ customer, customerunit, customergroup, customertype, city, misc, loading, app }))(Customer)
+export default connect(({ customer, customerunit, customerSocial, customergroup, customertype, city, misc, loading, app }) => ({ customer, customerunit, customerSocial, customergroup, customertype, city, misc, loading, app }))(Customer)
