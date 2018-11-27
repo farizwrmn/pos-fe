@@ -35,8 +35,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
 
   // Declare Variable
-  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
-  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product || 0), 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service || 0), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -65,7 +65,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN JASA + PART PER FAKTUR',
+            text: 'LAPORAN JASA + PRODUCT PER FAKTUR',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -163,7 +163,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: 'auto',
+    width: ['4%', '10%', '11%', '15%', '15%', '15%', '15%', '15%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',
