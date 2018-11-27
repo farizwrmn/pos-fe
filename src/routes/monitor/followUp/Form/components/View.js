@@ -29,7 +29,7 @@ const columnsContent = {
 const View = ({
   memberInfo, details, updateHeaderStatus
 }) => {
-  let label = ['member code', 'member name', 'gender', 'birth date', 'city', 'address', 'last trans',
+  let label = ['member code', 'member name', 'mobile number', 'phone number', 'gender', 'birth date', 'city', 'address', 'last trans',
     'last trans no', 'mechanic', 'cashier', 'last call', 'status', 'post service date']
   let content = []
   if (!_.isEmpty(memberInfo)) {
@@ -56,6 +56,8 @@ const View = ({
     content = [
       memberInfo.memberCode,
       memberInfo.memberName,
+      memberInfo.mobileNumber,
+      memberInfo.phoneNumber,
       memberInfo.gender === 'M' ? 'Male' : 'Female',
       memberInfo.birthDate ? moment(memberInfo.birthDate).format('DD-MMM-YYYY') : '',
       memberInfo.cityName || '',
@@ -96,7 +98,7 @@ const View = ({
           <DataTable {...tableProps} />
         </Col>
       </Row>
-      <Button className="button-right-side" size="large" onClick={() => updateHeaderStatus(memberInfo.id)}>Call</Button>
+      <Button className="button-right-side" size="large" onClick={() => updateHeaderStatus(memberInfo.id)}>Call - {memberInfo.mobileNumber || memberInfo.phoneNumber}</Button>
     </div>
   )
 }

@@ -81,6 +81,9 @@ const Call = ({
       {modalFeedback && <ModalFeedback {...modalProps} />}
       <Row style={{ marginTop: 20 }}>
         <Col {...columns}>
+          <FormItem label="Customer Info" hasFeedback {...formItemLayout}>
+            {memberInfo.memberName} - {memberInfo.mobileNumber || memberInfo.phoneNumber}
+          </FormItem>
           <FormItem label="Customer Satisfaction" hasFeedback {...formItemLayout}>
             {getFieldDecorator('customerSatisfaction', {
               initialValue: memberInfo.customerSatisfaction,
