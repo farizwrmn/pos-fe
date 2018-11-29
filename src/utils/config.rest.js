@@ -39,7 +39,9 @@ module.exports = {
     apiLoyalty: '/loyalty',
     apiReportCashback: '/report/cashback',
     apiSocial: '/social',
-    apiMemberSocial: '/membersocial'
+    apiMemberSocial: '/membersocial',
+    apiCms: '/cms',
+    apiUpload: '/upload'
   },
   api: {
     getIpAddress: '/utils/ipaddr',

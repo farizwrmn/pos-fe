@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getItem } from './lstorage'
+import { getCashierTrans, getItem, getDomainBE, getPortBE, removeItemKey } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -15,6 +15,26 @@ const reArrangeMember = (item) => {
     gender: item.gender,
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
   }
+}
+
+const getAPIURL = () => {
+  const BEURL = getDomainBE()
+  const BEPORT = getPortBE()
+  let APIHOST
+  if (!BEURL.match(/^[0-9a-z.]+$/)) {
+    removeItemKey('cdi')
+    APIHOST = 'localhost'
+  } else {
+    APIHOST = BEURL
+  }
+  let APIPORT
+  if (!BEPORT.match(/^[0-9a-z]+$/)) {
+    APIPORT = 5557
+  } else {
+    APIPORT = BEPORT
+  }
+  const APIURL = `http://${APIHOST}:${APIPORT}`
+  return APIURL
 }
 
 const getSettingLocal = () => getItem('setting')
@@ -74,5 +94,6 @@ module.exports = {
   reArrangeMemberId,
   insertCashierTrans,
   getSetting,
-  getPermission
+  getPermission,
+  getAPIURL
 }

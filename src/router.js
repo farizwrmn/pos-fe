@@ -147,6 +147,14 @@ const Routers = function ({ history, app }) {
             }, 'marketing-social-media')
           }
         }, {
+          path: 'marketing/cms',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/cms'))
+              cb(null, require('./routes/marketing/cms'))
+            }, 'marketing-cms')
+          }
+        }, {
           path: 'master/supplier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

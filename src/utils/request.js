@@ -5,9 +5,9 @@ import pathToRegexp from 'path-to-regexp'
 import lodash from 'lodash'
 import { message } from 'antd'
 // import { YQL, CORS } from './config'
-import { getDomainBE, getPortBE, removeItemKey } from './lstorage'
 import { apiPrefix } from '../utils/config.rest'
 // import crypt from './crypt'
+import { getAPIURL } from './variables'
 
 const fetch = (options) => {
   let {
@@ -18,7 +18,7 @@ const fetch = (options) => {
     headers
   } = options
 
-  const cloneData = lodash.cloneDeep(data)
+  let cloneData = lodash.cloneDeep(data)
 
   try {
     let domin = ''
@@ -38,6 +38,9 @@ const fetch = (options) => {
     message.error(e.message)
   }
 
+  if (options.usage === 'form') {
+    cloneData = data
+  }
   // if (fetchType === 'JSONP') {
   //   return new Promise((resolve, reject) => {
   //     jsonp(url, {
@@ -78,30 +81,10 @@ const fetch = (options) => {
   }
 }
 
-const getAPIURL = () => {
-  const BEURL = getDomainBE()
-  const BEPORT = getPortBE()
-  let APIHOST
-  if (!BEURL.match(/^[0-9a-z.]+$/)) {
-    removeItemKey('cdi')
-    APIHOST = 'localhost'
-  } else {
-    APIHOST = BEURL
-  }
-  let APIPORT
-  if (!BEPORT.match(/^[0-9a-z]+$/)) {
-    APIPORT = 5557
-  } else {
-    APIPORT = BEPORT
-  }
-  const APIURL = `http://${APIHOST}:${APIPORT}`
-  return APIURL
-}
-
 export default function request (options) {
   const APIURL = getAPIURL()
   options.usage = options.usage || 'store'
-  if (options.usage === 'store') {
+  if (options.usage === 'store' || options.usage === 'form') {
     options.url = APIURL + apiPrefix + options.url
   }
   if (options.url && options.url.indexOf('//') > -1) {
