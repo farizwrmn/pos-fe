@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Modal } from 'antd'
 import AdvancedForm from './AdvancedForm'
 
 const Member = ({
@@ -30,6 +31,7 @@ const Member = ({
 
   const modalSocialProps = {
     width: '700px',
+    okText: 'Save',
     listSocial,
     listCustomerSocial,
     title: 'Social Media',
@@ -59,16 +61,22 @@ const Member = ({
       })
     },
     onCancel () {
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          modalSocialVisible: false
-        }
-      })
-      dispatch({
-        type: 'customerSocial/updateState',
-        payload: {
-          listCustomerSocial
+      Modal.confirm({
+        title: 'Discard unsaved data',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'customer/updateState',
+            payload: {
+              modalSocialVisible: false
+            }
+          })
+          dispatch({
+            type: 'customerSocial/updateState',
+            payload: {
+              listCustomerSocial
+            }
+          })
         }
       })
     },
