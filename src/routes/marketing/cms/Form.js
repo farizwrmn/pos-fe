@@ -132,7 +132,12 @@ const FormCounter = ({
               <Option key="3" value="3">Non-active</Option>
             </Select>)}
           </FormItem>
-          <FormItem label="Image" hasFeedback {...formItemLayout}>
+          <FormItem
+            help="Only accept single jpg or png file, max: 2mb"
+            label="Image"
+            hasFeedback
+            {...formItemLayout}
+          >
             {getFieldDecorator('files', {
               rules: [
                 {
