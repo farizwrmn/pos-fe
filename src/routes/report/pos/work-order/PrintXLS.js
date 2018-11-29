@@ -66,7 +66,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN REKAP PENJUALAN PER STORE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN WORK ORDER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE: ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
