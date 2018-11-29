@@ -5,7 +5,7 @@ import { variables } from 'utils'
 import { add as addSocial } from '../../services/marketing/customerSocial'
 import { query, add, edit, remove } from '../../services/master/customer'
 import { query as queryMobile, srvGetMemberStatus, srvActivateMember } from '../../services/mobile/member'
-import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
+import { query as querySequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const { reArrangeMember } = variables
@@ -325,21 +325,9 @@ export default modelExtend(pageModel, {
           })
           localStorage.removeItem('member', [])
           localStorage.removeItem('memberUnit')
-          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-          let arrayProd
-          if (JSON.stringify(listByCode) === '[]') {
-            arrayProd = listByCode.slice()
-          } else {
-            arrayProd = JSON.parse(listByCode.slice())
-          }
-          let item = data.member
-          const newItem = reArrangeMember(item)
-          arrayProd.push(newItem)
-          localStorage.setItem('member', JSON.stringify(arrayProd))
+          const newItem = reArrangeMember(data.data)
+          localStorage.setItem('member', JSON.stringify([newItem]))
         }
-        const increase = yield call(increaseSequence, seqDetail)
-        if (!increase.success) throw increase
         Modal.info({
           title: `You are successfully added member with member code = ${payload.data.memberCode}`
         })
