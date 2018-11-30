@@ -99,6 +99,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/marketing/social'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/master/customer/customer/'))
             }, 'master-customer')
@@ -135,6 +137,22 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/loyaltySetting'))
               cb(null, require('./routes/master/customer/loyaltySetting/'))
             }, 'marketing-loyalty-setting')
+          }
+        }, {
+          path: 'marketing/social',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/social'))
+              cb(null, require('./routes/marketing/social'))
+            }, 'marketing-social-media')
+          }
+        }, {
+          path: 'marketing/cms',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/cms'))
+              cb(null, require('./routes/marketing/cms'))
+            }, 'marketing-cms')
           }
         }, {
           path: 'master/supplier',
@@ -322,6 +340,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/bundlingRules'))
               registerModel(app, require('./models/marketing/bundlingReward'))
               registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/setting/store'))
@@ -404,6 +423,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customerunit'))
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/unit'))
               registerModel(app, require('./models/setting/store'))
@@ -463,6 +483,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productcategory'))
               cb(null, require('./routes/report/pos/analyst'))
             }, 'report-pos-analyst')
+          }
+        }, {
+          path: 'report/pos/work-order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/pos'))
+              registerModel(app, require('./models/setting/cashier'))
+              cb(null, require('./routes/report/pos/work-order'))
+            }, 'report-pos-work-order')
           }
         }, {
           path: 'report/purchase/summary',
@@ -683,6 +712,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/cashentry'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/master/counter'))
@@ -750,6 +780,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/tools/maintenance'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/customerunit'))
               cb(null, require('./routes/tools/customerunit/'))
             }, 'tools-maintenance-customerunit')
@@ -772,6 +803,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/tools/sellprice'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/tools/sellprice'))
             }, 'tools-sellprice')
@@ -938,6 +971,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/customerunit'))
               cb(null, require('./routes/monitor/service/history'))
             }, 'service-history')
@@ -967,6 +1001,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/service'))
               registerModel(app, require('./models/master/variant'))
               registerModel(app, require('./models/master/productcategory'))
@@ -1007,6 +1042,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/bundlingRules'))
               registerModel(app, require('./models/marketing/bundlingReward'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/service'))
               cb(null, require('./routes/monitor/followUp'))
             }, 'follow-up')

@@ -13,7 +13,26 @@ const ProductFilter = ({
   dispatch,
   className,
   visible = false,
-  columns = [
+  isModal = true,
+  enableFilter = true,
+  showPagination = true,
+  form: {
+    getFieldDecorator,
+    getFieldsValue
+  },
+  productstock,
+  onRowClick,
+  productcategory,
+  productbrand,
+  variant,
+  specification,
+  ...tableProps
+}) => {
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
+  const { searchText, list, pagination, filteredInfo, selectedRowKeys } = productstock
+
+  const columns = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -24,12 +43,28 @@ const ProductFilter = ({
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '15%'
+      width: '10%'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '30%'
+      width: '15%'
+    }, {
+      title: 'Category',
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      width: '10%',
+      filteredInfo: filteredInfo.categoryId || null,
+      render: (text, record) => record.categoryName,
+      filters: listCategory.map(x => ({ text: x.categoryName, value: x.id }))
+    }, {
+      title: 'Brand',
+      dataIndex: 'brandId',
+      key: 'brandId',
+      width: '10%',
+      filteredInfo: filteredInfo.brandId || null,
+      render: (text, record) => record.brandName,
+      filters: listBrand.map(x => ({ text: x.brandName, value: x.id }))
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
@@ -49,26 +84,12 @@ const ProductFilter = ({
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }
-  ],
-  isModal = true,
-  enableFilter = true,
-  showPagination = true,
-  form: {
-    getFieldDecorator,
-    getFieldsValue
-  },
-  productstock,
-  onRowClick,
-  productcategory,
-  variant,
-  specification,
-  ...tableProps
-}) => {
+  ]
+
   const { listVariant } = variant
   const { modalShowSpecificationLovModalVisible, currentItem } = specification
   const productVariant = (listVariant || []).length > 0 ? listVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
-  const { searchText, list, pagination, selectedRowKeys } = productstock
   // const { pagination } = tableProps
   const handleSearch = () => {
     const data = getFieldsValue()
@@ -79,7 +100,8 @@ const ProductFilter = ({
         page: 1,
         pageSize: 10,
         q: searchText,
-        ...data
+        ...data,
+        ...filteredInfo
       }
     })
   }
@@ -106,17 +128,25 @@ const ProductFilter = ({
     dispatch({
       type: 'productstock/updateState',
       payload: {
-        searchText: null
+        searchText: null,
+        filteredInfo: {}
       }
     })
   }
-  const changeProduct = (page) => {
+  const changeProduct = (page, filters) => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        filteredInfo: filters
+      }
+    })
     dispatch({
       type: 'productstock/query',
       payload: {
         q: searchText,
         page: page.current,
-        pageSize: page.pageSize
+        pageSize: page.pageSize,
+        ...filters
       }
     })
   }
@@ -285,10 +315,28 @@ const ProductFilter = ({
 ProductFilter.propTypes = {
   form: PropTypes.object.isRequired,
   productstock: PropTypes.object.isRequired,
+  productbrand: PropTypes.object.isRequired,
   variant: PropTypes.object.isRequired,
   specification: PropTypes.object.isRequired,
   productcategory: PropTypes.object.isRequired,
   bundling: PropTypes.object.isRequired
 }
 
-export default connect(({ productstock, bundling, productcategory, variant, specification }) => ({ productstock, bundling, productcategory, variant, specification }))(Form.create()(ProductFilter))
+export default connect(
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  }) =>
+    ({
+      productstock,
+      bundling,
+      productcategory,
+      productbrand,
+      variant,
+      specification
+    })
+)(Form.create()(ProductFilter))

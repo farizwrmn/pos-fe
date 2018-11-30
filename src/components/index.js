@@ -1,7 +1,7 @@
 // import DataTable from './DataTable'
 import DropOption from './DropOption'
 import Search from './Search'
-// import Editor from './Editor'
+import Editor from './Editor'
 import FilterItem from './FilterItem'
 import SelectItem from './SelectItem'
 import DataQuery from './DataQuery'
@@ -24,7 +24,7 @@ export {
   // DataTable,
   DropOption,
   Search,
-  // Editor,
+  Editor,
   DataQuery,
   DataAdd,
   FilterItem,

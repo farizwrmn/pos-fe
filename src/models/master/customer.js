@@ -2,9 +2,10 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { variables } from 'utils'
+import { add as addSocial } from '../../services/marketing/customerSocial'
 import { query, add, edit, remove } from '../../services/master/customer'
 import { query as queryMobile, srvGetMemberStatus, srvActivateMember } from '../../services/mobile/member'
-import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
+import { query as querySequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const { reArrangeMember } = variables
@@ -25,6 +26,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     display: 'none',
     isChecked: false,
+    modalSocialVisible: false,
     selectedRowKeys: [],
     activeKey: '0',
     disable: '',
@@ -280,7 +282,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
+    * add ({ payload }, { select, call, put }) {
       const seqDetail = {
         seqCode: 'CUST',
         type: 1 // storeId
@@ -294,6 +296,11 @@ export default modelExtend(pageModel, {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         success()
+        let listCustomerSocial = yield select(({ customerSocial }) => customerSocial.listCustomerSocial)
+        listCustomerSocial = listCustomerSocial.filter(data => data.name !== undefined)
+        if (listCustomerSocial.length > 0) {
+          yield call(addSocial, { data: listCustomerSocial.map(x => ({ ...x, memberId: data.data.id })) })
+        }
         if (payload.modalType === 'add') {
           yield put({
             type: 'updateState',
@@ -318,21 +325,9 @@ export default modelExtend(pageModel, {
           })
           localStorage.removeItem('member', [])
           localStorage.removeItem('memberUnit')
-          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-          let arrayProd
-          if (JSON.stringify(listByCode) === '[]') {
-            arrayProd = listByCode.slice()
-          } else {
-            arrayProd = JSON.parse(listByCode.slice())
-          }
-          let item = data.member
-          const newItem = reArrangeMember(item)
-          arrayProd.push(newItem)
-          localStorage.setItem('member', JSON.stringify(arrayProd))
+          const newItem = reArrangeMember(data.data)
+          localStorage.setItem('member', JSON.stringify([newItem]))
         }
-        const increase = yield call(increaseSequence, seqDetail)
-        if (!increase.success) throw increase
         Modal.info({
           title: `You are successfully added member with member code = ${payload.data.memberCode}`
         })
@@ -366,6 +361,13 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ customer }) => customer.currentItem.memberCode)
+      const memberId = yield select(({ customer }) => customer.currentItem.id)
+      let listCustomerSocial = yield select(({ customerSocial }) => customerSocial.listCustomerSocial)
+      listCustomerSocial = listCustomerSocial.filter(data => data.name !== undefined)
+      if (listCustomerSocial.length > 0) {
+        yield call(addSocial, { data: listCustomerSocial.map(data => ({ ...data, memberId })) })
+      }
+
       let newCustomer = { ...payload, id }
       if (!id) newCustomer = { ...payload }
       const data = yield call(edit, newCustomer)
@@ -506,6 +508,10 @@ export default modelExtend(pageModel, {
       return {
         ...state
       }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     refreshView (state) {

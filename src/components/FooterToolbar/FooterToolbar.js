@@ -22,12 +22,8 @@ export default class FooterToolbar extends Component {
   }
 
   resizeFooterToolbar = () => {
-    const sider = document.querySelector('.ant-layout-sider')
-    if (sider == null) {
-      return
-    }
     const { isMobile } = this.context
-    const width = isMobile ? null : `calc(100% - ${sider.style.width})`
+    const width = isMobile ? null : 'calc(100%)'
     const { width: stateWidth } = this.state
     if (stateWidth !== width) {
       this.setState({ width })

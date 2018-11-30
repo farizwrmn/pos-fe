@@ -19,7 +19,9 @@ import {
   queryPOSCompareSvsI,
   queryHourly,
   queryHour,
-  queryInterval
+  queryInterval,
+  queryWoDetail,
+  queryWoCheck
 } from '../../services/report/pos'
 
 // const { getPermission } = variables
@@ -134,6 +136,42 @@ export default {
             listTrans: data.data,
             fromDate: payload.from,
             toDate: payload.to,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryWoDetail ({ payload }, { call, put }) {
+      const data = yield call(queryWoDetail, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.from,
+            toDate: payload.to,
+            pagination: {
+              total: data.total
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryWoCheck ({ payload }, { call, put }) {
+      const data = yield call(queryWoCheck, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            fromDate: payload.transDate[0],
+            toDate: payload.transDate[1],
             pagination: {
               total: data.total
             }

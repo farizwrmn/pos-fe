@@ -3,7 +3,7 @@
  */
 import { request, config, crypt, lstorage } from '../../utils'
 
-const { pos, posReport, posreport } = config.api
+const { pos, posReport, posreport, woReport } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -71,6 +71,36 @@ export async function queryAll (params) {
     params.storeId = lstorage.getCurrentUserStore()
   }
   const url = `${posreport}/all`
+  return request({
+    url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryWoDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
+  const url = `${woReport}/detail`
+  return request({
+    url,
+    data: params,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryWoCheck (params) {
+  const apiHeaderToken = crypt.apiheader()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
+  params.type = 'all'
+  params.field = 'id,storeId,woNo,woDate,transNo,transDate,categoryCode,categoryName,value,valueName,memo,memberId,memberCode,memberName,memberTypeName,policeNoId,policeNo'
+  const url = `${woReport}/check`
   return request({
     url,
     data: params,

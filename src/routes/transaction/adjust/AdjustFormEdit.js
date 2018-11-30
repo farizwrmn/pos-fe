@@ -56,66 +56,6 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
     })
   }
 
-  // const hdlGetProduct = () => {
-  //   onGetProduct()
-  // }
-
-  // const handleButtonDeleteClick = () => {
-  //   localStorage.removeItem('adjust')
-  //   onResetAll()
-  // }
-
-  // const hdlSearch = (e) => {
-  //   onSearchProduct(e, dataSource)
-  // }
-
-  // const hidePopover = () => {
-  //   onHidePopover()
-  // }
-
-  // const handleChangeSearch = (e) => {
-  //   const { value } = e.target
-  //   onChangeSearch(value)
-  // }
-
-  // const handleMenuClick = (item) => {
-  //   onChooseItem(item)
-  // }
-  // const columns = [
-  //   {
-  //     title: 'code',
-  //     dataIndex: 'productCode',
-  //     key: 'productCode',
-  //     width: '25%'
-  //   },
-  //   {
-  //     title: 'Product',
-  //     dataIndex: 'productName',
-  //     key: 'productName',
-  //     width: '55%'
-  //   },
-  //   {
-  //     title: 'Cost',
-  //     dataIndex: 'costPrice',
-  //     key: 'costPrice',
-  //     width: '20%'
-  //   }
-  // ]
-  // const contentPopover = (
-  //   <Table
-  //     pagination={{ total: dataSource.length, pageSize: 5 }}
-  //     scroll={{ x: 600, y: 150 }}
-  //     columns={columns}
-  //     simple
-  //     dataSource={dataSource}
-  //     // locale={{
-  //     //   emptyText: <Button type='primary' onClick={() => hdlGetProduct()}>Reset</Button>,
-  //     // }}
-  //     size="small"
-  //     rowKey={record => record.productCode}
-  //     onRowClick={record => handleMenuClick(record)}
-  //   />
-  // )
   const adjustOpts = {
     item,
     dataBrowse,
@@ -160,20 +100,6 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
       <FormItem label="PIC ID" {...formItemLayout}>
         <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
       </FormItem>
-      {/* <FormItem label="Search" {...formItemLayout}>
-        <Popover visible={popoverVisible} title={<a onClick={() => hidePopover()}><Icon type="close" /> Close</a>} placement="bottomLeft" content={contentPopover} trigger={'focus'}>
-          <Search prefix={<Icon type="barcode" />}
-            autoFocus
-            size="large"
-            placeholder="Search Product By Code or Name"
-            onEnter={value => hdlSearch(value)}
-            onSearch={value => hdlSearch(value)}
-            onChange={value => handleChangeSearch(value)}
-            onFocus={() => hdlGetProduct()}
-            onClick={() => hdlGetProduct()}
-          />
-        </Popover>
-      </FormItem> */}
       <FormItem>
         <Browse {...adjustOpts} />
       </FormItem>

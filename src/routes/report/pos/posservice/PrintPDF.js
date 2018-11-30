@@ -65,7 +65,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN JASA + PART PER FAKTUR',
+            text: 'LAPORAN JASA + PRODUCT PER FAKTUR',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

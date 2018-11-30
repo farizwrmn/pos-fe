@@ -20,7 +20,9 @@
     "react-countup": "^2.1.1",
     "react-dom": "^15.6.1",
     "react-helmet": "^5.1.3",
+    "react-html-parser": "^2.0.2",
     "react-input-mask": "2.0.2",
+    "react-quill": "^1.3.3",
     "react-web-notification": "^0.3.1",
     "recharts": "^0.22.4",
     "terbilang-spelling": "0.0.9"
@@ -62,7 +64,9 @@
   "jest": {
     "collectCoverage": true,
     "testRegex": "tests/.*\\.test\\.js$",
-    "setupFiles": ["./src/utils/browserMocks.js"]
+    "setupFiles": [
+      "./src/utils/browserMocks.js"
+    ]
   },
   "pre-commit": [
     "precommit-msg",
