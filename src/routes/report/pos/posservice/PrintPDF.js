@@ -26,7 +26,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.product) + parseFloat(data.service)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.product || 0) + parseFloat(data.service || 0)), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1

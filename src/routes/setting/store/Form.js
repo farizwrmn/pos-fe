@@ -282,7 +282,7 @@ const FormInput = ({
                 })(<Input />)}
               </FormItem>
               <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('taxId', {
+                {getFieldDecorator('taxID', {
                   initialValue: item.taxId,
                   rules: [
                     {

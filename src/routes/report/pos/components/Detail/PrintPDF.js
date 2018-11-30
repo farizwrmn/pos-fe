@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
-import { selisihMember, formatNumbering } from 'utils'
+import { formatNumbering } from 'utils'
 
 const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   listData = listData.filter(x => x.items.length > 0)
@@ -37,10 +37,10 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
 
   const createTableBody = (tabledata) => {
     let totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
-    let totalSubTotal = tabledata.reduce((cnt, o) => cnt + ((o.sellPrice || o.sellingPrice) * o.qty), 0)
+    let totalSubTotal = tabledata.reduce((cnt, o) => cnt + ((o.sellPrice - o.sellingPrice > 0 ? o.sellPrice : o.sellingPrice || 0) * o.qty), 0)
     let totalDiscount4 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discount) || 0), 0)
     let totalDiscountLoyalty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discountLoyalty) || 0), 0)
-    let totalDiscount = tabledata.reduce((cnt, o) => cnt + o.totalDiscount + (selisihMember(o) * o.qty), 0)
+    let totalDiscount = tabledata.reduce((cnt, o) => cnt + o.totalDiscount, 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
     const diffData = tabledata.reduce((group, item) => {
@@ -100,19 +100,20 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       for (let key in rows) {
         if (rows.hasOwnProperty(key)) {
           let data = rows[key]
+          const sellingPrice = (data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice)
           let row = [
             { text: counter, alignment: 'center', fontSize: 11 },
             { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
             { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
             { text: (data.qty || 0), alignment: 'center', fontSize: 11 },
-            { text: formatNumbering(data.sellPrice), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering((data.sellPrice || data.sellingPrice) * data.qty), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(sellingPrice), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering((sellingPrice) * data.qty), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.disc1), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.disc2), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.disc3), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.discount), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.discountLoyalty), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.totalDiscount + (selisihMember(data) * data.qty)), alignment: 'right', fontSize: 11 },
+            { text: formatNumbering(data.totalDiscount), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.netto), alignment: 'right', fontSize: 11 }
           ]
           body.push(row)

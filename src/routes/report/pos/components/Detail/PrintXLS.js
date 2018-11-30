@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatExcelReport } from 'components'
-import { selisihMember } from 'utils'
 
 const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   const styles = {
@@ -164,20 +163,21 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       let count = 1
       for (let n = 0; n < diffData[key].length; n += 1) {
         let data = diffData[key][n]
+        const sellingPrice = (data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice || 0)
         let tableBody = [
           { value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: `${data.productCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: `${data.productName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.qty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (parseFloat(data.sellPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (parseFloat((data.sellPrice || data.sellingPrice) * data.qty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (parseFloat(sellingPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (parseFloat(sellingPrice * data.qty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.disc1) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.disc2) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.disc3) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.discount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.discountLoyalty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (parseFloat(data.totalDiscount + (selisihMember(data) * data.qty))), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: (parseFloat(data.totalDiscount)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.netto) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         group.push(tableBody)
@@ -187,10 +187,10 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     tableBodies.push(group)
 
     let totalQty = master.items.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
-    let totalSubTotal = master.items.reduce((cnt, o) => cnt + ((o.sellPrice || o.sellingPrice) * o.qty), 0)
+    let totalSubTotal = master.items.reduce((cnt, o) => cnt + ((o.sellPrice - o.sellingPrice > 0 ? o.sellPrice : o.sellingPrice || 0) * o.qty), 0)
     let totalDiscount4 = master.items.reduce((cnt, o) => cnt + (parseFloat(o.discount) || 0), 0)
     let totalDiscountLoyalty = master.items.reduce((cnt, o) => cnt + (parseFloat(o.discountLoyalty) || 0), 0)
-    let totalDiscount = master.items.reduce((cnt, o) => cnt + o.totalDiscount + (selisihMember(o) * o.qty), 0)
+    let totalDiscount = master.items.reduce((cnt, o) => cnt + o.totalDiscount, 0)
     let totalAfterDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
     let tableFooter = [
@@ -252,6 +252,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     let master = listData[i]
     for (let key in master.items) {
       let item = master.items[key]
+      const sellingPrice = (item.sellPrice - item.sellingPrice > 0 ? item.sellPrice : item.sellingPrice || 0)
       tableFilters.push([
         { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (master.memberCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
@@ -259,14 +260,14 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (parseFloat(item.qty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: (parseFloat(item.sellingPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: (parseFloat((item.sellPrice || item.sellingPrice) * item.qty)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(sellingPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat((sellingPrice) * item.qty)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.disc1) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.disc2) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.disc3) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.discount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.discountLoyalty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: (parseFloat(item.totalDiscount + (selisihMember(item) * item.qty))), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.totalDiscount)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.netto) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
       ])
     }
