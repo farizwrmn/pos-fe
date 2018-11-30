@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicExcelReport } from 'components'
-import { formatDate, selisihMember } from 'utils'
+import { formatDate } from 'utils'
 
 const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
   const styles = {
@@ -55,6 +55,7 @@ const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const sellingPrice = data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice
         let row = [
           { value: (start || '').toString(), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
@@ -70,9 +71,9 @@ const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
           { value: (data.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
 
           { value: data.qty || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.sellPrice || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.sellPrice * data.qty, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: data.totalDiscount + (selisihMember(data) * data.qty), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: sellingPrice, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: sellingPrice * data.qty, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.totalDiscount, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: data.DPP, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
 
           { value: data.PPN, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
@@ -125,8 +126,8 @@ const PrintXLS = ({ list, fromDate, toDate, storeInfo }) => {
   }
 
   let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
-  let total = (list || []).reduce((cnt, data) => cnt + (data.sellPrice * data.qty), 0)
-  let discount = (list || []).reduce((cnt, data) => cnt + data.totalDiscount + (selisihMember(data) * data.qty), 0)
+  let total = (list || []).reduce((cnt, data) => cnt + ((data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice) * data.qty), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + data.totalDiscount, 0)
   let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
   let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
   let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)

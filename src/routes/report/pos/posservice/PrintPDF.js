@@ -26,7 +26,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.product) + parseFloat(data.service)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.product || 0) + parseFloat(data.service || 0)), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -35,8 +35,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
 
   // Declare Variable
-  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
-  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product || 0), 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service || 0), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -163,7 +163,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: 'auto',
+    width: ['4%', '10%', '11%', '15%', '15%', '15%', '15%', '15%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',

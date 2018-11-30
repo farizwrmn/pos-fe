@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { formatDate, numberFormat, selisihMember } from 'utils'
+import { formatDate, numberFormat } from 'utils'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -18,6 +18,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const sellingPrice = data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.technicianCode || ''), alignment: 'left', fontSize: 11 },
@@ -32,9 +33,9 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
           { text: (data.productName || ''), alignment: 'left', fontSize: 11 },
 
           { text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.sellPrice), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.sellPrice * data.qty), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.totalDiscount + (selisihMember(data) * data.qty)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(sellingPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(sellingPrice * data.qty), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.totalDiscount), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.DPP), alignment: 'right', fontSize: 11 },
 
           { text: formatNumberIndonesia(data.PPN), alignment: 'right', fontSize: 11 },
@@ -172,8 +173,8 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate }) => {
     console.log(e)
   }
   let qty = (list || []).reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0)
-  let total = (list || []).reduce((cnt, data) => cnt + (data.sellPrice * data.qty), 0)
-  let discount = (list || []).reduce((cnt, data) => cnt + data.totalDiscount + (selisihMember(data) * data.qty), 0)
+  let total = (list || []).reduce((cnt, data) => cnt + ((data.sellPrice - data.sellingPrice > 0 ? data.sellPrice : data.sellingPrice) * data.qty), 0)
+  let discount = (list || []).reduce((cnt, data) => cnt + data.totalDiscount, 0)
   let dpp = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0), 0)
   let ppn = (list || []).reduce((cnt, data) => cnt + parseFloat(data.PPN || 0), 0)
   let netto = (list || []).reduce((cnt, data) => cnt + parseFloat(data.DPP || 0) + parseFloat(data.PPN || 0), 0)

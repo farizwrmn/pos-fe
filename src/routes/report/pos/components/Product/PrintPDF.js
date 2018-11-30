@@ -66,7 +66,7 @@ const PrintPDF = ({ user, list, storeInfo, fromDate, toDate, productCode }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN REKAP PENJUALAN',
+            text: 'LAPORAN REKAP PER PART',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

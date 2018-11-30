@@ -506,8 +506,8 @@ export default {
       const dataPos = payload.dataPos
       const dataService = payload.dataService
       const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
-      let Discount = merge.reduce((cnt, o) => cnt + (((o.sellPrice || o.price) * o.qty) - o.total), 0)
-      let SubTotal = merge.reduce((cnt, o) => cnt + ((o.sellPrice || o.price) * o.qty), 0)
+      let Discount = merge.reduce((cnt, o) => cnt + ((((o.sellPrice - o.price > 0 ? o.sellPrice : o.price || 0) || o.price) * o.qty) - o.total), 0)
+      let SubTotal = merge.reduce((cnt, o) => cnt + (((o.sellPrice - o.price > 0 ? o.sellPrice : o.price || 0) || o.price) * o.qty), 0)
       let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
       const nettoValue = (Total - (unitInfo.discountLoyalty || 0))
       const terbilangString = nettoValue > 0 ? `${terbilang(nettoValue)} RUPIAH` : 'NOL RUPIAH'
@@ -550,13 +550,13 @@ export default {
           for (let key in rows) {
             if (rows.hasOwnProperty(key)) {
               let data = rows[key]
-              let totalDisc = ((data.sellPrice || data.price) * data.qty) - data.total
+              let totalDisc = (((data.sellPrice - data.price > 0 ? data.sellPrice : data.price || 0) || data.price) * data.qty) - data.total
               let row = [
                 { text: (data.no || '').toString(), alignment: 'center', fontSize: tableContentFontSize },
                 { text: (data.code || '').toString(), alignment: 'left', fontSize: tableContentFontSize },
                 { text: (data.name || '').toString(), alignment: 'left', fontSize: tableContentFontSize },
                 { text: (data.qty || 0).toString(), alignment: 'center', fontSize: tableContentFontSize },
-                { text: `${(data.sellPrice ? data.sellPrice : data.price || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize },
+                { text: `${(data.sellPrice - data.price > 0 ? data.sellPrice : data.price || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize },
                 { text: `${(totalDisc || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize },
                 { text: `${(data.total || 0).toLocaleString(['ban', 'id'])}`, alignment: 'right', fontSize: tableContentFontSize }
               ]

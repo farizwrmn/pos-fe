@@ -13,8 +13,8 @@ const warning = Modal.warning
 const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product), 0)
-  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service), 0)
+  let productTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.product || 0), 0)
+  let serviceTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.service || 0), 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'dmiPOS'
@@ -110,15 +110,15 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`E${m}`).value = `${listTrans[n].policeNo}`
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].product))
+        sheet.getCell(`F${m}`).value = (parseFloat(listTrans[n].product || 0))
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(listTrans[n].product), 2)
-        sheet.getCell(`G${m}`).value = (parseFloat(listTrans[n].service))
+        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(parseFloat(listTrans[n].product || 0), 2)
+        sheet.getCell(`G${m}`).value = (parseFloat(listTrans[n].service || 0))
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(parseFloat(listTrans[n].service), 2)
-        sheet.getCell(`H${m}`).value = ((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product)))
+        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(parseFloat(listTrans[n].service || 0), 2)
+        sheet.getCell(`H${m}`).value = ((parseFloat(listTrans[n].service || 0) + parseFloat(listTrans[n].product || 0)))
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel((parseFloat(listTrans[n].service) + parseFloat(listTrans[n].product)), 2)
+        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel((parseFloat(listTrans[n].service || 0) + parseFloat(listTrans[n].product || 0)), 2)
       }
 
       for (let m = 65; m < (65 + footer.length); m += 1) {

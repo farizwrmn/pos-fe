@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { formatNumbering, selisihMember } from 'utils'
+import { formatNumbering } from 'utils'
 import { BasicReport } from 'components'
 
 const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, brand }) => {
@@ -18,8 +18,8 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.qty || '').toString(), alignment: 'right', fontSize: 11 },
-          { text: formatNumbering((data.sellPrice || data.sellingPrice) * data.qty), alignment: 'right', fontSize: 11 },
-          { text: formatNumbering(data.totalDiscount + (selisihMember(data) * data.qty)), alignment: 'right', fontSize: 11 },
+          { text: formatNumbering(data.total), alignment: 'right', fontSize: 11 },
+          { text: formatNumbering(data.totalDiscount), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.DPP), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.PPN), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.netto), alignment: 'right', fontSize: 11 }
@@ -40,8 +40,8 @@ const PrintPDF = ({ user, listDaily, storeInfo, fromDate, toDate, category, bran
   let nettoTotal = 0
   if (listDaily.length > 0) {
     qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-    grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat((o.sellPrice || o.sellingPrice) * o.qty), 0)
-    discountTotal = listDaily.reduce((cnt, o) => cnt + o.totalDiscount + (selisihMember(o) * o.qty), 0)
+    grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
+    discountTotal = listDaily.reduce((cnt, o) => cnt + (o.totalDiscount), 0)
     dppTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
     ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPN), 0)
     nettoTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
