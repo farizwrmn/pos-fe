@@ -37,7 +37,7 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
-        } else if (pathname === '/marketing/promo' || pathname === '/tools/sellprice') {
+        } else if (pathname === '/marketing/promo' || pathname === '/tools/sellprice' || pathname === '/marketing/target') {
           dispatch({ type: 'query', payload: { type: 'all' } })
         }
       })

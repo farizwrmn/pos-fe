@@ -155,6 +155,16 @@ const Routers = function ({ history, app }) {
             }, 'marketing-cms')
           }
         }, {
+          path: 'marketing/target',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/target'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/marketing/target'))
+            }, 'marketing-target')
+          }
+        }, {
           path: 'master/supplier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

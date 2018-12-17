@@ -92,7 +92,8 @@ it('Should render Config Api', () =>
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
     workOrder: '/wo',
-    maintenance: '/maintenance'
+    maintenance: '/maintenance',
+    marketing: '/marketing'
   })
 )
 
