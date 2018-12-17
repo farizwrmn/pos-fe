@@ -3,7 +3,8 @@
  */
 import {
   queryHourly,
-  queryHour
+  queryHour,
+  queryTarget
 } from '../../services/report/marketing'
 
 export default {
@@ -38,6 +39,20 @@ export default {
             type: 'updateState',
             payload: {
               activeKey: activeKey || '1'
+            }
+          })
+        } else if (location.pathname === '/report/marketing/target') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '1'
+            }
+          })
+        } else {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: '1'
             }
           })
         }
@@ -85,6 +100,24 @@ export default {
             transTime,
             fromDate,
             toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryTarget ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTarget, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            fromDate: payload.from,
+            toDate: payload.to
           }
         })
       } else {

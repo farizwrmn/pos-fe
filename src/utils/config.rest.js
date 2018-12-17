@@ -38,6 +38,7 @@ module.exports = {
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
     apiReportCashback: '/report/cashback',
+    apiReportMarketing: '/report/marketing',
     apiSocial: '/social',
     apiMemberSocial: '/membersocial',
     apiCms: '/cms',

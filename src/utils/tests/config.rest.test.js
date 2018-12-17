@@ -29,7 +29,8 @@ it('Should render Config Rest', () =>
     apiFollowUp: '/followup',
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
-    apiReportCashback: '/report/cashback'
+    apiReportCashback: '/report/cashback',
+    apiReportMarketing: '/report/marketing'
   })
 )
 
