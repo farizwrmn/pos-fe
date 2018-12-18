@@ -22,7 +22,16 @@ const formatNumberIndonesia = (text) => {
   return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+const toColumnName = (num) => {
+  let ret = ''
+  for (let a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
+    ret = String.fromCharCode(parseFloat((num % b) / a) + 65) + ret
+  }
+  return ret
+}
+
 module.exports = {
   formatNumberInExcel,
-  formatNumberIndonesia
+  formatNumberIndonesia,
+  toColumnName
 }

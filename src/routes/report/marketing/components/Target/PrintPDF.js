@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { numberFormat } from 'utils'
+
+const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(fromDate, 'M').format('MMMM'), to = moment(toDate, 'M').format('MMMM') }) => {
   // Declare Function
@@ -15,25 +18,40 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const dataTotal = data.report
+        const dataFrom = dataTotal.filter(x => Number(x.period) === Number(fromDate))[0] || {}
+        const dataTo = dataTotal.filter(x => Number(x.period) === Number(toDate))[0] || {}
+        const filterDataLatest = dataTotal.filter(x => Number(x.period) <= Number(toDate))
+
+        const dataLatest = filterDataLatest[filterDataLatest.length - 1] || {}
+
+        const costDataFrom = data.costFrom.reduce((prev, next) => prev + next.posPrice, 0)
+        const costDataTo = data.costTo.reduce((prev, next) => prev + next.posPrice, 0)
+
+        const gpmFrom = ((dataFrom.netto - costDataFrom) / dataFrom.netto) * 100
+        const gpmTo = ((dataTo.netto - costDataTo) / dataTo.netto) * 100
+
         const row = [
           { text: count, style: 'tableDataCount' },
           { text: data.categoryName, style: 'tableData' },
 
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataLatest.currentTotalUnitEntry / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataFrom.unitEntry), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataTo.unitEntry), style: 'tableDataNumber' },
 
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataLatest.currentTotalQty / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataFrom.qty), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataTo.qty), style: 'tableDataNumber' },
 
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataLatest.currentTotalPrice / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataFrom.netto), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(dataTo.netto), style: 'tableDataNumber' },
 
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' },
-          { text: 0, style: 'tableDataNumber' }
+          { text: '-', style: 'tableDataNumber' },
+          { text: `${formatNumberIndonesia(gpmFrom)} ${gpmFrom ? '%' : ''}`, style: 'tableDataNumber' },
+          { text: `${formatNumberIndonesia(gpmTo)} ${gpmTo ? '%' : ''}`, style: 'tableDataNumber' }
+          // { text: formatNumberIndonesia(costDataFrom), style: 'tableDataNumber' },
+          // { text: formatNumberIndonesia(costDataTo), style: 'tableDataNumber' }
         ]
         body.push(row)
       }
@@ -95,7 +113,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(
           {
             columns: [
               {
-                text: `\nPERIODE: ${from}  TO  ${to}`,
+                text: `\nPERIODE: ${from} TO ${to}`,
                 fontSize: 12,
                 alignment: 'left'
               },
@@ -162,23 +180,23 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(
       { text: 'SALES', colSpan: 3, style: 'tableHeader' },
       { text: '', style: 'tableHeader' },
       { text: '', style: 'tableHeader' },
-      { text: 'GPM', colSpan: 3, style: 'tableHeader' },
+      { text: 'GPM (%)', colSpan: 3, style: 'tableHeader' },
       { text: '', style: 'tableHeader' },
       { text: '', style: 'tableHeader' }
     ],
     [
       { text: '', style: 'tableHeader' },
       { text: '', style: 'tableHeader' },
-      { text: 'YTD', style: 'tableHeader' },
+      { text: 'YTD AVG', style: 'tableHeader' },
       { text: from, style: 'tableHeader' },
       { text: to, style: 'tableHeader' },
-      { text: 'YTD', style: 'tableHeader' },
+      { text: 'YTD AVG', style: 'tableHeader' },
       { text: from, style: 'tableHeader' },
       { text: to, style: 'tableHeader' },
-      { text: 'YTD', style: 'tableHeader' },
+      { text: 'YTD AVG', style: 'tableHeader' },
       { text: from, style: 'tableHeader' },
       { text: to, style: 'tableHeader' },
-      { text: 'YTD', style: 'tableHeader' },
+      { text: 'YTD AVG', style: 'tableHeader' },
       { text: from, style: 'tableHeader' },
       { text: to, style: 'tableHeader' }
     ]

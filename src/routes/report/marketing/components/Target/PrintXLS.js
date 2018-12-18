@@ -67,27 +67,48 @@ const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').fo
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+
+        const dataTotal = data.report
+        const dataFrom = dataTotal.filter(x => Number(x.period) === Number(fromDate))[0] || {}
+        const dataTo = dataTotal.filter(x => Number(x.period) === Number(toDate))[0] || {}
+        const filterDataLatest = dataTotal.filter(x => Number(x.period) <= Number(toDate))
+
+        const dataLatest = filterDataLatest[filterDataLatest.length - 1] || {}
+
+        const costDataFrom = data.costFrom.reduce((prev, next) => prev + next.posPrice, 0)
+        const costDataTo = data.costTo.reduce((prev, next) => prev + next.posPrice, 0)
+
+        const gpmFrom = ((dataFrom.netto - costDataFrom) / dataFrom.netto) * 100
+        const gpmTo = ((dataTo.netto - costDataTo) / dataTo.netto) * 100
+        const target = data.target
+
         let row = [
           { value: start, ...customStyle.count },
           { value: '.', ...customStyle.data },
           { value: data.categoryName, ...customStyle.data },
 
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
+          { value: dataLatest.currentTotalUnitEntry / Number(toDate) || '-', ...customStyle.count },
+          { value: dataFrom.unitEntry || '-', ...customStyle.count },
+          { value: dataTo.unitEntry || '-', ...customStyle.count },
 
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
+          { value: dataLatest.currentTotalQty / Number(toDate) || '-', ...customStyle.count },
+          { value: dataFrom.qty || '-', ...customStyle.count },
+          { value: dataTo.qty || '-', ...customStyle.count },
 
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
+          { value: (dataLatest.currentTotalPrice / Number(toDate)) || '-', ...customStyle.count },
+          { value: dataFrom.netto || '-', ...customStyle.count },
+          { value: dataTo.netto || '-', ...customStyle.count },
 
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count },
-          { value: 0, ...customStyle.count }
+          { value: '-', ...customStyle.count },
+          { value: gpmFrom || '-', ...customStyle.count },
+          { value: gpmTo || '-', ...customStyle.count }
         ]
+        for (let key = 1; key <= 12; key += 1) {
+          row.push({ value: (target.filter(x => x.month === key)[0] || {}).targetSalesQty || '-', ...customStyle.count })
+          row.push({ value: (dataTotal.filter(x => x.period === key)[0] || {}).qty || '-', ...customStyle.count })
+          row.push({ value: (target.filter(x => x.month === key)[0] || {}).targetSales || '-', ...customStyle.count })
+          row.push({ value: (dataTotal.filter(x => x.period === key)[0] || {}).netto || '-', ...customStyle.count })
+        }
         body.push(row)
       }
       start += 1
@@ -98,7 +119,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').fo
   const title = [
     { value: 'LAPORAN TARGET PENUALAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${from}  TO  ${to}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: `PERIODE : ${from} TO ${to}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
 
   const tableHeader1 = [
@@ -115,25 +136,39 @@ const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').fo
     'SALES',
     '',
     '',
-    'GPM',
-    ''
+    'GPM (%)',
+    '',
+
+    'January', '', '', '', 'February', '', '', '',
+    'Maret', '', '', '', 'April', '', '', '',
+    'May', '', '', '', 'June', '', '', '',
+    'July', '', '', '', 'August', '', '', '',
+    'September', '', '', '', 'October', '', '', '',
+    'November', '', '', '', 'December', '', '', ''
   ]
   const tableHeader2 = [
     '',
     '',
     '',
-    'YTD',
+    'YTD AVG',
     from,
     to,
-    'YTD',
+    'YTD AVG',
     from,
     to,
-    'YTD',
+    'YTD AVG',
     from,
     to,
-    'YTD',
+    'YTD AVG',
     from,
-    to
+    to,
+
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES',
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES',
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES',
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES',
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES',
+    'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES', 'T.QTY', 'R.QTY', 'T.SALES', 'R.SALES'
   ]
 
   const tableHeader = [

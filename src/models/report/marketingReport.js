@@ -45,7 +45,10 @@ export default {
           dispatch({
             type: 'updateState',
             payload: {
-              activeKey: activeKey || '1'
+              activeKey: activeKey || '1',
+              listTrans: [],
+              fromDate: '',
+              toDate: ''
             }
           })
         } else {

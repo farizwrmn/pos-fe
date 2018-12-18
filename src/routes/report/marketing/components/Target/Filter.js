@@ -42,7 +42,8 @@ const Filter = ({
     if (period) {
       const to = moment(period, 'YYYY-MM-DD').format('M')
       const from = moment(period, 'YYYY-MM-DD').subtract(1, 'months').format('M')
-      onDateChange(from, to)
+      const year = moment(period, 'YYYY-MM-DD').subtract(1, 'months').format('YYYY')
+      onDateChange(from, to, year)
     }
   }
 
@@ -62,13 +63,17 @@ const Filter = ({
     resetList()
   }
 
+  const disabledDate = (current) => {
+    return Number(moment(current.valueOf()).format('MM')) === Number(1)
+  }
+
   return (
     <Row >
       <Col {...leftColumn} >
         <Form layout="inline">
           <FormItem label="Period">
             {getFieldDecorator('rangePicker')(
-              <MonthPicker size="large" />
+              <MonthPicker disabledDate={disabledDate} size="large" />
             )}
           </FormItem>
         </Form>

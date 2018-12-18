@@ -13,10 +13,10 @@ const Detail = ({ marketingReport, dispatch, app, loading }) => {
     fromDate,
     toDate,
     listTrans,
-    onDateChange (from, to) {
+    onDateChange (from, to, year) {
       dispatch({
         type: 'marketingReport/queryTarget',
-        payload: { from, to }
+        payload: { from, to, year }
       })
     },
     resetList () {

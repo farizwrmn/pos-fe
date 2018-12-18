@@ -6,7 +6,7 @@ import { numberFormat } from 'utils'
 import { saveAs } from 'file-saver'
 import moment from 'moment'
 
-const { formatNumberInExcel } = numberFormat
+const { formatNumberInExcel, toColumnName } = numberFormat
 
 const BasicReport = ({
   name,
@@ -42,36 +42,6 @@ const BasicReport = ({
 
   let sheet = ''
 
-  const getPositionTitle = (length) => {
-    let alphabet = ''
-    let totalAlphabet = 26
-    let startAlphabet = 65
-    let moreAlphabet = 0
-    if (length > totalAlphabet) {
-      length -= totalAlphabet
-      alphabet = String.fromCharCode(startAlphabet + moreAlphabet)
-      moreAlphabet += 1
-      getPositionTitle(length)
-    }
-    alphabet += String.fromCharCode(startAlphabet + length)
-    return alphabet
-  }
-
-  const getPosition = (position) => {
-    let alphabet = ''
-    let totalAlphabet = 26
-    let startAlphabet = 65
-    let moreAlphabet = 0
-    if (position + 1 > totalAlphabet) {
-      position -= totalAlphabet
-      alphabet = String.fromCharCode(startAlphabet + moreAlphabet)
-      moreAlphabet += 1
-      getPositionTitle(position)
-    }
-    alphabet += String.fromCharCode(startAlphabet + position)
-    return alphabet
-  }
-
   const createXLSLineItems = () => {
     sheet = workbook.addWorksheet('POS 1',
       { pageSetup: { paperSize, orientation } })
@@ -79,7 +49,7 @@ const BasicReport = ({
     if (title.length > 0) {
       for (let i = 0; i < title.length; i += 1) {
         let line = 2 + i
-        let position = getPositionTitle(Math.round(tableHeader[0].length / 2))
+        let position = toColumnName(Math.round((tableHeader[0].length % 26) / 2))
         content.push({
           value: sheet.getCell(`${position}${line}`).value = title[i].value,
           alignment: sheet.getCell(`${position}${line}`).alignment = title[i].alignment,
@@ -93,9 +63,9 @@ const BasicReport = ({
         let line = title.length + (4 + i)
         for (let j = 0; j < tableHeader[i].length; j += 1) {
           get.push({
-            value: sheet.getCell(`${getPosition(j)}${line}`).value = tableHeader[i][j].value,
-            alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableHeader[i][j].alignment,
-            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableHeader[i][j].font
+            value: sheet.getCell(`${toColumnName(j + 1)}${line}`).value = tableHeader[i][j].value,
+            alignment: sheet.getCell(`${toColumnName(j + 1)}${line}`).alignment = tableHeader[i][j].alignment,
+            font: sheet.getCell(`${toColumnName(j + 1)}${line}`).font = tableHeader[i][j].font
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableHeader[i][j].border
           })
         }
@@ -109,10 +79,10 @@ const BasicReport = ({
         let line = (title.length + tableHeader.length) + (4 + i)
         for (let j = 0; j < tableBody[i].length; j += 1) {
           get.push({
-            value: sheet.getCell(`${getPosition(j)}${line}`).value = tableBody[i][j].value,
-            alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableBody[i][j].alignment,
-            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableBody[i][j].font,
-            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableBody[i][j].value, 2)
+            value: sheet.getCell(`${toColumnName(j + 1)}${line}`).value = tableBody[i][j].value,
+            alignment: sheet.getCell(`${toColumnName(j + 1)}${line}`).alignment = tableBody[i][j].alignment,
+            font: sheet.getCell(`${toColumnName(j + 1)}${line}`).font = tableBody[i][j].font,
+            numFmt: sheet.getCell(`${toColumnName(j + 1)}${line}`).numFmt = formatNumberInExcel(tableBody[i][j].value, 2)
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableBody[i][j].border
           })
         }
@@ -125,10 +95,10 @@ const BasicReport = ({
         let line = (title.length + tableHeader.length + data.length) + (4 + i)
         for (let j = 0; j < tableFooter[i].length; j += 1) {
           get.push({
-            value: sheet.getCell(`${getPosition(j)}${line}`).value = tableFooter[i][j].value,
-            alignment: sheet.getCell(`${getPosition(j)}${line}`).alignment = tableFooter[i][j].alignment,
-            font: sheet.getCell(`${getPosition(j)}${line}`).font = tableFooter[i][j].font,
-            numFmt: sheet.getCell(`${getPosition(j)}${line}`).numFmt = formatNumberInExcel(tableFooter[i][j].value, 2)
+            value: sheet.getCell(`${toColumnName(j + 1)}${line}`).value = tableFooter[i][j].value,
+            alignment: sheet.getCell(`${toColumnName(j + 1)}${line}`).alignment = tableFooter[i][j].alignment,
+            font: sheet.getCell(`${toColumnName(j + 1)}${line}`).font = tableFooter[i][j].font,
+            numFmt: sheet.getCell(`${toColumnName(j + 1)}${line}`).numFmt = formatNumberInExcel(tableFooter[i][j].value, 2)
             // border: sheet.getCell(`${getPosition(j)}${line}`).border = tableFooter[i][j].border
           })
         }
