@@ -9,7 +9,7 @@ import { numberFormat } from 'utils'
 
 const { formatNumberIndonesia } = numberFormat
 
-const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(fromDate, 'M').format('MMMM'), to = moment(toDate, 'M').format('MMMM') }) => {
+const PrintPDF = ({ user, byCategory, listTrans, storeInfo, fromDate, toDate, from = moment(fromDate, 'M').format('MMMM'), to = moment(toDate, 'M').format('MMMM') }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -182,7 +182,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(
   const tableHeader = [
     [
       { text: 'NO', rowSpan: 2, style: 'tableHeader' },
-      { text: 'CATEGORY/BRAND', rowSpan: 2, style: 'tableHeader' },
+      { text: byCategory ? 'CATEGORY' : 'BRAND', rowSpan: 2, style: 'tableHeader' },
       { text: 'UNIT ENTRY', colSpan: 3, style: 'tableHeader' },
       { text: '', style: 'tableHeader' },
       { text: '', style: 'tableHeader' },

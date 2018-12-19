@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').format('MMMM'), to = moment(toDate, 'M').format('MMMM'), storeInfo }) => {
+const PrintXLS = ({ listTrans, byCategory, fromDate, toDate, from = moment(fromDate, 'M').format('MMMM'), to = moment(toDate, 'M').format('MMMM'), storeInfo }) => {
   const styles = {
     title: {
       name: 'Courier New',
@@ -137,7 +137,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').fo
   const tableHeader1 = [
     'NO.',
     '',
-    'CATEGORY/BRAND',
+    byCategory ? 'CATEGORY' : 'BRAND',
     '',
     'UNIT ENTRY',
     '',

@@ -1,15 +1,15 @@
 import React from 'react'
 import { Table } from 'antd'
 
-const List = ({ ...listProps }) => {
+const List = ({ byCategory, ...listProps }) => {
   const columns = [
     {
-      title: 'Category Code',
+      title: byCategory ? 'Category Code' : 'Brand Code',
       dataIndex: 'categoryCode',
       key: 'categoryCode'
     },
     {
-      title: 'Category Name',
+      title: byCategory ? 'Category Name' : 'Brand Name',
       dataIndex: 'categoryName',
       key: 'categoryName'
     }

@@ -19,6 +19,7 @@ export default {
     selectedBrand: [],
     tableHeader: [],
     filterModalVisible: false,
+    byCategory: 1,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -120,7 +121,8 @@ export default {
               total: data.total
             },
             fromDate: payload.from,
-            toDate: payload.to
+            toDate: payload.to,
+            byCategory: Number(payload.byCategory)
           }
         })
       } else {

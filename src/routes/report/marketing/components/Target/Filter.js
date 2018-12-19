@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Radio } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
+const RadioGroup = Radio.Group
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 
@@ -29,6 +30,7 @@ const Filter = ({
   onDateChange,
   loading,
   resetList,
+  byCategory,
   form: {
     getFieldsValue,
     getFieldValue,
@@ -37,13 +39,18 @@ const Filter = ({
     getFieldDecorator
   },
   ...printProps }) => {
+  const printOpts = {
+    byCategory,
+    ...printProps
+  }
   const handleSearch = () => {
     const period = getFieldValue('rangePicker')
+    const byCategory = getFieldValue('byCategory')
     if (period) {
       const to = moment(period, 'YYYY-MM-DD').format('M')
       const from = moment(period, 'YYYY-MM-DD').subtract(1, 'months').format('M')
       const year = moment(period, 'YYYY-MM-DD').subtract(1, 'months').format('YYYY')
-      onDateChange(from, to, year)
+      onDateChange(from, to, year, byCategory)
     }
   }
 
@@ -76,6 +83,18 @@ const Filter = ({
               <MonthPicker disabledDate={disabledDate} size="large" />
             )}
           </FormItem>
+          <FormItem label="By">
+            {getFieldDecorator('byCategory', { initialValue: byCategory })(
+              <RadioGroup>
+                <Radio value={1}>
+                  Category
+                </Radio>
+                <Radio value={0}>
+                  Brand
+                </Radio>
+              </RadioGroup>
+            )}
+          </FormItem>
         </Form>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
@@ -96,8 +115,8 @@ const Filter = ({
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        <PrintPDF {...printProps} />
-        <PrintXLS {...printProps} />
+        <PrintPDF {...printOpts} />
+        <PrintXLS {...printOpts} />
       </Col>
     </Row>
   )

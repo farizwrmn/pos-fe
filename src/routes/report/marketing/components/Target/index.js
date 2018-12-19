@@ -5,18 +5,19 @@ import Filter from './Filter'
 import List from './List'
 
 const Detail = ({ marketingReport, dispatch, app, loading }) => {
-  const { listTrans, pagination, fromDate, toDate } = marketingReport
+  const { listTrans, pagination, fromDate, toDate, byCategory } = marketingReport
   const { user, storeInfo } = app
   const filterProps = {
+    byCategory,
     user,
     storeInfo,
     fromDate,
     toDate,
     listTrans,
-    onDateChange (from, to, year) {
+    onDateChange (from, to, year, byCategory) {
       dispatch({
         type: 'marketingReport/queryTarget',
-        payload: { from, to, year }
+        payload: { from, to, year, byCategory }
       })
     },
     resetList () {
@@ -31,6 +32,7 @@ const Detail = ({ marketingReport, dispatch, app, loading }) => {
   }
 
   const listProps = {
+    byCategory,
     dataSource: listTrans,
     pagination,
     loading: loading.effects['marketingReport/queryTarget']
