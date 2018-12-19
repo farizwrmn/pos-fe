@@ -39,8 +39,8 @@ const FormCustomer = ({
       targetSales: filteredData.targetSales,
       targetSalesQty: filteredData.targetSalesQty
     }))
-    const newCategory = item.brand.filter(x => x.month === data.month).map(filteredData => ({
-      brandId: filteredData.brandId,
+    const newCategory = item.category.filter(x => x.month === data.month).map(filteredData => ({
+      categoryId: filteredData.categoryId,
       month: currentModal + 1,
       targetSales: filteredData.targetSales,
       targetSalesQty: filteredData.targetSalesQty
@@ -50,8 +50,6 @@ const FormCustomer = ({
     newData.year = item.year
     newData.description = item.description
     newData.id = item.id
-    console.log('newBrand', newBrand)
-    console.log('newData', newData)
 
     return Object.assign({}, newData)
   }
