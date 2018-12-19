@@ -2,16 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { Button, Tabs, Modal, message } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 import ModalTarget from './ModalTarget'
+import ModalCopy from './ModalCopy'
 
 const TabPane = Tabs.TabPane
 
 const Target = ({ target, loading, productbrand, productcategory, dispatch, location, app }) => {
-  const { listTarget, modalTargetVisible, pagination, modalType, currentItem, currentModal, activeKey } = target
+  const { listTarget, modalCopyVisible, modalTargetVisible, pagination, modalType, currentItem, currentModal, activeKey } = target
   const { listBrand } = productbrand
   const { listCategory } = productcategory
   const { user, storeInfo } = app
@@ -196,6 +197,39 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
   }
 
+  const modalCopyProps = {
+    months,
+    width: '200px',
+    title: 'Previous Item',
+    item: currentItem,
+    visible: modalCopyVisible,
+    currentModal,
+    onSubmit (data, dataMonth) {
+      Modal.confirm({
+        title: `Edit with data from ${months[dataMonth - 1].month} ?`,
+        onOk () {
+          dispatch({
+            type: 'target/updateState',
+            payload: {
+              currentItem: data,
+              modalCopyVisible: false,
+              modalTargetVisible: false
+            }
+          })
+          message.info(`Item edited with ${months[dataMonth - 1].month} data`)
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'target/updateState',
+        payload: {
+          modalCopyVisible: false
+        }
+      })
+    }
+  }
+
   const modalTargetProps = {
     width: '500px',
     okText: 'Save',
@@ -205,12 +239,25 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
     item: currentItem,
     title: (months[currentModal] || {}).month ? `Target ${months[currentModal].month}` : 'Target',
     visible: modalTargetVisible,
-    onCancel () {
+    onShowModalCopy () {
       dispatch({
         type: 'target/updateState',
         payload: {
-          modalTargetVisible: false,
-          currentModal: null
+          modalCopyVisible: true
+        }
+      })
+    },
+    onCancel () {
+      Modal.confirm({
+        title: 'Cancel edit this item ?',
+        onOk () {
+          dispatch({
+            type: 'target/updateState',
+            payload: {
+              modalTargetVisible: false,
+              currentModal: null
+            }
+          })
         }
       })
     },
@@ -246,6 +293,7 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
         </TabPane>
       </Tabs>
       {modalTargetVisible && <ModalTarget {...modalTargetProps} />}
+      {modalCopyVisible && <ModalCopy {...modalCopyProps} />}
     </div>
   )
 }

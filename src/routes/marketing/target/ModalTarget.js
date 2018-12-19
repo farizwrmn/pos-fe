@@ -12,9 +12,11 @@ const FormCustomer = ({
   item,
   onCancel,
   onSubmit,
+  onShowModalCopy,
   form: {
     getFieldDecorator,
-    getFieldsValue
+    getFieldsValue,
+    validateFields
   }
 }) => {
   const getCurrentData = () => {
@@ -34,12 +36,18 @@ const FormCustomer = ({
     }))
     newData.year = item.year
     newData.description = item.description
+    newData.id = item.id
 
     return Object.assign({}, newData)
   }
   const handleOk = () => {
-    const data = getCurrentData()
-    onSubmit(data)
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getCurrentData()
+      onSubmit(data)
+    })
   }
   const modalOpts = {
     onOk: handleOk,
@@ -58,7 +66,9 @@ const FormCustomer = ({
       {...modalOpts}
     >
       <Form layout="vertical">
-        <Tabs type="card">
+        <Tabs type="card"
+          tabBarExtraContent={<Button onClick={onShowModalCopy}>Copy From...</Button>}
+        >
           <TabPane tab="Brand" key="Brand">
             {listBrand.map((data, index) => {
               return (

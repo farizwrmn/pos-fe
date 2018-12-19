@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     listTarget: [],
     modalTargetVisible: false,
     currentModal: null,
+    modalCopyVisible: false,
     pagination: {
       current: 1
     }
