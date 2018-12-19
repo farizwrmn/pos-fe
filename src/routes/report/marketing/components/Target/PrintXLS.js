@@ -82,24 +82,36 @@ const PrintXLS = ({ listTrans, fromDate, toDate, from = moment(fromDate, 'M').fo
         const gpmTo = ((dataTo.netto - costDataTo) / dataTo.netto) * 100
         const target = data.target
 
+        const ytdUnit = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalUnitEntry / Number(toDate))
+        const ytdQty = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalQty / Number(toDate))
+        const ytdNetto = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalPrice / Number(toDate))
+
+        const awal = (data.beginTotal[0] || {}).qtyBegin || 0
+        const In = (data.vwQtyIn[0] || {}).qtyIn || 0
+        const tempBegin = (data.tempBegin[0] || {}).tempBeginQty || 0
+        const realBegin = (data.realBegin[0] || {}).tempBeginQty || 0
+
+        const gpmYtdCheckifzero = data.tempBegin.length > 0 ? ((awal + In) - tempBegin) : ((awal + In) - realBegin)
+
+        const ytdGpm = !dataFrom.qty && !dataTo.qty ? 0 : (((dataLatest.currentTotalPrice - gpmYtdCheckifzero) / dataLatest.currentTotalPrice) * 100) / (data.tempBegin.length > 0 ? 1 : Number(toDate))
         let row = [
           { value: start, ...customStyle.count },
           { value: '.', ...customStyle.data },
           { value: data.categoryName, ...customStyle.data },
 
-          { value: dataLatest.currentTotalUnitEntry / Number(toDate) || '-', ...customStyle.count },
+          { value: ytdUnit || '-', ...customStyle.count },
           { value: dataFrom.unitEntry || '-', ...customStyle.count },
           { value: dataTo.unitEntry || '-', ...customStyle.count },
 
-          { value: dataLatest.currentTotalQty / Number(toDate) || '-', ...customStyle.count },
+          { value: ytdQty || '-', ...customStyle.count },
           { value: dataFrom.qty || '-', ...customStyle.count },
           { value: dataTo.qty || '-', ...customStyle.count },
 
-          { value: (dataLatest.currentTotalPrice / Number(toDate)) || '-', ...customStyle.count },
+          { value: ytdNetto || '-', ...customStyle.count },
           { value: dataFrom.netto || '-', ...customStyle.count },
           { value: dataTo.netto || '-', ...customStyle.count },
 
-          { value: '-', ...customStyle.count },
+          { value: ytdGpm > 0 ? ytdGpm : '-', ...customStyle.count },
           { value: gpmFrom || '-', ...customStyle.count },
           { value: gpmTo || '-', ...customStyle.count }
         ]

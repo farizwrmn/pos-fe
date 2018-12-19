@@ -31,23 +31,35 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate, from = moment(
         const gpmFrom = ((dataFrom.netto - costDataFrom) / dataFrom.netto) * 100
         const gpmTo = ((dataTo.netto - costDataTo) / dataTo.netto) * 100
 
+        const ytdUnit = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalUnitEntry / Number(toDate))
+        const ytdQty = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalQty / Number(toDate))
+        const ytdNetto = (!dataFrom.qty && !dataTo.qty ? 0 : dataLatest.currentTotalPrice / Number(toDate))
+
+        const awal = (data.beginTotal[0] || {}).qtyBegin || 0
+        const In = (data.vwQtyIn[0] || {}).qtyIn || 0
+        const tempBegin = (data.tempBegin[0] || {}).tempBeginQty || 0
+        const realBegin = (data.realBegin[0] || {}).tempBeginQty || 0
+
+        const gpmYtdCheckifzero = data.tempBegin.length > 0 ? ((awal + In) - tempBegin) : ((awal + In) - realBegin)
+
+        const ytdGpm = !dataFrom.qty && !dataTo.qty ? 0 : (((dataLatest.currentTotalPrice - (gpmYtdCheckifzero + (data.tempBegin.length > 0 ? (costDataTo) : 0))) / dataLatest.currentTotalPrice) * 100) / (data.tempBegin.length > 0 ? 1 : Number(toDate))
         const row = [
           { text: count, style: 'tableDataCount' },
           { text: data.categoryName, style: 'tableData' },
 
-          { text: formatNumberIndonesia(dataLatest.currentTotalUnitEntry / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(ytdUnit), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataFrom.unitEntry), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataTo.unitEntry), style: 'tableDataNumber' },
 
-          { text: formatNumberIndonesia(dataLatest.currentTotalQty / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(ytdQty), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataFrom.qty), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataTo.qty), style: 'tableDataNumber' },
 
-          { text: formatNumberIndonesia(dataLatest.currentTotalPrice / Number(toDate)), style: 'tableDataNumber' },
+          { text: formatNumberIndonesia(ytdNetto), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataFrom.netto), style: 'tableDataNumber' },
           { text: formatNumberIndonesia(dataTo.netto), style: 'tableDataNumber' },
 
-          { text: '-', style: 'tableDataNumber' },
+          { text: `${formatNumberIndonesia(ytdGpm)} ${ytdGpm > 0 ? '%' : ''}`, style: 'tableDataNumber' },
           { text: `${formatNumberIndonesia(gpmFrom)} ${gpmFrom ? '%' : ''}`, style: 'tableDataNumber' },
           { text: `${formatNumberIndonesia(gpmTo)} ${gpmTo ? '%' : ''}`, style: 'tableDataNumber' }
           // { text: formatNumberIndonesia(costDataFrom), style: 'tableDataNumber' },
