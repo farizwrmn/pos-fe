@@ -10,6 +10,8 @@ const FormCustomer = ({
   listCategory,
   currentModal,
   item,
+  modalType,
+  updateClosing,
   onCancel,
   onSubmit,
   onShowModalCopy,
@@ -36,6 +38,7 @@ const FormCustomer = ({
     }))
     newData.year = item.year
     newData.description = item.description
+    newData.closing = item.closing
     newData.storeId = item.storeId
     newData.id = item.id
 
@@ -55,10 +58,18 @@ const FormCustomer = ({
     onCancel,
     ...modalProps
   }
+  const handleClosing = (current, item) => {
+    const closeTarget = current + 1
+    let closed = JSON.parse(item.closing || '[]')
+    closed.push(closeTarget)
+    closed = closed.sort((a, b) => a - b)
+    updateClosing(closed)
+  }
 
   return (
     <Modal
       footer={[
+        (<div>{modalType === 'edit' && <Button key="back" type="danger" size="large" style={{ float: 'left' }} onClick={() => handleClosing(currentModal, item)}>Closing Report</Button>}</div>),
         <Button key="back" size="large" onClick={onCancel}>Cancel</Button>,
         <Button key="submit" type="primary" size="large" onClick={handleOk}>
           Save

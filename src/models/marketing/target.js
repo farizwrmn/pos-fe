@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { queryById, query, add, remove } from '../../services/marketing/target'
+import { queryById, query, add, remove, editClosing } from '../../services/marketing/target'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -84,6 +84,42 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
+        throw data
+      }
+    },
+
+    * updateClosing ({ payload }, { select, call, put }) {
+      const currentItem = yield select(({ target }) => target.currentItem)
+      if (!currentItem.id) {
+        message.warning('Something went wrong, please refresh.')
+        return
+      }
+      const data = yield call(editClosing, { id: currentItem.id, data: { closing: payload } })
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
+        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',

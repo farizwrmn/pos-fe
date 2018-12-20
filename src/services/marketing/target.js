@@ -35,6 +35,16 @@ export async function add (params) {
   })
 }
 
+export async function editClosing (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${marketing}/target/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({

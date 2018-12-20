@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Table, InputNumber, Button, Row, Col, Modal, Select } from 'antd'
+import { Form, Input, Table, InputNumber, message, Button, Row, Col, Modal, Select } from 'antd'
 import { lstorage } from 'utils'
 
 const Option = Select.Option
@@ -95,11 +95,16 @@ const FormCounter = ({
     {
       title: 'Month',
       dataIndex: 'month',
-      key: 'month'
+      key: 'month',
+      render: (text, record) => (item.closing && item.closing.includes(record.index) ? `${text} (Closed)` : text)
     }
   ]
 
   const onRowClickTarget = (record, index) => {
+    if ((item.closing || []).includes(index + 1)) {
+      message.warning('This period has been closed')
+      return
+    }
     Modal.confirm({
       title: `Edit ${months[index].month} sales target`,
       onOk () {
@@ -132,7 +137,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<InputNumber min={2017} max={2999} maxLength={4} autoFocus />)}
+            })(<InputNumber disabled={modalType === 'edit'} min={2017} max={2999} maxLength={4} autoFocus />)}
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {

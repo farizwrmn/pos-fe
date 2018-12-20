@@ -93,39 +93,51 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
 
   const months = [
     {
+      index: 1,
       month: 'January'
     },
     {
+      index: 2,
       month: 'February'
     },
     {
+      index: 3,
       month: 'March'
     },
     {
+      index: 4,
       month: 'April'
     },
     {
+      index: 5,
       month: 'May'
     },
     {
+      index: 6,
       month: 'June'
     },
     {
+      index: 7,
       month: 'July'
     },
     {
+      index: 8,
       month: 'August'
     },
     {
+      index: 9,
       month: 'September'
     },
     {
+      index: 10,
       month: 'October'
     },
     {
+      index: 11,
       month: 'November'
     },
     {
+      index: 12,
       month: 'December'
     }
   ]
@@ -235,6 +247,7 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
     okText: 'Save',
     listCategory,
     listBrand,
+    modalType,
     currentModal,
     item: currentItem,
     title: (months[currentModal] || {}).month ? `Target ${months[currentModal].month}` : 'Target',
@@ -244,6 +257,26 @@ const Target = ({ target, loading, productbrand, productcategory, dispatch, loca
         type: 'target/updateState',
         payload: {
           modalCopyVisible: true
+        }
+      })
+    },
+    updateClosing (data) {
+      Modal.confirm({
+        title: `Closing report for ${months[currentModal].month}?`,
+        onOk () {
+          dispatch({
+            type: 'target/updateClosing',
+            payload: data
+          })
+          dispatch({
+            type: 'target/updateState',
+            payload: {
+              modalTargetVisible: false,
+              modalCopyVisible: false,
+              currentModal: null,
+              currentItem: {}
+            }
+          })
         }
       })
     },

@@ -49,6 +49,7 @@ const FormCustomer = ({
     newData.category = item.category.filter(x => x.month !== currentModal + 1).concat(newCategory)
     newData.year = item.year
     newData.description = item.description
+    newData.closing = item.closing
     newData.storeId = item.storeId
     newData.id = item.id
 
