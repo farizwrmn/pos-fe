@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -11,9 +11,9 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.typeName} ?`,
+        title: `Are you sure delete ${record.counterName} ?`,
         onOk () {
-          deleteItem(record.typeCode)
+          deleteItem(record.id)
         }
       })
     }
@@ -21,45 +21,20 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'typeCode',
-      key: 'typeCode'
+      title: 'Store',
+      dataIndex: 'storeId',
+      key: 'storeId',
+      render: (text, record) => record.store.storeName
     },
     {
-      title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName'
+      title: 'Year',
+      dataIndex: 'year',
+      key: 'year'
     },
     {
-      title: 'Discount 01',
-      dataIndex: 'discPct01',
-      key: 'discPct01'
-    },
-    {
-      title: 'Discount 02',
-      dataIndex: 'discPct02',
-      key: 'discPct02'
-    },
-    {
-      title: 'Discount 03',
-      dataIndex: 'discPct03',
-      key: 'discPct03'
-    },
-    {
-      title: 'Discount Nominal',
-      dataIndex: 'discNominal',
-      key: 'discNominal'
-    },
-    {
-      title: 'Sell Price',
-      dataIndex: 'sellPrice',
-      key: 'sellPrice'
-    },
-    {
-      title: 'Show as Discount',
-      dataIndex: 'showAsDiscount',
-      key: 'showAsDiscount',
-      render: text => <Tag color={text ? 'green' : 'red'}>{text ? 'true' : 'false'}</Tag>
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     },
     {
       title: 'Operation',
@@ -77,8 +52,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       <Table {...tableProps}
         bordered
         columns={columns}
-        scroll={{ x: 1000 }}
         simple
+        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>

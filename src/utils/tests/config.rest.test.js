@@ -29,7 +29,12 @@ it('Should render Config Rest', () =>
     apiFollowUp: '/followup',
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
-    apiReportCashback: '/report/cashback'
+    apiReportCashback: '/report/cashback',
+    apiReportMarketing: '/report/marketing',
+    apiSocial: '/social',
+    apiMemberSocial: '/membersocial',
+    apiCms: '/cms',
+    apiUpload: '/upload'
   })
 )
 
@@ -92,7 +97,8 @@ it('Should render Config Api', () =>
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
     workOrder: '/wo',
-    maintenance: '/maintenance'
+    maintenance: '/maintenance',
+    marketing: '/marketing'
   })
 )
 

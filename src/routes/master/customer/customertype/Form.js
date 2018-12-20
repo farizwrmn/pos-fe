@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Select, InputNumber, Row, Col, Modal, message } from 'antd'
+import { Form, Input, Button, Select, InputNumber, Row, Col, Checkbox, Modal, message } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -71,7 +71,6 @@ const formCustomerType = ({
       const data = {
         ...getFieldsValue()
       }
-      data.pendingPayment = data.pendingPayment === 0 || data.pendingPayment === false || !data.pendingPayment ? '0' : '1'
       console.log('Submit')
       if (data.typeCode) {
         Modal.confirm({
@@ -180,6 +179,12 @@ const formCustomerType = ({
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >{children}
             </Select>)}
+          </FormItem>
+          <FormItem label="Show as Discount" {...formItemLayout}>
+            {getFieldDecorator('showAsDiscount', {
+              valuePropName: 'checked',
+              initialValue: item.id ? item.showAsDiscount : true
+            })(<Checkbox />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

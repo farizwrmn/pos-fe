@@ -38,6 +38,7 @@ module.exports = {
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
     apiReportCashback: '/report/cashback',
+    apiReportMarketing: '/report/marketing',
     apiSocial: '/social',
     apiMemberSocial: '/membersocial',
     apiCms: '/cms',
@@ -101,6 +102,7 @@ module.exports = {
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
     workOrder: '/wo',
-    maintenance: '/maintenance'
+    maintenance: '/maintenance',
+    marketing: '/marketing'
   }
 }

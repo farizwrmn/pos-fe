@@ -44,7 +44,7 @@ export default modelExtend(pageModel, {
         } else if (
           pathname === '/master/work-order/category' ||
           (pathname === '/master/product/specification' && activeKey === 0) ||
-          pathname === '/marketing/promo'
+          pathname === '/marketing/promo' || pathname === '/marketing/target'
         ) {
           dispatch({ type: 'query' })
         }

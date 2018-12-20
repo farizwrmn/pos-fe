@@ -45,6 +45,7 @@ const ListQueue = ({ pos, dispatch }) => {
         gender: trans.gender,
         phone: trans.phone,
         memberSellPrice: trans.memberSellPrice,
+        showAsDiscount: trans.showAsDiscount,
         memberPendingPayment: trans.memberPendingPayment
       })
       arrayMechanic.push({

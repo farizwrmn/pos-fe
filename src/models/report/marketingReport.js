@@ -3,7 +3,8 @@
  */
 import {
   queryHourly,
-  queryHour
+  queryHour,
+  queryTarget
 } from '../../services/report/marketing'
 
 export default {
@@ -18,6 +19,7 @@ export default {
     selectedBrand: [],
     tableHeader: [],
     filterModalVisible: false,
+    byCategory: 1,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -38,6 +40,23 @@ export default {
             type: 'updateState',
             payload: {
               activeKey: activeKey || '1'
+            }
+          })
+        } else if (location.pathname === '/report/marketing/target') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '1',
+              listTrans: [],
+              fromDate: '',
+              toDate: ''
+            }
+          })
+        } else {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: '1'
             }
           })
         }
@@ -85,6 +104,25 @@ export default {
             transTime,
             fromDate,
             toDate
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryTarget ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTarget, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              total: data.total
+            },
+            fromDate: payload.from,
+            toDate: payload.to,
+            byCategory: Number(payload.byCategory)
           }
         })
       } else {
