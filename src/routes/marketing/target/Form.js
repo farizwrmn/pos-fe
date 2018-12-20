@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Table, InputNumber, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Table, InputNumber, Button, Row, Col, Modal, Select } from 'antd'
+import { lstorage } from 'utils'
 
+const Option = Select.Option
+const { getListUserStores } = lstorage
 
 const FormItem = Form.Item
 
@@ -62,6 +65,8 @@ const FormCounter = ({
     onCancel()
     resetFields()
   }
+  const data = getListUserStores()
+  const Options = (data || []).length > 0 ? data.map(data => <Option value={data.value} key={data.value}>{data.label}</Option>) : []
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -107,6 +112,18 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
+          <FormItem label="Store" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('storeId', {
+              initialValue: item.storeId ? item.storeId : lstorage.getCurrentUserStore(),
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select disabled={modalType === 'edit'} placeholder="Choose Store">
+              {Options}
+            </Select>)}
+          </FormItem>
           <FormItem label="Year" hasFeedback {...formItemLayout}>
             {getFieldDecorator('year', {
               initialValue: item.year,

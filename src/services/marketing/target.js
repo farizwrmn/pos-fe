@@ -15,6 +15,7 @@ export async function queryById (params) {
 }
 
 export async function query (params) {
+  params.order = '-year,storeId'
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${marketing}/target`,

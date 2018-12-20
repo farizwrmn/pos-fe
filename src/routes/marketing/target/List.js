@@ -21,6 +21,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
+      title: 'Store',
+      dataIndex: 'storeId',
+      key: 'storeId',
+      render: (text, record) => record.store.storeName
+    },
+    {
       title: 'Year',
       dataIndex: 'year',
       key: 'year'

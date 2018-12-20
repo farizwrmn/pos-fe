@@ -21,7 +21,7 @@ const Filter = ({
 }) => {
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
+    if (field.q === undefined || field.q === '') delete field.q
     onFilterChange(field)
   }
 
@@ -30,9 +30,9 @@ const Filter = ({
       <Col span={12} />
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('counterName')(
+          {getFieldDecorator('q')(
             <Search
-              placeholder="Search Counter"
+              placeholder="Search"
               onSearch={() => handleSubmit()}
             />
           )}

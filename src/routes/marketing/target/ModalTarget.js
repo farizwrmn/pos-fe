@@ -36,6 +36,7 @@ const FormCustomer = ({
     }))
     newData.year = item.year
     newData.description = item.description
+    newData.storeId = item.storeId
     newData.id = item.id
 
     return Object.assign({}, newData)
