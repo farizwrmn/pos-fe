@@ -30,7 +30,11 @@ it('Should render Config Rest', () =>
     apiSequence: '/sequences',
     apiLoyalty: '/loyalty',
     apiReportCashback: '/report/cashback',
-    apiReportMarketing: '/report/marketing'
+    apiReportMarketing: '/report/marketing',
+    apiSocial: '/social',
+    apiMemberSocial: '/membersocial',
+    apiCms: '/cms',
+    apiUpload: '/upload'
   })
 )
 

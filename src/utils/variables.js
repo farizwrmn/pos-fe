@@ -11,6 +11,7 @@ const reArrangeMember = (item) => {
     memberTypeName: item.memberTypeName,
     memberTypeId: item.memberTypeId,
     memberSellPrice: item.memberSellPrice,
+    showAsDiscount: item.showAsDiscount,
     memberPendingPayment: item.memberPendingPayment,
     gender: item.gender,
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
@@ -55,6 +56,7 @@ const reArrangeMemberId = (item) => {
     memberTypeName: item.memberTypeName,
     memberTypeId: item.memberTypeId,
     memberSellPrice: item.memberSellPrice,
+    showAsDiscount: item.showAsDiscount,
     memberPendingPayment: item.memberPendingPayment,
     gender: item.gender,
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
