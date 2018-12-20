@@ -96,13 +96,13 @@ const FormCounter = ({
       title: 'Month',
       dataIndex: 'month',
       key: 'month',
-      render: (text, record) => (item.closing && item.closing.includes(record.index) ? `${text} (Closed)` : text)
+      render: (text, record) => (item.closing && JSON.parse(item.closing || '[]').includes(record.index) ? `${text} (Closed)` : text)
     }
   ]
 
   const onRowClickTarget = (record, index) => {
-    if ((item.closing || []).includes(index + 1)) {
-      message.warning('This period has been closed')
+    if (JSON.parse(item.closing || '[]').includes(index + 1)) {
+      message.warning('This period has been closed', 1)
       return
     }
     Modal.confirm({
