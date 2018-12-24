@@ -9,9 +9,9 @@ import List from './List'
 import Filter from './Filter'
 // import Sticker from './Sticker'
 // import Shelf from './Shelf'
+import PrintPDFSpecification from './PrintPDFSpecification'
+import PrintXLSSpecification from './PrintXLSSpecification'
 import PrintPDF from './PrintPDF'
-import PrintShelf from './PrintShelf'
-import PrintSticker from './PrintSticker'
 import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
@@ -19,7 +19,6 @@ const TabPane = Tabs.TabPane
 const ProductStock = ({ specification, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listVariantStock } = variantStock
   const { list,
-    // listItem, update,
     changed,
     listPrintAllStock,
     showPDFModal,
@@ -31,9 +30,6 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     activeKey,
     disable,
     show,
-    // showModalProduct, modalProductType, period,
-    listSticker,
-    // selectedSticker,
     pagination,
     stockLoading,
     advancedForm,
@@ -341,8 +337,9 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
 
   const PDFModalProps = {
     visible: showPDFModal,
+    footer: null,
+    width: '600px',
     title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
-    width: 375,
     onCancel () {
       dispatch({
         type: 'productstock/updateState',
@@ -378,14 +375,35 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
 
   let buttonClickPDF = (changed && listPrintAllStock.length) ? (<PrintPDF data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
   let buttonClickXLS = (changed && listPrintAllStock.length) ? (<PrintXLS data={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+
+  let buttonClickPDFSpecification = (changed && listPrintAllStock.length) ? (<PrintPDFSpecification data={listPrintAllStock} name="Print Specification" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Specification</Button>)
+  let buttonClickXLSSpecification = (changed && listPrintAllStock.length) ? (<PrintXLSSpecification data={listPrintAllStock} name="Print Specification" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Specification</Button>)
   let notification = (changed && listPrintAllStock.length) ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
   let printmode
   if (mode === 'pdf') {
-    printmode = (<Row><Col md={12}>{buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
-      <Col md={12}><PrintPDF data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+    printmode = (<Row>
+      <Col md={8}>
+        {buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p>
+      </Col>
+      <Col md={8}>
+        <PrintPDF data={list} name="Print Current Page" {...printProps} />
+      </Col>
+      <Col md={8}>
+        {buttonClickPDFSpecification}
+      </Col>
+    </Row>)
   } else {
-    printmode = (<Row><Col md={12}>{buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p></Col>
-      <Col md={12}><PrintXLS data={list} name="Print Current Page" {...printProps} /></Col></Row>)
+    printmode = (<Row>
+      <Col md={8}>
+        {buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p>
+      </Col>
+      <Col md={8}>
+        <PrintXLS data={list} name="Print Current Page" {...printProps} />
+      </Col>
+      <Col md={8}>
+        {buttonClickXLSSpecification}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p>
+      </Col>
+    </Row>)
   }
 
   let moreButtonTab
@@ -410,124 +428,13 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
         </div>
       )
       break
-    case '2':
-      moreButtonTab = (<PrintSticker stickers={listSticker} {...printProps} />)
-      break
-    case '3':
-      moreButtonTab = (<PrintShelf stickers={listSticker} {...printProps} />)
-      break
     default:
       break
   }
 
-  // const stickerProps = {
-  //   showModalProduct,
-  //   listItem,
-  //   update,
-  //   period,
-  //   listSticker,
-  //   modalProductType,
-  //   selectedSticker,
-  //   onShowModalProduct (key) {
-  //     dispatch({
-  //       type: 'productstock/updateState',
-  //       payload: {
-  //         showModalProduct: true,
-  //         modalProductType: key,
-  //         selectedSticker: {}
-  //       }
-  //     })
-  //   },
-  //   onSelectSticker (sticker) {
-  //     dispatch({
-  //       type: 'productstock/updateState',
-  //       payload: {
-  //         update: true,
-  //         selectedSticker: sticker
-  //       }
-  //     })
-  //   },
-  //   onCloseModalProduct () {
-  //     dispatch({
-  //       type: 'productstock/updateState',
-  //       payload: {
-  //         update: false,
-  //         showModalProduct: false,
-  //         modalProductType: '',
-  //         listItem: [],
-  //         period: []
-  //       }
-  //     })
-  //   },
-  //   onAutoSearch (value) {
-  //     if (value.length < 1) {
-  //       dispatch({
-  //         type: 'productstock/updateState',
-  //         payload: {
-  //           listItem: []
-  //         }
-  //       })
-  //     } else if (value.length > 0) {
-  //       dispatch({
-  //         type: 'productstock/queryItem',
-  //         payload: {
-  //           q: value
-  //         }
-  //       })
-  //     }
-  //   },
-  //   addSticker (sticker) {
-  //     dispatch({
-  //       type: 'productstock/addSticker',
-  //       payload: {
-  //         sticker
-  //       }
-  //     })
-  //   },
-  //   deleteSticker (sticker) {
-  //     dispatch({
-  //       type: 'productstock/deleteSticker',
-  //       payload: {
-  //         sticker
-  //       }
-  //     })
-  //   },
-  //   updateSticker (selectedRecord, changedRecord) {
-  //     dispatch({
-  //       type: 'productstock/updateSticker',
-  //       payload: {
-  //         selectedRecord, changedRecord
-  //       }
-  //     })
-  //   },
-  //   onSearchUpdateSticker (value) {
-  //     if (value.updatedAt.length !== 0) {
-  //       dispatch({
-  //         type: 'productstock/queryItem',
-  //         payload: {
-  //           ...value
-  //         }
-  //       })
-  //     } else {
-  //       dispatch({
-  //         type: 'productstock/updateState',
-  //         payload: {
-  //           listItem: []
-  //         }
-  //       })
-  //     }
-  //     dispatch({
-  //       type: 'productstock/updateState',
-  //       payload: {
-  //         period: value.updatedAt
-  //       }
-  //     })
-  //   }
-  // }
-
   return (
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
-      {showPDFModal && <Modal footer={[]} {...PDFModalProps}>
+      {showPDFModal && <Modal {...PDFModalProps}>
         {printmode}
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -538,12 +445,6 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
           <Filter {...filterProps} />
           <List {...listProps} />
         </TabPane>
-        {/* <TabPane tab="Sticker" key="2" >
-          <Sticker {...stickerProps} />
-        </TabPane>
-        <TabPane tab="Shelf" key="3" >
-          <Shelf {...stickerProps} />
-        </TabPane> */}
       </Tabs>
     </div >
   )

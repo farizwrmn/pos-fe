@@ -62,6 +62,7 @@ const ModalMobile = ({
     memberCode: checkMember.info.memberCode
   } : { memberStatus: '', memberCode: '' }
   const dataMember = (checkMember.dataMember) ? {
+    mobileNumber: checkMember.dataMember.mobileNumber,
     email: checkMember.dataMember.memberEmail,
     name: checkMember.dataMember.memberName,
     point: checkMember.dataMember.memberPoint,
@@ -310,6 +311,7 @@ const ModalMobile = ({
                     </FormItem>
                     <FormItem label="Mobile Number" hasFeedback {...formMandatoryField}>
                       {getFieldDecorator('mobileNumber', {
+                        initialValue: dataMember.mobileNumber,
                         rules: [
                           {
                             required: !notRequired,

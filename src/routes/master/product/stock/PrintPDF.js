@@ -29,7 +29,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN DAFTAR STOK BARANG',
+            text: 'DAFTAR STOK BARANG',
             style: 'header'
           },
           {
@@ -44,11 +44,10 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
   const tableHeader = [
     [
       { text: 'NO', style: 'tableHeader' },
-      { text: 'ID', style: 'tableHeader' },
+      { text: 'CODE', style: 'tableHeader' },
       { text: 'NAMA', style: 'tableHeader' },
       { text: 'MEREK', style: 'tableHeader' },
       { text: 'KATEGORI', style: 'tableHeader' },
-      { text: 'ASPEK RASIO', style: 'tableHeader' },
       { text: 'HARGA JUAL', style: 'tableHeader' },
       { text: 'HARGA POKOK', style: 'tableHeader' },
       { text: 'HARGA DIST-1', style: 'tableHeader' },
@@ -57,25 +56,19 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
   ]
 
   const createTableBody = (tableBody) => {
-    let body = []
-    let counter = 1
-    for (let key in tableBody) {
-      if (tableBody.hasOwnProperty(key)) {
-        let row = []
-        row.push({ text: counter.toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key].productCode || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].productName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].brandName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].categoryName || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].aspectRatio || '0').toString(), alignment: 'right' })
-        row.push({ text: (tableBody[key].sellPrice || 0).toLocaleString(), alignment: 'right' })
-        row.push({ text: (tableBody[key].costPrice || 0).toLocaleString(), alignment: 'right' })
-        row.push({ text: (tableBody[key].distPrice01 || 0).toLocaleString(), alignment: 'right' })
-        row.push({ text: (tableBody[key].distPrice02 || 0).toLocaleString(), alignment: 'right' })
-        body.push(row)
-      }
-      counter += 1
-    }
+    const body = tableBody.map((specification, index) => (
+      [
+        { text: index + 1, alignment: 'center' },
+        { text: (specification.productCode || '').toString(), alignment: 'left' },
+        { text: (specification.productName || '').toString(), alignment: 'left' },
+        { text: (specification.brandName || '').toString(), alignment: 'left' },
+        { text: (specification.categoryName || '').toString(), alignment: 'left' },
+        { text: (specification.sellPrice || 0).toLocaleString(), alignment: 'right' },
+        { text: (specification.costPrice || 0).toLocaleString(), alignment: 'right' },
+        { text: (specification.distPrice01 || 0).toLocaleString(), alignment: 'right' },
+        { text: (specification.distPrice02 || 0).toLocaleString(), alignment: 'right' }
+      ]
+    ))
     return body
   }
 
@@ -126,7 +119,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    width: ['3%', '12%', '22%', '15%', '9%', '7%', '7%', '8%', '8%', '8%'],
+    width: ['4%', '15%', '23%', '16%', '10%', '8%', '8%', '8%', '8%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [15, 140, 15, 60],

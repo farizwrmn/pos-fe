@@ -32,13 +32,11 @@ export async function srvGetMemberStatus (params) {
   })
 }
 export async function srvActivateMember (params) {
-  let bodyData = {}
-  if (params.memberCode !== 'code') bodyData.memberCode = params.memberCode
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${apiMobile}/members/${params.memberCardId}`,
     method: 'put',
     headers: apiHeaderToken,
-    data: bodyData
+    data: params
   })
 }

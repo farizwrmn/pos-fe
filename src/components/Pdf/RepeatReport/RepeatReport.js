@@ -7,12 +7,46 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 const RepeatReport = ({
   name,
-  className,
+  className = 'button-width02 button-extra-large bgcolor-blue',
+  buttonSize = 'large',
   width = [],
+  iconSize = 'icon-large',
+  buttonStyle = {},
+  buttonType = 'dashed',
   tableMargin = [0, 0],
   pageMargins = [0, 0, 0, 0],
   pageOrientation = 'portrait',
-  tableStyle,
+  tableStyle = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
+    subheader: {
+      fontSize: 16,
+      bold: true,
+      margin: [0, 10, 0, 5]
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15]
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+      alignment: 'center'
+    },
+    tableTitle: {
+      fontSize: 14,
+      margin: [0, 20, 0, 8]
+    },
+    tableFooter: {
+      margin: [0, 0, 0, 0],
+      fontSize: 9,
+      alignment: 'left'
+    }
+  },
   pageSize = 'A4',
   tableBody = [],
   header = [],
@@ -32,6 +66,7 @@ const RepeatReport = ({
         {
           writable: true,
           margin: tableMargin,
+          dontBreakRows: true,
           table: {
             widths: width[i],
             body
@@ -67,12 +102,13 @@ const RepeatReport = ({
     }
   }
   return (
-    <Button type="dashed"
-      size="large"
+    <Button type={buttonType}
+      size={buttonSize}
       className={className}
       onClick={() => printPdf()}
+      style={buttonStyle}
     >
-      <Icon type="file-pdf" className="icon-large" />
+      <Icon type="file-pdf" className={iconSize} />
       {name}
     </Button>
   )
