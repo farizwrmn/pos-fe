@@ -46,12 +46,16 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
   if (checkTimeDiff > 500) {
     console.log('something fishy', checkTimeDiff)
   } else {
+    const currentDate = moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')
     if (!currentCashier.period) {
       infoCashRegister.desc = '* Select the correct cash register'
       infoCashRegister.dotVisible = true
-    } else if (currentCashier.period !== moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')) {
-      infoCashRegister.desc = '* The open cash register date is different from current date'
-      infoCashRegister.dotVisible = true
+    } else if (currentCashier.period !== currentDate) {
+      if (currentCashier.period && currentDate) {
+        const diffDays = moment.duration(moment(currentCashier.period, 'YYYY-MM-DD').diff(currentDate)).asDays()
+        infoCashRegister.desc = `${diffDays} day${Math.abs(diffDays) > 1 ? 's' : ''}`
+        infoCashRegister.dotVisible = true
+      }
     }
     infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
     infoCashRegister.CaptionObject =
@@ -346,6 +350,7 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     cashierId: user.userid,
     infoCashRegister,
     dispatch,
+    loading,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     getCashier () {

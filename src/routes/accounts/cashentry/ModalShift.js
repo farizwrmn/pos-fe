@@ -23,6 +23,7 @@ const ModalShift = ({
   findCounter,
   listCounter,
   infoCashRegister,
+  loading,
   dispatch,
   cashierId,
   onOk,
@@ -79,7 +80,7 @@ const ModalShift = ({
       {...modalOpts}
       footer={[
         <Button key="back" size="large" onClick={handleBack}>Home</Button>,
-        <Button key="submit" type="primary" size="large" onClick={handleOk}>
+        <Button disabled={loading.effects['pos/cashRegister']} key="submit" type="primary" size="large" onClick={handleOk}>
           Confirm
         </Button>
       ]}

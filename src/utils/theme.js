@@ -45,6 +45,6 @@ module.exports = {
     borderSplit: '#e9e9e9',
     warning: '#fac450',
     normal: '#108ee9',
-    error: '#f50'
+    error: '#ff0000'
   }
 }
