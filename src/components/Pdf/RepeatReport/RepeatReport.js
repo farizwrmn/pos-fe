@@ -76,28 +76,27 @@ const RepeatReport = ({
     }
     return contentPdf
   }
-  const printPdf = () => {
+  let docDefinition = {
+    pageSize,
+    pageOrientation,
+    pageMargins,
+    header,
+    content: createPdfLineItems(tableBody),
+    footer,
+    styles: tableStyle
+  }
+
+  const printPdf = (definition) => {
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
       })
     } else {
-      let contentPdf = createPdfLineItems(tableBody)
-
-      let docDefinition = {
-        pageSize,
-        pageOrientation,
-        pageMargins,
-        header,
-        content: contentPdf,
-        footer,
-        styles: tableStyle
-      }
       try {
-        pdfMake.createPdf(docDefinition).open()
+        pdfMake.createPdf(definition).open()
       } catch (e) {
-        pdfMake.createPdf(docDefinition).download()
+        pdfMake.createPdf(definition).download()
       }
     }
   }
@@ -105,7 +104,7 @@ const RepeatReport = ({
     <Button type={buttonType}
       size={buttonSize}
       className={className}
-      onClick={() => printPdf()}
+      onClick={() => printPdf(docDefinition)}
       style={buttonStyle}
     >
       <Icon type="file-pdf" className={iconSize} />

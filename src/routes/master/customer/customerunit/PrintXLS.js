@@ -1,19 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BasicExcelReport } from 'components'
+import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ dataSource, dataCustomer, storeInfo }) => {
+const PrintXLS = ({ dataSource, dataList, storeInfo, name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
       family: 4,
       size: 12
-    },
-    title: {
-      name: 'Courier New',
-      family: 4,
-      size: 12,
-      underline: true
     },
     tableHeader: {
       name: 'Courier New',
@@ -32,82 +26,125 @@ const PrintXLS = ({ dataSource, dataCustomer, storeInfo }) => {
       right: { style: 'thin', color: { argb: '000000' } }
     }
   }
-
-  const createTableBody = (list) => {
-    let body = []
-    let start = 1
-    for (let key in list) {
-      if (list.hasOwnProperty(key)) {
-        let data = list[key]
-        let row = []
-        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.policeNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.merk || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.model || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.type || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.year || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.chassisNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.machineNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        body.push(row)
-      }
-      start += 1
-    }
-    return body
-  }
-
   const title = [
-    { value: 'LAPORAN DAFTAR TIPE CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    {},
-    { value: `${dataCustomer.memberName}(${dataCustomer.memberCode})`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: 'DAFTAR SPESIFIKASI BARANG', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
-
-  const tableHeader = [
-    [
-      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO PLAT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'MEREK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'MODEL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TIPE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TAHUN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO RANGKA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO MESIN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
-    ]
-  ]
-
-  let tableBody
-  try {
-    tableBody = createTableBody(dataSource)
-  } catch (e) {
-    console.log(e)
+  const tableHeaderStyle = {
+    alignment: { vertical: 'middle', horizontal: 'center' },
+    font: styles.tableHeader,
+    border: styles.tableBorder
   }
+  const tableHeaderContent = [
+    'NO',
+    'NO PLAT',
+    'MEREK',
+    'MODEL',
+    'TYPE',
+    'TAHUN',
+    'NO RANGKA',
+    'NO MESIN'
+  ]
+  const tableHeader = [
+    tableHeaderContent.map(content => ({ value: content, ...tableHeaderStyle }))
+  ]
 
+  let tableTitle = dataSource
+    .filter(filtered => filtered.memberUnit.length > 0)
+    .map(dataTitle => ([
+      [
+        { value: 'MEMBER', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${dataTitle.memberCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
+        { value: `${dataTitle.memberName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
+    ]))
+
+  let tableBody = dataSource
+    .filter(filtered => filtered.memberUnit.length > 0)
+    .map(dataBody => dataBody.memberUnit
+      .map((listData, index) => {
+        const datalist = [
+          (index + 1 || '').toString(),
+          listData.policeNo,
+          listData.merk,
+          listData.model,
+          listData.type,
+          (listData.year || '').toString(),
+          listData.chassisNo,
+          listData.machineNo
+        ]
+        return datalist.map(dataDetail => ({
+          value: dataDetail,
+          alignment: { vertical: 'middle', horizontal: 'middle' },
+          font: styles.tableBody,
+          border: styles.tableBorder
+        }))
+      }))
+
+  const getTableFilters = (data, dataHeader) => {
+    const resultData = [dataHeader.map(dataHeaderDetail => ({ value: dataHeaderDetail, ...tableHeaderStyle }))]
+    return resultData.concat(data
+      .map((listData, index) => {
+        const datalist = [
+          (index + 1 || '').toString(),
+          listData.memberCode,
+          listData.memberName,
+          listData.policeNo,
+          listData.merk,
+          listData.model,
+          listData.type,
+          (listData.year || '').toString(),
+          listData.chassisNo,
+          listData.machineNo
+        ]
+        return datalist.map(dataDetail => ({
+          value: dataDetail,
+          alignment: { vertical: 'middle', horizontal: 'middle' },
+          font: styles.tableBody,
+          border: styles.tableBorder
+        }))
+      })
+    )
+  }
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
+    buttonSize: 'large',
+    name,
     className: '',
-    name: 'Excel',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data: dataSource.filter(filtered => filtered.memberUnit.length > 0),
     title,
     tableHeader,
-    tableBody,
-    fileName: 'CustomerUnit-Summary'
+    tableFilter: getTableFilters(dataList, [
+      'NO',
+      'CODE',
+      'MEMBER',
+      'NO PLAT',
+      'MEREK',
+      'MODEL',
+      'TYPE',
+      'TAHUN',
+      'NO RANGKA',
+      'NO MESIN'
+    ]),
+    fileName: 'ProductSpecification-Summary',
+    tableTitle,
+    tableBody
   }
 
   return (
-    <BasicExcelReport {...XLSProps} />
+    <RepeatExcelReport {...XLSProps} />
   )
 }
 
 PrintXLS.propTypes = {
-  dataSource: PropTypes.object,
+  data: PropTypes.object,
   storeInfo: PropTypes.object
 }
 

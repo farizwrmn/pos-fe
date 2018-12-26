@@ -3,6 +3,7 @@ import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   queryUnits,
+  queryUnitsAll,
   addUnit,
   removeUnit,
   editUnit,
@@ -36,6 +37,7 @@ export default modelExtend(pageModel, {
     listBrand: [],
     listModel: [],
     listType: [],
+    listUnitAll: [],
     selected: { brand: {}, model: {}, type: {} },
     pagination: {
       current: 1
@@ -61,7 +63,19 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
+    * getAll (payload, { select, call, put }) {
+      const listUnit = yield select(({ customerunit }) => customerunit.listUnit)
+      const data = yield call(queryUnitsAll)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listUnit,
+            listUnitAll: data.data
+          }
+        })
+      }
+    },
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(queryUnits, { memberCode: payload.code })
       if (data) {

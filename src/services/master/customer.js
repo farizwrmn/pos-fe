@@ -2,6 +2,16 @@ import { request, config, crypt } from '../../utils'
 
 const { customers, assets } = config.api
 
+export async function queryUnitsAll (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}unit`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
