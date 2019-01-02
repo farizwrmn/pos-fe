@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs, Dropdown, Menu, Icon } from 'antd'
+import { Button, Tabs, Dropdown, Menu } from 'antd'
+import _ from 'lodash'
 import Form from './Form'
 import List from './List'
 import PrintPDF from './PrintPDF'
@@ -12,7 +13,7 @@ import ModalBrowse from './Modal'
 const TabPane = Tabs.TabPane
 
 const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app }) => {
-  const { listUnit, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
+  const { listUnit, listUnitAll, modalType, currentItem, activeKey, disable, customerInfo } = customerunit
   const { user, storeInfo } = app
   const { list, listCustomer, modalVisible, dataCustomer, searchText, pagination } = customer
 
@@ -208,24 +209,44 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
   }
 
   const printProps = {
-    dataSource: listUnit,
+    dataSource: _.uniqBy(listUnit, 'memberId').map(data => ({
+      ...data,
+      memberUnit: listUnit.filter(x => x.memberId === data.memberId)
+    })),
     dataCustomer,
     user,
     storeInfo
   }
 
+  const getMemberUnitData = ({ key }) => {
+    if (key === '5' && listUnitAll.length === 0 && !loading.effects['customerunit/getAll']) {
+      dispatch({
+        type: 'customerunit/getAll'
+      })
+    }
+  }
+  const dataAll = _.uniqBy(listUnitAll, 'memberId').map(data => ({
+    ...data,
+    memberUnit: listUnitAll.filter(x => x.memberId === data.memberId)
+  }))
   const menu = (
-    <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    <Menu onClick={getMemberUnitData}>
+      {_.uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item key="1"><PrintPDF name="PDF (current)" {...printProps} /></Menu.Item> : null}
+      {_.uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item disabled={listUnit.length === 0} key="2"><PrintXLS name="XLS (current)" {...printProps} /></Menu.Item> : null}
+      {listUnitAll.length > 0 && listUnitAll.length <= 500 && <Menu.Item key="3"><PrintPDF name="PDF (all)" {...printProps} dataSource={dataAll} /></Menu.Item>}
+      {listUnitAll.length > 0 && <Menu.Item key="4"><PrintXLS name="XLS (all)" {...printProps} dataSource={dataAll} dataList={dataAll} /></Menu.Item>}
+      {listUnitAll.length === 0 && <Menu.Item key="5">Get All</Menu.Item>}
     </Menu>
   )
 
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => clickBrowse()}>Browse</Button> : (listUnit.length > 0 ? (<Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown>) : '')
+  const moreButtonTab = activeKey === '0' ?
+    <Button onClick={() => clickBrowse()}>Browse</Button>
+    :
+    (<Dropdown overlay={menu}>
+      <Button icon={loading.effects['customerunit/getAll'] ? 'loading' : 'printer'} style={{ marginLeft: 8 }}>
+        Print
+      </Button>
+    </Dropdown>)
 
   return (
     <div className="content-inner">

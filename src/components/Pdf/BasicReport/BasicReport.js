@@ -15,7 +15,27 @@ const BasicReport = ({
   pageMargins = [0, 0, 0, 0],
   pageSize = 'A4',
   pageOrientation = 'portrait',
-  tableStyle,
+  tableStyle = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
+    },
+    title: {
+      fontSize: 12,
+      alignment: 'left',
+      margin: [0, 5, 0, 0]
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      alignment: 'center'
+    },
+    tableBody: {
+      fontSize: 11
+    }
+  },
   layout = '',
   tableHeader = [],
   tableBody = [],
