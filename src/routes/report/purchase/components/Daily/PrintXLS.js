@@ -14,7 +14,7 @@ const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listDaily, dataSource, fromDate, toDate, storeInfo, category, brand }) => {
   let qtyTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.grandTotal), 0)
+  let grandTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
   let discountTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.totalDiscount), 0)
   let dppTotal = listDaily.reduce((cnt, o) => cnt + (parseFloat(o.DPP)), 0)
   let ppnTotal = listDaily.reduce((cnt, o) => cnt + parseFloat(o.PPN), 0)
