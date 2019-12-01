@@ -10,7 +10,7 @@ import {
 } from '../config.main'
 
 it('Should render App name', () =>
-  expect(name).toEqual('DMI-PoS')
+  expect(name).toEqual('Stock-POS')
 )
 
 it('Should render App Version', () =>

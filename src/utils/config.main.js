@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'DMI-PoS',
+  name: 'Stock-POS',
   version: '2018.07.003',
   prefix: 'dmiPos',
   footerText: 'Darkotech Mandiri Indonesia',
