@@ -11,6 +11,5 @@ package-lock.json
 Dockerfile
 .dockerignore
 .vscode
-public
 build/
 coverage/
