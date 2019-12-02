@@ -83,6 +83,6 @@
     "test": "set NODE_ENV=test && jest --coverage",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "serve": "serve -s dist",
-    "start": "node ./build/runServer.js"
+    "start": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server"
   }
 }
