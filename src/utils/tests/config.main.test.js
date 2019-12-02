@@ -22,7 +22,7 @@ it('Should render App Prefix', () =>
 )
 
 it('Should render App footerText', () =>
-  expect(footerText).toEqual('Darkotech Mandiri Indonesia')
+  expect(footerText).toEqual('Smartech Indo')
 )
 
 it('Should render App footerSubText', () =>

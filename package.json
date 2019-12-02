@@ -54,7 +54,6 @@
     "html-webpack-plugin": "^2.30.1",
     "jest": "^23.6.0",
     "jsonp": "^0.2.1",
-    "pre-commit": "^1.2.2",
     "rc-tween-one": "^1.0.0",
     "redbox-react": "^1.2.10",
     "roadhog": "0.6.0",
@@ -68,10 +67,6 @@
       "./src/utils/browserMocks.js"
     ]
   },
-  "pre-commit": [
-    "precommit-msg",
-    "lint"
-  ],
   "scripts": {
     "dev": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server",
     "dev8888": "set BROWSER=none&&set HOST=0.0.0.0&&PORT=8888 roadhog server",
