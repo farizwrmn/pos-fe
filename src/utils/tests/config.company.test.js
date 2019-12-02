@@ -10,7 +10,7 @@ it('Should render API Id Company', () =>
 )
 
 it('Should render API companyName', () =>
-  expect(companyName).toEqual('Darkotech Mandiri Indonesia')
+  expect(companyName).toEqual('Smartech Indo')
 )
 
 it('Should render API companyName', () =>
