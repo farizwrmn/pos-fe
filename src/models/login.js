@@ -18,6 +18,17 @@ export default {
     logo: '/logo.png'
   },
 
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        const { pathname } = location
+        if (pathname === '/login') {
+          dispatch({ type: 'login/getCompany', payload: { cid: 'MBI' } })
+        }
+      })
+    }
+  },
+
   effects: {
     * getCompany ({ payload }, { put }) {
       // const userCompany = yield call(getUserCompany, payload)
@@ -110,7 +121,7 @@ export default {
     * loginSuccess ({ payload }, { put }) {
       const { data } = payload
       const from = queryURL('from')
-      localStorage.setItem('sidebarColor', '#FFFFFF')
+      localStorage.setItem('sidebarColor', '#5A87b5')
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
