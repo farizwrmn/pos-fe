@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input, Cascader, Popover } from 'antd'
+import { Button, Row, Form, Input, Cascader, Popover, Col } from 'antd'
 import { config, ip } from 'utils'
 import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
@@ -88,9 +88,24 @@ const Login = ({
             </FormItem>
           }
           <Row>
-            <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
-              Sign in
-            </Button>
+            <Col span={4}>
+              <Button
+                shape="circle"
+                size="large"
+              >
+                <img
+                  alt="fingerprint"
+                  src="/fingerprint.svg"
+                  className={styles.fingerprint}
+                />
+              </Button>
+            </Col>
+            <Col span={20}>
+              <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
+                Sign in
+              </Button>
+            </Col>
+
             <p>
               <Footer otherClass={styles.footerlogin} />
             </p>
