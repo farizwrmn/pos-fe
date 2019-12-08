@@ -13,7 +13,7 @@ const { getCashierTrans } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
-const pdfMake = require('pdfmake/build/pdfmake.js')
+const pdfMake = require('pdfmake/build/pdfmake.min.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
