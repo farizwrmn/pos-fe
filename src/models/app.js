@@ -166,7 +166,7 @@ export default {
             menu
           }
         })
-        localStorage.setItem('isInit', Number(process.env.NODE_ENV === 'development'))
+        localStorage.setItem('isInit', Number(process.env.NODE_ENV === 'production'))
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
