@@ -236,6 +236,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
               cb(null, require('./routes/master/product/bookmark/'))
             }, 'master-product-bookmark')
           }

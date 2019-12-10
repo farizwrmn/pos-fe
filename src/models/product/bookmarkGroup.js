@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/product/bookmark'
+import { query, add, edit, remove } from '../../services/product/bookmarkGroup'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Bookmark has been saved')
+  message.success('Bookmark Group has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'productBookmark',
+  namespace: 'productBookmarkGroup',
 
   state: {
     currentItem: {},

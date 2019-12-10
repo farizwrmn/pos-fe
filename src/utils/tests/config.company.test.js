@@ -6,7 +6,7 @@ const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
 const APIV1 = '/api/v1'
 
 it('Should render API Id Company', () =>
-  expect(idCompany).toEqual('DMI')
+  expect(idCompany).toEqual('SMI')
 )
 
 it('Should render API companyName', () =>

@@ -6,7 +6,7 @@ import { EnumRoleType } from 'enums'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
-import * as menusService from '../services/menus'
+import { query as queryMenu } from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
 import { query as queryPermission } from '../services/permission'
@@ -77,17 +77,27 @@ export default {
   },
   effects: {
     * query ({ payload }, { call, put }) {
+      const isInit = localStorage.getItem('isInit')
       const { success, user } = yield call(query, payload)
       if (success && user) {
         const notifications = yield call(getNotifications, payload)
-        const { data } = yield call(menusService.query, { field: 'menuId,icon,name,bpid,mpid,route' })
         const { permissions } = user
 
-        let menu = data
-        if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)) {
-          permissions.visit = data.map(item => item.menuId)
+        let menu
+        if (!Number(isInit)) {
+          const { data } = yield call(queryMenu, { field: 'menuId,icon,name,bpid,mpid,route' })
+          menu = data
+          localStorage.setItem('routeList', JSON.stringify(menu))
         } else {
-          menu = data.filter((item) => {
+          const list = localStorage.getItem('routeList')
+          const routeList = list ? JSON.parse(list) : []
+          menu = routeList
+        }
+
+        if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)) {
+          permissions.visit = menu.map(item => item.menuId)
+        } else {
+          menu = menu.filter((item) => {
             const cases = [
               permissions.visit.includes(item.menuId),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
@@ -156,10 +166,11 @@ export default {
             menu
           }
         })
+        localStorage.setItem('isInit', Number(process.env.NODE_ENV === 'development'))
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
-        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data, visibleItem: { showPopOverNotification: true } } })
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
         yield put({ type: 'queryListNotifications' })
       } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname

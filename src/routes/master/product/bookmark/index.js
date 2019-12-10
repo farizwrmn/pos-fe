@@ -2,18 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs, Menu, Icon, Dropdown } from 'antd'
+import { Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
-import PrintPDF from './PrintPDF'
-import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => {
-  const { listBrand, display, isChecked, modalType, currentItem, activeKey, disable, show } = productBookmark
-  const { user, storeInfo } = app
+const ProductBookmard = ({ productBookmarkGroup, loading, dispatch, location }) => {
+  const { list, display, isChecked, modalType, currentItem, activeKey, show } = productBookmarkGroup
   const filterProps = {
     display,
     isChecked,
@@ -23,7 +20,7 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
     },
     onFilterChange (value) {
       dispatch({
-        type: 'productBookmark/query',
+        type: 'productBookmarkGroup/query',
         payload: {
           ...value
         }
@@ -31,24 +28,22 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
     },
     switchIsChecked () {
       dispatch({
-        type: 'productBookmark/switchIsChecked',
+        type: 'productBookmarkGroup/switchIsChecked',
         payload: `${isChecked ? 'none' : 'block'}`
       })
     },
     onResetClick () {
-      dispatch({ type: 'productBookmark/resetProductBrandList' })
+      dispatch({ type: 'productBookmarkGroup/resetProductBrandList' })
     }
   }
 
   const listProps = {
-    dataSource: listBrand,
-    user,
-    storeInfo,
-    loading: loading.effects['productBookmark/query'],
+    dataSource: list,
+    loading: loading.effects['productBookmarkGroup/query'],
     location,
     editItem (item) {
       dispatch({
-        type: 'productBookmark/updateState',
+        type: 'productBookmarkGroup/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -64,12 +59,12 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
         }
       }))
       dispatch({
-        type: 'productBookmark/query'
+        type: 'productBookmarkGroup/query'
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'productBookmark/delete',
+        type: 'productBookmarkGroup/delete',
         payload: id
       })
     }
@@ -77,7 +72,7 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
 
   const changeTab = (key) => {
     dispatch({
-      type: 'productBookmark/updateState',
+      type: 'productBookmarkGroup/updateState',
       payload: {
         activeKey: key,
         modalType: 'add',
@@ -93,35 +88,17 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
         activeKey: key
       }
     }))
-    dispatch({ type: 'productBookmark/resetProductBrandList' })
-  }
-
-  const clickBrowse = () => {
-    dispatch({
-      type: 'productBookmark/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
-  const onShowHideSearch = () => {
-    dispatch({
-      type: 'productBookmark/updateState',
-      payload: {
-        show: !show
-      }
-    })
+    dispatch({ type: 'productBookmarkGroup/resetProductBrandList' })
   }
 
   const formProps = {
     modalType,
     item: currentItem,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
+    disabled: loading.effects[`productBookmarkGroup/${modalType}`],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
       dispatch({
-        type: `productBookmark/${modalType}`,
+        type: `productBookmarkGroup/${modalType}`,
         payload: {
           id,
           data
@@ -137,7 +114,7 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
         }
       }))
       dispatch({
-        type: 'productBookmark/updateState',
+        type: 'productBookmarkGroup/updateState',
         payload: {
           currentItem: {}
         }
@@ -145,28 +122,9 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
     }
   }
 
-  const printProps = {
-    dataSource: listBrand,
-    user,
-    storeInfo
-  }
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
-    </Menu>
-  )
-
-  const moreButtonTab = activeKey === '0' ? <Button onClick={() => clickBrowse()}>Browse</Button> : (<div> <Button onClick={() => onShowHideSearch()}>{`${show ? 'Hide' : 'Show'} Search`}</Button><Dropdown overlay={menu}>
-    <Button style={{ marginLeft: 8 }}>
-      <Icon type="printer" /> Print
-    </Button>
-  </Dropdown> </div>)
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
@@ -179,12 +137,11 @@ const ProductBrand = ({ productBookmark, loading, dispatch, location, app }) => 
   )
 }
 
-ProductBrand.propTypes = {
-  productBookmark: PropTypes.object,
-  app: PropTypes.object,
+ProductBookmard.propTypes = {
+  productBookmarkGroup: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ productBookmark, loading, app }) => ({ productBookmark, loading, app }))(ProductBrand)
+export default connect(({ productBookmarkGroup, loading }) => ({ productBookmarkGroup, loading }))(ProductBookmard)

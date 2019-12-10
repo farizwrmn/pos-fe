@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, message, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -69,20 +69,16 @@ const formProductBrand = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.brandCode) {
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onSubmit(data.brandCode, data)
-            // setTimeout(() => {
-            resetFields()
-            // }, 500)
-          },
-          onCancel () { }
-        })
-      } else {
-        message.warning("Product Brand Code can't be null")
-      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          onSubmit(data.brandCode, data)
+          // setTimeout(() => {
+          resetFields()
+          // }, 500)
+        },
+        onCancel () { }
+      })
     })
   }
 
@@ -90,33 +86,21 @@ const formProductBrand = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brandCode', {
-              initialValue: item.brandCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-zA-Z0-9_]{3,}$/,
-                  message: 'a-Z & 0-9'
-                }
-              ]
-            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
-          </FormItem>
-          <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brandName', {
-              initialValue: item.brandName,
+          <FormItem label="Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('name', {
+              initialValue: item.name,
               rules: [
                 {
                   required: true,
                   pattern: /^.{3,20}$/,
-                  message: 'Brand Name must be between 3 and 20 characters'
+                  message: 'Name must be between 3 and 20 characters'
                 }
               ]
             })(<Input />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" disabled={disabled} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
       </Row>
@@ -126,7 +110,7 @@ const formProductBrand = ({
 
 formProductBrand.propTypes = {
   form: PropTypes.object.isRequired,
-  disabled: PropTypes.string,
+  disabled: PropTypes.boolean,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   button: PropTypes.string
