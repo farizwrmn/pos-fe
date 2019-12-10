@@ -241,6 +241,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-bookmark')
           }
         }, {
+          path: 'master/product/bookmark/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/detail/productBookmarkDetail'))
+              cb(null, require('./routes/master/product/bookmark/detail/'))
+            }, 'master-product-bookmark')
+          }
+        }, {
           path: 'master/service',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

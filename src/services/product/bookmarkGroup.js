@@ -2,6 +2,15 @@ import { request, config, crypt } from '../../utils'
 
 const { bookmarkGroup } = config.api
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${bookmarkGroup}/${params.id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
