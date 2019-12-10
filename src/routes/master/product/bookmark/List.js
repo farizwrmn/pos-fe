@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
 import moment from 'moment'
 
 const confirm = Modal.confirm
@@ -22,14 +23,16 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
       title: 'Name',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (text, record) => {
+        return (
+          <Link target="_blank" to={`/master/product/bookmark/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
       title: 'Created',
