@@ -1,12 +1,15 @@
+import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { queryById } from '../../services/product/bookmarkGroup'
+import { pageModel } from './../common'
 
-export default {
+export default modelExtend(pageModel, {
 
   namespace: 'productBookmarkDetail',
 
   state: {
-    data: {}
+    data: {},
+    modalProductVisible: true
   },
 
   subscriptions: {
@@ -47,4 +50,4 @@ export default {
       }
     }
   }
-}
+})
