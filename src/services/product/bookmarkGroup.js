@@ -7,6 +7,9 @@ export async function queryById (params) {
   return request({
     url: `${bookmarkGroup}/${params.id}`,
     method: 'get',
+    data: {
+      relationship: 1
+    },
     headers: apiHeaderToken
   })
 }
