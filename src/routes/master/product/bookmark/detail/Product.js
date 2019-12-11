@@ -9,9 +9,9 @@ const List = ({ ...tableProps, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       confirm({
-        title: `Are you sure delete ${record.brandName} ?`,
+        title: `Are you sure delete ${record.product.productName} ?`,
         onOk () {
-          deleteItem(record.brandCode)
+          deleteItem(record.id)
         }
       })
     }
@@ -19,15 +19,20 @@ const List = ({ ...tableProps, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name'
+      title: 'Product Code',
+      dataIndex: 'product.productCode',
+      key: 'product.productCode'
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'product.productName',
+      key: 'product.productName'
     },
     {
       title: 'Operation',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
       }
     }
   ]

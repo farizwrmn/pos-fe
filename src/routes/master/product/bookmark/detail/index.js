@@ -11,33 +11,39 @@ const Detail = ({
   dispatch,
   loading
 }) => {
-  const { data, modalProductVisible } = productBookmarkDetail
+  const { data, listBookmark, modalProductVisible } = productBookmarkDetail
 
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
-      content.push(<div key={key} className={styles.item}>
-        <div>{key}</div>
-        <div>{String(data[key])}</div>
-      </div>)
+      if (key !== 'bookmark') {
+        content.push(<div key={key} className={styles.item}>
+          <div>{key}</div>
+          <div>{String(data[key])}</div>
+        </div>)
+      }
     }
   }
 
   const productProps = {
-    dataSource: data && data.bookmark ? data.bookmark : [],
+    dataSource: listBookmark,
     loading: loading.effects['productBookmark/query'],
     location,
-    deleteItem (id) {
-      dispatch({
+    async deleteItem (id) {
+      await dispatch({
         type: 'productBookmark/delete',
         payload: id
+      })
+      await dispatch({
+        type: 'productBookmarkDetail/query',
+        payload: {
+          id: data.id
+        }
       })
     }
   }
 
   const openProductModal = () => {
-    console.log('click')
-
     dispatch({
       type: 'productstock/query'
     })
@@ -71,20 +77,41 @@ const Detail = ({
         }
       })
     },
-    onRowClick () {
-      console.log('click row')
+    async onRowClick (record) {
+      await dispatch({
+        type: 'productBookmark/add',
+        payload: {
+          data: {
+            productId: record.id,
+            groupId: data.id
+          }
+        }
+      })
+      await dispatch({
+        type: 'productBookmarkDetail/query',
+        payload: {
+          id: data.id
+        }
+      })
+      await dispatch({
+        type: 'productBookmarkDetail/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
     }
   }
 
   return (<div className="content-inner">
     <div className={styles.content}>
-      {modalProductVisible && <ModalProduct {...modalProductProps} />}
+      {modalProductVisible && !loading.effects['productBookmark/query'] && <ModalProduct {...modalProductProps} />}
       <Row>
         <Col md={24} lg={12}>
           {content}
         </Col>
         <Col md={24} lg={12}>
           <Button
+            type="primary"
             onClick={() => openProductModal()}
           >
             Product

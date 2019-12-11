@@ -4,12 +4,12 @@ import { queryById } from '../../services/product/bookmarkGroup'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
-
   namespace: 'productBookmarkDetail',
 
   state: {
     data: {},
-    modalProductVisible: true
+    listBookmark: [],
+    modalProductVisible: false
   },
 
   subscriptions: {
@@ -35,6 +35,14 @@ export default modelExtend(pageModel, {
             data: response.data
           }
         })
+        console.log('response', response)
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBookmark: response.data.bookmark
+          }
+        })
       } else {
         throw response
       }
@@ -48,6 +56,9 @@ export default modelExtend(pageModel, {
         ...state,
         data
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     }
   }
 })
