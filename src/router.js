@@ -377,6 +377,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
               registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
+              registerModel(app, require('./models/product/bookmark'))
               registerModel(app, require('./models/misc'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')

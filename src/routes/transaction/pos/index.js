@@ -15,6 +15,7 @@ import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
 import TransactionDetail from './TransactionDetail'
+import Bookmark from './Bookmark'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -37,6 +38,8 @@ const Pos = ({
   counter,
   app,
   promo,
+  productBookmarkGroup,
+  productBookmark,
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
@@ -1595,7 +1598,12 @@ const Pos = ({
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col lg={10} md={24} />
+        <Col lg={10} md={24}>
+          <Bookmark
+            productBookmarkGroup={productBookmarkGroup}
+            productBookmark={productBookmark}
+          />
+        </Col>
         <Col lg={14} md={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
@@ -1758,7 +1766,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
 }) => ({
-  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
 }))(Pos)
