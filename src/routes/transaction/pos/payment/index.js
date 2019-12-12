@@ -171,7 +171,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
               rounding: curRounding,
               memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
               memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
+              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
               memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
               useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
               technicianId: mechanicInformation.employeeCode,
@@ -197,47 +197,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
       }
     })
   }
-
-  // const printPreview = () => {
-  //   dispatch({
-  //     type: 'payment/printPayment',
-  //     payload: {
-  //       periode: moment().format('MMYY'),
-  //       transDate: getDate(1),
-  //       transDate2: getDate(3),
-  //       transTime: setTime(),
-  //       transDatePrint: moment().format('DD/MM/YYYY'),
-  //       grandTotal: parseInt(curTotal, 10),
-  //       totalPayment,
-  //       company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-  //       gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-  //       phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-  //       address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-  //       lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-  //       lastTransNo: localStorage.getItem('transNo') ? localStorage.getItem('transNo') : 'Please Insert TransNo',
-  //       totalChange,
-  //       totalDiscount: curTotalDiscount,
-  //       policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : '-----',
-  //       rounding: curRounding,
-  //       dataPos: getCashierTrans(),
-  //       dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-  //       memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
-  //       memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-  //       memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-  //       mechanicName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].mechanicName : 'No mechanic',
-  //       technicianId: mechanicInformation.mechanicCode,
-  //       curShift,
-  //       printNo: 1,
-  //       curCashierNo,
-  //       cashierId: user.userid,
-  //       userName: user.username,
-  //       listAmount,
-  //       curNetto: parseFloat(curTotal) + parseFloat(curRounding),
-  //       curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-  //       woNumber
-  //     }
-  //   })
-  // }
 
   const cancelPayment = () => {
     dispatch(routerRedux.push('/transaction/pos'))

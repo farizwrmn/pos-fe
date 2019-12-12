@@ -3,31 +3,27 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain, variables, isEmptyObject, lstorage, color, calendar } from 'utils'
+import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder, DataQuery } from 'components'
-import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
+import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Collapse, Popover } from 'antd'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 import ModalShift from './ModalShift'
-import FormWo from './FormWo'
-import styles from '../../../themes/index.less'
 import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
 import ModalCashback from './ModalCashback'
+import TransactionDetail from './TransactionDetail'
 
 const { reArrangeMember, reArrangeMemberId } = variables
-const { dayByNumber } = calendar
 const { Promo } = DataQuery
 const { prefix } = configMain
 const { getCashierTrans } = lstorage
 const Panel = Collapse.Panel
-const TabPane = Tabs.TabPane
 const FormItem = Form.Item
 const ButtonGroup = Button.Group
-const width = 1000
 const formItemLayout = {
   labelCol: {
     span: 6
@@ -57,7 +53,8 @@ const Pos = ({
   app,
   promo,
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
-  payment }) => {
+  payment
+}) => {
   const { setting } = app
   const { listShift } = shift
   const { listCounter } = counter
@@ -83,12 +80,10 @@ const Pos = ({
     modalServiceListVisible,
     mechanicInformation,
     curRecord,
-    // effectedRecord,
     modalShiftVisible,
     listCashier,
     dataCashierTrans,
     curCashierNo,
-    // curShift,
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalWorkOrderVisible,
@@ -98,8 +93,6 @@ const Pos = ({
     cashierBalance,
     showListReminder,
     listServiceReminder,
-    // curTotalDiscount,
-    paymentListActiveKey,
     modalAddUnit,
     cashierInformation
   } = pos
@@ -107,12 +100,10 @@ const Pos = ({
   const { modalAddMember, currentItem } = customer
   const { listLovMemberUnit, listUnit } = unit
   const { user } = app
-  const { usingWo, woNumber } = payment
-
-  const objectSize = (text) => {
-    let queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
-    return (queue || []).length
-  }
+  const {
+    // usingWo,
+    woNumber
+  } = payment
 
   let currentCashier = {
     cashierId: null,
@@ -209,41 +200,41 @@ const Pos = ({
     })
   }
 
-  const formWoProps = {
-    usingWo,
-    dispatch,
-    woNumber,
-    formItemLayout: {
-      labelCol: {
-        span: 24
-      },
-      wrapperCol: {
-        span: 24
-      },
-      style: {
-        marginTop: '5px',
-        marginBottom: '5px'
-      }
-    },
-    generateSequence () {
-      dispatch({
-        type: 'payment/sequenceQuery',
-        payload: {
-          seqCode: 'WO',
-          type: '1'
-        }
-      })
-    },
-    notUsingWo (check, value) {
-      dispatch({
-        type: 'payment/querySequenceSuccess',
-        payload: {
-          usingWo: check,
-          woNumber: value
-        }
-      })
-    }
-  }
+  // const formWoProps = {
+  //   usingWo,
+  //   dispatch,
+  //   woNumber,
+  //   formItemLayout: {
+  //     labelCol: {
+  //       span: 24
+  //     },
+  //     wrapperCol: {
+  //       span: 24
+  //     },
+  //     style: {
+  //       marginTop: '5px',
+  //       marginBottom: '5px'
+  //     }
+  //   },
+  //   generateSequence () {
+  //     dispatch({
+  //       type: 'payment/sequenceQuery',
+  //       payload: {
+  //         seqCode: 'WO',
+  //         type: '1'
+  //       }
+  //     })
+  //   },
+  //   notUsingWo (check, value) {
+  //     dispatch({
+  //       type: 'payment/querySequenceSuccess',
+  //       payload: {
+  //         usingWo: check,
+  //         woNumber: value
+  //       }
+  //     })
+  //   }
+  // }
 
   const resetSelectText = () => {
     dispatch({
@@ -397,8 +388,8 @@ const Pos = ({
         })
       } else {
         Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
           onOk () {
             dispatch({ type: 'pos/hideProductModal' })
             dispatch({
@@ -570,41 +561,6 @@ const Pos = ({
     }
   }
 
-  const modalEditPayment = (record) => {
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-    dispatch({
-      type: 'pos/showPaymentModal',
-      payload: {
-        item: record,
-        modalType: 'modalPayment'
-      }
-    })
-  }
-
-  const modalEditService = (record) => {
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-    dispatch({
-      type: 'pos/showServiceListModal',
-      payload: {
-        item: record,
-        modalType: 'modalService'
-      }
-    })
-  }
-
-  const modalEditBundle = () => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        modalVoidSuspendVisible: true
-      }
-    })
-  }
-
   const hdlUnitClick = () => {
     dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
   }
@@ -619,15 +575,6 @@ const Pos = ({
       type: 'pos/setNullUnit',
       payload: {
         memberUnit
-      }
-    })
-  }
-
-  const changePaymentListTab = (key) => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        paymentListActiveKey: key
       }
     })
   }
@@ -815,7 +762,7 @@ const Pos = ({
           memberId: newItem.id
         }
       })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
       dispatch({
         type: 'pos/updateState',
@@ -991,7 +938,7 @@ const Pos = ({
             type: 'pos/queryGetMemberSuccess',
             payload: { memberInformation: newItem }
           })
-          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
           dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
           dispatch({
             type: 'pos/hideMemberModal'
@@ -1235,8 +1182,8 @@ const Pos = ({
         })
       } else if (mechanicInformation.length === 0) {
         Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
           onOk () {
             dispatch({ type: 'pos/hideProductModal' })
             dispatch({
@@ -1340,8 +1287,8 @@ const Pos = ({
         }
       } else {
         Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
           onOk () {
             dispatch({
               type: 'pos/updateState',
@@ -1547,11 +1494,11 @@ const Pos = ({
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic'
+            kodeUtil: 'employee',
+            infoUtil: 'Employee'
           }
         })
-      } else if (kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'employee') {
         if (value) {
           dispatch({
             type: 'pos/getMechanic',
@@ -1639,8 +1586,8 @@ const Pos = ({
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic'
+            kodeUtil: 'employee',
+            infoUtil: 'Employee'
           }
         })
       } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[52]) { // shortcut discount nominal (Ctrl + Shift + 4)
@@ -1663,7 +1610,7 @@ const Pos = ({
             infoUtil: 'Service'
           }
         })
-      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'employee') {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -1697,18 +1644,6 @@ const Pos = ({
         }
       })
     }
-    // else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
-    //   handleVoid(value)
-    // }
-  }
-
-  const dataService = () => {
-    let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    return (service)
-  }
-  const dataBundle = () => {
-    let data = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
-    return data
   }
 
   const showModalCashback = () => {
@@ -1901,287 +1836,7 @@ const Pos = ({
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
 
-            <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-              <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1258px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Payment List'
-                  }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      width: '35px'
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      width: '100px'
-                    },
-                    {
-                      title: 'Product Name',
-                      dataIndex: 'name',
-                      width: '160px'
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Price',
-                      dataIndex: 'sellPrice',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-                    },
-                    {
-                      title: 'Disc1(%)',
-                      dataIndex: 'disc1',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc2(%)',
-                      dataIndex: 'disc2',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc3(%)',
-                      dataIndex: 'disc3',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc',
-                      dataIndex: 'discount',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'D. Member',
-                      dataIndex: 'price',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => ((Math.max(0, record.sellPrice - record.price) || 0) * record.qty).toLocaleString()
-                    },
-                    {
-                      title: 'Total',
-                      dataIndex: 'total',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '100px',
-                      render: text => text
-                    }
-                  ]}
-                  onRowClick={record => modalEditPayment(record)}
-                  dataSource={getCashierTrans()}
-                  style={{ marginBottom: 16 }}
-                />
-              </TabPane>
-              <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1037px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Payment List'
-                  }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      width: '41px'
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      width: '100px'
-                    },
-                    {
-                      title: 'Product Name',
-                      dataIndex: 'name',
-                      width: '160px'
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Price',
-                      dataIndex: 'sellPrice',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-                    },
-                    {
-                      title: 'Disc1(%)',
-                      dataIndex: 'disc1',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc2(%)',
-                      dataIndex: 'disc2',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc3(%)',
-                      dataIndex: 'disc3',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc',
-                      dataIndex: 'discount',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Total',
-                      dataIndex: 'total',
-                      width: '100px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '121px',
-                      render: text => text
-                    }
-                  ]}
-                  onRowClick={_record => modalEditService(_record)}
-                  dataSource={dataService()}
-                  style={{ marginBottom: 16 }}
-                />
-              </TabPane>
-              <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="3">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1000px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Bundle List'
-                  }}
-                  onRowClick={_record => modalEditBundle(_record)}
-                  dataSource={dataBundle()}
-                  style={{ marginBottom: 16 }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      key: 'no',
-                      width: '41px'
-                    },
-                    {
-                      title: 'type',
-                      dataIndex: 'type',
-                      key: 'type',
-                      width: `${width * 0.115}px`,
-                      render: (text) => {
-                        return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
-                      }
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      key: 'code',
-                      width: `${width * 0.1}px`
-                    },
-                    {
-                      title: 'Name',
-                      dataIndex: 'name',
-                      key: 'name',
-                      width: `${width * 0.15}px`
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Period',
-                      dataIndex: 'Date',
-                      key: 'Date',
-                      width: `${width * 0.15}px`,
-                      render: (text, record) => {
-                        return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
-                      }
-                    },
-                    {
-                      title: 'Available Date',
-                      dataIndex: 'availableDate',
-                      key: 'availableDate',
-                      width: `${width * 0.15}px`,
-                      render: (text) => {
-                        let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
-                        if (text !== null && (date || []).length === 7) {
-                          date = <Tag color="green">{'Everyday'}</Tag>
-                        }
-                        if (text !== null && (date || []).length < 7) {
-                          date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
-                        }
-                        return date
-                      }
-                    },
-                    {
-                      title: 'Available Hour',
-                      dataIndex: 'availableHour',
-                      key: 'availableHour',
-                      width: `${width * 0.1}px`,
-                      render: (text, record) => {
-                        return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
-                      }
-                    }
-                  ]}
-                />
-              </TabPane>
-            </Tabs>
-
+            <TransactionDetail pos={pos} dispatch={dispatch} />
             <Form>
               <div style={{ float: 'right' }}>
 
@@ -2211,9 +1866,9 @@ const Pos = ({
         </Col>
         <Col lg={6} md={4}>
           <Collapse defaultActiveKey={['1', '2', '3']}>
-            <Panel header="WorkOrder" key="3">
+            {/* <Panel header="WorkOrder" key="3">
               <FormWo {...formWoProps} />
-            </Panel>
+            </Panel> */}
             <Panel header="Member Info" key="1">
               <Form layout="horizontal">
                 <FormItem label="Name" {...formItemLayout}>

@@ -57,7 +57,7 @@ const Member = ({
         type: 'pos/queryGetMemberSuccess',
         payload: { memberInformation: data }
       })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
       dispatch({ type: 'unit/lov', payload: { id: data.memberCode } })
       dispatch({
         type: 'pos/updateState',

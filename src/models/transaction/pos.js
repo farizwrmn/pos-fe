@@ -645,9 +645,9 @@ export default {
       } else {
         Modal.warning({
           title: 'Warning',
-          content: 'Mechanic Information Not Found...!'
+          content: 'Employee Information Not Found...!'
         })
-        yield put({ type: 'setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+        yield put({ type: 'setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
         // throw data
       }
     },
@@ -676,7 +676,7 @@ export default {
       } else {
         const modal = Modal.warning({
           title: 'Warning',
-          content: 'Mechanic Not Found...!'
+          content: 'Employee Not Found...!'
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data

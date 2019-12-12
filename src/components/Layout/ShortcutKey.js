@@ -45,7 +45,7 @@ const ModalHelp = ({ ...modalProps }) => {
           <FormItem label="Insert Member" {...formItemLayout}>
             <Input value="Ctrl + Alt + M " size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
-          <FormItem label="Insert Mechanic" {...formItemLayout}>
+          <FormItem label="Insert Employee" {...formItemLayout}>
             <Input value="Ctrl + Alt + C " size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
           <FormItem label="Discount 1 (%)" {...formItemLayout}>
