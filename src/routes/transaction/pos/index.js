@@ -307,41 +307,6 @@ const Pos = ({
         }
       })
     },
-    handleProductBrowse () {
-      resetSelectText()
-      // get products data
-      // let json = setting.Inventory
-      // let jsondata = JSON.stringify(eval(`(${json})`))
-      // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-      dispatch({
-        type: 'pos/showProductModal',
-        payload: {
-          modalType: 'browseProductLock'
-        }
-      })
-      dispatch({
-        type: 'pos/getProducts',
-        payload: {
-          active: 1
-        }
-      })
-    },
-    handleServiceBrowse () {
-      resetSelectText()
-      dispatch({
-        type: 'pos/getServices',
-        payload: {
-          active: 1
-        }
-      })
-
-      dispatch({
-        type: 'pos/showServiceModal',
-        payload: {
-          modalType: 'browseService'
-        }
-      })
-    },
     handleWorkOrderBrowse () {
       resetSelectText()
       dispatch({
@@ -633,6 +598,39 @@ const Pos = ({
           {infoCashRegister.desc}
         </span>
       </span>)
+  }
+
+  const handleServiceBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/getServices',
+      payload: {
+        active: 1
+      }
+    })
+
+    dispatch({
+      type: 'pos/showServiceModal',
+      payload: {
+        modalType: 'browseService'
+      }
+    })
+  }
+
+  const handleProductBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showProductModal',
+      payload: {
+        modalType: 'browseProductLock'
+      }
+    })
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        active: 1
+      }
+    })
   }
 
   const modalShiftProps = {
@@ -1597,7 +1595,8 @@ const Pos = ({
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col lg={18} md={20}>
+        <Col lg={10} md={24} />
+        <Col lg={14} md={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
@@ -1617,11 +1616,12 @@ const Pos = ({
                   </Row>
                 </Card>
               </Row>
+              <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={2} md={24}>
+                <Col lg={2} md={2}>
                   {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
                 </Col>
-                <Col lg={22} md={24}>
+                <Col lg={14} md={24}>
                   <Input size="large"
                     autoFocus
                     value={curBarcode}
@@ -1632,10 +1632,32 @@ const Pos = ({
                     onKeyPress={e => handleKeyPress(e)}
                   />
                 </Col>
+                <Col lg={8} md={24}>
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon="barcode"
+                    onClick={handleProductBrowse}
+                    style={{
+                      margin: '0px 5px'
+                    }}
+                  >
+                    Product
+                  </Button>
+                  <Button type="primary"
+                    size="large"
+                    icon="tool"
+                    onClick={handleServiceBrowse}
+                    style={{
+                      margin: '0px 5px'
+                    }}
+                  >
+                    Service
+                  </Button>
+                </Col>
               </Row>
             </Form>
 
-            <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {/* {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />} */}
@@ -1679,9 +1701,9 @@ const Pos = ({
               </div>
             </Form>
           </Card>
+          <BottomButton {...buttomButtonProps} />
         </Col>
       </Row >
-      <BottomButton {...buttomButtonProps} />
       <Row>
         <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
           <Row gutter={32}>

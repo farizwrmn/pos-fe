@@ -13,8 +13,6 @@ const LovButton = ({
   handleAssetBrowse,
   handleAddAsset,
   handleMechanicBrowse,
-  handleProductBrowse,
-  handleServiceBrowse,
   handleQueue,
   workOrderItem
 }) => {
@@ -63,7 +61,7 @@ const LovButton = ({
           {`Asset (${memberUnitInfo.policeNo})`}
         </Button>
         <Tooltip title="add Asset">
-          <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
+          <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} />
         </Tooltip>
       </ButtonGroup>
       <ButtonGroup style={{ marginRight: 8 }}>
@@ -76,31 +74,6 @@ const LovButton = ({
           {`Employee (${mechanicInformation.employeeName})`}
         </Button>
       </ButtonGroup>
-      <Button
-        type="primary"
-        size="large"
-        icon="barcode"
-        className="button-width01"
-        onClick={handleProductBrowse}
-      >
-        Product
-      </Button>
-      <Button type="primary"
-        size="large"
-        icon="tool"
-        className="button-width01"
-        onClick={handleServiceBrowse}
-      >
-        Service
-      </Button>
-      {/* <Button type="primary"
-        size="large"
-        icon="tag-o"
-        className="button-width01"
-        onClick={handlePromoBrowse}
-      >
-        Promo
-      </Button> */}
       <Badge count={objectSize()}>
         <Button type="primary"
           style={{ marginBottom: '4px' }}
@@ -122,8 +95,6 @@ LovButton.propTypes = {
   handleAssetBrowse: PropTypes.func.isRequired,
   handleAddAsset: PropTypes.func.isRequired,
   handleMechanicBrowse: PropTypes.func.isRequired,
-  handleProductBrowse: PropTypes.func.isRequired,
-  handleServiceBrowse: PropTypes.func.isRequired,
   handleQueue: PropTypes.func.isRequired
 }
 
