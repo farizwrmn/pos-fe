@@ -5,6 +5,9 @@ import { Tooltip, Badge, Button } from 'antd'
 const ButtonGroup = Button.Group
 
 const LovButton = ({
+  memberInformation,
+  memberUnitInfo,
+  mechanicInformation,
   handleMemberBrowse,
   handleAddMember,
   handleAssetBrowse,
@@ -37,7 +40,7 @@ const LovButton = ({
           onClick={handleMemberBrowse}
           disabled={workOrderItem.id}
         >
-          Member
+          {`Member (${memberInformation.memberName})`}
         </Button>
         <Tooltip title="add Member">
           <Button
@@ -57,20 +60,22 @@ const LovButton = ({
           onClick={handleAssetBrowse}
           disabled={workOrderItem.id}
         >
-          Asset
+          {`Asset (${memberUnitInfo.policeNo})`}
         </Button>
         <Tooltip title="add Asset">
           <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} className="button-width02" />
         </Tooltip>
       </ButtonGroup>
-      <Button type="primary"
-        size="large"
-        icon="customer-service"
-        className="button-width01"
-        onClick={handleMechanicBrowse}
-      >
-        Employee
-      </Button>
+      <ButtonGroup style={{ marginRight: 8 }}>
+        <Button
+          type="primary"
+          size="large"
+          icon="customer-service"
+          onClick={handleMechanicBrowse}
+        >
+          {`Employee (${mechanicInformation.employeeName})`}
+        </Button>
+      </ButtonGroup>
       <Button
         type="primary"
         size="large"

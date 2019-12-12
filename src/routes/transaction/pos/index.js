@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder, DataQuery } from 'components'
-import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Collapse, Popover } from 'antd'
+import { Badge, Icon, Form, Input, Row, Col, Card, Button, Tooltip, Tag, Modal } from 'antd'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 import ModalShift from './ModalShift'
@@ -14,27 +14,13 @@ import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
-import ModalCashback from './ModalCashback'
 import TransactionDetail from './TransactionDetail'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
 const { getCashierTrans } = lstorage
-const Panel = Collapse.Panel
 const FormItem = Form.Item
-const ButtonGroup = Button.Group
-const formItemLayout = {
-  labelCol: {
-    span: 6
-  },
-  wrapperCol: {
-    span: 18
-  },
-  style: {
-    marginBottom: '5px'
-  }
-}
 
 const formItemLayout1 = {
   labelCol: { span: 10 },
@@ -49,7 +35,6 @@ const Pos = ({
   pos,
   shift,
   counter,
-  unit,
   app,
   promo,
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
@@ -65,7 +50,6 @@ const Pos = ({
     modalMechanicVisible,
     modalProductVisible,
     modalPaymentVisible,
-    visiblePopover,
     curBarcode,
     curQty,
     totalItem,
@@ -87,7 +71,6 @@ const Pos = ({
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalWorkOrderVisible,
-    modalCashbackVisible,
     listUnitUsage,
     showAlert,
     cashierBalance,
@@ -98,7 +81,6 @@ const Pos = ({
   } = pos
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
-  const { listLovMemberUnit, listUnit } = unit
   const { user } = app
   const {
     // usingWo,
@@ -247,6 +229,9 @@ const Pos = ({
 
   const lovButtonProps = {
     workOrderItem,
+    memberInformation,
+    memberUnitInfo,
+    mechanicInformation,
     handleMemberBrowse () {
       resetSelectText()
       // get member data
@@ -561,24 +546,6 @@ const Pos = ({
     }
   }
 
-  const hdlUnitClick = () => {
-    dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
-  }
-  const hdlNoUnit = () => {
-    let memberUnit = {
-      id: null,
-      policeNo: null,
-      merk: null,
-      model: null
-    }
-    dispatch({
-      type: 'pos/setNullUnit',
-      payload: {
-        memberUnit
-      }
-    })
-  }
-
   const setCurBarcode = (curBarcode, curQty) => {
     dispatch({
       type: 'pos/setCurBarcode',
@@ -851,37 +818,6 @@ const Pos = ({
             }
           })
           localStorage.setItem('workorder', JSON.stringify(object))
-        }
-      })
-    }
-  }
-
-  const modalCashbackProps = {
-    title: 'Use Cashback',
-    visible: modalCashbackVisible,
-    item: memberInformation || {},
-    onOk (data) {
-      const itemStorage = [data]
-      localStorage.setItem('member', JSON.stringify(itemStorage))
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalCashbackVisible: false,
-          memberInformation: data
-        }
-      })
-      dispatch({
-        type: 'pos/syncCustomerCashback',
-        payload: {
-          memberId: data.id
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalCashbackVisible: false
         }
       })
     }
@@ -1655,126 +1591,6 @@ const Pos = ({
     })
   }
 
-  const hdlPopoverClose = () => {
-    dispatch({ type: 'pos/modalPopoverClose' })
-  }
-  const hdlPopoverVisibleChange = () => {
-    dispatch({ type: 'pos/modalPopoverShow' })
-  }
-  const hdlTableRowClick = (record) => {
-    const { id, policeNo, merk, model, type, year, chassisNo, machineNo } = record
-    dispatch({
-      type: 'pos/getServiceUsageReminder',
-      payload: {
-        policeNo: id
-      }
-    })
-    dispatch({
-      type: 'pos/chooseMemberUnit',
-      payload: {
-        policeNo: {
-          id, policeNo, merk, model, type, year, chassisNo, machineNo
-        }
-      }
-    })
-    dispatch({
-      type: 'payment/setPoliceNo',
-      payload: {
-        policeNo: {
-          id, policeNo, merk, model, type, year, chassisNo, machineNo
-        }
-      }
-    })
-    dispatch({
-      type: 'payment/setLastMeter',
-      payload: { policeNo: record.policeNo }
-    })
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        showListReminder: false
-      }
-    })
-  }
-
-  const columns = [{
-    title: 'Unit No',
-    dataIndex: 'policeNo',
-    key: 'policeNo',
-    width: 100
-  }, {
-    title: 'Merk',
-    dataIndex: 'merk',
-    key: 'merk',
-    width: 250
-  }, {
-    title: 'Model',
-    dataIndex: 'model',
-    key: 'model',
-    width: 200
-  }]
-  const titlePopover = (
-    <Row>
-      <Col span={8}>Choose Member Unit</Col>
-      <Col span={1} offset={15}>
-        <Button shape="circle"
-          icon="close-circle"
-          size="small"
-          onClick={() => hdlPopoverClose()}
-        />
-      </Col>
-    </Row>
-  )
-  const contentPopover = (
-    <div>
-      {/* <Button type="primary" onClick={handleAddMember}>Add</Button> */}
-      <Table
-        columns={columns}
-        dataSource={listUnit || listLovMemberUnit}
-        size="small"
-        bordered
-        pagination={{ pageSize: 5 }}
-        onRowClick={_record => hdlTableRowClick(_record)}
-
-        locale={{
-          emptyText: 'No Unit'
-        }}
-      />
-    </div>
-  )
-
-  const onChangeLastMeter = (e) => {
-    const { value } = e.target
-    let lastMeter = value.replace(/^\D+/g, '')
-    localStorage.setItem('lastMeter', JSON.stringify(parseFloat(lastMeter)))
-    dispatch({
-      type: 'payment/setLastMeter',
-      payload: {
-        lastMeter
-      }
-    })
-    setTimeout(() => {
-      if (value !== '' && value) {
-        if (!showAlert) {
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              showAlert: true
-            }
-          })
-        }
-      } else {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            showAlert: false,
-            showListReminder: false
-          }
-        })
-      }
-    }, 1000)
-  }
-
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
 
   return (
@@ -1822,7 +1638,7 @@ const Pos = ({
             <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
-            {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />}
+            {/* {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />} */}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
@@ -1863,60 +1679,6 @@ const Pos = ({
               </div>
             </Form>
           </Card>
-        </Col>
-        <Col lg={6} md={4}>
-          <Collapse defaultActiveKey={['1', '2', '3']}>
-            {/* <Panel header="WorkOrder" key="3">
-              <FormWo {...formWoProps} />
-            </Panel> */}
-            <Panel header="Member Info" key="1">
-              <Form layout="horizontal">
-                <FormItem label="Name" {...formItemLayout}>
-                  <Input value={memberInformation.memberName} disabled />
-                </FormItem>
-                <FormItem label="Unit" hasFeedback {...formItemLayout}>
-                  <Col span={16}>
-                    <Input value={memberUnitInfo.policeNo} />
-                  </Col>
-                  <Col span={4}>
-                    <Popover title={titlePopover}
-                      content={contentPopover}
-                      visible={visiblePopover}
-                      onVisibleChange={() => hdlPopoverVisibleChange()}
-                      placement="left"
-                      trigger="click"
-                    >
-                      <ButtonGroup size="medium">
-                        <Button type="primary" icon="down-square-o" onClick={hdlUnitClick} />
-                      </ButtonGroup>
-                    </Popover>
-                  </Col>
-                  <Col span={4}>
-                    <Button type="danger" icon="close" onClick={hdlNoUnit} />
-                  </Col>
-                </FormItem>
-                <FormItem label="KM" hasFeedback {...formItemLayout}>
-                  <Input type="number" maxNumber={11} onChange={value => onChangeLastMeter(value)} id="KM" defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} />
-                </FormItem>
-                <FormItem label="Code" {...formItemLayout}>
-                  <Input value={memberInformation.memberCode} disabled />
-                </FormItem>
-                <FormItem label="Cashback" {...formItemLayout}>
-                  <Input value={memberInformation.cashback} disabled />
-                </FormItem>
-              </Form>
-            </Panel>
-            <Panel header="Employee Info" key="2">
-              <Form layout="horizontal">
-                <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName} disabled />
-                </FormItem>
-                <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeCode} disabled />
-                </FormItem>
-              </Form>
-            </Panel>
-          </Collapse>
         </Col>
       </Row >
       <BottomButton {...buttomButtonProps} />
