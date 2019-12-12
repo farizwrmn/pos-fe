@@ -13,8 +13,6 @@ const LovButton = ({
   handleProductBrowse,
   handleServiceBrowse,
   handleQueue,
-  handlePromoBrowse,
-  handleWorkOrderBrowse,
   workOrderItem
 }) => {
   const objectSize = () => {
@@ -32,15 +30,6 @@ const LovButton = ({
   }
   return (
     <div>
-      <ButtonGroup style={{ marginRight: 8 }}>
-        <Button
-          type="primary"
-          size="large"
-          onClick={handleWorkOrderBrowse}
-        >
-          Work Order
-        </Button>
-      </ButtonGroup>
       <ButtonGroup>
         <Button
           type="primary"
@@ -82,24 +71,15 @@ const LovButton = ({
       >
         Employee
       </Button>
-      <ButtonGroup>
-        <Button
-          type="primary"
-          size="large"
-          icon="barcode"
-          onClick={handleProductBrowse}
-        >
-          Product
-        </Button>
-        <Tooltip title="add Product">
-          <Button
-            type="primary"
-            size="large"
-            icon="plus-square-o"
-            className="button-width02"
-          />
-        </Tooltip>
-      </ButtonGroup>
+      <Button
+        type="primary"
+        size="large"
+        icon="barcode"
+        className="button-width01"
+        onClick={handleProductBrowse}
+      >
+        Product
+      </Button>
       <Button type="primary"
         size="large"
         icon="tool"
@@ -108,14 +88,14 @@ const LovButton = ({
       >
         Service
       </Button>
-      <Button type="primary"
+      {/* <Button type="primary"
         size="large"
         icon="tag-o"
         className="button-width01"
         onClick={handlePromoBrowse}
       >
         Promo
-      </Button>
+      </Button> */}
       <Badge count={objectSize()}>
         <Button type="primary"
           style={{ marginBottom: '4px' }}
@@ -139,8 +119,7 @@ LovButton.propTypes = {
   handleMechanicBrowse: PropTypes.func.isRequired,
   handleProductBrowse: PropTypes.func.isRequired,
   handleServiceBrowse: PropTypes.func.isRequired,
-  handleQueue: PropTypes.func.isRequired,
-  handlePromoBrowse: PropTypes.func.isRequired
+  handleQueue: PropTypes.func.isRequired
 }
 
 export default LovButton
