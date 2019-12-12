@@ -133,10 +133,6 @@ export default {
               status: 'O'
             }
           })
-          // dispatch({
-          //   type: 'getCashierInformation',
-          //   payload: userId
-          // })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
           const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({

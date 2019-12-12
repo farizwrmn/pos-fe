@@ -440,7 +440,7 @@ const Pos = ({
       dispatch(routerRedux.push('/transaction/pos/payment'))
     },
     handleSuspend () {
-      document.getElementById('KM').value = 0
+      if (document.getElementById('KM')) document.getElementById('KM').value = 0
       dispatch({ type: 'pos/insertQueueCache' })
       dispatch({
         type: 'pos/updateState',

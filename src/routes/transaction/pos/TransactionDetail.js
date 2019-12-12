@@ -188,7 +188,7 @@ const TransactionDetail = ({
           pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '680px', y: '220px' }}
+          scroll={{ x: '580px', y: '220px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -221,7 +221,7 @@ const TransactionDetail = ({
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '300px',
+              width: '200px',
               className: styles.alignRight,
               render: (text, record) => {
                 const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price

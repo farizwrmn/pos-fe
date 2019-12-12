@@ -38,6 +38,9 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') dispatch({ type: 'query' })
         }
+        if (pathname === '/transaction/pos') {
+          dispatch({ type: 'query', payload: { pageSize: 5, pathname } })
+        }
       })
     }
   },
@@ -45,7 +48,8 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { pathname, ...other } = payload
+      const data = yield call(query, other)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -58,6 +62,15 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        if (pathname === '/transaction/pos' && data && data.data && data.data.length > 0) {
+          yield put({
+            type: 'productBookmark/query',
+            payload: {
+              groupId: data.data[0].id,
+              relationship: 1
+            }
+          })
+        }
       }
     },
 
