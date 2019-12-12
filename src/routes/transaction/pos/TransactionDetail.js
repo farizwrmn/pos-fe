@@ -2,6 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { isEmptyObject, lstorage, color } from 'utils'
+import {
+  currencyFormatter,
+  discountFormatter,
+  numberFormatter
+} from 'utils/string'
 import { Badge, Icon, Table, Tabs } from 'antd'
 import styles from '../../../themes/index.less'
 
@@ -115,93 +120,61 @@ const TransactionDetail = ({
           pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '1258px', y: '220px' }}
+          scroll={{ x: '680px', y: '220px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
           columns={[
             {
               title: 'No',
-              dataIndex: 'no',
-              width: '35px'
+              width: '40px',
+              dataIndex: 'no'
             },
             {
-              title: 'Code',
+              title: 'Product',
               dataIndex: 'code',
-              width: '100px'
+              width: '300px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div>{`Product Code: ${record.code}`}</div>
+                    <div>{`Product Name: ${record.name}`}</div>
+                  </div>
+                )
+              }
             },
             {
-              title: 'Product Name',
-              dataIndex: 'name',
-              width: '160px'
-            },
-            {
-              title: 'Q',
+              title: 'Qty',
               dataIndex: 'qty',
               width: '40px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
             },
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '75px',
+              width: '300px',
               className: styles.alignRight,
-              render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-            },
-            {
-              title: 'Disc1(%)',
-              dataIndex: 'disc1',
-              width: '65px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc2(%)',
-              dataIndex: 'disc2',
-              width: '65px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc3(%)',
-              dataIndex: 'disc3',
-              width: '65px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc',
-              dataIndex: 'discount',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'D. Member',
-              dataIndex: 'price',
-              width: '75px',
-              className: styles.alignRight,
-              render: (text, record) => ((Math.max(0, record.sellPrice - record.price) || 0) * record.qty).toLocaleString()
-            },
-            {
-              title: 'Total',
-              dataIndex: 'total',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Employee',
-              dataIndex: 'employeeName',
-              width: '100px',
-              render: text => text
-            },
-            {
-              title: 'Promo',
-              dataIndex: 'bundleName',
-              width: '100px',
-              render: text => text
+              render: (text, record) => {
+                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                const disc1 = record.disc1
+                const disc2 = record.disc2
+                const disc3 = record.disc3
+                const discount = record.discount
+                const total = record.total
+                return (
+                  <div>
+                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
+                    <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
+                    <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
+                    <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
+                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
+                    <div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                    </div>
+                  </div>
+                )
+              }
             }
           ]}
           onRowClick={record => modalEditPayment(record)}
@@ -215,86 +188,61 @@ const TransactionDetail = ({
           pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '1037px', y: '220px' }}
+          scroll={{ x: '680px', y: '220px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
           columns={[
             {
               title: 'No',
-              dataIndex: 'no',
-              width: '41px'
+              width: '40px',
+              dataIndex: 'no'
             },
             {
-              title: 'Code',
+              title: 'Product',
               dataIndex: 'code',
-              width: '100px'
+              width: '300px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div>{`Product Code: ${record.code}`}</div>
+                    <div>{`Product Name: ${record.name}`}</div>
+                  </div>
+                )
+              }
             },
             {
-              title: 'Product Name',
-              dataIndex: 'name',
-              width: '160px'
-            },
-            {
-              title: 'Q',
+              title: 'Qty',
               dataIndex: 'qty',
               width: '40px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
             },
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '75px',
+              width: '300px',
               className: styles.alignRight,
-              render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-            },
-            {
-              title: 'Disc1(%)',
-              dataIndex: 'disc1',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc2(%)',
-              dataIndex: 'disc2',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc3(%)',
-              dataIndex: 'disc3',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Disc',
-              dataIndex: 'discount',
-              width: '75px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Total',
-              dataIndex: 'total',
-              width: '100px',
-              className: styles.alignRight,
-              render: text => (text || '-').toLocaleString()
-            },
-            {
-              title: 'Employee',
-              dataIndex: 'employeeName',
-              width: '100px',
-              render: text => text
-            },
-            {
-              title: 'Promo',
-              dataIndex: 'bundleName',
-              width: '121px',
-              render: text => text
+              render: (text, record) => {
+                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                const disc1 = record.disc1
+                const disc2 = record.disc2
+                const disc3 = record.disc3
+                const discount = record.discount
+                const total = record.total
+                return (
+                  <div>
+                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
+                    <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
+                    <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
+                    <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
+                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
+                    <div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                    </div>
+                  </div>
+                )
+              }
             }
           ]}
           onRowClick={_record => modalEditService(_record)}
