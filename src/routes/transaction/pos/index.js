@@ -1594,12 +1594,14 @@ const Pos = ({
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
 
-  const handleChangeBookmark = (key) => {
+  const handleChangeBookmark = (key = 1, page = 1, pageSize = 10) => {
     dispatch({
       type: 'productBookmark/query',
       payload: {
         groupId: key,
-        relationship: 1
+        relationship: 1,
+        page,
+        pageSize
       }
     })
   }

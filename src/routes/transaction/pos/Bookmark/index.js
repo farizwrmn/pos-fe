@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Avatar, Tabs, Spin } from 'antd'
+import { Card, Avatar, Tabs, Spin, Pagination } from 'antd'
 import { currencyFormatter } from 'utils/string'
 import styles from './bookmark.less'
 import EmptyBookmark from './EmptyBookmark'
@@ -13,14 +13,17 @@ const Bookmark = ({
   productBookmark
 }) => {
   const listBookmark = productBookmarkGroup.list
-  const { list } = productBookmark
+  const { filter, list, pagination } = productBookmark
+  const handleChangePagination = (page, pageSize) => {
+    onChange(filter.groupId, page, pageSize)
+  }
 
   return (
     <Card title="Bookmark">
       <Tabs onChange={onChange}>
         {listBookmark && listBookmark.length > 0 ?
           listBookmark.map((item => (
-            <Tabs.TabPane tab={item.name} key={item.id}>
+            <Tabs.TabPane tab={item.name} key={`${item.id}`}>
               {loading ? (
                 <Spin className={styles.spin} />
               )
@@ -48,6 +51,7 @@ const Bookmark = ({
           : null}
       </Tabs>
       {listBookmark && listBookmark.length === 0 && (<EmptyBookmarkGroup />)}
+      <Pagination onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
     </Card>
   )
 }

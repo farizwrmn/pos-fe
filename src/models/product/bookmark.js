@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    filter: {},
     modalType: 'add',
     display: 'none',
     isChecked: false,
@@ -56,6 +57,12 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            filter: payload
           }
         })
       }
