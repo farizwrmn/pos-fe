@@ -1594,12 +1594,24 @@ const Pos = ({
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
 
+  const handleChangeBookmark = (key) => {
+    dispatch({
+      type: 'productBookmark/query',
+      payload: {
+        groupId: key,
+        relationship: 1
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         <Col lg={10} md={24}>
           <Bookmark
+            loading={loading.effects['productBookmark/query']}
+            onChange={handleChangeBookmark}
             productBookmarkGroup={productBookmarkGroup}
             productBookmark={productBookmark}
           />
@@ -1607,7 +1619,6 @@ const Pos = ({
         <Col lg={14} md={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
               <Row>
                 <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
                   <Row>
@@ -1685,7 +1696,6 @@ const Pos = ({
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Form>
               <div style={{ float: 'right' }}>
-
                 <Row>
                   <FormItem label="Total Qty" {...formItemLayout1}>
                     <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
