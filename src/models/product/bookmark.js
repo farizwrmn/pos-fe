@@ -65,6 +65,8 @@ export default modelExtend(pageModel, {
             filter: payload
           }
         })
+      } else {
+        throw data
       }
     },
 

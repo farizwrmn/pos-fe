@@ -1002,6 +1002,108 @@ const Pos = ({
     }
   }
 
+  const chooseProduct = (item) => {
+    if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
+      let listByCode = getCashierTrans()
+      let arrayProd = listByCode
+      const checkExists = listByCode.filter(el => el.code === item.productCode)
+      if ((checkExists || []).length === 0) {
+        const data = {
+          no: arrayProd.length + 1,
+          code: item.productCode,
+          productId: item.id,
+          name: item.productName,
+          employeeId: mechanicInformation.employeeId,
+          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+          typeCode: 'P',
+          qty: 1,
+          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+        }
+
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: item.productCode,
+          productId: item.id,
+          name: item.productName,
+          employeeId: mechanicInformation.employeeId,
+          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+          typeCode: 'P',
+          qty: 1,
+          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+        })
+        dispatch({
+          type: 'pos/checkQuantityNewProduct',
+          payload: {
+            data,
+            arrayProd,
+            setting
+          }
+        })
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            paymentListActiveKey: '1'
+            // ,
+            // modalProductVisible: false
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
+      }
+    } else if (memberInformation.length === 0) {
+      Modal.info({
+        title: 'Member Information is not found',
+        content: 'Insert Member',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMembers'
+          })
+
+          dispatch({
+            type: 'pos/showMemberModal',
+            payload: {
+              modalType: 'browseMember'
+            }
+          })
+        }
+      })
+    } else if (mechanicInformation.length === 0) {
+      Modal.info({
+        title: 'Employee Information is not found',
+        content: 'Insert Employee',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMechanics'
+          })
+
+          dispatch({
+            type: 'pos/showMechanicModal',
+            payload: {
+              modalType: 'browseMechanic'
+            }
+          })
+        }
+      })
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -1031,111 +1133,7 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
-      if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
-        let listByCode = getCashierTrans()
-        let arrayProd = listByCode
-        const checkExists = listByCode.filter(el => el.code === item.productCode)
-        if ((checkExists || []).length === 0) {
-          // if (listByCode.length === 0) {
-          //   arrayProd = listByCode.slice()
-          // } else {
-          //   arrayProd = JSON.parse(listByCode.slice())
-          // }
-
-          const data = {
-            no: arrayProd.length + 1,
-            code: item.productCode,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: 1,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-          }
-
-          arrayProd.push({
-            no: arrayProd.length + 1,
-            code: item.productCode,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: 1,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-          })
-          dispatch({
-            type: 'pos/checkQuantityNewProduct',
-            payload: {
-              data,
-              arrayProd,
-              setting
-            }
-          })
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              paymentListActiveKey: '1'
-              // ,
-              // modalProductVisible: false
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'Cannot add product',
-            content: 'Already Exists in list'
-          })
-        }
-      } else if (memberInformation.length === 0) {
-        Modal.info({
-          title: 'Member Information is not found',
-          content: 'Insert Member',
-          onOk () {
-            dispatch({ type: 'pos/hideProductModal' })
-            dispatch({
-              type: 'pos/getMembers'
-            })
-
-            dispatch({
-              type: 'pos/showMemberModal',
-              payload: {
-                modalType: 'browseMember'
-              }
-            })
-          }
-        })
-      } else if (mechanicInformation.length === 0) {
-        Modal.info({
-          title: 'Employee Information is not found',
-          content: 'Insert Employee',
-          onOk () {
-            dispatch({ type: 'pos/hideProductModal' })
-            dispatch({
-              type: 'pos/getMechanics'
-            })
-
-            dispatch({
-              type: 'pos/showMechanicModal',
-              payload: {
-                modalType: 'browseMechanic'
-              }
-            })
-          }
-        })
-      }
+      chooseProduct(item)
     }
   }
 
@@ -1614,6 +1612,7 @@ const Pos = ({
           <Bookmark
             loading={loading.effects['productBookmark/query']}
             onChange={handleChangeBookmark}
+            onChoose={chooseProduct}
             productBookmarkGroup={productBookmarkGroup}
             productBookmark={productBookmark}
           />

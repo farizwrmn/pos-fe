@@ -8,6 +8,7 @@ import EmptyBookmarkGroup from './EmptyBookmarkGroup'
 
 const Bookmark = ({
   onChange,
+  onChoose,
   loading,
   productBookmarkGroup,
   productBookmark
@@ -31,7 +32,7 @@ const Bookmark = ({
                   <div>
                     {list && list.length > 0 ?
                       list.map((item, index) => (
-                        <Card.Grid key={index} className={styles.card}>
+                        <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
                           <div>
                             <Avatar size="large" src="/product-placeholder.jpg" />
                           </div>
