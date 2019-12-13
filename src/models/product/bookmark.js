@@ -71,9 +71,16 @@ export default modelExtend(pageModel, {
     },
 
     * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, { id: payload })
+      const data = yield call(remove, payload)
       if (data.success) {
         yield put({ type: 'query' })
+        yield put({
+          type: 'productBookmarkDetail/query',
+          payload: {
+            id: payload.groupId,
+            relationship: 1
+          }
+        })
       } else {
         throw data
       }
@@ -89,6 +96,13 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {}
+          }
+        })
+        yield put({
+          type: 'productBookmarkDetail/query',
+          payload: {
+            id: payload.data.groupId,
+            relationship: 1
           }
         })
       } else {

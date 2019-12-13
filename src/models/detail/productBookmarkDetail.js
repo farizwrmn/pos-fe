@@ -35,7 +35,6 @@ export default modelExtend(pageModel, {
             data: response.data
           }
         })
-        console.log('response', response)
 
         yield put({
           type: 'updateState',

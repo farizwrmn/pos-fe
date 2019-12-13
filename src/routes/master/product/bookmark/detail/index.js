@@ -29,15 +29,12 @@ const Detail = ({
     dataSource: listBookmark,
     loading: loading.effects['productBookmark/query'],
     location,
-    async deleteItem (id) {
-      await dispatch({
+    deleteItem (id) {
+      dispatch({
         type: 'productBookmark/delete',
-        payload: id
-      })
-      await dispatch({
-        type: 'productBookmarkDetail/query',
         payload: {
-          id: data.id
+          id,
+          groupId: data.id
         }
       })
     }
@@ -51,6 +48,15 @@ const Detail = ({
       type: 'productBookmarkDetail/updateState',
       payload: {
         modalProductVisible: true
+      }
+    })
+  }
+
+  const refreshList = () => {
+    dispatch({
+      type: 'productBookmarkDetail/query',
+      payload: {
+        id: data.id
       }
     })
   }
@@ -78,7 +84,7 @@ const Detail = ({
       })
     },
     async onRowClick (record) {
-      await dispatch({
+      dispatch({
         type: 'productBookmark/add',
         payload: {
           data: {
@@ -87,13 +93,7 @@ const Detail = ({
           }
         }
       })
-      await dispatch({
-        type: 'productBookmarkDetail/query',
-        payload: {
-          id: data.id
-        }
-      })
-      await dispatch({
+      dispatch({
         type: 'productBookmarkDetail/updateState',
         payload: {
           modalProductVisible: false
@@ -115,6 +115,12 @@ const Detail = ({
             onClick={() => openProductModal()}
           >
             Product
+          </Button>
+          <Button
+            icon="reload"
+            onClick={() => refreshList()}
+          >
+            Refresh
           </Button>
           <Product {...productProps} />
         </Col>
