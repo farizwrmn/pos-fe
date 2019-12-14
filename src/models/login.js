@@ -121,7 +121,7 @@ export default {
     * loginSuccess ({ payload }, { put }) {
       const { data } = payload
       const from = queryURL('from')
-      localStorage.setItem('sidebarColor', '#5A87b5')
+      localStorage.setItem('sidebarColor', '#55a756')
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })

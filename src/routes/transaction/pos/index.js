@@ -3,42 +3,25 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain, variables, isEmptyObject, lstorage, color, calendar } from 'utils'
+import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder, DataQuery } from 'components'
-import { Badge, Icon, Form, Input, Table, Row, Col, Card, Button, Tooltip, Tag, Modal, Tabs, Collapse, Popover } from 'antd'
+import { Badge, Icon, Form, Input, Row, Col, Card, Button, Tooltip, Tag, Modal } from 'antd'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 import ModalShift from './ModalShift'
-import FormWo from './FormWo'
-import styles from '../../../themes/index.less'
 import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
-import ModalCashback from './ModalCashback'
+import TransactionDetail from './TransactionDetail'
+import Bookmark from './Bookmark'
 
 const { reArrangeMember, reArrangeMemberId } = variables
-const { dayByNumber } = calendar
 const { Promo } = DataQuery
 const { prefix } = configMain
 const { getCashierTrans } = lstorage
-const Panel = Collapse.Panel
-const TabPane = Tabs.TabPane
 const FormItem = Form.Item
-const ButtonGroup = Button.Group
-const width = 1000
-const formItemLayout = {
-  labelCol: {
-    span: 6
-  },
-  wrapperCol: {
-    span: 18
-  },
-  style: {
-    marginBottom: '5px'
-  }
-}
 
 const formItemLayout1 = {
   labelCol: { span: 10 },
@@ -53,11 +36,13 @@ const Pos = ({
   pos,
   shift,
   counter,
-  unit,
   app,
   promo,
+  productBookmarkGroup,
+  productBookmark,
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
-  payment }) => {
+  payment
+}) => {
   const { setting } = app
   const { listShift } = shift
   const { listCounter } = counter
@@ -68,7 +53,6 @@ const Pos = ({
     modalMechanicVisible,
     modalProductVisible,
     modalPaymentVisible,
-    visiblePopover,
     curBarcode,
     curQty,
     totalItem,
@@ -83,36 +67,28 @@ const Pos = ({
     modalServiceListVisible,
     mechanicInformation,
     curRecord,
-    // effectedRecord,
     modalShiftVisible,
     listCashier,
     dataCashierTrans,
     curCashierNo,
-    // curShift,
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalWorkOrderVisible,
-    modalCashbackVisible,
     listUnitUsage,
     showAlert,
     cashierBalance,
     showListReminder,
     listServiceReminder,
-    // curTotalDiscount,
-    paymentListActiveKey,
     modalAddUnit,
     cashierInformation
   } = pos
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
-  const { listLovMemberUnit, listUnit } = unit
   const { user } = app
-  const { usingWo, woNumber } = payment
-
-  const objectSize = (text) => {
-    let queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
-    return (queue || []).length
-  }
+  const {
+    // usingWo,
+    woNumber
+  } = payment
 
   let currentCashier = {
     cashierId: null,
@@ -209,41 +185,41 @@ const Pos = ({
     })
   }
 
-  const formWoProps = {
-    usingWo,
-    dispatch,
-    woNumber,
-    formItemLayout: {
-      labelCol: {
-        span: 24
-      },
-      wrapperCol: {
-        span: 24
-      },
-      style: {
-        marginTop: '5px',
-        marginBottom: '5px'
-      }
-    },
-    generateSequence () {
-      dispatch({
-        type: 'payment/sequenceQuery',
-        payload: {
-          seqCode: 'WO',
-          type: '1'
-        }
-      })
-    },
-    notUsingWo (check, value) {
-      dispatch({
-        type: 'payment/querySequenceSuccess',
-        payload: {
-          usingWo: check,
-          woNumber: value
-        }
-      })
-    }
-  }
+  // const formWoProps = {
+  //   usingWo,
+  //   dispatch,
+  //   woNumber,
+  //   formItemLayout: {
+  //     labelCol: {
+  //       span: 24
+  //     },
+  //     wrapperCol: {
+  //       span: 24
+  //     },
+  //     style: {
+  //       marginTop: '5px',
+  //       marginBottom: '5px'
+  //     }
+  //   },
+  //   generateSequence () {
+  //     dispatch({
+  //       type: 'payment/sequenceQuery',
+  //       payload: {
+  //         seqCode: 'WO',
+  //         type: '1'
+  //       }
+  //     })
+  //   },
+  //   notUsingWo (check, value) {
+  //     dispatch({
+  //       type: 'payment/querySequenceSuccess',
+  //       payload: {
+  //         usingWo: check,
+  //         woNumber: value
+  //       }
+  //     })
+  //   }
+  // }
 
   const resetSelectText = () => {
     dispatch({
@@ -256,6 +232,9 @@ const Pos = ({
 
   const lovButtonProps = {
     workOrderItem,
+    memberInformation,
+    memberUnitInfo,
+    mechanicInformation,
     handleMemberBrowse () {
       resetSelectText()
       // get member data
@@ -331,41 +310,6 @@ const Pos = ({
         }
       })
     },
-    handleProductBrowse () {
-      resetSelectText()
-      // get products data
-      // let json = setting.Inventory
-      // let jsondata = JSON.stringify(eval(`(${json})`))
-      // const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
-      dispatch({
-        type: 'pos/showProductModal',
-        payload: {
-          modalType: 'browseProductLock'
-        }
-      })
-      dispatch({
-        type: 'pos/getProducts',
-        payload: {
-          active: 1
-        }
-      })
-    },
-    handleServiceBrowse () {
-      resetSelectText()
-      dispatch({
-        type: 'pos/getServices',
-        payload: {
-          active: 1
-        }
-      })
-
-      dispatch({
-        type: 'pos/showServiceModal',
-        payload: {
-          modalType: 'browseService'
-        }
-      })
-    },
     handleWorkOrderBrowse () {
       resetSelectText()
       dispatch({
@@ -397,8 +341,8 @@ const Pos = ({
         })
       } else {
         Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
           onOk () {
             dispatch({ type: 'pos/hideProductModal' })
             dispatch({
@@ -496,7 +440,7 @@ const Pos = ({
       dispatch(routerRedux.push('/transaction/pos/payment'))
     },
     handleSuspend () {
-      document.getElementById('KM').value = 0
+      if (document.getElementById('KM')) document.getElementById('KM').value = 0
       dispatch({ type: 'pos/insertQueueCache' })
       dispatch({
         type: 'pos/updateState',
@@ -568,68 +512,6 @@ const Pos = ({
         }
       })
     }
-  }
-
-  const modalEditPayment = (record) => {
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-    dispatch({
-      type: 'pos/showPaymentModal',
-      payload: {
-        item: record,
-        modalType: 'modalPayment'
-      }
-    })
-  }
-
-  const modalEditService = (record) => {
-    dispatch({
-      type: 'pos/getMechanics'
-    })
-    dispatch({
-      type: 'pos/showServiceListModal',
-      payload: {
-        item: record,
-        modalType: 'modalService'
-      }
-    })
-  }
-
-  const modalEditBundle = () => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        modalVoidSuspendVisible: true
-      }
-    })
-  }
-
-  const hdlUnitClick = () => {
-    dispatch({ type: 'unit/query', payload: { id: memberInformation.memberCode } })
-  }
-  const hdlNoUnit = () => {
-    let memberUnit = {
-      id: null,
-      policeNo: null,
-      merk: null,
-      model: null
-    }
-    dispatch({
-      type: 'pos/setNullUnit',
-      payload: {
-        memberUnit
-      }
-    })
-  }
-
-  const changePaymentListTab = (key) => {
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        paymentListActiveKey: key
-      }
-    })
   }
 
   const setCurBarcode = (curBarcode, curQty) => {
@@ -719,6 +601,39 @@ const Pos = ({
           {infoCashRegister.desc}
         </span>
       </span>)
+  }
+
+  const handleServiceBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/getServices',
+      payload: {
+        active: 1
+      }
+    })
+
+    dispatch({
+      type: 'pos/showServiceModal',
+      payload: {
+        modalType: 'browseService'
+      }
+    })
+  }
+
+  const handleProductBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showProductModal',
+      payload: {
+        modalType: 'browseProductLock'
+      }
+    })
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        active: 1
+      }
+    })
   }
 
   const modalShiftProps = {
@@ -815,7 +730,7 @@ const Pos = ({
           memberId: newItem.id
         }
       })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
       dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
       dispatch({
         type: 'pos/updateState',
@@ -909,37 +824,6 @@ const Pos = ({
     }
   }
 
-  const modalCashbackProps = {
-    title: 'Use Cashback',
-    visible: modalCashbackVisible,
-    item: memberInformation || {},
-    onOk (data) {
-      const itemStorage = [data]
-      localStorage.setItem('member', JSON.stringify(itemStorage))
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalCashbackVisible: false,
-          memberInformation: data
-        }
-      })
-      dispatch({
-        type: 'pos/syncCustomerCashback',
-        payload: {
-          memberId: data.id
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalCashbackVisible: false
-        }
-      })
-    }
-  }
-
   const modalMemberProps = {
     location,
     loading,
@@ -991,7 +875,7 @@ const Pos = ({
             type: 'pos/queryGetMemberSuccess',
             payload: { memberInformation: newItem }
           })
-          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'mechanic', infoUtil: 'Mechanic' } })
+          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
           dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
           dispatch({
             type: 'pos/hideMemberModal'
@@ -1118,6 +1002,108 @@ const Pos = ({
     }
   }
 
+  const chooseProduct = (item) => {
+    if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
+      let listByCode = getCashierTrans()
+      let arrayProd = listByCode
+      const checkExists = listByCode.filter(el => el.code === item.productCode)
+      if ((checkExists || []).length === 0) {
+        const data = {
+          no: arrayProd.length + 1,
+          code: item.productCode,
+          productId: item.id,
+          name: item.productName,
+          employeeId: mechanicInformation.employeeId,
+          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+          typeCode: 'P',
+          qty: 1,
+          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+        }
+
+        arrayProd.push({
+          no: arrayProd.length + 1,
+          code: item.productCode,
+          productId: item.id,
+          name: item.productName,
+          employeeId: mechanicInformation.employeeId,
+          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+          typeCode: 'P',
+          qty: 1,
+          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+          discount: 0,
+          disc1: 0,
+          disc2: 0,
+          disc3: 0,
+          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+        })
+        dispatch({
+          type: 'pos/checkQuantityNewProduct',
+          payload: {
+            data,
+            arrayProd,
+            setting
+          }
+        })
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            paymentListActiveKey: '1'
+            // ,
+            // modalProductVisible: false
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
+      }
+    } else if (memberInformation.length === 0) {
+      Modal.info({
+        title: 'Member Information is not found',
+        content: 'Insert Member',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMembers'
+          })
+
+          dispatch({
+            type: 'pos/showMemberModal',
+            payload: {
+              modalType: 'browseMember'
+            }
+          })
+        }
+      })
+    } else if (mechanicInformation.length === 0) {
+      Modal.info({
+        title: 'Employee Information is not found',
+        content: 'Insert Employee',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMechanics'
+          })
+
+          dispatch({
+            type: 'pos/showMechanicModal',
+            payload: {
+              modalType: 'browseMechanic'
+            }
+          })
+        }
+      })
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -1147,111 +1133,7 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
-      if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
-        let listByCode = getCashierTrans()
-        let arrayProd = listByCode
-        const checkExists = listByCode.filter(el => el.code === item.productCode)
-        if ((checkExists || []).length === 0) {
-          // if (listByCode.length === 0) {
-          //   arrayProd = listByCode.slice()
-          // } else {
-          //   arrayProd = JSON.parse(listByCode.slice())
-          // }
-
-          const data = {
-            no: arrayProd.length + 1,
-            code: item.productCode,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: 1,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-          }
-
-          arrayProd.push({
-            no: arrayProd.length + 1,
-            code: item.productCode,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: 1,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-          })
-          dispatch({
-            type: 'pos/checkQuantityNewProduct',
-            payload: {
-              data,
-              arrayProd,
-              setting
-            }
-          })
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              paymentListActiveKey: '1'
-              // ,
-              // modalProductVisible: false
-            }
-          })
-        } else {
-          Modal.warning({
-            title: 'Cannot add product',
-            content: 'Already Exists in list'
-          })
-        }
-      } else if (memberInformation.length === 0) {
-        Modal.info({
-          title: 'Member Information is not found',
-          content: 'Insert Member',
-          onOk () {
-            dispatch({ type: 'pos/hideProductModal' })
-            dispatch({
-              type: 'pos/getMembers'
-            })
-
-            dispatch({
-              type: 'pos/showMemberModal',
-              payload: {
-                modalType: 'browseMember'
-              }
-            })
-          }
-        })
-      } else if (mechanicInformation.length === 0) {
-        Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
-          onOk () {
-            dispatch({ type: 'pos/hideProductModal' })
-            dispatch({
-              type: 'pos/getMechanics'
-            })
-
-            dispatch({
-              type: 'pos/showMechanicModal',
-              payload: {
-                modalType: 'browseMechanic'
-              }
-            })
-          }
-        })
-      }
+      chooseProduct(item)
     }
   }
 
@@ -1340,8 +1222,8 @@ const Pos = ({
         }
       } else {
         Modal.info({
-          title: 'Mechanic Information is not found',
-          content: 'Insert Mechanic',
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
           onOk () {
             dispatch({
               type: 'pos/updateState',
@@ -1547,11 +1429,11 @@ const Pos = ({
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic'
+            kodeUtil: 'employee',
+            infoUtil: 'Employee'
           }
         })
-      } else if (kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'employee') {
         if (value) {
           dispatch({
             type: 'pos/getMechanic',
@@ -1639,8 +1521,8 @@ const Pos = ({
         dispatch({
           type: 'pos/setUtil',
           payload: {
-            kodeUtil: 'mechanic',
-            infoUtil: 'Mechanic'
+            kodeUtil: 'employee',
+            infoUtil: 'Employee'
           }
         })
       } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[52]) { // shortcut discount nominal (Ctrl + Shift + 4)
@@ -1663,7 +1545,7 @@ const Pos = ({
             infoUtil: 'Service'
           }
         })
-      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'mechanic') {
+      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'employee') {
         dispatch({
           type: 'pos/setUtil',
           payload: {
@@ -1697,18 +1579,6 @@ const Pos = ({
         }
       })
     }
-    // else if (e.keyCode === '118') { // Tombol F7 untuk void/hapus item
-    //   handleVoid(value)
-    // }
-  }
-
-  const dataService = () => {
-    let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    return (service)
-  }
-  const dataBundle = () => {
-    let data = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
-    return data
   }
 
   const showModalCashback = () => {
@@ -1720,136 +1590,36 @@ const Pos = ({
     })
   }
 
-  const hdlPopoverClose = () => {
-    dispatch({ type: 'pos/modalPopoverClose' })
-  }
-  const hdlPopoverVisibleChange = () => {
-    dispatch({ type: 'pos/modalPopoverShow' })
-  }
-  const hdlTableRowClick = (record) => {
-    const { id, policeNo, merk, model, type, year, chassisNo, machineNo } = record
-    dispatch({
-      type: 'pos/getServiceUsageReminder',
-      payload: {
-        policeNo: id
-      }
-    })
-    dispatch({
-      type: 'pos/chooseMemberUnit',
-      payload: {
-        policeNo: {
-          id, policeNo, merk, model, type, year, chassisNo, machineNo
-        }
-      }
-    })
-    dispatch({
-      type: 'payment/setPoliceNo',
-      payload: {
-        policeNo: {
-          id, policeNo, merk, model, type, year, chassisNo, machineNo
-        }
-      }
-    })
-    dispatch({
-      type: 'payment/setLastMeter',
-      payload: { policeNo: record.policeNo }
-    })
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        showListReminder: false
-      }
-    })
-  }
-
-  const columns = [{
-    title: 'Unit No',
-    dataIndex: 'policeNo',
-    key: 'policeNo',
-    width: 100
-  }, {
-    title: 'Merk',
-    dataIndex: 'merk',
-    key: 'merk',
-    width: 250
-  }, {
-    title: 'Model',
-    dataIndex: 'model',
-    key: 'model',
-    width: 200
-  }]
-  const titlePopover = (
-    <Row>
-      <Col span={8}>Choose Member Unit</Col>
-      <Col span={1} offset={15}>
-        <Button shape="circle"
-          icon="close-circle"
-          size="small"
-          onClick={() => hdlPopoverClose()}
-        />
-      </Col>
-    </Row>
-  )
-  const contentPopover = (
-    <div>
-      {/* <Button type="primary" onClick={handleAddMember}>Add</Button> */}
-      <Table
-        columns={columns}
-        dataSource={listUnit || listLovMemberUnit}
-        size="small"
-        bordered
-        pagination={{ pageSize: 5 }}
-        onRowClick={_record => hdlTableRowClick(_record)}
-
-        locale={{
-          emptyText: 'No Unit'
-        }}
-      />
-    </div>
-  )
-
-  const onChangeLastMeter = (e) => {
-    const { value } = e.target
-    let lastMeter = value.replace(/^\D+/g, '')
-    localStorage.setItem('lastMeter', JSON.stringify(parseFloat(lastMeter)))
-    dispatch({
-      type: 'payment/setLastMeter',
-      payload: {
-        lastMeter
-      }
-    })
-    setTimeout(() => {
-      if (value !== '' && value) {
-        if (!showAlert) {
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              showAlert: true
-            }
-          })
-        }
-      } else {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            showAlert: false,
-            showListReminder: false
-          }
-        })
-      }
-    }, 1000)
-  }
-
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+
+  const handleChangeBookmark = (key = 1, page = 1, pageSize = 10) => {
+    dispatch({
+      type: 'productBookmark/query',
+      payload: {
+        groupId: key,
+        relationship: 1,
+        page,
+        pageSize
+      }
+    })
+  }
 
   return (
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col lg={18} md={20}>
+        <Col lg={10} md={24}>
+          <Bookmark
+            loading={loading.effects['productBookmark/query']}
+            onChange={handleChangeBookmark}
+            onChoose={chooseProduct}
+            productBookmarkGroup={productBookmarkGroup}
+            productBookmark={productBookmark}
+          />
+        </Col>
+        <Col lg={14} md={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              {/* <Input placeholder="Name" disabled style={{ marginBottom: 8}}/> */}
               <Row>
                 <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
                   <Row>
@@ -1866,11 +1636,12 @@ const Pos = ({
                   </Row>
                 </Card>
               </Row>
+              <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={2} md={24}>
+                <Col lg={2} md={2}>
                   {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
                 </Col>
-                <Col lg={22} md={24}>
+                <Col lg={14} md={24}>
                   <Input size="large"
                     autoFocus
                     value={curBarcode}
@@ -1881,13 +1652,35 @@ const Pos = ({
                     onKeyPress={e => handleKeyPress(e)}
                   />
                 </Col>
+                <Col lg={8} md={24}>
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon="barcode"
+                    onClick={handleProductBrowse}
+                    style={{
+                      margin: '0px 5px'
+                    }}
+                  >
+                    Product
+                  </Button>
+                  <Button type="primary"
+                    size="large"
+                    icon="tool"
+                    onClick={handleServiceBrowse}
+                    style={{
+                      margin: '0px 5px'
+                    }}
+                  >
+                    Service
+                  </Button>
+                </Col>
               </Row>
             </Form>
 
-            <LovButton {...lovButtonProps} />
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
-            {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />}
+            {/* {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />} */}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
@@ -1901,290 +1694,9 @@ const Pos = ({
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
 
-            <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-              <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1258px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Payment List'
-                  }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      width: '35px'
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      width: '100px'
-                    },
-                    {
-                      title: 'Product Name',
-                      dataIndex: 'name',
-                      width: '160px'
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Price',
-                      dataIndex: 'sellPrice',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-                    },
-                    {
-                      title: 'Disc1(%)',
-                      dataIndex: 'disc1',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc2(%)',
-                      dataIndex: 'disc2',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc3(%)',
-                      dataIndex: 'disc3',
-                      width: '65px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc',
-                      dataIndex: 'discount',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'D. Member',
-                      dataIndex: 'price',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => ((Math.max(0, record.sellPrice - record.price) || 0) * record.qty).toLocaleString()
-                    },
-                    {
-                      title: 'Total',
-                      dataIndex: 'total',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '100px',
-                      render: text => text
-                    }
-                  ]}
-                  onRowClick={record => modalEditPayment(record)}
-                  dataSource={getCashierTrans()}
-                  style={{ marginBottom: 16 }}
-                />
-              </TabPane>
-              <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1037px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Payment List'
-                  }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      width: '41px'
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      width: '100px'
-                    },
-                    {
-                      title: 'Product Name',
-                      dataIndex: 'name',
-                      width: '160px'
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Price',
-                      dataIndex: 'sellPrice',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: (text, record) => (record.sellPrice - record.price > 0 ? record.sellPrice : record.price)
-                    },
-                    {
-                      title: 'Disc1(%)',
-                      dataIndex: 'disc1',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc2(%)',
-                      dataIndex: 'disc2',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc3(%)',
-                      dataIndex: 'disc3',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Disc',
-                      dataIndex: 'discount',
-                      width: '75px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Total',
-                      dataIndex: 'total',
-                      width: '100px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Employee',
-                      dataIndex: 'employeeName',
-                      width: '100px',
-                      render: text => text
-                    },
-                    {
-                      title: 'Promo',
-                      dataIndex: 'bundleName',
-                      width: '121px',
-                      render: text => text
-                    }
-                  ]}
-                  onRowClick={_record => modalEditService(_record)}
-                  dataSource={dataService()}
-                  style={{ marginBottom: 16 }}
-                />
-              </TabPane>
-              <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="3">
-                <Table
-                  rowKey={(record, key) => key}
-                  pagination={{ pageSize: 5 }}
-                  bordered
-                  size="small"
-                  scroll={{ x: '1000px', y: '220px' }}
-                  locale={{
-                    emptyText: 'Your Bundle List'
-                  }}
-                  onRowClick={_record => modalEditBundle(_record)}
-                  dataSource={dataBundle()}
-                  style={{ marginBottom: 16 }}
-                  columns={[
-                    {
-                      title: 'No',
-                      dataIndex: 'no',
-                      key: 'no',
-                      width: '41px'
-                    },
-                    {
-                      title: 'type',
-                      dataIndex: 'type',
-                      key: 'type',
-                      width: `${width * 0.115}px`,
-                      render: (text) => {
-                        return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
-                      }
-                    },
-                    {
-                      title: 'Code',
-                      dataIndex: 'code',
-                      key: 'code',
-                      width: `${width * 0.1}px`
-                    },
-                    {
-                      title: 'Name',
-                      dataIndex: 'name',
-                      key: 'name',
-                      width: `${width * 0.15}px`
-                    },
-                    {
-                      title: 'Q',
-                      dataIndex: 'qty',
-                      width: '40px',
-                      className: styles.alignRight,
-                      render: text => (text || '-').toLocaleString()
-                    },
-                    {
-                      title: 'Period',
-                      dataIndex: 'Date',
-                      key: 'Date',
-                      width: `${width * 0.15}px`,
-                      render: (text, record) => {
-                        return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
-                      }
-                    },
-                    {
-                      title: 'Available Date',
-                      dataIndex: 'availableDate',
-                      key: 'availableDate',
-                      width: `${width * 0.15}px`,
-                      render: (text) => {
-                        let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
-                        if (text !== null && (date || []).length === 7) {
-                          date = <Tag color="green">{'Everyday'}</Tag>
-                        }
-                        if (text !== null && (date || []).length < 7) {
-                          date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
-                        }
-                        return date
-                      }
-                    },
-                    {
-                      title: 'Available Hour',
-                      dataIndex: 'availableHour',
-                      key: 'availableHour',
-                      width: `${width * 0.1}px`,
-                      render: (text, record) => {
-                        return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
-                      }
-                    }
-                  ]}
-                />
-              </TabPane>
-            </Tabs>
-
+            <TransactionDetail pos={pos} dispatch={dispatch} />
             <Form>
               <div style={{ float: 'right' }}>
-
                 <Row>
                   <FormItem label="Total Qty" {...formItemLayout1}>
                     <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
@@ -2208,63 +1720,9 @@ const Pos = ({
               </div>
             </Form>
           </Card>
-        </Col>
-        <Col lg={6} md={4}>
-          <Collapse defaultActiveKey={['1', '2', '3']}>
-            <Panel header="WorkOrder" key="3">
-              <FormWo {...formWoProps} />
-            </Panel>
-            <Panel header="Member Info" key="1">
-              <Form layout="horizontal">
-                <FormItem label="Name" {...formItemLayout}>
-                  <Input value={memberInformation.memberName} disabled />
-                </FormItem>
-                <FormItem label="Unit" hasFeedback {...formItemLayout}>
-                  <Col span={16}>
-                    <Input value={memberUnitInfo.policeNo} />
-                  </Col>
-                  <Col span={4}>
-                    <Popover title={titlePopover}
-                      content={contentPopover}
-                      visible={visiblePopover}
-                      onVisibleChange={() => hdlPopoverVisibleChange()}
-                      placement="left"
-                      trigger="click"
-                    >
-                      <ButtonGroup size="medium">
-                        <Button type="primary" icon="down-square-o" onClick={hdlUnitClick} />
-                      </ButtonGroup>
-                    </Popover>
-                  </Col>
-                  <Col span={4}>
-                    <Button type="danger" icon="close" onClick={hdlNoUnit} />
-                  </Col>
-                </FormItem>
-                <FormItem label="KM" hasFeedback {...formItemLayout}>
-                  <Input type="number" maxNumber={11} onChange={value => onChangeLastMeter(value)} id="KM" defaultValue={localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0} />
-                </FormItem>
-                <FormItem label="Code" {...formItemLayout}>
-                  <Input value={memberInformation.memberCode} disabled />
-                </FormItem>
-                <FormItem label="Cashback" {...formItemLayout}>
-                  <Input value={memberInformation.cashback} disabled />
-                </FormItem>
-              </Form>
-            </Panel>
-            <Panel header="Employee Info" key="2">
-              <Form layout="horizontal">
-                <FormItem label="Name" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeName} disabled />
-                </FormItem>
-                <FormItem label="ID" {...formItemLayout}>
-                  <Input value={mechanicInformation.employeeCode} disabled />
-                </FormItem>
-              </Form>
-            </Panel>
-          </Collapse>
+          <BottomButton {...buttomButtonProps} />
         </Col>
       </Row >
-      <BottomButton {...buttomButtonProps} />
       <Row>
         <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
           <Row gutter={32}>
@@ -2319,7 +1777,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
 }) => ({
-  pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
 }))(Pos)

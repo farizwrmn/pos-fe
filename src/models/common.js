@@ -40,6 +40,9 @@ const pageModel = modelExtend(model, {
           ...pagination
         }
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     }
   }
 })

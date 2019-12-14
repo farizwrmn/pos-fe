@@ -68,6 +68,7 @@
     ]
   },
   "scripts": {
+    "analyze": "set NODE_OPTIONS=--max_old_space_size=4096 && roadhog build --analyze",
     "dev": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server",
     "dev8888": "set BROWSER=none&&set HOST=0.0.0.0&&PORT=8888 roadhog server",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
@@ -78,6 +79,6 @@
     "test": "set NODE_ENV=test && jest --coverage",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "serve": "serve -s dist",
-    "start": "set BROWSER=none&&set HOST=0.0.0.0&&roadhog server"
+    "start": "node ./build/runServer.js"
   }
 }

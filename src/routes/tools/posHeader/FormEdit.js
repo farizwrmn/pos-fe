@@ -174,7 +174,7 @@ const FormEdit = ({
           </FormItem>
         </Col>
         <Col md={12}>
-          <FormItem label="Mechanic" hasFeedback {...formItemLayout}>
+          <FormItem label="Employee" hasFeedback {...formItemLayout}>
             <Row>
               <Col span={12}>
                 {getFieldDecorator('technicianName', {

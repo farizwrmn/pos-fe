@@ -22,8 +22,6 @@ const Product = ({
   productbrand,
   ...tableProps
 }) => {
-  const { listCategory } = productcategory
-  const { listBrand } = productbrand
   const { searchText, list, pagination, filteredInfo } = productstock
   // const { pagination } = tableProps
 
@@ -44,22 +42,6 @@ const Product = ({
       dataIndex: 'productName',
       key: 'productName',
       width: '15%'
-    }, {
-      title: 'Category',
-      dataIndex: 'categoryId',
-      key: 'categoryId',
-      width: '10%',
-      filteredInfo: filteredInfo.categoryId || null,
-      render: (text, record) => record.categoryName,
-      filters: listCategory.map(x => ({ text: x.categoryName, value: x.id }))
-    }, {
-      title: 'Brand',
-      dataIndex: 'brandId',
-      key: 'brandId',
-      width: '10%',
-      filteredInfo: filteredInfo.brandId || null,
-      render: (text, record) => record.brandName,
-      filters: listBrand.map(x => ({ text: x.brandName, value: x.id }))
     }, {
       title: 'Sell Price',
       dataIndex: 'sellPrice',

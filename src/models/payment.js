@@ -13,7 +13,7 @@ const { getCashierTrans } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
-const pdfMake = require('pdfmake/build/pdfmake.js')
+const pdfMake = require('pdfmake/build/pdfmake.min.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
@@ -265,7 +265,7 @@ export default {
                   memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
                   memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
                   memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-                  employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No mechanic',
+                  employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
                   technicianId: payload.technicianId,
                   curShift: payload.curShift,
                   printNo: 1,
@@ -689,7 +689,7 @@ export default {
 
                     [{ text: 'Customer', fontSize: headerFontSize }, ':', { text: `${(payload.memberName || '').toString().toUpperCase()}${payload.phone ? '/' : ''}${(payload.phone || '').toString().toUpperCase()}`, fontSize: headerFontSize }, {}, { text: 'Type/Tahun', fontSize: headerFontSize }, ':', { text: `${(payload.unitInfo.type || '').toString().toUpperCase()}${payload.unitInfo.year ? '/' : ''}${(payload.unitInfo.year || '').toString().toUpperCase()}`, fontSize: headerFontSize }],
 
-                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Mechanic', fontSize: headerFontSize }, ':', { text: (payload.employeeName || '').toString().toUpperCase(), fontSize: headerFontSize }]
+                    [{ text: 'Alamat', fontSize: headerFontSize }, ':', { text: (payload.address || '').toString().toUpperCase().substring(0, 22), fontSize: headerFontSize }, {}, { text: 'Employee', fontSize: headerFontSize }, ':', { text: (payload.employeeName || '').toString().toUpperCase(), fontSize: headerFontSize }]
                   ]
                 },
                 layout: 'noBorders'

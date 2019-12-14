@@ -139,7 +139,7 @@ const PrintXLS = ({ listMechanic, storeInfo, fromDate, toDate }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: arr,
-    fileName: 'Mechanic-Services-Summary'
+    fileName: 'Employee-Services-Summary'
   }
 
   return (

@@ -152,7 +152,6 @@ export default {
         success('Payment has been saved')
         // setInterval(() => { location.reload() }, 1000)
       } else {
-        console.log('data', data)
         throw data
       }
     },

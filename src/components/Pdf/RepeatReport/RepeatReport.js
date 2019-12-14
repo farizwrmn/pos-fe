@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Icon, Modal } from 'antd'
-import pdfMake from 'pdfmake/build/pdfmake.js'
+import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs

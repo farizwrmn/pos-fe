@@ -232,6 +232,25 @@ const Routers = function ({ history, app }) {
             }, 'master-product-specification')
           }
         }, {
+          path: 'master/product/bookmark',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
+              cb(null, require('./routes/master/product/bookmark/'))
+            }, 'master-product-bookmark')
+          }
+        }, {
+          path: 'master/product/bookmark/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/detail/productBookmarkDetail'))
+              registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/master/product/bookmark/detail/'))
+            }, 'master-product-bookmark-detail')
+          }
+        }, {
           path: 'master/service',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -358,6 +377,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customergroup'))
               registerModel(app, require('./models/master/customertype'))
               registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
+              registerModel(app, require('./models/product/bookmark'))
               registerModel(app, require('./models/misc'))
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')

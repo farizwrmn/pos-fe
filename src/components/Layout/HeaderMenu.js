@@ -11,18 +11,18 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
     </div>
   )
   const childComp = (
-    <Tooltip placement="leftBottom" title={prompt}>
-      <div data-count={total > 99 ? '99+' : total}
-        className={separator ?
-          styles.void :
-          (((prompt === 'calendar' || prompt === 'notification') && total > 0) ? `${styles.button} ${styles[addClass || prompt]} ${styles.badgeStyle}` : `${styles.button} ${styles[addClass || prompt]}`)}
-        onClick={onClick}
-      >
-        <Link to={clickRoute}>
+    <Link to={clickRoute}>
+      <Tooltip placement="leftBottom" title={prompt}>
+        <div data-count={total > 99 ? '99+' : total}
+          className={separator ?
+            styles.void :
+            (((prompt === 'calendar' || prompt === 'notification') && total > 0) ? `${styles.button} ${styles[addClass || prompt]} ${styles.badgeStyle}` : `${styles.button} ${styles[addClass || prompt]}`)}
+          onClick={onClick}
+        >
           <Icon type={icon || prompt} />
-        </Link>
-      </div>
-    </Tooltip>
+        </div>
+      </Tooltip>
+    </Link>
   )
 
   let parentComp = <Popover content={content} trigger="click">{childComp}</Popover>

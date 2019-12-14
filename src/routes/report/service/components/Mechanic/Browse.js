@@ -18,7 +18,7 @@ const Browse = ({ dataSource, ...browseProps }) => {
       width: '100px'
     },
     {
-      title: 'Mechanic',
+      title: 'Employee',
       dataIndex: 'employeeName',
       key: 'employeeName',
       width: '100px'

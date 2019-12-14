@@ -1,6 +1,5 @@
 import {
   name,
-  version,
   prefix,
   footerText,
   footerSubText,
@@ -13,12 +12,8 @@ it('Should render App name', () =>
   expect(name).toEqual('Stock-POS')
 )
 
-it('Should render App Version', () =>
-  expect(version).toEqual('2018.07.003')
-)
-
 it('Should render App Prefix', () =>
-  expect(prefix).toEqual('dmiPos')
+  expect(prefix).toEqual('smiPos')
 )
 
 it('Should render App footerText', () =>
@@ -26,7 +21,7 @@ it('Should render App footerText', () =>
 )
 
 it('Should render App footerSubText', () =>
-  expect(footerSubText).toEqual('Point of Sales © 2017-2018')
+  expect(footerSubText).toEqual('Point of Sales © 2019')
 )
 
 it('Should render App Logo String', () =>

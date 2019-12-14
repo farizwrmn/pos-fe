@@ -42,7 +42,7 @@ const Report = ({ serviceReport, dispatch }) => {
         <TabPane tab="By Trans" key="1">
           {activeKey === '1' && <Trans />}
         </TabPane>
-        <TabPane tab="By Mechanic" key="2">
+        <TabPane tab="By Employee" key="2">
           {activeKey === '2' && <Mechanic />}
         </TabPane>
         <TabPane tab="By Item" key="3">

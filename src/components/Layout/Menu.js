@@ -24,8 +24,8 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
     case '#3E3E3E':
       selectedMenu = '#494949'
       break
-    case '#5A87b5':
-      selectedMenu = '#83a4c6'
+    case '#55a756':
+      selectedMenu = '#4e9c4f'
       hoverColor = '#444'
       break
     default:

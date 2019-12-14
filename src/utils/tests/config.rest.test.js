@@ -63,6 +63,8 @@ it('Should render Config Api', () =>
     userrole: '/misc/code/USERROLE',
     sellprice: '/misc/code/SELLPRICE',
     brand: '/stocks/brands',
+    bookmarkGroup: '/stock/bookmark-group',
+    bookmark: '/stock/bookmark',
     stockcategory: '/stocks/categories',
     stock: '/stocks',
     pos: '/pos',

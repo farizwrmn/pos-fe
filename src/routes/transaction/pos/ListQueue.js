@@ -149,11 +149,11 @@ const ListQueue = ({ pos, dispatch }) => {
                 dataIndex: 'policeNo'
               },
               {
-                title: 'Mechanic',
+                title: 'Employee',
                 dataIndex: 'employeeName'
               },
               {
-                title: 'Mechanic ID',
+                title: 'Employee ID',
                 dataIndex: 'employeeCode'
               },
               {
