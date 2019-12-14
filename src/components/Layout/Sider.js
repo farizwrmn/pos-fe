@@ -52,7 +52,7 @@ const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOp
     let i
     let logo4 = []
     for (i = 0; i < 5; i += 1) {
-      logo4.push(<span key={i}><img alt={'logo'} src={`/logo${lstorage.getIdBE()}.png`} style={{ float: 'center' }} /></span>)
+      logo4.push(<span key={i}><img alt={'logo'} src={`/logo${lstorage.getIdBE()}.png`} style={{ float: 'center', height: '20px', width: '20px' }} /></span>)
     }
     return (logo4)
   }
@@ -64,7 +64,7 @@ const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOp
           {siderFold
             ? <div>{loopLogo()}</div> :
             <div>
-              <span><img alt={'logo'} src={`/logo${lstorage.getIdBE()}.png`} style={{ float: 'center' }} /></span>
+              <span><img alt={'logo'} src={`/logo${lstorage.getIdBE()}.png`} style={{ float: 'center', height: '20px', width: '20px' }} /></span>
               <span><DateTime setDate={loginTime} setDateDiff={loginTimeDiff} /></span>
               <span>{companyName}</span>
               <span style={defaultStoreColor}>{defaultStoreName}</span>

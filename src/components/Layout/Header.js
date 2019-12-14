@@ -226,7 +226,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
                 <Button onClick={() => changeColor('#3E3E3E')} size="small" style={{ backgroundColor: '#3E3E3E', width: 20, borderColor: defaultSidebarColor === '#3E3E3E' ? '#108ee9' : '' }} />
               </Col>
               <Col span={8}>
-                <Button onClick={() => changeColor('#5A87b5')} size="small" style={{ backgroundColor: '#5A87b5', width: 20, borderColor: defaultSidebarColor === '#5A87b5' ? '#108ee9' : '' }} />
+                <Button onClick={() => changeColor('#55a756')} size="small" style={{ backgroundColor: '#55a756', width: 20, borderColor: defaultSidebarColor === '#55a756' ? '#108ee9' : '' }} />
               </Col>
             </Row>
           }

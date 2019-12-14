@@ -38,7 +38,7 @@ const LovButton = ({
           onClick={handleMemberBrowse}
           disabled={workOrderItem.id}
         >
-          {`Member (${memberInformation.memberName})`}
+          {memberInformation && memberInformation.memberName ? `Member (${memberInformation.memberName})` : 'Member'}
         </Button>
         <Tooltip title="add Member">
           <Button
@@ -58,7 +58,7 @@ const LovButton = ({
           onClick={handleAssetBrowse}
           disabled={workOrderItem.id}
         >
-          {`Asset (${memberUnitInfo.policeNo})`}
+          {memberUnitInfo && memberUnitInfo.policeNo ? `Asset (${memberUnitInfo.policeNo})` : 'Asset'}
         </Button>
         <Tooltip title="add Asset">
           <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} />
@@ -71,7 +71,7 @@ const LovButton = ({
           icon="customer-service"
           onClick={handleMechanicBrowse}
         >
-          {`Employee (${mechanicInformation.employeeName})`}
+          {mechanicInformation && mechanicInformation.employeeName ? `Employee (${mechanicInformation.employeeName})` : 'Employee'}
         </Button>
       </ButtonGroup>
       <Badge count={objectSize()}>

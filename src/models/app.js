@@ -54,7 +54,7 @@ export default {
     ignore: true,
     title: '',
     options: {},
-    defaultSidebarColor: localStorage.getItem('sidebarColor') || '#5A87b5'
+    defaultSidebarColor: localStorage.getItem('sidebarColor') || '#55a756'
   },
   subscriptions: {
 
