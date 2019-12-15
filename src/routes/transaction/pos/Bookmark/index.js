@@ -32,8 +32,6 @@ const Bookmark = ({
                   <div>
                     {list && list.length > 0 ?
                       list.map((item, index) => {
-                        console.log('item', item)
-
                         return (
                           <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
                             <div>
