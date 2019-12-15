@@ -1608,7 +1608,7 @@ const Pos = ({
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col lg={10} md={24}>
+        <Col md={10} sm={24}>
           <Bookmark
             loading={loading.effects['productBookmark/query']}
             onChange={handleChangeBookmark}
@@ -1617,7 +1617,7 @@ const Pos = ({
             productBookmark={productBookmark}
           />
         </Col>
-        <Col lg={14} md={24}>
+        <Col md={14} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <Row>
