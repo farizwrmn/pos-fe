@@ -31,18 +31,22 @@ const Bookmark = ({
                 : (
                   <div>
                     {list && list.length > 0 ?
-                      list.map((item, index) => (
-                        <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
-                          <div>
-                            <Avatar size="large" src="/product-placeholder.jpg" />
-                          </div>
-                          <div>{item && item.product ? item.product.productCode : null}</div>
-                          <div>
-                            <h3>{item && item.product ? item.product.productName : null}</h3>
-                          </div>
-                          <div>{currencyFormatter(item.product.sellPrice)}</div>
-                        </Card.Grid>
-                      )) : (
+                      list.map((item, index) => {
+                        console.log('item', item)
+
+                        return (
+                          <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
+                            <div>
+                              <Avatar size="large" src="/product-placeholder.jpg" />
+                            </div>
+                            <div>{item && item.product ? item.product.productCode : null}</div>
+                            <div>
+                              <h3>{item && item.product ? item.product.productName : null}</h3>
+                            </div>
+                            <div>{currencyFormatter(item && item.product ? item.product.sellPrice : null)}</div>
+                          </Card.Grid>
+                        )
+                      }) : (
                         <EmptyBookmark id={item.id} />
                       )}
                   </div>

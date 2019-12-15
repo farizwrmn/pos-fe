@@ -383,6 +383,35 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           }
+        },
+        {
+          path: 'transaction/pos/customer-view',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/transaction/pospromo'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/master/counter'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/marketing/promo'))
+              registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/marketing/bundlingRules'))
+              registerModel(app, require('./models/marketing/bundlingReward'))
+              registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/marketing/customerSocial'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/sequence'))
+              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
+              registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/transaction/customer-view/'))
+            }, 'transaction-pos-customer')
+          }
         }, {
           path: 'transaction/pos/payment',
           getComponent (nextState, cb) {
