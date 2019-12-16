@@ -29,7 +29,7 @@ it('Should render App Logo String', () =>
 )
 
 it('Should render App openPages', () =>
-  expect(openPages).toEqual(['/login', '/nps/01', '/nps/02', '/nps/03'])
+  expect(openPages).toEqual(['/login', '/nps/01', '/nps/02', '/nps/03', '/transaction/pos/customer-view'])
 )
 
 it('Should render App MultiSelect', () =>

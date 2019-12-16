@@ -322,7 +322,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
         {!isNavbar ? <aside style={{ backgroundColor: sidebarColor }} className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
           <Sider {...siderProps} />
-        </aside> : ''}
+        </aside> : null}
         <LocaleProvider locale={enUS}>
           <div className={styles.main}>
             <Header {...headerProps} />
