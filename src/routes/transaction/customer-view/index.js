@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { Form, Input, Row, Card } from 'antd'
 import TransactionDetail from './TransactionDetail'
 
-const { getCashierTrans, getServiceTrans } = lstorage
+const { getCashierTrans } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -21,6 +21,14 @@ function addHandler (ele, trigger, handler) {
   window.attachEvent(trigger, handler)
 }
 
+function removeHandler (ele, trigger, handler) {
+  if (window.addEventListener) {
+    ele.removeEventListener(trigger, handler, false)
+    return false
+  }
+  window.attachEvent(trigger, handler)
+}
+
 class Pos extends Component {
   state = {
     product: [],
@@ -29,22 +37,28 @@ class Pos extends Component {
   }
 
   componentDidMount () {
-    this.setListData()
+    addHandler(window, 'storage', data => this.setListData(data))
+    this.setListData({ key: 'cashier_trans' })
   }
 
-  setListData () {
-    this.setState({ loading: true })
-    this.setState({
-      product: getCashierTrans(),
-      service: getServiceTrans(),
-      memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : []
-    })
-    this.setState({ loading: false })
+  componentWillUnmount () {
+    removeHandler(window, 'storage', data => this.setListData(data))
+  }
+
+  setListData (data) {
+    if (data && (data.key === 'cashier_trans' || data.key === 'service_detail')) {
+      this.setState({ loading: true })
+      this.setState({
+        product: getCashierTrans(),
+        memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : []
+      })
+      this.setState({ loading: false })
+    }
   }
 
   render () {
     const { dispatch, pos } = this.props
-    const { product, service, memberInformation } = this.state
+    const { product, service, loading, memberInformation } = this.state
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
     let dataPos = product.concat(service)
@@ -54,12 +68,16 @@ class Pos extends Component {
 
     const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
 
-    addHandler(window, 'storage', () => this.setListData())
-
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          <TransactionDetail pos={pos} dispatch={dispatch} />
+          <TransactionDetail
+            pos={pos}
+            dispatch={dispatch}
+            product={product}
+            service={service}
+            loading={loading}
+          />
           <Form>
             <div style={{ float: 'right' }}>
               <Row>

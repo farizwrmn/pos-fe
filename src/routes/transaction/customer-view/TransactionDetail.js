@@ -7,19 +7,10 @@ import {
   discountFormatter,
   numberFormatter
 } from 'utils/string'
-import { Badge, Icon, Table, Tabs } from 'antd'
+import { Icon, Table, Tabs } from 'antd'
 import styles from '../../../themes/index.less'
 
-const { getCashierTrans, getServiceTrans } = lstorage
 const TabPane = Tabs.TabPane
-
-function addHandler (ele, trigger, handler) {
-  if (window.addEventListener) {
-    ele.addEventListener(trigger, handler, false)
-    return false
-  }
-  window.attachEvent(trigger, handler)
-}
 
 class TransactionDetail extends Component {
   state = {
@@ -27,38 +18,18 @@ class TransactionDetail extends Component {
     service: []
   }
 
-  componentDidMount () {
-    this.setListData()
-  }
-
-  setListData () {
-    this.setState({ loading: true })
-    this.setState({
-      product: getCashierTrans(),
-      service: getServiceTrans()
-    })
-    this.setState({ loading: false })
-  }
-
   render () {
     const {
       dispatch,
-      pos
-    } = this.props
-    const {
-      loading,
+      pos,
       product,
-      service
-    } = this.state
+      // service,
+      loading
+    } = this.props
     const {
       paymentListActiveKey,
       cashierInformation
     } = pos
-
-    const objectSize = (text) => {
-      let queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
-      return (queue || []).length
-    }
 
     let currentCashier = {
       cashierId: null,
@@ -114,11 +85,9 @@ class TransactionDetail extends Component {
         </span>)
     }
 
-    addHandler(window, 'storage', () => this.setListData())
-
     return (
       <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-        <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
+        <TabPane tab="Product" key="1">
           <Table
             loading={loading}
             rowKey={(record, key) => key}
@@ -183,74 +152,6 @@ class TransactionDetail extends Component {
               }
             ]}
             dataSource={product}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
-          <Table
-            loading={loading}
-            rowKey={(record, key) => key}
-            pagination={{ pageSize: 5 }}
-            bordered
-            size="small"
-            scroll={{ x: '580px', y: '220px' }}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no'
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div>{`Product Code: ${record.code}`}</div>
-                      <div>{`Product Name: ${record.name}`}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '200px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  const disc1 = record.disc1
-                  const disc2 = record.disc2
-                  const disc3 = record.disc3
-                  const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
-                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
-                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
-                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                      <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            dataSource={service}
             style={{ marginBottom: 16 }}
           />
         </TabPane>
