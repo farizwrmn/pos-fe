@@ -9,6 +9,7 @@ module.exports = {
   idCompany: 'SMI',
   companyName: 'Smartech Indo',
   rest: {
+    apiCompanyProtocol: APICOMPANYPROTOCOL,
     apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,

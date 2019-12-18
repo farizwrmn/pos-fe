@@ -173,6 +173,7 @@ const getCurrentUserStoreDetail = () => {
 const getIdBE = () => { return getStorageKey('cdi')[1] }
 const getDomainBE = () => { return getStorageKey('cdi')[2] }
 const getPortBE = () => { return getStorageKey('cdi')[3] }
+const getProtocolBE = () => { return getStorageKey('cdi')[4] }
 
 module.exports = {
   putStorageKey,
@@ -193,6 +194,7 @@ module.exports = {
   getSessionId,
   getDomainBE,
   getPortBE,
+  getProtocolBE,
   getIdBE,
   getCashierTrans,
   getServiceTrans,
