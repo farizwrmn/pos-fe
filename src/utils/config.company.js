@@ -1,8 +1,9 @@
 const production = process.env.NODE_ENV === 'production'
-const APICOMPANYHOST = production ? 'localhost' : 'localhost' // 'localhost'
-const APICOMPANYPORT = production ? 6402 : 6402
-const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
-const APIV1 = '/api/v1'
+const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
+const APICOMPANYHOST = production ? 'pos.marcotania.com' : 'localhost' // 'localhost'
+const APICOMPANYPORT = production ? 443 : 6402
+const APIVERSION = production ? '/api/v1' : '/api/v1'
+const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 
 module.exports = {
   idCompany: 'SMI',
@@ -11,7 +12,7 @@ module.exports = {
     apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,
-    apiCompanyURI: `${APICOMPANYURL}${APIV1}`,
-    apiUserCompany: `${APICOMPANYURL}${APIV1}/users/company`
+    apiCompanyURI: APICOMPANYURL,
+    apiUserCompany: `${APICOMPANYURL}/users/company`
   }
 }
