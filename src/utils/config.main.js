@@ -5,6 +5,6 @@ module.exports = {
   footerText: 'Smartech Indo',
   footerSubText: 'Point of Sales © 2019',
   logo: '/logo.png',
-  openPages: ['/login', '/nps/01', '/nps/02', '/nps/03'],
+  openPages: ['/login', '/nps/01', '/nps/02', '/nps/03', '/transaction/pos/customer-view'],
   disableMultiSelect: true
 }

@@ -47,7 +47,7 @@ const Pos = ({
   const { listShift } = shift
   const { listCounter } = counter
   const {
-    modalServiceVisible,
+    // modalServiceVisible,
     modalMemberVisible,
     modalAssetVisible,
     modalMechanicVisible,
@@ -603,22 +603,22 @@ const Pos = ({
       </span>)
   }
 
-  const handleServiceBrowse = () => {
-    resetSelectText()
-    dispatch({
-      type: 'pos/getServices',
-      payload: {
-        active: 1
-      }
-    })
+  // const handleServiceBrowse = () => {
+  //   resetSelectText()
+  //   dispatch({
+  //     type: 'pos/getServices',
+  //     payload: {
+  //       active: 1
+  //     }
+  //   })
 
-    dispatch({
-      type: 'pos/showServiceModal',
-      payload: {
-        modalType: 'browseService'
-      }
-    })
-  }
+  //   dispatch({
+  //     type: 'pos/showServiceModal',
+  //     payload: {
+  //       modalType: 'browseService'
+  //     }
+  //   })
+  // }
 
   const handleProductBrowse = () => {
     resetSelectText()
@@ -1137,115 +1137,115 @@ const Pos = ({
     }
   }
 
-  const modalServiceProps = {
-    location,
-    loading,
-    dispatch,
-    pos,
-    visible: modalServiceVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    onChange (e) {
-      dispatch({
-        type: 'pos/getServices',
-        payload: {
-          q: searchText === '' ? null : searchText,
-          active: 1,
-          page: Number(e.current),
-          pageSize: Number(e.pageSize)
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'pos/hideServiceModal'
-      })
-    },
-    onChooseItem (item) {
-      if (Object.assign(mechanicInformation || {}).length !== 0) {
-        let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-        let arrayProd = listByCode
-        const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
-        if (checkExists.length === 0) {
-          arrayProd.push({
-            no: arrayProd.length + 1,
-            code: item.serviceCode,
-            productId: item.id,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            name: item.serviceName,
-            qty: curQty,
-            typeCode: 'S',
-            sellPrice: item.serviceCost,
-            price: item.serviceCost,
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: item.serviceCost * curQty
-          })
+  // const modalServiceProps = {
+  //   location,
+  //   loading,
+  //   dispatch,
+  //   pos,
+  //   visible: modalServiceVisible,
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   onChange (e) {
+  //     dispatch({
+  //       type: 'pos/getServices',
+  //       payload: {
+  //         q: searchText === '' ? null : searchText,
+  //         active: 1,
+  //         page: Number(e.current),
+  //         pageSize: Number(e.pageSize)
+  //       }
+  //     })
+  //   },
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'pos/hideServiceModal'
+  //     })
+  //   },
+  //   onChooseItem (item) {
+  //     if (Object.assign(mechanicInformation || {}).length !== 0) {
+  //       let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+  //       let arrayProd = listByCode
+  //       const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+  //       if (checkExists.length === 0) {
+  //         arrayProd.push({
+  //           no: arrayProd.length + 1,
+  //           code: item.serviceCode,
+  //           productId: item.id,
+  //           employeeId: mechanicInformation.employeeId,
+  //           employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+  //           name: item.serviceName,
+  //           qty: curQty,
+  //           typeCode: 'S',
+  //           sellPrice: item.serviceCost,
+  //           price: item.serviceCost,
+  //           discount: 0,
+  //           disc1: 0,
+  //           disc2: 0,
+  //           disc3: 0,
+  //           total: item.serviceCost * curQty
+  //         })
 
-          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+  //         localStorage.setItem('service_detail', JSON.stringify(arrayProd))
 
-          dispatch({
-            type: 'pos/queryServiceSuccessByCode',
-            payload: {
-              listByCode: item,
-              curRecord: curRecord + 1
-            }
-          })
+  //         dispatch({
+  //           type: 'pos/queryServiceSuccessByCode',
+  //           payload: {
+  //             listByCode: item,
+  //             curRecord: curRecord + 1
+  //           }
+  //         })
 
-          let successModal = Modal.info({
-            title: 'Success add service',
-            content: 'Service has been added in Service`s Tab'
-          })
+  //         let successModal = Modal.info({
+  //           title: 'Success add service',
+  //           content: 'Service has been added in Service`s Tab'
+  //         })
 
-          dispatch({
-            type: 'pos/hideServiceModal'
-          })
+  //         dispatch({
+  //           type: 'pos/hideServiceModal'
+  //         })
 
-          setTimeout(() => successModal.destroy(), 1000)
+  //         setTimeout(() => successModal.destroy(), 1000)
 
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              paymentListActiveKey: '2'
-            }
-          })
+  //         dispatch({
+  //           type: 'pos/updateState',
+  //           payload: {
+  //             paymentListActiveKey: '2'
+  //           }
+  //         })
 
-          setCurBarcode('', 1)
-        } else {
-          Modal.warning({
-            title: 'Cannot add product',
-            content: 'Already Exists in list'
-          })
-        }
-      } else {
-        Modal.info({
-          title: 'Employee Information is not found',
-          content: 'Insert Employee',
-          onOk () {
-            dispatch({
-              type: 'pos/updateState',
-              payload: {
-                modalServiceVisible: false
-              }
-            })
-            dispatch({
-              type: 'pos/getMechanics'
-            })
+  //         setCurBarcode('', 1)
+  //       } else {
+  //         Modal.warning({
+  //           title: 'Cannot add product',
+  //           content: 'Already Exists in list'
+  //         })
+  //       }
+  //     } else {
+  //       Modal.info({
+  //         title: 'Employee Information is not found',
+  //         content: 'Insert Employee',
+  //         onOk () {
+  //           dispatch({
+  //             type: 'pos/updateState',
+  //             payload: {
+  //               modalServiceVisible: false
+  //             }
+  //           })
+  //           dispatch({
+  //             type: 'pos/getMechanics'
+  //           })
 
-            dispatch({
-              type: 'pos/showMechanicModal',
-              payload: {
-                modalType: 'browseMechanic'
-              }
-            })
-          }
-        })
-      }
-    }
-  }
+  //           dispatch({
+  //             type: 'pos/showMechanicModal',
+  //             payload: {
+  //               modalType: 'browseMechanic'
+  //             }
+  //           })
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
 
   const modalQueueProps = {
     location,
@@ -1608,7 +1608,7 @@ const Pos = ({
     <div className="content-inner" >
       {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col lg={10} md={24}>
+        <Col md={10} sm={24}>
           <Bookmark
             loading={loading.effects['productBookmark/query']}
             onChange={handleChangeBookmark}
@@ -1617,7 +1617,7 @@ const Pos = ({
             productBookmark={productBookmark}
           />
         </Col>
-        <Col lg={14} md={24}>
+        <Col md={14} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <Row>
@@ -1664,7 +1664,7 @@ const Pos = ({
                   >
                     Product
                   </Button>
-                  <Button type="primary"
+                  {/* <Button type="primary"
                     size="large"
                     icon="tool"
                     onClick={handleServiceBrowse}
@@ -1673,7 +1673,7 @@ const Pos = ({
                     }}
                   >
                     Service
-                  </Button>
+                  </Button> */}
                 </Col>
               </Row>
             </Form>
@@ -1686,7 +1686,7 @@ const Pos = ({
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
-            {modalServiceVisible && <Browse {...modalServiceProps} />}
+            {/* {modalServiceVisible && <Browse {...modalServiceProps} />} */}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}

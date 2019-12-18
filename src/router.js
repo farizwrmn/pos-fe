@@ -383,6 +383,15 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/transaction/pos/'))
             }, 'transaction-pos')
           }
+        },
+        {
+          path: 'transaction/pos/customer-view',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pos'))
+              cb(null, require('./routes/transaction/customer-view/'))
+            }, 'transaction-pos-customer')
+          }
         }, {
           path: 'transaction/pos/payment',
           getComponent (nextState, cb) {
