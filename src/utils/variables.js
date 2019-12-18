@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getItem, getDomainBE, getPortBE, removeItemKey } from './lstorage'
+import { getCashierTrans, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -34,7 +34,8 @@ const getAPIURL = () => {
   } else {
     APIPORT = BEPORT
   }
-  const APIURL = `http://${APIHOST}:${APIPORT}`
+  let APICOMPANYPROTOCOL = getProtocolBE()
+  const APIURL = `${APICOMPANYPROTOCOL}://${APIHOST}:${APIPORT}`
   return APIURL
 }
 
