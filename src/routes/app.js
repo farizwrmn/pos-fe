@@ -16,7 +16,13 @@ import ButtonIcon from '../../public/icons/Notifications_button_24.svg'
 
 const { prefix, openPages, logo } = configMain
 
-const { Header, Bread, Footer, Sider, styles } = Layout
+const {
+  Header,
+  Bread,
+  // Footer,
+  Sider,
+  styles
+} = Layout
 let lastHref
 
 const App = ({ children, dispatch, app = {}, loading, location }) => {
@@ -333,7 +339,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
                   hasPermission ? children : <Error />}
               </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </LocaleProvider>
         <Notification {...notificationProps} />

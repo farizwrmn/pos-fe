@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Button, Row, Form, Input, Cascader, Popover, Col } from 'antd'
 import { config, ip } from 'utils'
-import Footer from 'components/Layout/Footer'
+// import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
 import styles from './index.less'
 
@@ -107,7 +107,7 @@ const Login = ({
             </Col>
 
             <p>
-              <Footer otherClass={styles.footerlogin} />
+              {/* <Footer otherClass={styles.footerlogin} /> */}
             </p>
           </Row>
         </form>
