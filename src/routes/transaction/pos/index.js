@@ -1603,21 +1603,24 @@ const Pos = ({
       }
     })
   }
+  const listBookmark = productBookmarkGroup.list
+  const hasBookmark = listBookmark && listBookmark.length > 0
 
   return (
     <div className="content-inner" >
-      {modalShiftVisible && <ModalShift {...modalShiftProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
-        <Col md={10} sm={24}>
-          <Bookmark
-            loading={loading.effects['productBookmark/query']}
-            onChange={handleChangeBookmark}
-            onChoose={chooseProduct}
-            productBookmarkGroup={productBookmarkGroup}
-            productBookmark={productBookmark}
-          />
-        </Col>
-        <Col md={14} sm={24}>
+        {hasBookmark ? (
+          <Col md={10} sm={24}>
+            <Bookmark
+              loading={loading.effects['productBookmark/query']}
+              onChange={handleChangeBookmark}
+              onChoose={chooseProduct}
+              productBookmarkGroup={productBookmarkGroup}
+              productBookmark={productBookmark}
+            />
+          </Col>
+        ) : null}
+        <Col md={hasBookmark ? 14 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <Row>
@@ -1664,33 +1667,20 @@ const Pos = ({
                   >
                     Product
                   </Button>
-                  {/* <Button type="primary"
-                    size="large"
-                    icon="tool"
-                    onClick={handleServiceBrowse}
-                    style={{
-                      margin: '0px 5px'
-                    }}
-                  >
-                    Service
-                  </Button> */}
                 </Col>
               </Row>
             </Form>
 
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
-            {/* {modalCashbackVisible && <ModalCashback {...modalCashbackProps} />} */}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
-            {/* {modalServiceVisible && <Browse {...modalServiceProps} />} */}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
-            {/* {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />} */}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
 
@@ -1757,6 +1747,7 @@ const Pos = ({
           <Reminder {...reminderProps} />
         </div>
       }
+      {modalShiftVisible && <ModalShift {...modalShiftProps} />}
     </div >
   )
 }

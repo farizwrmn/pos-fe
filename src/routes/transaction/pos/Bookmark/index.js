@@ -20,42 +20,44 @@ const Bookmark = ({
   }
 
   return (
-    <Card title="Bookmark">
-      <Tabs onChange={onChange}>
-        {listBookmark && listBookmark.length > 0 ?
-          listBookmark.map((item => (
-            <Tabs.TabPane tab={item.name} key={`${item.id}`}>
-              {loading ? (
-                <Spin className={styles.spin} />
-              )
-                : (
-                  <div>
-                    {list && list.length > 0 ?
-                      list.map((item, index) => {
-                        return (
-                          <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
-                            <div>
-                              <Avatar size="large" src="/product-placeholder.jpg" />
-                            </div>
-                            <div>{item && item.product ? item.product.productCode : null}</div>
-                            <div>
-                              <h3>{item && item.product ? item.product.productName : null}</h3>
-                            </div>
-                            <div>{currencyFormatter(item && item.product ? item.product.sellPrice : null)}</div>
-                          </Card.Grid>
-                        )
-                      }) : (
-                        <EmptyBookmark id={item.id} />
-                      )}
-                  </div>
-                )}
-            </Tabs.TabPane>
-          )))
-          : null}
-      </Tabs>
-      {listBookmark && listBookmark.length === 0 && (<EmptyBookmarkGroup />)}
-      <Pagination onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
-    </Card>
+    <div>
+      {listBookmark && listBookmark.length > 0 ? (
+        <Card title="Bookmark">
+          <Tabs onChange={onChange}>
+            {listBookmark.map((item => (
+              <Tabs.TabPane tab={item.name} key={`${item.id}`}>
+                {loading ? (
+                  <Spin className={styles.spin} />
+                )
+                  : (
+                    <div>
+                      {list && list.length > 0 ?
+                        list.map((item, index) => {
+                          return (
+                            <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
+                              <div>
+                                <Avatar size="large" src="/product-placeholder.jpg" />
+                              </div>
+                              <div>{item && item.product ? item.product.productCode : null}</div>
+                              <div>
+                                <h3>{item && item.product ? item.product.productName : null}</h3>
+                              </div>
+                              <div>{currencyFormatter(item && item.product ? item.product.sellPrice : null)}</div>
+                            </Card.Grid>
+                          )
+                        }) : (
+                          <EmptyBookmark id={item.id} />
+                        )}
+                    </div>
+                  )}
+              </Tabs.TabPane>
+            )))}
+          </Tabs>
+          {listBookmark && listBookmark.length === 0 && (<EmptyBookmarkGroup />)}
+          <Pagination onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
+        </Card>
+      ) : null}
+    </div>
   )
 }
 
