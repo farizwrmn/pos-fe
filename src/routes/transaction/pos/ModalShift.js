@@ -33,7 +33,7 @@ const ModalShift = ({ loading, currentCashier, findShift, listShift, findCounter
       if (errors) {
         return
       }
-      const data = { ...getFieldsValue() }
+      const data = getFieldsValue()
 
       data.period = moment(data.period).format('YYYY-MM-DD')
       data.status = currentCashier.status
