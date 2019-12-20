@@ -69,12 +69,12 @@ const objectSize = () => {
 
 const LovButton = ({
   memberInformation,
-  memberUnitInfo,
+  // memberUnitInfo,
   mechanicInformation,
   handleMemberBrowse,
   handleAddMember,
-  handleAssetBrowse,
-  handleAddAsset,
+  // handleAssetBrowse,
+  // handleAddAsset,
   handleMechanicBrowse,
   handleQueue,
   workOrderItem
@@ -105,7 +105,7 @@ const LovButton = ({
           />
         </Tooltip>
       </ButtonGroup>
-      <ButtonGroup style={{ marginRight: 8 }}>
+      {/* <ButtonGroup style={{ marginRight: 8 }}>
         <Button
           type="primary"
           size="large"
@@ -117,7 +117,7 @@ const LovButton = ({
         <Tooltip title="add Asset">
           <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} />
         </Tooltip>
-      </ButtonGroup>
+      </ButtonGroup> */}
       <ButtonGroup style={{ marginRight: 8 }}>
         <Button
           type="primary"
@@ -154,8 +154,8 @@ const LovButton = ({
 LovButton.propTypes = {
   handleMemberBrowse: PropTypes.func.isRequired,
   handleAddMember: PropTypes.func.isRequired,
-  handleAssetBrowse: PropTypes.func.isRequired,
-  handleAddAsset: PropTypes.func.isRequired,
+  // handleAssetBrowse: PropTypes.func.isRequired,
+  // handleAddAsset: PropTypes.func.isRequired,
   handleMechanicBrowse: PropTypes.func.isRequired,
   handleQueue: PropTypes.func.isRequired
 }

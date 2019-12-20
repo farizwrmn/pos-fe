@@ -5,10 +5,22 @@ import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder, DataQuery } from 'components'
-import { Badge, Icon, Form, Input, Row, Col, Card, Button, Tooltip, Tag, Modal } from 'antd'
+import {
+  // Badge,
+  Icon,
+  Form,
+  Input,
+  Row,
+  Col,
+  Card,
+  Button,
+  // Tooltip,
+  Tag,
+  Modal
+} from 'antd'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
-import ModalShift from './ModalShift'
+// import ModalShift from './ModalShift'
 import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
@@ -34,8 +46,8 @@ const Pos = ({
   loading,
   dispatch,
   pos,
-  shift,
-  counter,
+  // shift,
+  // counter,
   app,
   promo,
   productBookmarkGroup,
@@ -44,8 +56,8 @@ const Pos = ({
   payment
 }) => {
   const { setting } = app
-  const { listShift } = shift
-  const { listCounter } = counter
+  // const { listShift } = shift
+  // const { listCounter } = counter
   const {
     // modalServiceVisible,
     modalMemberVisible,
@@ -67,16 +79,16 @@ const Pos = ({
     modalServiceListVisible,
     mechanicInformation,
     curRecord,
-    modalShiftVisible,
-    listCashier,
-    dataCashierTrans,
-    curCashierNo,
+    // modalShiftVisible,
+    // listCashier,
+    // dataCashierTrans,
+    // curCashierNo,
     modalQueueVisible,
     // modalVoidSuspendVisible,
     modalWorkOrderVisible,
     listUnitUsage,
     showAlert,
-    cashierBalance,
+    // cashierBalance,
     showListReminder,
     listServiceReminder,
     modalAddUnit,
@@ -84,7 +96,7 @@ const Pos = ({
   } = pos
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
-  const { user } = app
+  // const { user } = app
   const {
     // usingWo,
     woNumber
@@ -636,48 +648,48 @@ const Pos = ({
     })
   }
 
-  const modalShiftProps = {
-    item: dataCashierTrans,
-    listCashier,
-    listShift,
-    listCounter,
-    curCashierNo,
-    currentCashier,
-    visible: modalShiftVisible,
-    cashierId: user.userid,
-    infoCashRegister,
-    dispatch,
-    loading,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    getCashier () {
-      dispatch({
-        type: 'pos/loadDataPos'
-      })
-    },
-    onBack () {
-      dispatch({ type: 'pos/backPrevious' })
-    },
-    onCancel () {
-      Modal.error({
-        title: 'Error',
-        content: 'Please Use Confirm Button...!'
-      })
-    },
-    onOk (data) {
-      dispatch({ type: 'app/foldSider' })
-      dispatch({
-        type: 'pos/cashRegister',
-        payload: data
-      })
-    },
-    findShift () {
-      dispatch({ type: 'shift/query' })
-    },
-    findCounter () {
-      dispatch({ type: 'counter/query' })
-    }
-  }
+  // const modalShiftProps = {
+  //   item: dataCashierTrans,
+  //   listCashier,
+  //   listShift,
+  //   listCounter,
+  //   curCashierNo,
+  //   currentCashier,
+  //   visible: modalShiftVisible,
+  //   cashierId: user.userid,
+  //   infoCashRegister,
+  //   dispatch,
+  //   loading,
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   getCashier () {
+  //     dispatch({
+  //       type: 'pos/loadDataPos'
+  //     })
+  //   },
+  //   onBack () {
+  //     dispatch({ type: 'pos/backPrevious' })
+  //   },
+  //   onCancel () {
+  //     Modal.error({
+  //       title: 'Error',
+  //       content: 'Please Use Confirm Button...!'
+  //     })
+  //   },
+  //   onOk (data) {
+  //     dispatch({ type: 'app/foldSider' })
+  //     dispatch({
+  //       type: 'pos/cashRegister',
+  //       payload: data
+  //     })
+  //   },
+  //   findShift () {
+  //     dispatch({ type: 'shift/query' })
+  //   },
+  //   findCounter () {
+  //     dispatch({ type: 'counter/query' })
+  //   }
+  // }
 
   const modalAssetProps = {
     loading,
@@ -1623,7 +1635,7 @@ const Pos = ({
         <Col md={hasBookmark ? 14 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              <Row>
+              {/* <Row>
                 <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
                   <Row>
                     <Col span={2}># {currentCashier.id} </Col>
@@ -1638,7 +1650,7 @@ const Pos = ({
                     </Col>
                   </Row>
                 </Card>
-              </Row>
+              </Row> */}
               <LovButton {...lovButtonProps} />
               <Row>
                 <Col lg={2} md={2}>
@@ -1713,7 +1725,7 @@ const Pos = ({
           <BottomButton {...buttomButtonProps} />
         </Col>
       </Row >
-      <Row>
+      {/* <Row>
         <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
           <Row gutter={32}>
             <Col span={2}># {currentCashier.id} </Col>
@@ -1729,7 +1741,7 @@ const Pos = ({
             </Col>
           </Row>
         </Card>
-      </Row>
+      </Row> */}
       {memberInformation.memberTypeName && <div className="wrapper-switcher">
         <Button onClick={showModalCashback} className="btn-member">
           <span>
@@ -1747,7 +1759,7 @@ const Pos = ({
           <Reminder {...reminderProps} />
         </div>
       }
-      {modalShiftVisible && <ModalShift {...modalShiftProps} />}
+      {/* {modalShiftVisible && <ModalShift {...modalShiftProps} />} */}
     </div >
   )
 }
