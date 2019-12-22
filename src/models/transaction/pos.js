@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import * as cashierService from '../../services/cashier'
@@ -8,7 +8,7 @@ import { queryWOHeader } from '../../services/transaction/workOrder'
 import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
 import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
-import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock } from '../../services/master/productstock'
+import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryByBarcode } from '../../services/master/productstock'
 import { query as queryService } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
@@ -79,8 +79,8 @@ export default {
     curBarcode: '',
     curTotal: 0,
     curTotalDiscount: 0,
-    kodeUtil: 'member',
-    infoUtil: 'Member',
+    kodeUtil: 'barcode',
+    infoUtil: 'Product',
     dataPosLoaded: false,
     memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
     tmpMemberList: [],
@@ -957,6 +957,141 @@ export default {
         throw data
       }
     },
+
+    * chooseProduct ({ payload }, { select, put }) {
+      const modalMember = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Member Information is not found',
+            content: 'Insert Member',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const modalEmployee = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Employee Information is not found',
+            content: 'Insert Employee',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const { item } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+      const curQty = yield select(({ pos }) => pos.curQty)
+      const setting = yield select(({ app }) => app.setting)
+
+      if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
+        let listByCode = getCashierTrans()
+        let arrayProd = listByCode
+        const checkExists = listByCode.filter(el => el.code === item.productCode)
+        if ((checkExists || []).length === 0) {
+          const data = {
+            no: arrayProd.length + 1,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          }
+
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          })
+          yield put({
+            type: 'pos/checkQuantityNewProduct',
+            payload: {
+              data,
+              arrayProd,
+              setting
+            }
+          })
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '1'
+              // ,
+              // modalProductVisible: false
+            }
+          })
+        } else {
+          Modal.warning({
+            title: 'Already Exists',
+            content: 'Already Exists in list'
+          })
+        }
+      } else if (memberInformation.length === 0) {
+        yield modalMember()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMembers'
+        })
+
+        yield put({
+          type: 'pos/showMemberModal',
+          payload: {
+            modalType: 'browseMember'
+          }
+        })
+      } else if (mechanicInformation.length === 0) {
+        yield modalEmployee()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMechanics'
+        })
+
+        yield put({
+          type: 'pos/showMechanicModal',
+          payload: {
+            modalType: 'browseMechanic'
+          }
+        })
+      }
+    },
+
+    * getProductByBarcode ({ payload }, { call, put }) {
+      const response = yield call(queryByBarcode, payload)
+      if (response && response.success && response.data && response.data.id) {
+        yield put({
+          type: 'pos/chooseProduct',
+          payload: {
+            item: response.data
+          }
+        })
+      } else {
+        message.warning('Barcode Not found')
+      }
+    },
+
     * getProducts ({ payload }, { call, put }) {
       // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       // let data = {}

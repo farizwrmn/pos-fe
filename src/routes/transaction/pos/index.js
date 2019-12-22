@@ -6,7 +6,6 @@ import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import { Reminder, DataQuery } from 'components'
 import {
-  // Badge,
   Icon,
   Form,
   Input,
@@ -14,7 +13,6 @@ import {
   Col,
   Card,
   Button,
-  // Tooltip,
   Tag,
   Modal
 } from 'antd'
@@ -69,7 +67,6 @@ const Pos = ({
     curQty,
     totalItem,
     curTotal,
-    kodeUtil,
     searchText,
     itemService,
     itemPayment,
@@ -78,7 +75,7 @@ const Pos = ({
     memberUnitInfo,
     modalServiceListVisible,
     mechanicInformation,
-    curRecord,
+    // curRecord,
     // modalShiftVisible,
     // listCashier,
     // dataCashierTrans,
@@ -115,40 +112,6 @@ const Pos = ({
   }
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
-  // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
-  const keyShortcut = {
-    16: false,
-    17: false,
-    18: false,
-    77: false,
-    49: false,
-    50: false,
-    67: false,
-    51: false,
-    52: false,
-    72: false,
-    76: false,
-    73: false,
-    85: false,
-    75: false
-  }
-  /*
-  Ascii => Desc
-  17 => Ctrl
-  16 => Shift
-  18 => Alt
-  49 => 1
-  50 => 2
-  51 => 3
-  52 => 4
-  77 => M
-  72 => H
-  66 => B
-  67 => C
-  69 => E
-  73 => I
-  85 => U
-   */
   let product = getCashierTrans()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
   let dataPos = product.concat(service)
@@ -157,30 +120,6 @@ const Pos = ({
   const totalDiscount = usageLoyalty
   let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
   let totalQty = a.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
-  // const getDate = (mode) => {
-  //   let today = new Date()
-  //   let dd = today.getDate()
-  //   let mm = today.getMonth() + 1 // January is 0!
-  //   let yyyy = today.getFullYear()
-
-  //   if (dd < 10) {
-  //     dd = `0${dd}`
-  //   }
-
-  //   if (mm < 10) {
-  //     mm = `0${mm}`
-  //   }
-
-  //   if (mode === 1) {
-  //     today = `${dd}-${mm}-${yyyy}`
-  //   } else if (mode === 2) {
-  //     today = mm + yyyy
-  //   } else if (mode === 3) {
-  //     today = `${yyyy}-${mm}-${dd}`
-  //   }
-
-  //   return today
-  // }
 
   const onShowReminder = () => {
     dispatch({
@@ -196,42 +135,6 @@ const Pos = ({
       }
     })
   }
-
-  // const formWoProps = {
-  //   usingWo,
-  //   dispatch,
-  //   woNumber,
-  //   formItemLayout: {
-  //     labelCol: {
-  //       span: 24
-  //     },
-  //     wrapperCol: {
-  //       span: 24
-  //     },
-  //     style: {
-  //       marginTop: '5px',
-  //       marginBottom: '5px'
-  //     }
-  //   },
-  //   generateSequence () {
-  //     dispatch({
-  //       type: 'payment/sequenceQuery',
-  //       payload: {
-  //         seqCode: 'WO',
-  //         type: '1'
-  //       }
-  //     })
-  //   },
-  //   notUsingWo (check, value) {
-  //     dispatch({
-  //       type: 'payment/querySequenceSuccess',
-  //       payload: {
-  //         usingWo: check,
-  //         woNumber: value
-  //       }
-  //     })
-  //   }
-  // }
 
   const resetSelectText = () => {
     dispatch({
@@ -535,53 +438,6 @@ const Pos = ({
       }
     })
   }
-
-  const handleDiscount = (tipe, value) => {
-    let discountQty
-    if (tipe < 5) {
-      discountQty = 'Discount'
-    } else if (tipe === 5) {
-      discountQty = 'Quantity'
-    }
-    if (value) {
-      if (value < (curRecord)) {
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: (tipe === 4 ? 'discount' :
-              tipe === 5 ? 'quantity'
-                : `disc${tipe}`),
-            infoUtil: `Insert ${discountQty} ${(tipe === 4 ? 'Nominal' : tipe === 5 ? '' : (`${tipe} (%)`))} for Record ${value}`
-          }
-        })
-
-        dispatch({
-          type: 'pos/setEffectedRecord',
-          payload: {
-            effectedRecord: value
-          }
-        })
-      } else {
-        const modal = Modal.warning({
-          title: 'Warning',
-          content: 'Record is out of range...!'
-        })
-
-
-        setTimeout(() => modal.destroy(), 1000)
-      }
-    } else {
-      const modal = Modal.warning({
-        title: 'Warning',
-        content: 'Please define Record to be Change !'
-      })
-
-      setTimeout(() => modal.destroy(), 1000)
-    }
-    setCurBarcode('', 1)
-  }
-
-  // const cashActive = (currentCashier.cashActive || 0) !== 0
 
   let infoCashRegister = {}
   infoCashRegister.title = 'Cashier Information'
@@ -1015,105 +871,14 @@ const Pos = ({
   }
 
   const chooseProduct = (item) => {
-    if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
-      let listByCode = getCashierTrans()
-      let arrayProd = listByCode
-      const checkExists = listByCode.filter(el => el.code === item.productCode)
-      if ((checkExists || []).length === 0) {
-        const data = {
-          no: arrayProd.length + 1,
-          code: item.productCode,
-          productId: item.id,
-          name: item.productName,
-          employeeId: mechanicInformation.employeeId,
-          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-          typeCode: 'P',
-          qty: 1,
-          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-          discount: 0,
-          disc1: 0,
-          disc2: 0,
-          disc3: 0,
-          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-        }
+    console.log('chooseProduct', item)
 
-        arrayProd.push({
-          no: arrayProd.length + 1,
-          code: item.productCode,
-          productId: item.id,
-          name: item.productName,
-          employeeId: mechanicInformation.employeeId,
-          employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-          typeCode: 'P',
-          qty: 1,
-          sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-          price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-          discount: 0,
-          disc1: 0,
-          disc2: 0,
-          disc3: 0,
-          total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-        })
-        dispatch({
-          type: 'pos/checkQuantityNewProduct',
-          payload: {
-            data,
-            arrayProd,
-            setting
-          }
-        })
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            paymentListActiveKey: '1'
-            // ,
-            // modalProductVisible: false
-          }
-        })
-      } else {
-        Modal.warning({
-          title: 'Cannot add product',
-          content: 'Already Exists in list'
-        })
+    dispatch({
+      type: 'pos/chooseProduct',
+      payload: {
+        item
       }
-    } else if (memberInformation.length === 0) {
-      Modal.info({
-        title: 'Member Information is not found',
-        content: 'Insert Member',
-        onOk () {
-          dispatch({ type: 'pos/hideProductModal' })
-          dispatch({
-            type: 'pos/getMembers'
-          })
-
-          dispatch({
-            type: 'pos/showMemberModal',
-            payload: {
-              modalType: 'browseMember'
-            }
-          })
-        }
-      })
-    } else if (mechanicInformation.length === 0) {
-      Modal.info({
-        title: 'Employee Information is not found',
-        content: 'Insert Employee',
-        onOk () {
-          dispatch({ type: 'pos/hideProductModal' })
-          dispatch({
-            type: 'pos/getMechanics'
-          })
-
-          dispatch({
-            type: 'pos/showMechanicModal',
-            payload: {
-              modalType: 'browseMechanic'
-            }
-          })
-        }
-      })
-    }
+    })
   }
 
   const modalProductProps = {
@@ -1412,184 +1177,34 @@ const Pos = ({
   //   }
   // }
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = async (e) => {
     const { value } = e.target
-    if (e.key === '+') {
-      setCurBarcode('', value)
-    } else if (e.key === 'Enter') {
-      // if (kodeUtil === 'barcode') {
-      //   if (value) {
-      //     dispatch({
-      //       type: 'pos/getStock',
-      //       payload: {
-      //         productCode: value,
-      //         listByCode: getCashierTrans()
-      //         curQty,
-      //         memberCode: memberInformation.memberCode,
-      //         curRecord
-      //       }
-      //     })
-      //   }
-      // } else
-      if (kodeUtil === 'member') {
-        if (value) {
-          dispatch({ type: 'pos/getMember', payload: { memberCode: value } })
-
-          dispatch({ type: 'unit/lov', payload: { id: value } })
-        }
-
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'employee',
-            infoUtil: 'Employee'
-          }
-        })
-      } else if (kodeUtil === 'employee') {
-        if (value) {
-          dispatch({
-            type: 'pos/getMechanic',
-            payload: {
-              employeeId: value
-            }
-          })
-        }
-
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'barcode',
-            infoUtil: 'Product'
-          }
-        })
-      } else if (kodeUtil === 'discount' || kodeUtil === 'disc1' || kodeUtil === 'disc2' || kodeUtil === 'disc3' || kodeUtil === 'quantity') {
-        if (value) {
-          // dispatch({
-          //   type: 'pos/editPayment',
-          //   payload: {
-          //     value,
-          //     effectedRecord,
-          //     kodeUtil
-          //   }
-          // })
-        }
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'barcode',
-            infoUtil: 'Product'
-          }
-        })
+    console.log('value', value)
+    const response = dispatch({
+      type: 'pos/getProductByBarcode',
+      payload: {
+        id: value
       }
-      // else if (kodeUtil === 'service') {
-      //   if (value) {
-      //     dispatch({
-      //       type: 'pos/getService',
-      //       payload: {
-      //         serviceId: value,
-      //         listByCode: getCashierTrans()
-      //         curQty,
-      //         memberCode: memberInformation.memberCode,
-      //         curRecord
-      //       }
-      //     })
-      //   }
-      // }
-
-      if (kodeUtil !== 'refund') {
-        setCurBarcode('', 1)
-      } else if (value) {
-        setCurBarcode('', value * -1)
-      } else {
-        setCurBarcode('', 1)
-      }
-    }
+    })
+    console.log('value response', response)
+    // if (value && value !== '') {
+    //   dispatch({
+    //     type: 'pos/getStock',
+    //     payload: {
+    //       productCode: value,
+    //       listByCode: getCashierTrans(),
+    //       curQty: 1,
+    //       memberCode: memberInformation.memberCode,
+    //       curRecord
+    //     }
+    //   })
+    // }
   }
 
   const onChange = (e) => {
     const { value } = e.target
     if (value !== '+') {
       setCurBarcode(value, curQty)
-    }
-  }
-
-  const handleKeyDown = (e) => {
-    const { value } = e.target
-
-    if (e.keyCode in keyShortcut) {
-      keyShortcut[e.keyCode] = true
-
-      if (keyShortcut[17] && keyShortcut[18] && keyShortcut[77]) { // shortcut member (Ctrl + Alt + M)
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'member',
-            infoUtil: 'Member'
-          }
-        })
-      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[72]) { // shortcut untuk Help (Ctrl + ALT + H)
-        dispatch({ type: 'app/shortcutKeyShow' })
-      } else if (keyShortcut[17] && keyShortcut[18] && keyShortcut[67]) { // shortcut mechanic (Ctrl + Alt + C)
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'employee',
-            infoUtil: 'Employee'
-          }
-        })
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[52]) { // shortcut discount nominal (Ctrl + Shift + 4)
-        handleDiscount(4, value)
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[49]) { // shortcut discount 1 (Ctrl + Shift + 1)
-        handleDiscount(1, value)
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[50]) { // shortcut discount 2 (Ctrl + Shift + 2)
-        handleDiscount(2, value)
-      } else if (keyShortcut[17] && keyShortcut[16] && keyShortcut[51]) { // shortcut discount 3 (Ctrl + Shift + 3)
-        handleDiscount(3, value)
-      } else if (keyShortcut[17] && keyShortcut[75]) { // shortcut modified quantity (Ctrl + Shift + Q)
-        handleDiscount(5, value)
-      }
-    } else if (e.keyCode === '113') { // Tombol F2 untuk memilih antara product atau service
-      if (kodeUtil === 'barcode') {
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'service',
-            infoUtil: 'Service'
-          }
-        })
-      } else if (kodeUtil === 'service' || kodeUtil === 'member' || kodeUtil === 'employee') {
-        dispatch({
-          type: 'pos/setUtil',
-          payload: {
-            kodeUtil: 'barcode',
-            infoUtil: 'Product'
-          }
-        })
-      }
-    } else if (e.keyCode === '120') { // Tombol F9 untuk void/hapus all item
-      Modal.confirm({
-        title: 'Are you sure want to void/delete all items?',
-        content: 'This Operation cannot be undone...!',
-        onOk () {
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          localStorage.removeItem('mechanic')
-          localStorage.removeItem('cashier_trans')
-          localStorage.removeItem('service_detail')
-          dispatch({
-            type: 'pos/setCurTotal'
-          })
-        },
-        onCancel () { }
-      })
-    } else if (e.keyCode === '115') { // Tombol F4 untuk refund
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'refund',
-          infoUtil: 'Input Qty Refund'
-        }
-      })
     }
   }
 
@@ -1653,7 +1268,7 @@ const Pos = ({
               </Row> */}
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={2} md={2}>
+                <Col lg={4} md={2}>
                   {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
                 </Col>
                 <Col lg={14} md={24}>
@@ -1662,12 +1277,11 @@ const Pos = ({
                     value={curBarcode}
                     style={{ fontSize: 24, marginBottom: 8 }}
                     placeholder="Search Code Here"
-                    onKeyDown={e => handleKeyDown(e)}
                     onChange={e => onChange(e)}
-                    onKeyPress={e => handleKeyPress(e)}
+                    onPressEnter={e => handleKeyPress(e)}
                   />
                 </Col>
-                <Col lg={8} md={24}>
+                <Col lg={6} md={24}>
                   <Button
                     type="primary"
                     size="large"
