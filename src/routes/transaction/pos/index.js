@@ -1179,26 +1179,14 @@ const Pos = ({
 
   const handleKeyPress = async (e) => {
     const { value } = e.target
-    console.log('value', value)
-    const response = dispatch({
-      type: 'pos/getProductByBarcode',
-      payload: {
-        id: value
-      }
-    })
-    console.log('value response', response)
-    // if (value && value !== '') {
-    //   dispatch({
-    //     type: 'pos/getStock',
-    //     payload: {
-    //       productCode: value,
-    //       listByCode: getCashierTrans(),
-    //       curQty: 1,
-    //       memberCode: memberInformation.memberCode,
-    //       curRecord
-    //     }
-    //   })
-    // }
+    if (value && value !== '') {
+      dispatch({
+        type: 'pos/getProductByBarcode',
+        payload: {
+          id: value
+        }
+      })
+    }
   }
 
   const onChange = (e) => {
@@ -1250,22 +1238,6 @@ const Pos = ({
         <Col md={hasBookmark ? 14 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
-              {/* <Row>
-                <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
-                  <Row>
-                    <Col span={2}># {currentCashier.id} </Col>
-                    <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
-                    <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
-                    <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
-                    <Col md={5} lg={5}>
-                      <Tooltip title={infoCashRegister.Caption}>
-                        Date : {currentCashier.period}
-                        <Badge dot={infoCashRegister.dotVisible} />
-                      </Tooltip>
-                    </Col>
-                  </Row>
-                </Card>
-              </Row> */}
               <LovButton {...lovButtonProps} />
               <Row>
                 <Col lg={4} md={2}>

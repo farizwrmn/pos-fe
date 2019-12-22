@@ -2,14 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { configMain, isEmptyObject, color, lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
 import {
   Form,
-  // Table,
   Row,
   Col,
-  Card,
-  // Cascader,
   Button,
   Modal
 } from 'antd'
@@ -39,18 +36,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     curCashierNo,
     cashierInformation,
     cashierBalance } = pos
-  let currentCashier = {
-    cashierId: null,
-    employeeName: null,
-    shiftId: null,
-    shiftName: null,
-    counterId: null,
-    counterName: null,
-    period: null,
-    status: null,
-    cashActive: null
-  }
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   const { user, setting } = app
   const { listOpts } = paymentOpts
   // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
@@ -254,17 +239,6 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
   return (
     <div className="content-inner">
-      <Row>
-        <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
-          <Row>
-            <Col span={2}># {currentCashier.id} </Col>
-            <Col md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
-            <Col md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
-            <Col md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
-            <Col md={5} lg={5}>Date : {currentCashier.period}</Col>
-          </Row>
-        </Card>
-      </Row>
       {listOpts.length > 0 && <div>
         <Row style={{ marginBottom: 16 }}>
           <Col span={24}>

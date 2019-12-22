@@ -743,7 +743,7 @@ export default {
     * checkQuantityEditProduct ({ payload }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
-        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
         // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
         let tempQueue = []
         let tempTrans = []
@@ -756,7 +756,6 @@ export default {
         if (tempTrans.length > 0) {
           return tempTrans
         }
-        console.log('queue is empty, nothing to check')
         return []
       }
 
@@ -832,7 +831,7 @@ export default {
     * checkQuantityNewProduct ({ payload }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
-        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+        const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
         // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
         let tempQueue = []
         let tempTrans = []
@@ -845,7 +844,7 @@ export default {
         if (tempTrans.length > 0) {
           return tempTrans
         }
-        console.log('queue is empty, nothing to check')
+        console.log('queue')
         return []
       }
 
@@ -864,6 +863,8 @@ export default {
       let tempListProduct = []
       function getSetting (setting) {
         let json = setting.Inventory
+        console.log('json', json)
+        
         let jsondata = JSON.stringify(eval(`(${json})`))
         const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
         return outOfStock
@@ -1035,14 +1036,14 @@ export default {
               setting
             }
           })
-          yield put({
-            type: 'pos/updateState',
-            payload: {
-              paymentListActiveKey: '1'
-              // ,
-              // modalProductVisible: false
-            }
-          })
+          // yield put({
+          //   type: 'pos/updateState',
+          //   payload: {
+          //     paymentListActiveKey: '1'
+          //     // ,
+          //     // modalProductVisible: false
+          //   }
+          // })
         } else {
           Modal.warning({
             title: 'Already Exists',
