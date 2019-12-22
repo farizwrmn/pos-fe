@@ -22,6 +22,16 @@ export async function queryById (params) {
   })
 }
 
+export async function queryByBarcode (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${stock}/barcode/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryProductsBelowMinimum (params) {
   const apiHeaderToken = crypt.apiheader()
   params.store = lstorage.getCurrentUserStore()

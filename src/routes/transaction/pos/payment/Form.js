@@ -57,7 +57,7 @@ const formPayment = ({
   memberInformation,
   curRounding,
   listAmount,
-  cashierInformation,
+  // cashierInformation,
   cashierBalance,
   form: {
     getFieldDecorator,
@@ -74,8 +74,8 @@ const formPayment = ({
         return
       }
       const data = {
-        cashierTransId: cashierInformation.id,
-        cashierName: cashierInformation.cashierName,
+        // cashierTransId: cashierInformation.id,
+        // cashierName: cashierInformation.cashierName,
         ...getFieldsValue()
       }
       data.amount = parseFloat(data.amount)
@@ -105,7 +105,7 @@ const formPayment = ({
 
   const listProps = {
     cashierBalance,
-    cashierInformation,
+    // cashierInformation,
     dataSource: listAmount,
     editList (data) {
       editItem(data)

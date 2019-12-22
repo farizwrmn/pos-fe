@@ -1,15 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Icon } from 'antd'
 import ModalUnit from './ModalUnit'
 import { AdvancedFormMember } from '../components'
 
 const formCustomer = ({
   modalType,
   item,
-  modalAddUnit,
   addUnit,
-  confirmAddUnit,
   confirmSendUnit,
   cancelUnit
 }) => {
@@ -24,20 +21,20 @@ const formCustomer = ({
     cancelUnit
   }
 
-  const modalProps = {
-    visible: modalAddUnit,
-    title: <span><Icon type="question-circle-o" /> Confirm</span>,
-    onOk () {
-      confirmAddUnit()
-    },
-    onCancel () {
-      cancelUnit()
-    }
-  }
+  // const modalProps = {
+  //   visible: modalAddUnit,
+  //   title: <span><Icon type="question-circle-o" /> Confirm</span>,
+  //   onOk () {
+  //     confirmAddUnit()
+  //   },
+  //   onCancel () {
+  //     cancelUnit()
+  //   }
+  // }
 
   return (
     <div>
-      {modalAddUnit && <Modal {...modalProps}>Do you want to add asset for {addUnit.info.name}? </Modal>}
+      {/* {modalAddUnit && <Modal {...modalProps}>Do you want to add asset for {addUnit.info.name}? </Modal>} */}
       {addUnit.modal && <ModalUnit {...modalUnitProps} />}
       <AdvancedFormMember {...formCustomerProps} />
     </div>

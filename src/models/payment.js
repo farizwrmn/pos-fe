@@ -198,7 +198,6 @@ export default {
           })
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
-            const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
             const detailPOS = {
               dataPos: newArrayProd,
               dataBundle,
@@ -209,8 +208,6 @@ export default {
               discountLoyalty: payload.useLoyalty || 0,
               useLoyalty: payload.useLoyalty || 0,
               technicianId: payload.technicianId,
-              cashierTransId: cashierInformation.id,
-              transDate: cashierInformation.period,
               transTime: payload.transTime,
               total: payload.grandTotal,
               lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
@@ -243,7 +240,7 @@ export default {
                   transTime: payload.transTime,
                   grandTotal: payload.grandTotal,
                   totalPayment: payload.totalPayment,
-                  transDatePrint: moment(cashierInformation.period, 'YYYY-MM-DD').format('DD-MM-YYYY'),
+                  transDatePrint: data_create && data_create.pos && data_create.pos.transDate ? moment(data_create.pos.transDate).format('DD-MM-YYYY') : moment().format('DD-MM-YYYY'),
                   company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
                   gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
                   phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
