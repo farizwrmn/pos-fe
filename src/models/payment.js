@@ -230,7 +230,8 @@ export default {
             if (data_create.success) {
               const responsInsertPos = data_create.pos
               // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
-              window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              invoiceWindow.focus()
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
