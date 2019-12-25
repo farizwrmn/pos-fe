@@ -282,7 +282,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     }
   }
-  if (openPages && openPages.includes(pathname)) {
+  if (openPages && (openPages.includes(pathname) || openPages.includes(pathname.replace(/[0-9]/g, ':id')))) {
     return (<div>
       <Loader spinning={loading.effects['app/query']} />
       {children}

@@ -864,7 +864,7 @@ export default {
       function getSetting (setting) {
         let json = setting.Inventory
         console.log('json', json)
-        
+
         let jsondata = JSON.stringify(eval(`(${json})`))
         const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
         return outOfStock

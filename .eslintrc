@@ -21,6 +21,7 @@
     "arrow-body-style": [0, "never"],
     "func-names": 0,
     "prefer-const": 0,
+    "linebreak-style": 0,
     "no-extend-native": 0,
     "no-param-reassign": 0,
     "no-restricted-syntax": 0,

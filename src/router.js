@@ -563,6 +563,17 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-history')
           }
         }, {
+          path: 'transaction/pos/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/invoice/'))
+            }, 'transaction-pos-invoice-print')
+          }
+        }, {
           path: 'transaction/purchase/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
