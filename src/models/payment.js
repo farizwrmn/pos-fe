@@ -229,51 +229,69 @@ export default {
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
               const responsInsertPos = data_create.pos
-              const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
-              yield put({
-                type: 'printPayment',
-                payload: {
-                  periode: payload.periode,
-                  // transDate: payload.transDate,
-                  // transDate2: payload.transDate2,
+              // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
+              window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              try {
+                localStorage.removeItem('cashier_trans')
+                localStorage.removeItem('service_detail')
+                localStorage.removeItem('member')
+                localStorage.removeItem('memberUnit')
+                localStorage.removeItem('mechanic')
+                localStorage.removeItem('lastMeter')
+                localStorage.removeItem('workorder')
+                localStorage.removeItem('woNumber')
+                localStorage.removeItem('bundle_promo')
+              } catch (e) {
+                Modal.error({
+                  title: 'Error, Something Went Wrong!',
+                  content: `Cache is not cleared correctly :${e}`
+                })
+              }
 
-                  transTime: payload.transTime,
-                  grandTotal: payload.grandTotal,
-                  totalPayment: payload.totalPayment,
-                  transDatePrint: data_create && data_create.pos && data_create.pos.transDate ? moment(data_create.pos.transDate).format('DD-MM-YYYY') : moment().format('DD-MM-YYYY'),
-                  company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
-                  gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-                  phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-                  address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-                  lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
-                  lastTransNo: trans,
-                  totalChange: payload.totalChange,
-                  unitInfo: {
-                    ...memberUnit,
-                    lastCashback: responsInsertPos.lastCashback,
-                    gettingCashback: responsInsertPos.gettingCashback,
-                    discountLoyalty: responsInsertPos.discountLoyalty
-                  },
-                  totalDiscount: payload.totalDiscount,
-                  policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
-                  rounding: payload.rounding,
-                  dataPos: getCashierTrans(),
-                  dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-                  memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
-                  memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-                  memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-                  employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
-                  technicianId: payload.technicianId,
-                  curShift: payload.curShift,
-                  printNo: 1,
-                  companyInfo: payload.companyInfo,
-                  curCashierNo: payload.curCashierNo,
-                  cashierId: payload.cashierId,
-                  userName: payload.userName,
-                  posMessage: 'Data has been saved',
-                  type: 'POS'
-                }
-              })
+              // yield put({
+              //   type: 'printPayment',
+              //   payload: {
+              //     periode: payload.periode,
+              //     // transDate: payload.transDate,
+              //     // transDate2: payload.transDate2,
+
+              //     transTime: payload.transTime,
+              //     grandTotal: payload.grandTotal,
+              //     totalPayment: payload.totalPayment,
+              //     transDatePrint: data_create && data_create.pos && data_create.pos.transDate ? moment(data_create.pos.transDate).format('DD-MM-YYYY') : moment().format('DD-MM-YYYY'),
+              //     company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {},
+              //     gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+              //     phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+              //     address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+              //     lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
+              //     lastTransNo: trans,
+              //     totalChange: payload.totalChange,
+              //     unitInfo: {
+              //       ...memberUnit,
+              //       lastCashback: responsInsertPos.lastCashback,
+              //       gettingCashback: responsInsertPos.gettingCashback,
+              //       discountLoyalty: responsInsertPos.discountLoyalty
+              //     },
+              //     totalDiscount: payload.totalDiscount,
+              //     policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : payload.policeNo,
+              //     rounding: payload.rounding,
+              //     dataPos: getCashierTrans(),
+              //     dataService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
+              //     memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : 'No Member',
+              //     memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+              //     memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+              //     employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+              //     technicianId: payload.technicianId,
+              //     curShift: payload.curShift,
+              //     printNo: 1,
+              //     companyInfo: payload.companyInfo,
+              //     curCashierNo: payload.curCashierNo,
+              //     cashierId: payload.cashierId,
+              //     userName: payload.userName,
+              //     posMessage: 'Data has been saved',
+              //     type: 'POS'
+              //   }
+              // })
               yield put({
                 type: 'pos/setAllNull'
               })
