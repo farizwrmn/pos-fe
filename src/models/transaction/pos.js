@@ -5,7 +5,13 @@ import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
-import { query as queryPos, queryDetail, queryPos as queryaPos, updatePos } from '../../services/payment'
+import {
+  query as queryPos,
+  queryDetail,
+  queryPos as queryaPos,
+  queryById as queryInvoiceById,
+  updatePos
+} from '../../services/payment'
 import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryByBarcode } from '../../services/master/productstock'
@@ -114,6 +120,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
         const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
@@ -131,6 +138,13 @@ export default {
             payload: {
               cashierId: userId,
               status: 'O'
+            }
+          })
+        } else if (match) {
+          dispatch({
+            type: 'queryPosById',
+            payload: {
+              id: match[1]
             }
           })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
@@ -357,6 +371,25 @@ export default {
         })
       } else {
         throw cancel
+      }
+    },
+
+    * queryPosById ({ payload }, { call, put }) {
+      const response = yield call(queryInvoiceById, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'queryPosDetail',
+          payload: {
+            id: response.pos.transNo,
+            data: response.pos
+          }
+        })
+        yield put({
+          type: 'pos/setListPaymentDetail',
+          payload: response.pos
+        })
+      } else {
+        throw response
       }
     },
 

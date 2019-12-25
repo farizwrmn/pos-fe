@@ -1,91 +1,123 @@
 import React from 'react'
-import { Row, Col } from 'antd'
+import { connect } from 'dva'
+import { posTotal } from 'utils'
+import moment from 'moment'
 import styles from './index.less'
+import Header from './Header'
+import Body from './Body'
+import Total from './Total'
+import Footer from './Footer'
 
-const Invoice = () => {
-	return (
-		<div className={styles.invoiceMini}>
-			<div className={styles.center}>
-				<div className={styles.title}>K3MART.ID</div>
-				<div className={styles.subtitle}>ADAM MALIK</div>
-			</div>
-			<div className={styles.separator} />
-			<div className={styles.left}>
-				<div>Cashier : demo</div>
-				<Row>
-					<Col span={12}>
-						<strong>Invoice</strong>
-					</Col>
-					<Col span={12} className={styles.right}>
-						25 Dec 2019
-					</Col>
-				</Row>
-				<div>
-					<strong>#B1.19.12.25.00001</strong>
-				</div>
-			</div>
-			<div className={styles.borderedSection}>
-				<div className={styles.item}>
-					<Row>
-						<Col span={12} className={styles.left}>Cakes (Large) - 2017</Col>
-					</Row>
-					<Row>
-						<Col span={12} className={styles.left}>1 x @100</Col>
-						<Col span={12} className={styles.right}>100</Col>
-					</Row>
-				</div>
-				<div className={styles.item}>
-					<Row>
-						<Col span={12} className={styles.left}>Bread (Regular) - 2012</Col>
-					</Row>
-					<Row>
-						<Col span={12} className={styles.left}>1 x @100</Col>
-						<Col span={12} className={styles.right}>100</Col>
-					</Row>
-				</div>
-				<div className={styles.item}>
-					<Row>
-						<Col span={12} className={styles.left}>Pizza (Large) - 2007</Col>
-					</Row>
-					<Row>
-						<Col span={12} className={styles.left}>1 x @100</Col>
-						<Col span={12} className={styles.right}>50</Col>
-					</Row>
-				</div>
-			</div>
-			<div className={styles.amountSection}>
-				<Row>
-					<Col span={12} className={styles.right}>
-						<span>
-							<strong>
-								Total (4 items)
-							</strong>
-							:Rp
-						</span>
-					</Col>
-					<Col span={12} className={styles.right}>
-						318
-					</Col>
-				</Row>
-				<Row>
-					<Col span={12} className={styles.right}><strong>Cash</strong>:Rp</Col>
-					<Col span={12} className={styles.right}>
-						318
-					</Col>
-				</Row>
-			</div>
-			<div className={styles.separator} />
-			<div className={styles.reward}>
-				<div>Redeem your reward at</div>
-				<div>
-					<strong>www.k3mart.id</strong>
-				</div>
-			</div>
-			<div className={styles.amountSection}>
-				<div>THANK YOU - SEE YOU AGAIN SOON!</div>
-			</div>
-		</div>
-	)
+const Invoice = ({ pos, app, payment }) => {
+  const {
+    listPaymentDetail,
+    memberPrint,
+    mechanicPrint,
+    posData
+  } = pos
+  const { storeInfo } = app
+  const { companyInfo } = payment
+
+  const data = {
+    posData,
+    data: listPaymentDetail.data,
+    memberPrint,
+    mechanicPrint,
+    companyPrint: storeInfo
+  }
+  let dataPos = []
+  let dataService = []
+  if (data && data.data) {
+    for (let n = 0; n < data.data.length; n += 1) {
+      if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
+        let productId = data.data[n].productCode
+        let productName = data.data[n].productName
+        dataPos.push({
+          no: '',
+          code: productId,
+          name: productName,
+          qty: data.data[n].qty,
+          price: data.data[n].sellingPrice,
+          sellPrice: data.data[n].sellPrice,
+          discount: data.data[n].discount,
+          disc1: data.data[n].disc1,
+          disc2: data.data[n].disc2,
+          disc3: data.data[n].disc3,
+          total: posTotal(data.data[n])
+        })
+      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
+        let productId = data.data[n].serviceCode
+        let productName = data.data[n].serviceName
+        dataService.push({
+          no: '',
+          code: productId,
+          name: productName,
+          qty: data.data[n].qty,
+          price: data.data[n].sellingPrice,
+          sellPrice: data.data[n].sellPrice,
+          discount: data.data[n].discount,
+          disc1: data.data[n].disc1,
+          disc2: data.data[n].disc2,
+          disc3: data.data[n].disc3,
+          total: posTotal(data.data[n])
+        })
+      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
+        let productId = '-'
+        let productName = '-'
+        dataService.push({
+          no: '',
+          code: productId,
+          name: productName,
+          qty: data.data[n].qty,
+          price: data.data[n].sellingPrice,
+          sellPrice: data.data[n].sellPrice,
+          discount: data.data[n].discount,
+          disc1: data.data[n].disc1,
+          disc2: data.data[n].disc2,
+          disc3: data.data[n].disc3,
+          total: posTotal(data.data[n])
+        })
+      }
+    }
+  }
+  for (let j = 0; j < dataService.length; j += 1) {
+    dataService[j].no = j + 1
+  }
+  for (let k = 0; k < dataPos.length; k += 1) {
+    dataPos[k].no = k + 1
+  }
+  const invoiceInfo = {
+    dataPos,
+    dataService,
+    transDatePrint: moment(posData.transDate || '').format('DD-MM-YYYY'),
+    memberId: data.memberPrint.memberCode,
+    gender: data.memberPrint.gender,
+    company: data.companyPrint,
+    lastTransNo: listPaymentDetail.id,
+    unitInfo: {
+      ...listPaymentDetail
+    },
+    companyInfo,
+    memberName: data.memberPrint.memberName,
+    phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
+    policeNo: listPaymentDetail.policeNo,
+    lastMeter: listPaymentDetail.lastMeter,
+    employeeName: data.mechanicPrint.employeeName,
+    address: data.memberPrint.address01 ? data.memberPrint.address01 : data.memberPrint.address02,
+    cashierId: listPaymentDetail.cashierId,
+    userName: listPaymentDetail.cashierName,
+    printNo: 'copy'
+  }
+
+  return (
+    <div className={styles.invoiceMini}>
+      <Header invoiceInfo={invoiceInfo} />
+      <Body dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <Total dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <div className={styles.separator} />
+      <Footer />
+    </div>
+  )
 }
 
-export default Invoice
+export default connect(({ pos, payment, loading, app }) => ({ pos, payment, loading, app }))(Invoice)

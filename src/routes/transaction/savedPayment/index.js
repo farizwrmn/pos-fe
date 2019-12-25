@@ -176,6 +176,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
       })
     },
     onGetDetail (e) {
+      // const { transNo } = e
       window.open(`/transaction/pos/invoice/${e.id}`)
       // dispatch({
       //   type: 'pos/queryPosDetail',
