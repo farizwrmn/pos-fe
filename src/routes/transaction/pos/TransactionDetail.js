@@ -10,7 +10,7 @@ import {
 import { Badge, Icon, Table, Tabs } from 'antd'
 import styles from '../../../themes/index.less'
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getServiceTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const TransactionDetail = ({
@@ -49,6 +49,19 @@ const TransactionDetail = ({
       payload: {
         item: record,
         modalType: 'modalPayment'
+      }
+    })
+  }
+
+  const modalEditService = (record) => {
+    dispatch({
+      type: 'pos/getMechanics'
+    })
+    dispatch({
+      type: 'pos/showServiceListModal',
+      payload: {
+        item: record,
+        modalType: 'modalService'
       }
     })
   }
@@ -159,6 +172,72 @@ const TransactionDetail = ({
           ]}
           onRowClick={record => modalEditPayment(record)}
           dataSource={getCashierTrans()}
+          style={{ marginBottom: 16 }}
+        />
+      </TabPane>
+      <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
+        <Table
+          rowKey={(record, key) => key}
+          pagination={{ pageSize: 5 }}
+          bordered
+          size="small"
+          scroll={{ x: '580px', y: '220px' }}
+          locale={{
+            emptyText: 'Your Payment List'
+          }}
+          columns={[
+            {
+              title: 'No',
+              width: '40px',
+              dataIndex: 'no'
+            },
+            {
+              title: 'Product',
+              dataIndex: 'code',
+              width: '250px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div>{`Product Code: ${record.code}`}</div>
+                    <div>{`Product Name: ${record.name}`}</div>
+                  </div>
+                )
+              }
+            },
+            {
+              title: 'Qty',
+              dataIndex: 'qty',
+              width: '40px',
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
+            },
+            {
+              title: 'Price',
+              dataIndex: 'sellPrice',
+              width: '250px',
+              className: styles.alignRight,
+              render: (text, record) => {
+                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                const disc1 = record.disc1
+                const disc2 = record.disc2
+                const disc3 = record.disc3
+                const discount = record.discount
+                const total = record.total
+                return (
+                  <div>
+                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
+                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
+                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
+                    <div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                    </div>
+                  </div>
+                )
+              }
+            }
+          ]}
+          onRowClick={_record => modalEditService(_record)}
+          dataSource={getServiceTrans()}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
