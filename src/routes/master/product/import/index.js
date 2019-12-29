@@ -1,98 +1,123 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, Row
+  Button, Icon, Row, message
 } from 'antd'
 import { routerRedux } from 'dva/router'
+import * as Excel from 'exceljs/dist/exceljs.min.js'
 import List from './List'
 import PrintXLS from './PrintXLS'
 
-class ImportStock extends PureComponent {
-  state = {
-    selectedFile: null
-  }
-
-  render () {
-    const {
-      loading,
-      dispatch,
-      importstock,
-      productstock,
-      app
-    } = this.props
-    const { list, pagination } = importstock
-    const { user, storeInfo } = app
-    const {
-      changed,
-      listPrintAllStock,
-      stockLoading
-    } = productstock
-    const listProps = {
-      dataSource: list,
-      pagination,
-      loading: loading.effects['importstock/query'],
-      onChange (page) {
-        const { query, pathname } = location
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            page: page.current,
-            pageSize: page.pageSize
-          }
-        }))
-      }
-    }
-
-    const printProps = {
-      user,
-      storeInfo
-    }
-
-    const uploadProps = {
-      name: 'file',
-      processData: false
-    }
-
-    const getAllStock = () => {
-      dispatch({
-        type: 'productstock/queryAllStock',
-        payload: {
-          type: 'all'
+const ImportStock = ({
+  loading,
+  dispatch,
+  importstock,
+  productstock,
+  app
+}) => {
+  const { list, pagination } = importstock
+  const { user, storeInfo } = app
+  const {
+    changed,
+    listPrintAllStock,
+    stockLoading
+  } = productstock
+  const listProps = {
+    dataSource: list,
+    pagination,
+    loading: loading.effects['importstock/query'],
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
         }
-      })
+      }))
     }
-
-
-    let buttonClickXLS = (changed && listPrintAllStock.length)
-      ? (<PrintXLS data={listPrintAllStock} name="Export Template" {...printProps} />)
-      : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Data</Button>)
-
-    const { selectedFile } = this.state
-
-    console.log('selectedFile', selectedFile)
-
-    return (
-      <div className="content-inner">
-        <Row>
-          {buttonClickXLS}
-          <input
-            type="file"
-            className="ant-btn ant-btn-default ant-btn-lg"
-            {...uploadProps}
-            onChange={
-              (event) => {
-                this.setState({
-                  selectedFile: event.target.files[0]
-                })
-              }
-            }
-          />
-        </Row>
-        <List {...listProps} />
-      </div>
-    )
   }
+
+  const printProps = {
+    user,
+    storeInfo
+  }
+
+  const uploadProps = {
+    name: 'file',
+    processData: false
+  }
+
+  const getAllStock = () => {
+    dispatch({
+      type: 'productstock/queryAllStock',
+      payload: {
+        type: 'all'
+      }
+    })
+  }
+
+
+  let buttonClickXLS = (changed && listPrintAllStock.length)
+    ? (<PrintXLS data={listPrintAllStock} name="Export Template" {...printProps} />)
+    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Data</Button>)
+
+  const handleChangeFile = (event) => {
+    let uploadData = []
+    const fileName = event.target.files[0]
+    const workbook = new Excel.Workbook()
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(fileName)
+    reader.onload = () => {
+      const buffer = reader.result
+      workbook.xlsx.load(buffer)
+        .then(async (workbook) => {
+          const sheet = workbook.getWorksheet('POS 1')
+          await sheet
+            .eachRow({ includeEmpty: false }, (row, rowIndex) => {
+              const productId = row.values[3]
+              const qty = row.values[11]
+              const price = row.values[12]
+              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined') {
+                const data = {
+                  productId,
+                  qty,
+                  price
+                }
+                uploadData.push(data)
+              }
+            })
+        })
+        .then(() => {
+          if (uploadData && uploadData.length > 0) {
+            dispatch({
+              type: 'importstock/add',
+              payload: {
+                detail: uploadData
+              }
+            })
+          } else {
+            message.error('No Data to Upload')
+          }
+        })
+    }
+  }
+
+  return (
+    <div className="content-inner">
+      <Row>
+        {buttonClickXLS}
+        <input
+          type="file"
+          className="ant-btn ant-btn-default ant-btn-lg"
+          {...uploadProps}
+          onChange={handleChangeFile}
+        />
+      </Row>
+      <List {...listProps} />
+    </div>
+  )
 }
 
 export default connect(

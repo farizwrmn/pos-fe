@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'Stock-POS',
+  name: 'Supermart',
   version: '2018.07.003',
   prefix: 'smiPos',
   footerText: 'Smartech Indo',

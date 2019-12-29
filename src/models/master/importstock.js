@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/master/importstock'
 import { pageModel } from 'common'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Stock has been saved')
@@ -63,6 +64,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      payload.header = {
+        storeId: lstorage.getCurrentUserStore()
+      }
       const data = yield call(add, payload)
       if (data.success) {
         success()
