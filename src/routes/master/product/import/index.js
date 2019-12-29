@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, Row, message, Modal
+  Button, Icon, Row, message, Modal, Col
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import ProductXLS from './ProductXLS'
 
 const ImportStock = ({
   loading,
@@ -118,13 +119,18 @@ const ImportStock = ({
   return (
     <div className="content-inner">
       <Row>
-        {buttonClickXLS}
-        <input
-          type="file"
-          className="ant-btn ant-btn-default ant-btn-lg"
-          {...uploadProps}
-          onChange={handleChangeFile}
-        />
+        <Col span={12}>
+          {buttonClickXLS}
+          <input
+            type="file"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            {...uploadProps}
+            onChange={handleChangeFile}
+          />
+        </Col>
+        <Col span={12} style={{ textAlign: 'right' }}>
+          <ProductXLS data={[]} name="Export Product Template" {...printProps} />
+        </Col>
       </Row>
       <List {...listProps} />
       <div
