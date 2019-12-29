@@ -1,6 +1,12 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/importstock'
+import {
+  query,
+  add,
+  executeList,
+  edit,
+  remove
+} from 'services/master/importstock'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
 
@@ -88,6 +94,19 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+
+    * execute (payload, { call, put }) {
+      const response = yield call(executeList, {
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'query'
+        })
+      } else {
+        throw response
       }
     },
 

@@ -31,3 +31,13 @@ export async function add (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function executeList (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importstock}/execute/${params.storeId}`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

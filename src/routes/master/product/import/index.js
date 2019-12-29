@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, Row, message
+  Button, Icon, Row, message, Modal
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
@@ -79,11 +79,11 @@ const ImportStock = ({
               const productId = row.values[3]
               const qty = row.values[11]
               const price = row.values[12]
-              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined') {
+              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(qty) > 0 && Number(price) > 0) {
                 const data = {
-                  productId,
-                  qty,
-                  price
+                  productId: Number(productId),
+                  qty: Number(qty),
+                  price: Number(price)
                 }
                 uploadData.push(data)
               }
@@ -104,6 +104,17 @@ const ImportStock = ({
     }
   }
 
+  const handleExecute = () => {
+    Modal.confirm({
+      title: 'Do you want to execute this list ?',
+      onOk () {
+        dispatch({
+          type: 'importstock/execute'
+        })
+      }
+    })
+  }
+
   return (
     <div className="content-inner">
       <Row>
@@ -116,6 +127,16 @@ const ImportStock = ({
         />
       </Row>
       <List {...listProps} />
+      <div
+        style={{ textAlign: 'right' }}
+      >
+        <Button
+          type="primary"
+          onClick={handleExecute}
+        >
+          Execute
+        </Button>
+      </div>
     </div>
   )
 }
