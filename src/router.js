@@ -211,6 +211,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/importstock'))
+              registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/master/product/import/'))
             }, 'master-product-stock-import')
           }
