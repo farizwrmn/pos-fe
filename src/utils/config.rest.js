@@ -67,6 +67,7 @@ module.exports = {
     position: '/position',
     userrole: '/misc/code/USERROLE',
     sellprice: '/misc/code/SELLPRICE',
+    importstock: '/stocks/import',
     brand: '/stocks/brands',
     bookmarkGroup: '/stock/bookmark-group',
     bookmark: '/stock/bookmark',

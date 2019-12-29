@@ -35,10 +35,12 @@ module.exports = (webpackConfig) => {
   // Alias
   webpackConfig.resolve.alias = {
     components: `${__dirname}/src/components`,
+    services: `${__dirname}/src/services`,
     utils: `${__dirname}/src/utils`,
     config: `${__dirname}/src/utils/config`,
     enums: `${__dirname}/src/utils/enums`,
-    themes: `${__dirname}/src/themes`
+    themes: `${__dirname}/src/themes`,
+    common: `${__dirname}/src/models/common`
   }
   webpackConfig.resolve.modules = ['node_modules']
 
