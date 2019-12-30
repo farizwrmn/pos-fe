@@ -176,21 +176,23 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
       })
     },
     onGetDetail (e) {
-      const transNo = e.transNo
-      dispatch({
-        type: 'pos/queryPosDetail',
-        payload: {
-          id: transNo,
-          data: e
-        }
-      })
-      dispatch({
-        type: 'pos/setListPaymentDetail',
-        payload: e
-      })
-      dispatch({
-        type: 'pos/showPrintModal'
-      })
+      // const { transNo } = e
+      const invoiceWindow = window.open(`/transaction/pos/invoice/${e.id}`)
+      invoiceWindow.focus()
+      // dispatch({
+      //   type: 'pos/queryPosDetail',
+      //   payload: {
+      //     id: transNo,
+      //     data: e
+      //   }
+      // })
+      // dispatch({
+      //   type: 'pos/setListPaymentDetail',
+      //   payload: e
+      // })
+      // dispatch({
+      //   type: 'pos/showPrintModal'
+      // })
     },
     onChangePeriod (start, end) {
       dispatch({

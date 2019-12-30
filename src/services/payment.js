@@ -37,6 +37,18 @@ export async function queryPos (params) {
   })
 }
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${pos}/header/${params.id}`
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

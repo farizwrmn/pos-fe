@@ -207,6 +207,15 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'master/product/stock/import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importstock'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/master/product/import/'))
+            }, 'master-product-stock-import')
+          }
+        }, {
           path: 'master/product/sticker',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -561,6 +570,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/transaction/history/'))
             }, 'transaction-pos-history')
+          }
+        }, {
+          path: 'transaction/pos/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/invoice/'))
+            }, 'transaction-pos-invoice-print')
           }
         }, {
           path: 'transaction/purchase/history',

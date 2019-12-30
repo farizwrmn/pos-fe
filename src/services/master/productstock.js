@@ -86,6 +86,18 @@ export async function add (params) {
   })
 }
 
+export async function bulkInsert (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${stock}/bulk/insert`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+
 export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = params.id ? `${stock}/${encodeURIComponent(params.id)}` : stock

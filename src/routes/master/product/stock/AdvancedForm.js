@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 
@@ -242,13 +243,32 @@ const AdvancedForm = ({
     setFieldsValue({ dummyCode: value })
   }
 
+  const handleImportStock = () => {
+    dispatch(routerRedux.push({
+      pathname: '/master/product/stock/import'
+    }))
+  }
+
   const cardProps = {
     bordered: true,
     style: {
       padding: 8,
       marginLeft: 8,
       marginBottom: 8
-    }
+    },
+    title: (
+      <Row>
+        <Col span={12}><h3>Product Info</h3></Col>
+        <Col span={12} style={{ textAlign: 'right' }}>
+          <Button
+            type="primary"
+            onClick={handleImportStock}
+          >
+            Import
+          </Button>
+        </Col>
+      </Row>
+    )
   }
 
   const InputNumberProps = {
@@ -280,25 +300,6 @@ const AdvancedForm = ({
           editItemProductById(item)
         }
       })
-
-      // const data = getFieldsValue()
-      // dispatch({
-      //   type: 'productstock/updateState',
-      //   payload: {
-      //     modalVariantVisible: false,
-      //     currentItem: {
-      //       ...data
-      //     }
-      //   }
-      // })
-      // dispatch({
-      //   type: 'customerunit/updateState',
-      //   payload: {
-      //     modalVariantVisible: false,
-      //     unitItem: {}
-      //   }
-      // })
-      // resetFields()
     }
   }
 
@@ -449,7 +450,7 @@ const AdvancedForm = ({
 
   return (
     <Form layout="horizontal">
-      <Card title={<h3>Product Info</h3>} {...cardProps}>
+      <Card {...cardProps}>
         <Row>
           <Col {...column}>
             <FormItem label="Product Code" hasFeedback {...formItemLayout}>

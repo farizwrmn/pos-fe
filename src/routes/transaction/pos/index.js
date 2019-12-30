@@ -57,7 +57,7 @@ const Pos = ({
   // const { listShift } = shift
   // const { listCounter } = counter
   const {
-    // modalServiceVisible,
+    modalServiceVisible,
     modalMemberVisible,
     modalAssetVisible,
     modalMechanicVisible,
@@ -75,7 +75,7 @@ const Pos = ({
     memberUnitInfo,
     modalServiceListVisible,
     mechanicInformation,
-    // curRecord,
+    curRecord,
     // modalShiftVisible,
     // listCashier,
     // dataCashierTrans,
@@ -309,15 +309,6 @@ const Pos = ({
       const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
       const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
       const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-      if (service.length > 0 && (woNumber === '' || woNumber === null) && !workorder.id) {
-        Modal.warning({
-          title: 'Service Validation',
-          content: 'You are giving service without WorkOrder'
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
       if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
         Modal.warning({
           title: 'Unit Validation',
@@ -471,22 +462,22 @@ const Pos = ({
       </span>)
   }
 
-  // const handleServiceBrowse = () => {
-  //   resetSelectText()
-  //   dispatch({
-  //     type: 'pos/getServices',
-  //     payload: {
-  //       active: 1
-  //     }
-  //   })
+  const handleServiceBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/getServices',
+      payload: {
+        active: 1
+      }
+    })
 
-  //   dispatch({
-  //     type: 'pos/showServiceModal',
-  //     payload: {
-  //       modalType: 'browseService'
-  //     }
-  //   })
-  // }
+    dispatch({
+      type: 'pos/showServiceModal',
+      payload: {
+        modalType: 'browseService'
+      }
+    })
+  }
 
   const handleProductBrowse = () => {
     resetSelectText()
@@ -503,49 +494,6 @@ const Pos = ({
       }
     })
   }
-
-  // const modalShiftProps = {
-  //   item: dataCashierTrans,
-  //   listCashier,
-  //   listShift,
-  //   listCounter,
-  //   curCashierNo,
-  //   currentCashier,
-  //   visible: modalShiftVisible,
-  //   cashierId: user.userid,
-  //   infoCashRegister,
-  //   dispatch,
-  //   loading,
-  //   maskClosable: false,
-  //   wrapClassName: 'vertical-center-modal',
-  //   getCashier () {
-  //     dispatch({
-  //       type: 'pos/loadDataPos'
-  //     })
-  //   },
-  //   onBack () {
-  //     dispatch({ type: 'pos/backPrevious' })
-  //   },
-  //   onCancel () {
-  //     Modal.error({
-  //       title: 'Error',
-  //       content: 'Please Use Confirm Button...!'
-  //     })
-  //   },
-  //   onOk (data) {
-  //     dispatch({ type: 'app/foldSider' })
-  //     dispatch({
-  //       type: 'pos/cashRegister',
-  //       payload: data
-  //     })
-  //   },
-  //   findShift () {
-  //     dispatch({ type: 'shift/query' })
-  //   },
-  //   findCounter () {
-  //     dispatch({ type: 'counter/query' })
-  //   }
-  // }
 
   const modalAssetProps = {
     loading,
@@ -914,115 +862,115 @@ const Pos = ({
     }
   }
 
-  // const modalServiceProps = {
-  //   location,
-  //   loading,
-  //   dispatch,
-  //   pos,
-  //   visible: modalServiceVisible,
-  //   maskClosable: false,
-  //   wrapClassName: 'vertical-center-modal',
-  //   onChange (e) {
-  //     dispatch({
-  //       type: 'pos/getServices',
-  //       payload: {
-  //         q: searchText === '' ? null : searchText,
-  //         active: 1,
-  //         page: Number(e.current),
-  //         pageSize: Number(e.pageSize)
-  //       }
-  //     })
-  //   },
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'pos/hideServiceModal'
-  //     })
-  //   },
-  //   onChooseItem (item) {
-  //     if (Object.assign(mechanicInformation || {}).length !== 0) {
-  //       let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-  //       let arrayProd = listByCode
-  //       const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
-  //       if (checkExists.length === 0) {
-  //         arrayProd.push({
-  //           no: arrayProd.length + 1,
-  //           code: item.serviceCode,
-  //           productId: item.id,
-  //           employeeId: mechanicInformation.employeeId,
-  //           employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-  //           name: item.serviceName,
-  //           qty: curQty,
-  //           typeCode: 'S',
-  //           sellPrice: item.serviceCost,
-  //           price: item.serviceCost,
-  //           discount: 0,
-  //           disc1: 0,
-  //           disc2: 0,
-  //           disc3: 0,
-  //           total: item.serviceCost * curQty
-  //         })
+  const modalServiceProps = {
+    location,
+    loading,
+    dispatch,
+    pos,
+    visible: modalServiceVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getServices',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          active: 1,
+          page: Number(e.current),
+          pageSize: Number(e.pageSize)
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/hideServiceModal'
+      })
+    },
+    onChooseItem (item) {
+      if (Object.assign(mechanicInformation || {}).length !== 0) {
+        let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        let arrayProd = listByCode
+        const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        if (checkExists.length === 0) {
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            code: item.serviceCode,
+            productId: item.id,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            name: item.serviceName,
+            qty: curQty,
+            typeCode: 'S',
+            sellPrice: item.serviceCost,
+            price: item.serviceCost,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.serviceCost * curQty
+          })
 
-  //         localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
 
-  //         dispatch({
-  //           type: 'pos/queryServiceSuccessByCode',
-  //           payload: {
-  //             listByCode: item,
-  //             curRecord: curRecord + 1
-  //           }
-  //         })
+          dispatch({
+            type: 'pos/queryServiceSuccessByCode',
+            payload: {
+              listByCode: item,
+              curRecord: curRecord + 1
+            }
+          })
 
-  //         let successModal = Modal.info({
-  //           title: 'Success add service',
-  //           content: 'Service has been added in Service`s Tab'
-  //         })
+          let successModal = Modal.info({
+            title: 'Success add service',
+            content: 'Service has been added in Service`s Tab'
+          })
 
-  //         dispatch({
-  //           type: 'pos/hideServiceModal'
-  //         })
+          dispatch({
+            type: 'pos/hideServiceModal'
+          })
 
-  //         setTimeout(() => successModal.destroy(), 1000)
+          setTimeout(() => successModal.destroy(), 1000)
 
-  //         dispatch({
-  //           type: 'pos/updateState',
-  //           payload: {
-  //             paymentListActiveKey: '2'
-  //           }
-  //         })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '2'
+            }
+          })
 
-  //         setCurBarcode('', 1)
-  //       } else {
-  //         Modal.warning({
-  //           title: 'Cannot add product',
-  //           content: 'Already Exists in list'
-  //         })
-  //       }
-  //     } else {
-  //       Modal.info({
-  //         title: 'Employee Information is not found',
-  //         content: 'Insert Employee',
-  //         onOk () {
-  //           dispatch({
-  //             type: 'pos/updateState',
-  //             payload: {
-  //               modalServiceVisible: false
-  //             }
-  //           })
-  //           dispatch({
-  //             type: 'pos/getMechanics'
-  //           })
+          setCurBarcode('', 1)
+        } else {
+          Modal.warning({
+            title: 'Cannot add product',
+            content: 'Already Exists in list'
+          })
+        }
+      } else {
+        Modal.info({
+          title: 'Employee Information is not found',
+          content: 'Insert Employee',
+          onOk () {
+            dispatch({
+              type: 'pos/updateState',
+              payload: {
+                modalServiceVisible: false
+              }
+            })
+            dispatch({
+              type: 'pos/getMechanics'
+            })
 
-  //           dispatch({
-  //             type: 'pos/showMechanicModal',
-  //             payload: {
-  //               modalType: 'browseMechanic'
-  //             }
-  //           })
-  //         }
-  //       })
-  //     }
-  //   }
-  // }
+            dispatch({
+              type: 'pos/showMechanicModal',
+              payload: {
+                modalType: 'browseMechanic'
+              }
+            })
+          }
+        })
+      }
+    }
+  }
 
   const modalQueueProps = {
     location,
@@ -1265,6 +1213,16 @@ const Pos = ({
                   >
                     Product
                   </Button>
+                  <Button type="primary"
+                    size="large"
+                    icon="tool"
+                    onClick={handleServiceBrowse}
+                    style={{
+                      margin: '0px 5px'
+                    }}
+                  >
+                    Service
+                  </Button>
                 </Col>
               </Row>
             </Form>
@@ -1276,6 +1234,7 @@ const Pos = ({
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
+            {modalServiceVisible && <Browse {...modalServiceProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
@@ -1311,23 +1270,6 @@ const Pos = ({
           <BottomButton {...buttomButtonProps} />
         </Col>
       </Row >
-      {/* <Row>
-        <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
-          <Row gutter={32}>
-            <Col span={2}># {currentCashier.id} </Col>
-            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Cashier : {currentCashier.cashierId} </Col>
-            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Shift : {currentCashier.shiftName} </Col>
-            <Col xs={24} sm={24} md={5} lg={5} xl={5}> Counter : {currentCashier.counterName} </Col>
-            <Col xs={24} sm={24} md={5} lg={5} xl={5}>
-              <Tooltip title={infoCashRegister.Caption}>
-                Date : {currentCashier.period}
-                {'  '}
-                <Badge dot={infoCashRegister.dotVisible} />
-              </Tooltip>
-            </Col>
-          </Row>
-        </Card>
-      </Row> */}
       {memberInformation.memberTypeName && <div className="wrapper-switcher">
         <Button onClick={showModalCashback} className="btn-member">
           <span>
