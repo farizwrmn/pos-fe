@@ -7,6 +7,7 @@ import {
   edit,
   remove
 } from 'services/master/importstock'
+import { bulkInsert } from 'services/master/productstock'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
 
@@ -107,6 +108,22 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw response
+      }
+    },
+
+    * bulkInsert ({ payload }, { call, put }) {
+      const data = yield call(bulkInsert, payload)
+      if (data.success) {
+        success()
+        yield put({ type: 'query' })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
+        throw data
       }
     },
 

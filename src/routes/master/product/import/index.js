@@ -105,6 +105,59 @@ const ImportStock = ({
     }
   }
 
+  const handleImportProduct = (event) => {
+    let uploadData = []
+    const fileName = event.target.files[0]
+    const workbook = new Excel.Workbook()
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(fileName)
+    reader.onload = () => {
+      const buffer = reader.result
+      workbook.xlsx.load(buffer)
+        .then(async (workbook) => {
+          const sheet = workbook.getWorksheet('POS 1')
+          await sheet
+            .eachRow({ includeEmpty: false }, (row, rowIndex) => {
+              const productCode = row.values[3]
+              const productName = row.values[4]
+              const barCode01 = row.values[5]
+              const sellPrice = row.values[6]
+              const distPrice01 = row.values[7]
+              const distPrice02 = row.values[8]
+              const brandId = row.values[9]
+              const categoryId = row.values[10]
+              const trackQty = row.values[11]
+              const alertQty = row.values[12]
+              if (rowIndex >= 7) {
+                const data = {
+                  productCode,
+                  productName,
+                  barCode01,
+                  sellPrice,
+                  distPrice01,
+                  distPrice02,
+                  brandId: Number(brandId),
+                  categoryId: Number(categoryId),
+                  trackQty,
+                  alertQty
+                }
+                uploadData.push(data)
+              }
+            })
+        })
+        .then(() => {
+          if (uploadData && uploadData.length > 0) {
+            dispatch({
+              type: 'importstock/bulkInsert',
+              payload: uploadData
+            })
+          } else {
+            message.error('No Data to Upload')
+          }
+        })
+    }
+  }
+
   const handleExecute = () => {
     Modal.confirm({
       title: 'Do you want to execute this list ?',
@@ -130,6 +183,15 @@ const ImportStock = ({
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <ProductXLS data={[]} name="Export Product Template" {...printProps} />
+          <input
+            type="file"
+            style={{
+              float: 'right'
+            }}
+            className="ant-btn ant-btn-default ant-btn-lg"
+            {...uploadProps}
+            onChange={handleImportProduct}
+          />
         </Col>
       </Row>
       <List {...listProps} />
