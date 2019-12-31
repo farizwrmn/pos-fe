@@ -1,9 +1,10 @@
 import { idCompany, companyName, rest } from '../config.company'
 
+const APICOMPANYPROTOCOL = 'http' // 'localhost'
 const APICOMPANYHOST = 'localhost' // 'localhost'
 const APICOMPANYPORT = 6402
-const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}`
-const APIV1 = '/api/v1'
+const APIVERSION = '/api/v1'
+const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 
 it('Should render API Id Company', () =>
   expect(idCompany).toEqual('SMI')
@@ -16,9 +17,10 @@ it('Should render API companyName', () =>
 it('Should render API companyName', () =>
   expect(rest).toEqual({
     apiCompanyHost: APICOMPANYHOST,
+    apiCompanyProtocol: APICOMPANYPROTOCOL,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,
-    apiCompanyURI: `${APICOMPANYURL}${APIV1}`,
-    apiUserCompany: `${APICOMPANYURL}${APIV1}/users/company`
+    apiCompanyURI: APICOMPANYURL,
+    apiUserCompany: `${APICOMPANYURL}/users/company`
   })
 )

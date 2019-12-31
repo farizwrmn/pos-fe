@@ -9,7 +9,7 @@ import {
 } from '../config.main'
 
 it('Should render App name', () =>
-  expect(name).toEqual('Stock-POS')
+  expect(name).toEqual('Supermart')
 )
 
 it('Should render App Prefix', () =>
@@ -29,7 +29,15 @@ it('Should render App Logo String', () =>
 )
 
 it('Should render App openPages', () =>
-  expect(openPages).toEqual(['/login', '/nps/01', '/nps/02', '/nps/03', '/transaction/pos/customer-view'])
+  expect(openPages).toEqual(
+    [
+      '/login',
+      '/nps/01',
+      '/nps/02',
+      '/nps/03',
+      '/transaction/pos/customer-view',
+      '/transaction/pos/invoice/:id'
+    ])
 )
 
 it('Should render App MultiSelect', () =>
