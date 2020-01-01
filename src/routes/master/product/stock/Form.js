@@ -278,6 +278,17 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
+          <FormItem label="Dist Price 3" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice03', {
+              initialValue: item.distPrice03,
+              rules: [
+                {
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
+          </FormItem>
           <FormItem label="Track Qty" {...formItemLayout}>
             {getFieldDecorator('trackQty', {
               valuePropName: 'checked',

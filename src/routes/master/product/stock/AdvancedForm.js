@@ -633,20 +633,21 @@ const AdvancedForm = ({
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Cost Price" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('costPrice', {
-                  initialValue: item.costPrice,
+              <FormItem label="Dist Price 3" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('distPrice03', {
+                  initialValue: item.distPrice03,
                   rules: [
                     {
+                      required: true,
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                       message: '0-9'
                     }
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Pre Price" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('sellPricePre', {
-                  initialValue: item.sellPricePre,
+              <FormItem label="Cost Price" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('costPrice', {
+                  initialValue: item.costPrice,
                   rules: [
                     {
                       pattern: /^(?:0|[1-9][0-9]{0,20})$/,

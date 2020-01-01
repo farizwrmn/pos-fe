@@ -124,6 +124,7 @@ const ImportStock = ({
               const sellPrice = row.values[6]
               const distPrice01 = row.values[7]
               const distPrice02 = row.values[8]
+              const distPrice03 = row.values[9]
               const brandId = row.values[9]
               const categoryId = row.values[10]
               const trackQty = row.values[11]
@@ -136,6 +137,7 @@ const ImportStock = ({
                   sellPrice,
                   distPrice01,
                   distPrice02,
+                  distPrice03,
                   brandId: Number(brandId),
                   categoryId: Number(categoryId),
                   trackQty,

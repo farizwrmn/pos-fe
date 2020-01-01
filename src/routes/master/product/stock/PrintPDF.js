@@ -51,7 +51,8 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'HARGA JUAL', style: 'tableHeader' },
       { text: 'HARGA POKOK', style: 'tableHeader' },
       { text: 'HARGA DIST-1', style: 'tableHeader' },
-      { text: 'HARGA DIST-2', style: 'tableHeader' }
+      { text: 'HARGA DIST-2', style: 'tableHeader' },
+      { text: 'HARGA DIST-3', style: 'tableHeader' }
     ]
   ]
 
@@ -66,7 +67,8 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
         { text: (specification.sellPrice || 0).toLocaleString(), alignment: 'right' },
         { text: (specification.costPrice || 0).toLocaleString(), alignment: 'right' },
         { text: (specification.distPrice01 || 0).toLocaleString(), alignment: 'right' },
-        { text: (specification.distPrice02 || 0).toLocaleString(), alignment: 'right' }
+        { text: (specification.distPrice02 || 0).toLocaleString(), alignment: 'right' },
+        { text: (specification.distPrice03 || 0).toLocaleString(), alignment: 'right' }
       ]
     ))
     return body
@@ -119,7 +121,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    width: ['4%', '15%', '23%', '16%', '10%', '8%', '8%', '8%', '8%'],
+    width: ['4%', '15%', '19%', '14%', '8%', '8%', '8%', '8%', '8%', '8%'],
     pageSize: { width: 1000, height: 530 },
     pageOrientation: 'landscape',
     pageMargins: [15, 140, 15, 60],

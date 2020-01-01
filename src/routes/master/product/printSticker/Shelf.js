@@ -180,14 +180,10 @@ const Shelf = ({
               {aliases.check1 && (<p style={priceStyle}>Rp. {parseInt(x.info[aliases.price1], 0).toLocaleString()}</p>)}
               {aliases.check2 && (<p style={distPriceStyleLeft}>Rp. {parseInt(x.info[aliases.price2], 0).toLocaleString()}</p>)}
               <p style={distPriceStyleLeft}><br /></p>
-              {/* <p style={distPriceStyleLeft}>Rp. {parseInt(x.info.distPrice02, 0).toLocaleString()}</p> */}
             </Col>
             <Col md={12}>
               {aliases.check1 && (<p style={sellPriceStyle}>{aliases.alias1}</p>)}
               {aliases.check2 && (<p style={distPriceStyleRight}>{aliases.alias2}</p>)}
-              {/* <p style={sellPriceStyle}>(Sellprice)</p> */}
-              {/* <p style={distPriceStyleRight}>(Dist price 01)</p> */}
-              {/* <p style={distPriceStyleRight}>(Dist price 02)</p> */}
             </Col>
           </Row>
           <p style={productCodeStyle}>{x.info.productCode}</p>
