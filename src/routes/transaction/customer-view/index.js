@@ -91,11 +91,6 @@ class Pos extends Component {
                 </FormItem>
               </Row>
               <Row>
-                <FormItem label="Disc. Cashback" {...formItemLayout1}>
-                  <Input value={totalDiscount.toLocaleString()} style={{ fontSize: 20 }} />
-                </FormItem>
-              </Row>
-              <Row>
                 <FormItem label="Netto" {...formItemLayout1}>
                   <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
                 </FormItem>
