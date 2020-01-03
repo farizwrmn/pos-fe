@@ -3,7 +3,7 @@ import { Row, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 
-const Total = ({ dataPos = [], dataService = [] }) => {
+const Total = ({ posData = {}, dataPos = [], dataService = [] }) => {
   const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
   let TotalQty = merge.reduce((cnt, o) => cnt + o.qty, 0)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
@@ -14,19 +14,26 @@ const Total = ({ dataPos = [], dataService = [] }) => {
         <Col span={12} className={styles.right}>
           <span>
             <strong>
-              Total ({numberFormatter(TotalQty)} items)
+              Tax
             </strong>
             :Rp
           </span>
         </Col>
         <Col span={12} className={styles.right}>
-          {numberFormatter(Total)}
+          {numberFormatter(posData.dineInTax)}
         </Col>
       </Row>
       <Row>
-        <Col span={12} className={styles.right}><strong>Cash</strong>:Rp</Col>
         <Col span={12} className={styles.right}>
-          {numberFormatter(Total)}
+          <span>
+            <strong>
+              Total ({numberFormatter(parseFloat(TotalQty))} items)
+            </strong>
+            :Rp
+          </span>
+        </Col>
+        <Col span={12} className={styles.right}>
+          {numberFormatter(parseFloat(Total) + parseFloat(posData.dineInTax))}
         </Col>
       </Row>
     </div>

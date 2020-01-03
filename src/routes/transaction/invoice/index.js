@@ -113,7 +113,7 @@ const Invoice = ({ pos, app, payment }) => {
     <div className={styles.invoiceMini}>
       <Header invoiceInfo={invoiceInfo} />
       <Body dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
-      <Total dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <Total posData={posData} dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
       <div className={styles.separator} />
       <Footer />
     </div>

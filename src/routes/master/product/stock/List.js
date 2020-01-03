@@ -86,6 +86,13 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Dist 03',
+      dataIndex: 'distPrice03',
+      key: 'distPrice03',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Track Qty',
       dataIndex: 'trackQty',
       key: 'trackQty',

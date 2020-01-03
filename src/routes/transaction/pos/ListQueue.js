@@ -64,7 +64,7 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')
       try {
-        if (JSON.parse(trans.memberUnit).policeNo) {
+        if (trans.memberUnit && JSON.parse(trans.memberUnit).policeNo) {
           localStorage.setItem('memberUnit', trans.memberUnit)
         }
       } catch (e) {
@@ -94,7 +94,6 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
       localStorage.setItem('bundle_promo', JSON.stringify(trans.bundle_promo))
       localStorage.setItem('queue', JSON.stringify(queue))
-      document.getElementById('KM').value = localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0
       dispatch({
         type: 'pos/setCurTotal'
       })

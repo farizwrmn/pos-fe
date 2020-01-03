@@ -55,6 +55,12 @@ const Stock = ({
       key: 'distPrice02',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    }, {
+      title: 'Dist Price 03',
+      dataIndex: 'distPrice03',
+      key: 'distPrice03',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Qty',

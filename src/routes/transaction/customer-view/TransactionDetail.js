@@ -23,7 +23,7 @@ class TransactionDetail extends Component {
       dispatch,
       pos,
       product,
-      // service,
+      service,
       loading
     } = this.props
     const {
@@ -152,6 +152,74 @@ class TransactionDetail extends Component {
               }
             ]}
             dataSource={product}
+            style={{ marginBottom: 16 }}
+          />
+        </TabPane>
+        <TabPane tab="Service" key="2">
+          <Table
+            loading={loading}
+            rowKey={(record, key) => key}
+            pagination={{ pageSize: 5 }}
+            bordered
+            size="small"
+            scroll={{ x: '680px', y: '220px' }}
+            locale={{
+              emptyText: 'Your Payment List'
+            }}
+            columns={[
+              {
+                title: 'No',
+                width: '40px',
+                dataIndex: 'no'
+              },
+              {
+                title: 'Service',
+                dataIndex: 'code',
+                width: '300px',
+                render: (text, record) => {
+                  return (
+                    <div>
+                      <div>{`Service Code: ${record.code}`}</div>
+                      <div>{`Service Name: ${record.name}`}</div>
+                    </div>
+                  )
+                }
+              },
+              {
+                title: 'Qty',
+                dataIndex: 'qty',
+                width: '40px',
+                className: styles.alignCenter,
+                render: text => numberFormatter((text).toLocaleString())
+              },
+              {
+                title: 'Price',
+                dataIndex: 'sellPrice',
+                width: '300px',
+                className: styles.alignRight,
+                render: (text, record) => {
+                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                  const disc1 = record.disc1
+                  const disc2 = record.disc2
+                  const disc3 = record.disc3
+                  const discount = record.discount
+                  const total = record.total
+                  return (
+                    <div>
+                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
+                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
+                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
+                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
+                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
+                      <div>
+                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                      </div>
+                    </div>
+                  )
+                }
+              }
+            ]}
+            dataSource={service}
             style={{ marginBottom: 16 }}
           />
         </TabPane>

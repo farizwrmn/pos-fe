@@ -64,6 +64,13 @@ const List = ({ ...tableProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Dist 03',
+      dataIndex: 'product.distPrice03',
+      key: 'product.distPrice03',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Created',
       dataIndex: 'createdBy',
       key: 'createdBy'

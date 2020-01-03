@@ -14,7 +14,8 @@ import {
   Card,
   Button,
   Tag,
-  Modal
+  Modal,
+  Select
 } from 'antd'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
@@ -89,7 +90,8 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     modalAddUnit,
-    cashierInformation
+    cashierInformation,
+    dineInTax
   } = pos
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
@@ -819,8 +821,6 @@ const Pos = ({
   }
 
   const chooseProduct = (item) => {
-    console.log('chooseProduct', item)
-
     dispatch({
       type: 'pos/chooseProduct',
       payload: {
@@ -1153,7 +1153,18 @@ const Pos = ({
     })
   }
 
+  const handleChangeDineIn = (event) => {
+    localStorage.setItem('dineInTax', event)
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        dineInTax: event
+      }
+    })
+  }
+
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+  const dineIn = curNetto * (dineInTax / 100)
 
   const handleChangeBookmark = (key = 1, page = 1, pageSize = 10) => {
     dispatch({
@@ -1242,30 +1253,36 @@ const Pos = ({
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
-            <Form>
-              <div style={{ float: 'right' }}>
-                <Row>
+            <Row>
+              <Col md={24} lg={12}>
+                <FormItem label="Tax" {...formItemLayout1}>
+                  <Select
+                    defaultValue={dineInTax}
+                    style={{ width: '100%' }}
+                    onChange={handleChangeDineIn}
+                  >
+                    <Select.Option value={0}>Take Away (0%)</Select.Option>
+                    <Select.Option value={10}>Dine In (+10%)</Select.Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col md={24} lg={12}>
+                <div style={{ textAlign: 'right' }}>
                   <FormItem label="Total Qty" {...formItemLayout1}>
                     <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                </Row>
-                <Row>
                   <FormItem label="Total" {...formItemLayout1}>
                     <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                </Row>
-                <Row>
-                  <FormItem label="Disc. Cashback" {...formItemLayout1}>
-                    <Input value={totalDiscount.toLocaleString()} style={{ fontSize: 20 }} />
+                  <FormItem label="Dine In Tax" {...formItemLayout1}>
+                    <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                </Row>
-                <Row>
                   <FormItem label="Netto" {...formItemLayout1}>
-                    <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
+                    <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                </Row>
-              </div>
-            </Form>
+                </div>
+              </Col>
+            </Row>
           </Card>
           <BottomButton {...buttomButtonProps} />
         </Col>

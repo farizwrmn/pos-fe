@@ -41,6 +41,7 @@ it('Should render Config Rest', () =>
 it('Should render Config Api', () =>
   expect(api).toEqual({
     getIpAddress: '/utils/ipaddr',
+    importstock: '/stocks/import',
     userInfo: '/userInfo',
     sequence: '/sequence',
     employees: '/employees',

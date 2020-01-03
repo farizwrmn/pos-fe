@@ -53,6 +53,7 @@ export default {
     companyPrint: [],
     curQueue: 1,
     currentItem: {},
+    dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
