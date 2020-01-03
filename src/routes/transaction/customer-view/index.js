@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { Form, Input, Row, Card } from 'antd'
 import TransactionDetail from './TransactionDetail'
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getServiceTrans } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -31,6 +31,7 @@ function removeHandler (ele, trigger, handler) {
 
 class Pos extends Component {
   state = {
+    dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
     product: [],
     service: [],
     memberInformation: {}
@@ -46,10 +47,12 @@ class Pos extends Component {
   }
 
   setListData (data) {
-    if (data && (data.key === 'cashier_trans' || data.key === 'service_detail')) {
+    if (data && (data.key === 'dineInTax' || data.key === 'member' || data.key === 'cashier_trans' || data.key === 'service_detail')) {
       this.setState({ loading: true })
       this.setState({
+        dineInTax: Number(localStorage.getItem('dineInTax')),
         product: getCashierTrans(),
+        service: getServiceTrans(),
         memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : []
       })
       this.setState({ loading: false })
@@ -58,7 +61,13 @@ class Pos extends Component {
 
   render () {
     const { dispatch, pos } = this.props
-    const { product, service, loading, memberInformation } = this.state
+    const {
+      dineInTax,
+      product,
+      service,
+      loading,
+      memberInformation
+    } = this.state
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
     let dataPos = product.concat(service)
@@ -67,6 +76,7 @@ class Pos extends Component {
     let totalQty = dataPos.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
 
     const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+    const dineIn = curNetto * (dineInTax / 100)
 
     return (
       <div className="content-inner" >
@@ -93,6 +103,9 @@ class Pos extends Component {
               <Row>
                 <FormItem label="Netto" {...formItemLayout1}>
                   <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
+                </FormItem>
+                <FormItem label="Dine In Tax" {...formItemLayout1}>
+                  <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
                 </FormItem>
               </Row>
             </div>
