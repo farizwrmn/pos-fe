@@ -8,6 +8,9 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {}
+    },
+    removeItem: (key) => {
+      store[key] = undefined
     }
   })
 })()
