@@ -27,6 +27,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: formatNumberIndonesia(data.DPP), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.PPN), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.netto), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.dineInTax), alignment: 'right', fontSize: 11 })
         row.push({ text: data.memo, alignment: 'right', fontSize: 11 })
         body.push(row)
       }
@@ -41,6 +42,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   let dppTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
   let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
+  let dineInTotal = listTrans.reduce((cnt, o) => cnt + o.dineInTax, 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -75,7 +77,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1151, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -106,7 +108,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 740, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1151, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -143,6 +145,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DINE IN TAX', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'MEMO', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -154,7 +157,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 },
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
       { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
@@ -162,6 +165,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(ppnTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(dineInTotal), alignment: 'right', fontSize: 12 },
       {}
     ]
   ]
@@ -169,9 +173,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%'],
+    width: ['4%', '11%', '11%', '11%', '11%', '11%', '11%', '11%', '11%', '11%'],
     pageMargins: [50, 130, 50, 60],
-    pageSize: 'A4',
+    pageSize: 'A3',
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',
@@ -193,7 +197,7 @@ PrintPDF.propTypes = {
   user: PropTypes.object,
   storeInfo: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string.isRequired
+  toDate: PropTypes.string
 }
 
 export default PrintPDF
