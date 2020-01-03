@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
+import { Table } from 'antd'
 import styles from '../../../../themes/index.less'
 
 const List = ({ ...tableProps }) => {
