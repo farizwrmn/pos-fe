@@ -159,10 +159,11 @@ const formPayment = ({
   const usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
-  const dineIn = curNetto * (dineInTax / 100)
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-  const curChange = curPayment - curNetto > 0 ? curPayment - curNetto : 0
-  const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding)
+  const dineIn = curNetto * (dineInTax / 100)
+  const curChange = curPayment - curNetto > 0 ? curPayment - (curNetto + dineIn) : 0
+  const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
+
 
   const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
@@ -284,14 +285,14 @@ const formPayment = ({
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
             <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
-          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-            <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
-          </FormItem>
-          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-            <Input value={curNetto.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
-          </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
             <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
+          </FormItem>
+          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
+            <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
+          </FormItem>
+          <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
+            <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
           </FormItem>
         </Col>
       </Row>

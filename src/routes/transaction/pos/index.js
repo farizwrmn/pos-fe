@@ -1274,11 +1274,11 @@ const Pos = ({
                   <FormItem label="Total" {...formItemLayout1}>
                     <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                  <FormItem label="Netto" {...formItemLayout1}>
-                    <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
                   <FormItem label="Dine In Tax" {...formItemLayout1}>
                     <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
+                  </FormItem>
+                  <FormItem label="Netto" {...formItemLayout1}>
+                    <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
                 </div>
               </Col>
