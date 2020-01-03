@@ -128,6 +128,7 @@ export default {
         } else {
           let arrayProd = []
           const product = getCashierTrans()
+          const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
           const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
@@ -193,9 +194,11 @@ export default {
               discount: x.discount,
               disc1: x.disc1,
               disc2: x.disc2,
-              disc3: x.disc3
+              disc3: x.disc3,
+              totalPrice
             }
           })
+          const dineIn = grandTotal * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
@@ -210,6 +213,7 @@ export default {
               technicianId: payload.technicianId,
               transTime: payload.transTime,
               total: payload.grandTotal,
+              dineInTax: dineIn,
               lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
               creditCardNo: payload.creditCardNo,
               creditCardType: payload.creditCardType,
