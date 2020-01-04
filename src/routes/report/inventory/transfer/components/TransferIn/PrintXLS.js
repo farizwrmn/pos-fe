@@ -109,7 +109,7 @@ const PrintXLS = ({
         { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: (diffData[key][0].storeNameSender || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-        { value: 'TOTAL COLLY', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: 'TOTAL PACK', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ],

@@ -185,7 +185,7 @@ const FormAdd = ({
                 ]
               })(<Input />)}
             </FormItem>
-            <FormItem label="Total Colly" hasFeedback {...formItemLayout}>
+            <FormItem label="Total Pack" hasFeedback {...formItemLayout}>
               {getFieldDecorator('totalColly', {
                 initialValue: item.totalColly,
                 rules: [

@@ -119,7 +119,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
         body: [
           [{ text: 'NO TRANSAKSI' }, ':', { text: listData[key][0].transNo }, {}, { text: 'REF' }, ':', { text: listData[key][0].referenceTrans }],
           [{ text: 'TANGGAL' }, ':', { text: moment(listData[key][0].transDate).format('DD-MMM-YYYY') }, {}, { text: 'NO PLAT' }, ':', {}],
-          [{ text: 'DARI' }, ':', { text: listData[key][0].storeNameSender }, {}, { text: 'TOTAL COLLY' }, ':', {}],
+          [{ text: 'DARI' }, ':', { text: listData[key][0].storeNameSender }, {}, { text: 'TOTAL PACK' }, ':', {}],
           [{ text: 'KEPADA' }, ':', { text: listData[key][0].storeName }, {}, {}, {}, {}]
         ]
       },
