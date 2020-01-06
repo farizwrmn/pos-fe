@@ -43,10 +43,10 @@ export default modelExtend(pageModel, {
     stockLoading: false,
     aliases: {
       check1: true,
-      check2: true,
+      check2: false,
       price1: 'sellPrice',
       price2: 'distPrice01',
-      alias1: '',
+      alias1: 'RETAIL PRICE',
       alias2: ''
     },
     pagination: {
