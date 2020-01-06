@@ -142,11 +142,11 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
+                  pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={60} />)}
           </FormItem>
           <FormItem label="Location 1" hasFeedback {...formItemLayout}>
             {getFieldDecorator('location01', {
@@ -332,11 +332,11 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
+                  pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={60} />)}
           </FormItem>
           <FormItem label="Similar Name 1" hasFeedback {...formItemLayout}>
             {getFieldDecorator('otherName01', {

@@ -46,8 +46,8 @@ export default modelExtend(pageModel, {
       check2: true,
       price1: 'sellPrice',
       price2: 'distPrice01',
-      alias1: 'Non-Member',
-      alias2: 'Member'
+      alias1: '',
+      alias2: ''
     },
     pagination: {
       current: 1
