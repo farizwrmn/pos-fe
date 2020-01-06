@@ -98,6 +98,7 @@ const Invoice = ({ pos, app, payment }) => {
       ...listPaymentDetail
     },
     companyInfo,
+    storeInfo,
     memberName: data.memberPrint.memberName,
     phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
     policeNo: listPaymentDetail.policeNo,

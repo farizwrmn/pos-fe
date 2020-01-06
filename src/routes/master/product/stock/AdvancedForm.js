@@ -471,11 +471,11 @@ const AdvancedForm = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[A-Za-z0-9-._/ ]{3,50}$/i,
+                    pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={50} />)}
+              })(<Input maxLength={60} />)}
             </FormItem>
             <FormItem label="Category" hasFeedback {...formItemLayout}>
               {getFieldDecorator('categoryId', {
@@ -595,7 +595,7 @@ const AdvancedForm = ({
       </Card>
       <Row>
         <Col {...parentLeft}>
-          <Card title={<h3>Pricing</h3>} {...cardProps}>
+          <Card {...cardProps} title={<h3>Pricing</h3>}>
             <Row>
               <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('sellPrice', {
@@ -660,7 +660,7 @@ const AdvancedForm = ({
           </Card>
         </Col>
         <Col {...parentRight}>
-          <Card title={<h3>Advance Product Utility</h3>} {...cardProps}>
+          <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
             <Row>
               <Col {...column}>
                 <FormItem label="Track Qty" {...formItemLayout}>

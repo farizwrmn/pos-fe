@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReportCard } from 'components'
+import { currencyFormatter } from 'utils/string'
+import { name } from 'utils/config.main'
 
 const PrintShelf = ({ stickers, user, aliases }) => {
   const createTableBody = (tableBody) => {
@@ -12,30 +14,33 @@ const PrintShelf = ({ stickers, user, aliases }) => {
           const maxStringPerRow1 = tableBody[key].info.productName.slice(0, 28).toString()
           let maxStringPerRow2 = ' '
           if (tableBody[key].info.productName.toString().length > 28) {
-            maxStringPerRow2 = tableBody[key].info.productName.slice(28, 56).toString()
+            maxStringPerRow2 = tableBody[key].info.productName.slice(28, 60).toString()
           }
           let row = [
-            { text: maxStringPerRow1, style: 'productName', alignment: 'left' },
-            { text: maxStringPerRow2, style: 'productName', alignment: 'left' }
+            { text: maxStringPerRow1, style: 'productName1', alignment: 'center' },
+            { text: maxStringPerRow2, style: 'productName2', alignment: 'center' }
           ]
           if (aliases.check1) {
-            row.push({
-              columns: [
-                { text: `Rp ${(tableBody[key].info[aliases.price1] || 0).toLocaleString()}`, style: 'sellPrice' },
-                { text: aliases.alias1, style: 'info', margin: [0, 12, 0, 0] }
-              ]
-            })
+            row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
+            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), style: 'sellPrice' })
           }
           if (aliases.check2) {
+            // row.push({ text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] })
+            // row.push({ text: currencyFormatter(tableBody[key].info[aliases.price2]), style: 'others' })
             row.push({
               columns: [
-                { text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`, style: 'others' },
-                { text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] }
+                { text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0], alignment: 'left' },
+                { text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`, style: 'others', alignment: 'right' }
               ]
             })
           }
-          // row.push({ text: ' ', style: 'info', margin: [0, 0, 0, 0] })
-          row.push({ text: `(${(tableBody[key].info.productCode || '').toString()})`, style: 'others', alignment: 'left' })
+          row.push({
+            columns: [
+              { text: (tableBody[key].info.productCode || '').toString(), style: 'productCode', alignment: 'left' },
+              { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
+            ]
+          })
+          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'center' })
           body.push(row)
         }
       }
@@ -44,22 +49,33 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   }
   const styles = {
     info: {
-      alignment: 'right',
-      fontSize: 10
+      alignment: 'left',
+      fontSize: 8
     },
     sellPrice: {
       bold: true,
-      alignment: 'left',
-      fontSize: 15,
-      margin: [5, 5, 0, 0]
+      alignment: 'center',
+      fontSize: 20,
+      margin: [0, 10]
     },
-    productName: {
+    productName1: {
+      alignment: 'center',
       fontSize: 13,
-      margin: [5, 0, 0, 0]
+      margin: [0, 5, 0, 0]
+    },
+    productName2: {
+      alignment: 'center',
+      fontSize: 13,
+      margin: [0, 0, 0, 15]
     },
     others: {
       fontSize: 12,
-      margin: [5, 3, 0, 0],
+      margin: [5],
+      alignment: 'left'
+    },
+    productCode: {
+      fontSize: 9,
+      margin: [5, 0],
       alignment: 'left'
     }
   }
@@ -129,7 +145,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const pdfProps = {
     name: 'Print',
     width: [260, 260, 260],
-    height: 99,
+    height: 150,
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [17, 70, 17, 70],
