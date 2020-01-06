@@ -595,7 +595,7 @@ const AdvancedForm = ({
       </Card>
       <Row>
         <Col {...parentLeft}>
-          <Card title={<h3>Pricing</h3>} {...cardProps}>
+          <Card {...cardProps} title={<h3>Pricing</h3>}>
             <Row>
               <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('sellPrice', {
@@ -660,7 +660,7 @@ const AdvancedForm = ({
           </Card>
         </Col>
         <Col {...parentRight}>
-          <Card title={<h3>Advance Product Utility</h3>} {...cardProps}>
+          <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
             <Row>
               <Col {...column}>
                 <FormItem label="Track Qty" {...formItemLayout}>
