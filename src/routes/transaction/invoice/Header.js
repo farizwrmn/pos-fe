@@ -3,11 +3,13 @@ import { Row, Col } from 'antd'
 import styles from './index.less'
 
 const Header = ({ invoiceInfo }) => {
+  const { storeInfo } = invoiceInfo
+
   return (
     <div>
       <div className={styles.center}>
         <div className={styles.title}>K3MART.ID</div>
-        <div className={styles.subtitle}>ADAM MALIK</div>
+        <div className={styles.subtitle}>{storeInfo ? storeInfo.name : null}</div>
       </div>
       <div className={styles.separator} />
       <div className={styles.left}>
