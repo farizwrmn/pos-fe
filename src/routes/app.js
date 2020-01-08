@@ -282,7 +282,9 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     }
   }
-  if (openPages && (openPages.includes(pathname) || openPages.includes(pathname.replace(/[0-9]/g, ':id')))) {
+  const match = pathToRegexp('/transaction/pos/invoice/:id').exec(pathname)
+
+  if (openPages && (openPages.includes(pathname) || match)) {
     return (<div>
       <Loader spinning={loading.effects['app/query']} />
       {children}
