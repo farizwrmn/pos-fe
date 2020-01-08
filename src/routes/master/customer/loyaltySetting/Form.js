@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, message, Row, Col, Checkbox, InputNumber, DatePicker, Modal } from 'antd'
+import { Form, Button, message, Row, Col, Checkbox, InputNumber, DatePicker, Modal, Select } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -103,8 +103,23 @@ const FormCounter = ({
             })(<Checkbox>Active</Checkbox>)}
           </FormItem>
           <FormItem
+            label="Type"
+            {...formItemLayout}
+          >
+            {getFieldDecorator('type', {
+              initialValue: item.type || 'cashback'
+            })(
+              <Select
+                style={{ width: '100%' }}
+              >
+                <Select.Option value="cashback">Cashback</Select.Option>
+                <Select.Option value="point">Point</Select.Option>
+              </Select>
+            )}
+          </FormItem>
+          <FormItem
             label="Spending (%)"
-            help="Percentage Cashback given by Sales Netto"
+            help="Percentage Cashback given by Sales Netto, set value=0 on point type"
             hasFeedback
             {...formItemLayout}
           >
