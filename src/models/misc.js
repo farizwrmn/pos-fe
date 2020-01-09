@@ -26,7 +26,7 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: location.query
           })
-        } else if (location.pathname === '/transaction/pos/payment') {
+        } else if (location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos') {
           dispatch({ type: 'misc/lovFullCode', payload: { code: 'PAYMENT' } })
         } else if (location.pathname === '/master/customer' && activeKey === '2') {
           dispatch({ type: 'lov', payload: { code: 'IDTYPE' } })

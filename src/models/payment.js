@@ -57,6 +57,7 @@ export default {
     posMessage: '',
     lastMeter: 0,
     modalCreditVisible: false,
+    paymentModalVisible: false,
     listCreditCharge: [],
     listAmount: [],
     creditCardType: '',
@@ -69,7 +70,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos/history') {
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/transaction/pos/history') {
           let settingInvoice = {}
           try {
             settingInvoice = JSON.parse(getSetting('Invoice'))
@@ -957,6 +958,14 @@ export default {
         creditCardType: '',
         modalCreditVisible: false
       }
+    },
+
+    showPaymentModal (state) {
+      return { ...state, paymentModalVisible: true }
+    },
+
+    hidePaymentModal (state) {
+      return { ...state, paymentModalVisible: false }
     },
 
     setCreditCardPaymentNull (state) {

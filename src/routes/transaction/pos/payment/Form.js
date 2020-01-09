@@ -46,6 +46,7 @@ const formItemLayout = {
 
 const formPayment = ({
   item = {},
+  paymentModalVisible,
   onSubmit,
   onEdit,
   options,
@@ -133,7 +134,7 @@ const formPayment = ({
   }
   document.onkeydown = function (e) {
     if (e.which === 17) isCtrl = true
-    if (e.which === 66 && isCtrl === true && window.location.pathname === '/transaction/pos/payment') { // ctrl + b
+    if (e.which === 66 && isCtrl === true && paymentModalVisible && window.location.pathname === '/transaction/pos/payment') { // ctrl + b
       perfect()
       return false
     }

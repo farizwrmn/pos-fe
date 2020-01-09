@@ -25,6 +25,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     modalType,
     typeTrans,
     itemPayment,
+    paymentModalVisible,
     woNumber,
     companyInfo } = payment
   const { memberInformation,
@@ -83,6 +84,8 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
     return `${h}:${m}:${s}`
   }
+  console.log('listAmount', payment)
+
   const usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
@@ -188,6 +191,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     modalType,
     memberInformation,
     item: itemPayment,
+    paymentModalVisible,
     curTotal,
     dineInTax,
     curTotalDiscount,
