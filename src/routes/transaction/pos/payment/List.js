@@ -15,47 +15,36 @@ const List = ({ ...tableProps, editList }) => {
       key: 'id'
     },
     {
-      title: 'CashierTrans',
-      dataIndex: 'cashierTransId',
-      key: 'cashierTransId'
-    },
-    {
-      title: 'Cashier Name',
-      dataIndex: 'cashierName',
-      key: 'cashierName'
-    },
-    {
-      title: 'Type',
+      title: 'Payment',
       dataIndex: 'typeCode',
-      key: 'typeCode'
+      key: 'typeCode',
+      render: (text, data) => {
+        return (
+          <div>
+            <div>Type: {data.typeCode}</div>
+            <div>Amount: {data.amount}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount'
+      title: 'Customer',
+      dataIndex: 'printDate',
+      key: 'printDate',
+      render: (text, data) => {
+        return (
+          <div>
+            <div>Print Date: {text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : null}</div>
+            <div>Card Name: {data.cardName}</div>
+            <div>Card No: {data.cardNo}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Description',
       dataIndex: 'description',
       key: 'description'
-    },
-    {
-      title: 'Print Date',
-      dataIndex: 'printDate',
-      key: 'printDate',
-      render: (text) => {
-        return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : null
-      }
-    },
-    {
-      title: 'Card Name',
-      dataIndex: 'cardName',
-      key: 'cardName'
-    },
-    {
-      title: 'Card No.',
-      dataIndex: 'cardNo',
-      key: 'cardNo'
     }
   ]
 

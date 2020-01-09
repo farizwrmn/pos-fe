@@ -89,12 +89,12 @@ export default {
     kodeUtil: 'barcode',
     infoUtil: 'Product',
     dataPosLoaded: false,
-    memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
+    memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
     tmpMemberList: [],
     tmpMemberUnit: [],
     tmpMechanicList: [],
     tmpProductList: [],
-    mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
+    mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {},
     memberUnitInfo: {},
     curRecord: 1,
     effectedRecord: '',
@@ -1021,8 +1021,7 @@ export default {
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       const curQty = yield select(({ pos }) => pos.curQty)
       const setting = yield select(({ app }) => app.setting)
-
-      if ((memberInformation || []).length !== 0 && Object.assign(mechanicInformation || {}).length !== 0) {
+      if (!!(memberInformation && memberInformation.id) && !!(mechanicInformation && mechanicInformation.employeeId)) {
         let listByCode = getCashierTrans()
         let arrayProd = listByCode
         const checkExists = listByCode.filter(el => el.code === item.productCode)
@@ -1084,7 +1083,7 @@ export default {
             content: 'Already Exists in list'
           })
         }
-      } else if (memberInformation.length === 0) {
+      } else if (!(memberInformation && memberInformation.id)) {
         yield modalMember()
         yield put({ type: 'pos/hideProductModal' })
         yield put({
@@ -1097,7 +1096,7 @@ export default {
             modalType: 'browseMember'
           }
         })
-      } else if (mechanicInformation.length === 0) {
+      } else if (!(mechanicInformation && mechanicInformation.employeeId)) {
         yield modalEmployee()
         yield put({ type: 'pos/hideProductModal' })
         yield put({
@@ -1839,7 +1838,7 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: [], mechanicInformation: [], curTotalDiscount: 0, curRounding: 0, memberUnitInfo: { id: null, policeNo: null, merk: null, model: null }, lastMeter: 0 }
+      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: {}, mechanicInformation: {}, curTotalDiscount: 0, curRounding: 0, memberUnitInfo: { id: null, policeNo: null, merk: null, model: null }, lastMeter: 0 }
     },
 
 

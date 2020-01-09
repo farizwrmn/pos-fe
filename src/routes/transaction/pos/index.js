@@ -385,8 +385,10 @@ const Pos = ({
   }
 
   const modalPaymentTypeProps = {
+    width: '650px',
     visible: paymentModalVisible,
-    onOk: null,
+    footer: null,
+    // onOk: null,
     onCancel () {
       dispatch({
         type: 'payment/hidePaymentModal'

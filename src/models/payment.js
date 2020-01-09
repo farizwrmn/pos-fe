@@ -247,6 +247,9 @@ export default {
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('bundle_promo')
+                yield put({
+                  type: 'hidePaymentModal'
+                })
               } catch (e) {
                 Modal.error({
                   title: 'Error, Something Went Wrong!',
@@ -965,7 +968,7 @@ export default {
     },
 
     hidePaymentModal (state) {
-      return { ...state, paymentModalVisible: false }
+      return { ...state, paymentModalVisible: false, listAmount: [] }
     },
 
     setCreditCardPaymentNull (state) {

@@ -134,7 +134,7 @@ const formPayment = ({
   }
   document.onkeydown = function (e) {
     if (e.which === 17) isCtrl = true
-    if (e.which === 66 && isCtrl === true && paymentModalVisible && window.location.pathname === '/transaction/pos/payment') { // ctrl + b
+    if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
       perfect()
       return false
     }
@@ -190,7 +190,7 @@ const formPayment = ({
   return (
     <Form layout="horizontal">
       <Row>
-        <Col lg={8} md={12} sm={24}>
+        <Col md={12} sm={24}>
           <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('typeCode', {
               initialValue: item.typeCode ? item.typeCode : 'C'
@@ -236,7 +236,7 @@ const formPayment = ({
             })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
           </FormItem>
         </Col>
-        <Col lg={8} md={12} sm={24}>
+        <Col md={12} sm={24}>
           <FormItem label="Print Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('printDate', {
               initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
@@ -289,23 +289,21 @@ const formPayment = ({
       </FormItem>
       <List {...listProps} />
       <Row>
-        <Col lg={8} md={12} sm={24} />
-        <Col lg={8} md={12} sm={24} />
-        <Col lg={8} md={12} sm={24}>
+        <Col md={12} sm={24} style={{ float: 'right' }}>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
-            <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
+            <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-            <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20' }} size="large" />
+            <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
-            <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
+            <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-            <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
+            <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
           </FormItem>
           <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-            <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20' }} size="large" />
+            <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
           </FormItem>
         </Col>
       </Row>
