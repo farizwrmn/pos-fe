@@ -18,7 +18,7 @@ export default {
             type: 'queryOpts'
           })
         }
-        if (location.pathname === '/transaction/pos/payment') {
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
           dispatch({
             type: 'queryOptionMaster',
             payload: {

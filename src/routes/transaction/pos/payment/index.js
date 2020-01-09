@@ -17,7 +17,7 @@ const { getCashierTrans } = lstorage
 const { prefix } = configMain
 const FormItem = Form.Item
 
-const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
+const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
   const { totalPayment,
     totalChange,
     lastTransNo,
@@ -25,6 +25,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     modalType,
     typeTrans,
     itemPayment,
+    paymentModalVisible,
     woNumber,
     companyInfo } = payment
   const { memberInformation,
@@ -83,6 +84,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
 
     return `${h}:${m}:${s}`
   }
+
   const usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
@@ -180,7 +182,10 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
   }
 
   const cancelPayment = () => {
-    dispatch(routerRedux.push('/transaction/pos'))
+    // dispatch(routerRedux.push('/transaction/pos'))
+    dispatch({
+      type: 'payment/hidePaymentModal'
+    })
   }
 
   const formPaymentProps = {
@@ -188,6 +193,7 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
     modalType,
     memberInformation,
     item: itemPayment,
+    paymentModalVisible,
     curTotal,
     dineInTax,
     curTotalDiscount,
@@ -243,14 +249,14 @@ const Payment = ({ paymentOpts, dispatch, pos, payment, app }) => {
           </Col>
         </Row>
 
-        <Row>
+        <Row style={{ textAlign: 'right' }}>
           <Col span={24}>
             <Form layout="vertical">
               <FormItem>
-                <Button type="primary" size="large" onEnter={cancelPayment} onClick={cancelPayment} className="margin-right" width="100%" > Back To Transaction Detail </Button>
+                <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" >Back To Transaction Detail</Button>
               </FormItem>
               <FormItem>
-                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} className="margin-right" width="100%" > Confirm Payment </Button>
+                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" > Confirm Payment </Button>
               </FormItem>
             </Form>
           </Col>
@@ -268,4 +274,18 @@ Payment.propTypes = {
   app: PropTypes.object.isRequired
 }
 
-export default connect(({ paymentOpts, pos, payment, position, app }) => ({ paymentOpts, pos, payment, position, app }))(Payment)
+export default connect(({
+  paymentOpts,
+  pos,
+  payment,
+  position,
+  app,
+  loading
+}) => ({
+  paymentOpts,
+  pos,
+  payment,
+  position,
+  app,
+  loading
+}))(Payment)

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
+// import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
@@ -27,6 +27,7 @@ import BottomButton from './components/BottomButton'
 // import ModalVoidSuspend from './components/ModalVoidSuspend'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
+import PaymentModal from './paymentModal'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -98,6 +99,7 @@ const Pos = ({
   // const { user } = app
   const {
     // usingWo,
+    paymentModalVisible,
     woNumber
   } = payment
 
@@ -345,7 +347,11 @@ const Pos = ({
 
       dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
-      dispatch(routerRedux.push('/transaction/pos/payment'))
+      // Untuk tipe page
+      // dispatch(routerRedux.push('/transaction/pos/payment'))
+      dispatch({
+        type: 'payment/showPaymentModal'
+      })
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0
@@ -374,6 +380,18 @@ const Pos = ({
             type: 'pos/removeTrans'
           })
         }
+      })
+    }
+  }
+
+  const modalPaymentTypeProps = {
+    width: '650px',
+    visible: paymentModalVisible,
+    footer: null,
+    // onOk: null,
+    onCancel () {
+      dispatch({
+        type: 'payment/hidePaymentModal'
       })
     }
   }
@@ -1238,6 +1256,7 @@ const Pos = ({
               </Row>
             </Form>
 
+            {paymentModalVisible && <PaymentModal {...modalPaymentTypeProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}

@@ -136,6 +136,7 @@ const formService = ({
               initialValue: item.serviceCost,
               rules: [
                 {
+                  required: true,
                   pattern: /^(?:0|[1-9][0-9]{0,})$/,
                   message: '0-9'
                 }
