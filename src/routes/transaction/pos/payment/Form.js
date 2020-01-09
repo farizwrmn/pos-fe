@@ -176,6 +176,16 @@ const formPayment = ({
     })
   }
 
+  const onChangePaymentType = (value) => {
+    if (value === 'C') {
+      resetFields()
+    } else {
+      setFieldsValue({
+        printDate: moment()
+      })
+    }
+  }
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -194,6 +204,7 @@ const formPayment = ({
                 treeNodeFilterProp="title"
                 filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                 treeDefaultExpandAll
+                onChange={onChangePaymentType}
               >
                 {getMenus(menuTree)}
               </TreeSelect>
@@ -239,6 +250,7 @@ const formPayment = ({
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
                 placeholder="Select Time"
+                disabled
                 style={{ width: '100%', fontSize: '14pt' }}
               />
             )}
@@ -255,7 +267,7 @@ const formPayment = ({
               ]
             })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
           </FormItem>
-          <FormItem label="Card No." hasFeedback {...formItemLayout}>
+          <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
             {getFieldDecorator('cardNo', {
               initialValue: item.cardNo,
               rules: [
