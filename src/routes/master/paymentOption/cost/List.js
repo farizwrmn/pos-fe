@@ -48,8 +48,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'active',
+      key: 'active',
       render: text =>
         (<span>
           <Tag color={text ? 'blue' : 'red'}>

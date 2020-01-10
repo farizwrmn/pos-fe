@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Row, Col } from 'antd'
@@ -55,13 +56,19 @@ const Counter = ({
 
   const formProps = {
     modalType,
-    listPayment,
     item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    disabled: loading.effects['paymentCost/query'] || (currentItem && !currentItem.id),
+    button: 'Update',
     onSubmit (data) {
+      const { pathname } = location
+      const match = pathToRegexp('/master/paymentoption/cost/:id').exec(pathname)
       dispatch({
-        type: `paymentCost/${modalType}`,
-        payload: data
+        type: 'paymentCost/add',
+        payload: {
+          ...data,
+          bankId: currentItem ? currentItem.id : null,
+          machineId: match[1]
+        }
       })
     },
     onCancel () {

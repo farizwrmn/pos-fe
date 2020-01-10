@@ -151,7 +151,7 @@ export default modelExtend(pageModel, {
       const { item } = payload
       return {
         ...state,
-        modalType: 'edit',
+        modalType: 'add',
         currentItem: item
       }
     }
