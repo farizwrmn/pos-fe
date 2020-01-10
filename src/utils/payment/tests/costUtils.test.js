@@ -1,7 +1,7 @@
 import {
   generateListBank,
   checkBankActive
-} from '../utils'
+} from '../index'
 
 const listBank = [
   {

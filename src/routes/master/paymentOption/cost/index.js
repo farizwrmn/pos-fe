@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Row, Col } from 'antd'
-import Form from './Form'
-import List from './List'
 import {
   generateListBank
-} from './utils'
+} from 'utils/payment'
+import Form from './Form'
+import List from './List'
 
 const Counter = ({
   paymentCost,
