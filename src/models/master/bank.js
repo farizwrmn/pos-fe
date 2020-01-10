@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/master/bank'
-import { pageModel } from './../common'
+import { query, add, edit, remove } from 'services/master/bank'
+import { pageModel } from 'common'
 
 const success = () => {
   message.success('Bank has been saved')
@@ -32,6 +33,16 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
+          return
+        }
+        const match = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
         }
       })
     }

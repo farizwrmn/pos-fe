@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Select, Row, Col, Modal, Checkbox } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -31,7 +30,6 @@ const FormCounter = ({
   onCancel,
   modalType,
   button,
-  listPayment,
   form: {
     getFieldDecorator,
     validateFields,
@@ -83,67 +81,30 @@ const FormCounter = ({
       })
     })
   }
-  const parentList = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{c.typeName}</Option>) : []
 
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Parent" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('parentId', {
-              initialValue: item.parentId ? {
-                key: item.parentId,
-                label: item.paymentParentName
-              } : {},
-              rules: [
-                {
-                  required: false
-                }
-              ]
-            })(<Select
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              labelInValue
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-            >{parentList}
-            </Select>)}
-          </FormItem>
           <FormItem label="Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('typeCode', {
-              initialValue: item.typeCode,
+            {getFieldDecorator('paymentOption', {
+              initialValue: item.paymentOption,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={10} autoFocus />)}
+            })(<Input maxLength={3} autoFocus />)}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('typeName', {
-              initialValue: item.typeName,
+            {getFieldDecorator('name', {
+              initialValue: item.name,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={30} />)}
-          </FormItem>
-          <FormItem label="Description" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('description', {
-              initialValue: item.description,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={30} />)}
-          </FormItem>
-          <FormItem label="Status" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('status', {
-              valuePropName: 'checked',
-              initialValue: item.status === undefined ? true : Number(item.status)
-            })(<Checkbox>Active</Checkbox>)}
+            })(<Input maxLength={60} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

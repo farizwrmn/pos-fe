@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/paymentOption'
+import { query, add, edit, remove } from 'services/master/paymentOption/paymentMachineService'
 import { pageModel } from 'common'
+import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
   message.success('Payment method has been saved')
@@ -28,15 +29,23 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/paymentoption') {
+        const match = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+        if (match) {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-          else if (activeKey === '0') dispatch({ type: 'query', payload: { type: 'all', isnull: 'parentId' } })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                paymentOption: match[1]
+              }
+            })
+          }
         }
       })
     }

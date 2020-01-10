@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag, Modal } from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 import { routerRedux } from 'dva/router'
 
@@ -10,7 +10,7 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       dispatch(routerRedux.push({
-        pathname: `/master/paymentoption/edc/${record.typeCode}`
+        pathname: `/master/paymentoption/cost/${record.id}`
       }))
     } else if (e.key === '2') {
       editItem(record)
@@ -26,37 +26,16 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, data) => {
         return (
           <div>
-            <div>Code: {data.typeCode}</div>
-            <div>Name: {data.typeName}</div>
+            <div>Code: {data.paymentOption}</div>
+            <div>Name: {data.name}</div>
           </div>
         )
       }
-    },
-    {
-      title: 'Parent',
-      dataIndex: 'paymentParentName',
-      key: 'paymentParentName'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: text =>
-        (<span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Disabled'}
-          </Tag>
-        </span>)
     },
     {
       title: 'Operation',
@@ -68,7 +47,7 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'EDC' },
+              { key: '1', name: 'EDC Cost' },
               { key: '2', name: 'Edit' },
               { key: '3', name: 'Delete' }
             ]}

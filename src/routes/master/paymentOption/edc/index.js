@@ -90,7 +90,6 @@ const Counter = ({ paymentEdc, loading, dispatch, location, app }) => {
 
   const formProps = {
     modalType,
-    listPayment,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {

@@ -2,26 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { Row, Col } from 'antd'
 import Form from './Form'
 import List from './List'
-import Filter from './Filter'
 
-const TabPane = Tabs.TabPane
-
-const Counter = ({ paymentCost, loading, dispatch, location, app }) => {
-  const { listPayment, pagination, modalType, currentItem, activeKey } = paymentCost
+const Counter = ({
+  paymentCost,
+  bank,
+  loading,
+  dispatch,
+  location,
+  app
+}) => {
+  const { listPayment, pagination, modalType, currentItem } = paymentCost
+  const { listBank } = bank
   const { user, storeInfo } = app
-  const filterProps = {
-    onFilterChange (value) {
-      dispatch({
-        type: 'paymentCost/query',
-        payload: {
-          ...value
-        }
-      })
-    }
-  }
+  console.log('listBank', listBank)
 
   const listProps = {
     dataSource: listPayment,
@@ -63,31 +59,6 @@ const Counter = ({ paymentCost, loading, dispatch, location, app }) => {
     }
   }
 
-  const changeTab = (key) => {
-    dispatch({
-      type: 'paymentCost/changeTab',
-      payload: { key }
-    })
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        activeKey: key
-      }
-    }))
-    dispatch({ type: 'paymentCost/updateState', payload: { listPayment: [] } })
-  }
-
-  const clickBrowse = () => {
-    dispatch({
-      type: 'paymentCost/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
   const formProps = {
     modalType,
     listPayment,
@@ -100,13 +71,6 @@ const Counter = ({ paymentCost, loading, dispatch, location, app }) => {
       })
     },
     onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
       dispatch({
         type: 'paymentCost/updateState',
         payload: {
@@ -116,26 +80,16 @@ const Counter = ({ paymentCost, loading, dispatch, location, app }) => {
     }
   }
 
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
-        <TabPane tab="Browse" key="1" >
-          {activeKey === '1' &&
-            <div>
-              <Filter {...filterProps} />
-              <List {...listProps} />
-            </div>
-          }
-        </TabPane>
-      </Tabs>
+      <Row>
+        <Col md={24} lg={12}>
+          <Form {...formProps} />
+        </Col>
+        <Col md={24} lg={12}>
+          <List {...listProps} />
+        </Col>
+      </Row>
     </div>
   )
 }
@@ -148,4 +102,14 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ paymentCost, loading, app }) => ({ paymentCost, loading, app }))(Counter)
+export default connect(({
+  paymentCost,
+  bank,
+  loading,
+  app
+}) => ({
+  paymentCost,
+  bank,
+  loading,
+  app
+}))(Counter)

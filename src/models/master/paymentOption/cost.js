@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/paymentOption'
+import { query, add, edit, remove } from 'services/master/paymentOption/paymentCostService'
 import { pageModel } from 'common'
 
 const success = () => {

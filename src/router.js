@@ -328,6 +328,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/paymentOption/edc'))
+              registerModel(app, require('./models/master/bank'))
               cb(null, require('./routes/master/paymentOption/edc/'))
             }, 'master-payment-option-edc')
           }
