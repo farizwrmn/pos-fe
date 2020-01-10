@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ paymentEdc, loading, dispatch, location, app }) => {
+const Counter = ({ paymentOpts, paymentEdc, loading, dispatch, location, app }) => {
   const { listPayment, pagination, modalType, currentItem, activeKey } = paymentEdc
+  const { listOpts } = paymentOpts
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -89,6 +90,7 @@ const Counter = ({ paymentEdc, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    options: listOpts || [],
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -147,4 +149,14 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ paymentEdc, loading, app }) => ({ paymentEdc, loading, app }))(Counter)
+export default connect(({
+  paymentOpts,
+  paymentEdc,
+  loading,
+  app
+}) => ({
+  paymentOpts,
+  paymentEdc,
+  loading,
+  app
+}))(Counter)

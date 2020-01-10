@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, TreeSelect } from 'antd'
+import { arrayToTree } from 'utils'
 
 const FormItem = Form.Item
+const TreeNode = TreeSelect.TreeNode
 
 const formItemLayout = {
   labelCol: {
@@ -26,6 +28,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  options = [],
   onSubmit,
   onCancel,
   modalType,
@@ -68,11 +71,15 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.parentId = data.parentId ? data.parentId.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
+          console.log('item', item)
+
+          onSubmit({
+            ...data,
+            ...item
+          })
           // setTimeout(() => {
           resetFields()
           // }, 500)
@@ -82,19 +89,39 @@ const FormCounter = ({
     })
   }
 
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children && item.children.length) {
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+      }
+      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+    })
+  }
+
+  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Code" hasFeedback {...formItemLayout}>
+          <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('paymentOption', {
-              initialValue: item.paymentOption,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={3} autoFocus />)}
+              initialValue: item.typeCode ? item.typeCode : 'C'
+            })(
+              // <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
+              //   {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
+              // </Select>
+
+              <TreeSelect
+                showSearch
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeNodeFilterProp="title"
+                filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                treeDefaultExpandAll
+              >
+                {getMenus(menuTree)}
+              </TreeSelect>
+            )}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {

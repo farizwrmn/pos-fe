@@ -18,7 +18,12 @@ export default {
             type: 'queryOpts'
           })
         }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
+        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
+        if (
+          location.pathname === '/transaction/pos'
+          || location.pathname === '/transaction/pos/payment'
+          || matchEdc
+        ) {
           dispatch({
             type: 'queryOptionMaster',
             payload: {

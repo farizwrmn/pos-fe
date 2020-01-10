@@ -107,7 +107,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ paymentOption }) => paymentOption.currentItem.id)
+      const id = yield select(({ paymentEdc }) => paymentEdc.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
