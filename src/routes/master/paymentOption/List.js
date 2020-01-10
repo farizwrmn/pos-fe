@@ -10,6 +10,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     if (e.key === '1') {
       editItem(record)
     } else if (e.key === '2') {
+      editItem(record)
+    } else if (e.key === '3') {
       confirm({
         title: `Are you sure delete ${record.counterName} ?`,
         onOk () {
@@ -20,19 +22,22 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   }
   const columns = [
     {
+      title: 'Name',
+      dataIndex: 'typeName',
+      key: 'typeName',
+      render: (text, data) => {
+        return (
+          <div>
+            <div>Code: {data.typeCode}</div>
+            <div>Name: {data.typeName}</div>
+          </div>
+        )
+      }
+    },
+    {
       title: 'Parent',
       dataIndex: 'paymentParentName',
       key: 'paymentParentName'
-    },
-    {
-      title: 'Code',
-      dataIndex: 'typeCode',
-      key: 'typeCode'
-    },
-    {
-      title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName'
     },
     {
       title: 'Description',
@@ -56,7 +61,16 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return (
+          <DropOption
+            onMenuClick={e => handleMenuClick(record, e)}
+            menuOptions={[
+              { key: '1', name: 'EDC' },
+              { key: '2', name: 'Edit' },
+              { key: '3', name: 'Delete' }
+            ]}
+          />
+        )
       }
     }
   ]
