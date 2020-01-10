@@ -5,6 +5,9 @@ import { routerRedux } from 'dva/router'
 import { Row, Col } from 'antd'
 import Form from './Form'
 import List from './List'
+import {
+  generateListBank
+} from './utils'
 
 const Counter = ({
   paymentCost,
@@ -17,12 +20,10 @@ const Counter = ({
   const { listPayment, pagination, modalType, currentItem } = paymentCost
   const { listBank } = bank
   const { user, storeInfo } = app
-  console.log('listBank', listBank)
 
   const listProps = {
-    dataSource: listPayment,
+    dataSource: generateListBank(listBank, listPayment),
     user,
-    dispatch,
     storeInfo,
     pagination,
     loading: loading.effects['paymentCost/query'],
@@ -39,13 +40,6 @@ const Counter = ({
       }))
     },
     editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
       dispatch({
         type: 'paymentCost/editItem',
         payload: { item }

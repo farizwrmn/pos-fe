@@ -330,7 +330,6 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              registerModel(app, require('./models/master/bank'))
               cb(null, require('./routes/master/paymentOption/edc/'))
             }, 'master-payment-option-edc')
           }
@@ -340,6 +339,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/paymentOption/cost'))
               registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
               cb(null, require('./routes/master/paymentOption/cost/'))
             }, 'master-payment-option-cost')
           }

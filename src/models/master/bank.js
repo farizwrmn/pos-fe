@@ -35,7 +35,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
           return
         }
-        const match = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
+        const match = pathToRegexp('/master/paymentoption/cost/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'query',
