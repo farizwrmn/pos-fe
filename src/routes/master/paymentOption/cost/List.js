@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag, Modal } from 'antd'
 import { DropOption } from 'components'
+import { discountFormatter, currencyFormatter } from 'utils/string'
 
 const confirm = Modal.confirm
 
@@ -20,27 +21,30 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   }
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName',
+      title: 'Bank',
+      dataIndex: 'bankCode',
+      key: 'bankCode',
       render: (text, data) => {
         return (
           <div>
-            <div>Code: {data.typeCode}</div>
-            <div>Name: {data.typeName}</div>
+            <div>Code: {data.bankCode}</div>
+            <div>Name: {data.bankName}</div>
           </div>
         )
       }
     },
     {
-      title: 'Parent',
-      dataIndex: 'paymentParentName',
-      key: 'paymentParentName'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description'
+      title: 'Charge',
+      dataIndex: 'chargeNominal',
+      key: 'chargeNominal',
+      render: (text, data) => {
+        return (
+          <div>
+            <div>Charge(N): {currencyFormatter(data.chargeNominal)}</div>
+            <div>Charge(%): {discountFormatter(data.chargePercent)}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Status',
@@ -48,8 +52,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'status',
       render: text =>
         (<span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Disabled'}
+          <Tag color={text ? 'blue' : 'red'}>
+            {text ? 'Active' : 'Disabled'}
           </Tag>
         </span>)
     },

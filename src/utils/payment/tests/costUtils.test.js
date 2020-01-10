@@ -1,5 +1,6 @@
 import {
   generateListBank,
+  getCharge,
   checkBankActive
 } from '../index'
 
@@ -41,6 +42,8 @@ it('should render the right list of cost', () => {
       bankName: 'BANK BCA',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 2000,
+      chargePercent: 10,
       status: 1,
       active: true
     },
@@ -50,6 +53,8 @@ it('should render the right list of cost', () => {
       bankName: 'BANK MANDIRI',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 0,
+      chargePercent: 0,
       status: 1,
       active: false
     }
@@ -64,6 +69,8 @@ it('should render the all listBank active=false', () => {
       bankName: 'BANK BCA',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 0,
+      chargePercent: 0,
       status: 1,
       active: false
     },
@@ -73,6 +80,8 @@ it('should render the all listBank active=false', () => {
       bankName: 'BANK MANDIRI',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 0,
+      chargePercent: 0,
       status: 1,
       active: false
     }
@@ -102,6 +111,8 @@ it('Test when id of bank is not provided', () => {
       bankName: 'BANK BCA',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 0,
+      chargePercent: 0,
       status: 1,
       active: false
     },
@@ -110,6 +121,8 @@ it('Test when id of bank is not provided', () => {
       bankName: 'BANK MANDIRI',
       chargeFee: 0,
       chargeFeePercent: 0,
+      chargeNominal: 0,
+      chargePercent: 0,
       status: 1,
       active: false
     }
@@ -134,4 +147,16 @@ it('Test checkBankActive with null data', () => {
 
 it('Test checkBankActive with null data only on cost', () => {
   expect(checkBankActive({}, null)).toEqual(false)
+})
+
+it('Test checkBankActive with undefined data', () => {
+  expect(getCharge(undefined, undefined, undefined)).toEqual(0)
+})
+
+it('Test getCharge with null data', () => {
+  expect(getCharge(null, null, undefined)).toEqual(0)
+})
+
+it('Test getCharge with null data only on cost', () => {
+  expect(getCharge({}, null, undefined)).toEqual(0)
 })
