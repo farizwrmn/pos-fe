@@ -99,6 +99,8 @@ it('Should render Config Api', () =>
     role: '/role',
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
+    paymentMachine: '/payment-machine',
+    paymentCost: '/payment-cost',
     workOrder: '/wo',
     maintenance: '/maintenance',
     marketing: '/marketing'
