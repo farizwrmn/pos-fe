@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/paymentOption'
-import { pageModel } from './../common'
+import { query, add, edit, remove } from 'services/master/paymentOption'
+import { pageModel } from 'common'
 
 const success = () => {
   message.success('Payment method has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'paymentOption',
+  namespace: 'paymentCost',
 
   state: {
     currentItem: {},
