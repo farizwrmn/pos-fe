@@ -26,6 +26,7 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
   const listProps = {
     dataSource: listPayment,
     user,
+    dispatch,
     storeInfo,
     pagination,
     loading: loading.effects['paymentOption/query'],

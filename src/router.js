@@ -324,6 +324,22 @@ const Routers = function ({ history, app }) {
             }, 'master-payment-option')
           }
         }, {
+          path: 'master/paymentoption/edc/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption'))
+              cb(null, require('./routes/master/paymentOption/'))
+            }, 'master-payment-option-edc')
+          }
+        }, {
+          path: 'master/paymentoption/cost/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption'))
+              cb(null, require('./routes/master/paymentOption/'))
+            }, 'master-payment-option-cost')
+          }
+        }, {
           path: 'master/car/brand',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

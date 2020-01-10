@@ -2,13 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag, Modal } from 'antd'
 import { DropOption } from 'components'
+import { routerRedux } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      editItem(record)
+      dispatch(routerRedux.push({
+        pathname: `/master/paymentoption/edc/${record.typeCode}`
+      }))
     } else if (e.key === '2') {
       editItem(record)
     } else if (e.key === '3') {
