@@ -1,88 +1,113 @@
 import modelExtend from 'dva-model-extend'
-import pathToRegexp from 'path-to-regexp'
-import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from 'services/master/bank'
+import { message } from 'antd'
+import { query, add, edit, remove } from 'services/master/paymentOption/paymentMachineService'
 import { pageModel } from 'common'
+import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
-  message.success('Bank has been saved')
+  message.success('Payment method has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'bank',
+  namespace: 'paymentEdc',
 
   state: {
     currentItem: {},
-    listBank: [],
-    searchText: '',
     modalType: 'add',
-    activeKey: '0'
+    activeKey: '0',
+    listPayment: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/bank') {
+        const match = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+        if (match) {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
-          return
-        }
-        const match = pathToRegexp('/master/paymentoption/cost/:id').exec(location.pathname)
-        if (match) {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all'
-            }
-          })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                paymentOption: match[1]
+              }
+            })
+          }
         }
       })
     }
   },
 
   effects: {
-    * query ({ payload }, { call, put }) {
+
+    * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
-          type: 'updateState',
+          type: 'querySuccessCounter',
           payload: {
-            listBank: data.data
+            listPayment: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
           }
         })
       } else {
         throw data
       }
     },
+
+    * delete ({ payload }, { call, put }) {
+      const data = yield call(remove, payload)
+      if (data.success) {
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, { data: payload })
+      const data = yield call(add, payload)
       if (data.success) {
         success()
         yield put({
           type: 'updateState',
           payload: {
+            modalType: 'add',
+            currentItem: {}
           }
+        })
+        yield put({
+          type: 'query'
         })
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload.data
+            currentItem: payload
           }
         })
         throw data
       }
     },
+
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ bank }) => bank.currentItem.id)
+      const id = yield select(({ paymentEdc }) => paymentEdc.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -112,23 +137,15 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
-    },
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
     }
   },
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+      const { listPayment, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listPayment,
         pagination: {
           ...state.pagination,
           ...pagination
@@ -149,6 +166,7 @@ export default modelExtend(pageModel, {
         currentItem: {}
       }
     },
+
     editItem (state, { payload }) {
       const { item } = payload
       return {

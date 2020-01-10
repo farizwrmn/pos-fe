@@ -2,19 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag, Modal } from 'antd'
 import { DropOption } from 'components'
-import { routerRedux } from 'dva/router'
+import { discountFormatter, currencyFormatter } from 'utils/string'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
+const List = ({ ...tableProps, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      dispatch(routerRedux.push({
-        pathname: `/master/paymentoption/edc/${record.typeCode}`
-      }))
-    } else if (e.key === '2') {
       editItem(record)
-    } else if (e.key === '3') {
+    } else if (e.key === '2') {
       confirm({
         title: `Are you sure delete ${record.counterName} ?`,
         onOk () {
@@ -25,52 +21,52 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
   }
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'typeName',
-      key: 'typeName',
+      title: 'Bank',
+      dataIndex: 'bankCode',
+      key: 'bankCode',
       render: (text, data) => {
         return (
           <div>
-            <div>Code: {data.typeCode}</div>
-            <div>Name: {data.typeName}</div>
+            <div>Code: {data.bankCode}</div>
+            <div>Name: {data.bankName}</div>
           </div>
         )
       }
     },
     {
-      title: 'Parent',
-      dataIndex: 'paymentParentName',
-      key: 'paymentParentName'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description'
+      title: 'Charge',
+      dataIndex: 'chargeNominal',
+      key: 'chargeNominal',
+      render: (text, data) => {
+        return (
+          <div>
+            <div>Charge(N): {currencyFormatter(data.chargeNominal)}</div>
+            <div>Charge(%): {discountFormatter(data.chargePercent)}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'active',
+      key: 'active',
       render: text =>
         (<span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Disabled'}
+          <Tag color={text ? 'blue' : 'red'}>
+            {text ? 'Active' : 'Disabled'}
           </Tag>
         </span>)
     },
     {
       title: 'Operation',
       key: 'operation',
-      width: 100,
-      fixed: 'right',
       render: (text, record) => {
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'EDC' },
-              { key: '2', name: 'Edit' },
-              { key: '3', name: 'Delete' }
+              { key: '1', name: 'Edit' },
+              { key: '2', name: 'Delete' }
             ]}
           />
         )
@@ -84,7 +80,6 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>

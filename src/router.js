@@ -320,8 +320,28 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/paymentOption'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/'))
             }, 'master-payment-option')
+          }
+        }, {
+          path: 'master/paymentoption/edc/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption/edc'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/master/paymentOption/edc/'))
+            }, 'master-payment-option-edc')
+          }
+        }, {
+          path: 'master/paymentoption/cost/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption/cost'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/master/paymentOption/cost/'))
+            }, 'master-payment-option-cost')
           }
         }, {
           path: 'master/car/brand',

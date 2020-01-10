@@ -9,13 +9,14 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
-  const { listPayment, pagination, modalType, currentItem, activeKey } = paymentOption
+const Counter = ({ paymentOpts, paymentEdc, loading, dispatch, location, app }) => {
+  const { listPayment, pagination, modalType, currentItem, activeKey } = paymentEdc
+  const { listOpts } = paymentOpts
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'paymentOption/query',
+        type: 'paymentEdc/query',
         payload: {
           ...value
         }
@@ -29,7 +30,7 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
     dispatch,
     storeInfo,
     pagination,
-    loading: loading.effects['paymentOption/query'],
+    loading: loading.effects['paymentEdc/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -51,13 +52,13 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'paymentOption/editItem',
+        type: 'paymentEdc/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'paymentOption/delete',
+        type: 'paymentEdc/delete',
         payload: id
       })
     }
@@ -65,7 +66,7 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'paymentOption/changeTab',
+      type: 'paymentEdc/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -76,12 +77,12 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'paymentOption/updateState', payload: { listPayment: [] } })
+    dispatch({ type: 'paymentEdc/updateState', payload: { listPayment: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'paymentOption/updateState',
+      type: 'paymentEdc/updateState',
       payload: {
         activeKey: '1'
       }
@@ -89,13 +90,13 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    options: listOpts || [],
     modalType,
-    listPayment,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
-        type: `paymentOption/${modalType}`,
+        type: `paymentEdc/${modalType}`,
         payload: data
       })
     },
@@ -108,7 +109,7 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'paymentOption/updateState',
+        type: 'paymentEdc/updateState',
         payload: {
           currentItem: {}
         }
@@ -141,11 +142,21 @@ const Counter = ({ paymentOption, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  paymentOption: PropTypes.object,
+  paymentEdc: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ paymentOption, loading, app }) => ({ paymentOption, loading, app }))(Counter)
+export default connect(({
+  paymentOpts,
+  paymentEdc,
+  loading,
+  app
+}) => ({
+  paymentOpts,
+  paymentEdc,
+  loading,
+  app
+}))(Counter)
