@@ -9,13 +9,15 @@ import {
   Modal,
   DatePicker,
   // Select,
-  TreeSelect
+  TreeSelect,
+  Select
 } from 'antd'
 import { arrayToTree } from 'utils'
 import moment from 'moment'
 import List from './List'
 
 const FormItem = Form.Item
+const Option = Select.Option
 const TreeNode = TreeSelect.TreeNode
 // const Option = Select.Option
 
@@ -53,7 +55,12 @@ const formPayment = ({
   editItem,
   cancelEdit,
   dineInTax,
+  onGetMachine,
+  onGetCost,
+  onResetMachine,
   curTotal,
+  listEdc,
+  listCost,
   modalType,
   // curTotalDiscount,
   memberInformation,
@@ -180,11 +187,25 @@ const formPayment = ({
   const onChangePaymentType = (value) => {
     if (value === 'C') {
       resetFields()
+      onResetMachine()
     } else {
       setFieldsValue({
-        printDate: moment()
+        printDate: moment(),
+        machine: undefined,
+        bank: undefined
       })
+      validateFields()
+      onResetMachine()
+      onGetMachine(value)
     }
+  }
+
+  const onChangeMachine = (machineId) => {
+    setFieldsValue({
+      bank: undefined
+    })
+    validateFields()
+    onGetCost(machineId)
   }
 
   return (
@@ -195,10 +216,6 @@ const formPayment = ({
             {getFieldDecorator('typeCode', {
               initialValue: item.typeCode ? item.typeCode : 'C'
             })(
-              // <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
-              //   {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}
-              // </Select>
-
               <TreeSelect
                 showSearch
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -223,6 +240,40 @@ const formPayment = ({
               ]
             })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
           </FormItem>
+          {getFieldValue('typeCode') !== 'C' && listEdc && (
+            <FormItem label="Machine" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('machine', {
+                initialValue: item.machine,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C'
+                  }
+                ]
+              })(
+                <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+          )}
+          {getFieldValue('typeCode') !== 'C' && (
+            <FormItem label="Bank" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bank', {
+                initialValue: item.bank,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C'
+                  }
+                ]
+              })(
+                <Select style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+          )}
+        </Col>
+        <Col md={12} sm={24}>
           <FormItem label="Note" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item.description,
@@ -235,9 +286,14 @@ const formPayment = ({
               ]
             })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
           </FormItem>
-        </Col>
-        <Col md={12} sm={24}>
-          <FormItem label="Print Date" hasFeedback {...formItemLayout}>
+          <FormItem
+            label="Print Date"
+            hasFeedback
+            style={{
+              display: getFieldValue('typeCode') === 'C' ? 'none' : ''
+            }}
+            {...formItemLayout}
+          >
             {getFieldDecorator('printDate', {
               initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
               rules: [
@@ -256,30 +312,34 @@ const formPayment = ({
               />
             )}
           </FormItem>
-          <FormItem label="Card Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('cardName', {
-              initialValue: item.cardName,
-              rules: [
-                {
-                  required: getFieldValue('typeCode') !== 'C',
-                  pattern: /^[a-z0-9 -.,_]+$/i,
-                  message: 'please insert the value'
-                }
-              ]
-            })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
-          </FormItem>
-          <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('cardNo', {
-              initialValue: item.cardNo,
-              rules: [
-                {
-                  required: getFieldValue('typeCode') !== 'C',
-                  pattern: /^[a-z0-9-/.,_]+$/i,
-                  message: 'please insert the value'
-                }
-              ]
-            })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
-          </FormItem>
+          {getFieldValue('typeCode') !== 'C' && (
+            <FormItem label="Card Name" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('cardName', {
+                initialValue: item.cardName,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C',
+                    pattern: /^[a-z0-9 -.,_]+$/i,
+                    message: 'please insert the value'
+                  }
+                ]
+              })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
+          )}
+          {getFieldValue('typeCode') !== 'C' && (
+            <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('cardNo', {
+                initialValue: item.cardNo,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C',
+                    pattern: /^[a-z0-9-/.,_]+$/i,
+                    message: 'please insert the value'
+                  }
+                ]
+              })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
+          )}
         </Col>
         <Col lg={8} md={12} sm={24} />
       </Row>

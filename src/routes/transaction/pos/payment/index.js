@@ -17,7 +17,16 @@ const { getCashierTrans } = lstorage
 const { prefix } = configMain
 const FormItem = Form.Item
 
-const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
+const Payment = ({
+  paymentOpts,
+  paymentEdc,
+  paymentCost,
+  loading,
+  dispatch,
+  pos,
+  payment,
+  app
+}) => {
   const { totalPayment,
     totalChange,
     lastTransNo,
@@ -28,6 +37,12 @@ const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
     paymentModalVisible,
     woNumber,
     companyInfo } = payment
+  const {
+    listPayment: listEdc
+  } = paymentEdc
+  const {
+    listPayment: listCost
+  } = paymentCost
   const { memberInformation,
     mechanicInformation,
     curTotalDiscount,
@@ -188,6 +203,40 @@ const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
     })
   }
 
+  const onGetMachine = (paymentOption) => {
+    dispatch({
+      type: 'paymentEdc/query',
+      payload: {
+        paymentOption
+      }
+    })
+  }
+
+  const onGetCost = (machineId) => {
+    dispatch({
+      type: 'paymentCost/query',
+      payload: {
+        machineId,
+        relationship: 1
+      }
+    })
+  }
+
+  const onResetMachine = () => {
+    dispatch({
+      type: 'paymentEdc/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
+    dispatch({
+      type: 'paymentCost/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
+  }
+
   const formPaymentProps = {
     listAmount,
     modalType,
@@ -202,6 +251,11 @@ const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
     totalChange,
     cashierInformation,
     cashierBalance,
+    listEdc,
+    listCost,
+    onGetMachine,
+    onGetCost,
+    onResetMachine,
     onSubmit (data) {
       dispatch({
         type: 'payment/addMethod',
@@ -228,8 +282,13 @@ const Payment = ({ paymentOpts, loading, dispatch, pos, payment, app }) => {
           itemPayment: {}
         }
       })
+      onResetMachine()
     },
     editItem (data) {
+      if (data && data.typeCode !== 'C') {
+        onGetMachine(data.typeCode)
+        onGetCost(data.machine)
+      }
       dispatch({
         type: 'payment/updateState',
         payload: {
@@ -276,6 +335,8 @@ Payment.propTypes = {
 
 export default connect(({
   paymentOpts,
+  paymentEdc,
+  paymentCost,
   pos,
   payment,
   position,
@@ -283,6 +344,8 @@ export default connect(({
   loading
 }) => ({
   paymentOpts,
+  paymentEdc,
+  paymentCost,
   pos,
   payment,
   position,
