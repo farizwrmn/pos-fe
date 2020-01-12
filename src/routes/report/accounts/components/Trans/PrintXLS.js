@@ -13,6 +13,7 @@ const warning = Modal.warning
 const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
+  let chargeTotal = listTrans.reduce((cnt, o) => cnt + o.chargeTotal, 0)
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
   let paidTotal = listTrans.reduce((cnt, o) => cnt + o.paid, 0)
   let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
@@ -77,7 +78,7 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
           }
         }
       }
-      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'BAYAR', 'KEMBALIAN', 'STATUS']
+      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'BAYAR', 'KEMBALIAN', 'CHARGE', 'STATUS']
       const footer = [
         '',
         '',
@@ -86,8 +87,9 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         grandTotal,
         paidTotal,
         changeTotal,
+        chargeTotal,
         nettoTotal]
-      for (let m = 65; m < 73; m += 1) {
+      for (let m = 65; m < 74; m += 1) {
         let o = 7
         let count = m - 65
         sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
@@ -109,22 +111,21 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${listTrans[n].transNo}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].invoiceDate).format('DD-MM-YYYY')}`
+        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].invoiceDate).format('DD-MMM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = parseFloat((listTrans[n].nettoTotal) || 0)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(listTrans[n].nettoTotal)
-        sheet.getCell(`F${m}`).value = parseFloat((listTrans[n].paid) || 0)
+        sheet.getCell(`E${m}`).value = parseFloat((listTrans[n].nettoTotal) || 0)
         sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).numFmt = formatNumberInExcel(listTrans[n].paid)
-        sheet.getCell(`G${m}`).value = parseFloat((listTrans[n].change) || 0)
+        sheet.getCell(`F${m}`).value = parseFloat((listTrans[n].paid) || 0)
         sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = formatNumberInExcel(listTrans[n].change)
-        sheet.getCell(`H${m}`).value = `${listTrans[n].status || 'PENDING'}`
+        sheet.getCell(`G${m}`).value = parseFloat((listTrans[n].change) || 0)
         sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
+        sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].chargeTotal)
+        sheet.getCell(`I${m}`).value = `${listTrans[n].status || 'PENDING'}`
+        sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
       }
 
-      for (let m = 65; m < 73; m += 1) {
+      for (let m = 65; m < 74; m += 1) {
         let n = listTrans.length + 10
         let count = m - 65
         sheet.getCell(`C${n}`).font = {
