@@ -25,6 +25,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
           { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.change || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.chargeTotal || 0), alignment: 'right', fontSize: 11 },
           { text: (data.status || '').toString(), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -35,6 +36,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
 
   // Declare Variable
+  let chargeTotal = listTrans.reduce((cnt, o) => cnt + o.chargeTotal, 0)
   let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
   let paidTotal = listTrans.reduce((cnt, o) => cnt + o.paid, 0)
   let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
@@ -140,6 +142,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'BAYAR', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'KEMBALIAN', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'CHARGE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'STATUS', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -157,6 +160,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
       { text: `(${formatNumberIndonesia(paidTotal)})`, alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(changeTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(chargeTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
@@ -164,7 +168,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '17%', '16%', '16%', '15%', '15%', '15%'],
+    width: ['6%', '15%', '14%', '14%', '14%', '14%', '14%', '10%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',
