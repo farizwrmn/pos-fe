@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+// import { routerRedux } from 'dva/router'
 import { configMain, lstorage } from 'utils'
 import {
   Form,
@@ -187,7 +187,7 @@ const Payment = ({
               woNumber: woNumber === '' ? null : woNumber
             }
           })
-          dispatch(routerRedux.push('/transaction/pos'))
+          // dispatch(routerRedux.push('/transaction/pos'))
         }
       },
       onCancel () {
