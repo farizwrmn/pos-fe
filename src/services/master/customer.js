@@ -22,6 +22,16 @@ export async function query (params) {
   })
 }
 
+export async function queryByPhone (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/phone/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryByCode (params) {
   const url = params.memberCode ? `${customers}/${encodeURIComponent(params.memberCode)}` : `${customers}/${encodeURIComponent(params.data.memberCode)}`
   const apiHeaderToken = crypt.apiheader()

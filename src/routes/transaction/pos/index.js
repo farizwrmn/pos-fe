@@ -17,6 +17,7 @@ import {
   Modal,
   Select
 } from 'antd'
+import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -38,6 +39,11 @@ const FormItem = Form.Item
 const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
+}
+
+const keyMap = {
+  MEMBER: 'ctrl+alt+m',
+  PRODUCT: 'ctrl+alt+p'
 }
 
 const Pos = ({
@@ -72,6 +78,7 @@ const Pos = ({
     searchText,
     itemService,
     itemPayment,
+    kodeUtil,
     infoUtil,
     memberInformation,
     memberUnitInfo,
@@ -147,6 +154,27 @@ const Pos = ({
         searchText: ''
       }
     })
+  }
+
+  const hotKeysHandler = {
+    MEMBER: () => {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'member',
+          infoUtil: 'Member'
+        }
+      })
+    },
+    PRODUCT: () => {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
+        }
+      })
+    }
   }
 
   const lovButtonProps = {
@@ -1097,18 +1125,32 @@ const Pos = ({
   const handleKeyPress = async (e) => {
     const { value } = e.target
     if (value && value !== '') {
-      dispatch({
-        type: 'pos/getProductByBarcode',
-        payload: {
-          id: value,
-          type: 'barcode'
-        }
-      })
+      if (kodeUtil === 'barcode') {
+        dispatch({
+          type: 'pos/getProductByBarcode',
+          payload: {
+            id: value,
+            type: 'barcode'
+          }
+        })
+      }
+
+      if (kodeUtil === 'member') {
+        dispatch({
+          type: 'pos/getMemberByPhone',
+          payload: {
+            id: value,
+            type: 'member'
+          }
+        })
+      }
 
       dispatch({
         type: 'pos/updateState',
         payload: {
-          curBarcode: ''
+          curBarcode: '',
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
         }
       })
     }
@@ -1157,8 +1199,43 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
+  const changeUtil = () => {
+    if (kodeUtil === 'barcode') {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'member',
+          infoUtil: 'Member'
+        }
+      })
+      return
+    }
+
+    if (kodeUtil === 'member') {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
+        }
+      })
+      return
+    }
+    dispatch({
+      type: 'pos/setUtil',
+      payload: {
+        kodeUtil: 'barcode',
+        infoUtil: 'Product'
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
+      <GlobalHotKeys
+        keyMap={keyMap}
+        handlers={hotKeysHandler}
+      />
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={10} sm={24}>
@@ -1177,7 +1254,7 @@ const Pos = ({
               <LovButton {...lovButtonProps} />
               <Row>
                 <Col lg={4} md={2}>
-                  {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
+                  {infoUtil && <Tag onClick={changeUtil} color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
                 </Col>
                 <Col lg={14} md={24}>
                   <Input size="large"

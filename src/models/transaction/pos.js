@@ -12,7 +12,7 @@ import {
   queryById as queryInvoiceById,
   updatePos
 } from '../../services/payment'
-import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
+import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat, queryByPhone } from '../../services/master/customer'
 import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
 import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryByBarcode } from '../../services/master/productstock'
 import { query as queryService } from '../../services/master/service'
@@ -1037,7 +1037,7 @@ export default {
         type: 'pos/queryGetMemberSuccess',
         payload: { memberInformation: newItem }
       })
-      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
+      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
       yield put({ type: 'unit/lov', payload: { id: item.memberCode } })
       yield put({
         type: 'pos/hideMemberModal'
@@ -1227,6 +1227,21 @@ export default {
             modalType: 'browseMechanic'
           }
         })
+      }
+    },
+
+    * getMemberByPhone ({ payload }, { call, put }) {
+      const response = yield call(queryByPhone, payload)
+      if (response && response.success && response.data && response.data.id) {
+        yield put({
+          type: 'pos/chooseMember',
+          payload: {
+            item: response.data,
+            type: payload.type
+          }
+        })
+      } else {
+        message.warning('Barcode Not found')
       }
     },
 
