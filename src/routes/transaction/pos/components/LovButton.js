@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Tooltip, Badge, Button } from 'antd'
+import {
+  // Tooltip,
+  Badge,
+  Button
+} from 'antd'
 
-const ButtonGroup = Button.Group
+// const ButtonGroup = Button.Group
 
 // Find Left Boundry of current Window
 function FindLeftWindowBoundry () {
@@ -72,7 +76,7 @@ const LovButton = ({
   // memberUnitInfo,
   mechanicInformation,
   handleMemberBrowse,
-  handleAddMember,
+  // handleAddMember,
   // handleAssetBrowse,
   // handleAddAsset,
   handleMechanicBrowse,
@@ -85,16 +89,17 @@ const LovButton = ({
 
   return (
     <div>
-      <ButtonGroup>
-        <Button
-          type="primary"
-          size="large"
-          onClick={handleMemberBrowse}
-          disabled={workOrderItem.id}
-        >
-          {memberInformation && memberInformation.memberName ? `Member (${memberInformation.memberName})` : 'Member'}
-        </Button>
-        <Tooltip title="add Member">
+      {/* <ButtonGroup> */}
+      <Button
+        type="primary"
+        size="large"
+        onClick={handleMemberBrowse}
+        style={{ marginRight: 8 }}
+        disabled={workOrderItem.id}
+      >
+        {memberInformation && memberInformation.memberName ? `Member (${memberInformation.memberName})` : 'Member'}
+      </Button>
+      {/* <Tooltip title="add Member">
           <Button
             type="primary"
             size="large"
@@ -103,8 +108,8 @@ const LovButton = ({
             disabled={workOrderItem.id}
             className="button-width02"
           />
-        </Tooltip>
-      </ButtonGroup>
+        </Tooltip> */}
+      {/* </ButtonGroup> */}
       {/* <ButtonGroup style={{ marginRight: 8 }}>
         <Button
           type="primary"
@@ -118,29 +123,30 @@ const LovButton = ({
           <Button disabled={workOrderItem.id} type="primary" size="large" icon="plus-square-o" onClick={handleAddAsset} />
         </Tooltip>
       </ButtonGroup> */}
-      <ButtonGroup style={{ marginRight: 8 }}>
-        <Button
-          type="primary"
-          size="large"
-          icon="customer-service"
-          onClick={handleMechanicBrowse}
-        >
-          {mechanicInformation && mechanicInformation.employeeName ? `Employee (${mechanicInformation.employeeName})` : 'Employee'}
-        </Button>
-      </ButtonGroup>
+      {/* <ButtonGroup style={{ marginRight: 8 }}> */}
+      <Button
+        type="primary"
+        size="large"
+        icon="customer-service"
+        style={{ marginRight: 8 }}
+        onClick={handleMechanicBrowse}
+      >
+        {mechanicInformation && mechanicInformation.employeeName ? `Employee (${mechanicInformation.employeeName})` : 'Employee'}
+      </Button>
+      {/* </ButtonGroup> */}
       <Badge count={objectSize()}>
         <Button type="primary"
-          style={{ marginBottom: '4px' }}
+          style={{ marginRight: 8 }}
           size="large"
           icon="bell"
-          className="button-width01"
           onClick={handleQueue}
         >
           Queue
         </Button>
       </Badge>
-      <Button type="primary"
-        style={{ marginBottom: '4px' }}
+      <Button
+        type="primary"
+        style={{ marginRight: 8 }}
         size="large"
         icon="user"
         onClick={() => handleCustomerView()}
@@ -153,7 +159,7 @@ const LovButton = ({
 
 LovButton.propTypes = {
   handleMemberBrowse: PropTypes.func.isRequired,
-  handleAddMember: PropTypes.func.isRequired,
+  // handleAddMember: PropTypes.func.isRequired,
   // handleAssetBrowse: PropTypes.func.isRequired,
   // handleAddAsset: PropTypes.func.isRequired,
   handleMechanicBrowse: PropTypes.func.isRequired,

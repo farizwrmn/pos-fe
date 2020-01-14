@@ -12,15 +12,31 @@ import {
   queryById as queryInvoiceById,
   updatePos
 } from '../../services/payment'
-import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat } from '../../services/master/customer'
-import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
-import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryByBarcode } from '../../services/master/productstock'
+import {
+  query as queryMembers,
+  queryCashbackById,
+  queryByCode as queryMemberCode,
+  querySearchByPlat,
+  queryByPhone,
+  queryDefault as queryDefaultMember
+} from '../../services/master/customer'
+import {
+  queryMechanics,
+  queryMechanicByCode as queryMechanicCode,
+  queryDefault as queryDefaultEmployee
+} from '../../services/master/employee'
+import {
+  query as queryProductStock,
+  queryPOSproduct,
+  queryPOSstock as queryProductsInStock,
+  queryByBarcode
+} from '../../services/master/productstock'
 import { query as queryService } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
-const { insertCashierTrans } = variables
+const { insertCashierTrans, reArrangeMember } = variables
 
 const { getCashierTrans } = lstorage
 
@@ -123,6 +139,14 @@ export default {
       history.listen((location) => {
         const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
         const userId = lstorage.getStorageKey('udi')[1]
+        if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'setDefaultMember'
+          })
+          dispatch({
+            type: 'setDefaultEmployee'
+          })
+        }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           if (location.pathname !== '/transaction/pos/payment') {
@@ -350,6 +374,34 @@ export default {
       }
     },
 
+    * setDefaultMember ({ payload }, { call, put }) {
+      const memberInformation = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {}
+      if (memberInformation && memberInformation.memberName) return
+      const response = yield call(queryDefaultMember, payload)
+      if (response && response.success && response.data && response.data.id) {
+        yield put({
+          type: 'pos/chooseMember',
+          payload: {
+            item: response.data,
+            defaultValue: true
+          }
+        })
+      }
+    },
+
+    * setDefaultEmployee ({ payload }, { call, put }) {
+      const mechanicInformation = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
+      if (mechanicInformation && mechanicInformation.employeeId) return
+      const response = yield call(queryDefaultEmployee, payload)
+      if (response && response.success && response.data && response.data.employeeId) {
+        yield put({
+          type: 'pos/chooseEmployee',
+          payload: {
+            item: response.data
+          }
+        })
+      }
+    },
     * cancelInvoice ({ payload }, { call, put }) {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
@@ -853,6 +905,9 @@ export default {
             type: 'paymentEdit',
             payload: data
           })
+          let successModal = message.success('Success add product')
+          yield put({ type: 'pos/hideProductModal' })
+          setTimeout(() => successModal.destroy(), 200)
         }
       } else {
         Modal.warning({
@@ -993,6 +1048,96 @@ export default {
       }
     },
 
+    * chooseEmployee ({ payload }, { put }) {
+      const { item } = payload
+      localStorage.removeItem('mechanic')
+      let arrayProd = []
+      arrayProd.push({
+        employeeId: item.id,
+        employeeName: item.employeeName,
+        employeeCode: item.employeeId
+      })
+      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
+      yield put({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: arrayProd[0] || {} } })
+      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
+      yield put({ type: 'pos/hideMechanicModal' })
+    },
+
+    * chooseMember ({ payload = {} }, { put }) {
+      const { item, defaultValue, chooseItem } = payload
+      const modalMember = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Reset unsaved process',
+            content: 'this action will reset your current process',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      if (chooseItem) {
+        yield modalMember()
+      }
+      yield put({
+        type: 'pos/removeTrans',
+        payload: {
+          defaultValue
+        }
+      })
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+
+      let arrayProd
+      if (JSON.stringify(listByCode) === '[]') {
+        arrayProd = listByCode.slice()
+      } else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      let newItem = reArrangeMember(item)
+      arrayProd.push(newItem)
+
+      localStorage.setItem('member', JSON.stringify(arrayProd))
+      yield put({
+        type: 'pos/syncCustomerCashback',
+        payload: {
+          memberId: newItem.id
+        }
+      })
+      yield put({
+        type: 'pos/queryGetMemberSuccess',
+        payload: { memberInformation: newItem }
+      })
+      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
+      yield put({ type: 'unit/lov', payload: { id: item.memberCode } })
+      yield put({
+        type: 'pos/hideMemberModal'
+      })
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          showListReminder: false
+        }
+      })
+      yield put({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: item.id, name: item.memberName }
+          }
+        }
+      })
+      yield put({
+        type: 'pos/setCurBarcode',
+        payload: {
+          curBarcode: '',
+          curQty: 1
+        }
+      })
+    },
+
     * chooseProduct ({ payload }, { select, put }) {
       const modalMember = () => {
         return new Promise((resolve) => {
@@ -1016,7 +1161,7 @@ export default {
           })
         })
       }
-      const { item } = payload
+      const { item, type } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       const curQty = yield select(({ pos }) => pos.curQty)
@@ -1066,7 +1211,8 @@ export default {
             payload: {
               data,
               arrayProd,
-              setting
+              setting,
+              type: payload.type
             }
           })
           // yield put({
@@ -1077,6 +1223,50 @@ export default {
           //     // modalProductVisible: false
           //   }
           // })
+        } else if ((checkExists || []).length > 0 && type === 'barcode') {
+          const currentItem = checkExists[0]
+          const data = {
+            no: currentItem.no,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: currentItem.qty + 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          }
+
+          arrayProd.push({
+            no: currentItem.no,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: currentItem.qty + 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          })
+          yield put({
+            type: 'pos/checkQuantityEditProduct',
+            payload: {
+              data,
+              setting
+            }
+          })
         } else {
           Modal.warning({
             title: 'Already Exists',
@@ -1112,13 +1302,31 @@ export default {
       }
     },
 
+    * getMemberByPhone ({ payload }, { call, put }) {
+      const response = yield call(queryByPhone, payload)
+      if (response && response.success && response.data && response.data.id) {
+        yield put({
+          type: 'pos/chooseMember',
+          payload: {
+            item: response.data,
+            type: payload.type,
+            defaultValue: true,
+            chooseItem: true
+          }
+        })
+      } else {
+        message.warning('Barcode Not found')
+      }
+    },
+
     * getProductByBarcode ({ payload }, { call, put }) {
       const response = yield call(queryByBarcode, payload)
       if (response && response.success && response.data && response.data.id) {
         yield put({
           type: 'pos/chooseProduct',
           payload: {
-            item: response.data
+            item: response.data,
+            type: payload.type
           }
         })
       } else {
@@ -1360,12 +1568,15 @@ export default {
         }
       }
     },
-    * removeTrans (payload, { put }) {
+    * removeTrans ({ payload = {} }, { put }) {
+      const { defaultValue } = payload
       localStorage.removeItem('service_detail')
       localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('member')
+      if (!defaultValue) {
+        localStorage.removeItem('member')
+        localStorage.removeItem('mechanic')
+      }
       localStorage.removeItem('memberUnit')
-      localStorage.removeItem('mechanic')
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')
@@ -1838,7 +2049,19 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: {}, mechanicInformation: {}, curTotalDiscount: 0, curRounding: 0, memberUnitInfo: { id: null, policeNo: null, merk: null, model: null }, lastMeter: 0 }
+      return {
+        ...state,
+        curQty: 1,
+        curRecord: 1,
+        curTotal: 0,
+        listByCode: [],
+        memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
+        mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {},
+        curTotalDiscount: 0,
+        curRounding: 0,
+        memberUnitInfo: { id: null, policeNo: null, merk: null, model: null },
+        lastMeter: 0
+      }
     },
 
 

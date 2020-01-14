@@ -17,6 +17,7 @@ import {
   Modal,
   Select
 } from 'antd'
+import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -38,6 +39,11 @@ const FormItem = Form.Item
 const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
+}
+
+const keyMap = {
+  MEMBER: 'ctrl+alt+m',
+  PRODUCT: 'ctrl+alt+p'
 }
 
 const Pos = ({
@@ -72,6 +78,7 @@ const Pos = ({
     searchText,
     itemService,
     itemPayment,
+    kodeUtil,
     infoUtil,
     memberInformation,
     memberUnitInfo,
@@ -147,6 +154,27 @@ const Pos = ({
         searchText: ''
       }
     })
+  }
+
+  const hotKeysHandler = {
+    MEMBER: () => {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'member',
+          infoUtil: 'Member'
+        }
+      })
+    },
+    PRODUCT: () => {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
+        }
+      })
+    }
   }
 
   const lovButtonProps = {
@@ -680,59 +708,12 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          dispatch({
-            type: 'pos/removeTrans'
-          })
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-          let arrayProd
-          if (JSON.stringify(listByCode) === '[]') {
-            arrayProd = listByCode.slice()
-          } else {
-            arrayProd = JSON.parse(listByCode.slice())
-          }
-          let newItem = reArrangeMember(item)
-          arrayProd.push(newItem)
-
-          localStorage.setItem('member', JSON.stringify(arrayProd))
-          dispatch({
-            type: 'pos/syncCustomerCashback',
-            payload: {
-              memberId: newItem.id
-            }
-          })
-          dispatch({
-            type: 'pos/queryGetMemberSuccess',
-            payload: { memberInformation: newItem }
-          })
-          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
-          dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
-          dispatch({
-            type: 'pos/hideMemberModal'
-          })
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              showListReminder: false
-            }
-          })
-          dispatch({
-            type: 'customer/updateState',
-            payload: {
-              addUnit: {
-                modal: false,
-                info: { id: item.id, name: item.memberName }
-              }
-            }
-          })
-
-          setCurBarcode('', 1)
+      dispatch({
+        type: 'pos/chooseMember',
+        payload: {
+          item,
+          defaultValue: true,
+          chooseItem: true
         }
       })
     }
@@ -824,17 +805,12 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('mechanic')
-      let arrayProd = []
-      arrayProd.push({
-        employeeId: item.id,
-        employeeName: item.employeeName,
-        employeeCode: item.employeeId
+      dispatch({
+        type: 'pos/chooseEmployee',
+        payload: {
+          item
+        }
       })
-      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
-      dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: arrayProd[0] || {} } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
-      dispatch({ type: 'pos/hideMechanicModal' })
     }
   }
 
@@ -1146,10 +1122,32 @@ const Pos = ({
   const handleKeyPress = async (e) => {
     const { value } = e.target
     if (value && value !== '') {
+      if (kodeUtil === 'barcode') {
+        dispatch({
+          type: 'pos/getProductByBarcode',
+          payload: {
+            id: value,
+            type: 'barcode'
+          }
+        })
+      }
+
+      if (kodeUtil === 'member') {
+        dispatch({
+          type: 'pos/getMemberByPhone',
+          payload: {
+            id: value,
+            type: 'member'
+          }
+        })
+      }
+
       dispatch({
-        type: 'pos/getProductByBarcode',
+        type: 'pos/updateState',
         payload: {
-          id: value
+          curBarcode: '',
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
         }
       })
     }
@@ -1198,8 +1196,43 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
+  const changeUtil = () => {
+    if (kodeUtil === 'barcode') {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'member',
+          infoUtil: 'Member'
+        }
+      })
+      return
+    }
+
+    if (kodeUtil === 'member') {
+      dispatch({
+        type: 'pos/setUtil',
+        payload: {
+          kodeUtil: 'barcode',
+          infoUtil: 'Product'
+        }
+      })
+      return
+    }
+    dispatch({
+      type: 'pos/setUtil',
+      payload: {
+        kodeUtil: 'barcode',
+        infoUtil: 'Product'
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
+      <GlobalHotKeys
+        keyMap={keyMap}
+        handlers={hotKeysHandler}
+      />
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={10} sm={24}>
@@ -1217,8 +1250,26 @@ const Pos = ({
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={4} md={2}>
-                  {infoUtil && <Tag color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
+                <Col
+                  lg={4}
+                  md={2}
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    display: 'flex',
+                    width: 'em',
+                    height: '3em'
+                  }}
+                >
+                  {infoUtil && (
+                    <Tag
+                      onClick={changeUtil}
+                      color="green"
+                    >
+                      {infoUtil}
+                    </Tag>
+                  )}
                 </Col>
                 <Col lg={14} md={24}>
                   <Input size="large"
