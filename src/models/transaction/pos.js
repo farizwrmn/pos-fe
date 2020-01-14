@@ -1063,8 +1063,8 @@ export default {
       yield put({ type: 'pos/hideMechanicModal' })
     },
 
-    * chooseMember ({ payload }, { put }) {
-      const { item, defaultValue } = payload
+    * chooseMember ({ payload = {} }, { put }) {
+      const { item, defaultValue, chooseItem } = payload
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -1076,7 +1076,9 @@ export default {
           })
         })
       }
-      yield modalMember()
+      if (chooseItem) {
+        yield modalMember()
+      }
       yield put({
         type: 'pos/removeTrans',
         payload: {
@@ -1308,7 +1310,8 @@ export default {
           payload: {
             item: response.data,
             type: payload.type,
-            defaultValue: true
+            defaultValue: true,
+            chooseItem: true
           }
         })
       } else {

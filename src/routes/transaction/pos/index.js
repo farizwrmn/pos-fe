@@ -712,7 +712,8 @@ const Pos = ({
         type: 'pos/chooseMember',
         payload: {
           item,
-          defaultValue: true
+          defaultValue: true,
+          chooseItem: true
         }
       })
     }
