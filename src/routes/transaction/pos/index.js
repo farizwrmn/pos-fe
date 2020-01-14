@@ -680,59 +680,10 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMemberModal' }) },
     onChooseItem (item) {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          dispatch({
-            type: 'pos/removeTrans'
-          })
-          localStorage.removeItem('member')
-          localStorage.removeItem('memberUnit')
-          let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-          let arrayProd
-          if (JSON.stringify(listByCode) === '[]') {
-            arrayProd = listByCode.slice()
-          } else {
-            arrayProd = JSON.parse(listByCode.slice())
-          }
-          let newItem = reArrangeMember(item)
-          arrayProd.push(newItem)
-
-          localStorage.setItem('member', JSON.stringify(arrayProd))
-          dispatch({
-            type: 'pos/syncCustomerCashback',
-            payload: {
-              memberId: newItem.id
-            }
-          })
-          dispatch({
-            type: 'pos/queryGetMemberSuccess',
-            payload: { memberInformation: newItem }
-          })
-          dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
-          dispatch({ type: 'unit/lov', payload: { id: item.memberCode } })
-          dispatch({
-            type: 'pos/hideMemberModal'
-          })
-          dispatch({
-            type: 'pos/updateState',
-            payload: {
-              showListReminder: false
-            }
-          })
-          dispatch({
-            type: 'customer/updateState',
-            payload: {
-              addUnit: {
-                modal: false,
-                info: { id: item.id, name: item.memberName }
-              }
-            }
-          })
-
-          setCurBarcode('', 1)
+      dispatch({
+        type: 'pos/chooseMember',
+        payload: {
+          item
         }
       })
     }

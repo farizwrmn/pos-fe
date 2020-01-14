@@ -20,7 +20,7 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
-const { insertCashierTrans } = variables
+const { insertCashierTrans, reArrangeMember } = variables
 
 const { getCashierTrans } = lstorage
 
@@ -994,6 +994,76 @@ export default {
       } else {
         throw data
       }
+    },
+
+    * chooseMember ({ payload }, { put }) {
+      const { item } = payload
+      const modalMember = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Reset unsaved process',
+            content: 'this action will reset your current process',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      yield modalMember()
+      yield put({
+        type: 'pos/removeTrans'
+      })
+      localStorage.removeItem('member')
+      localStorage.removeItem('memberUnit')
+      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
+
+      let arrayProd
+      if (JSON.stringify(listByCode) === '[]') {
+        arrayProd = listByCode.slice()
+      } else {
+        arrayProd = JSON.parse(listByCode.slice())
+      }
+      let newItem = reArrangeMember(item)
+      arrayProd.push(newItem)
+
+      localStorage.setItem('member', JSON.stringify(arrayProd))
+      yield put({
+        type: 'pos/syncCustomerCashback',
+        payload: {
+          memberId: newItem.id
+        }
+      })
+      yield put({
+        type: 'pos/queryGetMemberSuccess',
+        payload: { memberInformation: newItem }
+      })
+      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
+      yield put({ type: 'unit/lov', payload: { id: item.memberCode } })
+      yield put({
+        type: 'pos/hideMemberModal'
+      })
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          showListReminder: false
+        }
+      })
+      yield put({
+        type: 'customer/updateState',
+        payload: {
+          addUnit: {
+            modal: false,
+            info: { id: item.id, name: item.memberName }
+          }
+        }
+      })
+      yield put({
+        type: 'pos/setCurBarcode',
+        payload: {
+          curBarcode: '',
+          curQty: 1
+        }
+      })
     },
 
     * chooseProduct ({ payload }, { select, put }) {
