@@ -2046,7 +2046,19 @@ export default {
     },
 
     setAllNull (state) {
-      return { ...state, curQty: 1, curRecord: 1, curTotal: 0, listByCode: [], memberInformation: {}, mechanicInformation: {}, curTotalDiscount: 0, curRounding: 0, memberUnitInfo: { id: null, policeNo: null, merk: null, model: null }, lastMeter: 0 }
+      return {
+        ...state,
+        curQty: 1,
+        curRecord: 1,
+        curTotal: 0,
+        listByCode: [],
+        memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
+        mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {},
+        curTotalDiscount: 0,
+        curRounding: 0,
+        memberUnitInfo: { id: null, policeNo: null, merk: null, model: null },
+        lastMeter: 0
+      }
     },
 
 

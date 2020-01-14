@@ -240,13 +240,22 @@ export default {
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
-                localStorage.removeItem('member')
-                localStorage.removeItem('memberUnit')
-                localStorage.removeItem('mechanic')
+                yield localStorage.removeItem('member')
+                yield localStorage.removeItem('memberUnit')
+                yield localStorage.removeItem('mechanic')
                 localStorage.removeItem('lastMeter')
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('bundle_promo')
+                yield put({
+                  type: 'pos/setAllNull'
+                })
+                yield put({
+                  type: 'pos/setDefaultMember'
+                })
+                yield put({
+                  type: 'pos/setDefaultEmployee'
+                })
                 yield put({
                   type: 'hidePaymentModal'
                 })
@@ -301,9 +310,6 @@ export default {
               //     type: 'POS'
               //   }
               // })
-              yield put({
-                type: 'pos/setAllNull'
-              })
               Modal.info({
                 title: 'Information',
                 content: 'Transaction has been saved...!'
