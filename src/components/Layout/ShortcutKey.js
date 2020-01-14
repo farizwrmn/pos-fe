@@ -21,10 +21,10 @@ const ModalHelp = ({ ...modalProps }) => {
     <Modal {...modalOpts} width="768" footer={[]}>
       <Card bordered={false} title="Shortcut Information" >
         <Form layout="horizontal">
-          <FormItem label="Product/Service" {...formItemLayout}>
-            <Input value="F2" size="large" style={{ fontSize: 20 }} disabled />
+          <FormItem label="Product" {...formItemLayout}>
+            <Input value="Ctrl + Alt + P" size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
-          <FormItem label="Refund" {...formItemLayout}>
+          {/* <FormItem label="Refund" {...formItemLayout}>
             <Input value="F4" size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
           <FormItem label="Closing Cashier" {...formItemLayout}>
@@ -41,11 +41,11 @@ const ModalHelp = ({ ...modalProps }) => {
           </FormItem>
           <FormItem label="Show Shortcut Key" {...formItemLayout}>
             <Input value="Ctrl + Alt + H " size="large" style={{ fontSize: 20 }} disabled />
-          </FormItem>
+          </FormItem> */}
           <FormItem label="Insert Member" {...formItemLayout}>
             <Input value="Ctrl + Alt + M " size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
-          <FormItem label="Insert Employee" {...formItemLayout}>
+          {/* <FormItem label="Insert Employee" {...formItemLayout}>
             <Input value="Ctrl + Alt + C " size="large" style={{ fontSize: 20 }} disabled />
           </FormItem>
           <FormItem label="Discount 1 (%)" {...formItemLayout}>
@@ -62,7 +62,7 @@ const ModalHelp = ({ ...modalProps }) => {
           </FormItem>
           <FormItem label="Quantity" {...formItemLayout}>
             <Input value="Ctrl + Shift + K" size="large" style={{ fontSize: 20 }} disabled />
-          </FormItem>
+          </FormItem> */}
         </Form>
       </Card>
     </Modal>
