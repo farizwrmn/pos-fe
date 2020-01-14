@@ -92,6 +92,15 @@ const removeItemKeys = () => {
   localStorage.removeItem('sidebarColor')
   localStorage.removeItem('routeList')
   localStorage.removeItem('isInit')
+  localStorage.removeItem('service_detail')
+  localStorage.removeItem('cashier_trans')
+  localStorage.removeItem('member')
+  localStorage.removeItem('mechanic')
+  localStorage.removeItem('memberUnit')
+  localStorage.removeItem('lastMeter')
+  localStorage.removeItem('woNumber')
+  localStorage.removeItem('bundle_promo')
+  localStorage.removeItem('workorder')
 }
 
 const removeAllKey = () => {
