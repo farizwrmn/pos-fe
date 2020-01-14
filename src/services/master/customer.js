@@ -12,6 +12,16 @@ export async function queryUnitsAll (params) {
   })
 }
 
+export async function queryDefault (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${customers}/default/value`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

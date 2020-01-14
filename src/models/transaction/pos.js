@@ -12,9 +12,25 @@ import {
   queryById as queryInvoiceById,
   updatePos
 } from '../../services/payment'
-import { query as queryMembers, queryCashbackById, queryByCode as queryMemberCode, querySearchByPlat, queryByPhone } from '../../services/master/customer'
-import { queryMechanics, queryMechanicByCode as queryMechanicCode } from '../../services/master/employee'
-import { query as queryProductStock, queryPOSproduct, queryPOSstock as queryProductsInStock, queryByBarcode } from '../../services/master/productstock'
+import {
+  query as queryMembers,
+  queryCashbackById,
+  queryByCode as queryMemberCode,
+  querySearchByPlat,
+  queryByPhone,
+  queryDefault as queryDefaultMember
+} from '../../services/master/customer'
+import {
+  queryMechanics,
+  queryMechanicByCode as queryMechanicCode,
+  queryDefault as queryDefaultEmployee
+} from '../../services/master/employee'
+import {
+  query as queryProductStock,
+  queryPOSproduct,
+  queryPOSstock as queryProductsInStock,
+  queryByBarcode
+} from '../../services/master/productstock'
 import { query as queryService } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
@@ -123,6 +139,14 @@ export default {
       history.listen((location) => {
         const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
         const userId = lstorage.getStorageKey('udi')[1]
+        if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'setDefaultMember'
+          })
+          dispatch({
+            type: 'setDefaultEmployee'
+          })
+        }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           if (location.pathname !== '/transaction/pos/payment') {
@@ -350,6 +374,34 @@ export default {
       }
     },
 
+    * setDefaultMember ({ payload }, { call, put }) {
+      const memberInformation = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {}
+      if (memberInformation && memberInformation.memberName) return
+      const response = yield call(queryDefaultMember, payload)
+      if (response && response.success && response.data && response.data.id) {
+        yield put({
+          type: 'pos/chooseMember',
+          payload: {
+            item: response.data,
+            defaultValue: true
+          }
+        })
+      }
+    },
+
+    * setDefaultEmployee ({ payload }, { call, put }) {
+      const mechanicInformation = localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {}
+      if (mechanicInformation && mechanicInformation.employeeId) return
+      const response = yield call(queryDefaultEmployee, payload)
+      if (response && response.success && response.data && response.data.employeeId) {
+        yield put({
+          type: 'pos/chooseEmployee',
+          payload: {
+            item: response.data
+          }
+        })
+      }
+    },
     * cancelInvoice ({ payload }, { call, put }) {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
@@ -996,8 +1048,23 @@ export default {
       }
     },
 
-    * chooseMember ({ payload }, { put }) {
+    * chooseEmployee ({ payload }, { put }) {
       const { item } = payload
+      localStorage.removeItem('mechanic')
+      let arrayProd = []
+      arrayProd.push({
+        employeeId: item.id,
+        employeeName: item.employeeName,
+        employeeCode: item.employeeId
+      })
+      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
+      yield put({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: arrayProd[0] || {} } })
+      yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
+      yield put({ type: 'pos/hideMechanicModal' })
+    },
+
+    * chooseMember ({ payload }, { put }) {
+      const { item, defaultValue } = payload
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -1011,7 +1078,10 @@ export default {
       }
       yield modalMember()
       yield put({
-        type: 'pos/removeTrans'
+        type: 'pos/removeTrans',
+        payload: {
+          defaultValue
+        }
       })
       localStorage.removeItem('member')
       localStorage.removeItem('memberUnit')
@@ -1237,7 +1307,8 @@ export default {
           type: 'pos/chooseMember',
           payload: {
             item: response.data,
-            type: payload.type
+            type: payload.type,
+            defaultValue: true
           }
         })
       } else {
@@ -1494,12 +1565,15 @@ export default {
         }
       }
     },
-    * removeTrans (payload, { put }) {
+    * removeTrans ({ payload = {} }, { put }) {
+      const { defaultValue } = payload
       localStorage.removeItem('service_detail')
       localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('member')
+      if (!defaultValue) {
+        localStorage.removeItem('member')
+        localStorage.removeItem('mechanic')
+      }
       localStorage.removeItem('memberUnit')
-      localStorage.removeItem('mechanic')
       localStorage.removeItem('lastMeter')
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')

@@ -711,7 +711,8 @@ const Pos = ({
       dispatch({
         type: 'pos/chooseMember',
         payload: {
-          item
+          item,
+          defaultValue: true
         }
       })
     }
@@ -803,17 +804,12 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideMechanicModal' }) },
     onChooseItem (item) {
-      localStorage.removeItem('mechanic')
-      let arrayProd = []
-      arrayProd.push({
-        employeeId: item.id,
-        employeeName: item.employeeName,
-        employeeCode: item.employeeId
+      dispatch({
+        type: 'pos/chooseEmployee',
+        payload: {
+          item
+        }
       })
-      localStorage.setItem('mechanic', JSON.stringify(arrayProd))
-      dispatch({ type: 'pos/queryGetMechanicSuccess', payload: { mechanicInformation: arrayProd[0] || {} } })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'barcode', infoUtil: 'Product' } })
-      dispatch({ type: 'pos/hideMechanicModal' })
     }
   }
 
@@ -1253,8 +1249,26 @@ const Pos = ({
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={4} md={2}>
-                  {infoUtil && <Tag onClick={changeUtil} color="green" style={{ marginBottom: 8 }}> {infoUtil} </Tag>}
+                <Col
+                  lg={4}
+                  md={2}
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    display: 'flex',
+                    width: 'em',
+                    height: '3em'
+                  }}
+                >
+                  {infoUtil && (
+                    <Tag
+                      onClick={changeUtil}
+                      color="green"
+                    >
+                      {infoUtil}
+                    </Tag>
+                  )}
                 </Col>
                 <Col lg={14} md={24}>
                   <Input size="large"
