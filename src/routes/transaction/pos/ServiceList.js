@@ -139,6 +139,7 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
+              disabled
               min={0}
               onBlur={value => handleTotalChange(value)}
             />
@@ -171,6 +172,7 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
+              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -188,6 +190,7 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
+              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -205,6 +208,7 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
+              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -222,6 +226,7 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
+              disabled
               min={0}
               max={itemService.total}
               onBlur={value => handleTotalChange(value)}
