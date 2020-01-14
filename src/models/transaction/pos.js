@@ -853,6 +853,9 @@ export default {
             type: 'paymentEdit',
             payload: data
           })
+          let successModal = message.success('Success add product')
+          yield put({ type: 'pos/hideProductModal' })
+          setTimeout(() => successModal.destroy(), 200)
         }
       } else {
         Modal.warning({
@@ -1016,7 +1019,7 @@ export default {
           })
         })
       }
-      const { item } = payload
+      const { item, type } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       const curQty = yield select(({ pos }) => pos.curQty)
@@ -1066,7 +1069,8 @@ export default {
             payload: {
               data,
               arrayProd,
-              setting
+              setting,
+              type: payload.type
             }
           })
           // yield put({
@@ -1077,6 +1081,50 @@ export default {
           //     // modalProductVisible: false
           //   }
           // })
+        } else if ((checkExists || []).length > 0 && type === 'barcode') {
+          const currentItem = checkExists[0]
+          const data = {
+            no: currentItem.no,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: currentItem.qty + 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          }
+
+          arrayProd.push({
+            no: currentItem.no,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: currentItem.qty + 1,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+          })
+          yield put({
+            type: 'pos/checkQuantityEditProduct',
+            payload: {
+              data,
+              setting
+            }
+          })
         } else {
           Modal.warning({
             title: 'Already Exists',
@@ -1118,7 +1166,8 @@ export default {
         yield put({
           type: 'pos/chooseProduct',
           payload: {
-            item: response.data
+            item: response.data,
+            type: payload.type
           }
         })
       } else {

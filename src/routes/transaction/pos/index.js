@@ -1149,7 +1149,15 @@ const Pos = ({
       dispatch({
         type: 'pos/getProductByBarcode',
         payload: {
-          id: value
+          id: value,
+          type: 'barcode'
+        }
+      })
+
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          curBarcode: ''
         }
       })
     }
