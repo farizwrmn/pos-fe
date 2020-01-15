@@ -273,6 +273,8 @@ const Pos = ({
     },
     handlePromoBrowse () {
       resetSelectText()
+      console.log('memberInformation', memberInformation)
+
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         dispatch({
           type: 'promo/query',
@@ -284,6 +286,23 @@ const Pos = ({
           type: 'promo/updateState',
           payload: {
             modalPromoVisible: true
+          }
+        })
+      } else if (Object.assign(memberInformation || {}).length === 0) {
+        Modal.info({
+          title: 'Member Information is not found',
+          content: 'Insert Member',
+          onOk () {
+            dispatch({
+              type: 'pos/getMembers'
+            })
+
+            dispatch({
+              type: 'pos/showMemberModal',
+              payload: {
+                modalType: 'browseMember'
+              }
+            })
           }
         })
       } else {

@@ -115,6 +115,7 @@ const FormCounter = ({
         const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
         if (checkExists.length === 0) {
           arrayProd = listByCode
+
           const data = {
             no: arrayProd.length + 1,
             type,
@@ -124,6 +125,9 @@ const FormCounter = ({
             qty: 1,
             sellPrice: type === 'P' ? item.sellPrice : item.serviceCost,
             sellingPrice: type === 'P' ? item.sellPrice : item.serviceCost,
+            distPrice01: type === 'P' ? item.distPrice01 : item.serviceCost,
+            distPrice02: type === 'P' ? item.distPrice02 : item.serviceCost,
+            distPrice03: type === 'P' ? item.distPrice03 : item.serviceCost,
             discount: 0,
             disc1: 0,
             disc2: 0,
