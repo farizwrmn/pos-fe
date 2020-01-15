@@ -4,8 +4,7 @@ const { apiPromo } = config.rest
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
-  params.order = 'id'
+  // params.order = 'id'
   params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${apiPromo}/reward`,

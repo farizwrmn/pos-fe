@@ -79,6 +79,7 @@ const LovButton = ({
   // handleAddMember,
   // handleAssetBrowse,
   // handleAddAsset,
+  handlePromoBrowse,
   handleMechanicBrowse,
   handleQueue,
   workOrderItem
@@ -133,6 +134,14 @@ const LovButton = ({
       >
         {mechanicInformation && mechanicInformation.employeeName ? `Employee (${mechanicInformation.employeeName})` : 'Employee'}
       </Button>
+      <Button type="primary"
+        size="large"
+        icon="tag-o"
+        className="button-width01"
+        onClick={handlePromoBrowse}
+      >
+        Bundle
+      </Button>
       {/* </ButtonGroup> */}
       <Badge count={objectSize()}>
         <Button type="primary"
@@ -146,7 +155,6 @@ const LovButton = ({
       </Badge>
       <Button
         type="primary"
-        style={{ marginRight: 8 }}
         size="large"
         icon="user"
         onClick={() => handleCustomerView()}

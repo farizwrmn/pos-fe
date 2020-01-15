@@ -1,17 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { isEmptyObject, lstorage, color } from 'utils'
+import { isEmptyObject, lstorage, color, calendar } from 'utils'
 import {
   currencyFormatter,
   discountFormatter,
   numberFormatter
 } from 'utils/string'
-import { Badge, Icon, Table, Tabs } from 'antd'
+import { Badge, Icon, Table, Tabs, Tag } from 'antd'
 import styles from '../../../themes/index.less'
 
-const { getCashierTrans, getServiceTrans } = lstorage
+const { dayByNumber } = calendar
+
+const { getCashierTrans, getServiceTrans, getBundleTrans } = lstorage
 const TabPane = Tabs.TabPane
+const width = 1000
 
 const TransactionDetail = ({
   dispatch,
@@ -62,6 +65,15 @@ const TransactionDetail = ({
       payload: {
         item: record,
         modalType: 'modalService'
+      }
+    })
+  }
+
+  const modalEditBundle = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalVoidSuspendVisible: true
       }
     })
   }
@@ -239,6 +251,91 @@ const TransactionDetail = ({
           onRowClick={_record => modalEditService(_record)}
           dataSource={getServiceTrans()}
           style={{ marginBottom: 16 }}
+        />
+      </TabPane>
+      <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="3">
+        <Table
+          rowKey={(record, key) => key}
+          pagination={{ pageSize: 5 }}
+          bordered
+          size="small"
+          scroll={{ x: '1000px', y: '220px' }}
+          locale={{
+            emptyText: 'Your Bundle List'
+          }}
+          onRowClick={_record => modalEditBundle(_record)}
+          dataSource={getBundleTrans()}
+          style={{ marginBottom: 16 }}
+          columns={[
+            {
+              title: 'No',
+              dataIndex: 'no',
+              key: 'no',
+              width: '41px'
+            },
+            {
+              title: 'type',
+              dataIndex: 'type',
+              key: 'type',
+              width: `${width * 0.115}px`,
+              render: (text) => {
+                return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
+              }
+            },
+            {
+              title: 'Code',
+              dataIndex: 'code',
+              key: 'code',
+              width: `${width * 0.1}px`
+            },
+            {
+              title: 'Name',
+              dataIndex: 'name',
+              key: 'name',
+              width: `${width * 0.15}px`
+            },
+            {
+              title: 'Q',
+              dataIndex: 'qty',
+              width: '40px',
+              className: styles.alignRight,
+              render: text => (text || '-').toLocaleString()
+            },
+            {
+              title: 'Period',
+              dataIndex: 'Date',
+              key: 'Date',
+              width: `${width * 0.15}px`,
+              render: (text, record) => {
+                return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
+              }
+            },
+            {
+              title: 'Available Date',
+              dataIndex: 'availableDate',
+              key: 'availableDate',
+              width: `${width * 0.15}px`,
+              render: (text) => {
+                let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
+                if (text !== null && (date || []).length === 7) {
+                  date = <Tag color="green">{'Everyday'}</Tag>
+                }
+                if (text !== null && (date || []).length < 7) {
+                  date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
+                }
+                return date
+              }
+            },
+            {
+              title: 'Available Hour',
+              dataIndex: 'availableHour',
+              key: 'availableHour',
+              width: `${width * 0.1}px`,
+              render: (text, record) => {
+                return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
+              }
+            }
+          ]}
         />
       </TabPane>
     </Tabs>

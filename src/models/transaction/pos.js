@@ -905,9 +905,8 @@ export default {
             type: 'paymentEdit',
             payload: data
           })
-          let successModal = message.success('Success add product')
+          message.success('Success add product')
           yield put({ type: 'pos/hideProductModal' })
-          setTimeout(() => successModal.destroy(), 200)
         }
       } else {
         Modal.warning({
@@ -1223,6 +1222,11 @@ export default {
           //     // modalProductVisible: false
           //   }
           // })
+        } else if ((checkExists || []).length > 0 && checkExists[0].bundleId) {
+          Modal.warning({
+            title: 'Exists in bundle',
+            content: 'This product exists in bundle'
+          })
         } else if ((checkExists || []).length > 0 && type === 'barcode') {
           const currentItem = checkExists[0]
           const data = {

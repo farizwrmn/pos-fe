@@ -159,6 +159,7 @@ const PaymentList = ({
             <InputNumber
               defaultValue={0}
               min={0}
+              disabled={!!item.bundleId}
               onBlur={value => handleTotalChange(value)}
             />
           )}
