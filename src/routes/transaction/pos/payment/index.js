@@ -154,7 +154,7 @@ const Payment = ({
               creditCardType: '',
               creditCardCharge: 0,
               totalCreditCard: 0,
-              transDatePrint: moment().format('DD/MM/YYYY'),
+              transDatePrint: moment().format('DD MMM YYYY HH:mm'),
               company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
               gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
               phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
