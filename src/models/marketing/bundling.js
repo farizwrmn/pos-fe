@@ -42,7 +42,10 @@ export default modelExtend(pageModel, {
     productCode: item.productCode
     productName: item.productName
     qty: item.qty
-    sellingPrice: item.sellingPrice
+    sellPrice: item.sellPrice
+    distPrice01: item.distPrice01
+    distPrice02: item.distPrice02
+    distPrice03: item.distPrice03
     discount: item.discount
     disc1: item.disc1
     disc2: item.disc2
@@ -151,10 +154,12 @@ export default modelExtend(pageModel, {
                 productId: data.data[n].id,
                 productCode: data.data[n].productCode,
                 productName: data.data[n].productName,
-                sellPrice: data.data[n].sellPrice,
                 type: 'P',
                 qty: 1,
-                sellingPrice: data.data[n].sellPrice,
+                sellPrice: data.data[n].sellPrice,
+                distPrice01: data.data[n].distPrice01,
+                distPrice02: data.data[n].distPrice02,
+                distPrice03: data.data[n].distPrice03,
                 discount: 0,
                 disc1: 0,
                 disc2: 0,

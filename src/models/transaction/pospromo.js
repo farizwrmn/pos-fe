@@ -252,6 +252,7 @@ export default modelExtend(pageModel, {
       })
     },
     * setProductPos ({ payload = {} }, { select, put }) {
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
@@ -308,33 +309,16 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
-              sellPrice: currentReward[n].sellingPrice,
-              sellingPrice: currentReward[n].sellingPrice,
+              sellPrice: memberInformation.showAsDiscount ? currentReward[n].sellPrice : currentReward[n][memberInformation.memberSellPrice.toString()],
+              sellingPrice: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
+              price: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,
               disc3: currentReward[n].disc3
             }
             data.total = posTotal(data)
-            arrayProd.push({
-              no: arrayProd.length + 1,
-              code: data.code,
-              productId: data.productId,
-              name: data.name,
-              bundleId: data.bundleId,
-              bundleName: data.bundleName,
-              employeeId: data.employeeId,
-              employeeName: data.employeeName,
-              typeCode: 'P',
-              qty: data.qty,
-              sellPrice: data.sellPrice,
-              price: data.sellingPrice,
-              discount: data.discount,
-              disc1: data.disc1,
-              disc2: data.disc2,
-              disc3: data.disc3,
-              total: data.total
-            })
+            arrayProd.push(data)
           }
         }
         localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))

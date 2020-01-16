@@ -31,7 +31,12 @@ const modal = ({
       data.productId = item.productId
       data.productCode = item.productCode
       data.productName = item.productName
-      data.sellingPrice = item.sellingPrice
+      data.sellingPrice = item.sellPrice
+      data.sellPrice = item.sellPrice
+      data.discount = 0
+      data.disc1 = 0
+      data.disc2 = 0
+      data.disc3 = 0
       data.total = posTotal(data)
       onOkList(data)
     })
@@ -53,6 +58,8 @@ const modal = ({
     ...formEditProps,
     onOk: handleOk
   }
+  console.log('item', item, item.distPrice02)
+
   return (
     <Modal title={`Reward for ${item.productCode} - ${item.productName}`}
       {...modalOpts}
@@ -73,41 +80,33 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="sellingPrice" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('sellingPrice', {
-            initialValue: item.sellingPrice,
+        <FormItem label="sellPrice" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('sellPrice', {
+            initialValue: item.sellPrice,
             rules: [{
               required: true
             }]
-          })(<InputNumber disabled autoFocus min={0} max={100} style={{ width: '100%' }} />)}
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="disc1" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('disc1', {
-            initialValue: item.disc1,
+        <FormItem label="distPrice01" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice01', {
+            initialValue: item.distPrice01,
             rules: [{
               required: true
             }]
-          })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="disc2" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('disc2', {
-            initialValue: item.disc2,
+        <FormItem label="distPrice02" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice02', {
+            initialValue: item.distPrice02,
             rules: [{
               required: true
             }]
-          })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="disc3" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('disc3', {
-            initialValue: item.disc3,
-            rules: [{
-              required: true
-            }]
-          })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
-        </FormItem>
-        <FormItem label="Discount" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('discount', {
-            initialValue: item.discount,
+        <FormItem label="distPrice03" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice03', {
+            initialValue: item.distPrice03,
             rules: [{
               required: true
             }]

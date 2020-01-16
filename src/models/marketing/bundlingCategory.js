@@ -41,7 +41,10 @@ export default modelExtend(pageModel, {
     productCode: item.productCode
     productName: item.productName
     qty: item.qty
-    sellingPrice: item.sellingPrice
+    sellPrice: item.sellPrice
+    distPrice01: item.distPrice01
+    distPrice02: item.distPrice02
+    distPrice03: item.distPrice03
     discount: item.discount
     disc1: item.disc1
     disc2: item.disc2
