@@ -169,7 +169,8 @@ export default {
           dispatch({
             type: 'queryPosById',
             payload: {
-              id: match[1]
+              id: match[1],
+              type: 'print'
             }
           })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
@@ -427,14 +428,16 @@ export default {
       }
     },
 
-    * queryPosById ({ payload }, { call, put }) {
-      const response = yield call(queryInvoiceById, payload)
+    * queryPosById ({ payload = {} }, { call, put }) {
+      const { type, ...other } = payload
+      const response = yield call(queryInvoiceById, other)
       if (response && response.success) {
         yield put({
           type: 'queryPosDetail',
           payload: {
             id: response.pos.transNo,
-            data: response.pos
+            data: response.pos,
+            type
           }
         })
         yield put({
@@ -447,6 +450,7 @@ export default {
     },
 
     * queryPosDetail ({ payload }, { call, put }) {
+      const { type } = payload
       const data = yield call(queryDetail, payload)
       const PosData = yield call(queryaPos, payload)
       const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
@@ -515,6 +519,9 @@ export default {
                 ((((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) * (data.pos[n].disc2 / 100)) * (data.pos[n].disc3 / 100))
             })
           }
+        }
+        if (type === 'print') {
+          window.print()
         }
       }
     },
