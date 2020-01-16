@@ -14,7 +14,7 @@ const Total = ({ posData = {}, dataPos = [], dataService = [] }) => {
         <Col span={12} className={styles.right}>
           <span>
             <strong>
-              Tax
+              Service Tax
             </strong>
             :Rp
           </span>
