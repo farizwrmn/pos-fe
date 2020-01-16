@@ -113,7 +113,12 @@ const modal = ({
           <Col lg={12} md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
-                initialValue: item.typeCode ? item.typeCode : 'C'
+                initialValue: item.typeCode ? item.typeCode : 'C',
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
               })(
                 <TreeSelect
                   showSearch
