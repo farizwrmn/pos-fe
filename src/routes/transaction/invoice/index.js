@@ -7,6 +7,7 @@ import Header from './Header'
 import Body from './Body'
 import Total from './Total'
 import Footer from './Footer'
+import Member from './Member'
 
 const Invoice = ({ pos, app, payment }) => {
   const {
@@ -117,6 +118,7 @@ const Invoice = ({ pos, app, payment }) => {
       <Total posData={posData} dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
       <div className={styles.separator} />
       <Footer />
+      <Member invoiceInfo={invoiceInfo} />
     </div>
   )
 }
