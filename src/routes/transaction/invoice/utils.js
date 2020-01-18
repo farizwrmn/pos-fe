@@ -8,6 +8,18 @@ const chooseOnePaymentType = (type = 'C', list = []) => {
   return 'Cash'
 }
 
+const group = (data, key) => {
+  return _.reduce(data, (group, item) => {
+    (group[item[key]] = group[item[key]] || []).push(item)
+    return group
+  }, [])
+}
+
+const groupProduct = (list) => {
+  return group(list, 'bundlingId')
+}
+
 export {
-  chooseOnePaymentType
+  chooseOnePaymentType,
+  groupProduct
 }

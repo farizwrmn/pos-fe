@@ -9,6 +9,7 @@ import Total from './Total'
 import Footer from './Footer'
 import MerchantCopy from './MerchantCopy'
 import Member from './Member'
+import { groupProduct } from './utils'
 
 const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
@@ -34,15 +35,17 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   }
   let dataPos = []
   let dataService = []
+  let dataGroup = []
   if (data && data.data) {
     for (let n = 0; n < data.data.length; n += 1) {
-      if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
+      if (data.data[n].productCode !== null && data.data[n].bundlingId === null) {
         let productId = data.data[n].productCode
         let productName = data.data[n].productName
         dataPos.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -52,13 +55,14 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
           disc3: data.data[n].disc3,
           total: posTotal(data.data[n])
         })
-      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
+      } else if (data.data[n].serviceCode !== null && data.data[n].bundlingId === null) {
         let productId = data.data[n].serviceCode
         let productName = data.data[n].serviceName
         dataService.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -68,13 +72,14 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
           disc3: data.data[n].disc3,
           total: posTotal(data.data[n])
         })
-      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
-        let productId = '-'
-        let productName = '-'
-        dataService.push({
+      } else if (data.data[n].bundlingId !== null) {
+        let productId = data.data[n].productCode
+        let productName = data.data[n].productName
+        dataGroup.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -96,6 +101,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   const invoiceInfo = {
     dataPos,
     dataService,
+    dataGroup: groupProduct(dataGroup),
     transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
     gender: data.memberPrint.gender,
@@ -120,7 +126,11 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   return (
     <div className={styles.invoiceMini}>
       <Header invoiceInfo={invoiceInfo} />
-      <Body dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <Body
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+        dataGroup={invoiceInfo.dataGroup || []}
+      />
       <Total
         posData={posData}
         listAmount={listAmount}
