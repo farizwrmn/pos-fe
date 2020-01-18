@@ -7,6 +7,7 @@ import Header from './Header'
 import Body from './Body'
 import Total from './Total'
 import Footer from './Footer'
+import MerchantCopy from './MerchantCopy'
 import Member from './Member'
 
 const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
@@ -129,6 +130,12 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
       />
       <div className={styles.separator} />
       <Footer />
+      <MerchantCopy
+        posData={posData}
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+        invoiceInfo={invoiceInfo}
+      />
       <Member invoiceInfo={invoiceInfo} />
     </div>
   )
