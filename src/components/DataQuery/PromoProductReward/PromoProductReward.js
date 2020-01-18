@@ -127,6 +127,18 @@ const PromoProductReward = ({
 
   const queryView = () => {
     dispatch({
+      type: 'bundlingRules/updateState',
+      payload: {
+        listRules: []
+      }
+    })
+    dispatch({
+      type: 'bundlingReward/updateState',
+      payload: {
+        listReward: []
+      }
+    })
+    dispatch({
       type: 'bundlingRules/query',
       payload: {
         type: 'all',
