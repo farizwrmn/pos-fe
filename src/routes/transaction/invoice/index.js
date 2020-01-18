@@ -9,16 +9,21 @@ import Total from './Total'
 import Footer from './Footer'
 import Member from './Member'
 
-const Invoice = ({ pos, app, payment }) => {
+const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
     posData
   } = pos
+  const {
+    listAmount
+  } = paymentDetail
+  const {
+    listOpts
+  } = paymentOpts
   const { storeInfo } = app
   const { companyInfo } = payment
-
   const data = {
     posData,
     data: listPaymentDetail.data,
@@ -115,7 +120,13 @@ const Invoice = ({ pos, app, payment }) => {
     <div className={styles.invoiceMini}>
       <Header invoiceInfo={invoiceInfo} />
       <Body dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
-      <Total posData={posData} dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <Total
+        posData={posData}
+        listAmount={listAmount}
+        listOpts={listOpts}
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+      />
       <div className={styles.separator} />
       <Footer />
       <Member invoiceInfo={invoiceInfo} />
@@ -123,4 +134,18 @@ const Invoice = ({ pos, app, payment }) => {
   )
 }
 
-export default connect(({ pos, payment, loading, app }) => ({ pos, payment, loading, app }))(Invoice)
+export default connect(({
+  pos,
+  payment,
+  paymentOpts,
+  paymentDetail,
+  loading,
+  app
+}) => ({
+  pos,
+  payment,
+  paymentOpts,
+  paymentDetail,
+  loading,
+  app
+}))(Invoice)

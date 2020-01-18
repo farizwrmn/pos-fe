@@ -3,6 +3,7 @@ import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
+import { queryPaymentSplit } from 'services/payment/payment'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import {
@@ -456,7 +457,35 @@ export default {
       const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const mechanic = payload.data.technicianId ? yield call(queryMechanicCode, payload.data.technicianId) : {}
-      if (data) {
+      let dataPayment = []
+      if (data && PosData && PosData.success) {
+        const payment = yield call(queryPaymentSplit, {
+          id: PosData.pos.transNo,
+          transNo: PosData.pos.transNo,
+          storeId: lstorage.getCurrentUserStore()
+        })
+        for (let n = 0; n < payment.data.length; n += 1) {
+          dataPayment.push({
+            no: n + 1,
+            id: payment.data[n].id,
+            cashierTransId: payment.data[n].cashierTransId,
+            active: payment.data[n].active,
+            storeId: payment.data[n].storeId,
+            transDate: payment.data[n].transDate,
+            transTime: payment.data[n].transTime,
+            typeCode: payment.data[n].typeCode,
+            cardNo: payment.data[n].cardNo,
+            cardName: payment.data[n].cardName,
+            description: payment.data[n].description,
+            paid: payment.data[n].paid || 0
+          })
+        }
+        yield put({
+          type: 'paymentDetail/updateState',
+          payload: {
+            listAmount: dataPayment
+          }
+        })
         yield put({
           type: 'querySuccessPaymentDetail',
           payload: {

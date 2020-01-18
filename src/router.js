@@ -605,6 +605,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/accounts/detail/paymentDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/transaction/invoice/'))
             }, 'transaction-pos-invoice-print')
           }

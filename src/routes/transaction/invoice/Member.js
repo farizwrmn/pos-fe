@@ -8,8 +8,6 @@ const Member = ({
   invoiceInfo
 }) => {
   if (!invoiceInfo) return null
-  console.log('invoiceInfo', invoiceInfo)
-
   return (
     <div className={styles.amountSection}>
       <Row>
