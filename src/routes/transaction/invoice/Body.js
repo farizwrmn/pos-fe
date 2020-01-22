@@ -1,10 +1,9 @@
 import React from 'react'
 import BodyItem from './BodyItem'
+import Group from './Group'
 import styles from './index.less'
 
 const Body = ({ dataPos = [], dataService = [], dataGroup = [] }) => {
-  console.log('dataGroup', dataGroup)
-
   return (
     <div>
       <div className={styles.borderedSection}>
@@ -20,7 +19,7 @@ const Body = ({ dataPos = [], dataService = [], dataGroup = [] }) => {
         })}
         {dataGroup && dataGroup.map((item, index) => {
           return (
-            <BodyItem key={index} item={item} />
+            <Group key={index} item={item} />
           )
         })}
       </div>

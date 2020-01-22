@@ -10,9 +10,10 @@ const Total = ({
   listOpts = [],
   posData = {},
   dataPos = [],
-  dataService = []
+  dataService = [],
+  dataGroup = []
 }) => {
-  const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
+  const merge = dataPos.concat(dataService).concat(dataGroup)
   let TotalQty = merge.reduce((cnt, o) => cnt + o.qty, 0)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)

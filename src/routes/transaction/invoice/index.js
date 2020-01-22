@@ -46,6 +46,8 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
           code: productId,
           name: productName,
           bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -63,6 +65,8 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
           code: productId,
           name: productName,
           bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -80,6 +84,8 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
           code: productId,
           name: productName,
           bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -137,6 +143,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
         listOpts={listOpts}
         dataPos={invoiceInfo.dataPos || []}
         dataService={invoiceInfo.dataService || []}
+        dataGroup={invoiceInfo.dataGroup || []}
       />
       <div className={styles.separator} />
       <Footer />

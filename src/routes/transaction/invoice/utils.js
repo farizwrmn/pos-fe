@@ -8,15 +8,26 @@ const chooseOnePaymentType = (type = 'C', list = []) => {
   return 'Cash'
 }
 
-const group = (data, key) => {
+const group = (data, key, secondaryKey) => {
   return _.reduce(data, (group, item) => {
-    (group[item[key]] = group[item[key]] || []).push(item)
+    (group[`${item[secondaryKey]} - ${item[key]}`] = group[`${item[secondaryKey]} - ${item[key]}`] || []).push(item)
     return group
   }, [])
 }
 
 const groupProduct = (list) => {
-  return group(list, 'bundlingId')
+  const listGroup = group(list, 'bundlingCode', 'bundlingName')
+  let newList = []
+  for (let key in listGroup) {
+    const price = listGroup[key].reduce((prev, next) => prev + next.total, 0)
+    newList.push({
+      key,
+      detail: listGroup[key],
+      price,
+      total: price
+    })
+  }
+  return newList
 }
 
 export {
