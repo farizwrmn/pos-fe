@@ -106,7 +106,12 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('paymentOption', {
-              initialValue: item.typeCode ? item.typeCode : 'C'
+              initialValue: item.typeCode ? item.typeCode : 'C',
+              rules: [
+                {
+                  required: true
+                }
+              ]
             })(
               // <Select onChange={() => changeMethod()} style={{ width: '100%', fontSize: '14pt' }}>
               //   {options.map(list => <Option value={list.typeCode}>{`${list.typeName} (${list.typeCode})`}</Option>)}

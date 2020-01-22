@@ -99,7 +99,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
         payload: {
           dataPos,
           dataService,
-          transDatePrint: moment(posData.transDate).format('DD/MM/YYYY'),
+          transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
           memberId: data.memberPrint.memberCode,
           gender: data.memberPrint.gender,
           company: data.companyPrint,

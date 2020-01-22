@@ -7,17 +7,25 @@ import Header from './Header'
 import Body from './Body'
 import Total from './Total'
 import Footer from './Footer'
+import MerchantCopy from './MerchantCopy'
+import Member from './Member'
+import { groupProduct } from './utils'
 
-const Invoice = ({ pos, app, payment }) => {
+const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
     posData
   } = pos
+  const {
+    listAmount
+  } = paymentDetail
+  const {
+    listOpts
+  } = paymentOpts
   const { storeInfo } = app
   const { companyInfo } = payment
-
   const data = {
     posData,
     data: listPaymentDetail.data,
@@ -27,15 +35,19 @@ const Invoice = ({ pos, app, payment }) => {
   }
   let dataPos = []
   let dataService = []
+  let dataGroup = []
   if (data && data.data) {
     for (let n = 0; n < data.data.length; n += 1) {
-      if (data.data[n].serviceCode === null || data.data[n].serviceName === null || data.data[n].productCode !== null || data.data[n].productName !== null) {
+      if (data.data[n].productCode !== null && data.data[n].bundlingId === null) {
         let productId = data.data[n].productCode
         let productName = data.data[n].productName
         dataPos.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -45,13 +57,16 @@ const Invoice = ({ pos, app, payment }) => {
           disc3: data.data[n].disc3,
           total: posTotal(data.data[n])
         })
-      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode !== null || data.data[n].serviceName !== null) {
+      } else if (data.data[n].serviceCode !== null && data.data[n].bundlingId === null) {
         let productId = data.data[n].serviceCode
         let productName = data.data[n].serviceName
         dataService.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -61,13 +76,16 @@ const Invoice = ({ pos, app, payment }) => {
           disc3: data.data[n].disc3,
           total: posTotal(data.data[n])
         })
-      } else if (data.data[n].productCode === null || data.data[n].productName === null || data.data[n].serviceCode === null || data.data[n].serviceName === null) {
-        let productId = '-'
-        let productName = '-'
-        dataService.push({
+      } else if (data.data[n].bundlingId !== null) {
+        let productId = data.data[n].productCode
+        let productName = data.data[n].productName
+        dataGroup.push({
           no: '',
           code: productId,
           name: productName,
+          bundlingId: data.data[n].bundlingId,
+          bundlingCode: data.data[n].bundlingCode,
+          bundlingName: data.data[n].bundlingName,
           qty: data.data[n].qty,
           price: data.data[n].sellingPrice,
           sellPrice: data.data[n].sellPrice,
@@ -89,7 +107,8 @@ const Invoice = ({ pos, app, payment }) => {
   const invoiceInfo = {
     dataPos,
     dataService,
-    transDatePrint: moment(posData.transDate || '').format('DD-MM-YYYY'),
+    dataGroup: groupProduct(dataGroup),
+    transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
     gender: data.memberPrint.gender,
     company: data.companyPrint,
@@ -113,12 +132,44 @@ const Invoice = ({ pos, app, payment }) => {
   return (
     <div className={styles.invoiceMini}>
       <Header invoiceInfo={invoiceInfo} />
-      <Body dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
-      <Total posData={posData} dataPos={invoiceInfo.dataPos || []} dataService={invoiceInfo.dataService || []} />
+      <Body
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+        dataGroup={invoiceInfo.dataGroup || []}
+      />
+      <Total
+        posData={posData}
+        listAmount={listAmount}
+        listOpts={listOpts}
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+        dataGroup={invoiceInfo.dataGroup || []}
+      />
       <div className={styles.separator} />
       <Footer />
+      <MerchantCopy
+        posData={posData}
+        dataPos={invoiceInfo.dataPos || []}
+        dataService={invoiceInfo.dataService || []}
+        invoiceInfo={invoiceInfo}
+      />
+      <Member invoiceInfo={invoiceInfo} />
     </div>
   )
 }
 
-export default connect(({ pos, payment, loading, app }) => ({ pos, payment, loading, app }))(Invoice)
+export default connect(({
+  pos,
+  payment,
+  paymentOpts,
+  paymentDetail,
+  loading,
+  app
+}) => ({
+  pos,
+  payment,
+  paymentOpts,
+  paymentDetail,
+  loading,
+  app
+}))(Invoice)
