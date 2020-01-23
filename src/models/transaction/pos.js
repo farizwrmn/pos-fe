@@ -3,6 +3,7 @@ import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
+import { allowPrint } from 'utils/validation'
 import { queryPaymentSplit } from 'services/payment/payment'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
@@ -549,8 +550,13 @@ export default {
             })
           }
         }
-        if (type === 'print') {
+        const isAllow = allowPrint(PosData.pos.printNo, PosData.pos.printLimit)
+        if (type === 'print' && isAllow) {
           window.print()
+          window.close()
+        }
+        if (!isAllow) {
+          window.close()
         }
       }
     },
