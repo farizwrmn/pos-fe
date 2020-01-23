@@ -553,7 +553,7 @@ export default {
         const isAllow = allowPrint(PosData.pos.printNo, PosData.pos.printLimit)
         if (type === 'print' && isAllow) {
           window.print()
-          window.close()
+          window.onafterprint = () => { window.close() }
         }
         if (!isAllow) {
           window.close()

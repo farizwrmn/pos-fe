@@ -79,11 +79,6 @@ export default {
             listOpts: data.data
           }
         })
-      } else {
-        Modal.error({
-          title: 'Cannot find payment method',
-          content: 'Using default setting'
-        })
       }
     }
   },
