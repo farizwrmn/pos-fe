@@ -8,7 +8,11 @@ const Header = ({ invoiceInfo }) => {
   return (
     <div>
       <div className={styles.center}>
-        <div className={styles.title}>K3MART.ID</div>
+        <img
+          src="/invoice-logo.png"
+          style={{ height: '100%', width: '100%' }}
+          alt="K3MART.ID"
+        />
         <div className={styles.subtitle}>{storeInfo ? storeInfo.name : null}</div>
       </div>
       <div className={styles.separator} />
