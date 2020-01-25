@@ -1,4 +1,4 @@
-import { request, config, crypt, lstorage } from '../../utils'
+import { request, config, crypt } from '../../utils'
 
 const { apiPromo } = config.rest
 
