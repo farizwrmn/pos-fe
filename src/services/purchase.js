@@ -24,6 +24,17 @@ export async function queryDetail (params) {
   })
 }
 
+export async function queryDetailByProductId (params) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${purchaseDetail}/latest/product`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function create (params) {
   const storeId = lstorage.getCurrentUserStore()
   params.data.storeId = storeId

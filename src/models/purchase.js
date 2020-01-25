@@ -2,7 +2,17 @@ import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { lstorage, configMain, alertModal } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, create, editPurchase, remove, queryHistories, queryHistory, queryHistoryDetail } from '../services/purchase'
+import {
+  query,
+  queryDetail,
+  create,
+  editPurchase,
+  remove,
+  queryHistories,
+  queryHistory,
+  queryHistoryDetail,
+  queryDetailByProductId
+} from '../services/purchase'
 import { pageModel } from './common'
 import { query as queryProducts } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
@@ -56,6 +66,7 @@ export default modelExtend(pageModel, {
     },
     datePicker: '',
     purchaseHistory: {},
+    listPurchaseLatestDetail: [],
     listPurchaseHistoryDetail: [],
     listPurchaseHistories: [],
     modalPrintInvoice: false,
@@ -105,6 +116,20 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw data
+      }
+    },
+
+    * getPurchaseLatestDetail ({ payload }, { call, put }) {
+      const response = yield call(queryDetailByProductId, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseLatestDetail: response.data
+          }
+        })
+      } else {
+        throw response
       }
     },
 
