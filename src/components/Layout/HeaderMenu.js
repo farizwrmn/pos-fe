@@ -11,7 +11,7 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
     </div>
   )
   const childComp = (
-    <Link to={clickRoute}>
+    <Link to={clickRoute} className={styles.link}>
       <Tooltip placement="leftBottom" title={prompt}>
         <div data-count={total > 99 ? '99+' : total}
           className={separator ?

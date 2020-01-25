@@ -37,11 +37,18 @@
   right: -7px;
 }
 
+.link {
+  color: @text-color;
+  &:hover {
+    color: @primary-color;
+  }
+}
+
 .button {
   cursor: pointer;
   transition: @transition-ease-in;
   & a {
-    color: #000;
+    color: #000 !important;
   }
   &:hover {
     color: @primary-color;
@@ -57,6 +64,9 @@
     background-color: @pastelgreen;
   }
   &.shortcut {
+    background-color: @yellow;
+  }
+  &.minStock {
     background-color: @wewak;
   }
   &.notification {

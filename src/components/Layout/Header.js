@@ -236,6 +236,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
           }
         />
         <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
+        <HeaderMenu prompt="minimum stock" icon="minus-circle-o" clickRoute="/report/product/stock/quantity-alerts" addClass="minStock" />
         {/* <HeaderMenu prompt="notification"
           icon="bell"
           {...notificationPopContent}

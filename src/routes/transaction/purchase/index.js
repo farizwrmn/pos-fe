@@ -7,13 +7,34 @@ import PurchaseList from './PurchaseList'
 
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
-    item, paginationSupplier, supplierInformation, pagination, listProduct, rounding, dataBrowse, listSupplier, tmpSupplierData, date, datePicker, modalProductVisible,
-    modalPurchaseVisible, searchText, searchTextSupplier, discPRC, discNML, curDiscPercent, curDiscNominal, curHead
+    item,
+    paginationSupplier,
+    supplierInformation,
+    pagination,
+    listProduct,
+    rounding,
+    dataBrowse,
+    listSupplier,
+    tmpSupplierData,
+    date,
+    datePicker,
+    modalProductVisible,
+    modalPurchaseVisible,
+    searchText,
+    searchTextSupplier,
+    discPRC,
+    discNML,
+    curDiscPercent,
+    curDiscNominal,
+    curHead,
+    listPurchaseLatestDetail
   } = purchase
 
   const purchaseProps = {
     date,
     datePicker,
+    listPurchaseLatestDetail,
+    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
     searchTextSupplier,
     paginationSupplier,
     item: item || '',
@@ -189,6 +210,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         type: 'purchase/modalEditShow',
         payload: {
           data
+        }
+      })
+      dispatch({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: data.code
         }
       })
     }
