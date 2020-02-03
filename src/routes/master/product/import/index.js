@@ -78,8 +78,8 @@ const ImportStock = ({
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[3]
-              const qty = row.values[11]
-              const price = row.values[12]
+              const qty = row.values[12]
+              const price = row.values[13]
               if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(qty) > 0 && Number(price) > 0) {
                 const data = {
                   productId: Number(productId),
@@ -125,10 +125,10 @@ const ImportStock = ({
               const distPrice01 = row.values[7]
               const distPrice02 = row.values[8]
               const distPrice03 = row.values[9]
-              const brandId = row.values[9]
-              const categoryId = row.values[10]
-              const trackQty = row.values[11]
-              const alertQty = row.values[12]
+              const brandId = row.values[10]
+              const categoryId = row.values[11]
+              const trackQty = row.values[12]
+              const alertQty = row.values[13]
               if (rowIndex >= 7) {
                 const data = {
                   productCode,
