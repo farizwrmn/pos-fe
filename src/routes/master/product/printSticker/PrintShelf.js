@@ -5,16 +5,19 @@ import { BasicReportCard } from 'components'
 import { currencyFormatter } from 'utils/string'
 import { name } from 'utils/config.main'
 
+const NUMBER_OF_COLUMN = 5
+const NUMBER_OF_PRODUCT_NAME = 28
+
 const PrintShelf = ({ stickers, user, aliases }) => {
   const createTableBody = (tableBody) => {
     let body = []
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
-          const maxStringPerRow1 = tableBody[key].info.productName.slice(0, 28).toString()
+          const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
           let maxStringPerRow2 = ' '
-          if (tableBody[key].info.productName.toString().length > 28) {
-            maxStringPerRow2 = tableBody[key].info.productName.slice(28, 60).toString()
+          if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
+            maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 60).toString()
           }
           let row = [
             { text: maxStringPerRow1, style: 'productName1', alignment: 'center' },
@@ -40,7 +43,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
             ]
           })
-          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'center' })
+          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'right' })
           body.push(row)
         }
       }
@@ -50,23 +53,23 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const styles = {
     info: {
       alignment: 'left',
-      fontSize: 8
+      fontSize: 7
     },
     sellPrice: {
       bold: true,
       alignment: 'center',
-      fontSize: 20,
-      margin: [0, 10]
+      fontSize: 12,
+      margin: [0, 5]
     },
     productName1: {
       alignment: 'center',
-      fontSize: 13,
+      fontSize: 7,
       margin: [0, 5, 0, 0]
     },
     productName2: {
       alignment: 'center',
-      fontSize: 13,
-      margin: [0, 0, 0, 15]
+      fontSize: 7,
+      margin: [0, 0, 0, 9]
     },
     others: {
       fontSize: 12,
@@ -75,7 +78,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     },
     productCode: {
       fontSize: 9,
-      margin: [5, 0],
+      margin: [0, 0],
       alignment: 'left'
     }
   }
@@ -123,7 +126,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
 
   let getList = []
   const getThree = (x, y) => {
-    if (tableBody.slice(x, y).length < 3) {
+    if (tableBody.slice(x, y).length < NUMBER_OF_COLUMN) {
       for (let i = x; i < y; i += 1) {
         tableBody[i] = tableBody[i] || []
       }
@@ -135,17 +138,20 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   }
 
   let x = 0
-  let y = 3
-  for (let i = 0; i < Math.ceil(tableBody.length / 3); i += 1) {
+  let y = NUMBER_OF_COLUMN
+  for (let i = 0; i < Math.ceil(tableBody.length / NUMBER_OF_COLUMN); i += 1) {
     getThree(x, y)
-    x += 3
-    y += 3
+    x += NUMBER_OF_COLUMN
+    y += NUMBER_OF_COLUMN
   }
+
+  const WIDTH_TABLE = (5 / 2.54) * 72
+  const HEIGHT_TABLE = (4 / 2.54) * 72
 
   const pdfProps = {
     name: 'Print',
-    width: [260, 260, 260],
-    height: 150,
+    width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
+    height: HEIGHT_TABLE,
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [17, 70, 17, 70],
