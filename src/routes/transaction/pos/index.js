@@ -14,8 +14,7 @@ import {
   Card,
   Button,
   Tag,
-  Modal,
-  Select
+  Modal
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
@@ -1345,16 +1344,10 @@ const Pos = ({
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
               <Col md={24} lg={12}>
-                <FormItem label="Tax" {...formItemLayout1}>
-                  <Select
-                    defaultValue={dineInTax}
-                    style={{ width: '100%' }}
-                    onChange={handleChangeDineIn}
-                  >
-                    <Select.Option value={0}>Take Away (0%)</Select.Option>
-                    <Select.Option value={10}>Dine In (+10%)</Select.Option>
-                  </Select>
-                </FormItem>
+                <Button.Group>
+                  <Button size="large" onClick={() => handleChangeDineIn(0)} type={dineInTax === 0 ? 'primary' : 'secondary'}>Take Away (0%)</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(10)} type={dineInTax && dineInTax === 10 ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
+                </Button.Group>
               </Col>
               <Col md={24} lg={12}>
                 <div style={{ textAlign: 'right' }}>
