@@ -1,6 +1,6 @@
 import { request, config, crypt } from 'utils'
 
-const { importstock } = config.api
+const { importstock, adjust } = config.api
 
 export async function queryCode (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -26,6 +26,16 @@ export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: importstock,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function opnameStock (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${adjust}/opname`,
     method: 'post',
     data: params,
     headers: apiHeaderToken
