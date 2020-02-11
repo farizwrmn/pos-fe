@@ -1,15 +1,18 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import {
   query,
   add,
-  executeList,
+  opnameStock,
   edit,
   remove
 } from 'services/master/importstock'
 import { bulkInsert } from 'services/master/productstock'
+import { queryLastActive } from 'services/period'
+import { getDateTime } from 'services/setting/time'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
+import moment from 'moment'
 
 const success = () => {
   message.success('Stock has been saved')
@@ -98,16 +101,51 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * execute (payload, { call, put }) {
-      const response = yield call(executeList, {
-        storeId: lstorage.getCurrentUserStore()
+    * execute (payload, { call, put, select }) {
+      const list = yield select(({ importstock }) => importstock.list)
+      console.log('list', list)
+      const store = lstorage.getCurrentUserStore()
+      const period = yield call(queryLastActive)
+      let startPeriod
+      if (period.data[0]) {
+        startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
+      }
+      const time = yield call(getDateTime, {
+        id: 'date'
       })
-      if (response && response.success) {
-        yield put({
-          type: 'query'
+      if (moment(time.data).format('YYYY-MM-DD') >= startPeriod) {
+        const stock = {
+          date: {
+            from: startPeriod,
+            to: time.data
+          },
+          store
+        }
+        const detail = list.map(item => ({
+          storeId: item.storeId,
+          productId: item.productId,
+          productCode: item.product.productCode,
+          productName: item.product.productName,
+          qty: item.qty,
+          sellingPrice: item.price
+        }))
+
+        const response = yield call(opnameStock, {
+          stock,
+          detail
         })
+        if (response && response.success) {
+          yield put({
+            type: 'query'
+          })
+        } else {
+          throw response
+        }
       } else {
-        throw response
+        Modal.warning({
+          title: 'Period Has been closed',
+          content: 'can`t insert new transaction'
+        })
       }
     },
 
