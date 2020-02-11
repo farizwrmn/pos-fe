@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
 import { connect } from 'dva'
 import {
@@ -61,7 +62,7 @@ const ImportStock = ({
 
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS data={listPrintAllStock} name="Export Template" {...printProps} />)
+    ? (<PrintXLS data={listPrintAllStock} name="Export Opname Template" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Data</Button>)
 
   const handleChangeFile = (event) => {
@@ -176,24 +177,34 @@ const ImportStock = ({
       <Row>
         <Col span={12}>
           {buttonClickXLS}
-          <input
-            type="file"
-            className="ant-btn ant-btn-default ant-btn-lg"
-            {...uploadProps}
-            onChange={handleChangeFile}
-          />
+          <div>
+            <label htmlFor="opname" className="ant-btn ant-btn-default ant-btn-lg" style={{ padding: '0.5em' }}>Select File</label>
+            <input
+              id="opname"
+              type="file"
+              className="ant-btn ant-btn-default ant-btn-lg"
+              style={{ visibility: 'hidden' }}
+              {...uploadProps}
+              onChange={handleChangeFile}
+            />
+          </div>
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <ProductXLS data={[]} name="Export Product Template" {...printProps} />
-          <input
-            type="file"
-            style={{
-              float: 'right'
-            }}
-            className="ant-btn ant-btn-default ant-btn-lg"
-            {...uploadProps}
-            onChange={handleImportProduct}
-          />
+          <div>
+            <label htmlFor="uploadProduct" className="ant-btn ant-btn-default ant-btn-lg" style={{ padding: '0.5em' }}>Select File</label>
+            <input
+              id="uploadProduct"
+              type="file"
+              style={{
+                visibility: 'hidden',
+                float: 'right'
+              }}
+              className="ant-btn ant-btn-default ant-btn-lg"
+              {...uploadProps}
+              onChange={handleImportProduct}
+            />
+          </div>
         </Col>
       </Row>
       <List {...listProps} />
