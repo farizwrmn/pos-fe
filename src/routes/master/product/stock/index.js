@@ -98,6 +98,7 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     user,
     pagination,
     storeInfo,
+    loadingModel: loading,
     loading: loading.effects['productstock/query'],
     location,
     onChange (page) {
