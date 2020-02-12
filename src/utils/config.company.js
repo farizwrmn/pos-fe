@@ -1,6 +1,6 @@
 const production = process.env.NODE_ENV === 'production'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
-const APICOMPANYHOST = production ? 'pos.marcotania.com' : 'localhost' // 'localhost'
+const APICOMPANYHOST = production ? 'pos.clarissaclothing.com' : 'localhost' // 'localhost'
 const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
