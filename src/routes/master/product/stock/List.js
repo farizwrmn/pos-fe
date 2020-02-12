@@ -1,17 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal, Tag, Icon } from 'antd'
+import { routerRedux } from 'dva/router'
 import { DropOption } from 'components'
 import moment from 'moment'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
-    } else if (e.key === '2') {
+    } if (e.key === '2') {
+      dispatch(routerRedux.push('/transaction/purchase/add'))
+    } if (e.key === '3') {
+      dispatch(routerRedux.push('/report/fifo/card'))
+    } else if (e.key === '4') {
       confirm({
         title: `Are you sure delete ${record.productName} ?`,
         onOk () {
@@ -41,6 +46,18 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'productName'
     },
     {
+      title: 'Qty',
+      dataIndex: 'count',
+      key: 'count',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loadingModel.effects['productstock/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
+    },
+    {
       title: 'Brand',
       dataIndex: 'brandName',
       key: 'brandName'
@@ -49,13 +66,6 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Category',
       dataIndex: 'categoryName',
       key: 'categoryName'
-    },
-    {
-      title: 'Aspect Ratio',
-      dataIndex: 'aspectRatio',
-      key: 'aspectRatio',
-      className: styles.alignRight,
-      render: text => text || '0'
     },
     {
       title: 'Sell Price',
@@ -108,56 +118,6 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Exception',
-      dataIndex: 'exception01',
-      key: 'exception01',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'True' : 'False'}</Tag>
-      }
-    },
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      key: 'image',
-      render: (text) => {
-        return text || 'no_image.png'
-      }
-    },
-    {
-      title: 'Dummy Code',
-      dataIndex: 'dummyCode',
-      key: 'dummyCode'
-    },
-    {
-      title: 'Dummy Name',
-      dataIndex: 'dummyName',
-      key: 'dummyName'
-    },
-    {
-      title: 'Brand ID',
-      dataIndex: 'brandId',
-      key: 'brandId'
-    },
-    {
-      title: 'Usage Period',
-      children: [
-        {
-          title: 'Day(s)',
-          dataIndex: 'usageTimePeriod',
-          key: 'usageTimePeriod',
-          className: styles.alignRight,
-          render: text => text || 0
-        },
-        {
-          title: 'KM',
-          dataIndex: 'usageMileage',
-          key: 'usageMileage',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        }
-      ]
-    },
-    {
       title: 'Created',
       children: [
         {
@@ -195,7 +155,17 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return (
+          <DropOption
+            onMenuClick={e => handleMenuClick(record, e)}
+            menuOptions={[
+              { key: '1', name: 'Edit' },
+              { key: '2', name: 'Purchase' },
+              { key: '3', name: 'History' },
+              { key: '4', name: 'Delete' }
+            ]}
+          />
+        )
       }
     }
   ]
