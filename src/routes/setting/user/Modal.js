@@ -36,6 +36,7 @@ const modal = ({
   currentUserRole = [],
   listUserRoleChange = {},
   listCheckedStores = [],
+  modalType,
   onOk,
   onChooseItem,
   visiblePopover = false,
@@ -325,6 +326,18 @@ const modal = ({
                   )}
                 </Col>
               </Row>
+            </FormItem>
+            <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('mobileNumber', {
+                initialValue: item.mobileNumber,
+                rules: [
+                  {
+                    required: true,
+                    pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                    message: 'mobile number is not valid'
+                  }
+                ]
+              })(<Input />)}
             </FormItem>
             <FormItem label="User Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('userName', {
