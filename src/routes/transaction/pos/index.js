@@ -13,7 +13,6 @@ import {
   Col,
   Card,
   Button,
-  Tag,
   Modal
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
@@ -28,6 +27,7 @@ import ModalVoidSuspend from './components/ModalVoidSuspend'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
+import BarcodeInput from './BarcodeInput'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -41,8 +41,8 @@ const formItemLayout1 = {
 }
 
 const keyMap = {
-  MEMBER: 'ctrl+alt+m',
-  PRODUCT: 'ctrl+alt+p'
+  MEMBER: 'ctrl+m',
+  PRODUCT: 'f2'
 }
 
 const Pos = ({
@@ -70,15 +70,12 @@ const Pos = ({
     modalMechanicVisible,
     modalProductVisible,
     modalPaymentVisible,
-    curBarcode,
     curQty,
     totalItem,
     curTotal,
     searchText,
     itemService,
     itemPayment,
-    kodeUtil,
-    infoUtil,
     memberInformation,
     memberUnitInfo,
     modalServiceListVisible,
@@ -157,22 +154,10 @@ const Pos = ({
 
   const hotKeysHandler = {
     MEMBER: () => {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'member',
-          infoUtil: 'Member'
-        }
-      })
+      document.getElementById('input-member').focus()
     },
     PRODUCT: () => {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'barcode',
-          infoUtil: 'Product'
-        }
-      })
+      document.getElementById('input-product').focus()
     }
   }
 
@@ -1137,7 +1122,7 @@ const Pos = ({
     }
   }
 
-  const handleKeyPress = async (e) => {
+  const handleKeyPress = async (e, kodeUtil) => {
     const { value } = e.target
     if (value && value !== '') {
       if (kodeUtil === 'barcode') {
@@ -1168,13 +1153,6 @@ const Pos = ({
           infoUtil: 'Product'
         }
       })
-    }
-  }
-
-  const onChange = (e) => {
-    const { value } = e.target
-    if (value !== '+') {
-      setCurBarcode(value, curQty)
     }
   }
 
@@ -1214,37 +1192,6 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
-  const changeUtil = () => {
-    if (kodeUtil === 'barcode') {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'member',
-          infoUtil: 'Member'
-        }
-      })
-      return
-    }
-
-    if (kodeUtil === 'member') {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'barcode',
-          infoUtil: 'Product'
-        }
-      })
-      return
-    }
-    dispatch({
-      type: 'pos/setUtil',
-      payload: {
-        kodeUtil: 'barcode',
-        infoUtil: 'Product'
-      }
-    })
-  }
-
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1268,59 +1215,44 @@ const Pos = ({
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col
-                  lg={4}
-                  md={2}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    display: 'flex',
-                    width: 'em',
-                    height: '3em'
-                  }}
-                >
-                  {infoUtil && (
-                    <Tag
-                      onClick={changeUtil}
-                      color="green"
-                    >
-                      {infoUtil}
-                    </Tag>
-                  )}
-                </Col>
                 <Col lg={14} md={24}>
-                  <Input size="large"
-                    autoFocus
-                    value={curBarcode}
-                    style={{ fontSize: 24, marginBottom: 8 }}
-                    placeholder="Search Code Here"
-                    onChange={e => onChange(e)}
-                    onPressEnter={e => handleKeyPress(e)}
-                  />
+                  <BarcodeInput onEnter={handleKeyPress} />
                 </Col>
                 <Col lg={6} md={24}>
-                  <Button
-                    type="primary"
-                    size="large"
-                    icon="barcode"
-                    onClick={handleProductBrowse}
+                  <div
                     style={{
-                      margin: '0px 5px'
+                      paddingTop: 5
                     }}
                   >
-                    Product
-                  </Button>
-                  <Button type="primary"
-                    size="large"
-                    icon="tool"
-                    onClick={handleServiceBrowse}
+                    <Button
+                      type="primary"
+                      size="medium"
+                      icon="barcode"
+                      onClick={handleProductBrowse}
+                      style={{
+                        margin: '0px 5px'
+                      }}
+                    >
+                      Product
+                    </Button>
+                  </div>
+
+                  <div
                     style={{
-                      margin: '0px 5px'
+                      paddingTop: 5
                     }}
                   >
-                    Service
-                  </Button>
+                    <Button type="primary"
+                      size="medium"
+                      icon="tool"
+                      onClick={handleServiceBrowse}
+                      style={{
+                        margin: '0px 5px'
+                      }}
+                    >
+                      Service
+                    </Button>
+                  </div>
                 </Col>
               </Row>
             </Form>
