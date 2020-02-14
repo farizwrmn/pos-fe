@@ -41,8 +41,8 @@ const formItemLayout1 = {
 }
 
 const keyMap = {
-  MEMBER: 'ctrl+alt+m',
-  PRODUCT: 'ctrl+alt+p'
+  MEMBER: 'ctrl+m',
+  PRODUCT: 'f2'
 }
 
 const Pos = ({
@@ -154,22 +154,10 @@ const Pos = ({
 
   const hotKeysHandler = {
     MEMBER: () => {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'member',
-          infoUtil: 'Member'
-        }
-      })
+      document.getElementById('input-member').focus()
     },
     PRODUCT: () => {
-      dispatch({
-        type: 'pos/setUtil',
-        payload: {
-          kodeUtil: 'barcode',
-          infoUtil: 'Product'
-        }
-      })
+      document.getElementById('input-product').focus()
     }
   }
 
