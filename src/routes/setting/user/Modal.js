@@ -227,8 +227,8 @@ const modal = ({
   )
 
   const targetKeys = listUserRoleTarget
-  const optionRole = listRole.length > 0
-    ? listRole.map(c => <Option value={c.key} disabled={!(listUserRole.includes(c.key))}>{c.title}</Option>)
+  const optionRole = listRole && listRole.length > 0
+    ? listRole.filter(filtered => filtered.key !== 'OWN').map(c => <Option value={c.key} disabled={!(listUserRole.includes(c.key))}>{c.title}</Option>)
     : []
   const hdlTransferAdd = (nextTargetKeys) => {
     currentUserRole = nextTargetKeys
@@ -413,7 +413,7 @@ const modal = ({
         </TabPane>
         <TabPane tab="Role" key="3">
           <Transfer
-            dataSource={listRole}
+            dataSource={listRole && listRole.filter(filtered => filtered.key !== 'OWN')}
             onChange={hdlTransferAdd}
             targetKeys={targetKeys}
             titles={['Source', 'Target']}
