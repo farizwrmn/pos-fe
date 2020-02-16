@@ -192,13 +192,20 @@ const ImportStock = ({
         <Col span={12} style={{ textAlign: 'right' }}>
           <ProductXLS data={[]} name="Export Product Template" {...printProps} />
           <div>
-            <label htmlFor="uploadProduct" className="ant-btn ant-btn-default ant-btn-lg" style={{ padding: '0.5em' }}>Select File</label>
+            <label
+              htmlFor="uploadProduct"
+              className="ant-btn ant-btn-default ant-btn-lg"
+              style={{
+                padding: '0.5em'
+              }}
+            >
+              Select File
+            </label>
             <input
               id="uploadProduct"
               type="file"
               style={{
-                visibility: 'hidden',
-                float: 'right'
+                visibility: 'hidden'
               }}
               className="ant-btn ant-btn-default ant-btn-lg"
               {...uploadProps}
