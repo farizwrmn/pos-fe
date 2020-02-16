@@ -101,12 +101,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * execute (payload, { call, put, select }) {
-      let list = yield select(({ importstock }) => importstock.list)
-      const importstock = yield call(query, { type: 'all' })
-      if (importstock && importstock.success && importstock.data) {
-        list = importstock.data
-      }
+    * execute (payload, { call, put }) {
       const store = lstorage.getCurrentUserStore()
       const period = yield call(queryLastActive)
       let startPeriod
@@ -124,18 +119,8 @@ export default modelExtend(pageModel, {
           },
           store
         }
-        const detail = list.map(item => ({
-          storeId: item.storeId,
-          productId: item.productId,
-          productCode: item.product.productCode,
-          productName: item.product.productName,
-          qty: item.qty,
-          sellingPrice: item.price
-        }))
-
         const response = yield call(opnameStock, {
-          stock,
-          detail
+          stock
         })
         if (response && response.success) {
           yield put({
