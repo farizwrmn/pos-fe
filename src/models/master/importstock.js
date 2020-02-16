@@ -102,8 +102,11 @@ export default modelExtend(pageModel, {
     },
 
     * execute (payload, { call, put, select }) {
-      const list = yield select(({ importstock }) => importstock.list)
-      console.log('list', list)
+      let list = yield select(({ importstock }) => importstock.list)
+      const importstock = yield call(query, { type: 'all' })
+      if (importstock && importstock.success && importstock.data) {
+        list = importstock.data
+      }
       const store = lstorage.getCurrentUserStore()
       const period = yield call(queryLastActive)
       let startPeriod
