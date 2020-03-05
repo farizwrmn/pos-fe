@@ -62,7 +62,7 @@ const PrintXLS = ({ data, storeInfo, name }) => {
     return body
   }
   const title = [
-    { value: 'LAPORAN DAFTAR KARYAWAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN DAFTAR CUSTOMER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
   ]
   const tableHeader = [

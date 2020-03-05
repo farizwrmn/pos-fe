@@ -47,8 +47,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       { text: 'ID', style: 'tableHeader' },
       { text: 'NAMA', style: 'tableHeader' },
       { text: 'POSISI', style: 'tableHeader' },
-      { text: 'ALAMAT', style: 'tableHeader' },
       { text: 'NO HP', style: 'tableHeader' },
+      { text: 'TANGGAL LAHIR', style: 'tableHeader' },
       { text: 'EMAIL', style: 'tableHeader' }
     ]
   ]
@@ -64,8 +64,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push({ text: (data.employeeId || '').toString(), alignment: 'left', style: 'tableBody' })
         row.push({ text: (data.employeeName || '').toString(), alignment: 'left', style: 'tableBody' })
         row.push({ text: (data.positionName || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.address01 || '').toString(), alignment: 'left', style: 'tableBody' })
-        row.push({ text: (data.phoneNumber || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.mobileNumber || '').toString(), alignment: 'left', style: 'tableBody' })
+        row.push({ text: (data.birthDate || '').toString(), alignment: 'left', style: 'tableBody' })
         row.push({ text: (data.email || '').toString(), alignment: 'left', style: 'tableBody' })
         body.push(row)
       }
