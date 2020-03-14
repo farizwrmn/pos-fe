@@ -385,6 +385,33 @@ const Routers = function ({ history, app }) {
             }, 'master-category-work-order')
           }
         }, {
+          path: 'balance/dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              cb(null, require('./routes/balance/dashboard/'))
+            }, 'balance-dashboard')
+          }
+        }, {
+          path: 'balance/current',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              cb(null, require('./routes/balance/balance/'))
+            }, 'balance-current')
+          }
+        }, {
+          path: 'balance/closing',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              cb(null, require('./routes/balance/closing/'))
+            }, 'balance-closing')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
