@@ -2,6 +2,11 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/balance/balance'
+import {
+  getActive,
+  open,
+  closed
+} from '../../services/balance/balanceProcess'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -31,21 +36,10 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/balance/current') {
-          if (activeKey === '1') {
-            dispatch({
-              type: 'query',
-              payload: other
-            })
-          }
-          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
+            type: 'active'
           })
         }
       })
@@ -68,6 +62,42 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * active (payload, { call, put }) {
+      const response = yield call(getActive)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * open ({ payload }, { call, put }) {
+      const response = yield call(open, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'active'
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * closed ({ payload }, { call, put }) {
+      const response = yield call(closed, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'active'
+        })
+      } else {
+        throw response
       }
     },
 
