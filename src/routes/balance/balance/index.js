@@ -14,7 +14,7 @@ const Container = ({ balance, dispatch, location }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
       dispatch({
-        type: `balance/${modalType}`,
+        type: 'balance/open',
         payload: {
           id,
           data
@@ -40,7 +40,7 @@ const Container = ({ balance, dispatch, location }) => {
 
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      {currentItem && currentItem.id && <Form {...formProps} />}
     </div>
   )
 }
