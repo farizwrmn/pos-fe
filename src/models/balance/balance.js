@@ -37,7 +37,10 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/balance/current' || pathname === '/balance/dashboard' || pathname === '/balance/closing') {
+        if (pathname === '/balance/current'
+          || pathname === '/balance/dashboard'
+          || pathname === '/balance/closing'
+          || pathname === '/transaction/pos') {
           dispatch({
             type: 'active'
           })
