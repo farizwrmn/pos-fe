@@ -4,19 +4,20 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const Container = ({ balance, dispatch, location }) => {
+const Container = ({ balance, shift, dispatch, location }) => {
   const { modalType, currentItem, disable } = balance
+  const { listShift } = shift
 
   const formProps = {
+    listShift: listShift || [],
     item: currentItem,
+    dispatch,
     modalType,
     disabled: `${modalType === 'edit' ? disable : ''}`,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (id, data) {
+    onSubmit (data) {
       dispatch({
         type: 'balance/open',
         payload: {
-          id,
           data
         }
       })
@@ -40,7 +41,9 @@ const Container = ({ balance, dispatch, location }) => {
 
   return (
     <div className="content-inner">
-      {currentItem && currentItem.id && <Form {...formProps} />}
+      {currentItem && currentItem.id ?
+        (<Form {...formProps} button="Close" />)
+        : (<Form {...formProps} button="Open" />)}
     </div>
   )
 }
@@ -53,4 +56,4 @@ Container.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ balance, loading, app }) => ({ balance, loading, app }))(Container)
+export default connect(({ balance, shift, loading, app }) => ({ balance, shift, loading, app }))(Container)

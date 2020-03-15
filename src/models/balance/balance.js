@@ -74,7 +74,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: response.data
+            currentItem: response.data || {}
           }
         })
       } else {
@@ -83,11 +83,14 @@ export default modelExtend(pageModel, {
     },
 
     * open ({ payload }, { call, put }) {
+      console.log('payload', payload)
+
       const response = yield call(open, payload)
       if (response && response.success) {
         yield put({
           type: 'active'
         })
+        yield put(routerRedux.push('/transaction/pos'))
       } else {
         throw response
       }

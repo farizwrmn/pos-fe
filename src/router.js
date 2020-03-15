@@ -401,6 +401,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
               cb(null, require('./routes/balance/balance/'))
             }, 'balance-current')
           }
