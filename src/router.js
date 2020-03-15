@@ -390,6 +390,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/app'))
               cb(null, require('./routes/balance/dashboard/'))
             }, 'balance-dashboard')
           }

@@ -44,7 +44,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/dashboard' || location.pathname === '/') {
+        if (location.pathname === '/dashboard' || location.pathname === '/' || location.pathname === '/balance/dashboard') {
           dispatch({
             type: 'query',
             payload: {

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -29,7 +29,6 @@ const FormComponent = ({
   onSubmit,
   onCancel,
   modalType,
-  disabled,
   button,
   form: {
     getFieldDecorator,
@@ -86,18 +85,6 @@ const FormComponent = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="ID" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('id', {
-              initialValue: item.id,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9_]{2,15}$/i,
-                  message: 'a-Z & 0-9'
-                }
-              ]
-            })(<Input disabled={disabled} maxLength={15} autoFocus />)}
-          </FormItem>
           <FormItem label="Supplier Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('supplierName', {
               initialValue: item.supplierName,
@@ -109,112 +96,6 @@ const FormComponent = ({
                 }
               ]
             })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem label="Payment Tempo" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('paymentTempo', {
-              initialValue: item.paymentTempo,
-              rules: [
-                {
-                  required: false,
-                  pattern: /^[0-9]{1,5}$/i,
-                  message: 'max: 99999'
-                }
-              ]
-            })(<InputNumber min={0} maxLength={5} style={{ width: '36%' }} />)}
-            <span className="ant-form-text" style={{ paddingLeft: '4px' }}>day(s)</span>
-          </FormItem>
-          <FormItem label="Address 1" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('address01', {
-              initialValue: item.address01,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                  message: 'a-Z & 0-9'
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem label="Address 2" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('address02', {
-              initialValue: item.address02,
-              rules: [
-                {
-                  pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
-                  message: 'a-Z & 0-9 min: 3 characters'
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem label="Province" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('state', {
-              initialValue: item.state,
-              rules: [
-                {
-                  pattern: /^[a-z0-9_-]{3,20}$/i,
-                  message: 'a-Z & 0-9'
-                }
-              ]
-            })(<Input maxLength={20} />)}
-          </FormItem>
-        </Col>
-        <Col {...column} >
-          <FormItem label="Post Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('zipCode', {
-              initialValue: item.zipCode,
-              rules: [
-                {
-                  pattern: /^[a-z0-9_-]{3,20}$/i,
-                  message: 'a-Z & 0-9 min: 3 characters'
-                }
-              ]
-            })(<Input maxLength={20} />)}
-          </FormItem>
-          <FormItem label="Tax ID" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxId', {
-              initialValue: item.taxId,
-              rules: [
-                {
-                  pattern: /^([0-9]{15,})+$/,
-                  message: 'invalid NPWP'
-                }
-              ]
-            })(<Input maxLength={15} />)}
-          </FormItem>
-          <FormItem label="Phone" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('phoneNumber', {
-              initialValue: item.phoneNumber,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                  message: 'Input a Phone No.[xxxx xxxx xxxx]'
-                }
-              ]
-            })(<Input maxLength={20} />)}
-          </FormItem>
-          <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('mobileNumber', {
-              initialValue: item.mobileNumber,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                  message: 'Input a Mobile No.[xxxx xxxx xxxx]'
-                }
-              ]
-            })(<Input maxLength={15} />)}
-          </FormItem>
-          <FormItem label="Email" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('email', {
-              initialValue: item.email,
-              rules: [
-                {
-                  pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-                  message: 'Email format is not valid'
-                }
-              ]
-            })(<Input maxLength={15} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
