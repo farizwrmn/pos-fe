@@ -37,7 +37,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/balance/current') {
+        if (pathname === '/balance/current' || pathname === '/balance/dashboard' || pathname === '/balance/closing') {
           dispatch({
             type: 'active'
           })
