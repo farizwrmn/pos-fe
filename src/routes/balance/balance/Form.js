@@ -68,18 +68,18 @@ const FormComponent = ({
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          if (button === 'Open') {
+      if (button === 'Open') {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
             onSubmit(data)
             resetFields()
-          } else {
-            dispatch(routerRedux.push('/balance/closing'))
-          }
-        },
-        onCancel () { }
-      })
+          },
+          onCancel () { }
+        })
+      } else {
+        dispatch(routerRedux.push('/balance/closing'))
+      }
     })
   }
 
