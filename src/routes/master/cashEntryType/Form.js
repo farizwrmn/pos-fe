@@ -91,7 +91,7 @@ const FormCounter = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  pattern: /^[a-z0-9-/]{1,9}$/i
                 }
               ]
             })(<Input maxLength={3} autoFocus />)}
