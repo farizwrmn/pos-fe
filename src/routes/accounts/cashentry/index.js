@@ -2,26 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, message, Modal, Tabs, Icon, Row, Col, Card } from 'antd'
-import { color, isEmptyObject, lstorage } from 'utils'
+import { Button, message, Modal, Tabs, Icon } from 'antd'
+import { color, lstorage } from 'utils'
 import moment from 'moment'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
-import ModalShift from './ModalShift'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier, loading, dispatch, location, app }) => {
+const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
   const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
-  const {
-    modalShiftVisible,
-    dataCashierTrans,
-    listCashier,
-    curCashierNo,
-    cashierBalance,
-    cashierInformation
-  } = pos
 
   let currentCashier = {
     cashierId: null,
@@ -35,7 +26,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     cashActive: null
   }
 
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
   let infoCashRegister = {}
   infoCashRegister.title = 'Cashier Information'
   infoCashRegister.titleColor = color.normal
@@ -66,8 +56,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
         </span>
       </span>)
   }
-  const { listShift } = shift
-  const { listCounter } = counter
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode } = accountCode
@@ -182,48 +170,32 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
         }
       })
     },
-    addModalItem (data, inputType) {
+    addModalItem (data) {
       data.no = (listItem || []).length + 1
-      const currentTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0)
-      if ((parseFloat(currentTotal) + parseFloat(data.amountOut || 0) + parseFloat(cashierBalance.cashOut || 0)) > (parseFloat(cashierBalance.cashIn || 0) + parseFloat(cashierInformation.openingBalance || 0)) && inputType === 'E') {
-        Modal.warning({
-          title: 'Cash out is bigger than current balance',
-          content: 'Please recount your cash'
-        })
-      } else {
-        listItem.push(data)
-        dispatch({
-          type: 'cashentry/updateState',
-          payload: {
-            modalVisible: false,
-            modalType: 'add',
-            listItem,
-            currentItemList: {}
-          }
-        })
-        message.success('success add item')
-      }
+      listItem.push(data)
+      dispatch({
+        type: 'cashentry/updateState',
+        payload: {
+          modalVisible: false,
+          modalType: 'add',
+          listItem,
+          currentItemList: {}
+        }
+      })
+      message.success('success add item')
     },
-    editModalItem (data, inputType) {
-      const currentTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0)
-      if (((currentTotal - listItem[data.no - 1].amountOut) + parseFloat(data.amountOut || 0) + parseFloat(cashierBalance.cashOut || 0)) > (parseFloat(cashierBalance.cashIn || 0) + parseFloat(cashierInformation.openingBalance || 0)) && inputType === 'E') {
-        Modal.warning({
-          title: 'Cash out is bigger than current balance',
-          content: 'Please recount your cash'
-        })
-      } else {
-        listItem[data.no - 1] = data
-        dispatch({
-          type: 'cashentry/updateState',
-          payload: {
-            modalVisible: false,
-            modalType: 'add',
-            listItem,
-            currentItemList: {}
-          }
-        })
-        message.success('success edit item')
-      }
+    editModalItem (data) {
+      listItem[data.no - 1] = data
+      dispatch({
+        type: 'cashentry/updateState',
+        payload: {
+          modalVisible: false,
+          modalType: 'add',
+          listItem,
+          currentItemList: {}
+        }
+      })
+      message.success('success edit item')
     }
   }
   const listDetailProps = {
@@ -245,8 +217,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
       dispatch({
         type: `cashentry/${modalType}`,
         payload: {
-          cashierBalance,
-          cashierInformation,
           inputType,
           data,
           detail,
@@ -339,48 +309,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     }
   }
 
-  const modalShiftProps = {
-    item: dataCashierTrans,
-    listCashier,
-    listShift,
-    listCounter,
-    curCashierNo,
-    currentCashier,
-    visible: modalShiftVisible,
-    cashierId: user.userid,
-    infoCashRegister,
-    dispatch,
-    loading,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    getCashier () {
-      dispatch({
-        type: 'pos/loadDataPos'
-      })
-    },
-    onBack () {
-      dispatch({ type: 'pos/backPrevious' })
-    },
-    onCancel () {
-      Modal.error({
-        title: 'Error',
-        content: 'Please Use Confirm Button...!'
-      })
-    },
-    onOk (data) {
-      dispatch({
-        type: 'pos/cashRegister',
-        payload: data
-      })
-    },
-    findShift () {
-      dispatch({ type: 'shift/query' })
-    },
-    findCounter () {
-      dispatch({ type: 'counter/query' })
-    }
-  }
-
   let moreButtonTab
   if (activeKey === '0') {
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
@@ -390,17 +318,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab={`Form ${modalType === 'add' ? 'Add' : 'Update'}`} key="0" >
-          <Row>
-            <Card bordered={false} noHovering style={{ fontWeight: '600', color: color.charcoal }}>
-              <Row>
-                <Col span={2}># {currentCashier.id} </Col>
-                <Col sm={5} md={5} lg={5}>Opening Balance : {currentCashier.openingBalance}</Col>
-                <Col sm={5} md={5} lg={5}>Cash In : {cashierBalance.cashIn}</Col>
-                <Col sm={5} md={5} lg={5}>Cash Out : {cashierBalance.cashOut}</Col>
-                <Col sm={5} md={5} lg={5}>Date : {currentCashier.period}</Col>
-              </Row>
-            </Card>
-          </Row>
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
@@ -412,7 +329,6 @@ const Cash = ({ cashentry, accountCode, pos, shift, counter, customer, supplier,
           }
         </TabPane>
       </Tabs>
-      {modalShiftVisible && <ModalShift {...modalShiftProps} />}
     </div>
   )
 }
@@ -435,6 +351,4 @@ export default connect(({
   supplier,
   loading,
   pos,
-  shift,
-  counter,
-  app }) => ({ cashentry, accountCode, customer, supplier, loading, pos, shift, counter, app }))(Cash)
+  app }) => ({ cashentry, accountCode, customer, supplier, loading, pos, app }))(Cash)

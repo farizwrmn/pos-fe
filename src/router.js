@@ -842,8 +842,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
-              registerModel(app, require('./models/master/shift'))
-              registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-payment')
