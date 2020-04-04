@@ -22,7 +22,7 @@ const Container = ({ balance, dispatch, paymentOpts }) => {
               balanceIn: selected.balanceIn
             })
           }),
-          cash: listOpts && listOpts.map((item) => {
+          cash: listOpts && listOpts.filter(filtered => filtered.typeCode === 'C').map((item) => {
             const selected = data && data.cash && data.cash[item.typeCode]
             return ({
               paymentOptionId: item.id,
@@ -37,14 +37,27 @@ const Container = ({ balance, dispatch, paymentOpts }) => {
             })
           })
         }
-        console.log('params', params)
+        dispatch({
+          type: 'balance/closed',
+          payload: {
+            data: params
+          }
+        })
       }
     }
   }
 
   return (
     <div className="content-inner">
-      <List {...listProps} />
+      {currentItem && currentItem.id ? (
+        <List {...listProps} />
+      )
+        : (
+          <div>
+            <h2>Already Closed</h2>
+            <a href={'/balance/current'}>Open New Transaction</a>
+          </div>
+        )}
     </div>
   )
 }

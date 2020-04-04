@@ -73,7 +73,10 @@ export default modelExtend(pageModel, {
     * active (payload, { call, put }) {
       const response = yield call(getActive)
       if (response && response.success) {
-        const detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
+        let detail = {}
+        if (response.data && response.data.id) {
+          detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
+        }
 
         yield put({
           type: 'updateState',
@@ -108,6 +111,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'active'
         })
+        yield put(routerRedux.push('/balance/current'))
       } else {
         throw response
       }
