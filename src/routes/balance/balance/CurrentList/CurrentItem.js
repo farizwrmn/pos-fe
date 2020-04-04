@@ -1,24 +1,18 @@
 import React from 'react'
 import { Card } from 'antd'
+import Item from './Item'
 
 class CurrentItem extends React.Component {
   render () {
     const {
-      title
+      title,
+      list
     } = this.props
-
-    const gridStyle = {
-      width: '25%',
-      textAlign: 'center'
-    }
 
     return (
       <div>
         <Card title={title}>
-          <Card.Grid style={gridStyle}>
-            <div>Content</div>
-            <div>Content</div>
-          </Card.Grid>
+          {list && list.map(item => <Item item={item} />)}
         </Card>
       </div>
     )

@@ -86,7 +86,9 @@ const FormComponent = ({
     })
   }
 
-  const currentListProps = {}
+  const currentListProps = {
+    item
+  }
 
   return (
     <Form layout="horizontal">
