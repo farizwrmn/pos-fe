@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
+import List from './List'
+import CurrentList from './CurrentList'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -23,8 +25,8 @@ const formItemLayout = {
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  lg: { span: 16 },
+  xl: { span: 16 }
 }
 
 const FormComponent = ({
@@ -34,6 +36,7 @@ const FormComponent = ({
   button,
   onSubmit,
   modalType,
+  listProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -83,6 +86,8 @@ const FormComponent = ({
     })
   }
 
+  const currentListProps = {}
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -106,6 +111,17 @@ const FormComponent = ({
               initialValue: item && item.description ? item.description : undefined
             })(<Input disabled={button === 'Close'} maxLength={255} />)}
           </FormItem>
+          {button === 'Open' ? (
+            <List
+              form={{
+                getFieldDecorator
+              }}
+              {...listProps}
+            />
+          )
+            : (
+              <CurrentList {...currentListProps} />
+            )}
           <FormItem {...tailFormItemLayout}>
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
