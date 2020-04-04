@@ -1,49 +1,50 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
-import Form from './Form'
+import List from './List'
 
-const Container = ({ balance, shift, dispatch, location }) => {
-  const { modalType, currentItem, disable } = balance
-  const { listShift } = shift
+const Container = ({ balance, dispatch, paymentOpts }) => {
+  const { currentItem } = balance
+  const { listOpts } = paymentOpts
 
-  const formProps = {
-    listShift: listShift || [],
-    item: currentItem,
+  const listProps = {
+    listOpts,
     dispatch,
-    modalType,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: 'Close',
     onSubmit (data) {
-      dispatch({
-        type: 'balance/open',
-        payload: {
-          data
+      if (data && currentItem && currentItem.id) {
+        const params = {
+          balanceId: currentItem.id,
+          detail: listOpts && listOpts.map((item) => {
+            const selected = data && data.detail && data.detail[item.typeCode]
+            return ({
+              paymentOptionId: item.id,
+              balanceIn: selected.balanceIn
+            })
+          }),
+          cash: listOpts && listOpts.map((item) => {
+            const selected = data && data.cash && data.cash[item.typeCode]
+            return ({
+              paymentOptionId: item.id,
+              balanceIn: selected.balanceIn
+            })
+          }),
+          consignment: listOpts && listOpts.map((item) => {
+            const selected = data && data.consignment && data.consignment[item.typeCode]
+            return ({
+              paymentOptionId: item.id,
+              balanceIn: selected.balanceIn
+            })
+          })
         }
-      })
-    },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'balance/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
+        console.log('params', params)
+      }
     }
   }
 
   return (
     <div className="content-inner">
-      {currentItem && currentItem.id ?
-        (<Form {...formProps} button="Close" />)
-        : (<Form {...formProps} button="Open" />)}
+      <List {...listProps} />
     </div>
   )
 }
@@ -56,4 +57,17 @@ Container.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ balance, shift, loading, app }) => ({ balance, shift, loading, app }))(Container)
+export default connect(
+  ({
+    loading,
+    balance,
+    app,
+    paymentOpts
+  }) =>
+    ({
+      loading,
+      balance,
+      app,
+      paymentOpts
+    })
+)(Container)
