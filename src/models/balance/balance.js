@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { BALANCE_TYPE_AWAL } from 'utils/variable'
 import { query, add, edit, remove } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
@@ -72,8 +73,7 @@ export default modelExtend(pageModel, {
     * active (payload, { call, put }) {
       const response = yield call(getActive)
       if (response && response.success) {
-        const detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1 })
-        console.log('detail', detail)
+        const detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
 
         yield put({
           type: 'updateState',
