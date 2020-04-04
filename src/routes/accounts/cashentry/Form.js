@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, message, Button, Row, Col, Modal, Select } from 'antd'
-import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
@@ -41,11 +40,7 @@ const FormCounter = ({
   modalVisible,
   modalProps,
   listDetailProps,
-  listCustomer,
-  listSupplier,
   updateCurrentItem,
-  customerOpt = (listCustomer || []).length > 0 ? listCustomer.map(c => <Option value={c.id} key={c.id}>{`${c.memberName} (${c.memberCode})`}</Option>) : [],
-  supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   form: {
     getFieldDecorator,
     getFieldValue,
@@ -56,8 +51,6 @@ const FormCounter = ({
   },
   inputType = getFieldValue('type')
 }) => {
-  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -210,44 +203,6 @@ const FormCounter = ({
                   <Option value="I">In</Option>
                 </Select>)}
             </FormItem>
-            {getFieldValue('type') === 'I' && <FormItem label={(<Link target="_blank" to={'/master/customer'}>Member</Link>)} hasFeedback {...formItemLayout}>
-              {getFieldDecorator('memberId', {
-                initialValue: item.memberId,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                onFocus={() => showLov('customer')}
-                onSearch={value => showLov('customer', { q: value })}
-                optionFilterProp="children"
-                labelInValue
-                filterOption={filterOption}
-              >{customerOpt}
-              </Select>)}
-            </FormItem>}
-            {getFieldValue('type') === 'E' && <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
-              {getFieldDecorator('supplierId', {
-                initialValue: item.supplierId,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                onFocus={() => showLov('supplier')}
-                onSearch={value => showLov('supplier', { q: value })}
-                optionFilterProp="children"
-                labelInValue
-                filterOption={filterOption}
-              >{supplierOpt}
-              </Select>)}
-            </FormItem>}
           </Col>
         </Row>
         <Row>

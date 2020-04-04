@@ -1,21 +1,31 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/shift'
-import { pageModel } from './../common'
+import { routerRedux } from 'dva/router'
+import { query, add, edit, remove } from '../../services/balance/balanceDetail'
+import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Shift has been saved')
+  message.success('Balance has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'shift',
+  namespace: 'balanceDetail',
 
   state: {
     currentItem: {},
     modalType: 'add',
+    display: 'none',
+    isChecked: false,
+    selectedRowKeys: [],
+    listBalanceDetail: [],
     activeKey: '0',
-    listShift: []
+    disable: '',
+    show: 1,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
@@ -23,19 +33,18 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/shift') {
+        if (pathname === '/balanceDetail/current') {
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: other
+            })
+          }
+          if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-        } else if (pathname === '/setting/store' || pathname === '/balance/current' || pathname === '/balance/closing' || pathname === '/transaction/pos' || pathname === '/cash-entry') {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all'
             }
           })
         }
@@ -49,9 +58,9 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data) {
         yield put({
-          type: 'querySuccessShift',
+          type: 'querySuccess',
           payload: {
-            listShift: data.data,
+            listBalanceDetail: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -62,9 +71,11 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
+    * delete ({ payload }, { call, put, select }) {
+      const data = yield call(remove, { id: payload })
+      const { selectedRowKeys } = yield select(_ => _.balanceDetail)
       if (data.success) {
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -72,8 +83,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
+        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -83,10 +95,11 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            currentItem: current
           }
         })
         throw data
@@ -94,9 +107,9 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ shift }) => shift.currentItem.id)
-      const newShift = { ...payload, id }
-      const data = yield call(edit, newShift)
+      const id = yield select(({ balanceDetail }) => balanceDetail.currentItem.id)
+      const newData = { ...payload, id }
+      const data = yield call(edit, newData)
       if (data.success) {
         success()
         yield put({
@@ -116,10 +129,11 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
+        let current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            currentItem: current
           }
         })
         throw data
@@ -128,11 +142,12 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    querySuccessShift (state, action) {
-      const { listShift, pagination } = action.payload
+    querySuccess (state, action) {
+      const { listBalanceDetail, pagination } = action.payload
       return {
         ...state,
-        listShift,
+        list: listBalanceDetail,
+        listBalanceDetail,
         pagination: {
           ...state.pagination,
           ...pagination
@@ -140,23 +155,27 @@ export default modelExtend(pageModel, {
       }
     },
 
-    changeTab (state, { payload }) {
-      const { key } = payload
-      return {
-        ...state,
-        activeKey: key,
-        modalType: 'add',
-        currentItem: {}
-      }
+    switchIsChecked (state, { payload }) {
+      return { ...state, isChecked: !state.isChecked, display: payload }
     },
 
-    editItem (state, { payload }) {
-      const { item } = payload
+    changeTab (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+    resetItem (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+    resetSupplierList (state) {
+      return { ...state, list: [], listBalanceDetail: [], pagination: { total: 0 } }
+    },
+
+    refreshView (state) {
       return {
         ...state,
-        modalType: 'edit',
-        activeKey: '0',
-        currentItem: item
+        modalType: 'add',
+        currentItem: {}
       }
     }
   }

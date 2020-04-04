@@ -385,10 +385,44 @@ const Routers = function ({ history, app }) {
             }, 'master-category-work-order')
           }
         }, {
+          path: 'balance/dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/app'))
+              cb(null, require('./routes/balance/dashboard/'))
+            }, 'balance-dashboard')
+          }
+        }, {
+          path: 'balance/current',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/balance/'))
+            }, 'balance-current')
+          }
+        }, {
+          path: 'balance/closing',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/closing/'))
+            }, 'balance-closing')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/transaction/pospromo'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
@@ -810,8 +844,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
-              registerModel(app, require('./models/master/shift'))
-              registerModel(app, require('./models/master/counter'))
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-payment')

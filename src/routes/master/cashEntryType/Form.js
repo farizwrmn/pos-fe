@@ -91,10 +91,10 @@ const FormCounter = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  pattern: /^[a-z0-9-/]{1,9}$/i
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input maxLength={3} autoFocus />)}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('typeName', {
@@ -104,7 +104,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={25} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

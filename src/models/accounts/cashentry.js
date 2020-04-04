@@ -101,69 +101,61 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload = {} }, { call, put, select }) {
-      const { detail, inputType, oldValue, cashierBalance, cashierInformation } = payload
+      const { oldValue } = payload
       yield put({
         type: 'updateState',
         payload: {
           currentItem: oldValue
         }
       })
-      const currentTotal = detail.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0)
-      if ((parseFloat(currentTotal || 0) + parseFloat(cashierBalance.cashOut || 0)) > (parseFloat(cashierBalance.cashIn || 0) + parseFloat(cashierInformation.openingBalance || 0)) && inputType === 'E') {
-        Modal.warning({
-          title: 'Cash out is bigger than current balance',
-          content: 'Please recount your cash'
-        })
-      } else {
-        const cashier = yield select(({ app }) => app.user)
-        const currentRegister = yield call(queryCurrentOpenCashRegister, { cashierId: cashier.userid })
-        if (currentRegister.success) {
-          if (currentRegister.data) {
-            const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-            payload.data.cashierTransId = cashierInformation.id
-            payload.data.transDate = cashierInformation.period
-            const data = yield call(add, payload)
-            if (data.success) {
-              success()
-              yield put({
-                type: 'updateState',
-                payload: {
-                  modalType: 'add',
-                  currentItem: {},
-                  listItem: []
-                }
-              })
-              const userId = lstorage.getStorageKey('udi')[1]
-              yield put({
-                type: 'pos/loadDataPos',
-                payload: {
-                  cashierId: userId,
-                  status: 'O'
-                }
-              })
-              yield put({ type: 'querySequence' })
-              Modal.success({
-                title: 'Transaction success',
-                content: 'Transaction has been saved'
-              })
-            } else {
-              yield put({
-                type: 'updateState',
-                payload: {
-                  currentItem: payload.oldValue
-                }
-              })
-              throw data
-            }
-          } else {
-            Modal.warning({
-              title: 'No cashierInformation',
-              content: `No cashier information for ${cashier.userid}`
+      const cashier = yield select(({ app }) => app.user)
+      const currentRegister = yield call(queryCurrentOpenCashRegister, { cashierId: cashier.userid })
+      if (currentRegister.success) {
+        if (currentRegister.data) {
+          const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
+          payload.data.cashierTransId = cashierInformation.id
+          payload.data.transDate = cashierInformation.period
+          const data = yield call(add, payload)
+          if (data.success) {
+            success()
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalType: 'add',
+                currentItem: {},
+                listItem: []
+              }
             })
+            const userId = lstorage.getStorageKey('udi')[1]
+            yield put({
+              type: 'pos/loadDataPos',
+              payload: {
+                cashierId: userId,
+                status: 'O'
+              }
+            })
+            yield put({ type: 'querySequence' })
+            Modal.success({
+              title: 'Transaction success',
+              content: 'Transaction has been saved'
+            })
+          } else {
+            yield put({
+              type: 'updateState',
+              payload: {
+                currentItem: payload.oldValue
+              }
+            })
+            throw data
           }
         } else {
-          throw currentRegister
+          Modal.warning({
+            title: 'No cashierInformation',
+            content: `No cashier information for ${cashier.userid}`
+          })
         }
+      } else {
+        throw currentRegister
       }
     },
 

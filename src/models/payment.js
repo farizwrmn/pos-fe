@@ -1,6 +1,7 @@
 import { Modal } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables, alertModal } from 'utils'
+import { routerRedux } from 'dva/router'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -316,6 +317,11 @@ export default {
               })
               // }
             } else {
+              if (data_create && data_create.message && typeof data_create.message === 'string') {
+                if (data_create.message === 'Please set your balance') {
+                  yield put(routerRedux.push('/balance/current'))
+                }
+              }
               Modal.error({
                 title: 'Error Saving Payment',
                 content: `${JSON.stringify(data_create.message)}`
