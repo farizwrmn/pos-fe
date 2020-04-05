@@ -12,6 +12,15 @@ export async function query (params) {
   })
 }
 
+export async function queryById (id) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${balance}/${id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = balance

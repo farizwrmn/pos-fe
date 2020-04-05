@@ -419,6 +419,17 @@ const Routers = function ({ history, app }) {
             }, 'balance-closing')
           }
         }, {
+          path: 'balance/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/invoice/'))
+            }, 'balance-invoice-detail')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

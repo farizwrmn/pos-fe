@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { queryById } from '../../services/balance/balance'
 import { query, add, edit, remove } from '../../services/balance/balanceDetail'
 import { pageModel } from '../common'
 
@@ -48,6 +50,10 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        const match = pathToRegexp('/balance/invoice/:id').exec(location.pathname)
+        if (match) {
+          dispatch({ type: 'queryById', payload: { id: match[1] } })
+        }
       })
     }
   },
@@ -68,6 +74,29 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryById ({ payload = {} }, { call, put }) {
+      const response = yield call(queryById, payload.id)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: response.data,
+            relationship: 1
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: {
+            balanceId: payload.id,
+            type: 'all',
+            relationship: 1
+          }
+        })
+      } else {
+        throw response
       }
     },
 
