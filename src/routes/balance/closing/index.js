@@ -3,18 +3,24 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 
-const Container = ({ balance, dispatch, paymentOpts }) => {
+const Container = ({ balance, shift, userDetail, dispatch, paymentOpts }) => {
   const { currentItem } = balance
+  const { listShift } = shift
   const { listOpts } = paymentOpts
+  const { data } = userDetail
 
   const listProps = {
+    item: currentItem,
     listOpts,
+    listShift,
+    listUser: data && data.data,
     dispatch,
     button: 'Close',
     onSubmit (data) {
       if (data && currentItem && currentItem.id) {
         const params = {
           balanceId: currentItem.id,
+          userId: data.approveUserId,
           detail: listOpts && listOpts.map((item) => {
             const selected = data && data.detail && data.detail[item.typeCode]
             return ({
@@ -74,12 +80,16 @@ export default connect(
   ({
     loading,
     balance,
+    shift,
+    userDetail,
     app,
     paymentOpts
   }) =>
     ({
       loading,
       balance,
+      shift,
+      userDetail,
       app,
       paymentOpts
     })

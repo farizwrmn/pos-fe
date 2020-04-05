@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
 import { lstorage } from 'utils'
+import FormHeader from './Form'
 
 const FormItem = Form.Item
 
@@ -91,7 +92,10 @@ const FormComponent = ({
 }
 
 const List = ({
+  item,
   listOpts = [],
+  listShift,
+  listUser,
   button,
   onSubmit,
   form: {
@@ -121,8 +125,18 @@ const List = ({
     })
   }
 
+  const formComponentProps = {
+    item,
+    listShift,
+    listUser,
+    form: {
+      getFieldDecorator
+    }
+  }
+
   return (
     <Form layout="horizontal">
+      <FormHeader {...formComponentProps} />
       <FormLabel />
       {listOpts && listOpts.map(item => (
         <FormComponent

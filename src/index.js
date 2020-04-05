@@ -13,6 +13,7 @@ const app = dva({
   history: browserHistory,
   onError (error) {
     if (error) {
+      console.log('error', error)
       if (error.message instanceof Object) {
         notification.config({ placement: 'bottomRight', duration: 3 })
         for (let i = 0; i < error.message.errors.length; i += 1) {
