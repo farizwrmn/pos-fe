@@ -12,13 +12,14 @@ const Container = ({ balance, balanceDetail, shift, paymentOpts, dispatch, locat
   const { modalType, disable } = balance
   const { listShift } = shift
   const { currentItem, listBalanceDetail } = balanceDetail
-  console.log('currentItem, listBalanceDetail', currentItem, listBalanceDetail)
-
   const { listOpts } = paymentOpts
 
   const formProps = {
     listShift: listShift || [],
-    item: currentItem,
+    item: currentItem ? {
+      ...currentItem,
+      detail: listBalanceDetail
+    } : {},
     dispatch,
     modalType,
     disabled: `${modalType === 'edit' ? disable : ''}`,

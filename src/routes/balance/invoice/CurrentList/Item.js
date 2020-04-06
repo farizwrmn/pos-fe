@@ -6,17 +6,17 @@ const Item = ({
   item
 }) => {
   const gridStyle = {
-    width: '25%',
+    display: 'flex',
+    flexDirection: 'column',
+    height: 100,
     textAlign: 'center'
   }
 
   return (
-    <div>
-      <Card.Grid style={gridStyle}>
-        <div>{item && item.paymentOption && `${item.paymentOption.typeName} (${item.paymentOption.typeCode})`}</div>
-        <div>{currencyFormatter(item.balanceIn)}</div>
-      </Card.Grid>
-    </div>
+    <Card.Grid md={24} style={gridStyle}>
+      <div>{item && item.paymentOption && `${item.paymentOption.typeName} (${item.paymentOption.typeCode})`}</div>
+      <div>{currencyFormatter(item.balanceIn)}</div>
+    </Card.Grid>
   )
 }
 
