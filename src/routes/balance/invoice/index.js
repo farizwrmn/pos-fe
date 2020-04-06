@@ -14,19 +14,13 @@ const Container = ({ balance, balanceDetail, shift, paymentOpts, dispatch, locat
   const { currentItem, listBalanceDetail } = balanceDetail
   console.log('currentItem, listBalanceDetail', currentItem, listBalanceDetail)
 
-
   const { listOpts } = paymentOpts
-
-  const listProps = {
-    listOpts
-  }
 
   const formProps = {
     listShift: listShift || [],
     item: currentItem,
     dispatch,
     modalType,
-    listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
       console.log('data', data)
@@ -82,9 +76,9 @@ const Container = ({ balance, balanceDetail, shift, paymentOpts, dispatch, locat
 
   return (
     <div className="content-inner">
-      {currentItem && currentItem.id ?
-        (<Form {...formProps} button="Close" />)
-        : (<Form {...formProps} button="Open" />)}
+      {currentItem && currentItem.id && (
+        <Form {...formProps} button="Open" />
+      )}
     </div>
   )
 }

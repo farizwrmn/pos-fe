@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
-import List from './List'
+import moment from 'moment'
 import CurrentList from './CurrentList'
 
-const Option = Select.Option
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -31,12 +30,10 @@ const column = {
 
 const FormComponent = ({
   item = {},
-  listShift = [],
   dispatch,
   button,
   onSubmit,
   modalType,
-  listProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -96,34 +93,58 @@ const FormComponent = ({
         <Col {...column}>
           <FormItem label="Shift" hasFeedback {...formItemLayout}>
             {getFieldDecorator('shiftId', {
-              initialValue: item && item.shiftId ? item.shiftId : undefined,
+              initialValue: item && item.shift ? item.shift.shiftName : undefined,
               rules: [
                 {
                   required: true
                 }
               ]
             })(
-              <Select disabled={button === 'Close'}>
-                {listShift && listShift.map(item => (<Option value={item.id} key={item.id}>{item.shiftName}</Option>))}
-              </Select>
+              <Input disabled />
+            )}
+          </FormItem>
+          <FormItem label="Cashier" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('userId', {
+              initialValue: item && item.user ? item.user.userName : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Input disabled />
+            )}
+          </FormItem>
+          <FormItem label="Close Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('closed', {
+              initialValue: item && item.closed ? moment(item.closed).format('DD-MMM-YYYY HH:mm:ss') : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Input disabled />
+            )}
+          </FormItem>
+          <FormItem label="Assign To" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('approveUserId', {
+              initialValue: item && item.approveUser ? item.approveUser.userName : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Input disabled />
             )}
           </FormItem>
           <FormItem label="Memo" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item && item.description ? item.description : undefined
-            })(<Input disabled={button === 'Close'} maxLength={255} />)}
+            })(<Input disabled maxLength={255} />)}
           </FormItem>
-          {button === 'Open' ? (
-            <List
-              form={{
-                getFieldDecorator
-              }}
-              {...listProps}
-            />
-          )
-            : (
-              <CurrentList {...currentListProps} />
-            )}
+          <CurrentList {...currentListProps} />
           <FormItem {...tailFormItemLayout}>
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
