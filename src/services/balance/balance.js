@@ -17,6 +17,9 @@ export async function queryById (id) {
   return request({
     url: `${balance}/${id}`,
     method: 'get',
+    data: {
+      relationship: 1
+    },
     headers: apiHeaderToken
   })
 }
