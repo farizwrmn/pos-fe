@@ -18,14 +18,7 @@ const Approve = ({
             ))}
           </div>
         </Col>
-        <Col md={24} lg={12}>
-          <div className={styles.container}>
-            <h1 className={styles.title}>Closing Alert</h1>
-            {list && list.map(item => (
-              <ApproveCard item={item} />
-            ))}
-          </div>
-        </Col>
+        <Col md={24} lg={12} />
       </Row>
     </div>
   )

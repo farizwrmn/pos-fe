@@ -3,8 +3,9 @@ import { connect } from 'dva'
 import Approve from './Approve'
 import ModalApprove from './ModalApprove'
 
-const Container = ({ dispatch, balance, balanceDetail }) => {
+const Container = ({ dispatch, paymentOpts, balance, balanceDetail }) => {
   const { currentItem, listBalance, modalApproveVisible } = balance
+  const { listOpts } = paymentOpts
   const { listBalanceDetail } = balanceDetail
   const approveProps = {
     list: listBalance,
@@ -13,6 +14,7 @@ const Container = ({ dispatch, balance, balanceDetail }) => {
         type: 'balanceDetail/query',
         payload: {
           balanceId: item.id,
+          relationship: 1,
           type: 'all'
         }
       })
@@ -28,6 +30,8 @@ const Container = ({ dispatch, balance, balanceDetail }) => {
 
   const modalApproveProps = {
     dataSource: listBalanceDetail,
+    listOpts,
+    okText: 'Approve',
     item: currentItem,
     visible: modalApproveVisible,
     onOk (item) {
@@ -55,4 +59,4 @@ const Container = ({ dispatch, balance, balanceDetail }) => {
   )
 }
 
-export default connect(({ balance, balanceDetail, loading, app }) => ({ balance, balanceDetail, loading, app }))(Container)
+export default connect(({ paymentOpts, balance, balanceDetail, loading, app }) => ({ paymentOpts, balance, balanceDetail, loading, app }))(Container)

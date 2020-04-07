@@ -392,6 +392,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/dashboard'))
               registerModel(app, require('./models/app'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/balance/dashboard/'))
             }, 'balance-dashboard')
           }
