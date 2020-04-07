@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { BALANCE_TYPE_AWAL } from 'utils/variable'
-import { query, add, edit, remove } from '../../services/balance/balance'
+import { query, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
@@ -24,6 +24,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    modalApproveVisible: false,
     listBalance: [],
     activeKey: '0',
     disable: '',
@@ -40,11 +41,19 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/balance/current'
-          || pathname === '/balance/dashboard'
           || pathname === '/balance/closing'
           || pathname === '/transaction/pos') {
           dispatch({
             type: 'active'
+          })
+        }
+        if (pathname === '/balance/dashboard') {
+          dispatch({
+            type: 'query',
+            payload: {
+              relationship: 1,
+              approvement: 1
+            }
           })
         }
       })
@@ -52,7 +61,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
@@ -91,9 +99,29 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * open ({ payload }, { call, put }) {
-      console.log('payload', payload)
+    * approve ({ payload }, { call, put }) {
+      const response = yield call(approve, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {},
+            modalApproveVisible: false
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: {
+            relationship: 1,
+            approvement: 1
+          }
+        })
+      } else {
+        throw response
+      }
+    },
 
+    * open ({ payload }, { call, put }) {
       const response = yield call(open, payload)
       if (response && response.success) {
         yield put({

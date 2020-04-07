@@ -16,6 +16,9 @@ export default {
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
+        if (location.pathname === '/balance/closing') {
+          dispatch({ type: 'query' })
+        }
       })
     }
   },

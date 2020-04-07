@@ -392,6 +392,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/dashboard'))
               registerModel(app, require('./models/app'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/balance/dashboard/'))
             }, 'balance-dashboard')
           }
@@ -414,8 +415,20 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/detail/user'))
               cb(null, require('./routes/balance/closing/'))
             }, 'balance-closing')
+          }
+        }, {
+          path: 'balance/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/invoice/'))
+            }, 'balance-invoice-detail')
           }
         }, {
           path: 'transaction/pos',

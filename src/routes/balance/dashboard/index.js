@@ -1,25 +1,62 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Row, Col } from 'antd'
-import Dashboard from '../../dashboard'
+import Approve from './Approve'
+import ModalApprove from './ModalApprove'
 
-const Container = () => {
+const Container = ({ dispatch, paymentOpts, balance, balanceDetail }) => {
+  const { currentItem, listBalance, modalApproveVisible } = balance
+  const { listOpts } = paymentOpts
+  const { listBalanceDetail } = balanceDetail
+  const approveProps = {
+    list: listBalance,
+    onOpenModal (item) {
+      dispatch({
+        type: 'balanceDetail/query',
+        payload: {
+          balanceId: item.id,
+          relationship: 1,
+          type: 'all'
+        }
+      })
+      dispatch({
+        type: 'balance/updateState',
+        payload: {
+          modalApproveVisible: true,
+          currentItem: item
+        }
+      })
+    }
+  }
+
+  const modalApproveProps = {
+    dataSource: listBalanceDetail,
+    listOpts,
+    okText: 'Approve',
+    item: currentItem,
+    visible: modalApproveVisible,
+    onOk () {
+      dispatch({
+        type: 'balance/approve',
+        payload: currentItem
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'balance/updateState',
+        payload: {
+          modalApproveVisible: false,
+          currentItem: {}
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
-      <Row>
-        <Col md={24} lg={12}>
-          <Dashboard />
-        </Col>
-        <Col md={24} lg={12}>
-          <Dashboard />
-        </Col>
-      </Row>
+      <Approve {...approveProps} />
+      {modalApproveVisible && <ModalApprove {...modalApproveProps} />}
     </div>
   )
 }
 
-Container.propTypes = {
-
-}
-
-export default connect(({ balance, loading, app }) => ({ balance, loading, app }))(Container)
+export default connect(({ paymentOpts, balance, balanceDetail, loading, app }) => ({ paymentOpts, balance, balanceDetail, loading, app }))(Container)

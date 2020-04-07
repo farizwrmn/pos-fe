@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
-import { lstorage } from 'utils'
-import FormHeader from './Form'
+import { Form, InputNumber, Row, Col } from 'antd'
 
 const FormItem = Form.Item
 
@@ -27,7 +25,6 @@ const FormLabel = () => {
         <Row>
           <Col span={8}><div>Sales</div></Col>
           <Col span={8}><div>Petty-Cash</div></Col>
-          <Col span={8}><div>Consignment</div></Col>
         </Row>
       </Col>
     </Row>
@@ -56,8 +53,8 @@ const FormComponent = ({
             )}
           </div>
         </Col>
-        <Col span={8}>
-          {name === 'C' && (
+        {name === 'C' && (
+          <Col span={8}>
             <div>
               {getFieldDecorator(`cash[${name}][balanceIn]`, {
                 initialValue: 0,
@@ -70,73 +67,21 @@ const FormComponent = ({
                 <InputNumber min={0} style={{ width: '60%' }} />
               )}
             </div>
-          )}
-        </Col>
-        <Col span={8}>
-          <div>
-            {getFieldDecorator(`consignment[${name}][balanceIn]`, {
-              initialValue: 0,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <InputNumber min={0} style={{ width: '60%' }} />
-            )}
-          </div>
-        </Col>
+          </Col>
+        )}
       </Row>
     </FormItem>
   )
 }
 
 const List = ({
-  item,
   listOpts = [],
-  listShift,
-  listUser,
-  button,
-  onSubmit,
   form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
+    getFieldDecorator
   }
 }) => {
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        storeId: lstorage.getCurrentUserStore(),
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data)
-          resetFields()
-        },
-        onCancel () { }
-      })
-    })
-  }
-
-  const formComponentProps = {
-    item,
-    listShift,
-    listUser,
-    form: {
-      getFieldDecorator
-    }
-  }
-
   return (
-    <Form layout="horizontal">
-      <FormHeader {...formComponentProps} />
+    <div>
       <FormLabel />
       {listOpts && listOpts.map(item => (
         <FormComponent
@@ -145,15 +90,12 @@ const List = ({
           name={item.typeCode}
         />
       ))}
-      <Button type="primary" onClick={handleSubmit}>{button}</Button>
-    </Form>
+    </div>
   )
 }
 
 List.propTypes = {
-  button: PropTypes.string,
-  form: PropTypes.object.isRequired,
-  onSubmit: PropTypes.func
+  form: PropTypes.object.isRequired
 }
 
-export default Form.create()(List)
+export default List
