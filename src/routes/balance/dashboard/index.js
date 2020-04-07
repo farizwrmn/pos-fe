@@ -1,25 +1,18 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Row, Col } from 'antd'
-import Dashboard from '../../dashboard'
+import Approve from './Approve'
 
-const Container = () => {
+const Container = ({ balance }) => {
+  const { listBalance } = balance
+  const approveProps = {
+    list: listBalance
+  }
+
   return (
     <div className="content-inner">
-      <Row>
-        <Col md={24} lg={12}>
-          <Dashboard />
-        </Col>
-        <Col md={24} lg={12}>
-          <Dashboard />
-        </Col>
-      </Row>
+      <Approve {...approveProps} />
     </div>
   )
-}
-
-Container.propTypes = {
-
 }
 
 export default connect(({ balance, loading, app }) => ({ balance, loading, app }))(Container)

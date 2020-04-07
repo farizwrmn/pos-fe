@@ -40,11 +40,19 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/balance/current'
-          || pathname === '/balance/dashboard'
           || pathname === '/balance/closing'
           || pathname === '/transaction/pos') {
           dispatch({
             type: 'active'
+          })
+        }
+        if (pathname === '/balance/dashboard') {
+          dispatch({
+            type: 'query',
+            payload: {
+              relationship: 1,
+              approvement: 1
+            }
           })
         }
       })
@@ -52,7 +60,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {
