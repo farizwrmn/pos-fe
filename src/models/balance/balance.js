@@ -24,6 +24,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    modalApproveVisible: false,
     listBalance: [],
     activeKey: '0',
     disable: '',

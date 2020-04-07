@@ -46,6 +46,18 @@ export async function remove (params) {
   })
 }
 
+
+export async function approve (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `/approve/balance/${params.id}`
+  return request({
+    url,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${balance}/${params.id}`

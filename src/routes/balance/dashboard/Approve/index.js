@@ -4,7 +4,8 @@ import ApproveCard from './ApproveCard'
 import styles from './index.less'
 
 const Approve = ({
-  list
+  list,
+  onOpenModal
 }) => {
   return (
     <div>
@@ -13,7 +14,7 @@ const Approve = ({
           <div className={styles.container}>
             <h1 className={styles.title}>Closing Report</h1>
             {list && list.map(item => (
-              <ApproveCard item={item} />
+              <ApproveCard item={item} onOpenModal={onOpenModal} />
             ))}
           </div>
         </Col>
