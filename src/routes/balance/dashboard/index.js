@@ -34,10 +34,10 @@ const Container = ({ dispatch, paymentOpts, balance, balanceDetail }) => {
     okText: 'Approve',
     item: currentItem,
     visible: modalApproveVisible,
-    onOk (item) {
+    onOk () {
       dispatch({
         type: 'balance/approve',
-        payload: item
+        payload: currentItem
       })
     },
     onCancel () {

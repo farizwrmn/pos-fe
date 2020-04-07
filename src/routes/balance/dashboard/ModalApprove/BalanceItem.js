@@ -28,9 +28,9 @@ const BalanceItem = ({
 
   return (
     <div>
-      <div className={styles.right}>{`Sales: ${currencyFormatter(sales)} (Closing - By input)`}</div>
-      <div className={styles.right}>{`Petty Cash: ${currencyFormatter(cash)} (Closing - By input)`}</div>
-      <div className={styles.right}>{`Consignment: ${currencyFormatter(consignment)} (Closing - By input)`}</div>
+      <div className={styles.right}>{`Sales: ${currencyFormatter(sales)}`}</div>
+      <div className={styles.right}>{`Petty Cash: ${currencyFormatter(cash)}`}</div>
+      <div className={styles.right}>{`Consignment: ${currencyFormatter(consignment)}`}</div>
     </div>
   )
 }
