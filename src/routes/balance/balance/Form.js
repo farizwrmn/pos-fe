@@ -94,6 +94,20 @@ const FormComponent = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
+          {item && item.store && (
+            <FormItem label="Store" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('storeName', {
+                initialValue: item.store.storeName,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Input disabled />
+              )}
+            </FormItem>
+          )}
           <FormItem label="Shift" hasFeedback {...formItemLayout}>
             {getFieldDecorator('shiftId', {
               initialValue: item && item.shiftId ? item.shiftId : undefined,
