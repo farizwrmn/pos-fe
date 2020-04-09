@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tree, Select, Row, Col, Modal, message } from 'antd'
+import { Form, Input, Button, Tree, Select, Row, Col, Modal, message, Checkbox } from 'antd'
 import { arrayToTree } from 'utils'
 
 const FormItem = Form.Item
@@ -146,7 +146,7 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-zA-Z0-9_]{3,}$/,
+                  pattern: /^[a-zA-Z0-9 _]{3,}$/,
                   message: 'a-Z & 0-9'
                 }
               ]
@@ -181,6 +181,12 @@ const formProductCategory = ({
               filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
             >{productCategory}
             </Select>)}
+          </FormItem>
+          <FormItem label="Loyalty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('loyaltyException', {
+              valuePropName: 'checked',
+              initialValue: item.loyaltyException === undefined ? true : item.loyaltyException
+            })(<Checkbox />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
