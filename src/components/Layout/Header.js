@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Button, Row, Col } from 'antd'
+import { Menu, Icon, Popover, Button, Row, Col, Calendar } from 'antd'
 import { classnames, lstorage } from 'utils'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -21,11 +21,11 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   handleRegenerateTotp, modalSwitchChange, totpChecked,
   location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu,
   selectedDate,
-  // selectedMonth, showBirthDayListModal,
+  selectedMonth, showBirthDayListModal,
   hideBirthDayListModal,
-  // changeCalendarMode, listTotalBirthdayPerDate,
+  changeCalendarMode, listTotalBirthdayPerDate,
   listCustomerBirthday, calendarMode, listNotification, listNotificationDetail,
-  // showPopOverCalendar, showPopOverNotification,
+  showPopOverCalendar, showPopOverNotification,
   refreshNotifications, defaultSidebarColor, changeSiderColor, sidebarColor
 }) => {
   let handleClickMenu = (e) => {
@@ -91,43 +91,43 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
     totpChecked
   }
 
-  // const getListData = (value) => {
-  //   let listData
-  //   for (let key in listTotalBirthdayPerDate) {
-  //     switch (value.format('MM-DD')) {
-  //       case `${selectedMonth}-${listTotalBirthdayPerDate[key].birthDate}`:
-  //         listData = [
-  //           { style: styles.badgeStyleDate, content: listTotalBirthdayPerDate[key].counter }
-  //         ]; break
-  //       default:
-  //     }
-  //   }
-  //   return listData || []
-  // }
+  const getListData = (value) => {
+    let listData
+    for (let key in listTotalBirthdayPerDate) {
+      switch (value.format('MM-DD')) {
+        case `${selectedMonth}-${listTotalBirthdayPerDate[key].birthDate}`:
+          listData = [
+            { style: styles.badgeStyleDate, content: listTotalBirthdayPerDate[key].counter }
+          ]; break
+        default:
+      }
+    }
+    return listData || []
+  }
 
-  // const dateCellRender = (value) => {
-  //   const listData = getListData(value)
-  //   return (
-  //     listData.map(item => (
-  //       <span className={item.style}>{item.content}</span>
-  //     ))
-  //   )
-  // }
+  const dateCellRender = (value) => {
+    const listData = getListData(value)
+    return (
+      listData.map(item => (
+        <span className={item.style}>{item.content}</span>
+      ))
+    )
+  }
 
-  // const calendarProps = {
-  //   fullscreen: false,
-  //   dateCellRender,
-  //   onSelect (value) {
-  //     showBirthDayListModal(value)
-  //   },
-  //   onPanelChange (value, mode) {
-  //     const month = moment(value).format('MM')
-  //     changeCalendarMode(month, mode)
-  //   },
-  //   disabledDate (current) {
-  //     return current <= moment().startOf('day')
-  //   }
-  // }
+  const calendarProps = {
+    fullscreen: false,
+    dateCellRender,
+    onSelect (value) {
+      showBirthDayListModal(value)
+    },
+    onPanelChange (value, mode) {
+      const month = moment(value).format('MM')
+      changeCalendarMode(month, mode)
+    },
+    disabledDate (current) {
+      return current <= moment().startOf('day')
+    }
+  }
   const date = calendarMode === 'month' ? moment(new Date(selectedDate)).format('MMMM, Do YYYY') : moment(new Date(selectedDate)).format('MMMM, YYYY')
 
   const displayBirthdayProps = {
@@ -153,38 +153,38 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   }
   notifications.push(<li style={{ borderTop: '1px solid #d0d0d0' }}><Button size="small" className={styles.refresh} onClick={refreshNotifications}>Refresh</Button></li>)
 
-  // const calendarPopOver = {
-  //   showPopOver: visibleItem.showPopOverCalendar,
-  //   handleVisibleChange: showPopOverCalendar
-  // }
+  const calendarPopOver = {
+    showPopOver: visibleItem.showPopOverCalendar,
+    handleVisibleChange: showPopOverCalendar
+  }
 
-  // const notificationPopOver = {
-  //   showPopOver: visibleItem.showPopOverNotification,
-  //   handleVisibleChange: showPopOverNotification
-  // }
+  const notificationPopOver = {
+    showPopOver: visibleItem.showPopOverNotification,
+    handleVisibleChange: showPopOverNotification
+  }
 
-  // let totalBirhtday = 0
-  // let totalNotification = 0
-  // for (let i = 0; i < listNotification.length; i += 1) {
-  //   switch (listNotification[i].info) {
-  //     case 'bday':
-  //       totalBirhtday = listNotification[i].counter
-  //       break
-  //     case 'notif':
-  //       totalNotification = listNotification[i].counter
-  //       break
-  //     default:
-  //   }
-  // }
+  let totalBirhtday = 0
+  let totalNotification = 0
+  for (let i = 0; i < listNotification.length; i += 1) {
+    switch (listNotification[i].info) {
+      case 'bday':
+        totalBirhtday = listNotification[i].counter
+        break
+      case 'notif':
+        totalNotification = listNotification[i].counter
+        break
+      default:
+    }
+  }
 
-  // let notificationPopContent
-  // // if (totalNotification) {
-  // notificationPopContent = {
-  //   ...notificationPopOver,
-  //   total: totalNotification,
-  //   popContent: (<ul style={{ width: 200, maxHeight: 200, overflowX: 'hidden' }}>{notifications}</ul>)
-  // }
-  // // }
+  let notificationPopContent = {}
+  if (totalNotification) {
+    notificationPopContent = {
+      ...notificationPopOver,
+      total: totalNotification,
+      popContent: (<ul style={{ width: 200, maxHeight: 200, overflowX: 'hidden' }}>{notifications}</ul>)
+    }
+  }
 
   const changeColor = (color) => {
     changeSiderColor(color)
@@ -213,7 +213,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         {/* <HeaderMenu prompt="home" clickRoute="/dashboard" /> */}
         {/* <HeaderMenu prompt="setting" /> */}
         {/* <HeaderMenu prompt="calculator" /> */}
-        {/* <HeaderMenu prompt="calendar" {...calendarPopOver} total={totalBirhtday} popContent={<Calendar {...calendarProps} />} /> */}
+        <HeaderMenu prompt="calendar" {...calendarPopOver} total={totalBirhtday} popContent={<Calendar {...calendarProps} />} />
         <HeaderMenu prompt="change theme"
           icon="bulb"
           popContent={
@@ -237,10 +237,10 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         />
         <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
         <HeaderMenu prompt="minimum stock" icon="minus-circle-o" clickRoute="/report/product/stock/quantity-alerts" addClass="minStock" />
-        {/* <HeaderMenu prompt="notification"
+        <HeaderMenu prompt="notification"
           icon="bell"
           {...notificationPopContent}
-        /> */}
+        />
         <HeaderMenu separator />
         <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
         {/* <HeaderMenu prompt="profit" icon="like-o" /> */}
