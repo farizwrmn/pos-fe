@@ -16,6 +16,14 @@ const CACHE_NAME = 'smiPOS'
 //   )
 // })
 
+self.addEventListener('push', (event) => {
+  const data = event.data.json()
+
+  self.registration.showNotification(data.title, {
+    body: data.content
+  })
+})
+
 self.addEventListener('install', (event) => {
   // console.log('Attempting to install service worker and cache static assets')
   event.waitUntil(
