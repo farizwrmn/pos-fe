@@ -18,7 +18,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
 
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
+  workbook.creator = 'smartPOS'
   workbook.created = new Date()
   workbook.views = [
     {

@@ -19,7 +19,7 @@ const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
   let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
   let nettoTotal = grandTotal - paidTotal > 0 ? grandTotal - paidTotal : 0
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
+  workbook.creator = 'smartPOS'
   workbook.created = new Date()
   // workbook.lastPrinted = new Date(2016, 9, 27)
   workbook.views = [
