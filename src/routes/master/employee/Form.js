@@ -40,6 +40,7 @@ class FormEmployee extends Component {
       showPosition,
       showCities,
       listLovJobPosition,
+      registerFingerprint,
       listCity,
       listIdType,
       showIdType,
@@ -296,10 +297,12 @@ class FormEmployee extends Component {
                   ]
                 })(<Input />)}
               </FormItem>
-              <FormItemFingerprint
+              {modalType === 'edit' && <FormItemFingerprint
                 getFieldDecorator={getFieldDecorator}
                 formItemLayout={formItemLayout}
-              />
+                registerFingerprint={registerFingerprint}
+                item={item}
+              />}
             </Card>
           </Col>
         </Row>

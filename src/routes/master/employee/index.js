@@ -110,6 +110,12 @@ const Employee = ({ employee, jobposition, misc, city, loading, dispatch, locati
         }
       })
     },
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
+      })
+    },
     onSubmit (id, data) {
       dispatch({
         type: `employee/${modalType}`,

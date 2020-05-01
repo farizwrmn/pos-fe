@@ -31,10 +31,21 @@ class FormItemFingerprint extends Component {
   }
 
   setEndpoint = () => {
+    const {
+      registerFingerprint,
+      item
+    } = this.props
     const endpoint = generateId(16)
     this.setState({
       endpoint
     })
+    if (registerFingerprint) {
+      registerFingerprint({
+        employeeId: item.id,
+        endpoint,
+        applicationSource: 'web'
+      })
+    }
   }
 
   render () {
