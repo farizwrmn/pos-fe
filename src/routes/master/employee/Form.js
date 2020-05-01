@@ -234,9 +234,9 @@ const formEmployee = ({
           </Card>
         </Col>
       </Row>
-      <Card title={<h3>Contact & Identity</h3>} {...cardProps}>
-        <Row>
-          <Col {...column}>
+      <Row>
+        <Col {...column}>
+          <Card title={<h3>Contact & Identity</h3>} {...cardProps}>
             <FormItem label="ID Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('idType', {
                 initialValue: item.idType,
@@ -266,6 +266,20 @@ const formEmployee = ({
                 ]
               })(<Input maxLength={30} />)}
             </FormItem>
+            <FormItem label="Phone Number" {...formItemLayout}>
+              {getFieldDecorator('phoneNumber', {
+                initialValue: item.phoneNumber
+              })(<Input />)}
+            </FormItem>
+            <FormItem label="Email" {...formItemLayout}>
+              {getFieldDecorator('email', {
+                initialValue: item.email
+              })(<Input />)}
+            </FormItem>
+          </Card>
+        </Col>
+        <Col {...column}>
+          <Card title={<h3>Fingerprint</h3>} {...cardProps}>
             <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
               {getFieldDecorator('mobileNumber', {
                 initialValue: item.mobileNumber,
@@ -278,19 +292,9 @@ const formEmployee = ({
                 ]
               })(<Input />)}
             </FormItem>
-            <FormItem label="Phone Number" {...formItemLayout}>
-              {getFieldDecorator('phoneNumber', {
-                initialValue: item.phoneNumber
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="Email" {...formItemLayout}>
-              {getFieldDecorator('email', {
-                initialValue: item.email
-              })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>
-      </Card>
+          </Card>
+        </Col>
+      </Row>
       <FormItem {...tailFormItemLayout}>
         {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
         <Button type="primary" onClick={handleSubmit}>{button}</Button>
