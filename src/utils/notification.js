@@ -20,7 +20,7 @@ function urlBase64ToUint8Array (base64String) {
   return outputArray
 }
 
-const PUBLIC_VAPID_KEY = 'BDma5GOuAC5baiHlzPJ4cUAmhbn0ZnoOCzcEbj9vYx93QXO7lSFTgdP312gyZZcS-KPvTWDJ5afEFKS4Dsnpxqo'
+const PUBLIC_VAPID_KEY = 'BEPdD7lgECTub9IaIVnnGYk0pZYvpbJl27HXbJMvze_9B6K7rLHeil3ZIo83YYcJALtFOPGsZGwh0Ps7DV-hVvg'
 const publicVapidKey = PUBLIC_VAPID_KEY
 
 export const getSubscription = async () => {
