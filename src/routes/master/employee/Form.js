@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Select, Row, Col, Modal, message, Card, DatePicker } from 'antd'
 import moment from 'moment'
+import FormItemFingerprint from 'components/Form/FormItemFingerprint'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -26,284 +27,292 @@ const column = {
   xl: { span: 12 }
 }
 
-const formEmployee = ({
-  item,
-  sequence,
-  onSubmit,
-  onCancel,
-  disabled,
-  button,
-  modalType,
-  showPosition,
-  showCities,
-  listLovJobPosition,
-  listCity,
-  listIdType,
-  showIdType,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    getFieldValue,
-    resetFields
-  }
-}) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 16 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
+class FormEmployee extends Component {
+  render () {
+    const {
+      item,
+      sequence,
+      onSubmit,
+      onCancel,
+      disabled,
+      button,
+      modalType,
+      showPosition,
+      showCities,
+      listLovJobPosition,
+      listCity,
+      listIdType,
+      showIdType,
+      form: {
+        getFieldDecorator,
+        validateFields,
+        getFieldsValue,
+        getFieldValue,
+        resetFields
+      }
+    } = this.props
+
+    const tailFormItemLayout = {
+      wrapperCol: {
+        span: 24,
+        xs: {
+          offset: modalType === 'edit' ? 10 : 19
+        },
+        sm: {
+          offset: modalType === 'edit' ? 16 : 20
+        },
+        md: {
+          offset: modalType === 'edit' ? 15 : 19
+        },
+        lg: {
+          offset: modalType === 'edit' ? 13 : 18
+        }
       }
     }
-  }
 
-  const jobPosition = () => {
-    showPosition()
-  }
-
-  const city = () => {
-    showCities()
-  }
-
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      if (data.employeeId) {
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onSubmit(data.employeeId, data)
-            resetFields()
-          },
-          onCancel () { }
-        })
-      } else {
-        message.warning("Employee Id can't be null")
-      }
-    })
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
-  const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
-  const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
-  const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
-
-  const cardProps = {
-    bordered: true,
-    style: {
-      padding: 8,
-      marginLeft: 8,
-      marginBottom: 8
+    const jobPosition = () => {
+      showPosition()
     }
-  }
 
-  const disabledDate = (current) => {
-    return current > moment(new Date())
-  }
+    const city = () => {
+      showCities()
+    }
 
-  return (
-    <Form layout="horizontal">
-      <Row>
-        <Col md={24} lg={12}>
-          <Card title={<h3>General</h3>} {...cardProps}>
-            <FormItem label="Employee ID" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('employeeId', {
-                initialValue: item.employeeId || sequence,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^[a-zA-Z0-9_]{6,15}$/i,
-                    message: 'a-z & 0-9, min: 6 characters'
-                  }
-                ]
-              })(<Input disabled={disabled} maxLength={15} />)}
-            </FormItem>
-            <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('employeeName', {
-                initialValue: item.employeeName,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Input autoFocus />)}
-            </FormItem>
-            <FormItem label="Position" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('positionId', {
-                initialValue: item.positionId,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Select
-                optionFilterProp="children"
-                onFocus={() => jobPosition()}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >{jobposition}
-              </Select>)}
-            </FormItem>
-            <FormItem label="Address" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('address01', {
-                initialValue: item.address01,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="Birth City" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('cityId', {
-                initialValue: item.cityId,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Select
-                optionFilterProp="children"
-                onFocus={() => city()}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >{cities}
-              </Select>)}
-            </FormItem>
-            <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('birthDate', {
-                initialValue: item.birthDate ? moment(item.birthDate) : null
-              })(<DatePicker disabledDate={disabledDate} />)}
-            </FormItem>
-          </Card>
-        </Col>
-        <Col md={24} lg={12}>
-          <Card title={<h3>Bank</h3>} {...cardProps}>
-            <FormItem label="Bank Name" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bankName', {
-                initialValue: item.bankName,
-                rules: [
-                  {
-                    required: false,
-                    pattern: /^[a-zA-Z_]{2,30}$/i,
-                    message: 'a-z, min: 2 characters'
-                  }
-                ]
-              })(<Input maxLength={30} />)}
-            </FormItem>
-            <FormItem label="Account No" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('accountNo', {
-                initialValue: item.accountNo,
-                rules: [
-                  {
-                    required: false,
-                    pattern: /^[0-9_]{2,30}$/i,
-                    message: '0-9, min: 2 characters'
-                  }
-                ]
-              })(<Input maxLength={30} />)}
-            </FormItem>
-            <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('accountName', {
-                initialValue: item.accountName,
-                rules: [
-                  {
-                    required: false,
-                    pattern: /^[a-zA-Z\s_]{2,30}$/i,
-                    message: 'a-z, min: 2 characters'
-                  }
-                ]
-              })(<Input maxLength={30} />)}
-            </FormItem>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Col {...column}>
-          <Card title={<h3>Contact & Identity</h3>} {...cardProps}>
-            <FormItem label="ID Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('idType', {
-                initialValue: item.idType,
-                rules: [
-                  {
-                    required: !!getFieldValue('idNo')
-                  }
-                ]
-              })(<Select
-                allowClear
-                optionFilterProp="children"
-                mode="default"
-                onFocus={showIdType}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >{childrenLov}
-              </Select>)}
-            </FormItem>
-            <FormItem label="ID No" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('idNo', {
-                initialValue: item.idNo,
-                rules: [
-                  {
-                    required: false,
-                    pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input maxLength={30} />)}
-            </FormItem>
-            <FormItem label="Phone Number" {...formItemLayout}>
-              {getFieldDecorator('phoneNumber', {
-                initialValue: item.phoneNumber
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="Email" {...formItemLayout}>
-              {getFieldDecorator('email', {
-                initialValue: item.email
-              })(<Input />)}
-            </FormItem>
-          </Card>
-        </Col>
-        <Col {...column}>
-          <Card title={<h3>Fingerprint</h3>} {...cardProps}>
-            <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('mobileNumber', {
-                initialValue: item.mobileNumber,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
-                    message: 'mobile number is not valid'
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-          </Card>
-        </Col>
-      </Row>
-      <FormItem {...tailFormItemLayout}>
-        {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-        <Button type="primary" onClick={handleSubmit}>{button}</Button>
-      </FormItem>
-    </Form>
-  )
+    const handleSubmit = () => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...getFieldsValue()
+        }
+        if (data.employeeId) {
+          Modal.confirm({
+            title: 'Do you want to save this item?',
+            onOk () {
+              onSubmit(data.employeeId, data)
+              resetFields()
+            },
+            onCancel () { }
+          })
+        } else {
+          message.warning("Employee Id can't be null")
+        }
+      })
+    }
+
+    const handleCancel = () => {
+      onCancel()
+      resetFields()
+    }
+
+    const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
+    const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
+    const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
+
+    const cardProps = {
+      bordered: true,
+      style: {
+        padding: 8,
+        marginLeft: 8,
+        marginBottom: 8
+      }
+    }
+
+    const disabledDate = (current) => {
+      return current > moment(new Date())
+    }
+
+    return (
+      <Form layout="horizontal">
+        <Row>
+          <Col md={24} lg={12}>
+            <Card title={<h3>General</h3>} {...cardProps}>
+              <FormItem label="Employee ID" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('employeeId', {
+                  initialValue: item.employeeId || sequence,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^[a-zA-Z0-9_]{6,15}$/i,
+                      message: 'a-z & 0-9, min: 6 characters'
+                    }
+                  ]
+                })(<Input disabled={disabled} maxLength={15} />)}
+              </FormItem>
+              <FormItem label="Employee Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('employeeName', {
+                  initialValue: item.employeeName,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input autoFocus />)}
+              </FormItem>
+              <FormItem label="Position" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('positionId', {
+                  initialValue: item.positionId,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  optionFilterProp="children"
+                  onFocus={() => jobPosition()}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{jobposition}
+                </Select>)}
+              </FormItem>
+              <FormItem label="Address" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('address01', {
+                  initialValue: item.address01,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input />)}
+              </FormItem>
+              <FormItem label="Birth City" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cityId', {
+                  initialValue: item.cityId,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  optionFilterProp="children"
+                  onFocus={() => city()}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{cities}
+                </Select>)}
+              </FormItem>
+              <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('birthDate', {
+                  initialValue: item.birthDate ? moment(item.birthDate) : null
+                })(<DatePicker disabledDate={disabledDate} />)}
+              </FormItem>
+            </Card>
+          </Col>
+          <Col md={24} lg={12}>
+            <Card title={<h3>Bank</h3>} {...cardProps}>
+              <FormItem label="Bank Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bankName', {
+                  initialValue: item.bankName,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[a-zA-Z_]{2,30}$/i,
+                      message: 'a-z, min: 2 characters'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Account No" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('accountNo', {
+                  initialValue: item.accountNo,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[0-9_]{2,30}$/i,
+                      message: '0-9, min: 2 characters'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Account Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('accountName', {
+                  initialValue: item.accountName,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[a-zA-Z\s_]{2,30}$/i,
+                      message: 'a-z, min: 2 characters'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col {...column}>
+            <Card title={<h3>Contact & Identity</h3>} {...cardProps}>
+              <FormItem label="ID Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('idType', {
+                  initialValue: item.idType,
+                  rules: [
+                    {
+                      required: !!getFieldValue('idNo')
+                    }
+                  ]
+                })(<Select
+                  allowClear
+                  optionFilterProp="children"
+                  mode="default"
+                  onFocus={showIdType}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{childrenLov}
+                </Select>)}
+              </FormItem>
+              <FormItem label="ID No" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('idNo', {
+                  initialValue: item.idNo,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
+                      message: 'a-Z & 0-9'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Phone Number" {...formItemLayout}>
+                {getFieldDecorator('phoneNumber', {
+                  initialValue: item.phoneNumber
+                })(<Input />)}
+              </FormItem>
+              <FormItem label="Email" {...formItemLayout}>
+                {getFieldDecorator('email', {
+                  initialValue: item.email
+                })(<Input />)}
+              </FormItem>
+            </Card>
+          </Col>
+          <Col {...column}>
+            <Card title={<h3>Fingerprint</h3>} {...cardProps}>
+              <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('mobileNumber', {
+                  initialValue: item.mobileNumber,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                      message: 'mobile number is not valid'
+                    }
+                  ]
+                })(<Input />)}
+              </FormItem>
+              <FormItemFingerprint
+                getFieldDecorator={getFieldDecorator}
+                formItemLayout={formItemLayout}
+              />
+            </Card>
+          </Col>
+        </Row>
+        <FormItem {...tailFormItemLayout}>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+        </FormItem>
+      </Form>
+    )
+  }
 }
 
-formEmployee.propTypes = {
+FormEmployee.propTypes = {
   form: PropTypes.object.isRequired,
   listLovJobPosition: PropTypes.object,
   listCity: PropTypes.object,
@@ -315,4 +324,4 @@ formEmployee.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(formEmployee)
+export default Form.create()(FormEmployee)

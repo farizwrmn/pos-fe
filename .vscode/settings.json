@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "files.eol": "\n",
-  "javascript.format.insertSpaceBeforeFunctionParenthesis": true
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "javascript.format.insertSpaceAfterConstructor": true
 }
