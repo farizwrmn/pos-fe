@@ -4,7 +4,7 @@ export async function registerEmployeeFingerprint (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/fingerprint-employee/register',
-    method: 'get',
+    method: 'post',
     data: params,
     headers: apiHeaderToken
   })
