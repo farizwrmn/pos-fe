@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Select, Row, Col, Modal, message, Card, DatePicker } from 'antd'
+import { Form, Input, Button, Select, Row, Col, Modal, message, Card, DatePicker, Icon } from 'antd'
 import moment from 'moment'
 import FormItemFingerprint from 'components/Form/FormItemFingerprint'
+import styles from './index.less'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -284,7 +285,25 @@ class FormEmployee extends Component {
             </Card>
           </Col>
           <Col {...column}>
-            <Card title={<h3>Fingerprint</h3>} {...cardProps}>
+            <Card
+              title={(
+                <div className={styles.row}>
+                  <h3>Fingerprint</h3>
+                  {item && item.fingerprintFile && item.fingerprintFile.raw && (
+                    <div>
+                      <Icon
+                        type="check-circle"
+                        className={styles.check}
+                      />
+                      <span className={styles.checkText}>
+                        already setup
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+              {...cardProps}
+            >
               <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('mobileNumber', {
                   initialValue: item.mobileNumber,
