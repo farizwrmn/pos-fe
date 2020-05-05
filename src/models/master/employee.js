@@ -1,6 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import {
+  registerEmployeeFingerprint
+} from 'services/fingerprint/fingerprintEmployee'
 import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
@@ -145,6 +148,13 @@ export default modelExtend(pageModel, {
       } else {
         console.log('employeeId = ', sequence.data)
         throw data
+      }
+    },
+
+    * registerFingerprint ({ payload }, { call }) {
+      const response = yield call(registerEmployeeFingerprint, payload)
+      if (!response.success) {
+        throw response
       }
     },
 

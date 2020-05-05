@@ -292,7 +292,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
   }
 
   const homeNotification = {
-    title: 'dmiPOS',
+    title: 'smartPOS',
     options: {
       body: 'Thankyou for subcribe us!',
       icon: <ButtonIcon />,

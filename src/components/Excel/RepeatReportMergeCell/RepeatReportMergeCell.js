@@ -22,7 +22,7 @@ const RepeatReportMergeCell = ({
   tableMerge = []
 }) => {
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
+  workbook.creator = 'smartPOS'
   workbook.created = new Date()
   workbook.views = [
     {

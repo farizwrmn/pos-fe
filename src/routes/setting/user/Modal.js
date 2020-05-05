@@ -5,6 +5,7 @@ import {
   Tabs, Transfer, Tree, Switch, Icon, Card, Select
 } from 'antd'
 import styles from './Modal.less'
+import Fingerprint from './Fingerprint'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
@@ -110,6 +111,8 @@ const modal = ({
     } else if (activeTab === '4') {
       modalAllStoresLoad(item.userId)
     } else if (activeTab === '5') {
+      // Get List Fingerprint
+    } else if (activeTab === '6') {
       modalTotpLoad(item.userId)
     }
   }
@@ -159,7 +162,9 @@ const modal = ({
         modalButtonSaveClick(data.userId, listUserRoleChange, activeTab)
       } else if (activeTab === '4') { // tab Store
         modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
-      } else if (activeTab === '5') { // tab Security
+      } else if (activeTab === '5') { // tab Fingerprint
+        // Get List of Fingerprint
+      } else if (activeTab === '6') { // tab Security
         modalButtonSaveClick(data.userId, { totp: totpChecked ? totp.key : null }, activeTab)
       }
     })
@@ -453,7 +458,10 @@ const modal = ({
             disabled
           />
         </TabPane>
-        <TabPane tab="Security" key="5">
+        <TabPane tab="Fingerprint" key="5">
+          <Fingerprint />
+        </TabPane>
+        <TabPane tab="Security" key="6">
           <Switch checked={totpChecked}
             checkedChildren={<div><Icon type="lock" /><span> Secure with TOTP</span></div>}
             unCheckedChildren={<div><Icon type="unlock" /><span> Not Secure</span></div>}

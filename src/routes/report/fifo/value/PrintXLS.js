@@ -36,7 +36,7 @@ const PrintXLS = ({ listRekap, dataSource, period, year, storeInfo }) => {
   let inTransferPrice = listRekap.reduce((cnt, o) => cnt + parseFloat(o.inTransferPrice || 0), 0)
 
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
+  workbook.creator = 'smartPOS'
   workbook.created = new Date()
   // workbook.lastPrinted = new Date(2016, 9, 27)
   workbook.views = [

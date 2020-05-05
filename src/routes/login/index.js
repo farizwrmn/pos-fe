@@ -5,6 +5,7 @@ import { Button, Row, Form, Input, Cascader, Popover, Col } from 'antd'
 import { config, ip } from 'utils'
 // import Footer from 'components/Layout/Footer'
 import Info from 'components/Layout/Info'
+import Fingerprint from './Fingerprint'
 import styles from './index.less'
 
 const { authBy } = config
@@ -19,7 +20,13 @@ const Login = ({
     // getFieldsValue
   }
 }) => {
-  const { loginLoading, listUserRole, visibleItem, logo } = login
+  const {
+    loginLoading,
+    listUserRole,
+    visibleItem,
+    logo,
+    modalFingerprintVisible
+  } = login
 
   // const handleCompany = () => {
   //   let fields = getFieldsValue()
@@ -36,8 +43,26 @@ const Login = ({
       dispatch({ type: 'login/login', payload: values })
     })
   }
+
+  const modalFingerprintProps = {
+    title: 'Fingerprint Verification',
+    footer: null,
+    okText: 'Ok',
+    cancelText: 'Cancel',
+    visible: modalFingerprintVisible,
+    onCancel () {
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className={styles.container}>
+      {modalFingerprintVisible && <Fingerprint {...modalFingerprintProps} />}
       <div className={styles.form}>
         <div className={styles.logo}>
           <img alt={'logo'} src={logo} />
@@ -92,6 +117,14 @@ const Login = ({
               <Button
                 shape="circle"
                 size="large"
+                onClick={() => {
+                  dispatch({
+                    type: 'login/updateState',
+                    payload: {
+                      modalFingerprintVisible: true
+                    }
+                  })
+                }}
               >
                 <img
                   alt="fingerprint"

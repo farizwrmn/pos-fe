@@ -48,6 +48,8 @@ it('Should render Config Api', () =>
     jobposition: '/employees/positions',
     customers: '/members',
     assets: '/assets',
+    fingerprint: '/fingerprint',
+    fingerprintVerification: '/fingerprint-verification',
     balance: '/balance',
     balanceDetail: '/balance-detail',
     customergroup: '/members/groups',

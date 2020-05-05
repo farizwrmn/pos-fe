@@ -55,6 +55,8 @@ module.exports = {
     customergroup: '/members/groups',
     customertype: '/members/types',
     suppliers: '/suppliers',
+    fingerprint: '/fingerprint',
+    fingerprintVerification: '/fingerprint-verification',
     balance: '/balance',
     balanceDetail: '/balance-detail',
     bank: '/bank',

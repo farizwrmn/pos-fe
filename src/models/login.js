@@ -14,6 +14,7 @@ export default {
     listUserRole: [],
     listUserStore: [],
     requiredRole: false,
+    modalFingerprintVisible: false,
     visibleItem: { verificationCode: false },
     logo: '/logo.png'
   },
@@ -137,6 +138,9 @@ export default {
     }
   },
   reducers: {
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    },
     getCompanySuccess (state, action) {
       let cdi = [action.payload.cid]
       cdi.push(...action.payload.data)

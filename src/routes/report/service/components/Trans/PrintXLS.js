@@ -20,7 +20,7 @@ const PrintXLS = ({ list, dataSource, fromDate, toDate, storeInfo }) => {
   let nettoTotal = list.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const workbook = new Excel.Workbook()
-  workbook.creator = 'dmiPOS'
+  workbook.creator = 'smartPOS'
   workbook.created = new Date()
   // workbook.lastPrinted = new Date(2016, 9, 27)
   workbook.views = [
