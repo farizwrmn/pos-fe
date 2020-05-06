@@ -42,6 +42,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/login'))
+              registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/login/'))
             }, 'login')
           }
