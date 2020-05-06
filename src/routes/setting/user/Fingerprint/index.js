@@ -19,7 +19,7 @@ const Fingerprint = ({
         getFieldDecorator={getFieldDecorator}
         formItemLayout={formItemLayout}
         registerFingerprint={registerFingerprint}
-        validationType="register"
+        validationType="hris"
         item={item}
       />
     </div>
