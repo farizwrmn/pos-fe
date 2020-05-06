@@ -1,11 +1,29 @@
 import React from 'react'
+import {
+  Form
+} from 'antd'
+import FormItemFingerprint from 'components/Form/FormItemFingerprint'
 
-const Fingerprint = () => {
+const Fingerprint = ({
+  form: {
+    getFieldDecorator
+  },
+  formItemLayout,
+  item,
+  registerFingerprint
+}) => {
   return (
     <div>
-      Fingerprint
+      <FormItemFingerprint
+        FormItemFingerprint
+        getFieldDecorator={getFieldDecorator}
+        formItemLayout={formItemLayout}
+        registerFingerprint={registerFingerprint}
+        validationType="register"
+        item={item}
+      />
     </div>
   )
 }
 
-export default Fingerprint
+export default Form.create()(Fingerprint)

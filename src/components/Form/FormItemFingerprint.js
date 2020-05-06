@@ -33,6 +33,7 @@ class FormItemFingerprint extends Component {
   setEndpoint = () => {
     const {
       registerFingerprint,
+      validationType = 'hris',
       item
     } = this.props
     const endpoint = generateId(16)
@@ -43,6 +44,7 @@ class FormItemFingerprint extends Component {
       registerFingerprint({
         employeeId: item.id,
         endpoint,
+        validationType,
         applicationSource: 'web'
       })
     }
