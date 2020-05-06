@@ -57,6 +57,12 @@ const Login = ({
           modalFingerprintVisible: false
         }
       })
+    },
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
+      })
     }
   }
 
