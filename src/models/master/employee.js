@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import {
   registerEmployeeFingerprint
 } from 'services/fingerprint/fingerprintEmployee'
+import moment from 'moment'
 import { query, queryField, add, edit, remove } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
@@ -17,6 +18,9 @@ export default modelExtend(pageModel, {
 
   state: {
     list: [],
+    listHris: [],
+    period: moment().format('MM'),
+    year: moment().format('YYYY'),
     listLovEmployee: [],
     currentItem: {},
     modalType: 'add',
