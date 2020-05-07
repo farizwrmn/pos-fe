@@ -13,7 +13,6 @@ const options = {
   pingTimeout: 3000,
   pingInterval: 5000
 }
-console.log('APISOCKET', APISOCKET)
 
 const socket = io(APISOCKET, options)
 
@@ -68,10 +67,15 @@ class FormItemFingerprint extends Component {
         validationType,
         applicationSource: 'web'
       })
+      this.onCopy()
     }
-    console.log('validationType', validationType)
+    this.setSocket()
+  }
 
-    if (validationType === 'login') {
+  setSocket = () => {
+    const { validationType } = this.props
+    const { endpoint } = this.state
+    if (validationType === 'login' && endpoint) {
       socket.on(`fingerprint/${endpoint}`, this.handleData)
     }
   }

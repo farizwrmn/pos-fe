@@ -1,4 +1,4 @@
-const APIV1 = '/api/v1'
+const APIV1 = ''
 const APIHOST = '192.168.88.191' // '192.168.80.64'
 const APIPORT = 6401
 const APIURL = `http://${APIHOST}:${APIPORT}`
