@@ -34,10 +34,7 @@ class FormItemFingerprint extends Component {
     }
   }
 
-  onCopy = () => {
-    const {
-      endpoint
-    } = this.state
+  onCopy = (endpoint) => {
     let textarea = document.createElement('textarea')
     textarea.id = 'temp_element'
     textarea.style.height = 0
@@ -67,21 +64,28 @@ class FormItemFingerprint extends Component {
         validationType,
         applicationSource: 'web'
       })
-      this.onCopy()
+      this.onCopy(endpoint)
     }
-    this.setSocket()
+    this.setSocket(endpoint)
   }
 
-  setSocket = () => {
+  setSocket = (endpoint) => {
     const { validationType } = this.props
-    const { endpoint } = this.state
     if (validationType === 'login' && endpoint) {
       socket.on(`fingerprint/${endpoint}`, this.handleData)
     }
   }
 
   handleData = (data) => {
-    console.log('handleData', data)
+    const { dispatch } = this.props
+    if (dispatch && data && data.success) {
+      dispatch({
+        type: 'login/loginSuccess',
+        payload: {
+          data
+        }
+      })
+    }
   }
 
   render () {
@@ -114,7 +118,7 @@ class FormItemFingerprint extends Component {
                 type="default"
                 shape="circle"
                 icon="copy"
-                onClick={() => this.onCopy()}
+                onClick={() => this.onCopy(endpoint)}
               />
             </Col>
           </Row>
