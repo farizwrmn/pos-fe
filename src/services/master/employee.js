@@ -86,6 +86,16 @@ export async function queryMechanics () {
   })
 }
 
+export const getReportCheckin = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/checkin/employee',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryMechanicByCode (params) {
   const url = params.employeeId ? `${employees}/mechanics/${encodeURIComponent(params.employeeId)}` : `${employees}/mechanics/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()

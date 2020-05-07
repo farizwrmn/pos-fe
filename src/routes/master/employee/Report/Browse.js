@@ -4,49 +4,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import moment from 'moment'
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode'
+      title: 'Employee Name',
+      dataIndex: 'employee.employeeName',
+      key: 'employee.employeeName'
     },
     {
-      title: 'Begin',
-      dataIndex: 'beginQty',
-      key: 'beginQty',
-      render: text => (text || '-').toLocaleString()
+      title: 'Bank Name',
+      dataIndex: 'employee.bankName',
+      key: 'employee.bankName'
     },
     {
-      title: 'Purchase Qty',
-      dataIndex: 'purchaseQty',
-      key: 'purchaseQty',
-      render: text => (text || '-').toLocaleString()
+      title: 'Account No',
+      dataIndex: 'employee.accountNo',
+      key: 'employee.accountNo'
     },
     {
-      title: 'Adjust IN',
-      dataIndex: 'adjInQty',
-      key: 'adjInQty',
-      render: text => (text || '-').toLocaleString()
+      title: 'Account Name',
+      dataIndex: 'employee.accountName',
+      key: 'employee.accountName'
     },
     {
-      title: 'POS Qty',
-      dataIndex: 'posQty',
-      key: 'posQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Adjust OUT',
-      dataIndex: 'adjOutQty',
-      key: 'adjOutQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      key: 'count',
-      render: text => (text || '-').toLocaleString()
+      title: 'Login At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: text => moment(text).format('lll')
     }
   ]
 

@@ -8,7 +8,6 @@ import { routerRedux } from 'dva/router'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
-import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
 
@@ -79,7 +78,6 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        {<PrintPDF {...printProps} />}
         {<PrintXLS {...printProps} />}
       </Col>
     </Row>

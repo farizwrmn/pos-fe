@@ -17,6 +17,7 @@ const Report = ({
     listHris
   } = employee
   const { user, storeInfo } = app
+  console.log('listHris', listHris)
   const filterProps = {
     user,
     listRekap: listHris,
@@ -51,7 +52,7 @@ const Report = ({
 
   const browseProps = {
     dataSource: listHris,
-    loading: loading.effects['employee/query']
+    loading: loading.effects['employee/getCheckinReport']
   }
 
   return (
