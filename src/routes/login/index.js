@@ -48,6 +48,7 @@ const Login = ({
     title: 'Fingerprint Verification',
     footer: null,
     okText: 'Ok',
+    dispatch,
     cancelText: 'Cancel',
     visible: modalFingerprintVisible,
     onCancel () {
@@ -56,6 +57,12 @@ const Login = ({
         payload: {
           modalFingerprintVisible: false
         }
+      })
+    },
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
       })
     }
   }

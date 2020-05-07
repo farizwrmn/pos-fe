@@ -2,8 +2,19 @@ import React, { Component } from 'react'
 import { Form, Row, Col, Input, Button, message } from 'antd'
 import { HELP_NOTIFICATION_COPY, HELP_NOTIFICATION_ERROR } from 'utils/variable'
 import { generateId } from 'utils/crypt'
+import io from 'socket.io-client'
+import { APISOCKET } from 'utils/config.company'
 
 const FormItem = Form.Item
+
+const options = {
+  upgrade: false,
+  transports: ['websocket'],
+  pingTimeout: 3000,
+  pingInterval: 5000
+}
+
+const socket = io(APISOCKET, options)
 
 class FormItemFingerprint extends Component {
   state = {
@@ -14,10 +25,16 @@ class FormItemFingerprint extends Component {
     this.setEndpoint()
   }
 
-  onCopy = () => {
-    const {
-      endpoint
-    } = this.state
+  componentWillUnmount () {
+    const { validationType } = this.props
+    const { endpoint } = this.state
+
+    if (endpoint && validationType === 'login') {
+      socket.off(`fingerprint/${endpoint}`, this.handleData)
+    }
+  }
+
+  onCopy = (endpoint) => {
     let textarea = document.createElement('textarea')
     textarea.id = 'temp_element'
     textarea.style.height = 0
@@ -33,6 +50,7 @@ class FormItemFingerprint extends Component {
   setEndpoint = () => {
     const {
       registerFingerprint,
+      validationType = 'hris',
       item
     } = this.props
     const endpoint = generateId(16)
@@ -43,7 +61,29 @@ class FormItemFingerprint extends Component {
       registerFingerprint({
         employeeId: item.id,
         endpoint,
+        validationType,
         applicationSource: 'web'
+      })
+      this.onCopy(endpoint)
+    }
+    this.setSocket(endpoint)
+  }
+
+  setSocket = (endpoint) => {
+    const { validationType } = this.props
+    if (validationType === 'login' && endpoint) {
+      socket.on(`fingerprint/${endpoint}`, this.handleData)
+    }
+  }
+
+  handleData = (data) => {
+    const { dispatch } = this.props
+    if (dispatch && data && data.success) {
+      dispatch({
+        type: 'login/loginSuccess',
+        payload: {
+          data
+        }
       })
     }
   }
@@ -78,7 +118,7 @@ class FormItemFingerprint extends Component {
                 type="default"
                 shape="circle"
                 icon="copy"
-                onClick={() => this.onCopy()}
+                onClick={() => this.onCopy(endpoint)}
               />
             </Col>
           </Row>

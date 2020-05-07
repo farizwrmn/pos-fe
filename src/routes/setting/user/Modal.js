@@ -38,6 +38,7 @@ const modal = ({
   listUserRoleChange = {},
   listCheckedStores = [],
   modalType,
+  dispatch,
   onOk,
   onChooseItem,
   visiblePopover = false,
@@ -258,6 +259,17 @@ const modal = ({
     })
   }
 
+  const fingerprintProps = {
+    formItemLayout,
+    item,
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
+      })
+    }
+  }
+
   const hdlOnCheckStore = (checkedKeys) => {
     modalNodeCheckedStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
   }
@@ -459,7 +471,7 @@ const modal = ({
           />
         </TabPane>
         <TabPane tab="Fingerprint" key="5">
-          <Fingerprint />
+          <Fingerprint {...fingerprintProps} />
         </TabPane>
         <TabPane tab="Security" key="6">
           <Switch checked={totpChecked}

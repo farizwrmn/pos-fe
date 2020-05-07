@@ -4,7 +4,8 @@ import { routerRedux } from 'dva/router'
 import {
   registerEmployeeFingerprint
 } from 'services/fingerprint/fingerprintEmployee'
-import { query, queryField, add, edit, remove } from '../../services/master/employee'
+import moment from 'moment'
+import { query, queryField, add, edit, remove, getReportCheckin } from '../../services/master/employee'
 import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
@@ -17,6 +18,9 @@ export default modelExtend(pageModel, {
 
   state: {
     list: [],
+    listHris: [],
+    period: moment().format('MM'),
+    year: moment().format('YYYY'),
     listLovEmployee: [],
     currentItem: {},
     modalType: 'add',
@@ -32,7 +36,11 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const {
+          activeKey,
+          period,
+          year
+        } = location.query
         const { pathname } = location
         switch (pathname) {
           case '/master/employee':
@@ -45,6 +53,17 @@ export default modelExtend(pageModel, {
               }
             })
             if (activeKey === '1') dispatch({ type: 'query' })
+            console.log('activeKey', activeKey)
+
+            if (activeKey === '2') {
+              dispatch({
+                type: 'getCheckinReport',
+                payload: {
+                  period,
+                  year
+                }
+              })
+            }
             break
           case '/report/service/history':
             dispatch({
@@ -148,6 +167,20 @@ export default modelExtend(pageModel, {
       } else {
         console.log('employeeId = ', sequence.data)
         throw data
+      }
+    },
+
+    * getCheckinReport ({ payload }, { call, put }) {
+      const response = yield call(getReportCheckin, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listHris: response.data
+          }
+        })
+      } else {
+        throw response
       }
     },
 

@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 import {
   LocaleProvider,
   Form,
-  Modal,
-  Input,
-  Row,
-  Button,
-  Col
+  Modal
 } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
 import FormItemFingerprint from 'components/Form/FormItemFingerprint'
@@ -16,8 +12,6 @@ const formItemLayout = {
   wrapperCol: { span: 12 }
 }
 
-const FormItem = Form.Item
-
 class Fingerprint extends Component {
   render () {
     const {
@@ -25,6 +19,8 @@ class Fingerprint extends Component {
       form: {
         getFieldDecorator
       },
+      registerFingerprint,
+      dispatch,
       ...modalProps
     } = this.props
 
@@ -33,19 +29,12 @@ class Fingerprint extends Component {
         <Modal {...modalProps}>
           <FormItemFingerprint
             getFieldDecorator={getFieldDecorator}
+            formItemLayout={formItemLayout}
+            registerFingerprint={registerFingerprint}
+            item={item}
+            dispatch={dispatch}
+            validationType="login"
           />
-          <FormItem label="Username" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('userId', {
-              initialValue: item.userId
-            })(
-              <Row gutter={12}>
-                <Col span={20}>
-                  <Input autoFocus id="userId" size="large" placeholder="Username" />
-                </Col>
-                <Col span={4}><Button type="primary" shape="circle" icon="search" /></Col>
-              </Row>
-            )}
-          </FormItem>
         </Modal>
       </LocaleProvider>
     )

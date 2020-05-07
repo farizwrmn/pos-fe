@@ -23,6 +23,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
 
   const modalProps = {
     item: currentItem,
+    dispatch,
     storeItem,
     roleItem,
     listAllStores,
@@ -92,7 +93,8 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
       if (activeTab === '3') { // tab Role
         dispatch({
           type: 'userRole/save',
-          payload: { userId, data, activeTab
+          payload: {
+            userId, data, activeTab
           }
         })
       } else if (activeTab === '4') { // tab Store
@@ -103,7 +105,8 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
       } else if (activeTab === '5') { // tab Security
         dispatch({
           type: 'user/edit',
-          payload: { id: userId, data, activeTab
+          payload: {
+            id: userId, data, activeTab
           }
         })
       } else {
@@ -147,7 +150,8 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     },
     modalSwitchChange (checked, userId) {
       if (checked) {
-        dispatch({ type: 'user/totp',
+        dispatch({
+          type: 'user/totp',
           payload: { mode: 'generate', id: userId }
         })
         dispatch({
@@ -247,17 +251,19 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
     size: 'small'
   }
   Object.assign(browseProps, disableMultiSelect ? null :
-    { rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'user/updateState',
-          payload: {
-            selectedRowKeys: keys
-          }
-        })
+    {
+      rowSelection: {
+        selectedRowKeys,
+        onChange: (keys) => {
+          dispatch({
+            type: 'user/updateState',
+            payload: {
+              selectedRowKeys: keys
+            }
+          })
+        }
       }
-    } }
+    }
   )
 
   const filterProps = {
