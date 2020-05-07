@@ -2,8 +2,20 @@ import React, { Component } from 'react'
 import { Form, Row, Col, Input, Button, message } from 'antd'
 import { HELP_NOTIFICATION_COPY, HELP_NOTIFICATION_ERROR } from 'utils/variable'
 import { generateId } from 'utils/crypt'
+import io from 'socket.io-client'
+import { APISOCKET } from 'utils/config.company'
 
 const FormItem = Form.Item
+
+const options = {
+  upgrade: false,
+  transports: ['websocket'],
+  pingTimeout: 3000,
+  pingInterval: 5000
+}
+console.log('APISOCKET', APISOCKET)
+
+const socket = io(APISOCKET, options)
 
 class FormItemFingerprint extends Component {
   state = {
@@ -12,6 +24,15 @@ class FormItemFingerprint extends Component {
 
   componentDidMount () {
     this.setEndpoint()
+  }
+
+  componentWillUnmount () {
+    const { validationType } = this.props
+    const { endpoint } = this.state
+
+    if (endpoint && validationType === 'login') {
+      socket.off(`fingerprint/${endpoint}`, this.handleData)
+    }
   }
 
   onCopy = () => {
@@ -48,6 +69,15 @@ class FormItemFingerprint extends Component {
         applicationSource: 'web'
       })
     }
+    console.log('validationType', validationType)
+
+    if (validationType === 'login') {
+      socket.on(`fingerprint/${endpoint}`, this.handleData)
+    }
+  }
+
+  handleData = (data) => {
+    console.log('handleData', data)
   }
 
   render () {
