@@ -80,6 +80,7 @@ export default {
       const isInit = localStorage.getItem('isInit')
       const { success, user } = yield call(query, payload)
       if (success && user) {
+        yield put({ type: 'app/queryRefreshNotifications' })
         const notifications = yield call(getNotifications, payload)
         const { permissions } = user
 

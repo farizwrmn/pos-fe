@@ -48,6 +48,7 @@ const Login = ({
     title: 'Fingerprint Verification',
     footer: null,
     okText: 'Ok',
+    dispatch,
     cancelText: 'Cancel',
     visible: modalFingerprintVisible,
     onCancel () {

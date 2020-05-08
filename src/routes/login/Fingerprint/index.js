@@ -20,6 +20,7 @@ class Fingerprint extends Component {
         getFieldDecorator
       },
       registerFingerprint,
+      dispatch,
       ...modalProps
     } = this.props
 
@@ -31,6 +32,7 @@ class Fingerprint extends Component {
             formItemLayout={formItemLayout}
             registerFingerprint={registerFingerprint}
             item={item}
+            dispatch={dispatch}
             validationType="login"
           />
         </Modal>
