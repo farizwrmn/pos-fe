@@ -43,6 +43,7 @@ class FormEmployee extends Component {
       listLovJobPosition,
       registerFingerprint,
       listCity,
+      listStoreLov,
       listIdType,
       showIdType,
       form: {
@@ -107,8 +108,10 @@ class FormEmployee extends Component {
       onCancel()
       resetFields()
     }
+    console.log('listStoreLov', listStoreLov)
 
     const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
+    const stores = listStoreLov.length > 0 ? listStoreLov.map(c => <Option value={c.id} key={c.id}>{c.storeName}</Option>) : []
     const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
     const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
 
@@ -288,7 +291,7 @@ class FormEmployee extends Component {
             <Card
               title={(
                 <div className={styles.row}>
-                  <h3>Fingerprint</h3>
+                  <h3>Security And Biometric</h3>
                   {item && item.fingerprintFile && item.fingerprintFile.raw && (
                     <div>
                       <Icon
@@ -315,6 +318,20 @@ class FormEmployee extends Component {
                     }
                   ]
                 })(<Input />)}
+              </FormItem>
+              <FormItem label="Store Location" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('defaultStore', {
+                  initialValue: item.defaultStore,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{stores}
+                </Select>)}
               </FormItem>
               {modalType === 'edit' && <FormItemFingerprint
                 getFieldDecorator={getFieldDecorator}

@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { getAllStores, addStore, showStore, updateStore } from '../../services/setting/store'
+import { getAllStores, getStore, addStore, showStore, updateStore } from '../../services/setting/store'
 import { pageModel } from './../common'
 
 const success = (id) => {
@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     listStore: [],
+    listStoreLov: [],
     setting: { cashRegisterPeriods: { active: true, autoClose: false }, selectedShift: [], selectedCounter: [], memberCode: true },
     modalType: 'add',
     modalEdit: { visible: false, item: {} }
@@ -25,6 +26,10 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/setting/store') {
           dispatch({ type: 'getAllStores' })
           dispatch({ type: 'refreshSetting' })
+        } else if (location.pathname === '/master/employee') {
+          dispatch({
+            type: 'getStore'
+          })
         } else if (location.pathname === '/transaction/work-order' || location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
           // } else if (location.pathname === '/master/customer' || location.pathname === '/transaction/pos') {
           dispatch({ type: 'showStore', payload: { id: lstorage.getCurrentUserStore() } })
@@ -34,6 +39,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * getStore ({ payload = {} }, { call, put }) {
+      const response = yield call(getStore, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listStoreLov: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * getAllStores ({ payload = {} }, { call, put }) {
       const data = yield call(getAllStores, payload)
       if (data.success) {

@@ -12,6 +12,16 @@ export async function getAllStores (params) {
   })
 }
 
+export async function getStore (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/list/stores',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function addStore (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
