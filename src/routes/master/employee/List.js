@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Icon } from 'antd'
 import moment from 'moment'
 import { DropOption } from 'components'
+import styles from './index.less'
 
 const confirm = Modal.confirm
 
@@ -27,14 +28,26 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'employeeId'
     },
     {
-      title: 'ID Type',
-      dataIndex: 'idType',
-      key: 'idType'
-    },
-    {
-      title: 'ID No',
-      dataIndex: 'idNo',
-      key: 'idNo'
+      title: 'Fingerprint',
+      dataIndex: 'fingerprintFile',
+      key: 'fingerprintFile',
+      render: (text) => {
+        return (
+          <div className={styles.row}>
+            {text && text.raw && (
+              <div>
+                <Icon
+                  type="check-circle"
+                  className={styles.check}
+                />
+                <span className={styles.checkText}>
+                  already setup
+                </span>
+              </div>
+            )}
+          </div>
+        )
+      }
     },
     {
       title: 'Name',

@@ -12,8 +12,9 @@ import Report from './Report'
 
 const TabPane = Tabs.TabPane
 
-const Employee = ({ employee, jobposition, misc, city, loading, dispatch, location, app }) => {
+const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch, location, app }) => {
   const { list, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
+  const { listStoreLov } = store
   const { listLovJobPosition } = jobposition
   const { listLov, code } = misc
   const listIdType = listLov && listLov[code] ? listLov[code] : []
@@ -96,6 +97,7 @@ const Employee = ({ employee, jobposition, misc, city, loading, dispatch, locati
   const formProps = {
     listLovJobPosition,
     listCity,
+    listStoreLov,
     item: currentItem,
     sequence,
     disabled: true,
@@ -257,4 +259,4 @@ Employee.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ employee, misc, jobposition, city, loading, app }) => ({ employee, misc, jobposition, city, loading, app }))(Employee)
+export default connect(({ employee, store, misc, jobposition, city, loading, app }) => ({ employee, store, misc, jobposition, city, loading, app }))(Employee)
