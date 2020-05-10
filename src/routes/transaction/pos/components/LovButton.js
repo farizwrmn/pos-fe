@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   // Tooltip,
-  Badge,
+  // Badge,
   Button
 } from 'antd'
 
@@ -57,19 +57,19 @@ function FindLeftScreenBoundry () {
 
 window.leftScreenBoundry = FindLeftScreenBoundry
 
-const objectSize = () => {
-  let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-  Object.size = function (obj) {
-    let size = 0
-    let key
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) size += 1
-    }
-    return size
-  }
-  let size = Object.size(queue)
-  return size
-}
+// const objectSize = () => {
+//   let queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+//   Object.size = function (obj) {
+//     let size = 0
+//     let key
+//     for (key in obj) {
+//       if (obj.hasOwnProperty(key)) size += 1
+//     }
+//     return size
+//   }
+//   let size = Object.size(queue)
+//   return size
+// }
 
 const LovButton = ({
   memberInformation,
@@ -81,7 +81,7 @@ const LovButton = ({
   // handleAddAsset,
   handlePromoBrowse,
   handleMechanicBrowse,
-  handleQueue,
+  // handleQueue,
   workOrderItem
 }) => {
   const handleCustomerView = () => {
@@ -143,7 +143,7 @@ const LovButton = ({
         Bundle
       </Button>
       {/* </ButtonGroup> */}
-      <Badge count={objectSize()}>
+      {/* <Badge count={objectSize()}>
         <Button type="primary"
           style={{ marginRight: 8 }}
           size="large"
@@ -152,7 +152,7 @@ const LovButton = ({
         >
           Queue
         </Button>
-      </Badge>
+      </Badge> */}
       <Button
         type="primary"
         size="large"
@@ -170,8 +170,8 @@ LovButton.propTypes = {
   // handleAddMember: PropTypes.func.isRequired,
   // handleAssetBrowse: PropTypes.func.isRequired,
   // handleAddAsset: PropTypes.func.isRequired,
-  handleMechanicBrowse: PropTypes.func.isRequired,
-  handleQueue: PropTypes.func.isRequired
+  handleMechanicBrowse: PropTypes.func.isRequired
+  // handleQueue: PropTypes.func.isRequired
 }
 
 export default LovButton
