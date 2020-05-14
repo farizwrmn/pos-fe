@@ -87,7 +87,7 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
         size="small"
         scroll={{ x: 1000 }}
         rowKey={record => record.no}
-        onRowClick={item => handleMenuClick(item)}
+        onRowClick={(item) => handleMenuClick(item)}
       />
     </div>
   )
