@@ -50,7 +50,7 @@ class TransferModal extends Component {
           handleProductBrowse()
         } else {
           Modal.warning({
-            title: 'No available quantity',
+            title: 'Message Error',
             content: 'Price must greater than zero!'
           })
         }
