@@ -20,7 +20,8 @@ const PurchaseList = ({
   form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
   modalPurchaseVisible,
   loadingPurchaseLatest,
-  listPurchaseLatestDetail
+  listPurchaseLatestDetail,
+  handleBrowseProduct
 }) => {
   const handleClick = () => {
     validateFields((errors) => {
@@ -34,6 +35,7 @@ const PurchaseList = ({
       onChooseItem(data, curHead)
       resetFields()
     })
+    handleBrowseProduct()
   }
   const hdlCancel = () => {
     onCancel()

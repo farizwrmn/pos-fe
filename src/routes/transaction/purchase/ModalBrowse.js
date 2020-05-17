@@ -10,6 +10,7 @@ const Browse = ({ location, purchase, onChange, loading, pagination, onChooseIte
   }
   let listProductFilter = listProduct.filter(el => el.active === true)
   const listProps = {
+    purchaseProps,
     dataSource: listProductFilter,
     loading: loading.effects[(
       'purchase/getProducts'
