@@ -36,17 +36,25 @@ class TransferModal extends Component {
         if (errors) {
           return
         }
+
         const data = {
           ...getFieldsValue()
         }
-        data.transType = currentItemList.transType
-        data.description = (data.description === '' || data.description === null ? null : data.description)
-        data.productId = currentItemList.productId
-        data.productCode = currentItemList.productCode
-        data.productName = currentItemList.productName
-        onOkList(data)
+        if (Number(data.qty) > 0) {
+          data.transType = currentItemList.transType
+          data.description = (data.description === '' || data.description === null ? null : data.description)
+          data.productId = currentItemList.productId
+          data.productCode = currentItemList.productCode
+          data.productName = currentItemList.productName
+          onOkList(data)
+          handleProductBrowse()
+        } else {
+          Modal.warning({
+            title: 'No available quantity',
+            content: 'Price must greater than zero!'
+          })
+        }
       })
-      handleProductBrowse()
     }
     const handleCancel = () => {
       onCancelList()
