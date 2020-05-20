@@ -546,6 +546,22 @@ const Pos = ({
     })
   }
 
+  const handleConsignmentBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showConsignmentModal',
+      payload: {
+        modalType: 'browseConsignment'
+      }
+    })
+    dispatch({
+      type: 'pos/getConsignments',
+      payload: {
+        page: 1
+      }
+    })
+  }
+
   const modalAssetProps = {
     loading,
     dispatch,
@@ -1234,6 +1250,17 @@ const Pos = ({
                       }}
                     >
                       Product
+                    </Button>
+                    <Button
+                      type="default"
+                      size="medium"
+                      icon="barcode"
+                      onClick={handleConsignmentBrowse}
+                      style={{
+                        margin: '0px 5px'
+                      }}
+                    >
+                      Consignment
                     </Button>
                   </div>
 
