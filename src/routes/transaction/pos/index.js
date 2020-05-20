@@ -69,6 +69,7 @@ const Pos = ({
     modalAssetVisible,
     modalMechanicVisible,
     modalProductVisible,
+    modalConsignmentVisible,
     modalPaymentVisible,
     curQty,
     totalItem,
@@ -842,6 +843,29 @@ const Pos = ({
     })
   }
 
+  const modalConsignmentProps = {
+    location,
+    loading,
+    dispatch,
+    pos,
+    visible: modalConsignmentVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getConsignments',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          page: Number(e.current)
+        }
+      })
+    },
+    onCancel () { dispatch({ type: 'pos/hideConsignmentModal' }) },
+    onChooseItem (item) {
+      chooseProduct(item)
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -1291,6 +1315,7 @@ const Pos = ({
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
+            {modalConsignmentVisible && <Browse {...modalConsignmentProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}

@@ -33,6 +33,9 @@ import {
   queryPOSstock as queryProductsInStock,
   queryByBarcode
 } from '../../services/master/productstock'
+import {
+  query as queryConsignment
+} from '../../services/master/consignment'
 import { query as queryService } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
@@ -60,6 +63,7 @@ export default {
     listUnit: [],
     listMechanic: [],
     listProduct: [],
+    listConsignment: [],
     listSequence: {},
     listUnitUsage: [],
     posData: [],
@@ -80,6 +84,7 @@ export default {
     modalWarningVisible: false,
     modalMechanicVisible: false,
     modalProductVisible: false,
+    modalConsignmentVisible: false,
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVoidSuspendVisible: false,
@@ -1380,6 +1385,30 @@ export default {
       }
     },
 
+    * getConsignments ({ payload }, { call, put }) {
+      const data = yield call(queryConsignment, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listConsignment: data.data,
+            pagination: {
+              total: data.total,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        // throw data
+      }
+    },
+
     * getProducts ({ payload }, { call, put }) {
       // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       // let data = {}
@@ -2055,6 +2084,13 @@ export default {
     },
     hideProductModal (state) {
       return { ...state, modalProductVisible: false, listProduct: [], tmpProductList: [] }
+    },
+
+    showConsignmentModal (state, action) {
+      return { ...state, ...action.payload, modalConsignmentVisible: true }
+    },
+    hideConsignmentModal (state) {
+      return { ...state, modalConsignmentVisible: false, listConsignment: [] }
     },
 
 
