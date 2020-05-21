@@ -57,6 +57,11 @@ const ListConsignment = ({ onChooseItem, pos, loading, dispatch, ...tableProps }
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Vendor',
+      dataIndex: 'product.vendor.name',
+      key: 'vendor'
+    },
+    {
       title: 'Product Code',
       dataIndex: 'product.product_code',
       key: 'productCode'
