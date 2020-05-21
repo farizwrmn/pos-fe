@@ -198,6 +198,18 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
         dispatch({ type: 'purchase/hideProductModal' })
+        dispatch({
+          type: 'purchase/updateState',
+          payload: {
+            modalPurchaseVisible: true
+          }
+        })
+        dispatch({
+          type: 'purchase/getPurchaseLatestDetail',
+          payload: {
+            productId: e.code
+          }
+        })
       } else {
         Modal.warning({
           title: 'Cannot add product',

@@ -130,7 +130,12 @@ const PurchaseList = ({
                 }]
               })(<InputNumber
                 min={0}
-                onBlur={value => hdlChange(value)}
+                // onBlur={value => hdlChange(value)}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    handleClick()
+                  }
+                }}
               />)}
             </FormItem>
             <FormItem {...formItemLayout} label="Price">
@@ -217,4 +222,5 @@ PurchaseList.propTypes = {
   onDelete: PropTypes.func.isRequired,
   modalPurchaseVisible: PropTypes.isRequired
 }
+
 export default Form.create()(PurchaseList)
