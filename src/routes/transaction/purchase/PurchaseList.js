@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Button, Input, Form, InputNumber, Row, Col } from 'antd'
 import LatestPrice from './LatestPrice'
@@ -10,206 +10,234 @@ const formItemLayout = {
   wrapperCol: { span: 10 }
 }
 
-const PurchaseList = ({
-  onChooseItem,
-  curHead,
-  onChangeTotalItem,
-  onDelete,
-  item,
-  onCancel,
-  form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
-  modalPurchaseVisible,
-  loadingPurchaseLatest,
-  listPurchaseLatestDetail,
-  handleBrowseProduct
-}) => {
-  const handleClick = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
+class PurchaseList extends Component {
+  componentDidMount () {
+    setTimeout(() => {
+      const selector = document.getElementById('qty')
+      if (selector) {
+        selector.focus()
+        selector.select()
       }
-      const data = {
-        ...getFieldsValue()
-      }
-      data.code = item.code
-      onChooseItem(data, curHead)
-      resetFields()
-    })
-    handleBrowseProduct()
-  }
-  const hdlCancel = () => {
-    onCancel()
+    }, 100)
   }
 
-  const hdlChange = () => {
-    const data = getFieldsValue()
-    data.code = item.code
-    let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
-    let TOTAL = H1 - (parseFloat(data.discount))
-    let tax = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
-    if (tax === 'E') {
-      data.dpp = TOTAL
-      data.ppn = 0
-    } else if (tax === 'I') {
-      data.dpp = TOTAL / 1.1
-      data.ppn = TOTAL * 0.1
-    } else if (tax === 'S') {
-      data.dpp = TOTAL
-      data.ppn = TOTAL * 0.1
+  render () {
+    const {
+      onChooseItem,
+      curHead,
+      onChangeTotalItem,
+      onDelete,
+      item,
+      onCancel,
+      form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
+      modalPurchaseVisible,
+      loadingPurchaseLatest,
+      listPurchaseLatestDetail,
+      handleBrowseProduct
+    } = this.props
+    const handleClick = () => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...getFieldsValue()
+        }
+        if (Number(data.qty) > 0) {
+          data.code = item.code
+          onChooseItem(data, curHead)
+          resetFields()
+          handleBrowseProduct()
+        } else {
+          Modal.warning({
+            title: 'Message Error',
+            content: 'Price must greater than zero!'
+          })
+        }
+      })
     }
-    data.total = data.dpp + data.ppn
-    onChangeTotalItem(data)
-  }
-  const handleDelete = () => {
-    const data = getFieldsValue()
-    Modal.confirm({
-      title: `Are you sure Delete ${data.name} ?`,
-      content: 'Delete cannot be undone',
-      onOk () {
-        onDelete(data)
-        resetFields()
-      },
-      onCancel () {
-        console.log('cancel')
+    const hdlCancel = () => {
+      onCancel()
+    }
+
+    const hdlChange = () => {
+      const data = getFieldsValue()
+      console.log('data', data)
+      data.code = item.code
+      let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
+      let TOTAL = H1 - (parseFloat(data.discount))
+      let tax = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
+      if (tax === 'E') {
+        data.dpp = TOTAL
+        data.ppn = 0
+      } else if (tax === 'I') {
+        data.dpp = TOTAL / 1.1
+        data.ppn = TOTAL * 0.1
+      } else if (tax === 'S') {
+        data.dpp = TOTAL
+        data.ppn = TOTAL * 0.1
       }
-    })
-  }
+      data.total = data.dpp + data.ppn
+      onChangeTotalItem(data)
+    }
+    const handleDelete = () => {
+      const data = getFieldsValue()
+      Modal.confirm({
+        title: `Are you sure Delete ${data.productName ? data.productName : data.name} ?`,
+        content: 'Delete cannot be undone',
+        onOk () {
+          onDelete(data)
+          resetFields()
+        },
+        onCancel () {
+          console.log('cancel')
+        }
+      })
+    }
 
-  const latestPriceProps = {
-    dataSource: listPurchaseLatestDetail,
-    loading: loadingPurchaseLatest
-  }
+    const latestPriceProps = {
+      dataSource: listPurchaseLatestDetail,
+      loading: loadingPurchaseLatest
+    }
 
-  return (
-    <Modal
-      visible={modalPurchaseVisible}
-      onCancel={() => hdlCancel()}
-      width="700px"
-      footer={[]}
-    >
-      <Row>
-        <Col md={24} lg={12}>
-          <LatestPrice {...latestPriceProps} />
-        </Col>
-        <Col md={24} lg={12}>
-          <Form>
-            <FormItem {...formItemLayout} label="No">
-              {getFieldDecorator('no', {
-                initialValue: item.no,
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Product Code">
-              {getFieldDecorator('productCode', {
-                initialValue: item.productCode,
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Product Name">
-              {getFieldDecorator('name', {
-                initialValue: item.name,
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Quantity">
-              {getFieldDecorator('qty', {
-                initialValue: item.qty,
-                rules: [{
-                  required: true,
-                  pattern: /^([0-9.]{0,13})$/i,
-                  message: 'Quantity is not define'
-                }]
-              })(<InputNumber
-                min={0}
-                // onBlur={value => hdlChange(value)}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    handleClick()
-                  }
-                }}
-              />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Price">
-              {getFieldDecorator('price', {
-                initialValue: item.price,
-                rules: [{
-                  required: true,
-                  pattern: /^([0-9.]{0,13})$/i,
-                  message: 'Price is not define'
-                }]
-              })(<Input
-                maxLength={13}
-                onBlur={value => hdlChange(value)}
-              />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Disc(%)">
-              {getFieldDecorator('disc1', {
-                initialValue: item.disc1,
-                rules: [{
-                  required: true,
-                  pattern: /^([0-9.]{0,4})$/i,
-                  message: 'Discount is not define'
-                }]
-              })(<InputNumber min={0} max={100} onBlur={value => hdlChange(value)} />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Disc(N)">
-              {getFieldDecorator('discount', {
-                initialValue: item.discount,
-                rules: [{
-                  required: true,
-                  pattern: /^([0-9.]{0,13})$/i,
-                  message: 'Discount is not define'
-                }]
-              })(<InputNumber
-                maxLength={13}
-                min={0}
-                max={(item.price * item.qty) - ((item.price * item.qty) * (item.disc1 / 100))}
-                onBlur={value => hdlChange(value)}
-              />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="DPP">
-              {getFieldDecorator('dpp', {
-                initialValue: item.dpp,
-                rules: [{
-                  required: true,
-                  message: 'DPP is not define'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="PPN">
-              {getFieldDecorator('ppn', {
-                initialValue: item.ppn,
-                rules: [{
-                  required: true,
-                  message: 'PPN is not define'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Total">
-              {getFieldDecorator('total', {
-                initialValue: item.total,
-                rules: [{
-                  required: true,
-                  message: 'Total is not define'
-                }]
-              })(<Input disabled />)}
-            </FormItem>
-            <Button type="primary" onClick={handleClick} style={{ float: 'right' }}> Change </Button>
-            <Button type="danger" onClick={handleDelete} style={{ float: 'right', marginLeft: '5px' }}> Delete </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Modal>
-  )
+    return (
+      <Modal
+        visible={modalPurchaseVisible}
+        onCancel={() => hdlCancel()}
+        width="700px"
+        footer={[]}
+      >
+        <Row>
+          <Col md={24} lg={12}>
+            <LatestPrice {...latestPriceProps} />
+          </Col>
+          <Col md={24} lg={12}>
+            <Form>
+              <FormItem {...formItemLayout} label="No">
+                {getFieldDecorator('no', {
+                  // initialValue: item.no,
+                  initialValue: item.id ? item.id : item.no,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Product Code">
+                {getFieldDecorator('productCode', {
+                  initialValue: item.productCode,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Product Name">
+                {getFieldDecorator('name', {
+                  // initialValue: item.name,
+                  initialValue: item.productName ? item.productName : item.name,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Quantity">
+                {getFieldDecorator('qty', {
+                  initialValue: item.qty || 0,
+                  rules: [{
+                    required: true,
+                    pattern: /^([0-9.]{0,13})$/i,
+                    message: 'Quantity is not define'
+                  }]
+                })(<InputNumber
+                  min={0}
+                  // onBlur={value => hdlChange(value)}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      handleClick()
+                    }
+                  }}
+                />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Price">
+                {getFieldDecorator('price', {
+                  // initialValue: item.price,
+                  initialValue: item.costPrice ? item.costPrice : item.price,
+                  rules: [{
+                    required: true,
+                    pattern: /^([0-9.]{0,13})$/i,
+                    message: 'Price is not define'
+                  }]
+                })(<Input
+                  maxLength={13}
+                  onBlur={value => hdlChange(value)}
+                />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Disc(%)">
+                {getFieldDecorator('disc1', {
+                  initialValue: item.disc1 || 0,
+                  rules: [{
+                    required: true,
+                    pattern: /^([0-9.]{0,4})$/i,
+                    message: 'Discount is not define'
+                  }]
+                })(<InputNumber
+                  min={0}
+                  max={100}
+                  onBlur={value => hdlChange(value)}
+                />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Disc(N)">
+                {getFieldDecorator('discount', {
+                  initialValue: item.discount || 0,
+                  rules: [{
+                    required: true,
+                    pattern: /^([0-9.]{0,13})$/i,
+                    message: 'Discount is not define'
+                  }]
+                })(<InputNumber
+                  maxLength={13}
+                  min={0}
+                  max={(item.price * item.qty) - ((item.price * item.qty) * (item.disc1 / 100))}
+                  onBlur={value => hdlChange(value)}
+                />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="DPP">
+                {getFieldDecorator('dpp', {
+                  initialValue: item.dpp || 0,
+                  rules: [{
+                    required: true,
+                    message: 'DPP is not define'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="PPN">
+                {getFieldDecorator('ppn', {
+                  initialValue: item.ppn || 0,
+                  rules: [{
+                    required: true,
+                    message: 'PPN is not define'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem {...formItemLayout} label="Total">
+                {getFieldDecorator('total', {
+                  initialValue: item.total || 0,
+                  rules: [{
+                    required: true,
+                    message: 'Total is not define'
+                  }]
+                })(<Input disabled />)}
+              </FormItem>
+              <Button type="primary" onClick={handleClick} style={{ float: 'right' }}> Change </Button>
+              <Button type="danger" onClick={handleDelete} style={{ float: 'right', marginLeft: '5px' }}> Delete </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Modal>
+    )
+  }
 }
 
 PurchaseList.propTypes = {

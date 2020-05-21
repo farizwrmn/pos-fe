@@ -199,15 +199,15 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
         dispatch({ type: 'purchase/hideProductModal' })
         dispatch({
-          type: 'purchase/updateState',
+          type: 'purchase/modalEditShow',
           payload: {
-            modalPurchaseVisible: true
+            data: e
           }
         })
         dispatch({
           type: 'purchase/getPurchaseLatestDetail',
           payload: {
-            productId: e.code
+            productId: e.id
           }
         })
       } else {
@@ -236,7 +236,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   return (
     <div className="content-inner">
       <PurchaseForm {...purchaseProps} />
-      <PurchaseList {...purchaseProps} />
+      {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
     </div>
   )
 }
