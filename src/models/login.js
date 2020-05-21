@@ -126,7 +126,16 @@ export default {
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
-      lstorage.putStorageKey('udi', [data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime, data.profile.sessionid])
+      const dataUdi = [
+        data.profile.userid,
+        data.profile.role,
+        data.profile.store,
+        data.profile.usercompany,
+        data.profile.userlogintime,
+        data.profile.sessionid,
+        data.profile.consignmentId ? data.profile.consignmentId.toString() : null
+      ]
+      lstorage.putStorageKey('udi', dataUdi)
       yield put({ type: 'app/query', payload: data.profile })
       if (from) {
         yield put(routerRedux.push(from))

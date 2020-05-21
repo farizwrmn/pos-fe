@@ -71,7 +71,16 @@ const Bread = ({ menu, changeRole }) => {
       onOk () {
         const localId = lstorage.getStorageKey('udi')
         const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-        lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          value.toString(),
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === value[0])[0].consignmentId ? listUserStores.filter(filtered => filtered.value === value[0])[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
         localStorage.setItem('newItem', JSON.stringify({ store: false }))
         changeRole(value.toString())
         localStorage.removeItem('cashier_trans')
@@ -83,7 +92,7 @@ const Bread = ({ menu, changeRole }) => {
         localStorage.removeItem('service_detail')
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('cashierNo')
-        setInterval(() => { window.location.reload() }, 1000)
+        setTimeout(() => { window.location.reload() }, 1000)
       }
     })
   }

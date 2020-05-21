@@ -25,7 +25,7 @@ const putStorageKey = (key, value, norandom) => {
         const diffDate = moment(new Date()).diff(moment(new Date(index)))
         cryptedValue += `${encrypt((diffDate) ? diffDate.toString() : '', rdmTextcryp)}#`
       } else if (counter === 6) {
-        cryptedValue += index ? index.toString() : ''
+        cryptedValue += index ? `${index.toString()}#` : ''
       } else {
         cryptedValue += `${encrypt((index) ? index.toString() : '', rdmTextcryp)}#`
       }
@@ -55,6 +55,7 @@ const getStorageKey = (key) => {
     pair[4] = decrypt(localIds[4], rdmText) || ''
     pair[5] = decrypt(localIds[5], rdmText) || ''
     pair[6] = localIds[6] || ''
+    pair[7] = decrypt(localIds[7], rdmText) || ''
   } else {
     pair[1] = decrypt(localStorage.getItem(`${prefix}${key}`)) || ''
     pair[2] = '---'
@@ -135,6 +136,7 @@ const getListUserStores = () => {
   return listUserStores
 }
 const getCurrentUserStore = () => { return parseInt(getStorageKey('udi')[3], 10) }
+const getCurrentUserConsignment = () => { return getStorageKey('udi')[7] }
 const getCurrentUserStoreName = () => {
   function valueStoreName (store) {
     if (store.value === this[0]) {
@@ -201,6 +203,7 @@ module.exports = {
   getLoginTimeDiff,
   getListUserStores,
   getCurrentUserStore,
+  getCurrentUserConsignment,
   getCurrentUserStoreName,
   getCurrentUserStoreCode,
   getCurrentUserStoreDetail,

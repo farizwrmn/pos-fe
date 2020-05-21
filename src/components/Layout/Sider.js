@@ -36,7 +36,16 @@ const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOp
 
   const handleChangeRole = (value) => {
     const localId = lstorage.getStorageKey('udi')
-    lstorage.putStorageKey('udi', [localId[1], value.toString(), localId[3], localId[4], localId[5], localId[6]], localId[0])
+    const dataUdi = [
+      localId[1],
+      value.toString(),
+      localId[3],
+      localId[4],
+      localId[5],
+      localId[6],
+      localId[7]
+    ]
+    lstorage.putStorageKey('udi', dataUdi, localId[0])
     changeRole(value.toString())
   }
 
@@ -45,7 +54,7 @@ const Sider = ({ siderFold, sidebarColor, darkTheme, location, changeRole, navOp
   //   const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
   //   lstorage.putStorageKey('udi', [localId[1], localId[2], value.toString(), localId[4], moment(new Date(serverTime)), localId[6]], localId[0])
   //   changeRole(value.toString())
-  //   setInterval(() => { window.location.reload() }, 1000)
+  //   setTimeout(() => { window.location.reload() }, 1000)
   // }
 
   const loopLogo = () => {
