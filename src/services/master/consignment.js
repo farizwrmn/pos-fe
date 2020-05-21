@@ -1,11 +1,18 @@
-import { request, crypt } from '../../utils'
+import { request, crypt, lstorage } from '../../utils'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/consignment-api/stock',
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
+  params.outlet_id = lstorage.getCurrentUserStore()
+  if (params && params.outlet_id) {
+    return request({
+      url: '/consignment-api/stock',
+      method: 'get',
+      data: params,
+      headers: apiHeaderToken
+    })
+  }
+  return ({
+    success: false,
+    message: 'Missing outlet_id'
   })
 }
