@@ -80,6 +80,7 @@ export default {
     modalMemberVisible: false,
     modalPaymentVisible: false,
     modalServiceListVisible: false,
+    modalConsignmentListVisible: false,
     modalHelpVisible: false,
     modalWarningVisible: false,
     modalMechanicVisible: false,
@@ -94,6 +95,7 @@ export default {
     modalCashbackVisible: false,
     itemPayment: {},
     itemService: {},
+    itemConsignment: {},
     visiblePopover: false,
     modalType: 'add',
     totalItem: 0,
@@ -242,6 +244,14 @@ export default {
       yield put({ type: 'setCurTotal' })
     },
 
+    * consignmentEdit ({ payload }, { put }) {
+      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      dataPos[payload.no - 1] = payload
+      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      yield put({ type: 'hideConsignmentModal' })
+      yield put({ type: 'setCurTotal' })
+    },
+
     * paymentDelete ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
@@ -352,6 +362,60 @@ export default {
         })
       } else {
         localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal'
+        })
+        yield put({
+          type: 'hideServiceListModal'
+        })
+      }
+    },
+
+    * consignmentDelete ({ payload }, { put }) {
+      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let arrayProd = dataPos.slice()
+      Array.prototype.remove = function () {
+        let what
+        let a = arguments
+        let L = a.length
+        let ax
+        while (L && this.length) {
+          what = a[L -= 1]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.Record - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          code: ary[n].code,
+          productId: ary[n].productId,
+          disc1: ary[n].disc1,
+          disc2: ary[n].disc2,
+          disc3: ary[n].disc3,
+          discount: ary[n].discount,
+          name: ary[n].name,
+          price: ary[n].price,
+          qty: ary[n].qty,
+          total: ary[n].total
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('consignment')
+        yield put({
+          type: 'setCurTotal'
+        })
+        yield put({
+          type: 'hideServiceListModal'
+        })
+      } else {
+        localStorage.setItem('consignment', JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -2196,6 +2260,13 @@ export default {
       return { ...state, modalServiceListVisible: false }
     },
 
+    showConsignmentListModal (state, action) {
+      return { ...state, ...action.payload, itemConsignment: action.payload.item, modalConsignmentListVisible: true }
+    },
+    hideConsignmentListModal (state) {
+      return { ...state, modalConsignmentListVisible: false }
+    },
+
     showMechanicModal (state, action) {
       return { ...state, ...action.payload, modalMechanicVisible: true }
     },
@@ -2285,8 +2356,11 @@ export default {
 
     setCurTotal (state) {
       let product = getCashierTrans()
+      let consignment = getConsignment()
       let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      let dataPos = product.concat(service)
+      let dataPos = product.concat(service).concat(consignment)
+      console.log('dataPos', dataPos)
+
       let a = dataPos
       let curRecord = a.reduce((cnt) => { return cnt + 1 }, 0)
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -2559,6 +2633,10 @@ export default {
 
     setTotalItemService (state, action) {
       return { ...state, itemService: action.payload }
+    },
+
+    setTotalItemConsignment (state, action) {
+      return { ...state, itemConsignment: action.payload }
     },
 
     changeQueue (state, action) {

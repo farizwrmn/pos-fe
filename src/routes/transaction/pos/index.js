@@ -32,7 +32,7 @@ import BarcodeInput from './BarcodeInput'
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -76,10 +76,12 @@ const Pos = ({
     curTotal,
     searchText,
     itemService,
+    itemConsignment,
     itemPayment,
     memberInformation,
     memberUnitInfo,
     modalServiceListVisible,
+    modalConsignmentListVisible,
     mechanicInformation,
     curRecord,
     // modalShiftVisible,
@@ -121,8 +123,9 @@ const Pos = ({
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   let product = getCashierTrans()
+  let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-  let dataPos = product.concat(service)
+  let dataPos = product.concat(service).concat(consignment)
   let a = dataPos
   let usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
@@ -804,6 +807,33 @@ const Pos = ({
     }
   }
 
+  const ModalConsignmentListProps = {
+    location,
+    loading,
+    totalItem,
+    pos,
+    item: itemConsignment,
+    visible: modalConsignmentListVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({ type: 'pos/hideConsignmentListModal' })
+    },
+    onChooseItem (data) {
+      dispatch({ type: 'pos/consignmentEdit', payload: data })
+      dispatch({ type: 'pos/hideConsignmentListModal' })
+    },
+    DeleteItem (data) {
+      dispatch({ type: 'pos/consignmentDelete', payload: data })
+    },
+    onChangeTotalItem (data) {
+      dispatch({
+        type: 'pos/setTotalItemConsignment',
+        payload: data
+      })
+    }
+  }
+
   const modalMechanicProps = {
     location,
     loading,
@@ -1333,6 +1363,7 @@ const Pos = ({
             {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
+            {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
