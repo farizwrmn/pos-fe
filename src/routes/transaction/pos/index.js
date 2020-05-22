@@ -843,6 +843,15 @@ const Pos = ({
     })
   }
 
+  const chooseConsignment = (item) => {
+    dispatch({
+      type: 'pos/chooseConsignment',
+      payload: {
+        item
+      }
+    })
+  }
+
   const modalConsignmentProps = {
     location,
     loading,
@@ -862,7 +871,7 @@ const Pos = ({
     },
     onCancel () { dispatch({ type: 'pos/hideConsignmentModal' }) },
     onChooseItem (item) {
-      chooseProduct(item)
+      chooseConsignment(item)
     }
   }
 

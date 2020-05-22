@@ -41,9 +41,9 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
-const { insertCashierTrans, reArrangeMember } = variables
+const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -1063,6 +1063,23 @@ export default {
       }
     },
 
+    * checkQuantityNewConsignment ({ payload }, { put }) {
+      const { data } = payload
+      console.log('data', data)
+
+      insertConsignment(data)
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
+      })
+      let successModal = Modal.info({
+        title: 'Success add product',
+        content: 'Product has been added in Product`s Tab'
+      })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      setTimeout(() => successModal.destroy(), 1000)
+    },
+
     * getListProductData (payload, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
@@ -1180,6 +1197,113 @@ export default {
         payload: {
           curBarcode: '',
           curQty: 1
+        }
+      })
+    },
+
+    * chooseConsignment ({ payload }, { select, put }) {
+      const modalMember = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Member Information is not found',
+            content: 'Insert Member',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const modalEmployee = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Employee Information is not found',
+            content: 'Insert Employee',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const { item } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+      if (!(memberInformation && memberInformation.id)) {
+        yield modalMember()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMembers'
+        })
+
+        yield put({
+          type: 'pos/showMemberModal',
+          payload: {
+            modalType: 'browseMember'
+          }
+        })
+        return
+      }
+      if (!(mechanicInformation && mechanicInformation.employeeId)) {
+        yield modalEmployee()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMechanics'
+        })
+
+        yield put({
+          type: 'pos/showMechanicModal',
+          payload: {
+            modalType: 'browseMechanic'
+          }
+        })
+        return
+      }
+      let listByCode = getConsignment()
+      let arrayProd = listByCode
+      const checkExists = listByCode.filter(el => el.code === item.product.product_code)
+      if ((checkExists || []).length > 0) {
+        Modal.warning({
+          title: 'Already Exists',
+          content: 'Already Exists in list'
+        })
+        return
+      }
+      const setting = yield select(({ app }) => app.setting)
+      const data = {
+        no: arrayProd.length + 1,
+        code: item.product.product_code,
+        productId: item.id,
+        name: item.product.product_name,
+        qty: 1,
+        sellPrice: item.price,
+        price: item.price,
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total: item.price
+      }
+
+      arrayProd.push({
+        no: arrayProd.length + 1,
+        code: item.product.product_code,
+        productId: item.id,
+        name: item.product.product_name,
+        qty: 1,
+        sellPrice: item.price,
+        price: item.price,
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total: item.price
+      })
+      yield put({
+        type: 'pos/checkQuantityNewConsignment',
+        payload: {
+          data,
+          arrayProd,
+          setting,
+          type: payload.type
         }
       })
     },

@@ -74,6 +74,10 @@ const getCashierTrans = () => {
   return localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
 }
 
+const getConsignment = () => {
+  return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+}
+
 const getServiceTrans = () => {
   return localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
 }
@@ -213,6 +217,7 @@ module.exports = {
   getProtocolBE,
   getIdBE,
   getCashierTrans,
+  getConsignment,
   getServiceTrans,
   getBundleTrans,
   setItem,
