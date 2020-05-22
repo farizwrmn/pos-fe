@@ -90,6 +90,7 @@ const Bread = ({ menu, changeRole }) => {
         localStorage.removeItem('memberUnit')
         localStorage.removeItem('mechanic')
         localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('cashierNo')
         setTimeout(() => { window.location.reload() }, 1000)

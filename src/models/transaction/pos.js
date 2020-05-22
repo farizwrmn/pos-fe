@@ -246,6 +246,13 @@ export default {
 
     * consignmentEdit ({ payload }, { put }) {
       let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      if (payload && payload.qty > payload.stock) {
+        Modal.confirm({
+          title: 'Out of Stock',
+          content: 'Out of Stock'
+        })
+        return
+      }
       dataPos[payload.no - 1] = payload
       localStorage.setItem('consignment', JSON.stringify(dataPos))
       yield put({ type: 'hideConsignmentModal' })
@@ -396,6 +403,7 @@ export default {
           no: n + 1,
           code: ary[n].code,
           productId: ary[n].productId,
+          stock: ary[n].stock,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -412,7 +420,7 @@ export default {
           type: 'setCurTotal'
         })
         yield put({
-          type: 'hideServiceListModal'
+          type: 'hideConsignmentListModal'
         })
       } else {
         localStorage.setItem('consignment', JSON.stringify(arrayProd))
@@ -420,7 +428,7 @@ export default {
           type: 'setCurTotal'
         })
         yield put({
-          type: 'hideServiceListModal'
+          type: 'hideConsignmentListModal'
         })
       }
     },
@@ -1129,8 +1137,6 @@ export default {
 
     * checkQuantityNewConsignment ({ payload }, { put }) {
       const { data } = payload
-      console.log('data', data)
-
       insertConsignment(data)
       yield put({
         type: 'pos/setUtil',
@@ -1335,6 +1341,7 @@ export default {
       const data = {
         no: arrayProd.length + 1,
         code: item.product.product_code,
+        stock: item.quantity,
         productId: item.id,
         name: item.product.product_name,
         qty: 1,
@@ -1350,6 +1357,7 @@ export default {
       arrayProd.push({
         no: arrayProd.length + 1,
         code: item.product.product_code,
+        stock: item.quantity,
         productId: item.id,
         name: item.product.product_name,
         qty: 1,
@@ -1834,6 +1842,7 @@ export default {
     * removeTrans ({ payload = {} }, { put }) {
       const { defaultValue } = payload
       localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
       localStorage.removeItem('cashier_trans')
       if (!defaultValue) {
         localStorage.removeItem('member')
@@ -1862,6 +1871,7 @@ export default {
       })
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
       localStorage.removeItem('member')
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('mechanic')
@@ -2359,8 +2369,6 @@ export default {
       let consignment = getConsignment()
       let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       let dataPos = product.concat(service).concat(consignment)
-      console.log('dataPos', dataPos)
-
       let a = dataPos
       let curRecord = a.reduce((cnt) => { return cnt + 1 }, 0)
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)

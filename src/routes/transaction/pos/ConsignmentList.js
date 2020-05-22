@@ -32,11 +32,8 @@ const PaymentList = ({
     data.typeCode = itemConsignment.typeCode
     data.productId = itemConsignment.productId
     data.code = itemConsignment.code
+    data.stock = itemConsignment.stock
     data.name = itemConsignment.name
-    if (data.employee) {
-      data.employeeId = data.employee.key
-      data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
-    }
     const { employee, ...other } = data
     onChangeTotalItem(other)
     return data
@@ -51,14 +48,9 @@ const PaymentList = ({
       }
       data.typeCode = itemConsignment.typeCode
       data.productId = itemConsignment.productId
-      if (data.employee) {
-        data.employeeId = data.employee.key
-        data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
-      }
       data.code = itemConsignment.code
       data.name = itemConsignment.name
-      const { employee, ...other } = data
-      onChooseItem(other)
+      onChooseItem(data)
     })
   }
 

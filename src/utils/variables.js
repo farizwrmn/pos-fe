@@ -96,7 +96,6 @@ const insertConsignment = (dataObject) => {
   const previousData = getConsignment()
   dataObject.sellingPrice = dataObject.price
   const total = posTotal(dataObject)
-
   previousData.push({
     no: dataObject.no,
     bundleId: dataObject.bundleId,
@@ -105,6 +104,7 @@ const insertConsignment = (dataObject) => {
     productId: dataObject.productId,
     code: dataObject.code,
     name: dataObject.name,
+    stock: dataObject.stock,
     qty: dataObject.qty,
     typeCode: dataObject.typeCode,
     sellPrice: dataObject.sellPrice,

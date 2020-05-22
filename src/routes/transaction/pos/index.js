@@ -261,8 +261,6 @@ const Pos = ({
     },
     handlePromoBrowse () {
       resetSelectText()
-      console.log('memberInformation', memberInformation)
-
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         dispatch({
           type: 'promo/query',

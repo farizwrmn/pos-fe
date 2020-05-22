@@ -241,6 +241,7 @@ export default {
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
+                localStorage.removeItem('consignment')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')
@@ -936,6 +937,7 @@ export default {
         try {
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
+          localStorage.removeItem('consignment')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')

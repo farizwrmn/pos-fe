@@ -103,6 +103,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('isInit')
   localStorage.removeItem('service_detail')
   localStorage.removeItem('cashier_trans')
+  localStorage.removeItem('consignment')
   localStorage.removeItem('member')
   localStorage.removeItem('mechanic')
   localStorage.removeItem('memberUnit')
