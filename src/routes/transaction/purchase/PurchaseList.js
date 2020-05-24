@@ -93,6 +93,11 @@ class PurchaseList extends Component {
         }
       })
     }
+    const hdlClickKeyDown = (e) => {
+      if (e.keyCode === 13) {
+        handleClick()
+      }
+    }
 
     const latestPriceProps = {
       dataSource: listPurchaseLatestDetail,
@@ -104,7 +109,7 @@ class PurchaseList extends Component {
         visible={modalPurchaseVisible}
         onCancel={() => hdlCancel()}
         width="700px"
-        footer={[]}
+        footer={null}
       >
         <Row>
           <Col md={24} lg={12}>
@@ -150,11 +155,7 @@ class PurchaseList extends Component {
                 })(<InputNumber
                   min={0}
                   onBlur={value => hdlChange(value)}
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) {
-                      handleClick()
-                    }
-                  }}
+                  onKeyDown={e => hdlClickKeyDown(e)}
                 />)}
               </FormItem>
               <FormItem {...formItemLayout} label="Price">
@@ -168,6 +169,7 @@ class PurchaseList extends Component {
                 })(<Input
                   maxLength={13}
                   onBlur={value => hdlChange(value)}
+                  onKeyDown={e => hdlClickKeyDown(e)}
                 />)}
               </FormItem>
               <FormItem {...formItemLayout} label="Disc(%)">
@@ -182,6 +184,7 @@ class PurchaseList extends Component {
                   min={0}
                   max={100}
                   onBlur={value => hdlChange(value)}
+                  onKeyDown={e => hdlClickKeyDown(e)}
                 />)}
               </FormItem>
               <FormItem {...formItemLayout} label="Disc(N)">
@@ -197,6 +200,7 @@ class PurchaseList extends Component {
                   min={0}
                   max={(item.price * item.qty) - ((item.price * item.qty) * (item.disc1 / 100))}
                   onBlur={value => hdlChange(value)}
+                  onKeyDown={e => hdlClickKeyDown(e)}
                 />)}
               </FormItem>
               <FormItem {...formItemLayout} label="DPP">
