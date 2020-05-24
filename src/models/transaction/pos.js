@@ -10,6 +10,7 @@ import { queryWOHeader } from '../../services/transaction/workOrder'
 import {
   query as queryPos,
   queryDetail,
+  queryDetailConsignment,
   queryPos as queryaPos,
   queryById as queryInvoiceById,
   updatePos
@@ -533,6 +534,7 @@ export default {
     * queryPosDetail ({ payload }, { call, put }) {
       const { type } = payload
       const data = yield call(queryDetail, payload)
+      const consignment = yield call(queryDetailConsignment, payload)
       const PosData = yield call(queryaPos, payload)
       const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -560,6 +562,23 @@ export default {
             paid: payment.data[n].paid || 0
           })
         }
+        let dataConsignment = []
+        if (consignment
+          && consignment.success
+          && consignment.pos
+          && consignment.pos.length > 0) {
+          dataConsignment = consignment.pos.map(item => ({
+            code: item.productCode,
+            name: '',
+            qty: item.qty,
+            price: item.sellingPrice,
+            discount: item.discount,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.total
+          }))
+        }
         yield put({
           type: 'paymentDetail/updateState',
           payload: {
@@ -571,6 +590,7 @@ export default {
           payload: {
             posData: PosData.pos,
             listPaymentDetail: {
+              dataConsignment,
               id: payload.data.transNo,
               cashierId: payload.data.cashierId,
               cashierName: PosData.pos.cashierName,

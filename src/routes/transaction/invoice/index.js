@@ -136,6 +136,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
         dataPos={invoiceInfo.dataPos || []}
         dataService={invoiceInfo.dataService || []}
         dataGroup={invoiceInfo.dataGroup || []}
+        dataConsignment={listPaymentDetail.dataConsignment || []}
       />
       <Total
         posData={posData}
