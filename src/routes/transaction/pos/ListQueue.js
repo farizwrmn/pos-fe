@@ -60,6 +60,7 @@ const ListQueue = ({ pos, dispatch }) => {
       localStorage.removeItem('member')
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')

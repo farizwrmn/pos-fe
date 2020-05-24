@@ -10,6 +10,7 @@ import { queryWOHeader } from '../../services/transaction/workOrder'
 import {
   query as queryPos,
   queryDetail,
+  queryDetailConsignment,
   queryPos as queryaPos,
   queryById as queryInvoiceById,
   updatePos
@@ -33,14 +34,17 @@ import {
   queryPOSstock as queryProductsInStock,
   queryByBarcode
 } from '../../services/master/productstock'
+import {
+  query as queryConsignment
+} from '../../services/master/consignment'
 import { query as queryService } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
 const { prefix } = configMain
-const { insertCashierTrans, reArrangeMember } = variables
+const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -60,6 +64,7 @@ export default {
     listUnit: [],
     listMechanic: [],
     listProduct: [],
+    listConsignment: [],
     listSequence: {},
     listUnitUsage: [],
     posData: [],
@@ -76,10 +81,12 @@ export default {
     modalMemberVisible: false,
     modalPaymentVisible: false,
     modalServiceListVisible: false,
+    modalConsignmentListVisible: false,
     modalHelpVisible: false,
     modalWarningVisible: false,
     modalMechanicVisible: false,
     modalProductVisible: false,
+    modalConsignmentVisible: false,
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVoidSuspendVisible: false,
@@ -89,6 +96,7 @@ export default {
     modalCashbackVisible: false,
     itemPayment: {},
     itemService: {},
+    itemConsignment: {},
     visiblePopover: false,
     modalType: 'add',
     totalItem: 0,
@@ -237,6 +245,21 @@ export default {
       yield put({ type: 'setCurTotal' })
     },
 
+    * consignmentEdit ({ payload }, { put }) {
+      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      if (payload && payload.qty > payload.stock) {
+        Modal.confirm({
+          title: 'Out of Stock',
+          content: 'Out of Stock'
+        })
+        return
+      }
+      dataPos[payload.no - 1] = payload
+      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      yield put({ type: 'hideConsignmentModal' })
+      yield put({ type: 'setCurTotal' })
+    },
+
     * paymentDelete ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
@@ -356,6 +379,63 @@ export default {
       }
     },
 
+    * consignmentDelete ({ payload }, { put }) {
+      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let arrayProd = dataPos.slice()
+      Array.prototype.remove = function () {
+        let what
+        let a = arguments
+        let L = a.length
+        let ax
+        while (L && this.length) {
+          what = a[L -= 1]
+          while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1)
+          }
+        }
+        return this
+      }
+
+      let ary = arrayProd
+      ary.remove(arrayProd[payload.Record - 1])
+      arrayProd = []
+      for (let n = 0; n < ary.length; n += 1) {
+        arrayProd.push({
+          no: n + 1,
+          code: ary[n].code,
+          productId: ary[n].productId,
+          stock: ary[n].stock,
+          disc1: ary[n].disc1,
+          disc2: ary[n].disc2,
+          disc3: ary[n].disc3,
+          discount: ary[n].discount,
+          name: ary[n].name,
+          sellPrice: ary[n].sellPrice,
+          price: ary[n].price,
+          otherSellPrice: ary[n].otherSellPrice,
+          qty: ary[n].qty,
+          total: ary[n].total
+        })
+      }
+      if (arrayProd.length === 0) {
+        localStorage.removeItem('consignment')
+        yield put({
+          type: 'setCurTotal'
+        })
+        yield put({
+          type: 'hideConsignmentListModal'
+        })
+      } else {
+        localStorage.setItem('consignment', JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal'
+        })
+        yield put({
+          type: 'hideConsignmentListModal'
+        })
+      }
+    },
+
     * queryHistory ({ payload = {} }, { call, put }) {
       const data = yield call(queryPos, payload)
       if (data.success) {
@@ -454,6 +534,7 @@ export default {
     * queryPosDetail ({ payload }, { call, put }) {
       const { type } = payload
       const data = yield call(queryDetail, payload)
+      const consignment = yield call(queryDetailConsignment, payload)
       const PosData = yield call(queryaPos, payload)
       const member = payload.data.memberCode ? yield call(queryMemberCode, { memberCode: payload.data.memberCode }) : {}
       const company = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -481,6 +562,23 @@ export default {
             paid: payment.data[n].paid || 0
           })
         }
+        let dataConsignment = []
+        if (consignment
+          && consignment.success
+          && consignment.pos
+          && consignment.pos.length > 0) {
+          dataConsignment = consignment.pos.map(item => ({
+            code: item.productCode,
+            name: '',
+            qty: item.qty,
+            price: item.sellingPrice,
+            discount: item.discount,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.total
+          }))
+        }
         yield put({
           type: 'paymentDetail/updateState',
           payload: {
@@ -492,6 +590,7 @@ export default {
           payload: {
             posData: PosData.pos,
             listPaymentDetail: {
+              dataConsignment,
               id: payload.data.transNo,
               cashierId: payload.data.cashierId,
               cashierName: PosData.pos.cashierName,
@@ -1058,6 +1157,21 @@ export default {
       }
     },
 
+    * checkQuantityNewConsignment ({ payload }, { put }) {
+      const { data } = payload
+      insertConsignment(data)
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
+      })
+      let successModal = Modal.info({
+        title: 'Success add product',
+        content: 'Product has been added in Product`s Tab'
+      })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      setTimeout(() => successModal.destroy(), 1000)
+    },
+
     * getListProductData (payload, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
@@ -1175,6 +1289,117 @@ export default {
         payload: {
           curBarcode: '',
           curQty: 1
+        }
+      })
+    },
+
+    * chooseConsignment ({ payload }, { select, put }) {
+      const modalMember = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Member Information is not found',
+            content: 'Insert Member',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const modalEmployee = () => {
+        return new Promise((resolve) => {
+          Modal.info({
+            title: 'Employee Information is not found',
+            content: 'Insert Employee',
+            onOk () {
+              resolve()
+            }
+          })
+        })
+      }
+      const { item } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+      if (!(memberInformation && memberInformation.id)) {
+        yield modalMember()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMembers'
+        })
+
+        yield put({
+          type: 'pos/showMemberModal',
+          payload: {
+            modalType: 'browseMember'
+          }
+        })
+        return
+      }
+      if (!(mechanicInformation && mechanicInformation.employeeId)) {
+        yield modalEmployee()
+        yield put({ type: 'pos/hideProductModal' })
+        yield put({
+          type: 'pos/getMechanics'
+        })
+
+        yield put({
+          type: 'pos/showMechanicModal',
+          payload: {
+            modalType: 'browseMechanic'
+          }
+        })
+        return
+      }
+      let listByCode = getConsignment()
+      let arrayProd = listByCode
+      const checkExists = listByCode.filter(el => el.code === item.product.product_code)
+      if ((checkExists || []).length > 0) {
+        Modal.warning({
+          title: 'Already Exists',
+          content: 'Already Exists in list'
+        })
+        return
+      }
+      const setting = yield select(({ app }) => app.setting)
+      const data = {
+        no: arrayProd.length + 1,
+        code: item.product.product_code,
+        stock: item.quantity,
+        productId: item.id,
+        name: item.product.product_name,
+        qty: 1,
+        sellPrice: item.price,
+        otherSellPrice: item.price_grabfood_gofood,
+        price: item.price,
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total: item.price
+      }
+
+      arrayProd.push({
+        no: arrayProd.length + 1,
+        code: item.product.product_code,
+        stock: item.quantity,
+        productId: item.id,
+        name: item.product.product_name,
+        qty: 1,
+        sellPrice: item.price,
+        otherSellPrice: item.price_grabfood_gofood,
+        price: item.price,
+        discount: 0,
+        disc1: 0,
+        disc2: 0,
+        disc3: 0,
+        total: item.price
+      })
+      yield put({
+        type: 'pos/checkQuantityNewConsignment',
+        payload: {
+          data,
+          arrayProd,
+          setting,
+          type: payload.type
         }
       })
     },
@@ -1377,6 +1602,30 @@ export default {
         })
       } else {
         message.warning('Barcode Not found')
+      }
+    },
+
+    * getConsignments ({ payload }, { call, put }) {
+      const data = yield call(queryConsignment, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listConsignment: data.data,
+            pagination: {
+              total: data.total,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        // throw data
       }
     },
 
@@ -1617,6 +1866,7 @@ export default {
     * removeTrans ({ payload = {} }, { put }) {
       const { defaultValue } = payload
       localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
       localStorage.removeItem('cashier_trans')
       if (!defaultValue) {
         localStorage.removeItem('member')
@@ -1645,6 +1895,7 @@ export default {
       })
       localStorage.removeItem('cashier_trans')
       localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
       localStorage.removeItem('member')
       localStorage.removeItem('memberUnit')
       localStorage.removeItem('mechanic')
@@ -2043,6 +2294,13 @@ export default {
       return { ...state, modalServiceListVisible: false }
     },
 
+    showConsignmentListModal (state, action) {
+      return { ...state, ...action.payload, itemConsignment: action.payload.item, modalConsignmentListVisible: true }
+    },
+    hideConsignmentListModal (state) {
+      return { ...state, modalConsignmentListVisible: false }
+    },
+
     showMechanicModal (state, action) {
       return { ...state, ...action.payload, modalMechanicVisible: true }
     },
@@ -2055,6 +2313,13 @@ export default {
     },
     hideProductModal (state) {
       return { ...state, modalProductVisible: false, listProduct: [], tmpProductList: [] }
+    },
+
+    showConsignmentModal (state, action) {
+      return { ...state, ...action.payload, modalConsignmentVisible: true }
+    },
+    hideConsignmentModal (state) {
+      return { ...state, modalConsignmentVisible: false, listConsignment: [] }
     },
 
 
@@ -2125,8 +2390,9 @@ export default {
 
     setCurTotal (state) {
       let product = getCashierTrans()
+      let consignment = getConsignment()
       let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      let dataPos = product.concat(service)
+      let dataPos = product.concat(service).concat(consignment)
       let a = dataPos
       let curRecord = a.reduce((cnt) => { return cnt + 1 }, 0)
       let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -2399,6 +2665,10 @@ export default {
 
     setTotalItemService (state, action) {
       return { ...state, itemService: action.payload }
+    },
+
+    setTotalItemConsignment (state, action) {
+      return { ...state, itemConsignment: action.payload }
     },
 
     changeQueue (state, action) {

@@ -61,6 +61,18 @@ export async function queryDetail (params) {
   })
 }
 
+export async function queryDetailConsignment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `/posconsignment/${encodeURIComponent(params.id)}`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${pos}/code/${encodeURIComponent(params.transNo)}`

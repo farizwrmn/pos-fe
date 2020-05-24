@@ -146,7 +146,7 @@ export default {
           }
         })
         success('Payment has been saved')
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }
@@ -170,7 +170,7 @@ export default {
           }
         })
         success(`Payment ${payload.transNo} has been void`)
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }
