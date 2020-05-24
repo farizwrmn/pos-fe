@@ -900,6 +900,12 @@ const Pos = ({
     onCancel () { dispatch({ type: 'pos/hideConsignmentModal' }) },
     onChooseItem (item) {
       chooseConsignment(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '3'
+        }
+      })
     }
   }
 
@@ -933,6 +939,12 @@ const Pos = ({
     },
     onChooseItem (item) {
       chooseProduct(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '1'
+        }
+      })
     }
   }
 
