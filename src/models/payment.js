@@ -10,7 +10,7 @@ import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
@@ -130,6 +130,7 @@ export default {
         } else {
           let arrayProd = []
           const product = getCashierTrans()
+          const consignment = getConsignment()
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
@@ -205,6 +206,7 @@ export default {
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               dataPos: newArrayProd,
+              dataConsignment: consignment,
               dataBundle,
               transNo: trans,
               taxType: companySetting,
