@@ -131,6 +131,7 @@ export default {
           let arrayProd = []
           const product = getCashierTrans()
           const consignment = getConsignment()
+          const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
@@ -201,7 +202,7 @@ export default {
               totalPrice
             }
           })
-          const dineIn = grandTotal * (dineInTax / 100)
+          const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {

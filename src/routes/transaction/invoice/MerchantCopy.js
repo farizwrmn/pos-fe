@@ -7,10 +7,11 @@ const MerchantCopy = ({
   posData = {},
   invoiceInfo = {},
   dataPos = [],
-  dataService = []
+  dataService = [],
+  dataConsignment = []
 }) => {
   const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
-  let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
+  let Total = merge.concat(dataConsignment).reduce((cnt, o) => cnt + o.total, 0)
 
   return (
     <div className={styles.amountSection}>
