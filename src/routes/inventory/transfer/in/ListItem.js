@@ -36,6 +36,9 @@ const ListItem = ({ ...tableProps }) => {
   return (
     <div>
       <Table {...tableProps}
+        pagination={{
+          showSizeChanger: true
+        }}
         bordered
         columns={columns}
         simple
