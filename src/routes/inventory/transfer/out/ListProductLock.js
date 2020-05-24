@@ -115,6 +115,7 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
         <FormItem>
           <Input placeholder="Search Product Name"
             value={searchText}
+            ref={input => input && input.focus()}
             size="small"
             onChange={e => handleChange(e)}
             onPressEnter={handleSearch}

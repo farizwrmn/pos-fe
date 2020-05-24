@@ -103,6 +103,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
         <FormItem>
           <Input placeholder="Search Product Name"
             value={searchText}
+            ref={input => input && input.focus()}
             size="small"
             onChange={e => handleChange(e)}
             onPressEnter={handleSearch}
