@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Icon, Button, Input, Form } from 'antd'
+import { Table, Button, Input, Form } from 'antd'
 import { connect } from 'dva'
-import styles from '../../../../themes/index.less'
+import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...tableProps }) => {
+const ListConsignment = ({ onChooseItem, pos, loading, dispatch, ...tableProps }) => {
   const { searchText } = pos
-  const { dataSource } = tableProps
 
   const handleMenuClick = (record) => {
     onChooseItem(record)
@@ -27,10 +26,9 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
 
   const handleSearch = () => {
     dispatch({
-      type: 'pos/getProducts',
+      type: 'pos/getConsignments',
       payload: {
         q: searchText === '' ? null : searchText,
-        active: 1,
         page: 1
       }
     })
@@ -44,10 +42,9 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       }
     })
     dispatch({
-      type: 'pos/getProducts',
+      type: 'pos/getConsignments',
       payload: {
-        page: 1,
-        active: 1
+        page: 1
       }
     })
   }
@@ -60,52 +57,39 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Vendor',
+      dataIndex: 'product.vendor.name',
+      key: 'vendor'
+    },
+    {
       title: 'Product Code',
-      dataIndex: 'productCode',
+      dataIndex: 'product.product_code',
       key: 'productCode'
-    }, {
+    },
+    {
       title: 'Product Name',
-      dataIndex: 'productName',
+      dataIndex: 'product.product_name',
       key: 'productName'
-    }, {
+    },
+    {
       title: 'Sell Price',
-      dataIndex: 'sellPrice',
+      dataIndex: 'price',
       key: 'sellPrice',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Dist Price 01',
-      dataIndex: 'distPrice01',
+      dataIndex: 'price_grabfood_gofood',
       key: 'distPrice01',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist Price 02',
-      dataIndex: 'distPrice02',
-      key: 'distPrice02',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Dist Price 03',
-      dataIndex: 'distPrice03',
-      key: 'distPrice03',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
       title: 'Qty',
-      dataIndex: 'count',
+      dataIndex: 'quantity',
       key: 'count',
-      className: styles.alignRight,
-      render: (text) => {
-        if (!loading.effects['pos/showProductQty']) {
-          return text || 0
-        }
-        return <Icon type="loading" />
-      }
+      className: styles.alignRight
     }
   ]
 
@@ -115,7 +99,6 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
         <FormItem>
           <Input placeholder="Search Product Name"
             value={searchText}
-            ref={input => input && input.focus()}
             size="small"
             onChange={e => handleChange(e)}
             onPressEnter={handleSearch}
@@ -128,22 +111,11 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
         <FormItem>
           <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
         </FormItem>
-        <FormItem>
-          <Button
-            size="small"
-            onClick={() => showProductQty(dataSource)}
-            loading={loading.effects['pos/showProductQty']}
-            disabled={loading.effects['pos/showProductQty']}
-          >
-            Show Qty
-          </Button>
-        </FormItem>
       </Form>
 
       <Table
         {...tableProps}
         bordered
-        loading={loading.effects['pos/getProducts'] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct']}
         columns={columns}
         simple
         size="small"
@@ -154,11 +126,11 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
   )
 }
 
-ListProduct.propTypes = {
+ListConsignment.propTypes = {
   onChooseItem: PropTypes.func,
   location: PropTypes.object,
   pos: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ pos }) => ({ pos }))(ListProduct)
+export default connect(({ pos }) => ({ pos }))(ListConsignment)

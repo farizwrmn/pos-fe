@@ -2,14 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
+import ConsignmentList from './ConsignmentList'
 
 const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { pagination, listMechanic, itemPayment, itemService, modalType, isMotion } = pos
+  const { pagination, listMechanic, itemPayment, itemService, itemConsignment, modalType, isMotion } = pos
   let title = ''
   if (modalType === 'modalPayment') {
     title = `Edit ${itemPayment.code} - ${itemPayment.name}`
   } else if (modalType === 'modalService') {
     title = `Edit ${itemService.code} - ${itemService.name}`
+  } else if (modalType === 'modalConsignment') {
+    title = `Edit ${itemConsignment.code} - ${itemConsignment.name}`
   } else {
     title = ''
   }
@@ -21,6 +24,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
     loading,
     item: modalType === 'modalPayment' ? itemPayment : {},
     itemService: modalType === 'modalService' ? itemService : {},
+    itemConsignment: modalType === 'modalConsignment' ? itemConsignment : {},
     isMotion,
     totalItem,
     listMechanic,
@@ -39,6 +43,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
     <div>
       {(modalType === 'modalPayment') && <PaymentList {...listProps} />}
       {(modalType === 'modalService') && <ServiceList {...listProps} />}
+      {(modalType === 'modalConsignment') && <ConsignmentList {...listProps} />}
     </div>
   )
 }

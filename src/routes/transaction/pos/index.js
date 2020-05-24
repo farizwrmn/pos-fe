@@ -32,7 +32,7 @@ import BarcodeInput from './BarcodeInput'
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -69,16 +69,19 @@ const Pos = ({
     modalAssetVisible,
     modalMechanicVisible,
     modalProductVisible,
+    modalConsignmentVisible,
     modalPaymentVisible,
     curQty,
     totalItem,
     curTotal,
     searchText,
     itemService,
+    itemConsignment,
     itemPayment,
     memberInformation,
     memberUnitInfo,
     modalServiceListVisible,
+    modalConsignmentListVisible,
     mechanicInformation,
     curRecord,
     // modalShiftVisible,
@@ -120,8 +123,9 @@ const Pos = ({
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   let product = getCashierTrans()
+  let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-  let dataPos = product.concat(service)
+  let dataPos = product.concat(service).concat(consignment)
   let a = dataPos
   let usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
@@ -257,8 +261,6 @@ const Pos = ({
     },
     handlePromoBrowse () {
       resetSelectText()
-      console.log('memberInformation', memberInformation)
-
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         dispatch({
           type: 'promo/query',
@@ -546,6 +548,22 @@ const Pos = ({
     })
   }
 
+  const handleConsignmentBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showConsignmentModal',
+      payload: {
+        modalType: 'browseConsignment'
+      }
+    })
+    dispatch({
+      type: 'pos/getConsignments',
+      payload: {
+        page: 1
+      }
+    })
+  }
+
   const modalAssetProps = {
     loading,
     dispatch,
@@ -787,6 +805,33 @@ const Pos = ({
     }
   }
 
+  const ModalConsignmentListProps = {
+    location,
+    loading,
+    totalItem,
+    pos,
+    item: itemConsignment,
+    visible: modalConsignmentListVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({ type: 'pos/hideConsignmentListModal' })
+    },
+    onChooseItem (data) {
+      dispatch({ type: 'pos/consignmentEdit', payload: data })
+      dispatch({ type: 'pos/hideConsignmentListModal' })
+    },
+    DeleteItem (data) {
+      dispatch({ type: 'pos/consignmentDelete', payload: data })
+    },
+    onChangeTotalItem (data) {
+      dispatch({
+        type: 'pos/setTotalItemConsignment',
+        payload: data
+      })
+    }
+  }
+
   const modalMechanicProps = {
     location,
     loading,
@@ -826,6 +871,44 @@ const Pos = ({
     })
   }
 
+  const chooseConsignment = (item) => {
+    dispatch({
+      type: 'pos/chooseConsignment',
+      payload: {
+        item
+      }
+    })
+  }
+
+  const modalConsignmentProps = {
+    location,
+    loading,
+    dispatch,
+    pos,
+    visible: modalConsignmentVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getConsignments',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          page: Number(e.current)
+        }
+      })
+    },
+    onCancel () { dispatch({ type: 'pos/hideConsignmentModal' }) },
+    onChooseItem (item) {
+      chooseConsignment(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '3'
+        }
+      })
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -856,6 +939,12 @@ const Pos = ({
     },
     onChooseItem (item) {
       chooseProduct(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '1'
+        }
+      })
     }
   }
 
@@ -1235,6 +1324,17 @@ const Pos = ({
                     >
                       Product
                     </Button>
+                    <Button
+                      type="default"
+                      size="medium"
+                      icon="barcode"
+                      onClick={handleConsignmentBrowse}
+                      style={{
+                        margin: '0px 5px'
+                      }}
+                    >
+                      Consignment
+                    </Button>
                   </div>
 
                   <div
@@ -1264,6 +1364,7 @@ const Pos = ({
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
+            {modalConsignmentVisible && <Browse {...modalConsignmentProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
@@ -1272,6 +1373,7 @@ const Pos = ({
             {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
+            {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>

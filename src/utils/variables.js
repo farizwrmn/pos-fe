@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey } from './lstorage'
+import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -92,10 +92,40 @@ const insertCashierTrans = (dataObject) => {
   return previousData
 }
 
+const insertConsignment = (dataObject) => {
+  const previousData = getConsignment()
+  dataObject.sellingPrice = dataObject.price
+  const total = posTotal(dataObject)
+  previousData.push({
+    no: dataObject.no,
+    bundleId: dataObject.bundleId,
+    employeeId: dataObject.employeeId,
+    employeeName: dataObject.employeeName,
+    productId: dataObject.productId,
+    code: dataObject.code,
+    name: dataObject.name,
+    stock: dataObject.stock,
+    otherSellPrice: dataObject.otherSellPrice,
+    qty: dataObject.qty,
+    typeCode: dataObject.typeCode,
+    sellPrice: dataObject.sellPrice,
+    price: dataObject.price,
+    discount: dataObject.discount,
+    disc1: dataObject.disc1,
+    disc2: dataObject.disc2,
+    disc3: dataObject.disc3,
+    total
+  })
+  localStorage.setItem('consignment', JSON.stringify(previousData))
+
+  return previousData
+}
+
 module.exports = {
   reArrangeMember,
   reArrangeMemberId,
   insertCashierTrans,
+  insertConsignment,
   getSetting,
   getPermission,
   getAPIURL

@@ -10,7 +10,7 @@ import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
@@ -130,6 +130,8 @@ export default {
         } else {
           let arrayProd = []
           const product = getCashierTrans()
+          const consignment = getConsignment()
+          const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
@@ -200,11 +202,12 @@ export default {
               totalPrice
             }
           })
-          const dineIn = grandTotal * (dineInTax / 100)
+          const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               dataPos: newArrayProd,
+              dataConsignment: consignment,
               dataBundle,
               transNo: trans,
               taxType: companySetting,
@@ -241,6 +244,7 @@ export default {
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
+                localStorage.removeItem('consignment')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')
@@ -936,6 +940,7 @@ export default {
         try {
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
+          localStorage.removeItem('consignment')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')

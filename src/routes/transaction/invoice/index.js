@@ -136,6 +136,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
         dataPos={invoiceInfo.dataPos || []}
         dataService={invoiceInfo.dataService || []}
         dataGroup={invoiceInfo.dataGroup || []}
+        dataConsignment={listPaymentDetail.dataConsignment || []}
       />
       <Total
         posData={posData}
@@ -144,6 +145,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
         dataPos={invoiceInfo.dataPos || []}
         dataService={invoiceInfo.dataService || []}
         dataGroup={invoiceInfo.dataGroup || []}
+        dataConsignment={listPaymentDetail.dataConsignment || []}
       />
       <div className={styles.separator} />
       <Footer />
@@ -151,6 +153,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
         posData={posData}
         dataPos={invoiceInfo.dataPos || []}
         dataService={invoiceInfo.dataService || []}
+        dataConsignment={listPaymentDetail.dataConsignment || []}
         invoiceInfo={invoiceInfo}
       />
       <Member invoiceInfo={invoiceInfo} />

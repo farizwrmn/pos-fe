@@ -279,6 +279,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
   const formEditProps = {
     visible: modalVisible,
     currentItemList,
+    modalProductProps,
     onOkList (item) {
       const check = {
         data: item
