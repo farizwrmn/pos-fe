@@ -409,7 +409,9 @@ export default {
           disc3: ary[n].disc3,
           discount: ary[n].discount,
           name: ary[n].name,
+          sellPrice: ary[n].sellPrice,
           price: ary[n].price,
+          otherSellPrice: ary[n].otherSellPrice,
           qty: ary[n].qty,
           total: ary[n].total
         })
@@ -1346,6 +1348,7 @@ export default {
         name: item.product.product_name,
         qty: 1,
         sellPrice: item.price,
+        otherSellPrice: item.price_grabfood_gofood,
         price: item.price,
         discount: 0,
         disc1: 0,
@@ -1362,6 +1365,7 @@ export default {
         name: item.product.product_name,
         qty: 1,
         sellPrice: item.price,
+        otherSellPrice: item.price_grabfood_gofood,
         price: item.price,
         discount: 0,
         disc1: 0,
