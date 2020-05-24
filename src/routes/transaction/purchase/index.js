@@ -181,7 +181,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         } else {
           arrayProd = JSON.parse(listByCode.slice())
         }
-        arrayProd.push({
+        const data = {
           no: arrayProd.length + 1,
           code: e.id,
           productCode: e.productCode,
@@ -194,6 +194,9 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           ppn: 0,
           ket: '',
           total: 0
+        }
+        arrayProd.push({
+          ...data
         })
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
@@ -208,6 +211,13 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           type: 'purchase/getPurchaseLatestDetail',
           payload: {
             productId: e.id
+          }
+        })
+        dispatch({
+          type: 'purchase/updateState',
+          payload: {
+            item: data,
+            modalPurchaseVisible: true
           }
         })
       } else {

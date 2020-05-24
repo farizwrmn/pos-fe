@@ -18,7 +18,7 @@ class PurchaseList extends Component {
         selector.focus()
         selector.select()
       }
-    }, 100)
+    }, 300)
   }
 
   render () {
@@ -62,7 +62,6 @@ class PurchaseList extends Component {
 
     const hdlChange = () => {
       const data = getFieldsValue()
-      console.log('data', data)
       data.code = item.code
       let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
       let TOTAL = H1 - (parseFloat(data.discount))
@@ -83,7 +82,7 @@ class PurchaseList extends Component {
     const handleDelete = () => {
       const data = getFieldsValue()
       Modal.confirm({
-        title: `Are you sure Delete ${data.productName ? data.productName : data.name} ?`,
+        title: `Are you sure Delete ${data.name} ?`,
         content: 'Delete cannot be undone',
         onOk () {
           onDelete(data)
@@ -115,8 +114,7 @@ class PurchaseList extends Component {
             <Form>
               <FormItem {...formItemLayout} label="No">
                 {getFieldDecorator('no', {
-                  // initialValue: item.no,
-                  initialValue: item.id ? item.id : item.no,
+                  initialValue: item.no,
                   rules: [{
                     required: true,
                     message: 'Required'
@@ -134,8 +132,7 @@ class PurchaseList extends Component {
               </FormItem>
               <FormItem {...formItemLayout} label="Product Name">
                 {getFieldDecorator('name', {
-                  // initialValue: item.name,
-                  initialValue: item.productName ? item.productName : item.name,
+                  initialValue: item.name,
                   rules: [{
                     required: true,
                     message: 'Required'
@@ -144,7 +141,7 @@ class PurchaseList extends Component {
               </FormItem>
               <FormItem {...formItemLayout} label="Quantity">
                 {getFieldDecorator('qty', {
-                  initialValue: item.qty || 0,
+                  initialValue: item.qty,
                   rules: [{
                     required: true,
                     pattern: /^([0-9.]{0,13})$/i,
@@ -152,7 +149,7 @@ class PurchaseList extends Component {
                   }]
                 })(<InputNumber
                   min={0}
-                  // onBlur={value => hdlChange(value)}
+                  onBlur={value => hdlChange(value)}
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
                       handleClick()
@@ -162,8 +159,7 @@ class PurchaseList extends Component {
               </FormItem>
               <FormItem {...formItemLayout} label="Price">
                 {getFieldDecorator('price', {
-                  // initialValue: item.price,
-                  initialValue: item.costPrice ? item.costPrice : item.price,
+                  initialValue: item.price,
                   rules: [{
                     required: true,
                     pattern: /^([0-9.]{0,13})$/i,
