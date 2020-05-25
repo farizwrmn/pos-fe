@@ -86,7 +86,7 @@ const PaymentList = ({
     <Modal
       footer={[
         (<Button type="danger" onClick={handleDelete} disabled={!(itemService.bundleId !== undefined && itemService.bundleId !== null)}>Void</Button>),
-        (<Button type="danger" onClick={handleDelete} disabled={(itemService.bundleId !== undefined && itemService.bundleId !== null)}>Delete</Button>),
+        // (<Button type="danger" onClick={handleDelete} disabled={(itemService.bundleId !== undefined && itemService.bundleId !== null)}>Delete</Button>),
         (<Button type="primary" onClick={handleClick}>Submit</Button>)
       ]}
       {...modalProps}

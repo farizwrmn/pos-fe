@@ -1192,6 +1192,20 @@ const Routers = function ({ history, app }) {
             }, 'follow-up')
           }
         }, {
+          path: 'integration/member',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/integration/member'))
+            }, 'integration-member')
+          }
+        }, {
+          path: 'integration/consignment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/integration/consignment'))
+            }, 'integration-consignment')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
