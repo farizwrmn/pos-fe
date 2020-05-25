@@ -175,7 +175,20 @@ const modal = ({
                       required: true
                     }
                   ]
-                })(<Select labelInValue onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
+                })(
+                  <Select
+                    labelInValue
+                    onFocus={getEmployee}
+                    onBlur={hideEmployee}
+                    showSearch
+                    allowClear
+                    optionFilterProp="children"
+                    placeholder="Choose Employee"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  >
+                    {childrenEmployee}
+                  </Select>
+                )}
               </FormItem>
             </Col>
             <Col lg={12} md={24}>

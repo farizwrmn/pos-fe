@@ -153,7 +153,20 @@ const FormAdd = ({
                     required: true
                   }
                 ]
-              })(<Select labelInValue onFocus={getEmployee} onBlur={hideEmployee} >{childrenEmployee}</Select>)}
+              })(
+                <Select
+                  labelInValue
+                  onFocus={getEmployee}
+                  onBlur={hideEmployee}
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  placeholder="Choose Employee"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >
+                  {childrenEmployee}
+                </Select>
+              )}
             </FormItem>
             <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
