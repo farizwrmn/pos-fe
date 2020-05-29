@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL } from 'utils/variable'
 import { query, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
@@ -62,7 +63,8 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: {
               relationship: 1,
-              history: 1
+              history: 1,
+              storeId: lstorage.getCurrentUserStore()
             }
           })
         }

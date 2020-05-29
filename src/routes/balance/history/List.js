@@ -2,6 +2,7 @@ import React from 'react'
 // import PropTypes from 'prop-types'
 import { Calendar } from 'antd'
 import moment from 'moment'
+import { lstorage } from 'utils'
 import styles from './List.less'
 
 const List = ({
@@ -44,7 +45,8 @@ const List = ({
           relationship: 1,
           history: 1,
           month,
-          year
+          year,
+          storeId: lstorage.getCurrentUserStore()
         }
       })
     },
