@@ -7,6 +7,7 @@ import styles from './List.less'
 
 const List = ({
   listBalance,
+  allStore,
   dispatch
 }) => {
   function getListData (value) {
@@ -22,7 +23,7 @@ const List = ({
         {
           listData.map((item, index) => (
             <li key={index}>
-              <span className={item.closed ? styles.eventClose : styles.eventOpen}>{`● ${item.shift.shiftName} - ${item.closed ? 'closed' : 'open'}`}</span>
+              <span className={item.closed ? styles.eventClose : styles.eventOpen}>{`● ${allStore ? `${item.store.storeName}: ` : ''}${item.shift.shiftName} - ${item.closed ? 'closed' : 'open'}`}</span>
             </li>
           ))
         }
@@ -47,6 +48,12 @@ const List = ({
           month,
           year,
           storeId: lstorage.getCurrentUserStore()
+        }
+      })
+      dispatch({
+        type: 'balance/updateState',
+        payload: {
+          currentDate: value
         }
       })
     },
