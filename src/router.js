@@ -426,6 +426,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/balance/history/'))
             }, 'balance-history')
           }

@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
     currentDate: moment(),
     selectedRowKeys: [],
     modalApproveVisible: false,
+    modalDetailVisible: false,
     listBalance: [],
     activeKey: '0',
     disable: '',

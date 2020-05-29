@@ -5,6 +5,7 @@ import { connect } from 'dva'
 import { lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
+import ModalDetail from './ModalDetail'
 
 class Container extends React.Component {
   state = {
@@ -36,18 +37,44 @@ class Container extends React.Component {
     const {
       app,
       dispatch,
-      balance
+      balance,
+      balanceDetail,
+      paymentOpts
     } = this.props
     const { allStore } = this.state
-    const { listBalance } = balance
+    const { listBalance, modalDetailVisible } = balance
+    const { currentItem, listBalanceDetail } = balanceDetail
+    const { listOpts } = paymentOpts
     const { user } = app
-    console.log('user', user)
-
-
     const listProps = {
       allStore,
       dispatch,
       listBalance
+    }
+
+    const modalDetailProps = {
+      dataSource: listBalanceDetail,
+      listOpts,
+      item: currentItem,
+      visible: modalDetailVisible,
+      onOk () {
+        dispatch({
+          type: 'balance/updateState',
+          payload: {
+            modalDetailVisible: false,
+            currentItem: {}
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'balance/updateState',
+          payload: {
+            modalDetailVisible: false,
+            currentItem: {}
+          }
+        })
+      }
     }
 
     return (
@@ -61,6 +88,7 @@ class Container extends React.Component {
           )
           && <Checkbox onChange={() => this.onChange()} checked={allStore}>All Store</Checkbox>}
         <List {...listProps} />
+        {modalDetailVisible && <ModalDetail {...modalDetailProps} />}
       </div>
     )
   }
@@ -75,11 +103,15 @@ Container.propTypes = {
 export default connect(
   ({
     balance,
+    balanceDetail,
+    paymentOpts,
     loading,
     app
   }) =>
     ({
       balance,
+      balanceDetail,
+      paymentOpts,
       loading,
       app
     })

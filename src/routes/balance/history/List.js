@@ -16,6 +16,24 @@ const List = ({
     return listData || []
   }
 
+  const queryDetail = (item) => {
+    dispatch({
+      type: 'balanceDetail/query',
+      payload: {
+        balanceId: item.id,
+        relationship: 1,
+        type: 'all'
+      }
+    })
+    dispatch({
+      type: 'balance/updateState',
+      payload: {
+        modalDetailVisible: true,
+        currentItem: item
+      }
+    })
+  }
+
   function dateCellRender (value) {
     const listData = getListData(value)
     return (
@@ -23,7 +41,7 @@ const List = ({
         {
           listData.map((item, index) => (
             <li key={index}>
-              <span className={item.closed ? styles.eventClose : styles.eventOpen}>{`● ${allStore ? `${item.store.storeName}: ` : ''}${item.shift.shiftName} - ${item.closed ? 'closed' : 'open'}`}</span>
+              <span onClick={() => queryDetail(item)} className={item.closed ? styles.eventClose : styles.eventOpen}>{`● ${allStore ? `${item.store.storeName}: ` : ''}${item.shift.shiftName} - ${item.closed ? 'closed' : 'open'}`}</span>
             </li>
           ))
         }
