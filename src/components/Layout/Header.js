@@ -92,25 +92,19 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   }
 
   const getListData = (value) => {
-    let listData
-    for (let key in listTotalBirthdayPerDate) {
-      switch (value.format('MM-DD')) {
-        case `${selectedMonth}-${listTotalBirthdayPerDate[key].birthDate}`:
-          listData = [
-            { style: styles.badgeStyleDate, content: listTotalBirthdayPerDate[key].counter }
-          ]; break
-        default:
-      }
+    let item = listTotalBirthdayPerDate.filter(filtered => `${selectedMonth}-${filtered.birthDate}` === value.format('MM-DD'))
+    if (item && item.length > 0) {
+      return ({
+        style: styles.badgeStyleDate, content: item[0].counter
+      })
     }
-    return listData || []
+    return {}
   }
 
   const dateCellRender = (value) => {
-    const listData = getListData(value)
+    const item = getListData(value)
     return (
-      listData.map(item => (
-        <span className={item.style}>{item.content}</span>
-      ))
+      <span className={item.style}>{item.content}</span>
     )
   }
 
