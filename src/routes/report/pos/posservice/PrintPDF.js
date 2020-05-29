@@ -23,7 +23,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.memberName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.policeNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.product || 0), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.service || 0), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(parseFloat(data.product || 0) + parseFloat(data.service || 0)), alignment: 'right', fontSize: 11 })
@@ -135,7 +134,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TRANS NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'MEMBER', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'POLICE NO.', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'SERVICE', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'right' }
@@ -149,8 +147,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 5, alignment: 'center', fontSize: 12 },
-      {},
+      { text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 },
       {},
       {},
       {},
@@ -163,7 +160,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '10%', '11%', '15%', '15%', '15%', '15%', '15%'],
+    width: ['4%', '15%', '15%', '15%', '17%', '17%', '17%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',

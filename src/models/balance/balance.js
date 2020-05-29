@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL } from 'utils/variable'
+import moment from 'moment'
 import { query, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
@@ -23,8 +25,10 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     display: 'none',
     isChecked: false,
+    currentDate: moment(),
     selectedRowKeys: [],
     modalApproveVisible: false,
+    modalDetailVisible: false,
     listBalance: [],
     activeKey: '0',
     disable: '',
@@ -53,6 +57,17 @@ export default modelExtend(pageModel, {
             payload: {
               relationship: 1,
               approvement: 1
+            }
+          })
+        }
+
+        if (pathname === '/balance/history') {
+          dispatch({
+            type: 'query',
+            payload: {
+              relationship: 1,
+              history: 1,
+              storeId: lstorage.getCurrentUserStore()
             }
           })
         }

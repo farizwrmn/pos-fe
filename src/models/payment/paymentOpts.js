@@ -26,6 +26,7 @@ export default {
           || location.pathname === '/balance/current'
           || location.pathname === '/balance/dashboard'
           || location.pathname === '/balance/closing'
+          || location.pathname === '/balance/history'
           || location.pathname === '/balance/approvement'
           || matchEdc
         ) {

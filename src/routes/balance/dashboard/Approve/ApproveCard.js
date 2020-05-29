@@ -19,6 +19,7 @@ const ApproveCard = ({ item, onOpenModal }) => {
       <Button type="primary" onClick={() => onOpenModal(item)} style={{ float: 'right' }}>Approve</Button>
       <h2 className={styles.date}>{item.open ? moment(item.open).format('DD-MMM-YYYY') : null}</h2>
       <div className={styles.secondaryTitle}>{item.store ? item.store.storeName : null} - {item.shift ? item.shift.shiftName : null}</div>
+      <CardItem label="Store" value={item.store ? item.store.storeName : null} />
       <CardItem label="Cashier" value={item.user ? item.user.userName : null} />
       <CardItem label="Assign" value={item.approveUser ? item.approveUser.userName : null} />
     </Card>
