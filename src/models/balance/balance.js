@@ -56,6 +56,16 @@ export default modelExtend(pageModel, {
             }
           })
         }
+
+        if (pathname === '/balance/history') {
+          dispatch({
+            type: 'query',
+            payload: {
+              relationship: 1,
+              history: 1
+            }
+          })
+        }
       })
     }
   },

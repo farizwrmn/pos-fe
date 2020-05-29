@@ -1,11 +1,12 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import List from './List'
 
 const Container = () => {
   return (
     <div className="content-inner">
-      History
+      <List />
     </div>
   )
 }
