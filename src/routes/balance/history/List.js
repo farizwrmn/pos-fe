@@ -41,7 +41,7 @@ const List = ({
         {
           listData.map((item, index) => (
             <li key={index}>
-              <span onClick={() => queryDetail(item)} className={item.closed ? styles.eventClose : styles.eventOpen}>{`● ${allStore ? `${item.store.storeName}: ` : ''}${item.shift.shiftName} - ${item.closed ? 'closed' : 'open'}`}</span>
+              <span onClick={() => queryDetail(item)} className={item.approve ? styles.eventApprove : item.closed ? styles.eventClose : styles.eventOpen}>{`● ${allStore ? `${item.store.storeName}: ` : ''}${item.shift.shiftName} - ${item.approve ? 'approve' : item.closed ? 'closed' : 'open'}`}</span>
             </li>
           ))
         }
