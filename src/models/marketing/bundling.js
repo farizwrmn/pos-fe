@@ -333,6 +333,7 @@ export default modelExtend(pageModel, {
         })
       }
       for (let n = 0; n < (dataReward.data || []).length; n += 1) {
+        dataReward.data[n].sellingPrice = dataReward.data[n].sellPrice
         listReward.push({
           no: n + 1,
           type: dataReward.data[n].type,
