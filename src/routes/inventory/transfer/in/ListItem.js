@@ -27,6 +27,13 @@ const ListItem = ({ ...tableProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Accept Qty',
+      dataIndex: 'acceptQty',
+      key: 'acceptQty',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description'
