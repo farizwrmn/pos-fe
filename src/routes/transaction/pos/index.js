@@ -751,6 +751,12 @@ const Pos = ({
       dispatch({
         type: 'pos/hideModalLogin'
       })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
     }
   }
 

@@ -82,7 +82,7 @@ export default {
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
         yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
-        yield put({ type: 'updateState', payload: { modalLoginData: {} } })
+        yield put({ type: 'updateState', payload: { modalLoginData: {}, modalFingerprintVisible: false } })
       } else {
         throw new Error('Cashier cannot delete')
       }
