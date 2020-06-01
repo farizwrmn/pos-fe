@@ -16,7 +16,8 @@ const ModalLogin = ({
     getFieldDecorator,
     validateFieldsAndScroll
     // getFieldsValue
-  }
+  },
+  ...modalProps
 }) => {
   const {
     loginLoading
@@ -33,12 +34,7 @@ const ModalLogin = ({
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) { return }
-
-      const ipAddress = ip.getIpAddress() || '127.0.0.1'
-      dispatch({ type: 'app/saveIPClient', payload: { ipAddr: ipAddress } })
-      values.ipaddr = ipAddress
-      values.userrole = values.userrole ? values.userrole.toString() : ''
-      dispatch({ type: 'login/login', payload: values })
+      dispatch({ type: 'login/verify', payload: values })
     })
   }
 
@@ -66,51 +62,49 @@ const ModalLogin = ({
   // }
 
   return (
-    <Modal>
+    <Modal {...modalProps}>
       {/* {modalFingerprintVisible && <Fingerprint {...modalFingerprintProps} />} */}
-      <div className={styles.form}>
-        <form>
-          <FormItem className={styles.formItem} hasFeedback>
-            {getFieldDecorator(`user${authBy}`, {
-              rules: [{ required: true }]
-            })(<Input autoFocus size="large" placeholder="Username" />)}
-          </FormItem>
-          <FormItem className={styles.formItem} hasFeedback>
-            {getFieldDecorator('password', {
-              rules: [{ required: true }]
-            })(<Input size="large"
-              type="password"
-              onPressEnter={handleOk} // onBlur={handleRole} onPressEnter={handleRole}
-              placeholder="Password"
-            />)}
-          </FormItem>
-          <Row>
-            <Col span={4}>
-              <Button
-                shape="circle"
-                size="large"
-                onClick={() => {
-                  dispatch({
-                    type: 'login/updateState',
-                    payload: {
-                      modalFingerprintVisible: true
-                    }
-                  })
-                }}
-              >
-                <img
-                  alt="fingerprint"
-                  src="/fingerprint.svg"
-                  className={styles.fingerprint}
-                />
-              </Button>
-            </Col>
-            <Col span={20}>
-              <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>Sign in</Button>
-            </Col>
-          </Row>
-        </form>
-      </div>
+      <form>
+        <FormItem className={styles.formItem} hasFeedback>
+          {getFieldDecorator(`user${authBy}`, {
+            rules: [{ required: true }]
+          })(<Input autoFocus size="large" placeholder="Username" />)}
+        </FormItem>
+        <FormItem className={styles.formItem} hasFeedback>
+          {getFieldDecorator('password', {
+            rules: [{ required: true }]
+          })(<Input size="large"
+            type="password"
+            onPressEnter={handleOk} // onBlur={handleRole} onPressEnter={handleRole}
+            placeholder="Password"
+          />)}
+        </FormItem>
+        <Row>
+          <Col span={4}>
+            <Button
+              shape="circle"
+              size="large"
+              onClick={() => {
+                dispatch({
+                  type: 'login/updateState',
+                  payload: {
+                    modalFingerprintVisible: true
+                  }
+                })
+              }}
+            >
+              <img
+                alt="fingerprint"
+                src="/fingerprint.svg"
+                className={styles.fingerprint}
+              />
+            </Button>
+          </Col>
+          <Col span={20}>
+            <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>Sign in</Button>
+          </Col>
+        </Row>
+      </form>
     </Modal>
   )
 }

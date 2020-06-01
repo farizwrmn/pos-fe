@@ -83,6 +83,7 @@ export default {
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalLoginVisible: false,
+    modalLoginType: null, // payment, service, consignment
     modalHelpVisible: false,
     modalWarningVisible: false,
     modalMechanicVisible: false,
@@ -2306,7 +2307,7 @@ export default {
       return { ...state, ...action.payload, modalLoginVisible: true }
     },
     hideModalLogin (state) {
-      return { ...state, modalLoginVisible: false }
+      return { ...state, modalLoginVisible: false, modalLoginType: null }
     },
 
     showMechanicModal (state, action) {
