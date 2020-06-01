@@ -212,6 +212,14 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     width: '700px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
+    onEnter (data) {
+      dispatch({
+        type: 'transferIn/acceptTransOut',
+        payload: {
+          ...data
+        }
+      })
+    },
     onOk (data, list, storeId) {
       dispatch({
         type: 'transferIn/updateState',
