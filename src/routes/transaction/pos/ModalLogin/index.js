@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Button, Modal, Row, Form, Input, Col } from 'antd'
-import { config, ip } from 'utils'
-// import Fingerprint from './Fingerprint'
+import { config } from 'utils'
+import Fingerprint from './Fingerprint'
 import styles from './index.less'
 
 const { authBy } = config
@@ -20,11 +20,11 @@ const ModalLogin = ({
   ...modalProps
 }) => {
   const {
-    loginLoading
+    loginLoading,
     // listUserRole,
     // visibleItem,
     // logo
-    // modalFingerprintVisible
+    modalFingerprintVisible
   } = login
 
   // const handleCompany = () => {
@@ -38,32 +38,32 @@ const ModalLogin = ({
     })
   }
 
-  // const modalFingerprintProps = {
-  //   title: 'Fingerprint Verification',
-  //   footer: null,
-  //   okText: 'Ok',
-  //   dispatch,
-  //   cancelText: 'Cancel',
-  //   visible: modalFingerprintVisible,
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'login/updateState',
-  //       payload: {
-  //         modalFingerprintVisible: false
-  //       }
-  //     })
-  //   },
-  //   registerFingerprint (payload) {
-  //     dispatch({
-  //       type: 'employee/registerFingerprint',
-  //       payload
-  //     })
-  //   }
-  // }
+  const modalFingerprintProps = {
+    title: 'Fingerprint Verification',
+    footer: null,
+    okText: 'Ok',
+    dispatch,
+    cancelText: 'Cancel',
+    visible: modalFingerprintVisible,
+    onCancel () {
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
+    },
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
+      })
+    }
+  }
 
   return (
     <Modal {...modalProps}>
-      {/* {modalFingerprintVisible && <Fingerprint {...modalFingerprintProps} />} */}
+      {modalFingerprintVisible && <Fingerprint {...modalFingerprintProps} />}
       <form>
         <FormItem className={styles.formItem} hasFeedback>
           {getFieldDecorator(`user${authBy}`, {

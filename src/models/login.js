@@ -44,37 +44,47 @@ export default {
       }
     },
 
-    * verify ({ payload }, { put, call, select }) {
-      const modalLoginType = yield select(({ pos }) => pos.modalLoginType)
-      const modalLoginData = yield select(({ login }) => login.modalLoginData)
+    * verify ({ payload }, { put, call }) {
       const data = yield call(login, payload)
       if (data.success
         && data.profile) {
-        if (data.profile.role === 'OWN'
-          || data.profile.role === 'SPR'
-          || data.profile.role === 'ADM') {
-          yield put({
-            type: 'updateState',
-            payload: {
-              supervisorUser: data.profile
-            }
-          })
-          if (modalLoginType === 'payment') {
-            yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
+        yield put({
+          type: 'successVerify',
+          payload: {
+            data
           }
-          if (modalLoginType === 'service') {
-            yield put({ type: 'pos/serviceDelete', payload: modalLoginData })
-          }
-          if (modalLoginType === 'consignment') {
-            yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
-          }
-          yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
-          yield put({ type: 'updateState', payload: { modalLoginData: {} } })
-        } else {
-          throw new Error('Cashier cannot delete')
-        }
+        })
       } else {
         throw data
+      }
+    },
+
+    * successVerify ({ payload }, { put, select }) {
+      const modalLoginType = yield select(({ pos }) => pos.modalLoginType)
+      const modalLoginData = yield select(({ login }) => login.modalLoginData)
+      const { data } = payload
+      if (data.profile.role === 'OWN'
+        || data.profile.role === 'SPR'
+        || data.profile.role === 'ADM') {
+        yield put({
+          type: 'updateState',
+          payload: {
+            supervisorUser: data.profile
+          }
+        })
+        if (modalLoginType === 'payment') {
+          yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'service') {
+          yield put({ type: 'pos/serviceDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'consignment') {
+          yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
+        }
+        yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
+        yield put({ type: 'updateState', payload: { modalLoginData: {} } })
+      } else {
+        throw new Error('Cashier cannot delete')
       }
     },
 
