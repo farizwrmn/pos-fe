@@ -50,7 +50,7 @@ class modal extends Component {
       modalConfirmVisible,
       form: {
         getFieldDecorator,
-        // resetFields,
+        resetFields,
         validateFields,
         getFieldsValue
       },
@@ -129,16 +129,20 @@ class modal extends Component {
     //   resetFields([value])
     // }
 
-    const onEnterProduct = (e) => {
+    const onEnterProduct = (e, kodeUtil) => {
       const { value } = e.target
-      validateFields((errors) => {
-        if (errors) {
-          return
+      if (value && value !== '') {
+        if (kodeUtil === 'barcode') {
+          const data = {
+            barCode01: value,
+            transNo: item.transNo,
+            storeId: item.id,
+            storeIdReceiver: item.storeIdReceiver
+          }
+          onEnter(data)
+          resetFields(['Product'])
         }
-        const storeId = item.storeIdReceiver
-        const transNo = sequenceNumber
-        onEnter(value, transNo, storeId)
-      })
+      }
     }
 
     return (
@@ -281,15 +285,10 @@ class modal extends Component {
                     id="input-product"
                     size="medium"
                     autoFocus
-                    // value={this.state.product}
-                    // onChange={(event) => {
-                    //   this.setState({ product: event.target.value })
-                    // }}
                     style={{ fontSize: 24, marginBottom: 8 }}
                     placeholder="Product (F2)"
                     onPressEnter={(event) => {
                       onEnterProduct(event, 'barcode')
-                      // this.setState({ product: '' })
                     }}
                   />
                 )}

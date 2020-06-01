@@ -3,9 +3,9 @@ import moment from 'moment'
 import { Modal, message } from 'antd'
 import { configMain, lstorage } from 'utils'
 import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
-import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive, queryHpokok } from '../services/transferStockOut'
+import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence } from '../services/sequence'
-import { acceptTransOut, resetTransOut } from '../services/transferOutAccept'
+import { acceptTransOut } from '../services/transferOutAccept'
 import { pageModel } from './common'
 import { getDateTime } from '../services/setting/time'
 
@@ -265,39 +265,15 @@ export default modelExtend(pageModel, {
       }
     },
     * acceptTransOut ({ payload }, { call, put }) {
-      const { storeId } = payload
-      const date = yield call(getDateTime, {
-        id: 'timestamp'
-      })
-      if (date.success) {
-        let response = yield call(acceptTransOut, payload)
-        if (response && response.success && response.data && response.data.id) {
-          success()
-          yield put({
-            type: 'updateState',
-            payload: {
-              listTransDetail: response.data,
-              modalConfirmVisible: true,
-              showPrintModal: true
-            }
-          })
-          yield call(resetTransOut, storeId)
-          const dataHpokok = yield call(queryHpokok, payload)
-          if (dataHpokok.success) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                listTransDetail: dataHpokok,
-                modalConfirmVisible: true,
-                showPrintModal: true
-              }
-            })
-          }
-        } else {
-          message.warning('Barcode Not found')
-          error(response)
-          throw response
-        }
+      let response = yield call(acceptTransOut, payload)
+      if (response && response.success && response.data) {
+        message.success('Accept request has sent')
+        yield put({
+          type: 'transferIn/queryOutDetail',
+          payload
+        })
+      } else {
+        throw response
       }
     }
   },

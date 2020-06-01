@@ -31,8 +31,10 @@ const ListItem = ({ ...tableProps }) => {
       dataIndex: 'acceptQty',
       key: 'acceptQty',
       className: styles.alignCenter,
-      render: () => <Icon type="check-circle" style={{ color: '#55a756' }} />
-      // render: text => (text || '-').toLocaleString()
+      render: (text, data) =>
+        (data && data.acceptQty
+          ? (<Icon type="check-circle" style={{ color: '#55a756' }} />)
+          : '-')
     },
     {
       title: 'Description',
