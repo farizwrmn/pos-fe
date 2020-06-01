@@ -86,8 +86,8 @@ const PaymentList = ({
   return (
     <Modal
       footer={[
-        (<Button type="danger" onClick={handleDelete} disabled={!(item.bundleId !== undefined && item.bundleId !== null)}>Void</Button>),
-        // (<Button type="danger" onClick={handleDelete} disabled={(item.bundleId !== undefined && item.bundleId !== null)}>Delete</Button>),
+        // (<Button type="danger" onClick={handleDelete} disabled={item.bundleId == null}>Void</Button>),
+        (<Button type="danger" onClick={handleDelete} disabled={item.bundleId != null}>Delete</Button>),
         (<Button type="primary" disabled={loading.effects['pos/checkQuantityEditProduct']} onClick={handleClick}>Submit</Button>)
       ]}
       {...modalProps}

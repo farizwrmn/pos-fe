@@ -13,6 +13,7 @@ export default {
     loginLoading: false,
     listUserRole: [],
     listUserStore: [],
+    supervisorUser: {},
     requiredRole: false,
     modalFingerprintVisible: false,
     visibleItem: { verificationCode: false },
@@ -41,6 +42,21 @@ export default {
         yield put({ type: 'getCompanyFailure' })
       }
     },
+
+    * verify ({ payload }, { put, call }) {
+      const data = yield call(login, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            supervisorUser: data.profile
+          }
+        })
+        return data
+      }
+      throw data
+    },
+
     * login ({ payload }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)

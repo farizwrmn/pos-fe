@@ -28,6 +28,7 @@ import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
+import ModalLogin from './ModalLogin'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -82,6 +83,7 @@ const Pos = ({
     memberUnitInfo,
     modalServiceListVisible,
     modalConsignmentListVisible,
+    modalLoginVisible,
     mechanicInformation,
     curRecord,
     // modalShiftVisible,
@@ -795,7 +797,7 @@ const Pos = ({
       dispatch({ type: 'pos/hideServiceListModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/serviceDelete', payload: data })
+      // dispatch({ type: 'pos/serviceDelete', payload: data })
     },
     onChangeTotalItem (data) {
       dispatch({
@@ -822,7 +824,7 @@ const Pos = ({
       dispatch({ type: 'pos/hideConsignmentListModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/consignmentDelete', payload: data })
+      // dispatch({ type: 'pos/consignmentDelete', payload: data })
     },
     onChangeTotalItem (data) {
       dispatch({
@@ -1374,6 +1376,7 @@ const Pos = ({
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
+            {modalLoginVisible && <ModalLogin />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
