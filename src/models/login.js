@@ -13,6 +13,8 @@ export default {
     loginLoading: false,
     listUserRole: [],
     listUserStore: [],
+    supervisorUser: {},
+    modalLoginData: {},
     requiredRole: false,
     modalFingerprintVisible: false,
     visibleItem: { verificationCode: false },
@@ -41,6 +43,51 @@ export default {
         yield put({ type: 'getCompanyFailure' })
       }
     },
+
+    * verify ({ payload }, { put, call }) {
+      const data = yield call(login, payload)
+      if (data.success
+        && data.profile) {
+        yield put({
+          type: 'successVerify',
+          payload: {
+            data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * successVerify ({ payload }, { put, select }) {
+      const modalLoginType = yield select(({ pos }) => pos.modalLoginType)
+      const modalLoginData = yield select(({ login }) => login.modalLoginData)
+      const { data } = payload
+      if (data.profile.role === 'OWN'
+        || data.profile.role === 'SPR'
+        || data.profile.role === 'ADM') {
+        yield put({
+          type: 'updateState',
+          payload: {
+            supervisorUser: data.profile
+          }
+        })
+        if (modalLoginType === 'payment') {
+          yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'service') {
+          yield put({ type: 'pos/serviceDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'consignment') {
+          yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
+        }
+        yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
+        yield put({ type: 'updateState', payload: { modalLoginData: {}, modalFingerprintVisible: false } })
+      } else {
+        throw new Error('Cashier cannot delete')
+      }
+    },
+
     * login ({ payload }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)

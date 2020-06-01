@@ -28,6 +28,7 @@ import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
+import ModalLogin from './ModalLogin'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -82,6 +83,7 @@ const Pos = ({
     memberUnitInfo,
     modalServiceListVisible,
     modalConsignmentListVisible,
+    modalLoginVisible,
     mechanicInformation,
     curRecord,
     // modalShiftVisible,
@@ -740,6 +742,24 @@ const Pos = ({
     }
   }
 
+  const modalLoginProps = {
+    visible: modalLoginVisible,
+    title: 'Supervisor Verification',
+    width: '320px',
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'pos/hideModalLogin'
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
   const modalPaymentProps = {
     location,
     loading,
@@ -753,7 +773,18 @@ const Pos = ({
       dispatch({ type: 'pos/hidePaymentModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/paymentDelete', payload: data })
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'payment'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
+      })
     },
     onChooseItem (data) {
       dispatch({
@@ -795,7 +826,18 @@ const Pos = ({
       dispatch({ type: 'pos/hideServiceListModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/serviceDelete', payload: data })
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'service'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
+      })
     },
     onChangeTotalItem (data) {
       dispatch({
@@ -822,7 +864,18 @@ const Pos = ({
       dispatch({ type: 'pos/hideConsignmentListModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/consignmentDelete', payload: data })
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'consignment'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
+      })
     },
     onChangeTotalItem (data) {
       dispatch({
@@ -1374,6 +1427,7 @@ const Pos = ({
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
+            {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
