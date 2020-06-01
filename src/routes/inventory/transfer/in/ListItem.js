@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Icon } from 'antd'
 import styles from '../../../../themes/index.less'
 
 const ListItem = ({ ...tableProps }) => {
@@ -30,8 +30,9 @@ const ListItem = ({ ...tableProps }) => {
       title: 'Accept Qty',
       dataIndex: 'acceptQty',
       key: 'acceptQty',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      className: styles.alignCenter,
+      render: () => <Icon type="check-circle" style={{ color: '#55a756' }} />
+      // render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Description',
