@@ -32,9 +32,9 @@ const ListItem = ({ ...tableProps }) => {
       key: 'acceptQty',
       className: styles.alignCenter,
       render: (text, data) =>
-        (data && data.acceptQty
+        (data && data.accept
           ? (<Icon type="check-circle" style={{ color: '#55a756' }} />)
-          : '-')
+          : data.acceptQty)
     },
     {
       title: 'Description',

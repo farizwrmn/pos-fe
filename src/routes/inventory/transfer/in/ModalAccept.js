@@ -273,11 +273,11 @@ class modal extends Component {
               </Col>
             </Row>
             <Row>
-              <FormItem label="Product (F2)" hasFeedback {...formItemLayout}>
+              <FormItem label="Product" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('Product', {
                   rules: [
                     {
-                      required: true
+                      required: false
                     }
                   ]
                 })(
@@ -286,7 +286,7 @@ class modal extends Component {
                     size="medium"
                     autoFocus
                     style={{ fontSize: 24, marginBottom: 8 }}
-                    placeholder="Product (F2)"
+                    placeholder="Product"
                     onPressEnter={(event) => {
                       onEnterProduct(event, 'barcode')
                     }}
