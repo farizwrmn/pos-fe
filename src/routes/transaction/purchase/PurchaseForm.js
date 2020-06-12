@@ -124,6 +124,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   const modalSupplierProps = {
     title: 'Supplier',
     visible: modalSupplierVisible,
+    footer: null,
     hdlSearch,
     onCancel () {
       dispatch({
@@ -147,7 +148,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
       title: 'ID',
       dataIndex: 'supplierCode',
       key: 'supplierCode',
-      width: '10%'
+      width: '20%'
     },
     {
       title: 'Name',
@@ -378,13 +379,13 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
               <Table
                 bordered
                 pagination={paginationSupplier}
-                scroll={{ x: 500, y: 100 }}
+                scroll={{ x: 500 }}
                 columns={columns}
                 simple
                 loading={loading.effects['purchase/querySupplier']}
                 dataSource={listSupplier}
                 size="small"
-                pageSize={5}
+                pageSize={10}
                 onChange={hdlSearchPagination}
                 onRowClick={_record => handleMenuClick(_record)}
               />
