@@ -49,6 +49,7 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: '',
     modalPaymentVisible: false,
+    modalSupplierVisible: false,
     disableItem: {},
     modalProductVisible: false,
     selectedRowKeys: [],

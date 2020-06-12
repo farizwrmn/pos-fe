@@ -27,7 +27,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     curDiscPercent,
     curDiscNominal,
     curHead,
-    listPurchaseLatestDetail
+    listPurchaseLatestDetail,
+    modalSupplierVisible
   } = purchase
 
   const purchaseProps = {
@@ -48,6 +49,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     listSupplier,
     modalProductVisible,
     modalPurchaseVisible,
+    modalSupplierVisible,
+    dispatch,
     supplierInformation: supplierInformation || null,
     tmpSupplierData,
     dataSource: listProduct,
