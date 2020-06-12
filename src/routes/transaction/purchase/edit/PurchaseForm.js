@@ -259,7 +259,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                   <Option value="S">Exclude (10%)</Option>
                 </Select>)}
               </FormItem>
-              <FormItem label="Tax Information" hasFeedback {...formItemLayout}>
+              <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxInvoiceNo', {
                   initialValue: transNo.taxInvoiceNo,
                   rules: [{

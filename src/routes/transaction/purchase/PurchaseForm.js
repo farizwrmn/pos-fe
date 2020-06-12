@@ -330,7 +330,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                   <Option value="S">Exclude (10%)</Option>
                 </Select>)}
               </FormItem>
-              <FormItem label="Tax Information" hasFeedback {...formItemLayout}>
+              <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxInvoiceNo', {
                   rules: [{
                     required: false,
