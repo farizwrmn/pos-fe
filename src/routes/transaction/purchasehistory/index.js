@@ -39,6 +39,7 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
     dataSource: listPurchaseHistories,
     loading: loading.effects['purchase/queryHistory'],
     location,
+    dispatch,
     printInvoice (transNo) {
       dispatch({
         type: 'purchase/queryHistoryDetail',
