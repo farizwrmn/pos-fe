@@ -148,6 +148,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
     width: 90,
+    dispatch,
     cashierInformation,
     loading: loading.effects['pos/queryHistory'],
     pagination,
