@@ -534,21 +534,21 @@ const Pos = ({
     })
   }
 
-  const handleProductBrowse = () => {
-    resetSelectText()
-    dispatch({
-      type: 'pos/showProductModal',
-      payload: {
-        modalType: 'browseProductLock'
-      }
-    })
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        active: 1
-      }
-    })
-  }
+  // const handleProductBrowse = () => {
+  //   resetSelectText()
+  //   dispatch({
+  //     type: 'pos/showProductModal',
+  //     payload: {
+  //       modalType: 'browseProductLock'
+  //     }
+  //   })
+  //   dispatch({
+  //     type: 'pos/getProducts',
+  //     payload: {
+  //       active: 1
+  //     }
+  //   })
+  // }
 
   const handleConsignmentBrowse = () => {
     resetSelectText()
@@ -1366,7 +1366,7 @@ const Pos = ({
                       paddingTop: 5
                     }}
                   >
-                    <Button
+                    {/* <Button
                       type="primary"
                       size="medium"
                       icon="barcode"
@@ -1376,7 +1376,7 @@ const Pos = ({
                       }}
                     >
                       Product
-                    </Button>
+                    </Button> */}
                     <Button
                       type="default"
                       size="medium"
