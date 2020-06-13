@@ -239,6 +239,23 @@ const FormEdit = ({
               }]
             })(<Input disabled style={{ backgroundColor: '#ffffff', width: '100%', height: '32px' }} />)}
           </FormItem>
+          <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxInvoiceNo', {
+              rules: [{
+                required: false,
+                message: 'Required',
+                pattern: /^[a-z0-9./-]{6,25}$/i
+              }]
+            })(<Input maxLength={25} placeholder="Tax Invoice No" />)}
+          </FormItem>
+          <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxDate', {
+              rules: [{
+                required: false,
+                message: 'Required'
+              }]
+            })(<DatePicker placeholder="Tax Date" />)}
+          </FormItem>
           <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('transDate', {
               initialValue: moment.utc(item.transDate, 'YYYY-MM-DD'),
