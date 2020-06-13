@@ -211,6 +211,8 @@ export default {
               dataBundle,
               transNo: trans,
               taxType: companySetting,
+              taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
+              taxDate: payload.taxInfo.taxDate,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
               discountLoyalty: payload.useLoyalty || 0,

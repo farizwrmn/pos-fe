@@ -2,9 +2,10 @@ import React from 'react'
 import moment from 'moment'
 import { DropOption } from 'components'
 import { Table, Icon } from 'antd'
+import { routerRedux } from 'dva/router'
 import styles from '../../../themes/index.less'
 
-const List = ({ ...tableProps, printInvoice }) => {
+const List = ({ ...tableProps, dispatch, printInvoice }) => {
   const printPurchaseHistory = (record) => {
     printInvoice(record.transNo)
   }
@@ -12,6 +13,9 @@ const List = ({ ...tableProps, printInvoice }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       printPurchaseHistory(record)
+    }
+    if (e.key === '2') {
+      dispatch(routerRedux.push(`/accounts/payable/${encodeURIComponent(record.transNo)}`))
     }
   }
 

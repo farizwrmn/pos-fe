@@ -15,7 +15,7 @@ const Browse = ({ location, pagination, purchase, onChange, loading, onRestoreVo
     dataSource: modalType === 'browseProduct' ? listProductFilter : modalType === 'browseInvoice' ? listInvoice : listVoid,
     loading: loading.effects[(
       modalType === 'browseProduct' ? 'purchase/getProducts' : modalType === 'browseInvoice' ? 'purchase/getInvoice' : 'purchase/getVoid'
-    )],
+    )] || loading.effects['purchase/getInvoiceHeader'],
     location,
     item: itemPayment,
     isMotion,
