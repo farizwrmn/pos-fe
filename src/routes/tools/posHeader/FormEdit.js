@@ -241,6 +241,7 @@ const FormEdit = ({
           </FormItem>
           <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxInvoiceNo', {
+              initialValue: item.taxInvoiceNo,
               rules: [{
                 required: false,
                 message: 'Required',
@@ -250,6 +251,7 @@ const FormEdit = ({
           </FormItem>
           <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxDate', {
+              initialValue: item && item.taxDate ? moment.utc(item.taxDate, 'YYYY-MM-DD') : null,
               rules: [{
                 required: false,
                 message: 'Required'
