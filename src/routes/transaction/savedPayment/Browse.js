@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import { configMain, alertModal } from 'utils'
 import styles from '../../../themes/index.less'
 
@@ -27,13 +28,26 @@ const searchBarLayout = {
 }
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod, loading,
-  form: { getFieldDecorator } }) => {
+  dispatch,
+  dataSource,
+  tmpDataSource,
+  onGetDetail,
+  cashierInformation,
+  onShowCancelModal,
+  onSearchChange,
+  onChangePeriod,
+  loading,
+  form: { getFieldDecorator }
+}) => {
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
+      dispatch(routerRedux.push({
+        pathname: `/accounts/payment/${encodeURIComponent(record.transNo)}`
+      }))
+    } else if (e.key === '3') {
       const transDate = moment(record.transDate).format('YYYY-MM-DD')
 
       const checkPermission = checkPermissionMonthTransaction(transDate)
@@ -138,7 +152,8 @@ const BrowseGroup = ({
           type="primary"
           menuOptions={[
             { key: '1', name: 'Print', icon: 'printer' },
-            { key: '2', name: 'Void', icon: 'delete' }
+            { key: '2', name: 'Payment', icon: 'pay-circle-o' },
+            { key: '3', name: 'Void', icon: 'delete' }
           ]}
         />)
       }
