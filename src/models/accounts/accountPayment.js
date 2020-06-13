@@ -1,4 +1,5 @@
 import { configMain } from 'utils'
+import moment from 'moment'
 import { queryPayable } from '../../services/payment/payable'
 import { query as queryPos } from '../../services/payment'
 
@@ -33,8 +34,8 @@ export default {
             dispatch({
               type: 'queryPurchase',
               payload: {
-                from: infoStore.startPeriod,
-                to: infoStore.endPeriod
+                from: moment().startOf('month').format('YYYY-MM-DD'),
+                to: moment().endOf('month').format('YYYY-MM-DD')
               }
             })
           } else {

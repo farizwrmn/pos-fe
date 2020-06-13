@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
-import { configMain } from 'utils'
+// import { configMain } from 'utils'
 import styles from '../../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = configMain
+// const { prefix } = configMain
 
 const leftColumn = {
   xs: 12,
@@ -28,7 +28,7 @@ const rightColumn = {
 const BrowseGroup = ({
   dataSource, tmpDataSource, onSearchChange, onChangePeriod,
   form: { getFieldDecorator }, ...browseProps }) => {
-  const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+  // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
     let newData
@@ -147,7 +147,7 @@ const BrowseGroup = ({
         <Col {...leftColumn}>
           <FormItem hasFeedBack >
             {getFieldDecorator('period', {
-              initialValue: moment.utc(storeInfo.startPeriod, 'YYYYMM'),
+              initialValue: moment.utc(moment(), 'YYYYMM'),
               rules: [{
                 required: true
               }]

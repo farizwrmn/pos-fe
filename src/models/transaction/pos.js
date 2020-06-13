@@ -186,12 +186,11 @@ export default {
             }
           })
         } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
-          const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
           dispatch({
             type: 'queryHistory',
             payload: {
-              startPeriod: infoStore.startPeriod,
-              endPeriod: infoStore.endPeriod
+              startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
+              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
             }
           })
           dispatch({
