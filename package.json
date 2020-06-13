@@ -3,6 +3,8 @@
   "dependencies": {
     "antd": "^2.13.2",
     "classnames": "^2.2.5",
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^1.8.0",
     "draftjs-to-markdown": "^0.4.0",
     "dva": "^1.2.0",
     "dva-loading": "^0.2.0",
