@@ -9,7 +9,7 @@ import { BasicInvoice } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -20,8 +20,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.code || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.name || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
@@ -53,6 +53,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       color: 'black'
     }
   }
+  console.log('itemHeader', itemHeader.technicianName)
+
   const header = {
     stack: [
       {
@@ -70,7 +72,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'center'
           },
           {
-            stack: storeInfo.stackHeader02
+            stack: storeInfo ? storeInfo.stackHeader02 : null
           }
         ]
       },
@@ -78,10 +80,33 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeId && itemHeader.employeeId.label ? itemHeader.employeeId.label : '').toString(), fontSize: 11 }],
-            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
-            [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeId && itemHeader.storeId.label ? itemHeader.storeId.label : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL PACK', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
-            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeIdReceiver && itemHeader.storeIdReceiver.label ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 11 }]
+            [
+              { text: 'NO TRANSAKSI', fontSize: 11 },
+              ':',
+              { text: (itemHeader.transNo || '').toString(), fontSize: 11 },
+              {},
+              { text: 'PIC', fontSize: 11 },
+              ':',
+              { text: (itemHeader && itemHeader.technicianName ? itemHeader.technicianName : '').toString(), fontSize: 11 }
+            ],
+            [
+              { text: 'TANGGAL', fontSize: 11 },
+              ':',
+              { text: moment().format('DD-MM-YYYY'), fontSize: 11 },
+              {},
+              { text: 'DESKRIPSI', fontSize: 11 },
+              ':',
+              { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 11 }
+            ],
+            [
+              { text: 'KEPADA', fontSize: 11 },
+              ':',
+              { text: (itemHeader && itemHeader.memberName ? `${itemHeader.memberName}\n${itemHeader.address01}` : '').toString(), fontSize: 11 },
+              {},
+              {},
+              {},
+              {}
+            ]
           ]
         },
         layout: 'noBorders'
@@ -109,8 +134,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           },
           {
             columns: [
-              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeId ? itemHeader.employeeId.label : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user ? user.username : ''}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader && itemHeader.technicianName ? itemHeader.technicianName : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
               { text: 'Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
             ]
           },

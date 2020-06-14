@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { posTotal, lstorage } from 'utils'
 import moment from 'moment'
-import { Modal, LocaleProvider } from 'antd'
+import { LocaleProvider } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 import Header from './Header'
@@ -13,7 +13,6 @@ import MerchantCopy from './MerchantCopy'
 import Member from './Member'
 import { groupProduct } from './utils'
 import ModalConfirm from './ModalConfirm'
-import PrintPDF from './PrintPDF'
 
 const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
@@ -112,6 +111,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   const invoiceInfo = {
     dataPos,
     dataService,
+    posData,
     dataGroup: groupProduct(dataGroup),
     transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
@@ -134,16 +134,6 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     printNo: 'copy'
   }
 
-  const formConfirmOpts = {
-    listItem: [],
-    itemHeader: {
-      storeId: {
-        label: lstorage.getCurrentUserStoreName()
-      },
-      employeeId: {}
-    }
-  }
-
   const onShowDeliveryOrder = () => {
     dispatch({
       type: 'pos/updateState',
@@ -153,10 +143,20 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     })
   }
 
+  const formConfirmOpts = {
+    listItem: invoiceInfo.dataPos,
+    itemHeader: {
+      storeId: {
+        label: lstorage.getCurrentUserStoreName()
+      },
+      employeeId: {},
+      ...posData
+    }
+  }
+
   const modalOpts = {
     visible: modalConfirmVisible,
     modalConfirmVisible,
-    itemPrint: invoiceInfo,
     user,
     printNo: 1,
     storeInfo,
@@ -190,6 +190,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
+        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
         <Header invoiceInfo={invoiceInfo} />
         <Body
           dataPos={invoiceInfo.dataPos || []}
@@ -216,16 +217,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           invoiceInfo={invoiceInfo}
         />
         <Member invoiceInfo={invoiceInfo} />
-        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
-        <Modal
-          title="Data has been saved"
-          visible
-          footer={null}
-          {...modalOpts}
-        >
-          <PrintPDF {...modalOpts} />
-        </Modal>
-        {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
+        {modalConfirmVisible && <ModalConfirm {...modalOpts} />}
       </div>
     </LocaleProvider>
   )

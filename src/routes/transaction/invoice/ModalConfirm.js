@@ -11,35 +11,10 @@ const modal = ({
   listItem,
   user,
   storeInfo,
-  ...formConfirmProps
+  ...modalOpts
 }) => {
   const handleOk = () => {
     onOkPrint()
-    Modal.confirm({
-      title: 'Transaction is done',
-      content: 'Are you sure?',
-      onOk () {
-        location.reload()
-      },
-      onCancel () {
-        onShowModal()
-      }
-    })
-  }
-  const modalOpts = {
-    ...formConfirmProps,
-    onCancel () {
-      Modal.confirm({
-        title: 'Transaction is done',
-        content: 'Are you sure?',
-        onOk () {
-          location.reload()
-        },
-        onCancel () {
-          onShowModal()
-        }
-      })
-    }
   }
 
   return (
@@ -48,12 +23,12 @@ const modal = ({
       visible
       footer={[
         <Button size="large" key="submit" type="danger" onClick={handleOk}>
-        Ignore
+          Ignore
         </Button>
       ]}
       {...modalOpts}
     >
-      {<PrintPDF listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
+      {<PrintPDF listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...modalOpts} />}
     </Modal>
   )
 }
