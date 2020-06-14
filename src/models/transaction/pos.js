@@ -82,6 +82,7 @@ export default {
     modalPaymentVisible: false,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
+    modalConfirmVisible: false,
     modalLoginVisible: false,
     modalLoginType: null, // payment, service, consignment
     modalHelpVisible: false,

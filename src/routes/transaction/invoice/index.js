@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { posTotal } from 'utils'
+import { posTotal, lstorage } from 'utils'
 import moment from 'moment'
+import { Modal, LocaleProvider } from 'antd'
+import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 import Header from './Header'
 import Body from './Body'
@@ -10,13 +12,16 @@ import Footer from './Footer'
 import MerchantCopy from './MerchantCopy'
 import Member from './Member'
 import { groupProduct } from './utils'
+import ModalConfirm from './ModalConfirm'
+import PrintPDF from './PrintPDF'
 
-const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
+const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    posData
+    posData,
+    modalConfirmVisible
   } = pos
   const {
     listAmount
@@ -24,7 +29,7 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
     listOpts
   } = paymentOpts
-  const { storeInfo } = app
+  const { storeInfo, user } = app
   const { companyInfo } = payment
   const data = {
     posData,
@@ -129,35 +134,100 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
     printNo: 'copy'
   }
 
+  const formConfirmOpts = {
+    listItem: [],
+    itemHeader: {
+      storeId: {
+        label: lstorage.getCurrentUserStoreName()
+      },
+      employeeId: {}
+    }
+  }
+
+  const onShowDeliveryOrder = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalConfirmVisible: true
+      }
+    })
+  }
+
+  const modalOpts = {
+    visible: modalConfirmVisible,
+    modalConfirmVisible,
+    itemPrint: invoiceInfo,
+    user,
+    printNo: 1,
+    storeInfo,
+    ...formConfirmOpts,
+    onShowModal () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: true
+        }
+      })
+    },
+    onOkPrint () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    }
+  }
+
   return (
-    <div className={styles.invoiceMini}>
-      <Header invoiceInfo={invoiceInfo} />
-      <Body
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        dataGroup={invoiceInfo.dataGroup || []}
-        dataConsignment={listPaymentDetail.dataConsignment || []}
-      />
-      <Total
-        posData={posData}
-        listAmount={listAmount}
-        listOpts={listOpts}
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        dataGroup={invoiceInfo.dataGroup || []}
-        dataConsignment={listPaymentDetail.dataConsignment || []}
-      />
-      <div className={styles.separator} />
-      <Footer />
-      <MerchantCopy
-        posData={posData}
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        dataConsignment={listPaymentDetail.dataConsignment || []}
-        invoiceInfo={invoiceInfo}
-      />
-      <Member invoiceInfo={invoiceInfo} />
-    </div>
+    <LocaleProvider locale={enUS}>
+      <div className={styles.invoiceMini}>
+        <Header invoiceInfo={invoiceInfo} />
+        <Body
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataGroup={invoiceInfo.dataGroup || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+        />
+        <Total
+          posData={posData}
+          listAmount={listAmount}
+          listOpts={listOpts}
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataGroup={invoiceInfo.dataGroup || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+        />
+        <div className={styles.separator} />
+        <Footer />
+        <MerchantCopy
+          posData={posData}
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+          invoiceInfo={invoiceInfo}
+        />
+        <Member invoiceInfo={invoiceInfo} />
+        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
+        <Modal
+          title="Data has been saved"
+          visible
+          footer={null}
+          {...modalOpts}
+        >
+          <PrintPDF {...modalOpts} />
+        </Modal>
+        {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
+      </div>
+    </LocaleProvider>
   )
 }
 

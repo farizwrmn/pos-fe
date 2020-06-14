@@ -321,6 +321,12 @@ export default {
                 title: 'Information',
                 content: 'Transaction has been saved...!'
               })
+              yield put({
+                type: 'pos/updateState',
+                payload: {
+                  modalConfirmVisible: true
+                }
+              })
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
