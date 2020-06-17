@@ -137,6 +137,13 @@ export default modelExtend(pageModel, {
             field: 'id,accountCode,accountName,accountParentId'
           }
         })
+        yield put({
+          type: 'queryLov',
+          payload: {
+            type: 'all',
+            field: 'id,accountCode,accountName,accountParentId'
+          }
+        })
       } else {
         yield put({
           type: 'updateState',

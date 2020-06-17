@@ -14,7 +14,7 @@ export async function queryCode (params) {
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.order = 'sort,accountParentCode'
+  params.order = 'accountCode,accountParentCode'
   return request({
     url: `${cashier}/account`,
     method: 'get',

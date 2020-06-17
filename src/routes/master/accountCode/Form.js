@@ -98,7 +98,7 @@ const FormCounter = ({
                 onClick={() => handleClickTree(item.accountCode, item.id)}
                 value={item.accountCode}
               >
-                {item.accountName} ({item.accountCode})
+                {item.accountCode} - {item.accountName}
               </div>
             )}
           >
@@ -113,7 +113,8 @@ const FormCounter = ({
             <div
               onClick={() => handleClickTree(item.accountCode, item.id)}
               value={item.accountCode}
-            >{item.accountName} ({item.accountCode})
+            >
+              {item.accountCode} - {item.accountName}
             </div>
           )}
         >
@@ -131,7 +132,9 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.accountParentId = data.accountParentId.key
+      if (data.accountParentId) {
+        data.accountParentId = data.accountParentId.key
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -161,7 +164,7 @@ const FormCounter = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{1,9}$/i
+                  pattern: /^[a-z0-9.-/]{1,9}$/i
                 }
               ]
             })(<Input maxLength={50} autoFocus />)}
