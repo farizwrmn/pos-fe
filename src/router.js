@@ -298,6 +298,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/accountCodeDefault'))
               cb(null, require('./routes/master/accountCode/'))
             }, 'master-account')
           }
