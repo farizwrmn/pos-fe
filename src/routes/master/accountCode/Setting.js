@@ -81,7 +81,6 @@ const Setting = ({
   listAccountCodeDefaultLov,
   onSubmit,
   form: {
-    resetFields,
     validateFields,
     getFieldDecorator,
     getFieldsValue
@@ -95,16 +94,18 @@ const Setting = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.accountParentId) {
-        data.accountParentId = data.accountParentId.key
-      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          const params = listAccountCodeDefaultLov.map((item) => {
+            return ({
+              accountCategory: item.accountCategory,
+              accountAlias: item.accountAlias,
+              accountName: item.accountName,
+              accountId: data[item.accountAlias].accountId.key
+            })
+          })
+          onSubmit(params)
         },
         onCancel () { }
       })
