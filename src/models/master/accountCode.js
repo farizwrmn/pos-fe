@@ -47,7 +47,8 @@ export default modelExtend(pageModel, {
               type: 'queryLov',
               payload: {
                 type: 'all',
-                field: 'id,accountCode,accountName,accountParentId'
+                field: 'id,accountCode,accountName,accountParentId',
+                order: 'accountCode'
               }
             })
           }
@@ -141,7 +142,8 @@ export default modelExtend(pageModel, {
           type: 'queryLov',
           payload: {
             type: 'all',
-            field: 'id,accountCode,accountName,accountParentId'
+            field: 'id,accountCode,accountName,accountParentId',
+            order: 'accountCode'
           }
         })
       } else {
