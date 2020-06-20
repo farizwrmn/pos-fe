@@ -33,6 +33,7 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
           <div>
             <div>Code: {data.typeCode}</div>
             <div>Name: {data.typeName}</div>
+            {data && data.accountCode && <strong>Account: {`${data.accountCode.accountCode} ${data.accountCode.accountName}`}</strong>}
           </div>
         )
       }

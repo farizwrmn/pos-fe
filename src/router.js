@@ -322,6 +322,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/paymentOption'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/'))

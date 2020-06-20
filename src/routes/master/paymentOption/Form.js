@@ -32,6 +32,7 @@ const FormCounter = ({
   modalType,
   button,
   listPayment,
+  listAccountCodeLov,
   form: {
     getFieldDecorator,
     validateFields,
@@ -39,6 +40,7 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const listOptions = (listAccountCodeLov || []).length > 0 ? (listAccountCodeLov || []).map(c => <Option value={c.id} key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -71,6 +73,7 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       data.parentId = data.parentId ? data.parentId.key : null
+      data.accountId = data.accountId ? data.accountId.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -117,7 +120,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={10} autoFocus />)}
+            })(<Input disabled={modalType === 'edit'} maxLength={10} autoFocus />)}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('typeName', {
@@ -128,6 +131,27 @@ const FormCounter = ({
                 }
               ]
             })(<Input maxLength={30} />)}
+          </FormItem>
+          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountId', {
+              initialValue: item && item.accountId ? {
+                key: item.accountId,
+                name: `${item.accountCode.accountName || ''} (${item.accountCode.accountCode})`
+              } : {},
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Choose Account"
+              labelInValue
+              filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+            >{listOptions}
+            </Select>)}
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {

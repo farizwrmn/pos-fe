@@ -28,7 +28,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/master/account'
+          || pathname === '/master/paymentoption') {
           dispatch({
             type: 'updateState',
             payload: {
