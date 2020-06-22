@@ -546,6 +546,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-booking-history-detail')
           }
         }, {
+          path: 'report/accounting/general-ledger',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              cb(null, require('./routes/report/accounting/ledger/generalLedger/'))
+            }, 'report-accounting-general-ledger')
+          }
+        }, {
           path: 'report/purchaseinvoice/summary',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
