@@ -166,7 +166,7 @@ const FormCounter = ({
       <Form layout="horizontal">
         <Row>
           <Col {...column}>
-            <FormItem label="transNo" hasFeedback {...formItemLayout}>
+            <FormItem label="Trans No" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transNo', {
                 initialValue: item.transNo,
                 rules: [
