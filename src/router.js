@@ -899,7 +899,20 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/supplier'))
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/cashentry/'))
-            }, 'accounts-payment')
+            }, 'accounts-cash-entry')
+          }
+        }, {
+          path: 'journal-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/cashentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/marketing/customerSocial'))
+              registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/transaction/pos'))
+              cb(null, require('./routes/accounts/journalentry/'))
+            }, 'accounts-journal-entry')
           }
         }, {
           path: 'bank-entry',
