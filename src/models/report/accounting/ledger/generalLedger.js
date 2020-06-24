@@ -3,7 +3,8 @@
  */
 import moment from 'moment'
 import {
-  generalLedger
+  generalLedger,
+  trialBalance
 } from 'services/report/accounting/ledger'
 
 export default {
@@ -28,9 +29,18 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/accounting/general-ledger' && location.query.period && location.query.year) {
+        if (location.query.period && location.query.year && (
+          location.pathname === '/report/accounting/consolidation/general-ledger'
+          || location.pathname === '/report/accounting/general-ledger'
+        )) {
           dispatch({
             type: 'queryGeneralLedger',
+            payload: location.query
+          })
+        }
+        if (location.pathname === '/report/accounting/consolidation/trial-balance' && location.query.period && location.query.year) {
+          dispatch({
+            type: 'queryTrialBalance',
             payload: location.query
           })
         }
@@ -49,6 +59,37 @@ export default {
         payload: date
       })
       const data = yield call(generalLedger, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listRekap: data.data,
+            period: payload.period,
+            year: payload.year,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            },
+            date
+          }
+        })
+      } else {
+        yield put({ type: 'setNull' })
+        throw data
+      }
+    },
+    * queryTrialBalance ({ payload = {} }, { call, put }) {
+      const date = payload
+      yield put({
+        type: 'setPeriod',
+        payload: date
+      })
+      yield put({
+        type: 'setNull',
+        payload: date
+      })
+      const data = yield call(trialBalance, payload)
       if (data.success) {
         yield put({
           type: 'querySuccessTrans',

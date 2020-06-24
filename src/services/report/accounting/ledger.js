@@ -10,3 +10,14 @@ export async function generalLedger (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function trialBalance (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = '/report/accounting/trial-balance'
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

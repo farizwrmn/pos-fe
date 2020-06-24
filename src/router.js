@@ -554,6 +554,22 @@ const Routers = function ({ history, app }) {
             }, 'report-accounting-general-ledger')
           }
         }, {
+          path: 'report/accounting/consolidation/general-ledger',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              cb(null, require('./routes/report/accounting/ledger/generalLedger/'))
+            }, 'report-accounting-general-ledger')
+          }
+        }, {
+          path: 'report/accounting/consolidation/trial-balance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              cb(null, require('./routes/report/accounting/ledger/trialBalance/'))
+            }, 'report-accounting-trial-balance')
+          }
+        }, {
           path: 'report/purchaseinvoice/summary',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
