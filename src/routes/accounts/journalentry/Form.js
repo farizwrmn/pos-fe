@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, message, Button, Row, Col, Modal, Select } from 'antd'
+import { Form, Input, Button, message, Row, Col, Modal } from 'antd'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
 
-const Option = Select.Option
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -35,34 +34,32 @@ const FormCounter = ({
   onSubmit,
   modalShow,
   modalShowList,
-  resetListItem,
   listItem,
   modalVisible,
   modalProps,
   listDetailProps,
-  updateCurrentItem,
   form: {
     getFieldDecorator,
-    getFieldValue,
     validateFields,
     getFieldsValue,
-    setFieldsValue,
     resetFields
-  },
-  inputType = getFieldValue('type')
+  }
 }) => {
   const handleSubmit = () => {
+    const debitTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()
+    const creditTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()
     validateFields((errors) => {
       if (errors) {
+        return
+      }
+      if (debitTotal !== creditTotal) {
+        message.error('Debit and Credit is not balance')
         return
       }
       const data = {
         ...getFieldsValue()
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.memberId = data.memberId ? data.memberId.key : null
-      data.supplierId = data.supplierId ? data.supplierId.key : null
-      data.transType = data.transType ? data.transType.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -74,85 +71,20 @@ const FormCounter = ({
     })
   }
   const hdlModalShow = () => {
-    validateFields(['type'], (errors) => {
-      if (errors) {
-        message.warning('Type is required', 1.5)
-        return
-      }
-      const type = getFieldValue('type')
-      modalShow(type)
-    })
-  }
-
-  const hdlModalReset = () => {
-    const oldType = getFieldValue('type')
-    const oldSupplierId = getFieldValue('supplierId')
-    const oldMemberId = getFieldValue('memberId')
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
-      if (errors) {
-        return
-      }
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          const type = getFieldValue('type')
-          resetListItem(type)
-        },
-        onCancel () {
-          if (oldType === 'I') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              memberId: {
-                key: oldMemberId ? oldMemberId.key : null,
-                label: oldMemberId ? oldMemberId.label : null
-              },
-              supplierId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          } else if (oldType === 'E') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              supplierId: {
-                key: oldSupplierId ? oldSupplierId.key : null,
-                label: oldSupplierId ? oldSupplierId.label : null
-              },
-              memberId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          }
-        }
-      })
-    })
+    modalShow()
   }
 
   const modalOpts = {
     showLov,
-    inputType: getFieldValue('type'),
     ...modalProps
   }
 
   const handleModalShowList = (record) => {
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
-      if (errors) {
-        return
-      }
-      record.accountId = {
-        key: record.accountId,
-        label: record.accountName
-      }
-      modalShowList(record)
-    })
+    record.accountId = {
+      key: record.accountId,
+      label: record.accountName
+    }
+    modalShowList(record)
   }
 
   const listDetailOpts = {
@@ -185,25 +117,7 @@ const FormCounter = ({
               {getFieldDecorator('description')(<Input />)}
             </FormItem>
           </Col>
-          <Col {...column}>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('type', {
-                initialValue: item.type,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <Select
-                  allowClear
-                  onChange={() => hdlModalReset()}
-                >
-                  <Option value="E">Out</Option>
-                  <Option value="I">In</Option>
-                </Select>)}
-            </FormItem>
-          </Col>
+          <Col {...column} />
         </Row>
         <Row>
           <Col {...column}>
@@ -224,7 +138,7 @@ const FormCounter = ({
           </Col>
         </Row>
       </Form>
-      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
+      {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )
 }

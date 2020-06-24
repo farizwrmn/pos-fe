@@ -1,21 +1,27 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
-import { queryCode, query, add, edit, remove } from '../../services/master/accountCode'
-import { pageModel } from './../common'
+import { routerRedux } from 'dva/router'
+import { Modal, message } from 'antd'
+import { lstorage } from 'utils'
+import { query as querySequence } from 'services/sequence'
+import { query, add, edit, remove } from 'services/payment/journalentry'
+import { pageModel } from 'common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Journal entry has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'accountCode',
+  namespace: 'journalentry',
 
   state: {
     currentItem: {},
+    currentItemList: {},
     modalType: 'add',
+    inputType: null,
     activeKey: '0',
-    listAccountCode: [],
-    listAccountCodeLov: [],
+    listCash: [],
+    modalVisible: false,
+    listItem: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -28,9 +34,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account'
-          || pathname === '/master/paymentoption'
-          || pathname === '/journal-entry') {
+        if (pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -38,21 +42,9 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({
-              type: 'query',
-              payload: {
-                ...other
-              }
-            })
+            dispatch({ type: 'query', payload: other })
           } else {
-            dispatch({
-              type: 'queryLov',
-              payload: {
-                type: 'all',
-                field: 'id,accountCode,accountName,accountParentId',
-                order: 'accountCode'
-              }
-            })
+            dispatch({ type: 'querySequence' })
           }
         }
       })
@@ -63,11 +55,11 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data.success) {
+      if (data) {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listAccountCode: data.data,
+            listCash: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -78,39 +70,24 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryLov ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccessCounterLov',
-          payload: {
-            listAccountCode: data.data,
-            listAccountCodeLov: data.data,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total
-            }
-          }
-        })
+    * querySequence ({ payload = {} }, { select, call, put }) {
+      const invoice = {
+        seqCode: 'JE',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
       }
-    },
-
-    * queryEditItem ({ payload = {} }, { call, put }) {
-      const data = yield call(queryCode, payload)
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: data.data,
-            disable: 'disabled',
-            modalType: 'edit',
-            activeKey: '0'
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ journalentry }) => journalentry.currentItem)
+      const transNo = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            transNo
           }
-        })
-      } else {
-        throw data
-      }
+        }
+      })
     },
 
     * delete ({ payload }, { call, put }) {
@@ -122,7 +99,14 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
+    * add ({ payload = {} }, { call, put }) {
+      const { oldValue } = payload
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: oldValue
+        }
+      })
       const data = yield call(add, payload)
       if (data.success) {
         success()
@@ -130,29 +114,28 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            listItem: []
           }
         })
+        const userId = lstorage.getStorageKey('udi')[1]
         yield put({
-          type: 'query',
+          type: 'pos/loadDataPos',
           payload: {
-            type: 'all',
-            field: 'id,accountCode,accountName,accountParentId'
+            cashierId: userId,
+            status: 'O'
           }
         })
-        yield put({
-          type: 'queryLov',
-          payload: {
-            type: 'all',
-            field: 'id,accountCode,accountName,accountParentId',
-            order: 'accountCode'
-          }
+        yield put({ type: 'querySequence' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
         })
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            currentItem: payload.oldValue
           }
         })
         throw data
@@ -160,7 +143,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ journalentry }) => journalentry.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -173,12 +156,14 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         })
-        yield put({
-          type: 'query',
-          payload: {
-            type: 'all'
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
           }
-        })
+        }))
+        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',
@@ -193,10 +178,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+      const { listCash, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listCash,
         pagination: {
           ...state.pagination,
           ...pagination
@@ -204,17 +189,9 @@ export default modelExtend(pageModel, {
       }
     },
 
-    querySuccessCounterLov (state, action) {
-      const { listAccountCode, listAccountCodeLov, pagination } = action.payload
-      return {
-        ...state,
-        listAccountCode,
-        listAccountCodeLov,
-        pagination: {
-          ...state.pagination,
-          ...pagination
-        }
-      }
+    updateCurrentItem (state, { payload }) {
+      const { currentItem } = state
+      return { ...state, currentItem: { ...currentItem, ...payload } }
     },
 
     updateState (state, { payload }) {
