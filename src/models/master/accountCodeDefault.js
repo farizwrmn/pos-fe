@@ -33,7 +33,8 @@ export default modelExtend(pageModel, {
             dispatch({
               type: 'queryLov',
               payload: {
-                type: 'all'
+                type: 'all',
+                order: 'accountCategory'
               }
             })
           }
