@@ -112,12 +112,27 @@ class FormPayment extends React.Component {
           ...getFieldsValue()
         }
         data.amount = parseFloat(data.amount)
+        const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+
         if (modalType === 'add') {
           data.id = listAmount.length + 1
           Modal.confirm({
             title: 'Accept this payment ?',
             onOk () {
-              onSubmit(data)
+              if (selectedBank && selectedBank[0]) {
+                data.chargeNominal = selectedBank[0].chargeNominal
+                data.chargePercent = selectedBank[0].chargePercent
+                data.amountCharge = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
+                if (data.amountCharge > 0) {
+                  Modal.error({
+                    title: 'There are credit charge for this payment'
+                  })
+                }
+              }
+              onSubmit({
+                ...data,
+                amount: data.amount + data.amountCharge
+              })
               resetFields()
             },
             onCancel () { }
@@ -135,6 +150,7 @@ class FormPayment extends React.Component {
         }
       })
     }
+    console.log('listAmount', listAmount)
 
     const listProps = {
       cashierBalance,
@@ -189,8 +205,9 @@ class FormPayment extends React.Component {
     //   })
     // }
     const usageLoyalty = memberInformation.useLoyalty || 0
+    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amountCharge || 0), 0)
     const totalDiscount = usageLoyalty
-    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
+    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
     const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
     const dineIn = curNetto * (dineInTax / 100)
     const curChange = curPayment - curNetto > 0 ? curPayment - (curNetto + dineIn) : 0
@@ -395,6 +412,9 @@ class FormPayment extends React.Component {
           <Col md={12} sm={24} style={{ float: 'right', textAlign: 'right' }}>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
               <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+            </FormItem>
+            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Charge" {...formItemLayout}>
+              <Input value={curCharge.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
             </FormItem>
             <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
               <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
