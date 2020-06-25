@@ -122,17 +122,14 @@ class FormPayment extends React.Component {
               if (selectedBank && selectedBank[0]) {
                 data.chargeNominal = selectedBank[0].chargeNominal
                 data.chargePercent = selectedBank[0].chargePercent
-                data.amountCharge = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
-                if (data.amountCharge > 0) {
+                data.chargeTotal = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
+                if (data.chargeTotal > 0) {
                   Modal.error({
                     title: 'There are credit charge for this payment'
                   })
                 }
               }
-              onSubmit({
-                ...data,
-                amount: data.amount + data.amountCharge
-              })
+              onSubmit(data)
               resetFields()
             },
             onCancel () { }
@@ -205,7 +202,7 @@ class FormPayment extends React.Component {
     //   })
     // }
     const usageLoyalty = memberInformation.useLoyalty || 0
-    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amountCharge || 0), 0)
+    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
     const totalDiscount = usageLoyalty
     const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
     const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)

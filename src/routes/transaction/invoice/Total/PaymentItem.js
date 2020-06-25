@@ -25,7 +25,7 @@ const PaymentItem = ({
           </span>
         </Col>
         <Col span={12} className={styles.right}>
-          {numberFormatter(item.paid)}
+          {numberFormatter(item.paid + item.chargeTotal)}
         </Col>
       </Row>
     </div>

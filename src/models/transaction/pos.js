@@ -560,6 +560,9 @@ export default {
             typeCode: payment.data[n].typeCode,
             cardNo: payment.data[n].cardNo,
             cardName: payment.data[n].cardName,
+            chargeNominal: payment.data[n].chargeNominal,
+            chargePercent: payment.data[n].chargePercent,
+            chargeTotal: payment.data[n].chargeTotal,
             description: payment.data[n].description,
             paid: payment.data[n].paid || 0
           })

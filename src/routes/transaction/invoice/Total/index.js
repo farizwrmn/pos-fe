@@ -17,6 +17,7 @@ const Total = ({
   const merge = dataPos.concat(dataService).concat(dataGroup).concat(dataConsignment)
   let TotalQty = merge.reduce((cnt, o) => cnt + o.qty, 0)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
+  const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal), 0)
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
   const curChange = curPayment - Total > 0 ? curPayment - (parseFloat(Total) + parseFloat(posData.dineInTax)) : 0
 
@@ -39,6 +40,21 @@ const Total = ({
         <Col span={12} className={styles.right}>
           <span>
             <strong>
+              Charge
+            </strong>
+            :Rp
+          </span>
+        </Col>
+        <Col span={12} className={styles.right}>
+          <strong className={styles.total}>
+            {numberFormatter(parseFloat(curCharge))}
+          </strong>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12} className={styles.right}>
+          <span>
+            <strong>
               Total ({numberFormatter(parseFloat(TotalQty))} items)
             </strong>
             :Rp
@@ -46,7 +62,7 @@ const Total = ({
         </Col>
         <Col span={12} className={styles.right}>
           <strong className={styles.total}>
-            {numberFormatter(parseFloat(Total) + parseFloat(posData.dineInTax))}
+            {numberFormatter(parseFloat(Total) + parseFloat(posData.dineInTax) + parseFloat(curCharge))}
           </strong>
         </Col>
       </Row>

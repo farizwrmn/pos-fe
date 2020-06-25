@@ -22,6 +22,7 @@ const List = ({ ...tableProps, editList }) => {
         return (
           <div>
             <div>Type: {data.typeCode}</div>
+            <div>Charge: <strong>{data.chargeTotal}</strong></div>
             <div>Amount: {data.amount}</div>
           </div>
         )
