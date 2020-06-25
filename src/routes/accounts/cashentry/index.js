@@ -58,7 +58,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
   const { listCustomer } = customer
   const { listSupplier } = supplier
-  const { listAccountCode } = accountCode
+  const { listAccountCode, listAccountCodeExpense } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -161,7 +161,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     item: currentItemList,
     visible: modalVisible,
     modalType,
-    listAccountCode,
+    listAccountCode: listAccountCodeExpense,
     onCancel () {
       dispatch({
         type: 'cashentry/updateState',
@@ -203,6 +203,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
   let timeout
   const formProps = {
+    listAccountCode,
     modalType,
     modalVisible,
     modalProps,

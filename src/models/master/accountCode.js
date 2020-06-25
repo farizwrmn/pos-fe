@@ -15,6 +15,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listAccountCode: [],
+    listAccountCodeExpense: [],
     listAccountCodeLov: [],
     pagination: {
       showSizeChanger: true,
@@ -28,6 +29,27 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/cash-entry') {
+          dispatch({
+            type: 'queryExpense',
+            payload: {
+              accountType: [
+                'EXPS',
+                'OEXP'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/master/account'
           || pathname === '/master/paymentoption'
           || pathname === '/journal-entry') {
@@ -78,13 +100,29 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryExpense ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessExpense',
+          payload: {
+            listAccountCodeExpense: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
     * queryLov ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
           type: 'querySuccessCounterLov',
           payload: {
-            listAccountCode: data.data,
             listAccountCodeLov: data.data,
             pagination: {
               current: Number(payload.page) || 1,
@@ -204,11 +242,22 @@ export default modelExtend(pageModel, {
       }
     },
 
-    querySuccessCounterLov (state, action) {
-      const { listAccountCode, listAccountCodeLov, pagination } = action.payload
+    querySuccessExpense (state, action) {
+      const { listAccountCodeExpense, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listAccountCodeExpense,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessCounterLov (state, action) {
+      const { listAccountCodeLov, pagination } = action.payload
+      return {
+        ...state,
         listAccountCodeLov,
         pagination: {
           ...state.pagination,
