@@ -13,7 +13,7 @@ const formItemLayout = {
 class ModalList extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('amountIn')
+      const selector = document.getElementById('amountOut')
       if (selector) {
         selector.focus()
         selector.select()
@@ -63,9 +63,9 @@ class ModalList extends Component {
     return (
       <Modal {...modalOpts}>
         <Form>
-          <FormItem {...formItemLayout} label="Amount In">
-            {getFieldDecorator('amountIn', {
-              initialValue: item.amountIn,
+          <FormItem {...formItemLayout} label="Amount Out">
+            {getFieldDecorator('amountOut', {
+              initialValue: item.amountOut,
               rules: [{
                 required: true,
                 pattern: /^([0-9.]{0,19})$/i,
