@@ -534,21 +534,21 @@ const Pos = ({
     })
   }
 
-  // const handleProductBrowse = () => {
-  //   resetSelectText()
-  //   dispatch({
-  //     type: 'pos/showProductModal',
-  //     payload: {
-  //       modalType: 'browseProductLock'
-  //     }
-  //   })
-  //   dispatch({
-  //     type: 'pos/getProducts',
-  //     payload: {
-  //       active: 1
-  //     }
-  //   })
-  // }
+  const handleProductBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showProductModal',
+      payload: {
+        modalType: 'browseProductLock'
+      }
+    })
+    dispatch({
+      type: 'pos/getProducts',
+      payload: {
+        active: 1
+      }
+    })
+  }
 
   const handleConsignmentBrowse = () => {
     resetSelectText()
@@ -1307,15 +1307,15 @@ const Pos = ({
     })
   }
 
-  const handleChangeDineIn = (event) => {
-    localStorage.setItem('dineInTax', event)
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        dineInTax: event
-      }
-    })
-  }
+  // const handleChangeDineIn = (event) => {
+  //   localStorage.setItem('dineInTax', event)
+  //   dispatch({
+  //     type: 'pos/updateState',
+  //     payload: {
+  //       dineInTax: event
+  //     }
+  //   })
+  // }
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
   const dineIn = curNetto * (dineInTax / 100)
@@ -1366,7 +1366,7 @@ const Pos = ({
                       paddingTop: 5
                     }}
                   >
-                    {/* <Button
+                    <Button
                       type="primary"
                       size="medium"
                       icon="barcode"
@@ -1376,7 +1376,7 @@ const Pos = ({
                       }}
                     >
                       Product
-                    </Button> */}
+                    </Button>
                     <Button
                       type="default"
                       size="medium"
@@ -1432,10 +1432,10 @@ const Pos = ({
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
               <Col md={24} lg={12}>
-                <Button.Group>
+                {/* <Button.Group>
                   <Button size="large" onClick={() => handleChangeDineIn(0)} type={dineInTax === 0 ? 'primary' : 'secondary'}>Take Away (0%)</Button>
                   <Button size="large" onClick={() => handleChangeDineIn(10)} type={dineInTax && dineInTax === 10 ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
-                </Button.Group>
+                </Button.Group> */}
               </Col>
               <Col md={24} lg={12}>
                 <div style={{ textAlign: 'right' }}>
