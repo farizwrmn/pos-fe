@@ -786,27 +786,59 @@ const Pos = ({
         }
       })
     },
+    // onChooseItem (data) {
+    //   dispatch({
+    //     type: 'pos/checkQuantityEditProduct',
+    //     payload: {
+    //       data,
+    //       setting
+    //     }
+    //   })
+    //   // dispatch({
+    //   //   type: 'pos/updateState',
+    //   //   payload: {
+    //   //     modalProductVisible: false
+    //   //   }
+    //   // })
+    //   // dispatch({ type: 'pos/paymentEdit', payload: data })
+    // },
     onChooseItem (data) {
-      dispatch({
-        type: 'pos/checkQuantityEditProduct',
-        payload: {
-          data,
-          setting
-        }
-      })
-      // dispatch({
-      //   type: 'pos/updateState',
-      //   payload: {
-      //     modalProductVisible: false
-      //   }
-      // })
-      // dispatch({ type: 'pos/paymentEdit', payload: data })
+      if (
+        itemPayment.qty !== data.qty
+        && itemPayment.disc1 === data.disc1
+        && itemPayment.disc2 === data.disc2
+        && itemPayment.disc3 === data.disc3
+        && itemPayment.discount === data.discount
+      ) {
+        dispatch({
+          type: 'pos/checkQuantityEditProduct',
+          payload: {
+            data,
+            setting
+          }
+        })
+      } else {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'editPayment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      }
     },
-    onChangeTotalItem (data) {
-      dispatch({
-        type: 'pos/setTotalItem',
-        payload: data
-      })
+    onChangeTotalItem (
+      // data
+    ) {
+      // dispatch({
+      //   type: 'pos/setTotalItem',
+      //   payload: data
+      // })
     }
   }
   const ModalServiceListProps = {

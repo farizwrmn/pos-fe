@@ -62,6 +62,7 @@ export default {
     * successVerify ({ payload }, { put, select }) {
       const modalLoginType = yield select(({ pos }) => pos.modalLoginType)
       const modalLoginData = yield select(({ login }) => login.modalLoginData)
+      const setting = yield select(({ app }) => app.setting)
       const { data } = payload
       if (data.profile.role === 'OWN'
         || data.profile.role === 'SPR'
@@ -72,6 +73,16 @@ export default {
             supervisorUser: data.profile
           }
         })
+
+        if (modalLoginType === 'editPayment') {
+          yield put({
+            type: 'pos/checkQuantityEditProduct',
+            payload: {
+              data: modalLoginData,
+              setting
+            }
+          })
+        }
         if (modalLoginType === 'payment') {
           yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
         }
