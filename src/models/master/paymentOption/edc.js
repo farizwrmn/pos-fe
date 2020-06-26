@@ -30,6 +30,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         const match = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+          || pathToRegexp('/accounts/payment/:id').exec(pathname)
         if (match) {
           dispatch({
             type: 'updateState',

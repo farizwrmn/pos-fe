@@ -1046,6 +1046,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/detail/paymentDetail'))
               registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/paymentOption/cost'))
+              registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/components/payment/detail/'))
             }, 'setting-payment-detail')
