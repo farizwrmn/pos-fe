@@ -334,6 +334,9 @@ export default {
             case 'SPC':
               Object.assign(listNotificationDetail[key], { route: '/dashboard' })
               break
+            case 'SDR':
+              Object.assign(listNotificationDetail[key], { route: '/sales-discount' })
+              break
             default:
           }
         }
