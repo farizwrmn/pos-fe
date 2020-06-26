@@ -445,6 +445,14 @@ const Routers = function ({ history, app }) {
             }, 'balance-invoice-detail')
           }
         }, {
+          path: 'sales-discount',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/productstock'))
+              cb(null, require('./routes/notification/salesDiscount/'))
+            }, 'sales-discount')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
