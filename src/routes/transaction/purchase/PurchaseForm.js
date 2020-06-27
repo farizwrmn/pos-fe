@@ -349,6 +349,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
               </FormItem>
               <FormItem label="Has Receive" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('receiveChecks', {
+                  valuePropName: 'checked',
                   rules: [{
                     required: getFieldValue('receiveChecks'),
                     message: 'Required'

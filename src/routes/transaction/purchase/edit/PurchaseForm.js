@@ -273,7 +273,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                 {getFieldDecorator('taxDate', {
                   initialValue: transNo.taxDate ? moment.utc(transNo.taxDate, 'YYYY-MM-DD') : null,
                   rules: [{
-                    required: true,
+                    required: false,
                     message: 'Required'
                   }]
                 })(<DatePicker />)}

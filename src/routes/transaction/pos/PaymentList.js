@@ -159,7 +159,6 @@ const PaymentList = ({
             <InputNumber
               defaultValue={0}
               min={0}
-              disabled={!!item.bundleId}
               onBlur={value => handleTotalChange(value)}
             />
           )}
@@ -175,7 +174,6 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
-              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -193,7 +191,6 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
-              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -210,7 +207,6 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
-              disabled
               defaultValue={0}
               min={0}
               max={100}
@@ -228,7 +224,6 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
-              disabled
               defaultValue={0}
               min={0}
               max={item.price * item.qty}
@@ -238,7 +233,10 @@ const PaymentList = ({
         </FormItem>
         <FormItem {...formItemLayout} label="Total">
           {getFieldDecorator('total', {
-            initialValue: item.total,
+            initialValue: posTotal({
+              ...item,
+              ...getFieldsValue()
+            }),
             rules: [{
               required: true,
               message: 'Required'

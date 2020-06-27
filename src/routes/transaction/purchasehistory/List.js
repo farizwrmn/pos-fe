@@ -74,7 +74,8 @@ const List = ({ ...tableProps, dispatch, printInvoice }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Print', icon: 'printer' }
+            { key: '1', name: 'Print', icon: 'printer' },
+            { key: '2', name: 'Payment', icon: 'pay-circle-o' }
           ]}
         />)
       }

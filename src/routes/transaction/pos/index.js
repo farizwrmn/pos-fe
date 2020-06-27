@@ -786,27 +786,59 @@ const Pos = ({
         }
       })
     },
+    // onChooseItem (data) {
+    //   dispatch({
+    //     type: 'pos/checkQuantityEditProduct',
+    //     payload: {
+    //       data,
+    //       setting
+    //     }
+    //   })
+    //   // dispatch({
+    //   //   type: 'pos/updateState',
+    //   //   payload: {
+    //   //     modalProductVisible: false
+    //   //   }
+    //   // })
+    //   // dispatch({ type: 'pos/paymentEdit', payload: data })
+    // },
     onChooseItem (data) {
-      dispatch({
-        type: 'pos/checkQuantityEditProduct',
-        payload: {
-          data,
-          setting
-        }
-      })
-      // dispatch({
-      //   type: 'pos/updateState',
-      //   payload: {
-      //     modalProductVisible: false
-      //   }
-      // })
-      // dispatch({ type: 'pos/paymentEdit', payload: data })
+      if (
+        itemPayment.qty !== data.qty
+        && itemPayment.disc1 === data.disc1
+        && itemPayment.disc2 === data.disc2
+        && itemPayment.disc3 === data.disc3
+        && itemPayment.discount === data.discount
+      ) {
+        dispatch({
+          type: 'pos/checkQuantityEditProduct',
+          payload: {
+            data,
+            setting
+          }
+        })
+      } else {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'editPayment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      }
     },
-    onChangeTotalItem (data) {
-      dispatch({
-        type: 'pos/setTotalItem',
-        payload: data
-      })
+    onChangeTotalItem (
+      // data
+    ) {
+      // dispatch({
+      //   type: 'pos/setTotalItem',
+      //   payload: data
+      // })
     }
   }
   const ModalServiceListProps = {
@@ -1307,15 +1339,15 @@ const Pos = ({
     })
   }
 
-  const handleChangeDineIn = (event) => {
-    localStorage.setItem('dineInTax', event)
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        dineInTax: event
-      }
-    })
-  }
+  // const handleChangeDineIn = (event) => {
+  //   localStorage.setItem('dineInTax', event)
+  //   dispatch({
+  //     type: 'pos/updateState',
+  //     payload: {
+  //       dineInTax: event
+  //     }
+  //   })
+  // }
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
   const dineIn = curNetto * (dineInTax / 100)
@@ -1432,10 +1464,10 @@ const Pos = ({
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
               <Col md={24} lg={12}>
-                <Button.Group>
+                {/* <Button.Group>
                   <Button size="large" onClick={() => handleChangeDineIn(0)} type={dineInTax === 0 ? 'primary' : 'secondary'}>Take Away (0%)</Button>
                   <Button size="large" onClick={() => handleChangeDineIn(10)} type={dineInTax && dineInTax === 10 ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
-                </Button.Group>
+                </Button.Group> */}
               </Col>
               <Col md={24} lg={12}>
                 <div style={{ textAlign: 'right' }}>
