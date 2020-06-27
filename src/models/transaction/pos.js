@@ -82,6 +82,7 @@ export default {
     modalPaymentVisible: false,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
+    modalConfirmVisible: false,
     modalLoginVisible: false,
     modalLoginType: null, // payment, service, consignment
     modalHelpVisible: false,
@@ -159,7 +160,7 @@ export default {
             type: 'setDefaultEmployee'
           })
         }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry') {
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry' || location.pathname === '/journal-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
           if (location.pathname !== '/transaction/pos/payment') {
             dispatch({
@@ -559,6 +560,9 @@ export default {
             typeCode: payment.data[n].typeCode,
             cardNo: payment.data[n].cardNo,
             cardName: payment.data[n].cardName,
+            chargeNominal: payment.data[n].chargeNominal,
+            chargePercent: payment.data[n].chargePercent,
+            chargeTotal: payment.data[n].chargeTotal,
             description: payment.data[n].description,
             paid: payment.data[n].paid || 0
           })
@@ -1497,6 +1501,8 @@ export default {
           })
         } else if ((checkExists || []).length > 0 && type === 'barcode') {
           const currentItem = checkExists[0]
+          const newQty = currentItem.qty + 1
+          const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           const data = {
             no: currentItem.no,
             code: item.productCode,
@@ -1505,14 +1511,14 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: currentItem.qty + 1,
+            qty: newQty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            price,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+            total: price * newQty
           }
 
           arrayProd.push({
@@ -1523,14 +1529,14 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: currentItem.qty + 1,
+            qty: newQty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+            total: price * newQty
           })
           yield put({
             type: 'pos/checkQuantityEditProduct',

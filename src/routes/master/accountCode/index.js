@@ -6,11 +6,13 @@ import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import Setting from './Setting'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, loading, dispatch, location, app }) => {
+const Counter = ({ accountCode, accountCodeDefault, loading, dispatch, location, app }) => {
   const { listAccountCode, listAccountCodeLov, pagination, modalType, currentItem, activeKey } = accountCode
+  const { listAccountCodeDefaultLov } = accountCodeDefault
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,6 +89,17 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     })
   }
 
+  const settingProps = {
+    listAccountCodeLov,
+    listAccountCodeDefaultLov,
+    onSubmit (data) {
+      dispatch({
+        type: 'accountCodeDefault/edit',
+        payload: data
+      })
+    }
+  }
+
   const formProps = {
     modalType,
     item: currentItem,
@@ -157,6 +170,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
             </div>
           }
         </TabPane>
+        <TabPane tab="Setting" key="2" >
+          {activeKey === '2' &&
+            <div>
+              <Setting {...settingProps} />
+            </div>
+          }
+        </TabPane>
       </Tabs>
     </div>
   )
@@ -170,4 +190,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, loading, app }) => ({ accountCode, loading, app }))(Counter)
+export default connect(({ accountCode, accountCodeDefault, loading, app }) => ({ accountCode, accountCodeDefault, loading, app }))(Counter)

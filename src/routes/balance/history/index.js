@@ -42,8 +42,8 @@ class Container extends React.Component {
       paymentOpts
     } = this.props
     const { allStore } = this.state
-    const { listBalance, modalDetailVisible } = balance
-    const { currentItem, listBalanceDetail } = balanceDetail
+    const { currentItem, listBalance, modalDetailVisible } = balance
+    const { listBalanceDetail } = balanceDetail
     const { listOpts } = paymentOpts
     const { user } = app
     const listProps = {

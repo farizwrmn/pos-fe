@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { lstorage, configMain, alertModal } from 'utils'
+import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import {
   query,
@@ -212,14 +213,28 @@ export default modelExtend(pageModel, {
         }
         const data = yield call(create, { id: payload.transNo, data: payload, add: arrayProd })
         if (data.success) {
-          Modal.info({
-            title: 'Transaction Success',
-            content: `Transaction ${payload.transNo} has been saved`
-          })
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'changeRounding', payload: 0 })
+          const modalMember = () => {
+            return new Promise((resolve, reject) => {
+              Modal.confirm({
+                title: 'Transaction Success',
+                content: `Go To Payment (${payload.transNo}) ?`,
+                onOk () {
+                  resolve()
+                },
+                onCancel () {
+                  reject()
+                }
+              })
+            })
+          }
+          yield modalMember()
+          yield put(routerRedux.push({
+            pathname: `/accounts/payable/${payload.transNo}`
+          }))
         } else {
           Modal.warning({
             title: 'Something went wrong',

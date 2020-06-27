@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  // Tooltip,
+  Tooltip,
   // Badge,
   Button
 } from 'antd'
 
-// const ButtonGroup = Button.Group
+const ButtonGroup = Button.Group
 
 // Find Left Boundry of current Window
 function FindLeftWindowBoundry () {
@@ -76,7 +76,7 @@ const LovButton = ({
   // memberUnitInfo,
   mechanicInformation,
   handleMemberBrowse,
-  // handleAddMember,
+  handleAddMember,
   // handleAssetBrowse,
   // handleAddAsset,
   handlePromoBrowse,
@@ -90,17 +90,16 @@ const LovButton = ({
 
   return (
     <div>
-      {/* <ButtonGroup> */}
-      <Button
-        type="primary"
-        size="large"
-        onClick={handleMemberBrowse}
-        style={{ marginRight: 8 }}
-        disabled={workOrderItem.id}
-      >
-        {memberInformation && memberInformation.memberName ? `Member (${memberInformation.memberName})` : 'Member'}
-      </Button>
-      {/* <Tooltip title="add Member">
+      <ButtonGroup>
+        <Button
+          type="primary"
+          size="large"
+          onClick={handleMemberBrowse}
+          disabled={workOrderItem.id}
+        >
+          {memberInformation && memberInformation.memberName ? `Member (${memberInformation.memberName.substring(0, 10)})` : 'Member'}
+        </Button>
+        <Tooltip title="add Member">
           <Button
             type="primary"
             size="large"
@@ -109,8 +108,8 @@ const LovButton = ({
             disabled={workOrderItem.id}
             className="button-width02"
           />
-        </Tooltip> */}
-      {/* </ButtonGroup> */}
+        </Tooltip>
+      </ButtonGroup>
       {/* <ButtonGroup style={{ marginRight: 8 }}>
         <Button
           type="primary"
@@ -167,7 +166,7 @@ const LovButton = ({
 
 LovButton.propTypes = {
   handleMemberBrowse: PropTypes.func.isRequired,
-  // handleAddMember: PropTypes.func.isRequired,
+  handleAddMember: PropTypes.func.isRequired,
   // handleAssetBrowse: PropTypes.func.isRequired,
   // handleAddAsset: PropTypes.func.isRequired,
   handleMechanicBrowse: PropTypes.func.isRequired
