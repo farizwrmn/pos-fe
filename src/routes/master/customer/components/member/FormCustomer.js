@@ -48,6 +48,7 @@ const FormCustomer = ({
   defaultMember,
   onCancel,
   form: {
+    getFieldValue,
     getFieldsValue,
     getFieldDecorator,
     resetFields,
@@ -207,7 +208,7 @@ const FormCustomer = ({
               initialValue: item.idType,
               rules: [
                 {
-                  required: true
+                  required: !!getFieldValue('idNo')
                 }
               ]
             })(<Select
@@ -223,7 +224,7 @@ const FormCustomer = ({
               initialValue: item.idNo,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
                   message: 'a-Z & 0-9'
                 }
