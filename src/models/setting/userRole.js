@@ -51,7 +51,6 @@ export default modelExtend(pageModel, {
       if (data.success) {
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
-        yield put({ type: 'user/modalHide' })
       } else {
         throw data
       }

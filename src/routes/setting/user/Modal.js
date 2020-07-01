@@ -143,27 +143,23 @@ const modal = ({
 
       // Start - Update User
       // if there is no update on password
-      if (modalProps.modalType === 'edit' && data.password === 'xxxxxx') {
-        delete data.oldpassword
-        delete data.password
-        delete data.confirm
+      if (modalType === 'edit' && data.password === 'xxxxxx') {
+        data.oldpassword = undefined
+        data.password = undefined
+        data.confirm = undefined
       }
-      if (data.userRole !== undefined) {
-        data.userRole = data.userRole.toString()
-      } else {
-        data.userRole = ''
-      }
-      delete data.userRole
+      data.userRole = undefined
       modalButtonSaveClick(data.userId, data, '1')
       // End - Update User
-
-      modalButtonSaveClick(data.userId, {
-        oldpassword: data.oldpassword,
-        password: data.password,
-        confirm: data.confirm
-      }, '2')
-      modalButtonSaveClick(data.userId, listUserRoleChange, '3')
-      modalButtonSaveClick(data.userId, listCheckedStores, '4')
+      if (listUserRoleChange
+        && listUserRoleChange.in
+        && listUserRoleChange.out
+        && (listUserRoleChange.in.length > 0 || listUserRoleChange.out.length > 0)) {
+        modalButtonSaveClick(data.userId, listUserRoleChange, '3')
+      }
+      if (listCheckedStores && listCheckedStores.length > 0) {
+        modalButtonSaveClick(data.userId, listCheckedStores, '4')
+      }
     })
   }
   const hdlCheckPassword = (rule, value, callback) => {
@@ -291,7 +287,6 @@ const modal = ({
         }
       })
   }
-  console.log('item.active', item.active)
   return (
     <Modal width="35vw"
       height="70vh"
