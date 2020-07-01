@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
-  Tabs, Transfer, Tree, Switch, Icon, Card, Select
+  Tabs, Transfer, Tree,
+  // Switch, Icon, Card,
+  Select
 } from 'antd'
 import styles from './Modal.less'
-import Fingerprint from './Fingerprint'
+// import Fingerprint from './Fingerprint'
 
 const FormItem = Form.Item
 const Panel = Collapse.Panel
@@ -45,7 +47,7 @@ const modal = ({
   disabledItem = { userId: true, getEmployee: true },
   activeTab,
   totpChecked,
-  totp = { key: '', url: '' },
+  // totp = { key: '', url: '' },
   modalPopoverVisible,
   modalPopoverClose,
   modalButtonCancelClick,
@@ -139,35 +141,29 @@ const modal = ({
       }
       // data.active = data.active !== undefined ? true : false
 
-      if (activeTab === '1') {
-        // if there is no update on password
-        if (modalProps.modalType === 'edit' && data.password === 'xxxxxx') {
-          delete data.oldpassword
-          delete data.password
-          delete data.confirm
-        }
-        if (data.userRole !== undefined) {
-          data.userRole = data.userRole.toString()
-        } else {
-          data.userRole = ''
-        }
-        delete data.userRole
-        modalButtonSaveClick(data.userId, data, activeTab)
-      } else if (activeTab === '2') {
-        modalButtonSaveClick(data.userId, {
-          oldpassword: data.oldpassword,
-          password: data.password,
-          confirm: data.confirm
-        }, activeTab)
-      } else if (activeTab === '3') { // tab Role
-        modalButtonSaveClick(data.userId, listUserRoleChange, activeTab)
-      } else if (activeTab === '4') { // tab Store
-        modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
-      } else if (activeTab === '5') { // tab Fingerprint
-        // Get List of Fingerprint
-      } else if (activeTab === '6') { // tab Security
-        modalButtonSaveClick(data.userId, { totp: totpChecked ? totp.key : null }, activeTab)
+      // Start - Update User
+      // if there is no update on password
+      if (modalProps.modalType === 'edit' && data.password === 'xxxxxx') {
+        delete data.oldpassword
+        delete data.password
+        delete data.confirm
       }
+      if (data.userRole !== undefined) {
+        data.userRole = data.userRole.toString()
+      } else {
+        data.userRole = ''
+      }
+      delete data.userRole
+      modalButtonSaveClick(data.userId, data, '1')
+      // End - Update User
+
+      modalButtonSaveClick(data.userId, {
+        oldpassword: data.oldpassword,
+        password: data.password,
+        confirm: data.confirm
+      }, '2')
+      modalButtonSaveClick(data.userId, listUserRoleChange, '3')
+      modalButtonSaveClick(data.userId, listCheckedStores, '4')
     })
   }
   const hdlCheckPassword = (rule, value, callback) => {
@@ -184,28 +180,28 @@ const modal = ({
     }
     callback()
   }
-  const confirmDisableTotp = () => {
-    confirm({
-      title: 'Are you sure disable TOTP?',
-      content: 'Disable Two-Factor Authentication will not secure your login',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk () {
-        modalSwitchChange(false, item.userId)
-      },
-      onCancel () {
-        console.log('Cancel')
-      }
-    })
-  }
-  const hdlSwitchChange = (checked) => {
-    if (!checked) {
-      confirmDisableTotp()
-    } else {
-      modalSwitchChange(true, item.userId)
-    }
-  }
+  // const confirmDisableTotp = () => {
+  //   confirm({
+  //     title: 'Are you sure disable TOTP?',
+  //     content: 'Disable Two-Factor Authentication will not secure your login',
+  //     okText: 'Yes',
+  //     okType: 'danger',
+  //     cancelText: 'No',
+  //     onOk () {
+  //       modalSwitchChange(false, item.userId)
+  //     },
+  //     onCancel () {
+  //       console.log('Cancel')
+  //     }
+  //   })
+  // }
+  // const hdlSwitchChange = (checked) => {
+  //   if (!checked) {
+  //     confirmDisableTotp()
+  //   } else {
+  //     modalSwitchChange(true, item.userId)
+  //   }
+  // }
 
   const titlePopover = (
     <Row>
@@ -259,16 +255,16 @@ const modal = ({
     })
   }
 
-  const fingerprintProps = {
-    formItemLayout,
-    item,
-    registerFingerprint (payload) {
-      dispatch({
-        type: 'employee/registerFingerprint',
-        payload
-      })
-    }
-  }
+  // const fingerprintProps = {
+  //   formItemLayout,
+  //   item,
+  //   registerFingerprint (payload) {
+  //     dispatch({
+  //       type: 'employee/registerFingerprint',
+  //       payload
+  //     })
+  //   }
+  // }
 
   const hdlOnCheckStore = (checkedKeys) => {
     modalNodeCheckedStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
@@ -470,30 +466,9 @@ const modal = ({
             disabled
           />
         </TabPane>
-        <TabPane tab="Fingerprint" key="5">
+        {/* <TabPane tab="Fingerprint" key="5">
           <Fingerprint {...fingerprintProps} />
-        </TabPane>
-        <TabPane tab="Security" key="6">
-          <Switch checked={totpChecked}
-            checkedChildren={<div><Icon type="lock" /><span> Secure with TOTP</span></div>}
-            unCheckedChildren={<div><Icon type="unlock" /><span> Not Secure</span></div>}
-            onChange={hdlSwitchChange}
-          />
-          <br />
-          {(totpChecked) &&
-            <div style={{ paddingTop: 10, position: 'relative', textAlign: 'center' }}>
-              <p style={{ paddingBottom: 10 }}>Scan the QR code or enter the secret in Google Authenticator</p>
-              <Card style={{ width: 240, display: 'inline-block' }} bodyStyle={{ padding: 0 }}>
-                <div className="custom-image">
-                  <img alt="example" width="100%" src={totp.url} />
-                </div>
-                <div className="custom-card">
-                  <h3>Secret - {totp.key}</h3>
-                </div>
-              </Card>
-            </div>
-          }
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </Modal>
   )
