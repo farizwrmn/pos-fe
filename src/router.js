@@ -456,6 +456,7 @@ const Routers = function ({ history, app }) {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/salesDiscount'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/transaction/pospromo'))

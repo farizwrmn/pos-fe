@@ -12,6 +12,8 @@ const FormItem = Form.Item
 const ModalLogin = ({
   login,
   dispatch,
+  modalLoginType,
+  modalLoginData,
   form: {
     getFieldDecorator,
     validateFieldsAndScroll
@@ -39,6 +41,8 @@ const ModalLogin = ({
   }
 
   const modalFingerprintProps = {
+    modalLoginType,
+    modalLoginData,
     title: 'Fingerprint Verification',
     footer: null,
     okText: 'Ok',

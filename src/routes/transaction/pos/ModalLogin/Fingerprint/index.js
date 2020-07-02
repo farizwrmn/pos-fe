@@ -16,6 +16,7 @@ class Fingerprint extends Component {
   render () {
     const {
       item = {},
+      modalLoginType,
       form: {
         getFieldDecorator
       },
@@ -33,6 +34,7 @@ class Fingerprint extends Component {
             registerFingerprint={registerFingerprint}
             item={item}
             dispatch={dispatch}
+            modalLoginType={modalLoginType}
             validationType="login"
             routing="verification"
           />
