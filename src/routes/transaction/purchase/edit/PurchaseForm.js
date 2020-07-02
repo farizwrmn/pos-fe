@@ -168,7 +168,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                   rules: [{
                     required: true,
                     message: 'Required',
-                    pattern: /^[a-z0-9/-]{6,25}$/i
+                    pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                   }]
                 })(<Input maxLength={25} disabled />)}
               </FormItem>
