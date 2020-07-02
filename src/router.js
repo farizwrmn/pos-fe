@@ -448,7 +448,7 @@ const Routers = function ({ history, app }) {
           path: 'sales-discount',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/report/productstock'))
+              registerModel(app, require('./models/notification/salesDiscount'))
               cb(null, require('./routes/notification/salesDiscount/'))
             }, 'sales-discount')
           }

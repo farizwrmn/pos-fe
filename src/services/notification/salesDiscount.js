@@ -26,7 +26,7 @@ export async function approve (params) {
   const url = `/notification/sales-discount/${params.id}`
   return request({
     url,
-    method: 'post',
+    method: 'delete',
     data: params,
     headers: apiHeaderToken
   })

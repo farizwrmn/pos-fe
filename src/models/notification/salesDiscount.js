@@ -37,7 +37,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/sales-discount') {
           dispatch({
-            type: 'active'
+            type: 'query'
           })
         }
       })
@@ -64,18 +64,16 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { data: payload })
+      yield put({ type: 'query' })
       if (data.success) {
         success()
-        yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    * approve ({ payload }, { select, call, put }) {
-      const id = yield select(({ balance }) => balance.currentItem.id)
-      const newPayload = { ...payload, id }
-      const data = yield call(approve, newPayload)
+    * approve ({ payload }, { call, put }) {
+      const data = yield call(approve, payload)
       if (data.success) {
         success()
         yield put({ type: 'query' })

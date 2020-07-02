@@ -30,8 +30,16 @@ const toColumnName = (num) => {
   return ret
 }
 
+const numberFormatter = (currency) => {
+  if (typeof currency === 'string' || typeof currency === 'number') {
+    return `${currency.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+  }
+  return '0'
+}
+
 module.exports = {
   formatNumberInExcel,
   formatNumberIndonesia,
-  toColumnName
+  toColumnName,
+  numberFormatter
 }
