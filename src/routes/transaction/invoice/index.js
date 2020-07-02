@@ -191,8 +191,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
-        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
-        <Header invoiceInfo={invoiceInfo} />
+        <Header onShowDeliveryOrder={onShowDeliveryOrder} invoiceInfo={invoiceInfo} />
         <Body
           dataPos={invoiceInfo.dataPos || []}
           dataService={invoiceInfo.dataService || []}
