@@ -248,9 +248,9 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                       rules: [{
                         required: true,
                         message: 'Required',
-                        pattern: /^[a-z0-9/-]{6,25}$/i
+                        pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                       }]
-                    })(<Input maxLength={25} />)}
+                    })(<Input maxLength={30} />)}
                   </FormItem>
                   <FormItem required label="Search" {...formItemLayout}>
                     <Button {...buttonSupplierProps} size="default">{supplierInformation && supplierInformation.supplierName ? `${supplierInformation.supplierName.substring(0, 12)}${supplierInformation.address01 ? ` - ${supplierInformation.address01.substring(0, 10)}` : ''}` : 'Search Supplier'}</Button>

@@ -203,6 +203,12 @@ const Payment = ({
 
   const onGetMachine = (paymentOption) => {
     dispatch({
+      type: 'paymentEdc/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
+    dispatch({
       type: 'paymentEdc/query',
       payload: {
         paymentOption
@@ -211,6 +217,12 @@ const Payment = ({
   }
 
   const onGetCost = (machineId) => {
+    dispatch({
+      type: 'paymentCost/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
     dispatch({
       type: 'paymentCost/query',
       payload: {

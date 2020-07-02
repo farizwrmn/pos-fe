@@ -471,7 +471,7 @@ const AdvancedForm = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
+                    pattern: /^[A-Za-z0-9-."',._/ ]{3,60}$/i,
                     message: 'a-Z & 0-9'
                   }
                 ]
