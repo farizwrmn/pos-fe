@@ -84,14 +84,14 @@ const FormCustomer = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
+          console.log('modalType', modalType)
+
           if (modalType === 'add' || modalType === 'edit') {
             onSubmit(data.memberCode, data, modalType)
           } else {
             confirmSendMember(data.memberCode, data, modalType)
           }
-          setTimeout(() => {
-            resetFields()
-          }, 500)
+          resetFields()
         },
         onCancel () { }
       })
@@ -182,7 +182,14 @@ const FormCustomer = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input placeholder={(setting.memberCode || memberCodeDisable) ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : (setting.memberCode ? setting.memberCode : memberCodeDisable)} style={{ height: '32px' }} maxLength={16} />)}
+                })(
+                  <Input
+                    placeholder={setting.memberCode || memberCodeDisable ? 'Code generate by system' : ''}
+                    disabled={item.memberCode && modalType === 'edit' ? item.memberCode : (setting.memberCode || memberCodeDisable)}
+                    style={{ height: '32px' }}
+                    maxLength={16}
+                  />
+                )}
               </Col>
               <Col xs={24} sm={4} md={6} lg={6}>
                 <Tooltip placement="bottomLeft" title="Get Default Code">
