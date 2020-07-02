@@ -236,7 +236,7 @@ const FormCustomer = ({
               initialValue: item.address01,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
                   message: 'a-Z & 0-9'
                 }
@@ -259,7 +259,7 @@ const FormCustomer = ({
               initialValue: item.cityId,
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
             })(<Select
@@ -299,7 +299,7 @@ const FormCustomer = ({
               initialValue: item.phoneNumber,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                   message: 'Input a Phone No.[xxxx xxxx xxxx]'
                 }
@@ -311,7 +311,7 @@ const FormCustomer = ({
               initialValue: item.mobileNumber,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                   message: 'mobile number is not valid'
                 }
