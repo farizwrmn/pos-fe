@@ -8,9 +8,11 @@ const ModalSupplier = ({ hdlSearch, children, ...props }) => {
         <Input
           ref={input => input && input.focus()}
           placeholder="Search Supplier"
-          onEnter={(e) => {
+          onKeyDown={(e) => {
             const { value } = e.target
-            hdlSearch(value)
+            if (e.keyCode === 13) {
+              hdlSearch(value)
+            }
           }}
           style={{ marginBottom: 16 }}
         />
