@@ -142,7 +142,6 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[A-Za-z0-9-."',._/ ]{3,255}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]
