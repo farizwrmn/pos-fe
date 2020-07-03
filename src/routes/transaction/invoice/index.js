@@ -108,12 +108,13 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   for (let k = 0; k < dataPos.length; k += 1) {
     dataPos[k].no = k + 1
   }
+
   const invoiceInfo = {
     dataPos,
     dataService,
     posData,
     dataGroup: groupProduct(dataGroup),
-    transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
+    transDatePrint: moment(`${posData.transDate} ${posData.transTime}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
     gender: data.memberPrint.gender,
     company: data.companyPrint,
@@ -190,8 +191,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
-        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
-        <Header invoiceInfo={invoiceInfo} />
+        <Header onShowDeliveryOrder={onShowDeliveryOrder} invoiceInfo={invoiceInfo} />
         <Body
           dataPos={invoiceInfo.dataPos || []}
           dataService={invoiceInfo.dataService || []}
