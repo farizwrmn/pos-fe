@@ -5,7 +5,6 @@ import { DropOption } from 'components'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { configMain, alertModal } from 'utils'
-import styles from '../../../themes/index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
 const { MonthPicker } = DatePicker
@@ -89,30 +88,15 @@ const BrowseGroup = ({
       render: _text => `${moment(_text).format('LL')}`
     },
     {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 120
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 120,
-      className: styles.alignRight,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Cashier ID',
-      dataIndex: 'cashierTransId',
-      key: 'cashierTransId',
+      title: 'Cashier',
+      dataIndex: 'technicianName',
+      key: 'technicianName',
       width: 100
     },
     {
-      title: 'Cashier',
-      dataIndex: 'cashierName',
-      key: 'cashierName',
+      title: 'Member',
+      dataIndex: 'memberName',
+      key: 'memberName',
       width: 100
     },
     {
@@ -168,6 +152,8 @@ const BrowseGroup = ({
   const disabledDate = (current) => {
     return current > moment().endOf('month')
   }
+
+  console.log('dataSource', dataSource)
 
   return (
     <Form>

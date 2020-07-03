@@ -142,11 +142,11 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
+                  pattern: /^[A-Za-z0-9-."',._/ ]{3,255}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input maxLength={60} />)}
+            })(<Input maxLength={255} />)}
           </FormItem>
           <FormItem label="Location 1" hasFeedback {...formItemLayout}>
             {getFieldDecorator('location01', {
