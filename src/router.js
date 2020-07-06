@@ -894,8 +894,21 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/accounts/detail/payableDetail'))
               registerModel(app, require('./models/accounts/accountPayment'))
-              cb(null, require('./routes/accounts/summary'))
+              cb(null, require('./routes/accounts/payment'))
             }, 'accounts-payment')
+          }
+        }, {
+          path: 'accounts/payable',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/unit'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/accounts/detail/payableDetail'))
+              registerModel(app, require('./models/accounts/accountPayment'))
+              cb(null, require('./routes/accounts/payable'))
+            }, 'accounts-payable')
           }
         }, {
           path: 'cash-entry',
