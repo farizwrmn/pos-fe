@@ -128,7 +128,7 @@ export default {
           title: 'Something went wrong',
           content: 'data is not found'
         })
-        yield put(routerRedux.push('/accounts/payment'))
+        yield put(routerRedux.push('/accounts/payable'))
       }
     },
     * add ({ payload }, { call, put }) {
