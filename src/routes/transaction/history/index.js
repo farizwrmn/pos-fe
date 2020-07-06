@@ -7,7 +7,7 @@ import PurchaseHistory from '../purchasehistory/index'
 
 const TabPane = Tabs.TabPane
 
-const History = ({ history, dispatch }) => {
+const History = ({ history, dispatch, location }) => {
   const { path } = history
 
   const changeTab = (path) => {
@@ -23,10 +23,10 @@ const History = ({ history, dispatch }) => {
     <div className="content-inner">
       <Tabs activeKey={path} onChange={path => changeTab(path)}>
         <TabPane tab="POS" key="/transaction/pos/history">
-          {path === '/transaction/pos/history' && <Pos />}
+          {path === '/transaction/pos/history' && <Pos location={location} />}
         </TabPane>
         <TabPane tab="Purchase" key="/transaction/purchase/history">
-          {path === '/transaction/purchase/history' && <PurchaseHistory />}
+          {path === '/transaction/purchase/history' && <PurchaseHistory location={location} />}
         </TabPane>
       </Tabs>
     </div>
