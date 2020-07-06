@@ -102,7 +102,7 @@ const Detail = ({ payableDetail, bank, supplierBank, paymentOpts, dispatch }) =>
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/accounts/payment?activeKey=2'))
+    dispatch(routerRedux.push('/accounts/payable'))
   }
 
   const modalCancelProps = {
