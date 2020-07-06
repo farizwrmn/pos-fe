@@ -3,8 +3,6 @@ import { Row, Col } from 'antd'
 import styles from './index.less'
 
 const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
-  const { storeInfo } = invoiceInfo
-
   return (
     <div>
       <div className={styles.center}>
@@ -13,7 +11,6 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
           style={{ height: '100%', width: '100%' }}
           alt="K3MART.ID"
         />
-        <div className={styles.subtitle}>{storeInfo ? storeInfo.name : null}</div>
         <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
       </div>
       <div className={styles.separator} />
