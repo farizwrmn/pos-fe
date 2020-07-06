@@ -15,7 +15,7 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, load
   const { period, year, activeKey, listProduct } = fifoReport
   const { listCategory } = productcategory
   const { listBrand } = productbrand
-  let { listRekap } = fifoReport
+  let { listRekap, tmpListRekap } = fifoReport
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
   }
@@ -40,6 +40,34 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, load
     storeInfo,
     period,
     year,
+    onUpdateDataSource (value) {
+      const reg = new RegExp(value, 'gi')
+      let newData = tmpListRekap.map((record) => {
+        const match = record.productCode.match(reg) || record.productName.match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record
+        }
+      }).filter(record => !!record)
+      if (value !== '') {
+        dispatch({
+          type: 'fifoReport/updateState',
+          payload: {
+            listRekap: newData
+          }
+        })
+      }
+      if (value === '') {
+        dispatch({
+          type: 'fifoReport/updateState',
+          payload: {
+            listRekap: tmpListRekap
+          }
+        })
+      }
+    },
     onListReset () {
       if (activeKey === '3') {
         dispatch({

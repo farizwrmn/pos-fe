@@ -90,47 +90,31 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           title: 'Product Code',
           dataIndex: 'productCode',
           key: 'productCode',
-          width: '227px'
+          width: '227px',
+          render: (text, record) => {
+            return (
+              <div>
+                <div>{record.productCode}</div>
+                <div>{record.productName}</div>
+              </div>
+            )
+          }
         },
         {
-          title: 'Begin',
-          dataIndex: 'beginQty',
-          key: 'beginQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Purchase Qty',
-          dataIndex: 'purchaseQty',
-          key: 'purchaseQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Adjust IN',
-          dataIndex: 'adjInQty',
-          key: 'adjInQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'POS Qty',
-          dataIndex: 'posQty',
-          key: 'posQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Adjust OUT',
-          dataIndex: 'adjOutQty',
-          key: 'adjOutQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
+          title: 'Sell Price',
+          dataIndex: 'sellPrice',
+          key: 'sellPrice',
+          width: '227px',
+          render: (text, record) => {
+            return (
+              <div>
+                <div>{`sellPrice: ${formatNumberIndonesia(record.sellPrice)}`}</div>
+                <div>{`distPrice01: ${formatNumberIndonesia(record.distPrice01)}`}</div>
+                <div>{`distPrice02: ${formatNumberIndonesia(record.distPrice02)}`}</div>
+                <div>{`distPrice03: ${formatNumberIndonesia(record.distPrice03)}`}</div>
+              </div>
+            )
+          }
         },
         {
           title: 'Count',
