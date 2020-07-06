@@ -5,7 +5,6 @@ import {
   Form,
   TreeSelect,
   Select,
-  Tooltip,
   DatePicker,
   Row,
   Col,
@@ -36,6 +35,11 @@ const modal = ({
   changeValueNumber,
   listSupplierBank,
   showAddBank,
+  listEdc,
+  listCost,
+  onResetMachine,
+  onGetMachine,
+  onGetCost,
   curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0),
   options,
   form: {
@@ -85,21 +89,6 @@ const modal = ({
       amount: e
     })
   }
-  const formatNumber = (value) => {
-    value += ''
-    const list = value.split('.')
-    const prefix = list[0].charAt(0) === '-' ? '-' : ''
-    let num = prefix ? list[0].slice(1) : list[0]
-    let result = ''
-    while (num.length > 3) {
-      result = `,${num.slice(-3)}${result}`
-      num = num.slice(0, num.length - 3)
-    }
-    if (num) {
-      result = num + result
-    }
-    return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`
-  }
 
   const hdlChangeTooltip = () => {
     const value = getFieldValue('amount')
@@ -118,12 +107,6 @@ const modal = ({
     }
     changeValueNumber(value)
   }
-
-  const title = valueNumber ? (
-    <span className="numeric-input-title">
-      {valueNumber !== '-' ? formatNumber(valueNumber) : '-'}
-    </span>
-  ) : 'Input a number'
 
   const changeSelectTypeCode = (value) => {
     if (value === 'C') {
@@ -155,6 +138,31 @@ const modal = ({
       return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
     })
   }
+
+  const onChangePaymentType = (value) => {
+    if (value === 'C') {
+      resetFields()
+      onResetMachine()
+    } else {
+      setFieldsValue({
+        printDate: moment(),
+        machine: undefined,
+        bank: undefined
+      })
+      validateFields()
+      onResetMachine()
+      onGetMachine(value)
+    }
+  }
+
+  const onChangeMachine = (machineId) => {
+    setFieldsValue({
+      bank: undefined
+    })
+    validateFields()
+    onGetCost(machineId)
+  }
+
   return (
     <Modal {...modalOpts}>
       <Form>
@@ -175,44 +183,28 @@ const modal = ({
                   treeNodeFilterProp="title"
                   filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                   treeDefaultExpandAll
-                  onChange={changeSelectTypeCode}
+                  onChange={(e) => {
+                    changeSelectTypeCode(e)
+                    onChangePaymentType(e)
+                  }}
                 >
                   {getMenus(menuTree)}
                 </TreeSelect>
               )}
             </FormItem>
-            <Tooltip
-              visible={visibleTooltip}
-              title={title}
-              placement="topRight"
-              overlayClassName="numeric-input"
-            >
-              <FormItem label="Amount" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('amount', {
-                  initialValue: parseFloat(data.nettoTotal - curPayment) || item.amount,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
-                      message: '0-9 please insert the value'
-                    }
-                  ]
-                })(
-                  <Input onFocus={hdlChangeTooltip} onChange={changeNumber} style={{ width: '100%' }} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(data.nettoTotal - curPayment))}>Netto</Button>)} autoFocus maxLength={12} />
-                )}
-              </FormItem>
-            </Tooltip>
-            <FormItem label="Note" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description', {
-                initialValue: item.description,
+            <FormItem label="Amount" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('amount', {
+                initialValue: parseFloat(data.nettoTotal - curPayment) || item.amount,
                 rules: [
                   {
-                    required: false,
-                    pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
-                    message: 'please insert the value'
+                    required: true,
+                    pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
+                    message: '0-9 please insert the value'
                   }
                 ]
-              })(<Input maxLength={250} style={{ width: '100%' }} />)}
+              })(
+                <Input onFocus={hdlChangeTooltip} onChange={changeNumber} style={{ width: '100%' }} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(data.nettoTotal - curPayment))}>Netto</Button>)} autoFocus maxLength={12} />
+              )}
             </FormItem>
             <FormItem label="Bank" hasFeedback labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('bankAccountId', {
@@ -232,12 +224,63 @@ const modal = ({
             </FormItem>
           </Col>
           <Col lg={12} md={12} sm={24}>
-            <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transDate', {
-                initialValue: moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss'),
+            <FormItem label="Note" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
                 rules: [
                   {
-                    required: true,
+                    required: false,
+                    pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
+                    message: 'please insert the value'
+                  }
+                ]
+              })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
+            {getFieldValue('typeCode') !== 'C' && listEdc && (
+              <FormItem label="Machine" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('machine', {
+                  initialValue: item.machine,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C'
+                    }
+                  ]
+                })(
+                  <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
+                  </Select>
+                )}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Bank" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bank', {
+                  initialValue: item.bank,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C'
+                    }
+                  ]
+                })(
+                  <Select style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                  </Select>
+                )}
+              </FormItem>
+            )}
+            <FormItem
+              label="Print Date"
+              hasFeedback
+              style={{
+                display: getFieldValue('typeCode') === 'C' ? 'none' : ''
+              }}
+              {...formItemLayout}
+            >
+              {getFieldDecorator('printDate', {
+                initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C',
                     message: 'please insert the value'
                   }
                 ]
@@ -246,46 +289,39 @@ const modal = ({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   placeholder="Select Time"
-                  style={{ width: '100%' }}
+                  disabled
+                  style={{ width: '100%', fontSize: '14pt' }}
                 />
               )}
             </FormItem>
-            <FormItem label="Card Name" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('cardName', {
-                initialValue: item.cardName,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' && getFieldValue('typeCode') !== 'G',
-                    pattern: /^[a-z0-9 -.,_]+$/i,
-                    message: 'please insert the value'
-                  }
-                ]
-              })(<Input disabled={getFieldValue('typeCode') === 'C' || getFieldValue('typeCode') === 'G'} maxLength={250} style={{ width: '100%' }} />)}
-            </FormItem>
-            <FormItem label="Card No." hasFeedback {...formItemLayout}>
-              {getFieldDecorator('cardNo', {
-                initialValue: item.cardNo,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' && getFieldValue('typeCode') !== 'G',
-                    pattern: /^[a-z0-9-/.,_]+$/i,
-                    message: 'please insert the value'
-                  }
-                ]
-              })(<Input disabled={getFieldValue('typeCode') === 'C' || getFieldValue('typeCode') === 'G'} maxLength={30} style={{ width: '100%' }} />)}
-            </FormItem>
-            <FormItem label="Check No" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('checkNo', {
-                initialValue: item.checkNo,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') === 'G',
-                    pattern: /^[a-z0-9-/.,_]+$/i,
-                    message: 'please insert the value'
-                  }
-                ]
-              })(<Input disabled={!(getFieldValue('typeCode') === 'G')} maxLength={30} style={{ width: '100%' }} />)}
-            </FormItem>
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cardName', {
+                  initialValue: item.cardName,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C',
+                      pattern: /^[a-z0-9 -.,_]+$/i,
+                      message: 'please insert the value'
+                    }
+                  ]
+                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cardNo', {
+                  initialValue: item.cardNo,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C',
+                      pattern: /^[a-z0-9-/.,_]+$/i,
+                      message: 'please insert the value'
+                    }
+                  ]
+                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
           </Col>
         </Row>
       </Form>
