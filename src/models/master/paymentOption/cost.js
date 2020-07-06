@@ -29,6 +29,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         const match = pathToRegexp('/master/paymentoption/cost/:id').exec(pathname)
           || pathToRegexp('/accounts/payment/:id').exec(pathname)
+          || pathToRegexp('/accounts/payable/:id').exec(pathname)
         if (match) {
           dispatch({
             type: 'query',

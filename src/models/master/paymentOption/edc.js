@@ -31,6 +31,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         const match = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
           || pathToRegexp('/accounts/payment/:id').exec(pathname)
+          || pathToRegexp('/accounts/payable/:id').exec(pathname)
         if (match) {
           dispatch({
             type: 'updateState',

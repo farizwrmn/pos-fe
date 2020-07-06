@@ -12,7 +12,13 @@ import styles from './index.less'
 
 const { SupplierBank } = DataAdd
 
-const Detail = ({ payableDetail, bank, supplierBank, paymentOpts, dispatch }) => {
+const Detail = ({ paymentEdc, paymentCost, payableDetail, bank, supplierBank, paymentOpts, dispatch }) => {
+  const {
+    listPayment: listEdc
+  } = paymentEdc
+  const {
+    listPayment: listCost
+  } = paymentCost
   const { listDetail, visibleTooltip, valueNumber, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = payableDetail
   const { listOpts } = paymentOpts
   const { listSupplierBank, modalAddBankVisible } = supplierBank
@@ -40,6 +46,39 @@ const Detail = ({ payableDetail, bank, supplierBank, paymentOpts, dispatch }) =>
     valueNumber,
     options: listOpts,
     visible: modalVisible,
+    listEdc,
+    listCost,
+    onGetCost (machineId) {
+      dispatch({
+        type: 'paymentCost/query',
+        payload: {
+          machineId,
+          relationship: 1
+        }
+      })
+    },
+    onGetMachine (paymentOption) {
+      dispatch({
+        type: 'paymentEdc/query',
+        payload: {
+          paymentOption
+        }
+      })
+    },
+    onResetMachine () {
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          listPayment: []
+        }
+      })
+      dispatch({
+        type: 'paymentCost/updateState',
+        payload: {
+          listPayment: []
+        }
+      })
+    },
     onOk (e) {
       dispatch({
         type: 'payableDetail/updateState',
@@ -224,4 +263,4 @@ Detail.propTypes = {
   paymentOpts: PropTypes.object
 }
 
-export default connect(({ bank, supplierBank, payableDetail, paymentOpts, dispatch, loading }) => ({ bank, supplierBank, payableDetail, paymentOpts, dispatch, loading }))(Detail)
+export default connect(({ bank, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }) => ({ bank, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }))(Detail)
