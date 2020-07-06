@@ -62,6 +62,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.sellPrice, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.distPrice01, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.distPrice02, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.distPrice03, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.amount || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
@@ -71,6 +75,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     }
     tableFooter.push(
       [
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
@@ -86,6 +94,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HARGA JUAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HARGA DIST-1', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HARGA DIST-2', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HARGA DIST-3', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }

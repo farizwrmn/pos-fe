@@ -22,6 +22,10 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.sellPrice), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.distPrice01), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.distPrice02), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.distPrice03), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.amount) / parseFloat(data.count)), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.count), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 }
@@ -71,7 +75,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: activeKey === '0' ? 1300 : 742, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1550, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -102,7 +106,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: activeKey === '0' ? 1300 : 742, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1550, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -135,6 +139,10 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       { fontSize: 12, text: 'NO', alignment: 'center' },
       { fontSize: 12, text: 'KODE PRODUK', alignment: 'center' },
       { fontSize: 12, text: 'NAMA PRODUK', alignment: 'center' },
+      { fontSize: 12, text: 'HARGA JUAL', alignment: 'center' },
+      { fontSize: 12, text: 'HARGA DIST-1', alignment: 'center' },
+      { fontSize: 12, text: 'HARGA DIST-2', alignment: 'center' },
+      { fontSize: 12, text: 'HARGA DIST-3', alignment: 'center' },
       { fontSize: 12, text: 'HPP', alignment: 'center' },
       { fontSize: 12, text: 'SALDO', alignment: 'center' },
       { fontSize: 12, text: 'JUMLAH', alignment: 'center' }
@@ -154,19 +162,35 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       {},
       {},
       {},
+      {},
+      {},
+      {},
+      {},
       { text: formatNumberIndonesia(count), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(amount), alignment: 'right', fontSize: 12 }
     ]
   ]
 
-  let widths = ['5%', '20%', '35%', '15%', '10%', '15%']
+  let widths = [
+    '5%',
+    '12%',
+    '12%',
+    '10%',
+    '10%',
+    '10%',
+    '10%',
+    '10%',
+    '10%',
+    '10%',
+    '10%'
+  ]
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: widths,
     pageMargins: [50, 130, 50, 60],
-    pageSize: 'A4',
+    pageSize: { width: 1165, height: 1650 },
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',
