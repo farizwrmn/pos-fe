@@ -1,173 +1,226 @@
 /**
- * Created by Veirry on 09/09/2017.
+ * Created by Veirry on 07/07/2020.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Icon, Modal } from 'antd'
-import { saveAs } from 'file-saver'
-import { numberFormat } from 'utils'
-import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
+import { RepeatExcelReport } from 'components'
 
-const warning = Modal.warning
-const { formatNumberInExcel } = numberFormat
-
-const PrintXLS = ({ listTrans, dataSource, from, to, storeInfo }) => {
-  let chargeTotal = listTrans.reduce((cnt, o) => cnt + o.chargeTotal, 0)
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
-  let paidTotal = listTrans.reduce((cnt, o) => cnt + o.paid, 0)
-  let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
-  let nettoTotal = grandTotal - paidTotal > 0 ? grandTotal - paidTotal : 0
-  const workbook = new Excel.Workbook()
-  workbook.creator = 'smartPOS'
-  workbook.created = new Date()
-  // workbook.lastPrinted = new Date(2016, 9, 27)
-  workbook.views = [
-    {
-      x: 0,
-      y: 0,
-      width: 10000,
-      height: 20000,
-      firstSheet: 0,
-      activeTab: 1,
-      visibility: 'visible'
-    }
-  ]
-  const sheet = workbook.addWorksheet('POS 1',
-    { pageSetup: { paperSize: 9, orientation: 'portrait' } })
-  const handleXLS = () => {
-    if (from === '' && to === '') {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...'
-      })
-    } else if (listTrans.length === 0) {
-      warning({
-        title: 'Parameter cannot be null',
-        content: 'your Trans Date paramater probably not set...'
-      })
-    } else {
-      sheet.getCell('F2').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12,
-        underline: true
-      }
-      sheet.getCell('F3').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12
-      }
-      sheet.getCell('F4').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 12
-      }
-      sheet.getCell('J5').font = {
-        name: 'Courier New',
-        family: 4,
-        size: 10
-      }
-      for (let n = 0; n <= listTrans.length; n += 1) {
-        for (let m = 65; m < 74; m += 1) {
-          let o = 9 + n
-          sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-            name: 'Times New Roman',
-            family: 4,
-            size: 10
-          }
-        }
-      }
-      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'TOTAL', 'BAYAR', 'KEMBALIAN', 'CHARGE', 'STATUS']
-      const footer = [
-        '',
-        '',
-        '',
-        'GRAND TOTAL',
-        grandTotal,
-        paidTotal,
-        changeTotal,
-        chargeTotal,
-        nettoTotal]
-      for (let m = 65; m < 74; m += 1) {
-        let o = 7
-        let count = m - 65
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).alignment = { vertical: 'middle', horizontal: 'center' }
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).value = header[count]
-        sheet.getCell(`${String.fromCharCode(m)}${o}`).numFmt = formatNumberInExcel(header[count])
-      }
-
-      for (let n = 0; n < listTrans.length; n += 1) {
-        let m = 9 + n
-        console.log('listTrans[n].status', listTrans[n].status)
-        sheet.getCell(`A${m}`).value = `${parseInt(n + 1, 10)}`
-        sheet.getCell(`A${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`B${m}`).value = '.'
-        sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`C${m}`).value = `${listTrans[n].transNo}`
-        sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
-        sheet.getCell(`D${m}`).value = `${moment(listTrans[n].invoiceDate).format('DD-MMM-YYYY')}`
-        sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = parseFloat((listTrans[n].nettoTotal) || 0)
-        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = parseFloat((listTrans[n].paid) || 0)
-        sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = parseFloat((listTrans[n].change) || 0)
-        sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].chargeTotal)
-        sheet.getCell(`I${m}`).value = `${listTrans[n].status || 'PENDING'}`
-        sheet.getCell(`I${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-      }
-
-      for (let m = 65; m < 74; m += 1) {
-        let n = listTrans.length + 10
-        let count = m - 65
-        sheet.getCell(`C${n}`).font = {
-          name: 'Courier New',
-          family: 4,
-          size: 11
-        }
-        sheet.getCell(`${String.fromCharCode(m + 3)}${n}`).font = {
-          name: 'Times New Roman',
-          family: 4,
-          size: 10
-        }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`${String.fromCharCode(m)}${n}`).value = `${footer[count]}`
-      }
-
-      sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F2').value = 'LAPORAN PEMBAYARAN DAN PIUTANG'
-      sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F3').value = `${storeInfo.name}`
-      sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F4').value = `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`
-      sheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'right' }
-      workbook.xlsx.writeBuffer().then((e) => {
-        let blob = new Blob([e], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-        saveAs(blob, `POS-Summary${moment().format('YYYYMMDD')}.xlsx`)
-      })
+const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
+  const styles = {
+    title: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+      underline: true
+    },
+    merchant: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
+    },
+    period: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
+    },
+    tableTitle: {
+      name: 'Courier New',
+      family: 4,
+      size: 12,
+      bold: true
+    },
+    tableHeader: {
+      name: 'Courier New',
+      family: 4,
+      size: 11,
+      bold: true
+    },
+    tableBody: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
+    tableFooter: {
+      name: 'Times New Roman',
+      family: 4,
+      size: 10
+    },
+    tableBorder: {
+      top: { style: 'thin', color: { argb: '000000' } },
+      left: { style: 'thin', color: { argb: '000000' } },
+      bottom: { style: 'thin', color: { argb: '000000' } },
+      right: { style: 'thin', color: { argb: '000000' } }
     }
   }
+
+  const title = [
+    { value: 'LAPORAN PEMBAYARAN DETAIL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
+    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
+  ]
+
+  let tableTitle = []
+  let tableBody = []
+  let tableFooter = []
+  let groupBy = (xs) => {
+    return xs
+      .reduce((prev, next) => {
+        if (next.cost) {
+          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          return prev
+        }
+        (prev.cash = prev.cash || []).push(next)
+        return prev
+      }, {})
+  }
+  const groubedByTeam = groupBy(listTrans)
+  let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+  for (let i = 0; i < arr.length; i += 1) {
+    const item = arr[i][0]
+    try {
+      let title = [
+        [
+          { value: 'BANK', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+          { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+          { value: `${item.cost ? item.cost.costBank.bankName : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+        ]
+      ]
+      tableTitle.push(title)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  for (let i = 0; i < arr.length; i += 1) {
+    let itemArr = arr[i]
+    let count = 1
+    let header = [
+      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NO_FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'CASHIER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'APPROVE BY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'OPTION', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'EDC', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'CHARGE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'MEMO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+    ]
+    let group = [header]
+    for (let key in itemArr) {
+      const item = itemArr[key]
+      let body = [
+        { value: `${count}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.transDate}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.pos.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.balance.balanceUser.fullName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.balance && item.balance.balanceApprove ? item.balance.balanceApprove.fullName : '-'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.paymentOption && item.paymentOption.typeName ? item.paymentOption.typeName : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.cost && item.cost.costMachine ? item.cost.costMachine.name : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(item.chargeTotal)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(item.amount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.description || '-'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder }
+      ]
+      count += 1
+      group.push(body)
+    }
+    tableBody.push(group)
+    const chargeTotal = itemArr.reduce((cnt, o) => cnt + (parseFloat(o.chargeTotal) || 0), 0)
+    const amountTotal = itemArr.reduce((cnt, o) => cnt + (parseFloat(o.amount) || 0), 0)
+    let footer = [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: chargeTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: amountTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+    ]
+    tableFooter.push(footer)
+  }
+
+  let tableFilters = [
+    [
+      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'NO_FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'CASHIER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'APPROVE BY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'OPTION', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'EDC', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'BANK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'CHARGE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'MEMO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
+    ],
+    [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
+    ]
+  ]
+  let count = 1
+  for (let i = 0; i < listTrans.length; i += 1) {
+    let item = listTrans[i]
+    tableFilters.push([
+      { value: count.toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+      { value: (item.transDate || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: (item.pos.transNo || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: item.balance.balanceUser.fullName, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: item.balance && item.balance.balanceApprove ? item.balance.balanceApprove.fullName : '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: item.paymentOption && item.paymentOption.typeName ? item.paymentOption.typeName : 'CASH', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: item.cost && item.cost.costMachine ? item.cost.costMachine.name : 'CASH', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: item.cost && item.cost.costBank ? item.cost.costBank.bankName : 'CASH', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+      { value: parseFloat(item.chargeTotal), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+      { value: parseFloat(item.amount), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+      { value: (item.description || '-'), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody }
+    ])
+    count += 1
+  }
+
+  // Declare additional Props
+  const XLSProps = {
+    className: 'button-width02 button-extra-large bgcolor-green',
+    paperSize: 9,
+    orientation: 'portrait',
+    title,
+    tableTitle,
+    tableBody,
+    tableFooter,
+    data: listTrans,
+    tableFilter: tableFilters,
+    fileName: 'POS-Detail-Summary'
+  }
+
+  console.log('XLSProps', XLSProps)
+
   return (
-    <Button type="dashed"
-      size="large"
-      className="button-width02 button-extra-large bgcolor-green"
-      onClick={() => handleXLS(dataSource)}
-    >
-      <Icon type="file-excel" className="icon-large" />
-    </Button>
+    <RepeatExcelReport {...XLSProps} />
   )
 }
 
 PrintXLS.propTypes = {
-  listTrans: PropTypes.array
+  listTrans: PropTypes.object,
+  storeInfo: PropTypes.string,
+  fromDate: PropTypes.string,
+  toDate: PropTypes.string
 }
 
 export default PrintXLS

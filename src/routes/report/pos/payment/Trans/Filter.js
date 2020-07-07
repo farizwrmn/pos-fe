@@ -28,7 +28,8 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ from, to, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+  const { from, to } = printProps
   const handleChange = (value) => {
     const from = value[0].format('YYYY-MM-DD')
     const to = value[1].format('YYYY-MM-DD')

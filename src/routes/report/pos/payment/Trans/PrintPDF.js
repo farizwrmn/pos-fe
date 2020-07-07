@@ -1,64 +1,132 @@
 /**
- * Created by boo on 9/19/17.
+ * Created by Veirry on 07/07/2020.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
-import { BasicReport } from 'components'
 import { numberFormat } from 'utils'
+import PropTypes from 'prop-types'
+import { RepeatReport } from 'components'
 
-const { formatNumberIndonesia } = numberFormat
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
-  // Declare Function
+  let width = []
+  let outJSON = listTrans
+
+  let groupBy = (xs) => {
+    return xs
+      .reduce((prev, next) => {
+        if (next.cost) {
+          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          return prev
+        }
+        (prev.cash = prev.cash || []).push(next)
+        return prev
+      }, {})
+  }
+
+  // const unique = (group, code) => {
+  //   return group.map((key) => {
+  //     return key[code]
+  //   }).filter((e, index, array) => {
+  //     return index === array.indexOf(e)
+  //   })
+  // }
+  // const groupCode = unique(outJSON, 'productCode')
+  // let groups = []
+  // groupCode.map((code) => {
+  //   groups.push(outJSON.filter(group => group.productCode === code))
+  //   return code
+  // })
+
+  let groubedByTeam = groupBy(outJSON, 'cost.costBank.bankName')
+  let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+
   const createTableBody = (tabledata) => {
-    let body = []
+    const headers = [
+      [
+        { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'CASHIER', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'APPROVE BY', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'OPTION', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'EDC', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'CHARGE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'MEMO', style: 'tableHeader', alignment: 'center' }
+      ]
+    ]
+
     const rows = tabledata
-    let count = 1
+    let body = headers
+    let counter = 1
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = [
-          { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: moment(data.invoiceDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.paid || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.change || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.chargeTotal || 0), alignment: 'right', fontSize: 11 },
-          { text: (data.status || '').toString(), alignment: 'right', fontSize: 11 }
+          { text: counter, alignment: 'center', fontSize: 11 },
+          { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
+          { text: data.pos.transNo, alignment: 'left', fontSize: 11 },
+          { text: data.balance.balanceUser.fullName, alignment: 'left', fontSize: 11 },
+          { text: data.balance && data.balance.balanceApprove ? data.balance.balanceApprove.fullName : '-', alignment: 'left', fontSize: 11 },
+          { text: data.paymentOption && data.paymentOption.typeName ? data.paymentOption.typeName : 'CASH', alignment: 'left', fontSize: 11 },
+          { text: data.cost && data.cost.costMachine ? data.cost.costMachine.name : 'CASH', alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.chargeTotal || 0)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.amount) || 0), alignment: 'right', fontSize: 11 },
+          { text: data.description || '-', alignment: 'left', fontSize: 11 }
         ]
         body.push(row)
       }
-      count += 1
+      counter += 1
     }
+
+    const chargeTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.chargeTotal) || 0), 0)
+    const amountTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.amount) || 0), 0)
+
+    let totalRow = [
+      { text: 'Total', colSpan: 7, alignment: 'center', fontSize: 12 },
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      { text: formatNumberIndonesia(chargeTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(amountTotal), alignment: 'right', fontSize: 12 },
+      {}
+    ]
+    body.push(totalRow)
+
+    width.push([
+      '4%',
+      '10%',
+      '10%',
+      '10%',
+      '10%',
+      '10%',
+      '10%',
+      '10%',
+      '10%',
+      '15%',
+      '15%'
+    ])
     return body
   }
 
-  // Declare Variable
-  let chargeTotal = listTrans.reduce((cnt, o) => cnt + o.chargeTotal, 0)
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.nettoTotal, 0)
-  let paidTotal = listTrans.reduce((cnt, o) => cnt + o.paid, 0)
-  let changeTotal = listTrans.reduce((cnt, o) => cnt + o.change, 0)
-  let nettoTotal = grandTotal - paidTotal > 0 ? grandTotal - paidTotal : 0
-  const styles = {
-    header: {
-      fontSize: 18,
-      bold: true,
-      margin: [0, 0, 0, 10]
-    },
-    subheader: {
-      fontSize: 16,
-      bold: true,
-      margin: [0, 10, 0, 5]
-    },
-    tableExample: {
-      margin: [0, 5, 0, 15]
-    },
-    tableHeader: {
-      bold: true,
-      fontSize: 13,
-      color: 'black'
+  let tableBody = []
+  let tableTitle = []
+  for (let i = 0; i < arr.length; i += 1) {
+    const item = arr[i][0]
+    try {
+      tableBody.push(createTableBody(arr[i]))
+      if (item.cost) {
+        tableTitle.push({ text: `Bank : ${item.cost.costBank.bankName}`, style: 'tableTitle' })
+      } else {
+        tableTitle.push({ text: 'Cash', style: 'tableTitle' })
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -70,13 +138,13 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN PEMBAYARAN DAN PIUTANG',
+            text: 'LAPORAN PEMBAYARAN DETAIL',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1080, y2: 5, lineWidth: 0.5 }]
           },
           {
             columns: [
@@ -102,17 +170,18 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     ],
     margin: [50, 12, 50, 30]
   }
+
   const footer = (currentPage, pageCount) => {
     return {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 740, y2: -8, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 1080, y2: -8, lineWidth: 0.5 }]
         },
         {
           columns: [
             {
-              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY HH:mm:ss')}`,
+              text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
               fontSize: 9,
               alignment: 'left'
@@ -134,65 +203,59 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       ]
     }
   }
-  const tableHeader = [
-    [
-      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO FAKTUR', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'BAYAR', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'KEMBALIAN', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CHARGE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'STATUS', style: 'tableHeader', alignment: 'center' }
-    ]
-  ]
-  let tableBody = []
-  try {
-    tableBody = createTableBody(listTrans)
-  } catch (e) {
-    console.log(e)
-  }
-  const tableFooter = [
-    [
-      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-      {},
-      {},
-      { text: formatNumberIndonesia(grandTotal), alignment: 'right', fontSize: 12 },
-      { text: `(${formatNumberIndonesia(paidTotal)})`, alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(changeTotal), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(chargeTotal), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 }
-    ]
-  ]
 
-  // Declare additional Props
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10]
+    },
+    subheader: {
+      fontSize: 16,
+      bold: true,
+      margin: [0, 10, 0, 5]
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15]
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black'
+    },
+    tableTitle: {
+      fontSize: 14,
+      margin: [0, 20, 0, 8]
+    }
+  }
+
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '15%', '14%', '14%', '14%', '14%', '14%', '10%'],
-    pageMargins: [50, 130, 50, 60],
-    pageSize: 'A4',
+    pageSize: 'A3',
     pageOrientation: 'landscape',
-    tableStyle: styles,
-    layout: 'noBorder',
-    tableHeader,
-    tableBody,
-    tableFooter,
-    data: listTrans,
+    width,
+    pageMargins: [50, 130, 50, 60],
     header,
-    footer
+    tableTitle,
+    tableBody,
+    layout: 'noBorder',
+    footer,
+    tableStyle: styles,
+    data: arr
   }
 
   return (
-    <BasicReport {...pdfProps} />
+    <RepeatReport {...pdfProps} />
   )
 }
 
 PrintPDF.propTypes = {
-  listTrans: PropTypes.array,
-  user: PropTypes.object,
-  storeInfo: PropTypes.object.isRequired,
-  from: PropTypes.string.isRequired,
-  to: PropTypes.string
+  listTrans: PropTypes.array.isRequired,
+  dataSource: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired,
+  period: PropTypes.string.isRequired,
+  year: PropTypes.string.isRequired,
+  storeInfo: PropTypes.object
 }
 
 export default PrintPDF

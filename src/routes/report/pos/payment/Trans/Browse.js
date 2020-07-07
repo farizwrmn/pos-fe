@@ -62,6 +62,7 @@ const Browse = ({ ...browseProps }) => {
         return (
           <div>
             <div>{`Type Code: ${record.cost && record.cost.costBank ? record.cost.costBank.bankName : record.typeCode}`}</div>
+            <div>{`Type Name: ${record.paymentOption && record.paymentOption.typeName ? record.paymentOption.typeName : record.typeCode}`}</div>
             <div>{`Charge: ${formatNumberIndonesia(record.chargeTotal)}`}</div>
             <div>{`Amount: ${formatNumberIndonesia(record.amount)}`}</div>
             <div>{`Memo: ${record.description || ''}`}</div>
