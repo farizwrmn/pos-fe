@@ -834,6 +834,14 @@ const Routers = function ({ history, app }) {
             }, 'report-inventory-sellprice')
           }
         }, {
+          path: 'report/pos/payment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/posPayment'))
+              cb(null, require('./routes/report/pos/payment'))
+            }, 'report-pos-payment')
+          }
+        }, {
           path: 'report/accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

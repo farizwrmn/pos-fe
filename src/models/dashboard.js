@@ -66,7 +66,7 @@ export default {
         to: today
       }
       const data = yield call(getDashboards, params)
-      const formatData = construct(data.sales, last7day, today)
+      const formatData = construct(data.saTles, last7day, today)
       formatData.sort((left, right) => {
         return moment.utc(moment(left.title, 'MM/DD/YYYY').format('YYYY-MM-DD')).diff(moment.utc(moment(right.title, 'MM/DD/YYYY').format('YYYY-MM-DD')))
       })
