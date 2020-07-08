@@ -123,7 +123,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       if (item.cost) {
         tableTitle.push({ text: `Bank : ${item.cost.costBank.bankName}`, style: 'tableTitle' })
       } else {
-        tableTitle.push({ text: 'Cash', style: 'tableTitle' })
+        tableTitle.push({ text: 'CASH', style: 'tableTitle' })
       }
     } catch (e) {
       console.log(e)
