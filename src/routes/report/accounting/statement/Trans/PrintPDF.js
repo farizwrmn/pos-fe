@@ -88,7 +88,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN PENJUALAN PER FAKTUR',
+            text: 'LAPORAN LABA RUGI',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
