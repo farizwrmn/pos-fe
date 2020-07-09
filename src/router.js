@@ -842,6 +842,22 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-payment')
           }
         }, {
+          path: 'report/accounting/profit-loss',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatement'))
+              cb(null, require('./routes/report/accounting/statement'))
+            }, 'report-accounting-profit-loss')
+          }
+        }, {
+          path: 'report/accounting/balance-sheet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatement'))
+              cb(null, require('./routes/report/accounting/statement'))
+            }, 'report-accounting-balance-sheet')
+          }
+        }, {
           path: 'report/accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
