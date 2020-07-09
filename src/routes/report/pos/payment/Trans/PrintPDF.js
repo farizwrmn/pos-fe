@@ -243,6 +243,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     tableStyle: styles,
     data: arr
   }
+  console.log('payment', pdfProps)
 
   return (
     <RepeatReport {...pdfProps} />
