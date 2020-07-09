@@ -1,9 +1,6 @@
-import { configMain } from 'utils'
 import moment from 'moment'
 import { queryPayable } from '../../services/payment/payable'
 import { query as queryPos } from '../../services/payment'
-
-const { prefix } = configMain
 
 export default {
 
@@ -18,44 +15,42 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { activeKey } = location.query
+        if (location.pathname === '/accounts/payable') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listPayment: [],
+              tmpListPayment: [],
+              changed: false,
+              activeKey: activeKey || '2'
+            }
+          })
+          dispatch({
+            type: 'queryPurchase',
+            payload: {
+              from: moment().startOf('month').format('YYYY-MM-DD'),
+              to: moment().endOf('month').format('YYYY-MM-DD')
+            }
+          })
+        }
         if (location.pathname === '/accounts/payment') {
-          const { activeKey } = location.query
-          const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
-          if (activeKey === '2') {
-            dispatch({
-              type: 'updateState',
-              payload: {
-                listPayment: [],
-                tmpListPayment: [],
-                changed: false,
-                activeKey: activeKey || '2'
-              }
-            })
-            dispatch({
-              type: 'queryPurchase',
-              payload: {
-                from: moment().startOf('month').format('YYYY-MM-DD'),
-                to: moment().endOf('month').format('YYYY-MM-DD')
-              }
-            })
-          } else {
-            dispatch({
-              type: 'updateState',
-              payload: {
-                listPayment: [],
-                tmpListPayment: [],
-                changed: false,
-                activeKey: activeKey || '1'
-              }
-            })
-            dispatch({
-              type: 'queryHistory',
-              payload: {
-                startPeriod: infoStore.startPeriod,
-                endPeriod: infoStore.endPeriod
-              }
-            })
-          }
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listPayment: [],
+              tmpListPayment: [],
+              changed: false,
+              activeKey: activeKey || '1'
+            }
+          })
+          dispatch({
+            type: 'queryHistory',
+            payload: {
+              startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
+              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+            }
+          })
         }
       })
     }

@@ -287,6 +287,8 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     fileName: 'POS-Detail-Summary'
   }
 
+  console.log('XLSProps', XLSProps)
+
   return (
     <RepeatExcelReport {...XLSProps} />
   )

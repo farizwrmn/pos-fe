@@ -6,11 +6,12 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form, Modal, Select } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Modal, Select, Input } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
+const { Search } = Input
 const Option = Select.Option
 
 const leftColumn = {
@@ -35,6 +36,7 @@ const Filter = ({
   onChangePeriod,
   // productCode,
   // productName,
+  onUpdateDataSource,
   listProduct,
   listCategory,
   listBrand,
@@ -170,6 +172,10 @@ const Filter = ({
     resetFields(['category', 'productName'])
   }
 
+  function onChangeSearch (value) {
+    onUpdateDataSource(value)
+  }
+
   return (
     <Row>
       <Col {...leftColumn} >
@@ -180,6 +186,23 @@ const Filter = ({
             <MonthPicker onChange={onChange} placeholder="Select Period" />
           )}
         </FilterItem>
+        {
+          activeKey === '1' &&
+          <Row>
+            <Col lg={12} md={24} >
+              <FilterItem label="Search">
+                {getFieldDecorator('search')(
+                  <Search
+                    style={{ width: '189px', margin: '5px 0' }}
+                    onSearch={(value) => {
+                      onChangeSearch(value)
+                    }}
+                  />
+                )}
+              </FilterItem>
+            </Col>
+          </Row>
+        }
         {activeKey === '3' &&
           <Row>
             <Col lg={12} md={24} >

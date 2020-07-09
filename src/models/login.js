@@ -74,15 +74,6 @@ export default {
           }
         })
 
-        if (modalLoginType === 'editPayment') {
-          yield put({
-            type: 'pos/checkQuantityEditProduct',
-            payload: {
-              data: modalLoginData,
-              setting
-            }
-          })
-        }
         if (modalLoginType === 'payment') {
           yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
         }
@@ -92,8 +83,19 @@ export default {
         if (modalLoginType === 'consignment') {
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
+        if (modalLoginType === 'editPayment') {
+          yield put({
+            type: 'pos/checkQuantityEditProduct',
+            payload: {
+              data: modalLoginData,
+              setting
+            }
+          })
+        } else {
+          yield put({ type: 'updateState', payload: { modalLoginData: {} } })
+        }
+        yield put({ type: 'updateState', payload: { modalFingerprintVisible: false } })
         yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
-        yield put({ type: 'updateState', payload: { modalLoginData: {}, modalFingerprintVisible: false } })
       } else {
         throw new Error('Cashier cannot delete')
       }

@@ -184,9 +184,21 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * registerFingerprint ({ payload }, { call }) {
+    * registerFingerprint ({ payload }, { select, call, put }) {
       const response = yield call(registerEmployeeFingerprint, payload)
-      if (!response.success) {
+      const modalLoginType = yield select(({ pos }) => pos && pos.modalLoginType)
+      const modalLoginData = yield select(({ login }) => login && login.modalLoginData)
+      if (response.success) {
+        if (modalLoginType === 'editPayment') {
+          yield put({
+            type: 'salesDiscount/add',
+            payload: {
+              fingerprintId: response.data.id,
+              value: modalLoginData
+            }
+          })
+        }
+      } else {
         throw response
       }
     },

@@ -9,6 +9,7 @@ export default {
   namespace: 'fifoReport',
 
   state: {
+    tmpListRekap: [],
     listRekap: [],
     period: moment().format('MM'),
     year: moment().format('YYYY'),
@@ -122,6 +123,7 @@ export default {
         yield put({
           type: 'querySuccessTrans',
           payload: {
+            tmpListRekap: data.data,
             listRekap: data.data,
             period: payload.period,
             year: payload.year,
@@ -260,12 +262,13 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { listRekap, date, pagination, period, year } = action.payload
+      const { listRekap, tmpListRekap, date, pagination, period, year } = action.payload
       return {
         ...state,
         period,
         year,
         listRekap,
+        tmpListRekap: tmpListRekap || [],
         fromDate: date.period,
         toDate: date.year,
         pagination: {

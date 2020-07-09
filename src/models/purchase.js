@@ -9,6 +9,7 @@ import {
   create,
   editPurchase,
   remove,
+  queryList,
   queryHistories,
   queryHistory,
   queryHistoryDetail,
@@ -88,11 +89,13 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
         } else if (location.pathname === '/transaction/purchase/history') {
+          const { activeKey, ...other } = location.query
           dispatch({
-            type: 'queryHistory',
+            type: 'queryList',
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
-              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+              endPeriod: moment().endOf('month').format('YYYY-MM-DD'),
+              ...other
             }
           })
         }
@@ -101,6 +104,25 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryList ({ payload = {} }, { call, put }) {
+      const data = yield call(queryList, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessHistory',
+          payload: {
+            listPurchaseHistories: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: Number(data.total || 0)
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
       if (data.success) {

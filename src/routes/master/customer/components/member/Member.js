@@ -53,27 +53,6 @@ const Member = ({
           modalType
         }
       })
-      dispatch({
-        type: 'pos/queryGetMemberSuccess',
-        payload: { memberInformation: data }
-      })
-      dispatch({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
-      dispatch({ type: 'unit/lov', payload: { id: data.memberCode } })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showListReminder: false
-        }
-      })
-      dispatch({
-        type: 'customer/updateState',
-        payload: {
-          addUnit: {
-            modal: false,
-            info: { id, name: data.memberName }
-          }
-        }
-      })
     },
     onCancel () {
       const { pathname } = location

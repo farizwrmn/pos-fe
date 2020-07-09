@@ -9,7 +9,7 @@ import moment from 'moment'
 import ModalRange from './modalRange'
 import styles from './sales.less'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
 const FormItem = Form.Item
 const { MonthPicker } = DatePicker
@@ -17,7 +17,7 @@ class CustomizedLabel extends React.Component {
   render () {
     const { x, y, stroke, value } = this.props
 
-    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value === 0 ? null : value}</text>
+    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value === 0 ? null : numberFormatter(value)}</text>
   }
 }
 
@@ -212,12 +212,11 @@ const Sales = ({
           <Tooltip
             wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
             content={(content) => {
-              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${formatNumberIndonesia(item.value)}`}</li>)
+              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${numberFormatter(item.value)}`}</li>)
               return <div className={styles.tooltip}><p className={styles.tiptitle}>{moment(content.label, 'DD/MM').format('ll')}</p><ul>{list}</ul></div>
             }}
           />
           <Line type="linear" dataKey="Sales" stroke={color.pastelgreen} strokeWidth={3} dot={{ fill: color.pastelgreen }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
-          <Line type="linear" dataKey="Service" stroke={color.wewak} strokeWidth={3} dot={{ fill: color.wewak }} activeDot={{ r: 5, strokeWidth: 0 }} label={<CustomizedLabel />} />
         </LineChart>
       </ResponsiveContainer>
     </div>

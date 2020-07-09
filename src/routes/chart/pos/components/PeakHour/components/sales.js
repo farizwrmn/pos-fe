@@ -7,13 +7,13 @@ import { connect } from 'dva'
 import moment from 'moment'
 import styles from './sales.less'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
 class CustomizedLabel extends React.Component {
   render () {
     const { x, y, stroke, value } = this.props
 
-    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value === 0 ? null : value}</text>
+    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={11} textAnchor="middle">{value === 0 ? null : numberFormatter(value)}</text>
   }
 }
 
@@ -42,7 +42,7 @@ const Sales = ({
             wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
             content={(content) => {
               const label = (parseFloat(content.label) + 1 || '').toString()
-              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${formatNumberIndonesia(item.value)}`}</li>)
+              const list = content.payload.map((item, key) => <li key={key} className={styles.tipitem}><span className={styles.radiusdot} style={{ background: item.color }} />{`${item.name}:${numberFormatter(item.value)}`}</li>)
               return <div className={styles.tooltip}><p className={styles.tiptitle}>{`${moment(content.label, 'H').format('HH:mm')} ~ ${moment(label, 'H').format('HH:mm')}`}</p><ul>{list}</ul></div>
             }}
           />

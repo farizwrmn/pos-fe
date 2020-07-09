@@ -52,6 +52,7 @@ const Pos = ({
   loading,
   dispatch,
   pos,
+  login,
   // shift,
   // counter,
   app,
@@ -100,8 +101,10 @@ const Pos = ({
     listServiceReminder,
     modalAddUnit,
     cashierInformation,
-    dineInTax
+    dineInTax,
+    modalLoginType
   } = pos
+  const { modalLoginData } = login
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
@@ -743,6 +746,8 @@ const Pos = ({
   }
 
   const modalLoginProps = {
+    modalLoginType,
+    modalLoginData,
     visible: modalLoginVisible,
     title: 'Supervisor Verification',
     width: '320px',
@@ -1528,7 +1533,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)
