@@ -1,7 +1,10 @@
 /**
  * Created by Veirry on 07/07/2020.
  */
-import { queryProfitLoss } from 'services/report/accounting/accountingStatement'
+import {
+  queryProfitLoss,
+  queryBalanceSheet
+} from 'services/report/accounting/accountingStatement'
 
 export default {
   namespace: 'accountingStatementReport',
@@ -31,13 +34,16 @@ export default {
             type: 'setListNull'
           })
           dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: '1'
-            }
+            type: 'query',
+            payload: location.query
+          })
+        }
+        if (location.pathname === '/report/accounting/balance-sheet') {
+          dispatch({
+            type: 'setListNull'
           })
           dispatch({
-            type: 'query',
+            type: 'queryBalanceSheet',
             payload: location.query
           })
         }
@@ -47,6 +53,20 @@ export default {
   effects: {
     * query ({ payload }, { call, put }) {
       const data = yield call(queryProfitLoss, payload)
+      yield put({
+        type: 'querySuccessTrans',
+        payload: {
+          listTrans: data.data,
+          pagination: {
+            total: data.total
+          },
+          from: payload.from,
+          to: payload.to
+        }
+      })
+    },
+    * queryBalanceSheet ({ payload }, { call, put }) {
+      const data = yield call(queryBalanceSheet, payload)
       yield put({
         type: 'querySuccessTrans',
         payload: {
