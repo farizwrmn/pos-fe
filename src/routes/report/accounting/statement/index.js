@@ -10,18 +10,18 @@ const TabPane = Tabs.TabPane
 const Report = ({ dispatch, location }) => {
   const { pathname } = location
 
-  const changeTab = (path) => {
-    dispatch({
-      type: 'accountingStatementReport/updateState',
-      payload: {
-        path
+  const changeTab = (pathname) => {
+    const { query } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query
       }
-    })
-    dispatch(routerRedux.push(path))
+    }))
   }
   return (
     <div className="content-inner">
-      <Tabs activeKey={pathname} onChange={path => changeTab(path)}>
+      <Tabs activeKey={pathname} onChange={pathname => changeTab(pathname)}>
         <TabPane tab="Profit Loss" key="/report/accounting/profit-loss">
           {pathname === '/report/accounting/profit-loss' && <ProfitLoss location={location} />}
         </TabPane>

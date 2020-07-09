@@ -88,7 +88,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN LABA RUGI',
+            text: 'LAPORAN NERACA',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -162,25 +162,34 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
   const groubedByTeam = groupBy(listTrans, 'accountType')
   const group = {
-    REVE: [],
-    COGS: [],
-    EXPS: [],
-    OINC: [],
-    OXPS: [],
+    BANK: [],
+    AREC: [],
+    INTR: [],
+    OCAS: [],
+
+    FASS: [],
+    DEPR: [],
+    OASS: [],
+
+    APAY: [],
+    OCLY: [],
+    LTLY: [],
+
+    EQTY: [],
     ...groubedByTeam
   }
   try {
-    // Start - REVE
-    const { groupBody: groupREVEBody, total: totalREVE } = createTableBody(group, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
-    tableBody = tableBody.concat(groupREVEBody)
-    // End - REVE
+    // Start - BANK
+    const { groupBody: groupBANKBody, total: totalBANK } = createTableBody(group, { type: 'BANK', bodyTitle: 'ASET LANCAR ', totalTitle: 'Jumlah Aset Lancar' })
+    tableBody = tableBody.concat(groupBANKBody)
+    // End - BANK
 
     // Start - COGS
     const { groupBody: groupCOGSBody, total: totalCOGS } = createTableBody(group, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
     tableBody = tableBody.concat(groupCOGSBody)
     // End - COGS
 
-    const labaKotor = totalREVE + totalCOGS
+    const labaKotor = totalBANK + totalCOGS
     tableBody = tableBody.concat([
       [
         { text: '', alignment: 'right', fontSize: 11 },
