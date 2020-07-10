@@ -323,7 +323,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
   return (
     <div>
       <Helmet>
-        <title>{configMain.name}</title>
+        <title>{window.location.href}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
       </Helmet>
