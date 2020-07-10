@@ -42,12 +42,13 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
     location,
     dispatch,
     pagination,
-    onChange (page) {
+    onChange (page, filters, sorter) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
           ...query,
+          order: sorter && sorter.column ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}` : undefined,
           page: page.current,
           pageSize: page.pageSize
         }
