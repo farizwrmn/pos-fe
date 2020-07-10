@@ -59,38 +59,46 @@ const styles = {
   }
 }
 
-const groupByType = (
-  list,
-  {
-    type,
-    bodyTitle,
-    totalTitle
-  }
-) => {
-  let groupBody = [
-    [{ value: bodyTitle, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle, border: styles.tableTitle }]
-  ]
-  for (let key in list[type]) {
-    const item = list[type][key]
-    try {
-      let body = [
-        { value: `     ${item.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: (parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
-      ]
-      groupBody.push(body)
-    } catch (e) {
-      console.log(e)
+const createTableBody = (tabledata, bodyStruct) => {
+  let groupBody = []
+  let grandTotal = 0
+  for (let key in bodyStruct) {
+    const item = bodyStruct[key]
+    const depth = ('\t').repeat(0)
+    if (item.accountName) {
+      groupBody.push([
+        { value: `${depth}${item.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: parseFloat(item.debit ? (item.debit * -1) : item.credit || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+      ])
+    } else {
+      groupBody.push([
+        { value: `${depth}${item.bodyTitle}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder }
+      ])
+    }
+    if (item.child) {
+      const { data, total } = createTableBody(tabledata, item.child)
+      groupBody = groupBody.concat(data)
+      groupBody.push([
+        { value: `${depth}${item.totalTitle}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
+        { value: parseFloat(total), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
+      ])
+      grandTotal += total
+    }
+    if (item.type) {
+      const accountData = tabledata[item.type]
+      const total = accountData.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+      const { data } = createTableBody(tabledata, accountData)
+      groupBody = groupBody.concat(data)
+      groupBody.push([
+        { value: `${depth}${item.totalTitle}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
+        { value: parseFloat(total), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
+      ])
+      grandTotal += parseFloat(total || 0)
     }
   }
-  const total = list[type].reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-  groupBody.push([
-    { value: totalTitle, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-    { value: parseFloat(total), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-  ])
-  return {
-    groupBody,
-    total
-  }
+
+  return { data: groupBody, total: grandTotal }
 }
 
 const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
@@ -113,86 +121,126 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
   const groubedByTeam = groupBy(listTrans, 'accountType')
 
   const group = {
-    REVE: [],
-    COGS: [],
-    EXPS: [],
-    OINC: [],
-    OXPS: [],
+    BANK: [],
+    AREC: [],
+    INTR: [],
+    OCAS: [],
+
+    FASS: [],
+    DEPR: [],
+    OASS: [],
+
+    APAY: [],
+    OCLY: [],
+    LTLY: [],
+
+    EQTY: [],
     ...groubedByTeam
   }
 
   const ProcedureOfList = () => {
     // Start - REVE
-    const { groupBody: groupREVEBody, total: totalREVE } = groupByType(group, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
+    const { data: groupREVEBody } = createTableBody(
+      group,
+      [
+        {
+          bodyTitle: 'ASET',
+          totalTitle: 'Jumlah Aset',
+          level: 0,
+          child: [
+            {
+              bodyTitle: 'ASET LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Lancar',
+              child: [
+                {
+                  type: 'BANK',
+                  level: 2,
+                  bodyTitle: 'Kas dan Setara Kas',
+                  totalTitle: 'Jumlah Kas dan Setara Kas'
+                },
+                {
+                  type: 'AREC',
+                  level: 2,
+                  bodyTitle: 'Piutang Usaha',
+                  totalTitle: 'Jumlah Piutang Usaha'
+                },
+                {
+                  type: 'INTR',
+                  level: 2,
+                  bodyTitle: 'Persediaan',
+                  totalTitle: 'Jumlah Persediaan'
+                },
+                {
+                  type: 'OCAS',
+                  level: 2,
+                  bodyTitle: 'Aset Lancar Lainnya',
+                  totalTitle: 'Jumlah Aset Lancar Lainnya'
+                }
+              ]
+            },
+            {
+              bodyTitle: 'ASET TIDAK LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Tidak Lancar',
+              child: [
+                {
+                  type: 'FASS',
+                  level: 2,
+                  bodyTitle: 'Nilai Histori',
+                  totalTitle: 'Jumlah Nilai Histori'
+                },
+                {
+                  type: 'DEPR',
+                  level: 2,
+                  bodyTitle: 'Akumulasi Penyusutan',
+                  totalTitle: 'Jumlah Akumulasi Penyusutan'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          bodyTitle: 'KEWAJIBAN DAN EKUITAS',
+          totalTitle: 'Jumlah Kewajiban dan Ekuitas',
+          level: 0,
+          child: [
+            {
+              bodyTitle: 'KEWAJIBAN JANGKA PENDEK',
+              level: 1,
+              totalTitle: 'Jumlah Kewajiban Jangka Pendek',
+              child: [
+                {
+                  type: 'APAY',
+                  level: 2,
+                  bodyTitle: 'Hutang Usaha',
+                  totalTitle: 'Jumlah Hutang Usaha'
+                },
+                {
+                  type: 'OCLY',
+                  level: 2,
+                  bodyTitle: 'Kewajiban Jangka Pendek Lainnya',
+                  totalTitle: 'Jumlah Kewajiban Jangka Pendek Lainnya'
+                }
+              ]
+            },
+            {
+              type: 'LTLY',
+              level: 1,
+              bodyTitle: 'Kewajiban Jangka Panjang',
+              totalTitle: 'Jumlah Kewajiban Jangka Panjang'
+            },
+            {
+              type: 'EQTY',
+              level: 1,
+              bodyTitle: 'Ekuitas',
+              totalTitle: 'Jumlah Ekuitas'
+            }
+          ]
+        }
+      ])
     tableBody.push(groupREVEBody)
     // End - REVE
-
-    // Start - COGS
-    const { groupBody: groupCOGSBody, total: totalCOGS } = groupByType(group, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
-    tableBody.push(groupCOGSBody)
-    // End - COGS
-
-    // Start - Laba Kotor
-    const labaKotor = totalREVE + totalCOGS
-    tableBody.push([
-      [
-        { value: 'LABA KOTOR', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-        { value: parseFloat(labaKotor), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-      ]
-    ])
-    // End - Laba Kotor
-
-    // Start - EXPS
-    const { groupBody: groupEXPSBody, total: totalEXPS } = groupByType(group, {
-      type: 'EXPS',
-      totalTitle: 'Jumlah Beban Operasional',
-      bodyTitle: 'BEBAN OPERASIONAL'
-    })
-    tableBody.push(groupEXPSBody)
-    // End - EXPS
-
-    // Start - Pendapatan Operasional
-    const operationalRevenue = labaKotor + totalEXPS
-    tableBody.push([
-      [
-        { value: 'PENDAPATAN OPERASIONAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-        { value: parseFloat(operationalRevenue), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-      ]
-    ])
-    // End - Pendapatan Operasional
-
-    // Start - OINC
-    const { groupBody: groupOINCBody, total: totalOINC } = groupByType(group, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
-    tableBody.push(groupOINCBody)
-    // End - OINC
-
-    // Start - OXPS
-    const { groupBody: groupOXPSBody, total: totalOXPS } = groupByType(group, {
-      type: 'OXPS',
-      bodyTitle: 'BEBAN NON OPERASIONAL',
-      totalTitle: 'Jumlah Beban Non Operasional'
-    })
-    tableBody.push(groupOXPSBody)
-    // End - OXPS
-
-    // Start - Jumlah Non Operasional
-    const nonOperationalRevenue = totalOINC + totalOXPS
-    const fixRevenue = operationalRevenue + nonOperationalRevenue
-    tableBody.push([
-      [
-        { value: 'Jumlah Pendapatan dan Beban Non Operasional', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-        { value: parseFloat(nonOperationalRevenue), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-      ],
-      [
-        { value: 'LABA BERSIH (SEBELUM PAJAK)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-        { value: parseFloat(fixRevenue), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-      ],
-      [
-        { value: 'LABA BERSIH (SETELAH PAJAK)', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
-        { value: parseFloat(fixRevenue), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
-      ]
-    ])
-    // End - Jumlah Non Operasional
   }
 
   try {

@@ -147,6 +147,7 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
   const browseProps = {
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
+    app,
     width: 90,
     dispatch,
     cashierInformation,
