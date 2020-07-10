@@ -9,43 +9,57 @@ import { numberFormat } from 'utils'
 
 const { formatNumberIndonesia } = numberFormat
 
-const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
-  // Declare Function
-  const createTableBody = (tabledata, {
-    type,
-    bodyTitle,
-    totalTitle
-  }) => {
-    let groupBody = []
-    const rows = tabledata[type]
-    groupBody.push([
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: bodyTitle, style: 'tableHeader', alignment: 'left', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 }
-    ])
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let item = rows[key]
-        let row = [
-          { text: '', alignment: 'left', fontSize: 11 },
-          { text: (item.accountName || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
-          { text: '', alignment: 'left', fontSize: 11 }
-        ]
-        groupBody.push(row)
-      }
+const createTableBody = (tabledata, bodyStruct) => {
+  let groupBody = []
+  let grandTotal = 0
+  for (let key in bodyStruct) {
+    const item = bodyStruct[key]
+    const depth = 15 * (item.level != null ? item.level : 3)
+    if (item.accountName) {
+      groupBody.push([
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: (item.accountName || '').toString(), margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ])
+    } else {
+      groupBody.push([
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: (item.bodyTitle || '').toString(), margin: [depth, 0, 0, 0], style: 'tableHeader', alignment: 'left', fontSize: 11 },
+        { text: '', alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ])
     }
-    const total = rows.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-    groupBody.push([
-      { text: '', alignment: 'left', fontSize: 11 },
-      { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
-      { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'left', fontSize: 11 }
-    ])
-    return { total, groupBody }
+    if (item.child) {
+      const { data, total } = createTableBody(tabledata, item.child)
+      groupBody = groupBody.concat(data)
+      groupBody.push([
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: (item.totalTitle || '').toString(), style: 'tableFooter', margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ])
+      grandTotal += total
+    }
+    if (item.type) {
+      const accountData = tabledata[item.type]
+      const total = accountData.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+      const { data } = createTableBody(tabledata, accountData)
+      groupBody = groupBody.concat(data)
+      groupBody.push([
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: (item.totalTitle || '').toString(), style: 'tableFooter', margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ])
+      grandTotal += parseFloat(total || 0)
+    }
   }
 
+  return { data: groupBody, total: grandTotal }
+}
+
+const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   // Declare Variable
   const styles = {
     header: {
@@ -179,81 +193,106 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     ...groubedByTeam
   }
   try {
-    // Start - BANK
-    const { groupBody: groupBANKBody, total: totalBANK } = createTableBody(group, { type: 'BANK', bodyTitle: 'ASET LANCAR ', totalTitle: 'Jumlah Aset Lancar' })
+    const { data: groupBANKBody } = createTableBody(
+      group,
+      [
+        {
+          bodyTitle: 'ASET',
+          totalTitle: 'Jumlah Aset',
+          level: 0,
+          child: [
+            {
+              bodyTitle: 'ASET LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Lancar',
+              child: [
+                {
+                  type: 'BANK',
+                  level: 2,
+                  bodyTitle: 'Kas dan Setara Kas',
+                  totalTitle: 'Jumlah Kas dan Setara Kas'
+                },
+                {
+                  type: 'AREC',
+                  level: 2,
+                  bodyTitle: 'Piutang Usaha',
+                  totalTitle: 'Jumlah Piutang Usaha'
+                },
+                {
+                  type: 'INTR',
+                  level: 2,
+                  bodyTitle: 'Persediaan',
+                  totalTitle: 'Jumlah Persediaan'
+                },
+                {
+                  type: 'OCAS',
+                  level: 2,
+                  bodyTitle: 'Aset Lancar Lainnya',
+                  totalTitle: 'Jumlah Aset Lancar Lainnya'
+                }
+              ]
+            },
+            {
+              bodyTitle: 'ASET TIDAK LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Tidak Lancar',
+              child: [
+                {
+                  type: 'FASS',
+                  level: 2,
+                  bodyTitle: 'Nilai Histori',
+                  totalTitle: 'Jumlah Nilai Histori'
+                },
+                {
+                  type: 'DEPR',
+                  level: 2,
+                  bodyTitle: 'Akumulasi Penyusutan',
+                  totalTitle: 'Jumlah Akumulasi Penyusutan'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          bodyTitle: 'KEWAJIBAN DAN EKUITAS',
+          totalTitle: 'Jumlah Kewajiban dan Ekuitas',
+          level: 0,
+          child: [
+            {
+              bodyTitle: 'KEWAJIBAN JANGKA PENDEK',
+              level: 1,
+              totalTitle: 'Jumlah Kewajiban Jangka Pendek',
+              child: [
+                {
+                  type: 'APAY',
+                  level: 2,
+                  bodyTitle: 'Hutang Usaha',
+                  totalTitle: 'Jumlah Hutang Usaha'
+                },
+                {
+                  type: 'OCLY',
+                  level: 2,
+                  bodyTitle: 'Kewajiban Jangka Pendek Lainnya',
+                  totalTitle: 'Jumlah Kewajiban Jangka Pendek Lainnya'
+                }
+              ]
+            },
+            {
+              type: 'LTLY',
+              level: 1,
+              bodyTitle: 'Kewajiban Jangka Panjang',
+              totalTitle: 'Jumlah Kewajiban Jangka Panjang'
+            },
+            {
+              type: 'EQTY',
+              level: 1,
+              bodyTitle: 'Ekuitas',
+              totalTitle: 'Jumlah Ekuitas'
+            }
+          ]
+        }
+      ])
     tableBody = tableBody.concat(groupBANKBody)
-    // End - BANK
-
-    // Start - COGS
-    const { groupBody: groupCOGSBody, total: totalCOGS } = createTableBody(group, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
-    tableBody = tableBody.concat(groupCOGSBody)
-    // End - COGS
-
-    const labaKotor = totalBANK + totalCOGS
-    tableBody = tableBody.concat([
-      [
-        { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'LABA KOTOR', style: 'tableSeparator', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(labaKotor), style: 'tableSeparator', alignment: 'right', fontSize: 11 },
-        { text: '', alignment: 'right', fontSize: 11 }
-      ]
-    ])
-
-    // Start - EXPS
-    const { groupBody: groupEXPSBody, total: totalEXPS } = createTableBody(group, {
-      type: 'EXPS',
-      totalTitle: 'Jumlah Beban Operasional',
-      bodyTitle: 'BEBAN OPERASIONAL'
-    })
-    tableBody = tableBody.concat(groupEXPSBody)
-    // End - EXPS
-
-    const operationalRevenue = labaKotor + totalEXPS
-    tableBody = tableBody.concat([
-      [
-        { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'PENDAPATAN OPERASIONAL', style: 'tableSeparator', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(operationalRevenue), style: 'tableSeparator', alignment: 'right', fontSize: 11 },
-        { text: '', alignment: 'right', fontSize: 11 }
-      ]
-    ])
-
-    // Start - OINC
-    const { groupBody: groupOINCBody, total: totalOINC } = createTableBody(group, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
-    tableBody = tableBody.concat(groupOINCBody)
-    // End - OINC
-
-    // Start - OXPS
-    const { groupBody: groupOXPSBody, total: totalOXPS } = createTableBody(group, {
-      type: 'OXPS',
-      bodyTitle: 'BEBAN NON OPERASIONAL',
-      totalTitle: 'Jumlah Beban Non Operasional'
-    })
-    tableBody = tableBody.concat(groupOXPSBody)
-    // End - OXPS
-
-    const nonOperationalRevenue = totalOINC + totalOXPS
-    const fixRevenue = operationalRevenue + nonOperationalRevenue
-    tableBody = tableBody.concat([
-      [
-        { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'Jumlah Pendapatan dan Beban Non Operasional', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(nonOperationalRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
-        { text: '', alignment: 'right', fontSize: 11 }
-      ],
-      [
-        { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'LABA BERSIH (SEBELUM PAJAK)', style: 'tableHeader', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableHeader', alignment: 'right', fontSize: 11 },
-        { text: '', alignment: 'right', fontSize: 11 }
-      ],
-      [
-        { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'LABA BERSIH (SEBELUM SETELAH)', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
-        { text: '', alignment: 'right', fontSize: 11 }
-      ]
-    ])
   } catch (e) {
     console.log(e)
   }
