@@ -24,13 +24,20 @@ const List = ({ ...tableProps, dispatch, printInvoice }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
+      sorter: () => { },
       render: _text => `${moment(_text).format('LL')}`
     },
     {
       title: 'No',
       dataIndex: 'transNo',
+      sorter: () => { },
       key: 'transNo'
+    },
+    {
+      title: 'Store',
+      dataIndex: 'storeName',
+      sorter: () => { },
+      key: 'storeName'
     },
     {
       title: 'Supplier',
