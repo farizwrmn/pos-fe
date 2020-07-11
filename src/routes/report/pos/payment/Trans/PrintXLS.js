@@ -67,7 +67,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -83,7 +83,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
         [
           { value: 'BANK', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
           { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-          { value: `${item.cost ? item.cost.costBank.bankName : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+          { value: `${item.cost ? item.cost.costMachine.name : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
         ]
       ]
       tableTitle.push(title)
@@ -118,7 +118,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
         { value: `${item.balance.balanceUser.fullName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${item.balance && item.balance.balanceApprove ? item.balance.balanceApprove.fullName : '-'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${item.paymentOption && item.paymentOption.typeName ? item.paymentOption.typeName : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-        { value: `${item.cost && item.cost.costMachine ? item.cost.costMachine.name : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `${item.cost && item.cost.costBank ? item.cost.costBank.bankName : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: (parseFloat(item.chargeTotal)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
         { value: (parseFloat(item.amount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
         { value: `${item.description || '-'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder }
