@@ -241,8 +241,6 @@ export default {
             if (data_create.success) {
               const responsInsertPos = data_create.pos
               // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
-              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
-              invoiceWindow.focus()
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
@@ -327,6 +325,8 @@ export default {
                   modalConfirmVisible: true
                 }
               })
+              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              invoiceWindow.focus()
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
