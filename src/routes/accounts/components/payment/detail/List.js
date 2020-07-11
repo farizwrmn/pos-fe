@@ -5,7 +5,7 @@ import { Table, Icon, Tag } from 'antd'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
@@ -34,6 +34,19 @@ const List = ({ cancelPayment, ...tableProps }) => {
         </span>)
     },
     {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 120
+    },
+    {
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
+      width: 120,
+      render: _text => `${moment(_text).format('LL')}`
+    },
+    {
       title: 'Type Code',
       dataIndex: 'typeCode',
       key: 'typeCode',
@@ -44,14 +57,14 @@ const List = ({ cancelPayment, ...tableProps }) => {
       dataIndex: 'chargeTotal',
       key: 'chargeTotal',
       width: 120,
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
     },
     {
       title: 'Amount',
       dataIndex: 'paid',
       key: 'paid',
       width: 120,
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
     },
     {
       title: 'Description',
@@ -71,19 +84,6 @@ const List = ({ cancelPayment, ...tableProps }) => {
       dataIndex: 'cardNo',
       key: 'cardNo',
       width: 120
-    },
-    {
-      title: 'Trans Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: 120,
-      render: _text => `${moment(_text).format('LL')}`
-    },
-    {
-      title: 'Trans Time',
-      dataIndex: 'transTime',
-      key: 'transTime',
-      width: 53
     },
     {
       title: <Icon type="setting" />,
