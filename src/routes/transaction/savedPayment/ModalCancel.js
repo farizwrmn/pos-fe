@@ -47,7 +47,6 @@ const modal = ({
             rules: [
               {
                 required: true,
-                pattern: /^[a-z0-9/\n _-]{20,100}$/i,
                 message: 'At least 20 character'
               }
             ]

@@ -193,7 +193,7 @@ const modal = ({
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
             {getFieldValue('typeCode') !== 'C' && listEdc && (
-              <FormItem label="Machine" hasFeedback {...formItemLayout}>
+              <FormItem label="EDC" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('machine', {
                   initialValue: item.machine,
                   rules: [
@@ -209,7 +209,7 @@ const modal = ({
               </FormItem>
             )}
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Bank" hasFeedback {...formItemLayout}>
+              <FormItem label="Card" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('bank', {
                   initialValue: item.bank,
                   rules: [

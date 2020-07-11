@@ -5,7 +5,7 @@ import { numberFormat } from 'utils'
 import { Table, Icon, Tag } from 'antd'
 import moment from 'moment'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
@@ -34,6 +34,19 @@ const List = ({ cancelPayment, ...tableProps }) => {
         </span>)
     },
     {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 120,
+      render: _text => `${moment(_text).format('LL')}`
+    },
+    {
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
+      width: 120
+    },
+    {
       title: 'Type Code',
       dataIndex: 'typeCode',
       key: 'typeCode',
@@ -44,7 +57,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
       dataIndex: 'paid',
       key: 'paid',
       width: 120,
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text || 0)}</p>
     },
     {
       title: 'Description',
@@ -96,12 +109,6 @@ const List = ({ cancelPayment, ...tableProps }) => {
       key: 'updatedAt',
       width: 120,
       render: _text => `${moment(_text).format('LL')}`
-    },
-    {
-      title: 'Trans Time',
-      dataIndex: 'transTime',
-      key: 'transTime',
-      width: 80
     },
     {
       title: <Icon type="setting" />,

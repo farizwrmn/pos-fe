@@ -17,7 +17,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -71,7 +71,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
           { text: data.balance.balanceUser.fullName, alignment: 'left', fontSize: 11 },
           { text: data.balance && data.balance.balanceApprove ? data.balance.balanceApprove.fullName : '-', alignment: 'left', fontSize: 11 },
           { text: data.paymentOption && data.paymentOption.typeName ? data.paymentOption.typeName : 'CASH', alignment: 'left', fontSize: 11 },
-          { text: data.cost && data.cost.costMachine ? data.cost.costMachine.name : 'CASH', alignment: 'left', fontSize: 11 },
+          { text: data.cost && data.cost.costBank ? data.cost.costBank.bankName : 'CASH', alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.chargeTotal || 0)), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.amount) || 0), alignment: 'right', fontSize: 11 },
           { text: data.description || '-', alignment: 'left', fontSize: 11 }
@@ -121,7 +121,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     try {
       tableBody.push(createTableBody(arr[i]))
       if (item.cost) {
-        tableTitle.push({ text: `Bank : ${item.cost.costBank.bankName}`, style: 'tableTitle' })
+        tableTitle.push({ text: `BANK : ${item.cost.costMachine.name}`, style: 'tableTitle' })
       } else {
         tableTitle.push({ text: 'CASH', style: 'tableTitle' })
       }
@@ -243,7 +243,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     tableStyle: styles,
     data: arr
   }
-  console.log('payment', pdfProps)
 
   return (
     <RepeatReport {...pdfProps} />

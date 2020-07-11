@@ -206,7 +206,7 @@ const modal = ({
                 <Input onFocus={hdlChangeTooltip} onChange={changeNumber} style={{ width: '100%' }} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(data.nettoTotal - curPayment))}>Netto</Button>)} autoFocus maxLength={12} />
               )}
             </FormItem>
-            <FormItem label="Bank" hasFeedback labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+            <FormItem label="Card" hasFeedback labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('bankAccountId', {
                 rules: [
                   {
@@ -237,7 +237,7 @@ const modal = ({
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
             {getFieldValue('typeCode') !== 'C' && listEdc && (
-              <FormItem label="Machine" hasFeedback {...formItemLayout}>
+              <FormItem label="EDC" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('machine', {
                   initialValue: item.machine,
                   rules: [
@@ -253,7 +253,7 @@ const modal = ({
               </FormItem>
             )}
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Bank" hasFeedback {...formItemLayout}>
+              <FormItem label="Card" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('bank', {
                   initialValue: item.bank,
                   rules: [

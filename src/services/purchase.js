@@ -14,7 +14,6 @@ export async function query (params) {
 }
 
 export async function queryList (params) {
-  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/purchase-history',
