@@ -82,6 +82,17 @@ export default {
             listPOSCompareSvsI: []
           }
         })
+
+        if (location.pathname === '/report/pos/summary') {
+          const { query } = location
+          if (query.activeKey === '4' && query.from && query.to) {
+            dispatch({
+              type: 'posReport/queryPOSDetail',
+              payload: query
+            })
+          }
+        }
+
         if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
           dispatch({
             type: 'setListNull'
@@ -288,9 +299,24 @@ export default {
       let data = yield call(queryPOSDetail, payload)
       if (data.success) {
         yield put({
+          type: 'posReport/queryPOS',
+          payload: {
+            startPeriod: payload.from,
+            endPeriod: payload.to,
+            status: 'A'
+          }
+        })
+        yield put({
           type: 'querySuccessPOSDetail',
           payload: {
             listPOSDetail: data.data
+          }
+        })
+        yield put({
+          type: 'posReport/setDate',
+          payload: {
+            startPeriod: payload.from,
+            endPeriod: payload.to
           }
         })
       } else {

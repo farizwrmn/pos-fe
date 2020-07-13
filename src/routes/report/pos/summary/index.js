@@ -7,7 +7,9 @@ import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 
-import { Cancel, Trans, Daily, Detail, Compare, Hourly, Hour, PosUnit } from '../components'
+import { Cancel, Trans, Daily, Compare, Hourly, Hour, PosUnit } from '../components'
+
+import Detail from '../components/Detail'
 
 const TabPane = Tabs.TabPane
 
@@ -43,7 +45,7 @@ const Report = ({ posReport, dispatch, location }) => {
           {activeKey === '3' && <Daily />}
         </TabPane>
         <TabPane tab="Detail" key="4">
-          {activeKey === '4' && <Detail />}
+          {activeKey === '4' && <Detail location={location} />}
         </TabPane>
         <TabPane tab="Compare" key="5">
           {activeKey === '5' && <Compare />}
