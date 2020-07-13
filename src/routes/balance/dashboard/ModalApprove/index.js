@@ -11,7 +11,13 @@ const ModalApprove = ({ ...modalProps }) => {
         <Card title="User Info">
           <BalanceUser {...modalProps} />
         </Card>
-        <Card title="Summary (Just only problem transaction)">
+        <Card
+          title={(
+            <div>
+              <div>{'Problem Summary (negative => Overinput)'}</div>
+            </div>
+          )}
+        >
           <BalanceSummary {...modalProps} />
         </Card>
         <Card title="Detail (Closing - By input)">
