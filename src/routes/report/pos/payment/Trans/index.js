@@ -6,20 +6,29 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import Browse from './Browse'
+import BrowseTotal from './BrowseTotal'
 import Filter from './Filter'
 
-const Report = ({ dispatch, posPaymentReport, loading, app }) => {
+const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
   const { listTrans, from, to, productCode } = posPaymentReport
+  const { listOpts } = paymentOpts
   const { user, storeInfo } = app
   const browseProps = {
     loading: loading.effects['posPaymentReport/query'],
     dataSource: listTrans,
     listTrans,
     storeInfo,
+    pagination: false,
     user,
     from,
     to,
     productCode
+  }
+
+  const browseTotalProps = {
+    listOpts,
+    dataSource: [],
+    pagination: false
   }
 
   const filterProps = {
@@ -61,10 +70,54 @@ const Report = ({ dispatch, posPaymentReport, loading, app }) => {
     }
   }
 
+  let groupBy = (xs) => {
+    return xs
+      .reduce((prev, next) => {
+        if (next.cost) {
+          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
+          return prev
+        }
+        (prev.cash = prev.cash || []).push(next)
+        return prev
+      }, {})
+  }
+
+  let groupByKey = (xs, key) => {
+    return xs
+      .reduce((prev, next) => {
+        (prev[next[key]] = prev[next[key]] || []).push(next)
+        return prev
+      }, {})
+  }
+
+  let groubedByTeam = groupBy(listTrans, 'cost.costBank.bankName')
+  let groupByEdc = groupByKey(listTrans, 'machine')
+  let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+
+  console.log('groupByEdc', listOpts, groupByEdc)
+
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
-      <Browse {...browseProps} />
+      <BrowseTotal {...browseTotalProps} />
+      {arr && arr.map((item, index) => {
+        return (
+          <Browse
+            {...browseProps}
+            dataSource={item}
+            key={index}
+            title={() => {
+              const record = item && item.length > 0 ? item[0] : {}
+              return (
+                <div className="header">
+                  <div>{`${record.cost && record.cost.costMachine ? record.cost.costMachine.name : record && record.paymentOption ? record.paymentOption.typeName : 'CASH'} details`}</div>
+                </div>
+              )
+            }}
+
+          />
+        )
+      })}
     </div>
   )
 }
@@ -75,4 +128,4 @@ Report.propTyps = {
   posPaymentReport: PropTypes.object
 }
 
-export default connect(({ loading, posPaymentReport, app }) => ({ loading, posPaymentReport, app }))(Report)
+export default connect(({ loading, paymentOpts, posPaymentReport, app }) => ({ loading, paymentOpts, posPaymentReport, app }))(Report)

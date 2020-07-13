@@ -837,6 +837,7 @@ const Routers = function ({ history, app }) {
           path: 'report/pos/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/report/posPayment'))
               cb(null, require('./routes/report/pos/payment'))
             }, 'report-pos-payment')
