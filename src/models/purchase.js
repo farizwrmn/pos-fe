@@ -95,6 +95,7 @@ export default modelExtend(pageModel, {
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
               endPeriod: moment().endOf('month').format('YYYY-MM-DD'),
+              order: '-transDate',
               ...other
             }
           })
