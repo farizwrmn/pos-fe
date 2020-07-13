@@ -39,7 +39,7 @@ export default {
     listPOSDetail: [],
     listPOSCompareSvsI: [],
     listStore: lstorage.getListUserStores(),
-    fromDate: moment().format('YYYY-MM-DD'),
+    fromDate: moment().startOf('month').format('YYYY-MM-DD'),
     toDate: moment().format('YYYY-MM-DD'),
     paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
     diffDay: 0,
@@ -585,7 +585,7 @@ export default {
         diffDay: 0,
         selectedBrand: [],
         tableHeader: [],
-        fromDate: moment().format('YYYY-MM-DD'),
+        fromDate: moment().startOf('month').format('YYYY-MM-DD'),
         toDate: moment().format('YYYY-MM-DD'),
         pagination: {
           showSizeChanger: true,

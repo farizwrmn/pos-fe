@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import moment from 'moment'
 import { ModalFilter } from 'components'
 import { routerRedux } from 'dva/router'
+import { numberFormat } from 'utils'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -18,7 +19,7 @@ const Report = ({ dispatch, loading, location, posReport, app }) => {
       let totalAfterDiscount = listPOSDetail.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
       return (
         <div className="total">
-          <div>{`Total: ${totalAfterDiscount}`}</div>
+          <div>{`Total: ${numberFormat.numberFormatter(totalAfterDiscount)}`}</div>
         </div>
       )
     }
@@ -47,7 +48,7 @@ const Report = ({ dispatch, loading, location, posReport, app }) => {
     toDate,
     showFilter,
     onListReset () {
-      const { pathname } = location
+      const { pathname, query } = location
       dispatch({
         type: 'posReport/setListNull'
       })
@@ -55,14 +56,17 @@ const Report = ({ dispatch, loading, location, posReport, app }) => {
         type: 'cashier/resetFilter'
       })
       dispatch(routerRedux.push({
-        pathname
+        pathname,
+        query: {
+          activeKey: query.activeKey || '4'
+        }
       }))
     }
   }
 
   const modalProps = {
     visible: modalFilterPOSByDetail,
-    date: [moment(fromDate, 'YYYY-MM-DD'), moment(toDate, 'YYYY-MM-DD')],
+    date: [moment.utc(fromDate, 'YYYY-MM-DD'), moment.utc(toDate, 'YYYY-MM-DD')],
     title: 'Filter',
     onCancel () {
       showFilter()
