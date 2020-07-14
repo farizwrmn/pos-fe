@@ -67,7 +67,15 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName'
-    }, {
+    },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
