@@ -4,17 +4,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
 
 const BrowseTotal = ({ listOpts, ...browseProps }) => {
   const mappedColumn = listOpts.map(item => ({
     title: item.typeName,
     dataIndex: item.typeCode,
     key: item.typeCode,
-    width: '150px'
+    width: '150px',
+    render: text => numberFormat.numberFormatter(text)
   }))
   const columns = [
     {
-      title: 'EDC',
+      title: 'Bank',
       dataIndex: 'machine',
       key: 'machine',
       width: '150px'

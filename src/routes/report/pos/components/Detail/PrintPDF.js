@@ -38,8 +38,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
   const createTableBody = (tabledata) => {
     let totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
     let totalSubTotal = tabledata.reduce((cnt, o) => cnt + ((o.sellPrice - o.sellingPrice > 0 ? o.sellPrice : o.sellingPrice || 0) * o.qty), 0)
-    let totalDiscount4 = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discount) || 0), 0)
-    let totalDiscountLoyalty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.discountLoyalty) || 0), 0)
     let totalDiscount = tabledata.reduce((cnt, o) => cnt + o.totalDiscount, 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
@@ -61,11 +59,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               { text: 'QTY', style: 'tableHeader' },
               { text: 'HARGA SATUAN', style: 'tableHeader' },
               { text: 'SUB TOTAL', style: 'tableHeader' },
-              { text: 'DISK-1', style: 'tableHeader' },
-              { text: 'DISK-2', style: 'tableHeader' },
-              { text: 'DISK-3', style: 'tableHeader' },
-              { text: 'DISKON', style: 'tableHeader' },
-              { text: 'LOYALTY', style: 'tableHeader' },
               { text: 'TOTAL DISKON', style: 'tableHeader' },
               { text: 'TOTAL', style: 'tableHeader' }
             ]
@@ -80,11 +73,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               { text: 'QTY', style: 'tableHeader' },
               { text: 'HARGA SATUAN', style: 'tableHeader' },
               { text: 'SUB TOTAL', style: 'tableHeader' },
-              { text: 'DISK-1', style: 'tableHeader' },
-              { text: 'DISK-2', style: 'tableHeader' },
-              { text: 'DISK-3', style: 'tableHeader' },
-              { text: 'DISKON', style: 'tableHeader' },
-              { text: 'LOYALTY', style: 'tableHeader' },
               { text: 'TOTAL DISKON', style: 'tableHeader' },
               { text: 'TOTAL', style: 'tableHeader' }
             ]
@@ -108,11 +96,6 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             { text: (data.qty || 0), alignment: 'center', fontSize: 11 },
             { text: formatNumbering(sellingPrice), alignment: 'right', fontSize: 11 },
             { text: formatNumbering((sellingPrice) * data.qty), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.disc1), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.disc2), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.disc3), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.discount), alignment: 'right', fontSize: 11 },
-            { text: formatNumbering(data.discountLoyalty), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.totalDiscount), alignment: 'right', fontSize: 11 },
             { text: formatNumbering(data.netto), alignment: 'right', fontSize: 11 }
           ]
@@ -129,16 +112,11 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       { text: formatNumbering(totalQty), style: 'rowNumberFooter' },
       {},
       { text: formatNumbering(totalSubTotal), style: 'rowNumberFooter' },
-      {},
-      {},
-      {},
-      { text: formatNumbering(totalDiscount4), style: 'rowNumberFooter' },
-      { text: formatNumbering(totalDiscountLoyalty), style: 'rowNumberFooter' },
       { text: formatNumbering(totalDiscount), style: 'rowNumberFooter' },
       { text: formatNumbering(totalAfterDiscount), style: 'rowNumberFooter' }
     ]
     body.push(totalRow)
-    width.push(['2%', '12%', '16%', '4%', '8%', '8%', '6%', '6%', '6%', '8%', '8%', '8%', '8%'])
+    width.push(['2%', '12%', '16%', '6%', '16%', '16%', '16%', '16%'])
     return body
   }
 
@@ -156,10 +134,10 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, {}, {}, {}],
-              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, { text: 'NO PLAT/KM', fontSize: 11 }, ':', { text: `${(listData[i].policeNo || '').toString()}${(listData[i].policeNo && listData[i].lastMeter) ? '/' : ''}${(listData[i].lastMeter || '').toString()}`, fontSize: 11 }],
-              [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'MEREK/MODEL', fontSize: 11 }, ':', { text: `${(listData[i].merk || '').toString()}${(listData[i].merk && listData[i].model) ? '/' : ''}${(listData[i].model || '').toString()}`, fontSize: 11 }],
-              [{ text: 'ID ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberCode || '').toString(), fontSize: 11 }, {}, { text: 'TIPE/TAHUN', fontSize: 11 }, ':', { text: `${(listData[i].type || '').toString()}${(listData[i].type && listData[i].year) ? '/' : ''}${(listData[i].year || '').toString()}`, fontSize: 11 }],
-              [{ text: 'NAMA ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberName || '').toString(), fontSize: 11 }, {}, { text: 'MEKANIK', fontSize: 11 }, ':', { text: (listData[i].technicianName || '').toString(), fontSize: 11 }]
+              [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (listData[i].transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
+              [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
+              [{ text: 'ID ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberCode || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
+              [{ text: 'NAMA ANGGOTA', fontSize: 11 }, ':', { text: (listData[i].memberName || '').toString(), fontSize: 11 }, {}, {}, {}, {}]
             ]
           },
           layout: 'noBorders'
