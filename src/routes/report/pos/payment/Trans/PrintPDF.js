@@ -17,7 +17,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
+          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -39,7 +39,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   //   return code
   // })
 
-  let groubedByTeam = groupBy(outJSON, 'cost.costBank.bankName')
+  let groubedByTeam = groupBy(outJSON)
   let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
 
   const createTableBody = (tabledata) => {

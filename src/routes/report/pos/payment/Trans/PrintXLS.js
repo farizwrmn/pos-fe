@@ -67,7 +67,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
+          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
