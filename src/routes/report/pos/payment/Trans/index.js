@@ -5,6 +5,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
+import {
+  numberFormat
+} from 'utils'
 import Browse from './Browse'
 import BrowseTotal from './BrowseTotal'
 import Filter from './Filter'
@@ -74,7 +77,7 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.machineId] = prev[next.cost.machineId] || []).push(next)
+          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -90,16 +93,41 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
       }, {})
   }
 
-  let groubedByTeam = groupBy(listTrans, 'cost.costBank.bankName')
-  let groupByEdc = groupByKey(listTrans, 'machine')
+  let groubedByTeam = groupBy(listTrans)
+  let groupByEdc = groupByKey(listTrans, 'typeCode')
   let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+  let arrByEdc = Object.keys(groubedByTeam)
+    .map((index) => {
+      const mapTypeCode = listOpts.map(item => ({
+        key: item.typeCode,
+        value: groupByEdc[item.typeCode]
+      }))
 
-  console.log('groupByEdc', listOpts, groupByEdc)
+      const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] && groubedByTeam[index][0].cost ? groubedByTeam[index][0].cost : {}
+      const mapObj = {
+        machine: bankInfo && bankInfo.costBank && bankInfo.costBank.bankName ? bankInfo.costBank.bankName : 'CASH'
+      }
+      for (let key in mapTypeCode) {
+        const item = mapTypeCode[key]
+        mapObj[item.key] = item.value ?
+          item.value
+            .filter((filtered) => {
+              return (filtered.cost && filtered.cost.bankId === bankInfo.bankId) || (filtered.cost === null && item.key === 'C' && mapObj.machine === 'CASH')
+            })
+            .reduce((prev, next) => prev + next.amount, 0)
+          : 0
+      }
+      return mapObj
+    })
 
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
-      <BrowseTotal {...browseTotalProps} />
+      <BrowseTotal
+        {...browseTotalProps}
+        listEdc={groupByEdc}
+        dataSource={arrByEdc}
+      />
       {arr && arr.map((item, index) => {
         return (
           <Browse
@@ -109,8 +137,13 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
             title={() => {
               const record = item && item.length > 0 ? item[0] : {}
               return (
-                <div className="header">
-                  <div>{`${record.cost && record.cost.costMachine ? record.cost.costMachine.name : record && record.paymentOption ? record.paymentOption.typeName : 'CASH'} details`}</div>
+                <div className="row">
+                  <div style={{ width: '50%' }} className="header">
+                    <div>{`${record.cost && record.cost.costMachine ? record.cost.costBank.bankName : record && record.paymentOption ? record.paymentOption.typeName : 'CASH'} details`}</div>
+                  </div>
+                  <div style={{ width: '50%' }} className="total">
+                    <div>{`Total: ${numberFormat.numberFormatter(item.reduce((prev, next) => prev + next.amount, 0))}`}</div>
+                  </div>
                 </div>
               )
             }}

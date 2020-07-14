@@ -43,8 +43,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
       title: 'Time',
       dataIndex: 'transTime',
       key: 'transTime',
-      width: 120,
-      render: _text => `${moment(_text).format('LL')}`
+      width: 120
     },
     {
       title: 'Type Code',
