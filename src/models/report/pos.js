@@ -87,18 +87,18 @@ export default {
           const { query } = location
           if (query.activeKey === '4' && query.from && query.to) {
             dispatch({
-              type: 'posReport/queryDaily',
+              type: 'posReport/queryPOSDetail',
+              payload: query
+            })
+          }
+          if (query.activeKey === '3' && query.from && query.to) {
+            dispatch({
+              type: 'posReport/queryDailyGetCategories',
               payload: {
                 from: moment().startOf('month').format('YYYY-MM-DD'),
                 to: moment().format('YYYY-MM-DD'),
                 mode: 'pbc'
               }
-            })
-          }
-          if (query.activeKey === '4' && query.from && query.to) {
-            dispatch({
-              type: 'posReport/queryPOSDetail',
-              payload: query
             })
           }
         }
