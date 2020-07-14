@@ -31,24 +31,16 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       title: 'Active',
       dataIndex: 'active',
       key: 'active',
+      width: '80px',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
       }
     },
     {
-      title: 'ID',
-      dataIndex: 'productCode',
-      key: 'productCode'
-    },
-    {
-      title: 'Name',
-      dataIndex: 'productName',
-      key: 'productName'
-    },
-    {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',
+      width: '50px',
       className: styles.alignRight,
       render: (text) => {
         if (!loadingModel.effects['productstock/showProductQty']) {
@@ -57,6 +49,29 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
         return <Icon type="loading" />
       }
     },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      className: styles.alignRight,
+      width: '150px',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '200px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.productCode}</div>
+            <div>{record.productName}</div>
+          </div>
+        )
+      }
+    },
+
     {
       title: 'Brand',
       dataIndex: 'brandName',
@@ -71,13 +86,6 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Cost Price',
-      dataIndex: 'costPrice',
-      key: 'costPrice',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
