@@ -91,6 +91,16 @@ export default {
               payload: query
             })
           }
+          if (query.activeKey === '3' && query.from && query.to) {
+            dispatch({
+              type: 'posReport/queryDailyGetCategories',
+              payload: {
+                from: moment().startOf('month').format('YYYY-MM-DD'),
+                to: moment().format('YYYY-MM-DD'),
+                mode: 'pbc'
+              }
+            })
+          }
         }
 
         if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
