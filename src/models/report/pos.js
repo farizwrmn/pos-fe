@@ -87,6 +87,16 @@ export default {
           const { query } = location
           if (query.activeKey === '4' && query.from && query.to) {
             dispatch({
+              type: 'posReport/queryDaily',
+              payload: {
+                from: moment().startOf('month').format('YYYY-MM-DD'),
+                to: moment().format('YYYY-MM-DD'),
+                mode: 'pbc'
+              }
+            })
+          }
+          if (query.activeKey === '4' && query.from && query.to) {
+            dispatch({
               type: 'posReport/queryPOSDetail',
               payload: query
             })
