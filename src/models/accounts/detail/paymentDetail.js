@@ -98,6 +98,8 @@ export default {
           transDate: payment.data[n].transDate,
           transTime: payment.data[n].transTime,
           typeCode: payment.data[n].typeCode,
+          paymentMachine: payment.data[n].paymentMachine,
+          cost: payment.data[n].cost,
           cardNo: payment.data[n].cardNo,
           cardName: payment.data[n].cardName,
           chargeNominal: payment.data[n].chargeNominal,

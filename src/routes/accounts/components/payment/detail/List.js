@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
 import { Table, Icon, Tag } from 'antd'
-import moment from 'moment'
 import { numberFormat } from 'utils'
 
 const numberFormatter = numberFormat.numberFormatter
@@ -71,6 +70,18 @@ const List = ({ cancelPayment, ...tableProps }) => {
       key: 'description',
       width: 120,
       render: text => <p style={{ textAlign: 'left' }}>{text}</p>
+    },
+    {
+      title: 'Machine',
+      dataIndex: 'paymentMachine.name',
+      key: 'paymentMachine.name',
+      width: 120
+    },
+    {
+      title: 'Card',
+      dataIndex: 'cost.costBank.bankName',
+      key: 'cost.costBank.bankName',
+      width: 120
     },
     {
       title: 'Card Name',
