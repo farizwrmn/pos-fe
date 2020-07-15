@@ -72,11 +72,10 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
       }))
     }
   }
-
   let groupBy = (xs) => {
     return xs
       .reduce((prev, next) => {
-        if (next.cost) {
+        if (next.machine) {
           (prev[next.machine] = prev[next.machine] || []).push(next)
           return prev
         }
@@ -94,32 +93,36 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
   }
   let groubedByTeam = groupBy(listTrans)
   let groupByEdc = groupByKey(listTrans, 'typeCode')
-  let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
-  let arrByEdc = Object.keys(groubedByTeam)
-    .map((index) => {
-      const mapTypeCode = listOpts.map(item => ({
-        key: item.typeCode,
-        value: groupByEdc[item.typeCode]
-      }))
+  let arr
+  let arrByEdc = []
+  try {
+    arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+    arrByEdc = Object.keys(groubedByTeam)
+      .map((index) => {
+        const mapTypeCode = listOpts.map(item => ({
+          key: item.typeCode,
+          value: groupByEdc[item.typeCode]
+        }))
 
-      const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] && groubedByTeam[index][0] ? groubedByTeam[index][0] : {}
-      const mapObj = {
-        machine: bankInfo && bankInfo.paymentMachine && bankInfo.paymentMachine.name ? bankInfo.paymentMachine.name : 'CASH'
-      }
-      for (let key in mapTypeCode) {
-        const item = mapTypeCode[key]
-        mapObj[item.key] = item.value ?
-          item.value
-            .filter((filtered) => {
-              return (filtered.paymentMachine && filtered.paymentMachine.name === bankInfo.paymentMachine.name && filtered.typeCode === bankInfo.typeCode) || (filtered.paymentMachine == null && item.key === 'C' && mapObj.machine === 'CASH')
-            })
-            .reduce((prev, next) => prev + next.amount, 0)
-          : 0
-      }
-      return mapObj
-    })
-
-  console.log('arrByEdc', arrByEdc)
+        const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] ? groubedByTeam[index][0] : {}
+        const mapObj = {
+          machine: bankInfo && bankInfo.paymentMachine && bankInfo.paymentMachine.name ? bankInfo.paymentMachine.name : 'CASH'
+        }
+        for (let key in mapTypeCode) {
+          const item = mapTypeCode[key]
+          mapObj[item.key] = item.value ?
+            item.value
+              .filter((filtered) => {
+                return (filtered.paymentMachine && bankInfo.paymentMachine && filtered.paymentMachine.name === bankInfo.paymentMachine.name && filtered.typeCode === bankInfo.typeCode) || (filtered.paymentMachine == null && item.key === 'C' && mapObj.machine === 'CASH')
+              })
+              .reduce((prev, next) => prev + next.amount, 0)
+            : 0
+        }
+        return mapObj
+      })
+  } catch (error) {
+    console.log('error', error)
+  }
 
   return (
     <div className="content-inner">
