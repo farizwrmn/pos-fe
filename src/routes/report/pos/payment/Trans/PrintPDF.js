@@ -17,7 +17,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          (prev[next.machine] = prev[next.machine] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -51,7 +51,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
         { fontSize: 12, text: 'CASHIER', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'APPROVE BY', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'OPTION', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'EDC', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'CARD', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'CHARGE', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'MEMO', style: 'tableHeader', alignment: 'center' }
@@ -120,8 +120,8 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     const item = arr[i][0]
     try {
       tableBody.push(createTableBody(arr[i]))
-      if (item.cost) {
-        tableTitle.push({ text: `BANK : ${item.cost.costMachine.name}`, style: 'tableTitle' })
+      if (item.machine) {
+        tableTitle.push({ text: `EDC : ${item.paymentMachine.name}`, style: 'tableTitle' })
       } else {
         tableTitle.push({ text: 'CASH', style: 'tableTitle' })
       }

@@ -77,7 +77,7 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          (prev[next.machine] = prev[next.machine] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -92,7 +92,6 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
         return prev
       }, {})
   }
-
   let groubedByTeam = groupBy(listTrans)
   let groupByEdc = groupByKey(listTrans, 'typeCode')
   let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
@@ -103,22 +102,24 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
         value: groupByEdc[item.typeCode]
       }))
 
-      const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] && groubedByTeam[index][0].cost ? groubedByTeam[index][0].cost : {}
+      const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] && groubedByTeam[index][0] ? groubedByTeam[index][0] : {}
       const mapObj = {
-        machine: bankInfo && bankInfo.costBank && bankInfo.costBank.bankName ? bankInfo.costBank.bankName : 'CASH'
+        machine: bankInfo && bankInfo.paymentMachine && bankInfo.paymentMachine.name ? bankInfo.paymentMachine.name : 'CASH'
       }
       for (let key in mapTypeCode) {
         const item = mapTypeCode[key]
         mapObj[item.key] = item.value ?
           item.value
             .filter((filtered) => {
-              return (filtered.cost && filtered.cost.bankId === bankInfo.bankId) || (filtered.cost === null && item.key === 'C' && mapObj.machine === 'CASH')
+              return (filtered.paymentMachine && filtered.paymentMachine.name === bankInfo.paymentMachine.name && filtered.typeCode === bankInfo.typeCode) || (filtered.paymentMachine == null && item.key === 'C' && mapObj.machine === 'CASH')
             })
             .reduce((prev, next) => prev + next.amount, 0)
           : 0
       }
       return mapObj
     })
+
+  console.log('arrByEdc', arrByEdc)
 
   return (
     <div className="content-inner">
@@ -139,7 +140,7 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
               return (
                 <div className="row">
                   <div style={{ width: '50%' }} className="header">
-                    <div>{`${record.cost && record.cost.costMachine ? record.cost.costBank.bankName : record && record.paymentOption ? record.paymentOption.typeName : 'CASH'} details`}</div>
+                    <div>{`${record.paymentMachine && record.paymentMachine.name ? record.paymentMachine.name : 'CASH'} details`}</div>
                   </div>
                   <div style={{ width: '50%' }} className="total">
                     <div>{`Total: ${numberFormat.numberFormatter(item.reduce((prev, next) => prev + next.amount, 0))}`}</div>
