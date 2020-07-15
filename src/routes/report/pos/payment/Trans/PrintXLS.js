@@ -67,7 +67,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     return xs
       .reduce((prev, next) => {
         if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+          (prev[next.machine] = prev[next.machine] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -81,9 +81,9 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     try {
       let title = [
         [
-          { value: 'BANK', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+          { value: 'EDC', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
           { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
-          { value: `${item.cost ? item.cost.costMachine.name : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+          { value: `${item.paymentMachine ? item.paymentMachine.name : 'CASH'}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
         ]
       ]
       tableTitle.push(title)
@@ -102,7 +102,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
       { value: 'CASHIER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'APPROVE BY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'OPTION', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'EDC', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'CARD', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'CHARGE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MEMO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }

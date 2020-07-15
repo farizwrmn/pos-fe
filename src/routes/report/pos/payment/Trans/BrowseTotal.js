@@ -31,7 +31,6 @@ const BrowseTotal = ({ listOpts, ...browseProps }) => {
       columns={columns}
       simple
       size="small"
-      rowKey={record => record.machine}
     />
   )
 }
