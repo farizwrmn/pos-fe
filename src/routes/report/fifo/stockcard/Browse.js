@@ -66,6 +66,13 @@ const Browse = ({ ...browseProps }) => {
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
+      title: 'S.Price',
+      dataIndex: 'sValue',
+      key: 'sValue',
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
+    },
+    {
       title: 'Amount',
       dataIndex: 'sAmount',
       key: 'sAmount',
