@@ -87,7 +87,7 @@ const BrowseGroup = ({
       key: 'transDate',
       width: 150,
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('LL')}`
+      render: (text, record) => `${text} ${record.transTime}`
     },
     {
       title: 'Cashier',
