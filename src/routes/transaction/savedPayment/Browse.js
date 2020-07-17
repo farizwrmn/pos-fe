@@ -161,8 +161,6 @@ const BrowseGroup = ({
     return current > moment().endOf('month')
   }
 
-  console.log('dataSource', dataSource)
-
   return (
     <Form>
       <Row style={{ marginBottom: '10px' }}>
