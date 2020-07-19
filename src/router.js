@@ -18,6 +18,8 @@ const Routers = function ({ history, app }) {
         require.ensure([], (require) => {
           registerModel(app, require('./models/dashboard'))
           registerModel(app, require('./models/app'))
+          registerModel(app, require('./models/transaction/pos'))
+          registerModel(app, require('./models/report/fifo'))
           cb(null, { component: require('./routes/dashboard/') })
         }, 'dashboard')
       },
@@ -27,6 +29,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/report/fifo'))
               cb(null, require('./routes/dashboard/'))
             }, 'dashboard')
           }
