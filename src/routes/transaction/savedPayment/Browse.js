@@ -183,7 +183,20 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} bordered columns={columns} dataSource={dataSource} loading={loading} />
+      <Table
+        pageSize={5}
+        size="small"
+        scroll={{ x: 1000, y: 500 }}
+        bordered
+        columns={columns}
+        dataSource={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM' ? dataSource : dataSource.slice(dataSource.length - 6, dataSource.length - 1)}
+        loading={loading}
+        pagination={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM'}
+      />
     </Form>
   )
 }
