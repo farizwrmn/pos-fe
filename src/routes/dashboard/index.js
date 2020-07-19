@@ -5,6 +5,7 @@ import { Row, Col, Card } from 'antd'
 import { NumberCard, Sales } from './components'
 import SalesDetail from './SalesDetail'
 import Profit from './Profit'
+import Product from './Product'
 
 function Dashboard ({ loading, fifoReport, dashboard, pos }) {
   const { data, numbers } = dashboard
@@ -50,7 +51,22 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
     pagination: false,
     width: 90,
     size: 'small',
-    loading: loading.effects['pos/queryDashboard'],
+    loading: loading.effects['fifo/queryFifoValues'],
+    footer: () => {
+      return (
+        <a target="_blank" href="/report/fifo/value">
+          Go to report
+        </a>
+      )
+    }
+  }
+
+  const productProps = {
+    dataSource: listRekap && listRekap.length > 0 ? listRekap.slice(0, 15) : [],
+    pagination: false,
+    width: 90,
+    size: 'small',
+    loading: loading.effects['fifo/queryFifoValues'],
     footer: () => {
       return (
         <a target="_blank" href="/report/fifo/value">
@@ -81,6 +97,9 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
         </Col>
         <Col lg={6} md={24}>
           <Profit {...profitProps} />
+        </Col>
+        <Col lg={12} md={24}>
+          <Product {...productProps} />
         </Col>
       </Row>
     </div>
