@@ -62,7 +62,7 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
   }
 
   const productProps = {
-    dataSource: listRekap && listRekap.length > 0 ? listRekap.slice(0, 15) : [],
+    dataSource: listRekap && listRekap.length > 0 ? listRekap.sort((a, b) => b.count - a.count).slice(0, 15) : [],
     pagination: false,
     width: 90,
     size: 'small',
