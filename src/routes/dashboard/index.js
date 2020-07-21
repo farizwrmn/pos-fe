@@ -69,7 +69,7 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
     loading: loading.effects['fifo/queryFifoValues'],
     footer: () => {
       return (
-        <a target="_blank" href="/report/fifo/value">
+        <a target="_blank" href="/master/product/stock?activeKey=1">
           Go to report
         </a>
       )
@@ -92,14 +92,13 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
       </Row>
       <Row gutter={24}>
         {numberCards}
+        <Col lg={16} md={24}>
+          <Product {...productProps} />
+        </Col>
+        <Col lg={2} md={24} />
         <Col lg={6} md={24}>
           <SalesDetail {...salesDetailProps} />
-        </Col>
-        <Col lg={6} md={24}>
           <Profit {...profitProps} />
-        </Col>
-        <Col lg={12} md={24}>
-          <Product {...productProps} />
         </Col>
       </Row>
     </div>
