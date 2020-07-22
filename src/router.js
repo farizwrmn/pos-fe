@@ -1154,6 +1154,16 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out')
           }
         }, {
+          path: 'transaction/return-sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/employee'))
+              cb(null, require('./routes/return/returnSales'))
+            }, 'transaction-return-sales')
+          }
+        }, {
           path: 'setting/misc',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
