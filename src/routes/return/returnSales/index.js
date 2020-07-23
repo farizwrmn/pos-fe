@@ -200,7 +200,11 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     },
     handleInvoiceBrowse () {
       dispatch({
-        type: 'transferOut/getInvoice'
+        type: 'pos/queryHistory',
+        payload: {
+          startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
+          endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+        }
       })
       dispatch({
         type: 'pos/updateState',
@@ -262,7 +266,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     },
     onInvoiceHeader (period) {
       dispatch({
-        type: 'transferOut/getInvoice',
+        type: 'pos/queryHistory',
         payload: {
           ...period
         }
@@ -406,6 +410,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     modalInvoiceVisible,
     modalVisible,
     loadingButton: loading,
+    pos,
     loading: loading.effects['transferOut/querySequence'],
     disabled: `${formType === 'edit' ? disable : ''}`,
     button: `${formType === 'add' ? 'Add' : 'Update'}`,

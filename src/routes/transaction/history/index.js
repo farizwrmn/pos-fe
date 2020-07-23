@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
-import Pos from '../savedPayment/index'
-import PurchaseHistory from '../purchasehistory/index'
+import Pos from '../savedPayment'
+import PurchaseHistory from '../purchasehistory'
 
 const TabPane = Tabs.TabPane
 

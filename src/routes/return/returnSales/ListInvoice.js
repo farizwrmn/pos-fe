@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button, Input, Form, Modal, Row, Col, DatePicker } from 'antd'
+import { Table, Input, Form, Modal, Row, Col, DatePicker, Tag } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain } from 'utils'
@@ -10,7 +10,8 @@ const FormItem = Form.Item
 const Warning = Modal.confirm
 const { prefix } = configMain
 
-const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...tableProps }) => {
+const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch, ...tableProps }) => {
+  const { listPayment, tmpListPayment } = pos
   const handleMenuClick = (record) => {
     const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
     if (record.transDate < storeInfo.startPeriod) {
@@ -42,32 +43,20 @@ const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...t
 
   const handleChange = (e) => {
     const { value } = e.target
-
-    dispatch({
-      type: 'purchase/updateState',
-      payload: {
-        searchText: value
+    const reg = new RegExp(value, 'gi')
+    let newData
+    newData = tmpListPayment.map((record) => {
+      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierName || '').match(reg)
+      if (!match) {
+        return null
       }
-    })
-  }
-
-  const handleSearch = () => {
-    dispatch({
-      type: 'purchase/onInvoiceSearch',
-      payload: {
-        // searchText,
-        // tmpInvoiceList
+      return {
+        ...record
       }
-    })
-  }
-
-  const handleReset = () => {
+    }).filter(record => !!record)
     dispatch({
-      type: 'purchase/onInvoiceReset',
-      payload: {
-        searchText: ''
-        // tmpInvoiceList
-      }
+      type: 'pos/searchPOS',
+      payload: newData
     })
   }
 
@@ -83,22 +72,41 @@ const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...t
 
   const columns = [
     {
-      title: 'Invoice',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: '25%'
-    },
-    {
-      title: 'Trans Date',
+      title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '45%'
+      width: 150,
+      render: (text, record) => `${text} ${record.transTime}`
     },
     {
-      title: 'SupplierName',
-      dataIndex: 'supplierName',
-      key: 'supplierName',
-      width: '30%'
+      title: 'Cashier',
+      dataIndex: 'technicianName',
+      key: 'technicianName',
+      width: 100
+    },
+    {
+      title: 'Member',
+      dataIndex: 'memberName',
+      key: 'memberName',
+      width: 100
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      render: text =>
+        (<span>
+          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+          </Tag>
+        </span>)
+    },
+    {
+      title: 'No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: 180
     }
   ]
 
@@ -108,19 +116,13 @@ const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...t
         <Row>
           <Col lg={16} md={14}>
             <FormItem>
-              <Input placeholder="Search Invoice Number"
+              <Input
+                placeholder="Search Invoice Number"
                 // value={searchText}
-                size="small"
                 onChange={_e => handleChange(_e)}
-                onPressEnter={handleSearch}
+                onPressEnter={handleChange}
                 style={{ marginBottom: 16 }}
               />
-            </FormItem>
-            <FormItem>
-              <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
-            </FormItem>
-            <FormItem>
-              <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
             </FormItem>
           </Col>
           <Col lg={8} md={10}>
@@ -140,6 +142,7 @@ const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...t
         size="small"
         rowKey={record => record.productCode}
         onRowClick={_record => handleMenuClick(_record)}
+        dataSource={listPayment}
       />
     </div>
   )

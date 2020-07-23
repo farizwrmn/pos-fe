@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Select } from 'antd'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -37,10 +37,8 @@ const FormAdd = ({
   loadingButton,
   // handleCancel,
   listItem,
-  listEmployee,
   listStore,
-  getEmployee,
-  hideEmployee,
+  pos,
   ...listProps,
   // ...filterProps,
   // ...formProps,
@@ -55,7 +53,6 @@ const FormAdd = ({
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
   const { handleProductBrowse, handleInvoiceBrowse } = modalProductProps
-  let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -82,7 +79,6 @@ const FormAdd = ({
     },
     ...formConfirmProps
   }
-  const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
 
   let childrenStoreReceived = []
   if (listStore.length > 0) {
@@ -103,6 +99,7 @@ const FormAdd = ({
   // }
   const modalPurchaseOpts = {
     modalInvoiceVisible,
+    pos,
     ...modalProductProps
   }
   const modalProductOpts = {
@@ -134,80 +131,12 @@ const FormAdd = ({
                 ]
               })(<Input disabled />)}
             </FormItem>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transType', {
-                initialValue: 'MUOUT',
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="PIC" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('employeeId', {
-                initialValue: item.employeeId,
-                valuePropName: 'value',
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <Select
-                  labelInValue
-                  onFocus={getEmployee}
-                  onBlur={hideEmployee}
-                  showSearch
-                  allowClear
-                  optionFilterProp="children"
-                  placeholder="Choose Employee"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >
-                  {childrenEmployee}
-                </Select>
-              )}
-            </FormItem>
             <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductOpts} />}
             {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
           </Col>
           <Col {...col}>
-            <FormItem label="To Store" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('storeIdReceiver', {
-                initialValue: item.storeIdReceiver,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Select
-                labelInValue
-              >
-                {childrenStoreReceived}
-              </Select>)}
-            </FormItem>
-            <FormItem label="Car Number" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('carNumber', {
-                initialValue: item.carNumber,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="Total Pack" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('totalColly', {
-                initialValue: item.totalColly,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<InputNumber min={0} max={qtyTotal} />)}
-            </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description', {
                 initialValue: item.description,
