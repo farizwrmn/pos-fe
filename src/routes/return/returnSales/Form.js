@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Select } from 'antd'
-import { lstorage } from 'utils'
+import { Form, Input, Button, Row, Col } from 'antd'
+// import { lstorage } from 'utils'
 import ListItem from './ListItem'
-import Browse from './Browse'
-import ModalConfirm from './ModalConfirm'
+// import ModalConfirm from './ModalConfirm'
 
-const { Option } = Select
 const FormItem = Form.Item
 const { TextArea } = Input
 
@@ -29,22 +27,15 @@ const col = {
 const FormAdd = ({
   item = {},
   onSubmit,
-  // disabled,
-  // resetItem,
-  modalProductVisible,
-  modalInvoiceVisible,
   button,
   loadingButton,
-  // handleCancel,
   listItem,
-  listStore,
-  pos,
-  ...listProps,
-  // ...filterProps,
-  // ...formProps,
-  ...formConfirmProps,
-  modalConfirmVisible,
-  modalProductProps,
+  listProps,
+  handleProductBrowse,
+  handleInvoiceBrowse,
+  // formConfirmProps,
+  // modalConfirmVisible,
+  // modalProductProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -52,7 +43,7 @@ const FormAdd = ({
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse, handleInvoiceBrowse } = modalProductProps
+  // const {  } = modalProductProps
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -69,43 +60,17 @@ const FormAdd = ({
       // handleReset()
     })
   }
-  const formConfirmOpts = {
-    listItem,
-    itemHeader: {
-      storeId: {
-        label: lstorage.getCurrentUserStoreName()
-      },
-      ...getFieldsValue()
-    },
-    ...formConfirmProps
-  }
-
-  let childrenStoreReceived = []
-  if (listStore.length > 0) {
-    if (item.storeId) {
-      let groupStore = []
-      for (let id = 0; id < listStore.length; id += 1) {
-        groupStore.push(
-          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
-            {listStore[id].label}
-          </Option>
-        )
-      }
-      childrenStoreReceived.push(groupStore)
-    }
-  }
-  // const resetFieldsOnly = (value) => {
-  //   resetFields([value])
+  // const formConfirmOpts = {
+  //   listItem,
+  //   itemHeader: {
+  //     storeId: {
+  //       label: lstorage.getCurrentUserStoreName()
+  //     },
+  //     ...getFieldsValue()
+  //   },
+  //   ...formConfirmProps
   // }
-  const modalPurchaseOpts = {
-    modalInvoiceVisible,
-    pos,
-    ...modalProductProps
-  }
-  const modalProductOpts = {
-    modalProductProps,
-    ...modalProductProps
-  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -132,9 +97,7 @@ const FormAdd = ({
               })(<Input disabled />)}
             </FormItem>
             <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
-            <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
-            {modalProductVisible && <Browse {...modalProductOpts} />}
-            {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
+            <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>
           </Col>
           <Col {...col}>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
@@ -153,7 +116,7 @@ const FormAdd = ({
         <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
-        {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
+        {/* {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />} */}
       </Form>
     </div>
   )
@@ -165,8 +128,6 @@ FormAdd.propTypes = {
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   resetItem: PropTypes.func,
-  // changeTab: PropTypes.func,
-  // activeKey: PropTypes.string,
   button: PropTypes.string
 }
 

@@ -27,10 +27,10 @@ class TransferModal extends Component {
       onOkList,
       onCancelList,
       onDeleteItem,
+      handleProductBrowse,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
-    const { handleProductBrowse } = formEditProps.modalProductProps
     const handleOk = () => {
       validateFields((errors) => {
         if (errors) {

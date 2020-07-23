@@ -157,7 +157,7 @@ ListTransfer.propTypes = {
   showPrintModal: PropTypes.bool,
   storeInfo: PropTypes.object,
   user: PropTypes.func,
-  listTransferOut: PropTypes.object,
+  listReturnSales: PropTypes.object,
   getProducts: PropTypes.func,
   getTrans: PropTypes.func,
   listProducts: PropTypes.object,

@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import { query, add, edit, remove } from 'services/return/returnSales'
+import { query as querySequence } from 'services/sequence'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -12,10 +14,15 @@ export default modelExtend(pageModel, {
   namespace: 'returnSales',
 
   state: {
+    listItem: [],
+    list: [],
     currentItem: {},
+    currentItemList: {},
     modalType: 'add',
     activeKey: '0',
-    list: [],
+    modalEditItemVisible: false,
+    modalProductVisible: false,
+    modalInvoiceVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -28,11 +35,18 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/return-sales') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
+            }
+          })
+          dispatch({
+            type: 'querySequence',
+            payload: {
+              seqCode: 'RJJ',
+              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
@@ -66,6 +80,21 @@ export default modelExtend(pageModel, {
         yield put({ type: 'query' })
       } else {
         throw data
+      }
+    },
+
+    * getInvoiceDetailPurchase ({ payload }, { call, put }) {
+      const response = yield call(query, payload)
+      if (response.success) {
+        const listItem = []
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem
+          }
+        })
+      } else {
+        throw response
       }
     },
 
@@ -124,6 +153,25 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+
+    * querySequence ({ payload }, { call, put }) {
+      yield put({ type: 'resetState' })
+      const data = yield call(querySequence, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {
+              transNo: data.data,
+              storeId: lstorage.getCurrentUserStore()
+            },
+            listStore: lstorage.getListUserStores()
+          }
+        })
+      } else {
+        throw (data)
       }
     }
   },
