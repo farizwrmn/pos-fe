@@ -53,14 +53,12 @@ const modal = ({
         return
       }
       const item = {
+        reference: data[0].id,
+        transNo: data[0].transNo,
+        storeId: data[0].storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
-        cashierTransId: cashierInformation.id,
         ...getFieldsValue()
       }
-      const detail = data && data[0]
-      item.reference = detail.id
-      item.transNo = detail.transNo
-      item.storeId = detail.storeId
       onOk(item)
     })
   }
@@ -78,7 +76,7 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    onOk: () => handleOk(),
+    onOk: handleOk,
     onCancel: handleCancel
   }
 
