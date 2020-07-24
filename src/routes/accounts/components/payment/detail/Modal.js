@@ -52,11 +52,11 @@ const modal = ({
       if (errors) {
         return
       }
-      console.log('data', data)
+      const detail = data && data[0]
       const item = {
-        reference: data[0].id,
-        transNo: data[0].transNo,
-        storeId: data[0].storeId,
+        reference: detail.id,
+        transNo: detail.transNo,
+        storeId: detail.storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
         cashierTransId: cashierInformation.id,
         ...getFieldsValue()

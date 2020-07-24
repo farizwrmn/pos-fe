@@ -32,7 +32,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
       }
     }
   }
-
+  console.log('index', data)
   const modalProps = {
     width: '68%',
     data,
