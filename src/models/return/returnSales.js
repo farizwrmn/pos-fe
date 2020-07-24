@@ -137,7 +137,7 @@ export default modelExtend(pageModel, {
       const newData = {
         no: listItem.length + 1,
         ...payload.item,
-        originalQty: payload.item.qty
+        initialQty: payload.item.qty
       }
       newListItem.push(newData)
       yield put({
@@ -161,7 +161,7 @@ export default modelExtend(pageModel, {
       const exists = listItem.filter(filtered => filtered.id === payload.item.id)
       if (exists && exists.length > 0) {
         const { item } = payload
-        if (item.qty > item.originalQty) {
+        if (item.qty > item.initialQty) {
           message.warning('Qty of return sales is bigger than sales')
           return
         }
@@ -213,27 +213,27 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
-      if (data.success) {
+      const response = yield call(add, payload)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            currentItemList: {},
+            listItem: [],
+            listProduct: []
           }
         })
         yield put({
-          type: 'query'
+          type: 'querySequence',
+          payload: {
+            seqCode: 'RJJ',
+            type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+          }
         })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
+        throw response
       }
     },
 
