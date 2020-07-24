@@ -52,6 +52,7 @@ const modal = ({
       if (errors) {
         return
       }
+      console.log('data', data)
       const item = {
         reference: data[0].id,
         transNo: data[0].transNo,
