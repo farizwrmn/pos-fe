@@ -38,7 +38,8 @@ const FormAdd = ({
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue
+    getFieldsValue,
+    resetFields
   },
   listProps
 }) => {
@@ -56,7 +57,7 @@ const FormAdd = ({
         title: 'Save this transaction',
         content: 'Are you sure?',
         onOk () {
-          onSubmit(data, listItem)
+          onSubmit(data, listItem, resetFields)
         },
         onCancel () {
           // cancel

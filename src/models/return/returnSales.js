@@ -213,7 +213,10 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload)
+      const response = yield call(add, {
+        data: payload.data,
+        detail: payload.detail
+      })
       if (response.success) {
         success()
         yield put({
@@ -225,6 +228,7 @@ export default modelExtend(pageModel, {
             listProduct: []
           }
         })
+        payload.resetFields()
         yield put({
           type: 'querySequence',
           payload: {

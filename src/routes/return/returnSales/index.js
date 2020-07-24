@@ -399,12 +399,13 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
     loading: loading.effects['returnSales/querySequence'],
     disabled: false,
     button: 'Add',
-    onSubmit (data, listItem) {
+    onSubmit (data, listItem, resetFields) {
       dispatch({
         type: 'returnSales/add',
         payload: {
           data,
-          detail: listItem
+          detail: listItem,
+          resetFields
         }
       })
     },
