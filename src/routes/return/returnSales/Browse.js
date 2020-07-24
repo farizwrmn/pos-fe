@@ -1,35 +1,47 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'antd'
-import ListProduct from './ListProductLock'
+import ListProduct from './ListProduct'
 import ListInvoice from './ListInvoice'
 
-const Browse = ({ searchText, showProductQty, modalInvoiceVisible, onChange, modalProductVisible, listInvoice, tmpInvoiceList, onInvoiceHeader, onChooseInvoice, location, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
-  const { listProduct, pagination, itemPayment, itemService, modalType, isMotion } = pos
+const Browse = ({
+  searchText,
+  showProductQty,
+  modalInvoiceVisible,
+  modalProductVisible,
+  listInvoice,
+  tmpInvoiceList,
+  onInvoiceHeader,
+  onChooseInvoice,
+  location,
+  pos,
+  loading,
+  onChooseItem,
+  totalItem,
+  returnSales,
+  ...modalProps
+}) => {
+  const { listProduct } = returnSales
   const width = '80%'
   const modalOpts = {
     ...modalProps
   }
-  let listProductLock = listProduct
 
   const listProps = {
     pos,
-    dataSource: modalInvoiceVisible ? listInvoice : listProductLock,
-    loading: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? loading : loading.effects['transferOut/getInvoiceDetailPurchase'],
-    pagination: modalType === 'browseProductLock' || modalType === 'browseProductFree' ? pagination : null,
+    dataSource: modalInvoiceVisible ? listInvoice : listProduct,
+    loading,
+    pagination: null,
     tmpInvoiceList,
     searchText,
     location,
-    item: modalType === 'modalPayment' ? itemPayment : {},
-    itemService: modalType === 'modalService' ? itemService : {},
-    isMotion,
     totalItem,
     onInvoiceHeader,
-    onChange (e) {
-      if (modalType === 'browseProductLock' || modalType === 'browseProductFree') {
-        onChange(e)
-      }
-    },
+    // onChange (e) {
+    //   if (modalType === 'browseProductLock' || modalType === 'browseProductFree') {
+    //     onChange(e)
+    //   }
+    // },
     showProductQty (id) {
       showProductQty(id)
     },

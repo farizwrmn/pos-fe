@@ -30,7 +30,6 @@ const FormAdd = ({
   button,
   loadingButton,
   listItem,
-  listProps,
   handleProductBrowse,
   handleInvoiceBrowse,
   // formConfirmProps,
@@ -40,9 +39,9 @@ const FormAdd = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue
-  }
+  },
+  listProps
 }) => {
-  const { pagination, onChange, ...otherListProps } = listProps
   // const {  } = modalProductProps
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -97,7 +96,9 @@ const FormAdd = ({
               })(<Input disabled />)}
             </FormItem>
             <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
-            <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>
+            {item && item.referenceNo && item.reference && (
+              <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>
+            )}
           </Col>
           <Col {...col}>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
@@ -112,9 +113,9 @@ const FormAdd = ({
             </FormItem>
           </Col>
         </Row>
-        <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
+        <ListItem {...listProps} style={{ marginTop: '10px' }} />
         <FormItem>
-          <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          <Button disabled={loadingButton.effects['returnSales/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
         {/* {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />} */}
       </Form>

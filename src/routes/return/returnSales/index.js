@@ -35,7 +35,7 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
     // formType,
     // display,
     // activeKey,
-    pagination
+    currentItemList
     // filter,
     // sort,
     // showPrintModal
@@ -67,7 +67,7 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
   const listProps = {
     dataSource: listItem,
     loading: loading.effects['returnSales/query'],
-    pagination,
+    pagination: false,
     location,
     onChange (page) {
       dispatch({
@@ -75,6 +75,15 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
         payload: {
           page: page.current,
           pageSize: page.pageSize
+        }
+      })
+    },
+    onModalVisible (record) {
+      dispatch({
+        type: 'returnSales/updateState',
+        payload: {
+          currentItemList: record,
+          modalEditItemVisible: true
         }
       })
     },
@@ -90,12 +99,6 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
       })
       dispatch({
         type: 'returnSales/query'
-      })
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'returnSales/delete',
-        payload: id
       })
     }
   }
@@ -168,6 +171,7 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
     location,
     loading,
     pos,
+    returnSales,
     // listInvoice,
     // tmpInvoiceList,
     // searchText,
@@ -207,7 +211,13 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
         }
       })
     },
-    onChooseItem (/* item */) {
+    onChooseItem (item) {
+      dispatch({
+        type: 'returnSales/addItem',
+        payload: {
+          item
+        }
+      })
       // let arrayProd = []
       // const listByCode = listItem
       // const checkExists = listByCode.filter(el => el.productCode === item.productCode)
@@ -270,21 +280,6 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
 
   const handleProductBrowse = () => {
     dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        active: 1
-      }
-    })
-    dispatch({
-      type: 'pos/getListProductData'
-    })
-    dispatch({
-      type: 'pos/showProductModal',
-      payload: {
-        modalType: 'browseProductFree'
-      }
-    })
-    dispatch({
       type: 'returnSales/updateState',
       payload: {
         modalProductVisible: true
@@ -295,11 +290,16 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
   const formEditProps = {
     visible: modalEditItemVisible,
     item: currentItem,
+    currentItemList,
     modalProductProps,
     handleProductBrowse,
-    onOkList (
-      // item
-    ) {
+    onOkList (item) {
+      dispatch({
+        type: 'returnSales/editItem',
+        payload: {
+          item
+        }
+      })
       // const check = {
       //   data: item
       // }
@@ -334,12 +334,11 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
         }
       })
     },
-    onDeleteItem (no) {
+    onDeleteItem (item) {
       dispatch({
-        type: 'returnSales/deleteListState',
+        type: 'returnSales/deleteItem',
         payload: {
-          no,
-          listItem
+          item
         }
       })
     },
@@ -407,21 +406,6 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
           storeId: data.storeId,
           data,
           detail: list
-        }
-      })
-    },
-    onModalVisible (record) {
-      dispatch({
-        type: 'pos/queryProducts',
-        payload: {
-          active: 1
-        }
-      })
-      dispatch({
-        type: 'returnSales/updateState',
-        payload: {
-          currentItemList: record,
-          modalEditItemVisible: true
         }
       })
     },

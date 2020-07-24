@@ -38,6 +38,7 @@ class TransferModal extends Component {
         }
 
         const data = {
+          id: currentItemList.id,
           ...getFieldsValue()
         }
         if (Number(data.qty) > 0) {
@@ -60,15 +61,11 @@ class TransferModal extends Component {
       onCancelList()
     }
     const handleDelete = () => {
-      const data = {
-        transType: currentItemList.transType,
-        ...getFieldsValue()
-      }
       Modal.confirm({
         title: `Delete ${currentItemList.productName}`,
         content: 'Are you sure ?',
         onOk () {
-          onDeleteItem(data.no - 1)
+          onDeleteItem(currentItemList)
           resetFields()
         }
       })

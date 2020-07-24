@@ -80,13 +80,13 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
 
   return (
     <div>
-      <Table {...tableProps}
+      <Table
+        {...tableProps}
         bordered
         columns={columns}
         simple
         size="small"
         scroll={{ x: 1000 }}
-        rowKey={record => record.no}
         onRowClick={item => handleMenuClick(item)}
       />
     </div>
@@ -94,8 +94,7 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
 }
 
 ListItem.propTypes = {
-  editItem: PropTypes.func,
-  deleteItem: PropTypes.func
+  editItem: PropTypes.func
 }
 
 export default ListItem

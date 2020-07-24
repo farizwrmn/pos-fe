@@ -4,6 +4,7 @@ import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query, add, edit, remove } from 'services/return/returnSales'
 import { query as querySequence } from 'services/sequence'
+import { queryDetail as queryPosDetail } from 'services/payment'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
 
   state: {
     listItem: [],
+    listProduct: [],
     list: [],
     currentItem: {},
     currentItemList: {},
@@ -83,18 +85,130 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * getInvoiceDetailPurchase ({ payload }, { call, put }) {
-      const response = yield call(query, payload)
-      if (response.success) {
-        const listItem = []
+    * getInvoiceDetailPurchase ({ payload }, { select, call, put }) {
+      const currentItem = yield select(({ returnSales }) => returnSales.currentItem)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProduct: [],
+          listItem: []
+        }
+      })
+      const response = yield call(queryPosDetail, {
+        id: payload.transNo,
+        type: 'print'
+      })
+      if (response.success && response.pos) {
+        const listProduct = response.pos.filter(filtered => filtered.typeCode === 'P')
+        yield put({
+          type: 'updateItem',
+          payload: {
+            reference: payload.id,
+            referenceNo: payload.transNo
+          }
+        })
         yield put({
           type: 'updateState',
           payload: {
-            listItem
+            listProduct,
+            modalInvoiceVisible: false,
+            currentItem: {
+              ...currentItem,
+              reference: payload.id,
+              referenceNo: payload.transNo
+            }
           }
         })
       } else {
         throw response
+      }
+    },
+
+    * addItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnSales }) => returnSales.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        message.warning('Product already exists')
+        return
+      }
+      const newListItem = [
+        ...listItem
+      ]
+      const newData = {
+        no: listItem.length + 1,
+        ...payload.item,
+        originalQty: payload.item.qty
+      }
+      newListItem.push(newData)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: newListItem,
+          modalProductVisible: false
+        }
+      })
+      // yield put({
+      //   type: 'updateState',
+      //   payload: {
+      //     currentItemList: newData,
+      //     modalEditItemVisible: true
+      //   }
+      // })
+    },
+
+    * editItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnSales }) => returnSales.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        const { item } = payload
+        if (item.qty > item.originalQty) {
+          message.warning('Qty of return sales is bigger than sales')
+          return
+        }
+        const newListItem = listItem.map((item) => {
+          if (item.id === payload.item.id) {
+            return ({
+              ...item,
+              ...payload.item
+            })
+          }
+          return item
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: newListItem,
+            currentItemList: {},
+            modalEditItemVisible: false
+          }
+        })
+      } else {
+        message.warning('Product not exists')
+      }
+    },
+
+    * deleteItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnSales }) => returnSales.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        const newListItem = listItem
+          .filter(filtered => filtered.id !== payload.item.id)
+          .map((item, index) => {
+            return ({
+              ...item,
+              no: index + 1
+            })
+          })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: newListItem,
+            currentItemList: {},
+            modalEditItemVisible: false
+          }
+        })
+      } else {
+        message.warning('Product not exists')
       }
     },
 
