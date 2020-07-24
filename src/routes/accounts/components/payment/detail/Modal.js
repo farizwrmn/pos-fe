@@ -52,15 +52,15 @@ const modal = ({
       if (errors) {
         return
       }
-      const detail = data && data[0]
       const item = {
-        reference: detail.id,
-        transNo: detail.transNo,
-        storeId: detail.storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
         cashierTransId: cashierInformation.id,
         ...getFieldsValue()
       }
+      const detail = data && data[0]
+      item.reference = detail.id
+      item.transNo = detail.transNo
+      item.storeId = detail.storeId
       onOk(item)
     })
   }
@@ -78,7 +78,7 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    onOk: handleOk,
+    onOk: () => handleOk(),
     onCancel: handleCancel
   }
 
