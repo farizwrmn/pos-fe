@@ -27,7 +27,6 @@ class TransferModal extends Component {
       onOkList,
       onCancelList,
       onDeleteItem,
-      handleProductBrowse,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
@@ -38,7 +37,7 @@ class TransferModal extends Component {
         }
 
         const data = {
-          id: currentItemList.id,
+          ...currentItemList,
           ...getFieldsValue()
         }
         if (Number(data.qty) > 0) {
@@ -48,7 +47,6 @@ class TransferModal extends Component {
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
           onOkList(data)
-          handleProductBrowse()
         } else {
           Modal.warning({
             title: 'Message Error',
