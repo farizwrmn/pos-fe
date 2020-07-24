@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 // import { lstorage } from 'utils'
 import ListItem from './ListItem'
 // import ModalConfirm from './ModalConfirm'
@@ -49,13 +49,19 @@ const FormAdd = ({
         return
       }
       const data = {
+        ...item,
         ...getFieldsValue()
       }
-      data.employeeId = data.employeeId.key
-      data.storeId = item.storeId
-      data.storeIdReceiver = data.storeIdReceiver.key
-      data.reference = item.reference
-      onSubmit(data, listItem)
+      Modal.confirm({
+        title: 'Save this transaction',
+        content: 'Are you sure?',
+        onOk () {
+          onSubmit(data, listItem)
+        },
+        onCancel () {
+          // cancel
+        }
+      })
       // handleReset()
     })
   }
