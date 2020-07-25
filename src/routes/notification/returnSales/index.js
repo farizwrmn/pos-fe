@@ -71,7 +71,7 @@ class SalesDiscount extends Component {
       <div>
         <Row>
           <Col lg={6}>
-            <h1>Sales Discount</h1>
+            <h1>Return Request</h1>
             <div className={styles.content} >
               {list && list.length > 0 ? list.map((item) => {
                 return (

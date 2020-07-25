@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import moment from 'moment'
-import { query, add, approve } from 'services/notification/returnSales'
+import { approve } from 'services/notification/returnSales'
+import { query } from 'services/return/returnSales'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -37,6 +38,12 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/return-request') {
           dispatch({
+            type: 'updateState',
+            payload: {
+              list: []
+            }
+          })
+          dispatch({
             type: 'query'
           })
         }
@@ -59,16 +66,6 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      }
-    },
-
-    * add ({ payload }, { call, put }) {
-      const data = yield call(add, { data: payload })
-      yield put({ type: 'query' })
-      if (data.success) {
-        success()
-      } else {
-        throw data
       }
     },
 
