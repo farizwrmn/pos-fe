@@ -6,7 +6,7 @@ const GroupItem = ({ item }) => {
   return (
     <div>
       <Row>
-        <Col span={12} className={styles.left}>{` - ${item.name}`}</Col>
+        <Col span={24} className={styles.left}>{` - ${item.name}`}</Col>
       </Row>
     </div>
   )
