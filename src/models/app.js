@@ -337,6 +337,9 @@ export default {
             case 'SDR':
               Object.assign(listNotificationDetail[key], { route: '/sales-discount' })
               break
+            case 'RSR':
+              Object.assign(listNotificationDetail[key], { route: '/return-request' })
+              break
             default:
           }
         }

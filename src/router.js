@@ -457,6 +457,14 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
+          path: 'return-request',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/salesDiscount'))
+              cb(null, require('./routes/notification/salesDiscount/'))
+            }, 'return-request')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
