@@ -7,31 +7,9 @@ import {
   Modal
 } from 'antd'
 import { connect } from 'dva'
-import io from 'socket.io-client'
-import { APISOCKET } from 'utils/config.company'
-import { posTotal, posDiscount, numberFormat } from 'utils'
 import styles from './index.less'
 
-const numberFormatter = numberFormat.numberFormatter
-
-const options = {
-  upgrade: false,
-  transports: ['websocket'],
-  pingTimeout: 3000,
-  pingInterval: 5000
-}
-
-const socket = io(APISOCKET, options)
-
 class SalesDiscount extends Component {
-  componentDidMount () {
-    socket.on('salesDiscountRequest', e => this.handleData(e))
-  }
-
-  componentWillUnmount () {
-    socket.off('salesDiscountRequest', e => this.handleData(e))
-  }
-
   handleData () {
     const { dispatch } = this.props
     dispatch({
@@ -76,14 +54,12 @@ class SalesDiscount extends Component {
               {list && list.length > 0 ? list.map((item) => {
                 return (
                   <Card
-                    title={`${item.value.code} - ${item.value.name}`}
+                    title={`${item.transNo} - ${item.pos.transNo}`}
                     extra={<Button shape="circle" type="primary" loading={loading.effects['returnSales/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    <div>{`Created By: ${item.createdBy}`}</div>
-                    <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
-                    <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
-                    <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
+                    <div>{`Memo: ${item.memo || ''}`}</div>
+                    <div>{`Created By: ${item.createdBy || ''}`}</div>
                   </Card>
                 )
               })
