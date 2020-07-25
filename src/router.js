@@ -460,8 +460,8 @@ const Routers = function ({ history, app }) {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/notification/salesDiscount'))
-              cb(null, require('./routes/notification/salesDiscount/'))
+              registerModel(app, require('./models/notification/returnSales'))
+              cb(null, require('./routes/notification/returnSales/'))
             }, 'return-request')
           }
         }, {
