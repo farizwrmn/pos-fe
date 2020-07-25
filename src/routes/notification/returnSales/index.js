@@ -7,6 +7,7 @@ import {
   Modal
 } from 'antd'
 import { connect } from 'dva'
+import { numberFormatter } from 'utils/numberFormat'
 import styles from './index.less'
 
 class SalesDiscount extends Component {
@@ -59,6 +60,14 @@ class SalesDiscount extends Component {
                     bordered
                   >
                     {item.memo && <div>{`Memo: ${item.memo}`}</div>}
+                    {item.returnSalesDetail && item.returnSalesDetail.map((detail) => {
+                      return (
+                        <Row >
+                          <Col span={12}>{detail.product.productCode}-{detail.product.productName}</Col>
+                          <Col span={12} className={styles.right}>{detail.posDetail.qty}x{numberFormatter(detail.posDetail.DPP / detail.posDetail.qty)}</Col>
+                        </Row>
+                      )
+                    })}
                     <div>{`Created By: ${item.createdBy || ''}`}</div>
                   </Card>
                 )
