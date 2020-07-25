@@ -58,7 +58,7 @@ class SalesDiscount extends Component {
                     extra={<Button shape="circle" type="primary" loading={loading.effects['returnSales/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    <div>{`Memo: ${item.memo || ''}`}</div>
+                    {item.memo && <div>{`Memo: ${item.memo}`}</div>}
                     <div>{`Created By: ${item.createdBy || ''}`}</div>
                   </Card>
                 )
