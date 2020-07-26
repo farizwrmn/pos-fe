@@ -240,7 +240,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       ],
       [
         { text: '', alignment: 'right', fontSize: 11 },
-        { text: 'LABA BERSIH (SEBELUM SETELAH)', style: 'tableFooter', alignment: 'left', fontSize: 11 },
+        { text: 'LABA BERSIH (SETELAH PAJAK)', style: 'tableFooter', alignment: 'left', fontSize: 11 },
         { text: formatNumberIndonesia(fixRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ]
