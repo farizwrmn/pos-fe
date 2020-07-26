@@ -1122,7 +1122,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/supplierBank'))
               registerModel(app, require('./models/master/bank'))
               cb(null, require('./routes/accounts/components/payable/detail/'))
-            }, 'setting-payment-detail')
+            }, 'setting-payable-detail')
           }
         }, {
           path: 'inventory/transfer/in',

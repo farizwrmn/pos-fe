@@ -57,7 +57,6 @@ const modal = ({
         transNo: data[0].transNo,
         storeId: data[0].storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
-        cashierTransId: cashierInformation.id,
         ...getFieldsValue()
       }
       onOk(item)
