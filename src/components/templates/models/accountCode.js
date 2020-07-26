@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listAccountCode: [],
+    list: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -47,9 +47,9 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
-          type: 'querySuccessCounter',
+          type: 'querySuccess',
           payload: {
-            listAccountCode: data.data,
+            list: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -129,11 +129,11 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+    querySuccess (state, action) {
+      const { list, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        list,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -86,8 +86,8 @@ const BrowseGroup = ({
       dataIndex: 'transDate',
       key: 'transDate',
       width: 150,
-      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('LL')}`
+      sorter: (a, b) => moment.utc(a.createdAt) - moment.utc(b.createdAt),
+      render: (text, record) => `${text} ${record.transTime}`
     },
     {
       title: 'Cashier',
@@ -161,8 +161,6 @@ const BrowseGroup = ({
     return current > moment().endOf('month')
   }
 
-  console.log('dataSource', dataSource)
-
   return (
     <Form>
       <Row style={{ marginBottom: '10px' }}>
@@ -185,7 +183,20 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} bordered columns={columns} dataSource={dataSource} loading={loading} />
+      <Table
+        pageSize={5}
+        size="small"
+        scroll={{ x: 1000, y: 500 }}
+        bordered
+        columns={columns}
+        dataSource={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM' ? dataSource : dataSource.slice(dataSource.length - 6, dataSource.length - 1)}
+        loading={loading}
+        pagination={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM'}
+      />
     </Form>
   )
 }

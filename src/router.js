@@ -18,6 +18,8 @@ const Routers = function ({ history, app }) {
         require.ensure([], (require) => {
           registerModel(app, require('./models/dashboard'))
           registerModel(app, require('./models/app'))
+          registerModel(app, require('./models/transaction/pos'))
+          registerModel(app, require('./models/report/fifo'))
           cb(null, { component: require('./routes/dashboard/') })
         }, 'dashboard')
       },
@@ -27,6 +29,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/report/fifo'))
               cb(null, require('./routes/dashboard/'))
             }, 'dashboard')
           }
@@ -451,6 +455,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/notification/salesDiscount'))
               cb(null, require('./routes/notification/salesDiscount/'))
             }, 'sales-discount')
+          }
+        }, {
+          path: 'return-request',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/returnSales'))
+              cb(null, require('./routes/notification/returnSales/'))
+            }, 'return-request')
           }
         }, {
           path: 'transaction/pos',
@@ -1148,6 +1160,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
             }, 'inventory-transfer-out')
+          }
+        }, {
+          path: 'transaction/return-sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnSales'))
+              registerModel(app, require('./models/transaction/pos'))
+              cb(null, require('./routes/return/returnSales'))
+            }, 'transaction-return-sales')
           }
         }, {
           path: 'setting/misc',

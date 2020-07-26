@@ -1,11 +1,9 @@
-import { request, config, crypt } from '../../utils'
-
-const { cashier } = config.api
+import { request, crypt } from 'utils'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account`,
+    url: '/return-sales',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -15,17 +13,17 @@ export async function query (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account`,
+    url: '/return-sales',
     method: 'post',
     data: params,
     headers: apiHeaderToken
   })
 }
 
-export async function remove (id) {
+export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account/${id}`,
+    url: `/return-sales/${params.id}`,
     method: 'delete',
     headers: apiHeaderToken
   })
@@ -34,7 +32,7 @@ export async function remove (id) {
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${cashier}/account/${params.id}`,
+    url: `/return-sales/${params.id}`,
     method: 'put',
     data: params,
     headers: apiHeaderToken

@@ -91,7 +91,6 @@ const PrintPDF = ({ dataSource, user, storeInfo, name }) => {
       ]
     }
   }
-  console.log('dataSource', dataSource)
 
   const pdfProps = {
     buttonType: 'default',

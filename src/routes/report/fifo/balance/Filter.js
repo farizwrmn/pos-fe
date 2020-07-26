@@ -133,12 +133,12 @@ const Filter = ({
   let optionSelectName = []
   const selectChildren = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectCode.push(<Option key={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
+      optionSelectCode.push(<Option key={listProduct[i].productCode.toString(36)} title={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)}>{listProduct[i].productName.toString(36)}</Option>)
+      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)} title={`${listProduct[i].productCode.toString(36)} - ${listProduct[i].productName.toString(36)}`}>{listProduct[i].productName.toString(36)}</Option>)
     }
   }
 
@@ -148,12 +148,12 @@ const Filter = ({
 
   let categories = []
   if (listCategory.length) {
-    categories.push(listCategory.map(x => (<Option key={x.id}>{x.categoryName}</Option>)))
+    categories.push(listCategory.map(x => (<Option key={x.id} title={x.categoryName}>{x.categoryName}</Option>)))
   }
 
   let brands = []
   if (listBrand.length) {
-    brands.push(listBrand.map(x => (<Option key={x.id}>{x.brandName}</Option>)))
+    brands.push(listBrand.map(x => (<Option key={x.id} title={x.brandName}>{x.brandName}</Option>)))
   }
 
   const onSelectCategory = (value) => {
