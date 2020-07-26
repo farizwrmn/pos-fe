@@ -20,10 +20,10 @@ export async function add (params) {
   })
 }
 
-export async function remove (id) {
+export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/return-sales/${id}`,
+    url: `/return-sales/${params.id}`,
     method: 'delete',
     headers: apiHeaderToken
   })

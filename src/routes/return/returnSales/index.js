@@ -1,9 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  // Modal,
-  Tabs
-} from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
 // import { lstorage } from 'utils'
@@ -14,7 +10,6 @@ import ModalItem from './Modal'
 // import FilterTransfer from './FilterTransferOut'
 
 // const { getCashierTrans } = lstorage
-const TabPane = Tabs.TabPane
 
 const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => {
   const {
@@ -26,7 +21,6 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
     // listTransOut,
     modalInvoiceVisible,
     modalProductVisible,
-    period,
     listItem,
     currentItem,
     // currentItemList,
@@ -532,36 +526,12 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
   //   }
   // }
 
-  let activeTabKey = '0'
-  const changeTab = (key) => {
-    activeTabKey = key
-    if (activeTabKey === '1') {
-      dispatch({
-        type: 'returnSales/queryTransferOut',
-        payload: {
-          start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
-        }
-      })
-    }
-  }
-
   return (
     <div className="content-inner">
-      <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
-        {activeTabKey === '0' && (
-          <TabPane tab="Add" key="0">
-            <Form {...formProps} />
-            {modalEditItemVisible && <ModalItem {...formEditProps} />}
-            {modalProductVisible && <Browse {...modalProductProps} />}
-            {modalInvoiceVisible && <Browse {...modalProductProps} />}
-          </TabPane>
-        )}
-        <TabPane tab="Archieve" key="1">
-          {/* <FilterTransfer {...filterTransferProps} />
-          <ListTransfer {...listTransferProps} /> */}
-        </TabPane>
-      </Tabs>
+      <Form {...formProps} />
+      {modalEditItemVisible && <ModalItem {...formEditProps} />}
+      {modalProductVisible && <Browse {...modalProductProps} />}
+      {modalInvoiceVisible && <Browse {...modalProductProps} />}
     </div>
   )
 }
