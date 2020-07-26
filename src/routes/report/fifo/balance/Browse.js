@@ -40,23 +40,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'pQty',
           width: '50px',
           className: styles.alignRight,
-          render: text => parseFloat(text || '-').toLocaleString()
-        },
-        {
-          title: 'Price',
-          dataIndex: 'pPrice',
-          key: 'pPrice',
-          width: '100px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
-        },
-        {
-          title: 'Amount',
-          dataIndex: 'pAmount',
-          key: 'pAmount',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
+          render: text => (text === '' ? '-' : numberFormat.numberFormatter(text))
         },
         {
           title: 'Out',
@@ -64,23 +48,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'sQty',
           width: '50px',
           className: styles.alignRight,
-          render: text => parseFloat(text || '-').toLocaleString()
-        },
-        {
-          title: 'Price',
-          dataIndex: 'sPrice',
-          key: 'sPrice',
-          width: '100px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
-        },
-        {
-          title: 'Amount',
-          dataIndex: 'sAmount',
-          key: 'sAmount',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
+          render: text => (text === '' ? '-' : numberFormat.numberFormatter(text))
         }
       )
       break

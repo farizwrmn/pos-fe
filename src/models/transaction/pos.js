@@ -4,11 +4,14 @@ import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import { allowPrint } from 'utils/validation'
-import { queryPaymentSplit } from 'services/payment/payment'
+import {
+  queryPaymentSplit
+} from 'services/payment/payment'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import {
   query as queryPos,
+  queryList,
   queryDetail,
   queryDetailConsignment,
   queryPos as queryaPos,
@@ -112,6 +115,12 @@ export default {
       pageSize: 10,
       total: 0
     },
+    listPosDetail: [],
+    paginationDashboard: {
+      current: 1,
+      pageSize: 10,
+      total: 0
+    },
     curBarcode: '',
     curTotal: 0,
     curTotalDiscount: 0,
@@ -152,6 +161,16 @@ export default {
       history.listen((location) => {
         const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
         const userId = lstorage.getStorageKey('udi')[1]
+        if (location.pathname === '/dashboard' || location.pathname === '/') {
+          dispatch({
+            type: 'queryDashboard',
+            payload: {
+              page: 1,
+              pageSize: 10,
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (location.pathname === '/transaction/pos') {
           dispatch({
             type: 'setDefaultMember'
@@ -231,6 +250,27 @@ export default {
   },
 
   effects: {
+    * queryDashboard ({ payload = {} }, { call, put }) {
+      const data = yield call(queryList, {
+        ...payload,
+        order: '-id',
+        status: 'A'
+      })
+      if (data) {
+        yield put({
+          type: 'queryDashboardSuccess',
+          payload: {
+            listPosDetail: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
     * paymentEdit ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       dataPos[payload.no - 1] = payload
@@ -1988,6 +2028,18 @@ export default {
   },
 
   reducers: {
+    queryDashboardSuccess (state, action) {
+      const { listPosDetail, pagination } = action.payload
+      return {
+        ...state,
+        listPosDetail,
+        paginationDashboard: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
     querySuccess (state, action) {
       const { list, pagination, tmpList } = action.payload
       let dataPos = getCashierTrans()

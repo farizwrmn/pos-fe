@@ -13,6 +13,16 @@ const { pos, posdetail } = config.api
 //   })
 // }
 
+export async function queryList (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/pos-detail',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   const storeId = lstorage.getCurrentUserStore()

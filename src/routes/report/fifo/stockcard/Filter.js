@@ -50,12 +50,12 @@ const Filter = ({
   let optionSelectName = []
   const selectChildren = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelect.push(<Option key={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
+      optionSelect.push(<Option key={listProduct[i].productCode.toString(36)} title={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)}>{listProduct[i].productName.toString(36)}</Option>)
+      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)} title={`${listProduct[i].productCode.toString(36)} - ${listProduct[i].productName.toString(36)}`}>{listProduct[i].productName.toString(36)}</Option>)
     }
   }
   const exportProps = {
@@ -134,13 +134,13 @@ const Filter = ({
             </Select>)}
           </FilterItem> */}
         <Row style={{ marginTop: 5 }}>
-          <Col lg={12} md={24} >
-            <FilterItem label="Product Code">
+          <Col lg={16} md={24} >
+            <FilterItem label="Code">
               {getFieldDecorator('productCode', {
               })(<Select
                 className=""
                 mode="multiple"
-                style={{ width: '189px' }}
+                style={{ width: '250px' }}
                 placeholder="Select Code"
                 onFocus={selectChildren()}
                 onChange={() => resetSelected('productName')}
@@ -150,13 +150,11 @@ const Filter = ({
                 {optionSelect}
               </Select>)}
             </FilterItem>
-          </Col>
-          <Col lg={12} md={24} >
-            <FilterItem label="Product Name">
+            <FilterItem label="Name">
               {getFieldDecorator('productName', {
               })(<Select
                 mode="multiple"
-                style={{ width: '189px' }}
+                style={{ width: '250px' }}
                 placeholder="Select Name"
                 onFocus={selectChildrenName()}
                 onChange={() => resetSelected('productCode')}

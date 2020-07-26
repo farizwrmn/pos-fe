@@ -28,6 +28,15 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/' || location.pathname === '/dashboard') {
+          dispatch({
+            type: 'queryFifoValues',
+            payload: {
+              period: moment().format('M'),
+              year: moment().format('YYYY')
+            }
+          })
+        }
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
           if (location.query.activeKey ? location.query.activeKey === '0' || location.query.activeKey === '1' : false) {
             dispatch({

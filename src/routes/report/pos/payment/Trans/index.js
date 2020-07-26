@@ -72,12 +72,11 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
       }))
     }
   }
-
   let groupBy = (xs) => {
     return xs
       .reduce((prev, next) => {
-        if (next.cost) {
-          (prev[next.cost.bankId] = prev[next.cost.bankId] || []).push(next)
+        if (next.machine) {
+          (prev[next.machine] = prev[next.machine] || []).push(next)
           return prev
         }
         (prev.cash = prev.cash || []).push(next)
@@ -92,33 +91,38 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
         return prev
       }, {})
   }
-
   let groubedByTeam = groupBy(listTrans)
   let groupByEdc = groupByKey(listTrans, 'typeCode')
-  let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
-  let arrByEdc = Object.keys(groubedByTeam)
-    .map((index) => {
-      const mapTypeCode = listOpts.map(item => ({
-        key: item.typeCode,
-        value: groupByEdc[item.typeCode]
-      }))
+  let arr
+  let arrByEdc = []
+  try {
+    arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
+    arrByEdc = Object.keys(groubedByTeam)
+      .map((index) => {
+        const mapTypeCode = listOpts.map(item => ({
+          key: item.typeCode,
+          value: groupByEdc[item.typeCode]
+        }))
 
-      const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] && groubedByTeam[index][0].cost ? groubedByTeam[index][0].cost : {}
-      const mapObj = {
-        machine: bankInfo && bankInfo.costBank && bankInfo.costBank.bankName ? bankInfo.costBank.bankName : 'CASH'
-      }
-      for (let key in mapTypeCode) {
-        const item = mapTypeCode[key]
-        mapObj[item.key] = item.value ?
-          item.value
-            .filter((filtered) => {
-              return (filtered.cost && filtered.cost.bankId === bankInfo.bankId) || (filtered.cost === null && item.key === 'C' && mapObj.machine === 'CASH')
-            })
-            .reduce((prev, next) => prev + next.amount, 0)
-          : 0
-      }
-      return mapObj
-    })
+        const bankInfo = index && groubedByTeam && groubedByTeam[index] && groubedByTeam[index][0] ? groubedByTeam[index][0] : {}
+        const mapObj = {
+          machine: bankInfo && bankInfo.paymentMachine && bankInfo.paymentMachine.name ? bankInfo.paymentMachine.name : 'CASH'
+        }
+        for (let key in mapTypeCode) {
+          const item = mapTypeCode[key]
+          mapObj[item.key] = item.value ?
+            item.value
+              .filter((filtered) => {
+                return (filtered.paymentMachine && bankInfo.paymentMachine && filtered.paymentMachine.name === bankInfo.paymentMachine.name && filtered.typeCode === bankInfo.typeCode) || (filtered.paymentMachine == null && item.key === 'C' && mapObj.machine === 'CASH')
+              })
+              .reduce((prev, next) => prev + next.amount, 0)
+            : 0
+        }
+        return mapObj
+      })
+  } catch (error) {
+    console.log('error', error)
+  }
 
   return (
     <div className="content-inner">
@@ -139,7 +143,7 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
               return (
                 <div className="row">
                   <div style={{ width: '50%' }} className="header">
-                    <div>{`${record.cost && record.cost.costMachine ? record.cost.costBank.bankName : record && record.paymentOption ? record.paymentOption.typeName : 'CASH'} details`}</div>
+                    <div>{`${record.paymentMachine && record.paymentMachine.name ? record.paymentMachine.name : 'CASH'} details`}</div>
                   </div>
                   <div style={{ width: '50%' }} className="total">
                     <div>{`Total: ${numberFormat.numberFormatter(item.reduce((prev, next) => prev + next.amount, 0))}`}</div>
