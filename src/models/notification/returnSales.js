@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import moment from 'moment'
 import { approve } from 'services/notification/returnSales'
-import { query } from 'services/return/returnSales'
+import { query, remove } from 'services/return/returnSales'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -53,7 +53,10 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        queryType: 'toApprove',
+        ...payload
+      })
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -71,6 +74,16 @@ export default modelExtend(pageModel, {
 
     * approve ({ payload }, { call, put }) {
       const data = yield call(approve, payload)
+      if (data.success) {
+        success()
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
+    * remove ({ payload }, { call, put }) {
+      const data = yield call(remove, payload)
       if (data.success) {
         success()
         yield put({ type: 'query' })

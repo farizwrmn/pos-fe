@@ -5,7 +5,7 @@ export async function approve (params) {
   const url = `/return-sales/approve/${params.id}`
   return request({
     url,
-    method: 'delete',
+    method: 'post',
     data: params,
     headers: apiHeaderToken
   })

@@ -35,8 +35,24 @@ class SalesDiscount extends Component {
           dispatch({
             type: 'returnSales/approve',
             payload: {
-              id: item.id,
-              fingerprintId: item.fingerprintVerification.id
+              id: item.id
+            }
+          })
+        },
+        onCancel () {
+          // Cancel
+        }
+      })
+    }
+
+    const handleDelete = (item) => {
+      Modal.confirm({
+        title: 'Delete this transaction',
+        onOk () {
+          dispatch({
+            type: 'returnSales/remove',
+            payload: {
+              id: item.id
             }
           })
         },
@@ -49,14 +65,19 @@ class SalesDiscount extends Component {
     return (
       <div>
         <Row>
-          <Col lg={6}>
+          <Col lg={12}>
             <h1>Return Request</h1>
             <div className={styles.content} >
               {list && list.length > 0 ? list.map((item) => {
                 return (
                   <Card
                     title={`${item.transNo} - ${item.pos.transNo}`}
-                    extra={<Button shape="circle" type="primary" loading={loading.effects['returnSales/query']} icon="check" onClick={() => handleClick(item)} />}
+                    extra={(
+                      <Row>
+                        <Button shape="circle" type="danger" style={{ marginRight: '1em' }} loading={loading.effects['returnSales/query'] || loading.effects['returnSales/remove']} icon="delete" onClick={() => handleDelete(item)} />
+                        <Button shape="circle" type="primary" loading={loading.effects['returnSales/query'] || loading.effects['returnSales/approve']} icon="check" onClick={() => handleClick(item)} />
+                      </Row>
+                    )}
                     bordered
                   >
                     {item.memo && <div>{`Memo: ${item.memo}`}</div>}
