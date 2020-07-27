@@ -49,11 +49,11 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
       //     to
       //   }
       // })
-      const { pathname, queryBalanceSheet } = location
+      const { pathname, query } = location
       dispatch(routerRedux.push({
         pathname,
-        queryBalanceSheet: {
-          ...queryBalanceSheet,
+        query: {
+          ...query,
           from,
           to
         }
