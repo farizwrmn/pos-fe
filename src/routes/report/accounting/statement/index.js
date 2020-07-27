@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
 import ProfitLoss from './ProfitLoss'
 import BalanceSheet from './BalanceSheet'
+import CashFlow from './CashFlow'
 
 const TabPane = Tabs.TabPane
 
@@ -27,6 +28,9 @@ const Report = ({ dispatch, location }) => {
         </TabPane>
         <TabPane tab="Balance Sheet" key="/report/accounting/balance-sheet">
           {pathname === '/report/accounting/balance-sheet' && <BalanceSheet location={location} />}
+        </TabPane>
+        <TabPane tab="Cash Flow" key="/report/accounting/cash-flow">
+          {pathname === '/report/accounting/cash-flow' && <CashFlow location={location} />}
         </TabPane>
       </Tabs>
     </div>
