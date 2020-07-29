@@ -871,6 +871,14 @@ const Routers = function ({ history, app }) {
             }, 'report-accounting-balance-sheet')
           }
         }, {
+          path: 'report/accounting/cash-flow',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatement'))
+              cb(null, require('./routes/report/accounting/statement'))
+            }, 'report-accounting-cash-flow')
+          }
+        }, {
           path: 'report/accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

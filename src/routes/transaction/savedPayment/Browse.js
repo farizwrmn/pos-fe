@@ -31,7 +31,6 @@ const BrowseGroup = ({
   dataSource,
   tmpDataSource,
   onGetDetail,
-  cashierInformation,
   onShowCancelModal,
   onSearchChange,
   onChangePeriod,
@@ -56,7 +55,7 @@ const BrowseGroup = ({
         return
       }
 
-      if (transDate >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
+      if (transDate >= storeInfo.startPeriod) {
         onShowCancelModal(record)
       } else {
         Modal.warning({

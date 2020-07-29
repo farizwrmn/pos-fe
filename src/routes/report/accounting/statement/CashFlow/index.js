@@ -35,13 +35,12 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
       })
     },
     onDateChange (from, to) {
-      // dispatch({
-      //   type: 'accountingStatementReport/queryBalanceSheet',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
+      dispatch({
+        type: 'accountingStatementReport/queryBalanceSheet',
+        payload: {
+          listTrans: []
+        }
+      })
       // dispatch({
       //   type: 'accountingStatementReport/setDate',
       //   payload: {
