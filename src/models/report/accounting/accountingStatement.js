@@ -3,7 +3,8 @@
  */
 import {
   queryProfitLoss,
-  queryBalanceSheet
+  queryBalanceSheet,
+  queryCashFlow
 } from 'services/report/accounting/accountingStatement'
 
 export default {
@@ -47,6 +48,15 @@ export default {
             payload: location.query
           })
         }
+        if (location.pathname === '/report/accounting/cash-flow') {
+          dispatch({
+            type: 'setListNull'
+          })
+          dispatch({
+            type: 'queryCashFlow',
+            payload: location.query
+          })
+        }
       })
     }
   },
@@ -67,6 +77,20 @@ export default {
     },
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
+      yield put({
+        type: 'querySuccessTrans',
+        payload: {
+          listTrans: data.data,
+          pagination: {
+            total: data.total
+          },
+          from: payload.from,
+          to: payload.to
+        }
+      })
+    },
+    * queryCashFlow ({ payload }, { call, put }) {
+      const data = yield call(queryCashFlow, payload)
       yield put({
         type: 'querySuccessTrans',
         payload: {

@@ -114,8 +114,8 @@ export default modelExtend(pageModel, {
       if (currentRegister.success) {
         if (currentRegister.data) {
           const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-          payload.data.cashierTransId = cashierInformation.id
-          payload.data.transDate = cashierInformation.period
+          payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
+          payload.data.transDate = cashierInformation ? cashierInformation.period : undefined
           const data = yield call(add, payload)
           if (data.success) {
             success()
