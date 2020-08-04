@@ -34,7 +34,7 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
         type: 'accountingStatementReport/setListNull'
       })
     },
-    onDateChange (from, to) {
+    onDateChange (to) {
       // dispatch({
       //   type: 'accountingStatementReport/queryBalanceSheet',
       //   payload: {
@@ -54,7 +54,6 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
         pathname,
         query: {
           ...query,
-          from,
           to
         }
       }))
