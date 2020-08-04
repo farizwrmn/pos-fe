@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, message, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, message, Row, Col, Modal, DatePicker } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
 
@@ -115,6 +116,15 @@ const FormCounter = ({
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description')(<Input />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Trans Date">
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
             </FormItem>
           </Col>
           <Col {...column} />
