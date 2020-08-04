@@ -191,7 +191,6 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
       || filtered.accountType === 'OINC'
       || filtered.accountType === 'OEXP')
       .reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-    console.log('group', group)
     // Start - REVE
     const {
       groupBody: groupREVEBody
