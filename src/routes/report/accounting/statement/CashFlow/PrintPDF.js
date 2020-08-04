@@ -86,6 +86,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       color: 'black',
       margin: [0, 0, 0, 15]
     },
+    tableBody: {
+      fontSize: 13,
+      color: 'black',
+      margin: [0, 15, 0, 15]
+    },
     tableSeparator: {
       bold: true,
       fontSize: 13,
@@ -102,7 +107,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN NERACA',
+            text: 'LAPORAN ARUS KAS',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -176,6 +181,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
   const groubedByTeam = groupBy(listTrans, 'accountType')
   const group = {
+    // BalanceSheet
     BANK: [],
     AREC: [],
     INTR: [],
@@ -190,9 +196,30 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     LTLY: [],
 
     EQTY: [],
+
+    // ProfitLoss
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
     ...groubedByTeam
   }
   try {
+    const fixRevenue = listTrans.filter(filtered => filtered.accountType === 'REVE'
+      || filtered.accountType === 'COGS'
+      || filtered.accountType === 'EXPS'
+      || filtered.accountType === 'OINC'
+      || filtered.accountType === 'OEXP')
+      .reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+    tableBody = tableBody.concat([
+      [
+        { text: '', alignment: 'right', fontSize: 11 },
+        { text: 'LABA RUGI', style: 'tableBody', alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(fixRevenue), style: 'tableBody', alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'right', fontSize: 11 }
+      ]
+    ])
     const { data: groupBANKBody } = createTableBody(
       group,
       [

@@ -103,7 +103,7 @@ const createTableBody = (tabledata, bodyStruct) => {
 
 const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
   const title = [
-    { value: 'LAPORAN NERACA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN ARUS KAS', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
