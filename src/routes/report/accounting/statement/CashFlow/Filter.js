@@ -36,7 +36,6 @@ const Filter = ({ onDateChange, onListReset, form: { validateFields, getFieldsVa
         return
       }
       const data = getFieldsValue()
-      console.log('data', data)
       if (data.from && data.to) {
         const from = data.from.startOf('month').format('YYYY-MM-DD')
         const to = data.to.endOf('month').format('YYYY-MM-DD')

@@ -26,7 +26,6 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
     listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
-      console.log('data', data)
       if (data) {
         const detail = listOpts && listOpts.map((item) => {
           const selected = data && data.detail && data.detail[item.typeCode]
