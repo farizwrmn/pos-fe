@@ -41,12 +41,27 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       dataIndex: 'count',
       key: 'count',
       width: '50px',
-      className: styles.alignRight,
+      className: styles.clickableRight,
       render: (text) => {
         if (!loadingModel.effects['productstock/showProductQty']) {
           return text || 0
         }
         return <Icon type="loading" />
+      },
+      onCellClick: (record) => {
+        console.log('click', record.id)
+        dispatch({
+          type: 'updateState',
+          payload: {
+            countStoreList: []
+          }
+        })
+        dispatch({
+          type: 'productstock/showProductStoreQty',
+          payload: {
+            data: [record]
+          }
+        })
       }
     },
     {

@@ -3,7 +3,7 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
 import moment from 'moment'
-import { query, queryById, add, edit, queryPOSproduct, remove } from '../../services/master/productstock'
+import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
@@ -45,6 +45,8 @@ export default modelExtend(pageModel, {
     mode: '',
     changed: false,
     stockLoading: false,
+    countStoreList: [],
+    modalQuantityVisible: false,
     aliases: {
       check1: true,
       check2: false,
@@ -54,7 +56,8 @@ export default modelExtend(pageModel, {
       alias2: ''
     },
     pagination: {
-      current: 1
+      current: 1,
+      showSizeChanger: true
     }
   },
 
@@ -63,7 +66,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/product/stock') {
+        if (pathname === '/stock') {
           if (!activeKey) dispatch({ type: 'refreshView' })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
           dispatch({
@@ -171,6 +174,25 @@ export default modelExtend(pageModel, {
           payload: {
             list: data,
             pagination: {}
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
+
+    * showProductStoreQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproductStore, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            countStoreList: listProductData.data,
+            modalQuantityVisible: true
           }
         })
       } else {

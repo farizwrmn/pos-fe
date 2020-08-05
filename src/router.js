@@ -196,7 +196,7 @@ const Routers = function ({ history, app }) {
             }, 'master-product-category')
           }
         }, {
-          path: 'master/product/stock',
+          path: '/stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/productstock'))
@@ -209,6 +209,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/master/product/stock/'))
             }, 'master-product-stock')
           }

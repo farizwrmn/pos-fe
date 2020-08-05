@@ -65,6 +65,16 @@ export async function queryPOSproduct (params) {
   })
 }
 
+export async function queryPOSproductStore (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${fiforeport}/store-stock`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryProductByCode (params) {
   let url = `${stock}/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()

@@ -13,11 +13,13 @@ import PrintPDFSpecification from './PrintPDFSpecification'
 import PrintXLSSpecification from './PrintXLSSpecification'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
+import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ specification, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ specification, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listVariantStock } = variantStock
+  const { listStoreLov } = store
   const { list,
     changed,
     listPrintAllStock,
@@ -35,7 +37,9 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     advancedForm,
     modalVariantVisible,
     modalSpecificationVisible,
-    modalProductVisible
+    modalProductVisible,
+    countStoreList,
+    modalQuantityVisible
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -88,6 +92,24 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
         type: 'productstock/updateState',
         payload: {
           searchText: null
+        }
+      })
+    }
+  }
+
+  const modalQuantityProps = {
+    count: countStoreList,
+    listStoreLov,
+    title: 'Other Store Qty',
+    loading: loading.effects['productstock/showProductStoreQty'],
+    visible: modalQuantityVisible,
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          countStoreList: [],
+          modalQuantityVisible: false
         }
       })
     }
@@ -436,6 +458,7 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
 
   return (
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
+      {modalQuantityVisible && <ModalQuantity {...modalQuantityProps} />}
       {showPDFModal && <Modal {...PDFModalProps}>
         {printmode}
       </Modal>}
@@ -466,4 +489,4 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
