@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
+import moment from 'moment'
 import { numberFormatter } from 'utils/numberFormat'
 
 const SalesDetail = ({ ...other }) => {
@@ -11,6 +12,7 @@ const SalesDetail = ({ ...other }) => {
       render: (text, record) => {
         return (
           <div>
+            <div>{moment(record.createdAt).format('lll')}</div>
             <div>{`${text} - ${record.productName}`}</div>
             <div>{`${record.qty} x ${numberFormatter(record.DPP / record.qty)}`}<strong style={{ float: 'right' }}>{`IDR ${numberFormatter(record.DPP)}`}</strong></div>
           </div>
