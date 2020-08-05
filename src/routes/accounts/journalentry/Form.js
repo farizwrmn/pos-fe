@@ -63,6 +63,7 @@ const FormCounter = ({
       }
       data.storeId = lstorage.getCurrentUserStore()
       const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      data.transDate = transDate
       if (transDate < storeInfo.startPeriod) {
         message.error('This period has been closed')
         return

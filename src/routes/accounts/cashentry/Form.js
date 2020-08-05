@@ -66,6 +66,7 @@ const FormCounter = ({
       data.accountId = data.accountId ? data.accountId.key : null
       data.transType = data.transType ? data.transType.key : null
       const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      data.transDate = transDate
       if (transDate < storeInfo.startPeriod) {
         message.error('This period has been closed')
         return
