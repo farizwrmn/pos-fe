@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, DatePicker } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, DatePicker, message } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -39,6 +39,7 @@ const FormCounter = ({
   resetListItem,
   // onCancel,
   listItem,
+  storeInfo,
   // modalType,
   modalVisible,
   modalProps,
@@ -81,6 +82,11 @@ const FormCounter = ({
       data.supplierId = data.supplierId ? data.supplierId.key : null
       data.bankId = data.bankId ? data.bankId.key : null
       data.transType = data.transType ? data.transType.key : null
+      const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      if (transDate < storeInfo.startPeriod) {
+        message.error('This period has been closed')
+        return
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
