@@ -58,6 +58,16 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Margin',
+      dataIndex: 'margin',
+      key: 'margin',
+      className: styles.alignRight,
+      width: '70px',
+      render: (text, record) => {
+        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+      }
+    },
+    {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
