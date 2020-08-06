@@ -30,7 +30,8 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/cash-entry'
-          || pathname === '/bank-entry') {
+          || pathname === '/bank-entry'
+          || pathname === '/transfer-entry') {
           dispatch({
             type: 'queryExpense',
             payload: {

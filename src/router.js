@@ -996,8 +996,22 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/accounts/bankentry/'))
             }, 'finance-bank-entry')
           }
-        },
-        {
+        }, {
+          path: 'transfer-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/cashentry'))
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/supplier'))
+              cb(null, require('./routes/accounts/transferentry/'))
+            }, 'finance-transfer-entry')
+          }
+        }, {
           path: 'tools/maintenance/inventoryproduct',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
