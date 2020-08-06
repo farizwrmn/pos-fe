@@ -7,7 +7,7 @@ import { color, lstorage } from 'utils'
 import moment from 'moment'
 import Form from './Form'
 
-const Cash = ({ bankentry, accountCode, customer, supplier, dispatch, location, app }) => {
+const Cash = ({ bankentry, accountCode, customer, supplier, dispatch, location }) => {
   const { listItem, modalVisible, inputType, modalType, currentItem, currentItemList } = bankentry
 
   let currentCashier = {
@@ -55,7 +55,6 @@ const Cash = ({ bankentry, accountCode, customer, supplier, dispatch, location, 
   const { listCustomer } = customer
   const { listSupplier } = supplier
   const { listAccountCode, listAccountCodeExpense } = accountCode
-  const { storeInfo } = app
 
   const modalProps = {
     title: modalType === 'add' ? 'Add Detail' : 'Edit Detail',
@@ -113,17 +112,14 @@ const Cash = ({ bankentry, accountCode, customer, supplier, dispatch, location, 
     listItem,
     listCustomer,
     listSupplier,
-    storeInfo,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, resetFields) {
       dispatch({
-        type: `bankentry/${modalType}`,
+        type: 'bankentry/transfer',
         payload: {
-          inputType,
           data,
-          detail,
-          oldValue
+          resetFields
         }
       })
     },
@@ -226,7 +222,6 @@ Cash.propTypes = {
   pos: PropTypes.object.isRequired,
   loading: PropTypes.object,
   location: PropTypes.object,
-  app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -236,5 +231,4 @@ export default connect(({
   customer,
   supplier,
   loading,
-  pos,
-  app }) => ({ bankentry, accountCode, customer, supplier, loading, pos, app }))(Cash)
+  pos }) => ({ bankentry, accountCode, customer, supplier, loading, pos }))(Cash)

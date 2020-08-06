@@ -23,6 +23,16 @@ export async function add (params) {
   })
 }
 
+export async function transfer (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${cashier}/bankentry/transfer`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

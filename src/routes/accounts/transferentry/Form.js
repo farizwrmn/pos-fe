@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Modal, Select, message, InputNumber } from 'antd'
+import { Form, Button, Row, Col, Modal, Select, InputNumber } from 'antd'
 import { lstorage } from 'utils'
-import moment from 'moment'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -31,8 +30,6 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  storeInfo,
-  listItem,
   listAccountCode,
   form: {
     getFieldDecorator,
@@ -52,21 +49,12 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.memberId = data.memberId ? data.memberId.key : null
-      data.supplierId = data.supplierId ? data.supplierId.key : null
-      data.accountId = data.accountId ? data.accountId.key : null
-      data.transType = data.transType ? data.transType.key : null
-      const transDate = moment(data.transDate).format('YYYY-MM-DD')
-      data.transDate = transDate
-      if (transDate < storeInfo.startPeriod) {
-        message.error('This period has been closed')
-        return
-      }
+      data.from = data.from ? data.from.key : null
+      data.to = data.to ? data.to.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listItem, getFieldsValue())
-          resetFields()
+          onSubmit(data, resetFields)
         },
         onCancel () { }
       })

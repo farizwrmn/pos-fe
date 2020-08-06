@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove } from '../../services/payment/bankentry'
+import { query, add, edit, remove, transfer } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -84,6 +84,23 @@ export default modelExtend(pageModel, {
           }
         }
       })
+    },
+
+    * transfer ({ payload }, { call, put }) {
+      const response = yield call(transfer, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: []
+          }
+        })
+      } else {
+        payload.resetFields()
+        throw response
+      }
     },
 
     * delete ({ payload }, { call, put }) {
