@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Form, Button, Row, Col, Modal, Select, message, InputNumber } from 'antd'
 import { lstorage } from 'utils'
 import moment from 'moment'
-import ModalList from './Modal'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -31,20 +30,16 @@ const column = {
 
 const FormCounter = ({
   item = {},
-  showLov,
   onSubmit,
   storeInfo,
   listItem,
-  modalVisible,
-  modalProps,
   listAccountCode,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
     resetFields
-  },
-  inputType = 'E'
+  }
 }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
@@ -76,11 +71,6 @@ const FormCounter = ({
         onCancel () { }
       })
     })
-  }
-
-  const modalOpts = {
-    showLov,
-    ...modalProps
   }
 
   return (
@@ -146,7 +136,6 @@ const FormCounter = ({
           </Col>
         </Row>
       </Form>
-      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
     </div>
   )
 }
