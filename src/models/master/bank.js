@@ -36,7 +36,8 @@ export default modelExtend(pageModel, {
           return
         }
         const match = pathToRegexp('/master/paymentoption/cost/:id').exec(location.pathname)
-        if (match) {
+        if (match
+          || location.pathname === '/bank-entry') {
           dispatch({
             type: 'query',
             payload: {

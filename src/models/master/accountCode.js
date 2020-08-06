@@ -29,7 +29,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/cash-entry') {
+        if (pathname === '/cash-entry'
+          || pathname === '/bank-entry') {
           dispatch({
             type: 'queryExpense',
             payload: {
@@ -45,6 +46,15 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: {
               accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
+        if (pathname === '/bank-entry') {
+          dispatch({
+            type: 'query',
+            payload: {
               type: 'all',
               order: 'accountCode'
             }

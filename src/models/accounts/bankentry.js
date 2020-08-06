@@ -8,7 +8,7 @@ import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Cash has been saved')
+  message.success('Deposit has been saved')
 }
 
 export default modelExtend(pageModel, {
