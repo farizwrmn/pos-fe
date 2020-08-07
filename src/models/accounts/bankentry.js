@@ -97,8 +97,8 @@ export default modelExtend(pageModel, {
             listItem: []
           }
         })
-      } else {
         payload.resetFields()
+      } else {
         throw response
       }
     },
