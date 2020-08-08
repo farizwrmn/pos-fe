@@ -30,9 +30,13 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
         if (pathname === '/cash-entry'
           || pathname === '/bank-entry'
-          || pathname === '/transfer-entry') {
+          || pathname === '/transfer-entry'
+          || pathname === '/bank-recon'
+          || pathname === '/master/paymentoption'
+          || matchEdc) {
           dispatch({
             type: 'queryExpense',
             payload: {
@@ -63,11 +67,7 @@ export default modelExtend(pageModel, {
           })
         }
 
-        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
         if (pathname === '/master/account'
-          || pathname === '/master/paymentoption'
-          || pathname === '/bank-recon'
-          || matchEdc
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',

@@ -33,6 +33,26 @@ export async function transfer (params) {
   })
 }
 
+export async function queryBankRecon (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/accounting/bank-recon',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function updateBankRecon (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/accounting/bank-recon/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

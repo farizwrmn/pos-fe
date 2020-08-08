@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove, transfer } from '../../services/payment/bankentry'
+import { query, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -22,7 +22,12 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listCash: [],
     modalVisible: false,
-    listItem: []
+    listItem: [],
+    listBankRecon: [],
+    summaryBankRecon: [],
+    accountId: null,
+    from: null,
+    to: null
   },
 
   subscriptions: {
@@ -63,6 +68,52 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryBankRecon ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBankRecon, payload)
+      if (response && response.success) {
+        console.log('response.data', response.data)
+        yield put({
+          type: 'updateState',
+          payload
+        })
+        yield put({
+          type: 'querySuccessBankRecon',
+          payload: {
+            listBankRecon: response.data,
+            summaryBankRecon: response.summary,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateBankRecon ({ payload = {} }, { call, put, select }) {
+      let {
+        accountId,
+        from,
+        to
+      } = yield select(({ bankentry }) => bankentry)
+      const response = yield call(updateBankRecon, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryBankRecon',
+          payload: {
+            accountId,
+            from,
+            to
+          }
+        })
+      } else {
+        throw response
       }
     },
 
@@ -198,6 +249,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listCash,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessBankRecon (state, action) {
+      const { listBankRecon, summaryBankRecon, pagination } = action.payload
+      return {
+        ...state,
+        listBankRecon,
+        summaryBankRecon,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -2,20 +2,41 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import Form from './Form'
+import List from './List'
 
 const Cash = ({ bankentry, accountCode, dispatch }) => {
-  const { currentItem } = bankentry
+  const {
+    listBankRecon,
+    summaryBankRecon,
+    currentItem,
+    pagination,
+    from,
+    to
+  } = bankentry
   const { listAccountCode } = accountCode
 
   const formProps = {
     item: currentItem,
+    from,
+    to,
     listAccountCode,
-    onSubmit (data, resetFields) {
+    onSubmit (data) {
       dispatch({
-        type: 'bankentry/transfer',
+        type: 'bankentry/queryBankRecon',
+        payload: data
+      })
+    }
+  }
+
+  const listProps = {
+    listBankRecon,
+    summaryBankRecon,
+    pagination,
+    onSubmit (item) {
+      dispatch({
+        type: 'bankentry/updateBankRecon',
         payload: {
-          data,
-          resetFields
+          id: item.id
         }
       })
     }
@@ -24,6 +45,7 @@ const Cash = ({ bankentry, accountCode, dispatch }) => {
   return (
     <div className="content-inner">
       <Form {...formProps} />
+      <List {...listProps} />
     </div>
   )
 }

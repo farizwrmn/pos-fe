@@ -1012,7 +1012,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/accounts/transferentry/'))
+              cb(null, require('./routes/accounts/bankrecon/'))
             }, 'finance-bank-recon')
           }
         }, {
