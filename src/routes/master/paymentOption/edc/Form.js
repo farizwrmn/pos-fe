@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, TreeSelect } from 'antd'
+import { Form, Input, Select, Button, Row, Col, Modal, TreeSelect } from 'antd'
 import { arrayToTree } from 'utils'
 
 const FormItem = Form.Item
 const TreeNode = TreeSelect.TreeNode
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -32,6 +33,7 @@ const FormCounter = ({
   onSubmit,
   onCancel,
   modalType,
+  listAccountCodeLov,
   button,
   form: {
     getFieldDecorator,
@@ -40,6 +42,7 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const listOptions = (listAccountCodeLov || []).length > 0 ? (listAccountCodeLov || []).map(c => <Option value={c.id} key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -71,14 +74,13 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.accountId = data.accountId ? data.accountId.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          console.log('item', item)
-
           onSubmit({
-            ...data,
-            ...item
+            ...item,
+            ...data
           })
           // setTimeout(() => {
           resetFields()
@@ -106,7 +108,7 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('paymentOption', {
-              initialValue: item.typeCode ? item.typeCode : 'C',
+              initialValue: item.paymentOption ? item.paymentOption : 'C',
               rules: [
                 {
                   required: true
@@ -137,6 +139,27 @@ const FormCounter = ({
                 }
               ]
             })(<Input maxLength={60} />)}
+          </FormItem>
+          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountId', {
+              initialValue: item && item.accountId ? {
+                key: item.accountId,
+                name: `${item.accountCode.accountName || ''} (${item.accountCode.accountCode})`
+              } : {},
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Choose Account"
+              labelInValue
+              filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+            >{listOptions}
+            </Select>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

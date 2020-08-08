@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { queryCode, query, add, edit, remove } from '../../services/master/accountCode'
 import { pageModel } from './../common'
 
@@ -61,8 +62,11 @@ export default modelExtend(pageModel, {
             }
           })
         }
+
+        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
         if (pathname === '/master/account'
           || pathname === '/master/paymentoption'
+          || matchEdc
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
