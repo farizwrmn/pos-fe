@@ -112,6 +112,7 @@ export default modelExtend(pageModel, {
             to
           }
         })
+        message.success('Bank reconciliation successfully updated')
       } else {
         throw response
       }
