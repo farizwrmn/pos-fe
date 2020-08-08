@@ -66,6 +66,7 @@ export default modelExtend(pageModel, {
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
         if (pathname === '/master/account'
           || pathname === '/master/paymentoption'
+          || pathname === '/bank-recon'
           || matchEdc
           || pathname === '/journal-entry') {
           dispatch({

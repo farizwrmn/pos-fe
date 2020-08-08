@@ -5,11 +5,11 @@ import Form from './Form'
 
 const Cash = ({ bankentry, accountCode, dispatch }) => {
   const { currentItem } = bankentry
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCode } = accountCode
 
   const formProps = {
     item: currentItem,
-    listAccountCode: listAccountCodeLov,
+    listAccountCode,
     onSubmit (data, resetFields) {
       dispatch({
         type: 'bankentry/transfer',
