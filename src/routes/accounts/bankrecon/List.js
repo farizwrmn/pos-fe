@@ -3,41 +3,73 @@ import PropTypes from 'prop-types'
 import {
   currencyFormatter
 } from 'utils/string'
-import { Row, Col } from 'antd'
+import { Row, Col, Card, Button, Modal } from 'antd'
 
 const List = ({
+  loading,
   summaryBankRecon,
   listBankRecon,
   onSubmit
 }) => {
-  console.log('summaryBankRecon', summaryBankRecon)
   return (
     <div>
-      {summaryBankRecon && summaryBankRecon[0] && (
-        <div>
-          {`Saldo: ${currencyFormatter(summaryBankRecon[0].amount)}`}
-        </div>
-      )}
-      {listBankRecon && listBankRecon.map((item) => {
-        return (
-          <div>
-            <Row>
-              <Col span={12}>
-                <div>{item.transDate}</div>
-              </Col>
-              <Col span={12}>
-                {item.debit && <div>{`(DB) ${currencyFormatter(item.debit)}`}</div>}
-                {item.credit && <div>{`(CR) ${currencyFormatter(item.credit)}`}</div>}
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <div>{item.transactionType}</div>
-              </Col>
-            </Row>
-          </div>
-        )
-      })}
+      <Row>
+        <Col md={24} lg={12}>
+          {summaryBankRecon && summaryBankRecon[0] && (
+            <div>
+              <Card
+                title="Journal"
+                style={{ marginBottom: '1em' }}
+              >
+                <div>
+                  {`Saldo: ${currencyFormatter(summaryBankRecon[0].amount)}`}
+                </div>
+              </Card>
+            </div>
+          )}
+        </Col>
+      </Row>
+      <Row>
+        <Col md={24} lg={12}>
+          {listBankRecon && listBankRecon.map((item) => {
+            return (
+              <div>
+                <Card
+                  title={item.transactionType}
+                  extra={
+                    <Button
+                      shape="circle"
+                      type="primary"
+                      loading={loading.effects['bankentry/updateBankRecon']}
+                      icon="check"
+                      onClick={() => {
+                        Modal.confirm({
+                          title: 'Approve bank recon',
+                          onOk () {
+                            onSubmit(item)
+                          }
+                        })
+                      }}
+                    />
+                  }
+                  style={{ marginBottom: '1em' }}
+                >
+                  <Row>
+                    <Col span={12}>
+                      <div>{item.transDate}</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.debit && <div>{`(DB) ${currencyFormatter(item.debit)}`}</div>}
+                      {item.credit && <div>{`(CR) ${currencyFormatter(item.credit)}`}</div>}
+                    </Col>
+                  </Row>
+                </Card>
+              </div>
+            )
+          })}
+        </Col>
+        <Col md={24} lg={12} />
+      </Row>
     </div>
   )
 }

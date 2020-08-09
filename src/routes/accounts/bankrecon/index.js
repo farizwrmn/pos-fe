@@ -4,7 +4,7 @@ import { connect } from 'dva'
 import Form from './Form'
 import List from './List'
 
-const Cash = ({ bankentry, accountCode, dispatch }) => {
+const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
   const {
     listBankRecon,
     summaryBankRecon,
@@ -29,10 +29,12 @@ const Cash = ({ bankentry, accountCode, dispatch }) => {
   }
 
   const listProps = {
+    loading,
     listBankRecon,
     summaryBankRecon,
     pagination,
     onSubmit (item) {
+      console.log('item', item)
       dispatch({
         type: 'bankentry/updateBankRecon',
         payload: {

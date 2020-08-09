@@ -22,10 +22,7 @@ const formItemLayout = {
 
 const column = {
   xs: { span: 24 },
-  sm: { span: 12 },
-  md: { span: 12 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  md: { span: 10 }
 }
 
 const FormCounter = ({
@@ -92,6 +89,8 @@ const FormCounter = ({
                 <RangePicker size="large" format="DD-MMM-YYYY" />
               )}
             </FormItem>
+          </Col>
+          <Col span={2}>
             <FormItem>
               {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
               <Button type="primary" icon="search" onClick={handleSubmit} style={{ float: 'right' }} />
