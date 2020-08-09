@@ -47,39 +47,6 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
           return text || 0
         }
         return <Icon type="loading" />
-      },
-      onCellClick: (record) => {
-        console.log('click', record.id)
-        dispatch({
-          type: 'updateState',
-          payload: {
-            countStoreList: []
-          }
-        })
-        dispatch({
-          type: 'productstock/showProductStoreQty',
-          payload: {
-            data: [record]
-          }
-        })
-      }
-    },
-    {
-      title: 'Cost Price',
-      dataIndex: 'costPrice',
-      key: 'costPrice',
-      className: styles.alignRight,
-      width: '150px',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Margin',
-      dataIndex: 'margin',
-      key: 'margin',
-      className: styles.alignRight,
-      width: '70px',
-      render: (text, record) => {
-        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
       }
     },
     {
@@ -106,6 +73,24 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       title: 'Category',
       dataIndex: 'categoryName',
       key: 'categoryName'
+    },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      className: styles.alignRight,
+      width: '150px',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Margin',
+      dataIndex: 'margin',
+      key: 'margin',
+      className: styles.alignRight,
+      width: '70px',
+      render: (text, record) => {
+        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+      }
     },
     {
       title: 'Sell Price',
@@ -211,6 +196,21 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
         simple
         scroll={{ x: 2500 }}
         rowKey={record => record.id}
+        onRowClick={(record) => {
+          console.log('click', record.id)
+          dispatch({
+            type: 'updateState',
+            payload: {
+              countStoreList: []
+            }
+          })
+          dispatch({
+            type: 'productstock/showProductStoreQty',
+            payload: {
+              data: [record]
+            }
+          })
+        }}
       />
     </div>
   )
