@@ -1,23 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {
+  currencyFormatter
+} from 'utils/string'
+import { Row, Col } from 'antd'
 
 const List = ({
   summaryBankRecon,
   listBankRecon,
   onSubmit
 }) => {
+  console.log('summaryBankRecon', summaryBankRecon)
   return (
     <div>
       {summaryBankRecon && summaryBankRecon[0] && (
         <div>
-          {summaryBankRecon[0].amount}
+          {`Saldo: ${currencyFormatter(summaryBankRecon[0].amount)}`}
         </div>
       )}
       {listBankRecon && listBankRecon.map((item) => {
         return (
           <div>
-            <div>{item.debit}</div>
-            <div>{item.credit}</div>
+            <Row>
+              <Col span={12}>
+                <div>{item.transDate}</div>
+              </Col>
+              <Col span={12}>
+                {item.debit && <div>{`(DB) ${currencyFormatter(item.debit)}`}</div>}
+                {item.credit && <div>{`(CR) ${currencyFormatter(item.credit)}`}</div>}
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <div>{item.transactionType}</div>
+              </Col>
+            </Row>
           </div>
         )
       })}
