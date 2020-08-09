@@ -90,7 +90,7 @@ const ListService = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
         </span>)
     },
     {
-      title: 'Service Cost',
+      title: 'Service Price',
       dataIndex: 'serviceCost',
       key: 'serviceCost',
       width: 125,

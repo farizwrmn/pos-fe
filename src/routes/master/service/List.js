@@ -40,7 +40,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Service Cost',
+      title: 'Service Price',
       dataIndex: 'serviceCost',
       key: 'serviceCost',
       className: styles.alignRight,
