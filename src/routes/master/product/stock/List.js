@@ -8,7 +8,14 @@ import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) => {
+const List = ({ ...tableProps,
+  dispatch,
+  loadingModel,
+  editItem,
+  deleteItem,
+  listCategory,
+  listBrand
+}) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -66,13 +73,17 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
 
     {
       title: 'Brand',
-      dataIndex: 'brandName',
-      key: 'brandName'
+      dataIndex: 'brandId',
+      key: 'brandId',
+      filters: listBrand ? listBrand.map(item => ({ text: item.brandName, value: item.id })) : [],
+      render: (text, record) => record.brandName
     },
     {
       title: 'Category',
-      dataIndex: 'categoryName',
-      key: 'categoryName'
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      filters: listCategory ? listCategory.map(item => ({ text: item.categoryName, value: item.id })) : [],
+      render: (text, record) => record.categoryName
     },
     {
       title: 'Cost Price',
