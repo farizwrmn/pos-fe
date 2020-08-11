@@ -32,7 +32,7 @@ const cardStyle = {
 }
 
 const gridStyle = {
-  width: `${(1 / 3) * 100}%`,
+  width: `${(1 / 2) * 100}%`,
   padding: '10px 8px 5px 8px',
   textAlign: 'center'
 }

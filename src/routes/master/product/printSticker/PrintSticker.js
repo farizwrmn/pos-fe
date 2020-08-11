@@ -12,7 +12,7 @@ const PrintSticker = ({ stickers }) => {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           let row = []
           const productCode = tableBody[key].info.productCode.toString()
-          const productName = tableBody[key].info.productName.slice(0, 20).toString()
+          const productName = tableBody[key].info.productName.slice(0, 60).toString()
           row.push({ text: productName, style: 'productName' })
           row.push({ text: productCode, style: 'productCode' })
           // row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
@@ -34,7 +34,8 @@ const PrintSticker = ({ stickers }) => {
       margin: [0, 7, 0, 2]
     },
     productName: {
-      fontSize: 7,
+      fontSize: 5,
+      margin: [0, 5],
       alignment: 'center'
     },
     productCode: {
@@ -84,7 +85,7 @@ const PrintSticker = ({ stickers }) => {
     pageMargins: [MARGIN / 2, MARGIN * 2],
     tableStyle: styles,
     tableBody: getList,
-    // layout: 'noBorders',
+    layout: 'noBorders',
     footer: {}
   }
 
