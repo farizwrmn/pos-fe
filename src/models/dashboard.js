@@ -48,9 +48,9 @@ export default {
           dispatch({
             type: 'query',
             payload: {
-              start: moment().add(-6, 'days').format('YYYY-MM-DD'),
+              start: moment().add(-29, 'days').format('YYYY-MM-DD'),
               to: moment().format('YYYY-MM-DD'),
-              typeText: 'Weekly'
+              typeText: 'Last 30 Days'
             }
           })
         }

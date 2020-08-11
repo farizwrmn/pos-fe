@@ -13,7 +13,7 @@ const SalesDetail = ({ ...other }) => {
         return (
           <div>
             <div>{moment(record.createdAt).format('lll')}</div>
-            <div>{`${text} - ${record.productName}`}</div>
+            <div>{`${text || record.serviceCode} - ${record.productName || record.serviceName}`}</div>
             <div>{`${record.qty} x ${numberFormatter(record.DPP / record.qty)}`}<strong style={{ float: 'right' }}>{`IDR ${numberFormatter(record.DPP)}`}</strong></div>
           </div>
         )

@@ -121,17 +121,22 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
     pagination,
     dispatch,
     storeInfo,
+    listCategory,
+    listBrand,
     loadingModel: loading,
     loading: loading.effects['productstock/query'],
     location,
-    onChange (page) {
+    onChange (page, filters) {
+      const { brandId, categoryId } = filters
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize
+          pageSize: page.pageSize,
+          brandId,
+          categoryId
         }
       }))
     },

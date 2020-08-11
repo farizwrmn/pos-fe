@@ -8,7 +8,14 @@ import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) => {
+const List = ({ ...tableProps,
+  dispatch,
+  loadingModel,
+  editItem,
+  deleteItem,
+  listCategory,
+  listBrand
+}) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -47,39 +54,6 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
           return text || 0
         }
         return <Icon type="loading" />
-      },
-      onCellClick: (record) => {
-        console.log('click', record.id)
-        dispatch({
-          type: 'updateState',
-          payload: {
-            countStoreList: []
-          }
-        })
-        dispatch({
-          type: 'productstock/showProductStoreQty',
-          payload: {
-            data: [record]
-          }
-        })
-      }
-    },
-    {
-      title: 'Cost Price',
-      dataIndex: 'costPrice',
-      key: 'costPrice',
-      className: styles.alignRight,
-      width: '150px',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Margin',
-      dataIndex: 'margin',
-      key: 'margin',
-      className: styles.alignRight,
-      width: '70px',
-      render: (text, record) => {
-        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
       }
     },
     {
@@ -99,13 +73,35 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
 
     {
       title: 'Brand',
-      dataIndex: 'brandName',
-      key: 'brandName'
+      dataIndex: 'brandId',
+      key: 'brandId',
+      filters: listBrand ? listBrand.map(item => ({ text: item.brandName, value: item.id })) : [],
+      render: (text, record) => record.brandName
     },
     {
       title: 'Category',
-      dataIndex: 'categoryName',
-      key: 'categoryName'
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      filters: listCategory ? listCategory.map(item => ({ text: item.categoryName, value: item.id })) : [],
+      render: (text, record) => record.categoryName
+    },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      className: styles.alignRight,
+      width: '150px',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Margin',
+      dataIndex: 'margin',
+      key: 'margin',
+      className: styles.alignRight,
+      width: '70px',
+      render: (text, record) => {
+        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+      }
     },
     {
       title: 'Sell Price',
@@ -211,6 +207,21 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
         simple
         scroll={{ x: 2500 }}
         rowKey={record => record.id}
+        onRowClick={(record) => {
+          console.log('click', record.id)
+          dispatch({
+            type: 'updateState',
+            payload: {
+              countStoreList: []
+            }
+          })
+          dispatch({
+            type: 'productstock/showProductStoreQty',
+            payload: {
+              data: [record]
+            }
+          })
+        }}
       />
     </div>
   )

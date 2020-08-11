@@ -147,7 +147,6 @@ class FormPayment extends React.Component {
         }
       })
     }
-    console.log('listAmount', listAmount)
 
     const listProps = {
       cashierBalance,
