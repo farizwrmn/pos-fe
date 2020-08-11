@@ -70,7 +70,7 @@ const styles = {
   },
   productName: {
     fontSize: 5,
-    margin: [0, 5],
+    margin: [0, 0, 0, 5],
     alignment: 'center'
   },
   productCode: {
