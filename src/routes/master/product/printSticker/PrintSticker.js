@@ -63,7 +63,6 @@ const styles = {
     fontSize: 10
   },
   sellPrice: {
-    bold: true,
     alignment: 'right',
     fontSize: 5,
     margin: [5, 0]
