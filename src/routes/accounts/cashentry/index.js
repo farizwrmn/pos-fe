@@ -212,6 +212,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     listItem,
     listCustomer,
     listSupplier,
+    storeInfo,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, detail, oldValue) {

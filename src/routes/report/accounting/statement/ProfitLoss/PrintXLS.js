@@ -117,7 +117,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     COGS: [],
     EXPS: [],
     OINC: [],
-    OXPS: [],
+    OEXP: [],
     ...groubedByTeam
   }
 
@@ -166,14 +166,14 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     tableBody.push(groupOINCBody)
     // End - OINC
 
-    // Start - OXPS
+    // Start - OEXP
     const { groupBody: groupOXPSBody, total: totalOXPS } = groupByType(group, {
-      type: 'OXPS',
+      type: 'OEXP',
       bodyTitle: 'BEBAN NON OPERASIONAL',
       totalTitle: 'Jumlah Beban Non Operasional'
     })
     tableBody.push(groupOXPSBody)
-    // End - OXPS
+    // End - OEXP
 
     // Start - Jumlah Non Operasional
     const nonOperationalRevenue = totalOINC + totalOXPS
@@ -210,7 +210,7 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     tableTitle,
     tableBody,
     tableFooter,
-    data: listTrans,
+    data: tableBody,
     fileName: 'Accounting-Detail-Summary'
   }
 

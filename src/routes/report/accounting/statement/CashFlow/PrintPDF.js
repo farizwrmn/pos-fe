@@ -59,6 +59,45 @@ const createTableBody = (tabledata, bodyStruct) => {
   return { data: groupBody, total: grandTotal }
 }
 
+const createProfitLossTableBody = (tabledata, {
+  bodyTitle,
+  totalTitle
+}) => {
+  let groupBody = []
+  const rows = tabledata
+  groupBody.push([
+    { text: '', alignment: 'right', fontSize: 11 },
+    { text: bodyTitle, style: 'tableHeader', alignment: 'left', fontSize: 11 },
+    { text: '', alignment: 'right', fontSize: 11 },
+    { text: '', alignment: 'right', fontSize: 11 }
+  ])
+  for (let key in rows) {
+    if (rows.hasOwnProperty(key)) {
+      let item = rows[key]
+      let row = [
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: (item.accountName || '').toString(), alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ]
+      groupBody.push(row)
+    }
+  }
+  const total = rows.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+  groupBody.push([
+    { text: '', alignment: 'left', fontSize: 11 },
+    { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
+    { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+    { text: '', alignment: 'left', fontSize: 11 }
+  ])
+  return { total, groupBody }
+}
+
+const getTotal = (data = []) => {
+  if (!data) return 0
+  return data.reduce((prev, next) => prev + parseFloat(next.debit ? (next.debit * -1) : next.credit || 0), 0)
+}
+
 const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   // Declare Variable
   const styles = {
@@ -86,6 +125,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       color: 'black',
       margin: [0, 0, 0, 15]
     },
+    tableBody: {
+      fontSize: 13,
+      color: 'black',
+      margin: [0, 15, 0, 15]
+    },
     tableSeparator: {
       bold: true,
       fontSize: 13,
@@ -102,7 +146,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN NERACA',
+            text: 'LAPORAN ARUS KAS',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -176,123 +220,107 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
   const groubedByTeam = groupBy(listTrans, 'accountType')
   const group = {
+    // BalanceSheet
     BANK: [],
-    AREC: [],
-    INTR: [],
-    OCAS: [],
+    AREC: [], // 4 - Piutang Usaha
+    INTR: [], // 5 - Persediaan
+    OCAS: [], // 6 - Aset Lancar Lainnya
 
-    FASS: [],
-    DEPR: [],
-    OASS: [],
+    FASS: [], // 7 - Aset Tetap
+    DEPR: [], // 1 - Penyusutan
+    OASS: [], // 8 - Aset Lainnya
 
-    APAY: [],
-    OCLY: [],
-    LTLY: [],
+    APAY: [], // 2 - Hutang Usaha
+    OCLY: [], // 3 - Kewajiban Jangka Pendek
+    LTLY: [], // 9 - Kewajiban Jangka Panjang
 
-    EQTY: [],
+    EQTY: [], // 10 - Modal
+
+    // ProfitLoss
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
     ...groubedByTeam
   }
   try {
-    const { data: groupBANKBody } = createTableBody(
-      group,
+    const fixRevenue = listTrans.filter(filtered => filtered.accountType === 'REVE'
+      || filtered.accountType === 'COGS'
+      || filtered.accountType === 'EXPS'
+      || filtered.accountType === 'OINC'
+      || filtered.accountType === 'OEXP')
+      .reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+    const {
+      groupBody: groupOperationBody
+      // total: totalOperation
+    }
+      = createProfitLossTableBody(
+        [
+          {
+            accountName: 'Laba/Rugi',
+            credit: fixRevenue
+          },
+          {
+            accountName: 'Tambah Akumulasi Penyusutan',
+            credit: getTotal(group.DEPR)
+          },
+          {
+            accountName: 'Tambah Hutang Usaha',
+            credit: getTotal(group.APAY)
+          },
+          {
+            accountName: 'Tambah Kewajiban Jangka Pendek',
+            credit: getTotal(group.OCLY)
+          },
+          {
+            accountName: 'Kurang Piutang Usaha',
+            credit: getTotal(group.AREC)
+          },
+          {
+            accountName: 'Kurang Persediaan',
+            credit: getTotal(group.INTR)
+          },
+          {
+            accountName: 'Kurang Aset Lancar Lainnya',
+            credit: getTotal(group.OCAS)
+          }
+        ],
+        { bodyTitle: 'Aktifitas Operasi', totalTitle: 'Total Aktifitas Operasi' })
+
+    const {
+      groupBody: groupInvestmentBody
+      // total: totalInvestment
+    } = createProfitLossTableBody(
       [
         {
-          bodyTitle: 'ASET',
-          totalTitle: 'Jumlah Aset',
-          level: 0,
-          child: [
-            {
-              bodyTitle: 'ASET LANCAR',
-              level: 1,
-              totalTitle: 'Jumlah Aset Lancar',
-              child: [
-                {
-                  type: 'BANK',
-                  level: 2,
-                  bodyTitle: 'Kas dan Setara Kas',
-                  totalTitle: 'Jumlah Kas dan Setara Kas'
-                },
-                {
-                  type: 'AREC',
-                  level: 2,
-                  bodyTitle: 'Piutang Usaha',
-                  totalTitle: 'Jumlah Piutang Usaha'
-                },
-                {
-                  type: 'INTR',
-                  level: 2,
-                  bodyTitle: 'Persediaan',
-                  totalTitle: 'Jumlah Persediaan'
-                },
-                {
-                  type: 'OCAS',
-                  level: 2,
-                  bodyTitle: 'Aset Lancar Lainnya',
-                  totalTitle: 'Jumlah Aset Lancar Lainnya'
-                }
-              ]
-            },
-            {
-              bodyTitle: 'ASET TIDAK LANCAR',
-              level: 1,
-              totalTitle: 'Jumlah Aset Tidak Lancar',
-              child: [
-                {
-                  type: 'FASS',
-                  level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori'
-                },
-                {
-                  type: 'DEPR',
-                  level: 2,
-                  bodyTitle: 'Akumulasi Penyusutan',
-                  totalTitle: 'Jumlah Akumulasi Penyusutan'
-                }
-              ]
-            }
-          ]
+          accountName: 'Kurang Aset Tetap',
+          credit: getTotal(group.FASS)
         },
         {
-          bodyTitle: 'KEWAJIBAN DAN EKUITAS',
-          totalTitle: 'Jumlah Kewajiban dan Ekuitas',
-          level: 0,
-          child: [
-            {
-              bodyTitle: 'KEWAJIBAN JANGKA PENDEK',
-              level: 1,
-              totalTitle: 'Jumlah Kewajiban Jangka Pendek',
-              child: [
-                {
-                  type: 'APAY',
-                  level: 2,
-                  bodyTitle: 'Hutang Usaha',
-                  totalTitle: 'Jumlah Hutang Usaha'
-                },
-                {
-                  type: 'OCLY',
-                  level: 2,
-                  bodyTitle: 'Kewajiban Jangka Pendek Lainnya',
-                  totalTitle: 'Jumlah Kewajiban Jangka Pendek Lainnya'
-                }
-              ]
-            },
-            {
-              type: 'LTLY',
-              level: 1,
-              bodyTitle: 'Kewajiban Jangka Panjang',
-              totalTitle: 'Jumlah Kewajiban Jangka Panjang'
-            },
-            {
-              type: 'EQTY',
-              level: 1,
-              bodyTitle: 'Ekuitas',
-              totalTitle: 'Jumlah Ekuitas'
-            }
-          ]
+          accountName: 'Kurang Aset Lainnya',
+          credit: getTotal(group.OASS)
         }
-      ])
-    tableBody = tableBody.concat(groupBANKBody)
+      ],
+      { bodyTitle: 'Investasi', totalTitle: 'Total Investasi' })
+    const {
+      groupBody: groupFinancingBody
+      // total: totalFinancing
+    } = createProfitLossTableBody(
+      [
+        {
+          accountName: 'Tambah Kewajiban Jangka Panjang',
+          credit: getTotal(group.LTLY)
+        },
+        {
+          accountName: 'Tambah Modal',
+          credit: getTotal(group.EQTY)
+        }
+      ],
+      { bodyTitle: 'Pendanaan', totalTitle: 'Total Pendanaan' })
+    tableBody = tableBody.concat(groupOperationBody)
+    tableBody = tableBody.concat(groupInvestmentBody)
+    tableBody = tableBody.concat(groupFinancingBody)
   } catch (e) {
     console.log(e)
   }

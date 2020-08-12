@@ -33,8 +33,8 @@ const Profit = ({ ...other }) => {
       render: (text, record) => {
         return (
           <div>
-            <div>Harga: {formatNumberIndonesia(record.valuePrice / record.posQty)}</div>
-            <div>Modal: {formatNumberIndonesia(record.posPrice / record.posQty)}</div>
+            <div>Harga: {formatNumberIndonesia(record.sellPrice)}</div>
+            <div>Modal: {formatNumberIndonesia(record.amount / record.count)}</div>
           </div>
         )
       }

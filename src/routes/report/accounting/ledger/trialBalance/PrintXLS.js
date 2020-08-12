@@ -92,7 +92,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN HISTORY BUKU BESAR', alignment: styles.alignmentCenter, font: styles.title },
+    { value: 'LAPORAN NERACA SALDO', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
     { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: styles.alignmentCenter, font: styles.title }
   ]

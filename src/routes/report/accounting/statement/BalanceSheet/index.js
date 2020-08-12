@@ -12,7 +12,7 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
   const { listTrans, from, to, productCode } = accountingStatementReport
   const { user, storeInfo } = app
   const browseProps = {
-    loading: loading.effects['accountingStatementReport/queryCashFlow'],
+    loading: loading.effects['accountingStatementReport/queryBalanceSheet'],
     dataSource: listTrans,
     listTrans,
     storeInfo,
@@ -34,7 +34,7 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
         type: 'accountingStatementReport/setListNull'
       })
     },
-    onDateChange (from, to) {
+    onDateChange (to) {
       // dispatch({
       //   type: 'accountingStatementReport/queryBalanceSheet',
       //   payload: {
@@ -54,7 +54,6 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
         pathname,
         query: {
           ...query,
-          from,
           to
         }
       }))

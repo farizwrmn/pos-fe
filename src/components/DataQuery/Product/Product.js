@@ -183,7 +183,7 @@ const Product = ({
             <FormItem>
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
-            <Link target="_blank" to={'/master/product/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
+            <Link target="_blank" to={'/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
           </Form>}
           <Table
             {...tableProps}

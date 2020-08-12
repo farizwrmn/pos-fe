@@ -4,12 +4,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Modal } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { RangePicker } = DatePicker
+const { MonthPicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -28,12 +28,30 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, onListReset, form: { validateFields, getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
+  const handleChange = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      if (data.from && data.to) {
+        const from = data.from.startOf('month').format('YYYY-MM-DD')
+        const to = data.to.endOf('month').format('YYYY-MM-DD')
+        onDateChange(from, to)
+      } else {
+        Modal.warning({
+          title: 'Cannot find parameter',
+          content: 'Try to reset the form',
+          onOk () {
+          },
+          onCancel () {
+
+          }
+        })
+      }
+    })
   }
 
   const handleReset = () => {
@@ -55,15 +73,38 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker', {
-            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null
+        <FilterItem label="From">
+          {getFieldDecorator('from', {
+            initialValue: from ? moment.utc(from, 'YYYY-MM') : null
           })(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <MonthPicker
+              size="large"
+              format="MMM-YYYY"
+              style={{ marginBottom: '1em' }}
+            />
+          )}
+        </FilterItem>
+        <FilterItem label="To">
+          {getFieldDecorator('to', {
+            initialValue: to ? moment.utc(to, 'YYYY-MM') : null
+          })(
+            <MonthPicker
+              size="large"
+              format="MMM-YYYY"
+            />
           )}
         </FilterItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleChange()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"

@@ -69,7 +69,7 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
     loading: loading.effects['fifo/queryFifoValues'],
     footer: () => {
       return (
-        <a target="_blank" href="/master/product/stock?activeKey=1">
+        <a target="_blank" href="/stock?activeKey=1">
           Go to report
         </a>
       )

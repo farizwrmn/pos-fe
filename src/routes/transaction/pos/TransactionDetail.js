@@ -44,6 +44,7 @@ const TransactionDetail = ({
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   const modalEditPayment = (record) => {
+    console.log('record', record)
     dispatch({
       type: 'pos/getMechanics'
     })
