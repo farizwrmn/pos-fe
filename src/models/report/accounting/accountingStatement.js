@@ -84,7 +84,6 @@ export default {
           pagination: {
             total: data.total
           },
-          from: payload.from,
           to: payload.to
         }
       })

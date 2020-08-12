@@ -12,3 +12,16 @@ export const TYPE_CONSIGNMENT = 2
 // NOTIFICATION
 export const HELP_NOTIFICATION_COPY = 'Copy endpoint to your fingerprint driver'
 export const HELP_NOTIFICATION_ERROR = 'Endpoint is not found, please refresh'
+
+// ACCOUNTING TRANSACTION TYPE
+export const SALES = 'SALES'
+export const JOURNALENTRY = 'JREN'
+export const EXPENSE = 'CASHE'
+export const DEPOSITE = 'BANKE'
+export const SALESPAY = 'SPAY'
+export const PURCHASE = 'PURC'
+export const PPAY = 'PPAY'
+export const AJIN = 'AJIN'
+export const AJOUT = 'AJOUT'
+export const RBB = 'RBB'
+export const RJJ = 'RJJ'

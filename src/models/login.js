@@ -84,13 +84,19 @@ export default {
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'editPayment') {
-          yield put({
-            type: 'pos/checkQuantityEditProduct',
-            payload: {
-              data: modalLoginData,
-              setting
-            }
-          })
+          if (modalLoginData && modalLoginData.typeCode === 'P') {
+            yield put({
+              type: 'pos/checkQuantityEditProduct',
+              payload: {
+                data: modalLoginData,
+                setting
+              }
+            })
+          }
+          if (modalLoginData && modalLoginData.typeCode === 'S') {
+            yield put({ type: 'pos/serviceEdit', payload: modalLoginData })
+            yield put({ type: 'pos/hideServiceListModal' })
+          }
         } else {
           yield put({ type: 'updateState', payload: { modalLoginData: {} } })
         }

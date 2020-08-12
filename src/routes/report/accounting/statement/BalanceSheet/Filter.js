@@ -9,8 +9,6 @@ import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { RangePicker } = DatePicker
-
 const leftColumn = {
   xs: 24,
   sm: 12,
@@ -29,11 +27,12 @@ const rightColumn = {
 }
 
 const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-  const { from, to } = printProps
-  const handleChange = (value) => {
-    const from = value[0].format('YYYY-MM-DD')
-    const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
+  const { to } = printProps
+  const handleChange = (date) => {
+    if (date) {
+      const to = date.format('YYYY-MM-DD')
+      onDateChange(to)
+    }
   }
 
   const handleReset = () => {
@@ -56,10 +55,10 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
     <Row>
       <Col {...leftColumn} >
         <FilterItem label="Trans Date">
-          {getFieldDecorator('rangePicker', {
-            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null
+          {getFieldDecorator('to', {
+            initialValue: to ? moment.utc(to, 'YYYY-MM-DD') : null
           })(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <DatePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
           )}
         </FilterItem>
       </Col>

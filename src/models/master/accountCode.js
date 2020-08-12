@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { queryCode, query, add, edit, remove } from '../../services/master/accountCode'
 import { pageModel } from './../common'
 
@@ -29,7 +30,13 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/cash-entry') {
+        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+        if (pathname === '/cash-entry'
+          || pathname === '/bank-entry'
+          || pathname === '/transfer-entry'
+          || pathname === '/bank-recon'
+          || pathname === '/master/paymentoption'
+          || matchEdc) {
           dispatch({
             type: 'queryExpense',
             payload: {
@@ -50,8 +57,17 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/bank-entry') {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
+
         if (pathname === '/master/account'
-          || pathname === '/master/paymentoption'
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',

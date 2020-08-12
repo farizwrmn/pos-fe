@@ -166,7 +166,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     COGS: [],
     EXPS: [],
     OINC: [],
-    OXPS: [],
+    OEXP: [],
     ...groubedByTeam
   }
   try {
@@ -214,14 +214,14 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     tableBody = tableBody.concat(groupOINCBody)
     // End - OINC
 
-    // Start - OXPS
+    // Start - OEXP
     const { groupBody: groupOXPSBody, total: totalOXPS } = createTableBody(group, {
-      type: 'OXPS',
+      type: 'OEXP',
       bodyTitle: 'BEBAN NON OPERASIONAL',
       totalTitle: 'Jumlah Beban Non Operasional'
     })
     tableBody = tableBody.concat(groupOXPSBody)
-    // End - OXPS
+    // End - OEXP
 
     const nonOperationalRevenue = totalOINC + totalOXPS
     const fixRevenue = operationalRevenue + nonOperationalRevenue

@@ -12,12 +12,8 @@ const Report = ({ dispatch, location }) => {
   const { pathname } = location
 
   const changeTab = (pathname) => {
-    const { query } = location
     dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query
-      }
+      pathname
     }))
   }
   return (

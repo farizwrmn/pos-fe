@@ -196,7 +196,7 @@ const Routers = function ({ history, app }) {
             }, 'master-product-category')
           }
         }, {
-          path: 'master/product/stock',
+          path: '/stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/productstock'))
@@ -209,6 +209,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/master/product/stock/'))
             }, 'master-product-stock')
           }
@@ -336,6 +337,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption/edc/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/edc/'))
@@ -995,8 +997,25 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/accounts/bankentry/'))
             }, 'finance-bank-entry')
           }
-        },
-        {
+        }, {
+          path: 'transfer-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/accounts/transferentry/'))
+            }, 'finance-transfer-entry')
+          }
+        }, {
+          path: 'bank-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/accounts/bankrecon/'))
+            }, 'finance-bank-recon')
+          }
+        }, {
           path: 'tools/maintenance/inventoryproduct',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

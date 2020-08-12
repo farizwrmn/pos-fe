@@ -131,7 +131,7 @@ const formService = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
-          <FormItem label="Service Cost" hasFeedback {...formItemLayout}>
+          <FormItem label="Service Price" hasFeedback {...formItemLayout}>
             {getFieldDecorator('serviceCost', {
               initialValue: item.serviceCost,
               rules: [

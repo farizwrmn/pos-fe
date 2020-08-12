@@ -129,7 +129,6 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',

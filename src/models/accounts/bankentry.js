@@ -3,12 +3,12 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove } from '../../services/payment/bankentry'
+import { query, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Cash has been saved')
+  message.success('Deposit has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -22,7 +22,12 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listCash: [],
     modalVisible: false,
-    listItem: []
+    listItem: [],
+    listBankRecon: [],
+    summaryBankRecon: [],
+    accountId: null,
+    from: null,
+    to: null
   },
 
   subscriptions: {
@@ -66,6 +71,53 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryBankRecon ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBankRecon, payload)
+      if (response && response.success) {
+        console.log('response.data', response.data)
+        yield put({
+          type: 'updateState',
+          payload
+        })
+        yield put({
+          type: 'querySuccessBankRecon',
+          payload: {
+            listBankRecon: response.data,
+            summaryBankRecon: response.summary,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateBankRecon ({ payload = {} }, { call, put, select }) {
+      let {
+        accountId,
+        from,
+        to
+      } = yield select(({ bankentry }) => bankentry)
+      const response = yield call(updateBankRecon, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryBankRecon',
+          payload: {
+            accountId,
+            from,
+            to
+          }
+        })
+        message.success('Bank reconciliation successfully updated')
+      } else {
+        throw response
+      }
+    },
+
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
         seqCode: 'BTR',
@@ -84,6 +136,23 @@ export default modelExtend(pageModel, {
           }
         }
       })
+    },
+
+    * transfer ({ payload }, { call, put }) {
+      const response = yield call(transfer, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: []
+          }
+        })
+        payload.resetFields()
+      } else {
+        throw response
+      }
     },
 
     * delete ({ payload }, { call, put }) {
@@ -108,7 +177,7 @@ export default modelExtend(pageModel, {
         if (currentRegister.data) {
           const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
           payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
-          payload.data.transDate = cashierInformation.period ? cashierInformation.period : undefined
+          payload.data.transDate = cashierInformation ? cashierInformation.period : payload.data.transDate ? payload.data.transDate : undefined
           const data = yield call(add, payload)
           if (data.success) {
             success()
@@ -181,6 +250,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listCash,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessBankRecon (state, action) {
+      const { listBankRecon, summaryBankRecon, pagination } = action.payload
+      return {
+        ...state,
+        listBankRecon,
+        summaryBankRecon,
         pagination: {
           ...state.pagination,
           ...pagination

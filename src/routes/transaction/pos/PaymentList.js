@@ -15,7 +15,6 @@ const formItemLayout = {
 const PaymentList = ({
   onChooseItem,
   DeleteItem,
-  onChangeTotalItem,
   loading,
   item,
   listMechanic,
@@ -39,8 +38,6 @@ const PaymentList = ({
       data.employeeId = data.employee.key
       data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
     }
-    const { employee, ...other } = data
-    onChangeTotalItem(other)
     return data
   }
   const listOptions = listMechanic.map(x => (<Option key={x.id} value={x.id}>{x.employeeName} ({x.employeeId})</Option>))
@@ -256,7 +253,6 @@ PaymentList.propTypes = {
   item: PropTypes.object,
   DeleteItem: PropTypes.func,
   totalItem: PropTypes.string,
-  onChooseItem: PropTypes.func,
-  onChangeTotalItem: PropTypes.func
+  onChooseItem: PropTypes.func
 }
 export default Form.create()(PaymentList)

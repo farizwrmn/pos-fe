@@ -54,8 +54,6 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     for (let key in list) {
       if (list.hasOwnProperty(key)) {
         let data = list[key]
-        console.log('data', data)
-
         let row = []
         row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })

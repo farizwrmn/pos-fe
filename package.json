@@ -2,6 +2,7 @@
   "private": true,
   "dependencies": {
     "antd": "^2.13.2",
+    "bwip-js": "^2.0.10",
     "classnames": "^2.2.5",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^1.8.0",
@@ -83,6 +84,7 @@
     "test": "set NODE_ENV=test && jest --coverage",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "serve": "serve -s dist",
-    "start": "node ./build/runServer.js"
+    "start": "node ./build/runServer.js",
+    "postinstall": "cp lib/package.json node_modules/bwip-js/package.json"
   }
 }
