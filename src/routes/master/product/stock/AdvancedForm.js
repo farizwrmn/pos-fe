@@ -474,7 +474,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={255} />)}
+              })(<Input maxLength={85} />)}
             </FormItem>
             <FormItem label="Category" hasFeedback {...formItemLayout}>
               {getFieldDecorator('categoryId', {
