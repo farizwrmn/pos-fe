@@ -49,7 +49,7 @@ const createTableBody = async (tableBody) => {
         row.push({ text: productName, style: 'productName' })
         // row.push({ image: `data:image/jpeg;base64,${image}`, style: 'productBarcode' })
         // row.push({ text: tableBody[key].info.barCode01 || productCode, style: 'productCode' })
-        row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
+        row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, margin: [0, (5 - Math.ceil(productName.length / 26)) * 7, 10, 0], style: 'sellPrice' })
         body.push(row)
       }
     }
@@ -65,18 +65,17 @@ const styles = {
   sellPrice: {
     bold: true,
     alignment: 'right',
-    fontSize: 7,
-    margin: [10, 0]
+    fontSize: 8
   },
   productName: {
     // fontSize: 5,
-    fontSize: 8,
-    margin: [0, 0, 0, 5],
+    fontSize: 9,
+    margin: [5, 0, 5, 5],
     alignment: 'center'
   },
   productCode: {
     // fontSize: 5,
-    fontSize: 7,
+    fontSize: 8,
     margin: [0, 0],
     alignment: 'center'
   },
@@ -146,7 +145,7 @@ class PrintSticker extends React.PureComponent {
       height: HEIGHT,
       pageSize: { width: (WIDTH * 2) + (MARGIN * 4), height: HEIGHTWITHMARGIN * 10 },
       pageOrientation: 'portrait',
-      pageMargins: [MARGIN / 3, MARGIN * 2],
+      pageMargins: [MARGIN / 2, MARGIN],
       tableStyle: styles,
       tableBody,
       layout: 'noBorders',
