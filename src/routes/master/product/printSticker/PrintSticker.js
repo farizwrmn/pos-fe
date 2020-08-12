@@ -149,7 +149,7 @@ class PrintSticker extends React.PureComponent {
       pageMargins: [MARGIN / 3, MARGIN * 2],
       tableStyle: styles,
       tableBody,
-      // layout: 'noBorders',
+      layout: 'noBorders',
       footer: {}
     }
 
