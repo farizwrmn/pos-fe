@@ -69,13 +69,13 @@ const styles = {
   productName: {
     // fontSize: 5,
     fontSize: 9,
-    margin: [5, 0, 5, 0],
+    margin: [10, 0, 10, 0],
     alignment: 'center'
   },
   productCode: {
     // fontSize: 5,
     fontSize: 10,
-    margin: [0, 0],
+    margin: [0, 0, 0, 0],
     alignment: 'center'
   },
   productBarcode: {
@@ -144,7 +144,7 @@ class PrintSticker extends React.PureComponent {
       height: HEIGHT,
       pageSize: { width: (WIDTH * 2) + (MARGIN * 4), height: HEIGHTWITHMARGIN * 10 },
       pageOrientation: 'portrait',
-      pageMargins: [MARGIN / 1.5, MARGIN],
+      pageMargins: [MARGIN, MARGIN],
       tableStyle: styles,
       tableBody,
       layout: process.env.NODE_ENV === 'production' ? 'noBorders' : '',
