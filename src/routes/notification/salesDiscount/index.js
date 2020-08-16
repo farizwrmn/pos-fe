@@ -29,7 +29,7 @@ class SalesDiscount extends Component {
   }
 
   componentWillUnmount () {
-    socket.off('salesDiscountRequest', e => this.handleData(e))
+    socket.off('salesDiscountRequest')
   }
 
   handleData () {

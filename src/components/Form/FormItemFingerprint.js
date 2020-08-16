@@ -28,9 +28,10 @@ class FormItemFingerprint extends Component {
   componentWillUnmount () {
     const { validationType } = this.props
     const { endpoint } = this.state
-
+    console.log('componentWillUnmount validationType', validationType)
+    console.log('componentWillUnmount endpoint', endpoint)
     if (endpoint && validationType === 'login') {
-      socket.off(`fingerprint/${endpoint}`, this.handleData)
+      socket.off(`fingerprint/${endpoint}`)
     }
   }
 
