@@ -79,6 +79,8 @@ class FormItemFingerprint extends Component {
 
   handleData = (data) => {
     const { dispatch, routing } = this.props
+
+    console.log('handleData', data, routing)
     if (dispatch && data && data.success && routing === 'verification') {
       dispatch({
         type: 'login/successVerify',
