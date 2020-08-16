@@ -15,7 +15,7 @@ import styles from './index.less'
 const numberFormatter = numberFormat.numberFormatter
 
 const options = {
-  upgrade: false,
+  upgrade: true,
   transports: ['websocket'],
   pingTimeout: 3000,
   pingInterval: 5000
@@ -29,7 +29,7 @@ class SalesDiscount extends Component {
   }
 
   componentWillUnmount () {
-    socket.off('salesDiscountRequest', e => this.handleData(e))
+    socket.off('salesDiscountRequest')
   }
 
   handleData () {
