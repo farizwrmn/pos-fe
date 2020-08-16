@@ -8,7 +8,7 @@ import { APISOCKET } from 'utils/config.company'
 const FormItem = Form.Item
 
 const options = {
-  upgrade: false,
+  upgrade: true,
   transports: ['websocket'],
   pingTimeout: 3000,
   pingInterval: 5000
