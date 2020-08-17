@@ -15,7 +15,7 @@ import styles from './index.less'
 const numberFormatter = numberFormat.numberFormatter
 
 const options = {
-  upgrade: false,
+  upgrade: true,
   transports: ['websocket'],
   pingTimeout: 3000,
   pingInterval: 5000
@@ -29,7 +29,7 @@ class SalesDiscount extends Component {
   }
 
   componentWillUnmount () {
-    socket.off('salesDiscountRequest', e => this.handleData(e))
+    socket.off('salesDiscountRequest')
   }
 
   handleData () {
@@ -80,7 +80,7 @@ class SalesDiscount extends Component {
                     extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    <div>{`Created By: ${item.createdBy}`}</div>
+                    <div>{`Created By: ${item.discountUser.fullName}`}</div>
                     <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
                     <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
                     <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
