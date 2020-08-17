@@ -80,7 +80,7 @@ class SalesDiscount extends Component {
                     extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    <div>{`Created By: ${item.createdBy}`}</div>
+                    <div>{`Created By: ${item.discountUser.fullName}`}</div>
                     <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
                     <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
                     <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
