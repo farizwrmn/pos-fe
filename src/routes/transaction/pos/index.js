@@ -868,6 +868,9 @@ const Pos = ({
             modalLoginData: data
           }
         })
+      } else {
+        dispatch({ type: 'pos/serviceEdit', payload: data })
+        dispatch({ type: 'pos/hideServiceListModal' })
       }
     }
   }
