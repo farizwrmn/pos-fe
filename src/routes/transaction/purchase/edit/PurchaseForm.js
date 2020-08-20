@@ -179,7 +179,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     required: true,
                     message: 'Required'
                   }]
-                })(<DatePicker disabled />)}
+                })(<DatePicker />)}
               </FormItem>
               <FormItem label="Supplier" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierCode', {
