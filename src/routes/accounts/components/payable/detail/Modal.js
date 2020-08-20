@@ -269,6 +269,27 @@ const modal = ({
               </FormItem>
             )}
             <FormItem
+              label="Trans Date"
+              hasFeedback
+              {...formItemLayout}
+            >
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment.utc(item.transDate, 'YYYY-MM-DD') : moment(),
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C',
+                    message: 'please insert the value'
+                  }
+                ]
+              })(
+                <DatePicker
+                  format="YYYY-MM-DD"
+                  placeholder="Select Date"
+                  style={{ width: '100%', fontSize: '14pt' }}
+                />
+              )}
+            </FormItem>
+            <FormItem
               label="Print Date"
               hasFeedback
               style={{
