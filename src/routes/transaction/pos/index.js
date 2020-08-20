@@ -791,22 +791,6 @@ const Pos = ({
         }
       })
     },
-    // onChooseItem (data) {
-    //   dispatch({
-    //     type: 'pos/checkQuantityEditProduct',
-    //     payload: {
-    //       data,
-    //       setting
-    //     }
-    //   })
-    //   // dispatch({
-    //   //   type: 'pos/updateState',
-    //   //   payload: {
-    //   //     modalProductVisible: false
-    //   //   }
-    //   // })
-    //   // dispatch({ type: 'pos/paymentEdit', payload: data })
-    // },
     onChooseItem (data) {
       if (
         itemPayment.qty !== data.qty
@@ -836,14 +820,6 @@ const Pos = ({
           }
         })
       }
-    },
-    onChangeTotalItem (
-      // data
-    ) {
-      // dispatch({
-      //   type: 'pos/setTotalItem',
-      //   payload: data
-      // })
     }
   }
   const ModalServiceListProps = {
@@ -858,15 +834,11 @@ const Pos = ({
     onCancel () {
       dispatch({ type: 'pos/hideServiceListModal' })
     },
-    onChooseItem (data) {
-      dispatch({ type: 'pos/serviceEdit', payload: data })
-      dispatch({ type: 'pos/hideServiceListModal' })
-    },
     DeleteItem (data) {
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'service'
+          modalLoginType: 'payment'
         }
       })
       dispatch({
@@ -876,11 +848,30 @@ const Pos = ({
         }
       })
     },
-    onChangeTotalItem (data) {
-      dispatch({
-        type: 'pos/setTotalItemService',
-        payload: data
-      })
+    onChooseItem (data) {
+      if (
+        !(itemService.qty !== data.qty
+          && itemService.disc1 === data.disc1
+          && itemService.disc2 === data.disc2
+          && itemService.disc3 === data.disc3
+          && itemService.discount === data.discount)
+      ) {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'editPayment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      } else {
+        dispatch({ type: 'pos/serviceEdit', payload: data })
+        dispatch({ type: 'pos/hideServiceListModal' })
+      }
     }
   }
 
@@ -1227,6 +1218,7 @@ const Pos = ({
           discount: dataProductFiltered[n].discount,
           name: dataProductFiltered[n].name,
           price: dataProductFiltered[n].price,
+          sellPrice: dataProductFiltered[n].sellPrice,
           qty: dataProductFiltered[n].qty,
           typeCode: dataProductFiltered[n].typeCode,
           total: dataProductFiltered[n].total
@@ -1247,6 +1239,7 @@ const Pos = ({
           discount: dataServiceFiltered[n].discount,
           name: dataServiceFiltered[n].name,
           price: dataServiceFiltered[n].price,
+          sellPrice: dataServiceFiltered[n].sellPrice,
           qty: dataServiceFiltered[n].qty,
           typeCode: dataServiceFiltered[n].typeCode,
           total: dataServiceFiltered[n].total

@@ -8,7 +8,7 @@ import { APISOCKET } from 'utils/config.company'
 const FormItem = Form.Item
 
 const options = {
-  upgrade: false,
+  upgrade: true,
   transports: ['websocket'],
   pingTimeout: 3000,
   pingInterval: 5000
@@ -28,9 +28,10 @@ class FormItemFingerprint extends Component {
   componentWillUnmount () {
     const { validationType } = this.props
     const { endpoint } = this.state
-
+    console.log('componentWillUnmount validationType', validationType)
+    console.log('componentWillUnmount endpoint', endpoint)
     if (endpoint && validationType === 'login') {
-      socket.off(`fingerprint/${endpoint}`, this.handleData)
+      socket.off(`fingerprint/${endpoint}`)
     }
   }
 
@@ -78,6 +79,8 @@ class FormItemFingerprint extends Component {
 
   handleData = (data) => {
     const { dispatch, routing } = this.props
+
+    console.log('handleData', data, routing)
     if (dispatch && data && data.success && routing === 'verification') {
       dispatch({
         type: 'login/successVerify',

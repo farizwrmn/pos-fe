@@ -26,7 +26,7 @@ const ModalSticker = ({
 }) => {
   let listItemName = listItem.length > 0 ? listItem.map(x => `${x.productName} (${x.productCode})`) : []
 
-  let productNames = listItem.length > 0 ? listItem.map(x => (<Option key={x.productName}>{x.productName}</Option>)) : []
+  let productNames = listItem.length > 0 ? listItem.map(x => (<Option key={x.productName} title={`${x.productCode} - ${x.productName}`}>{x.productName}</Option>)) : []
 
   const handleFields = (fields) => {
     const { updatedAt } = fields

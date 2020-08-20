@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicReportCard } from 'components'
-import bwipjs from 'bwip-js'
+// import bwipjs from 'bwip-js'
 
 const NUMBER_OF_COLUMN = 2
 const HEIGHTWITHMARGIN = 86.9291338593
@@ -9,47 +9,47 @@ const HEIGHT = 75.590551182
 const WIDTH = 151.181102364
 const MARGIN = 5.66929133865
 
-const createBarcodeImage = (text, opt) => {
-  opt = opt || {}
-  const format = opt.format || 'code128'
-  const height = opt.height || 5
-  return new Promise((resolve, reject) => {
-    try {
-      bwipjs.toBuffer({
-        bcid: format,
-        text,
-        height,
-        parsefnc: true
-      }, (err, img) => {
-        if (err) { return reject(err) }
-        return resolve(img)
-      })
-    } catch (errMessage) {
-      return reject(errMessage)
-    }
-  })
-}
+// const createBarcodeImage = (text, opt) => {
+//   opt = opt || {}
+//   const format = opt.format || 'code128'
+//   const height = opt.height || 5
+//   return new Promise((resolve, reject) => {
+//     try {
+//       bwipjs.toBuffer({
+//         bcid: format,
+//         text,
+//         height,
+//         parsefnc: true
+//       }, (err, img) => {
+//         if (err) { return reject(err) }
+//         return resolve(img)
+//       })
+//     } catch (errMessage) {
+//       return reject(errMessage)
+//     }
+//   })
+// }
 
 const createTableBody = async (tableBody) => {
   let body = []
-  function ToBase64 (u8) {
-    // eslint-disable-next-line no-undef
-    return btoa(String.fromCharCode.apply(null, u8))
-  }
+  // function ToBase64 (u8) {
+  //   // eslint-disable-next-line no-undef
+  //   return btoa(String.fromCharCode.apply(null, u8))
+  // }
   for (let key in tableBody) {
     if (tableBody.hasOwnProperty(key)) {
       for (let i = 0; i < tableBody[key].qty; i += 1) {
         const productCode = tableBody[key].info.productCode.toString()
-        const productName = tableBody[key].info.productName.slice(0, 30).toString()
+        const productName = tableBody[key].info.productName.slice(0, 85).toString()
         // eslint-disable-next-line no-await-in-loop
-        const res = await createBarcodeImage(tableBody[key].info.barCode01 || productCode)
+        // const res = await createBarcodeImage(tableBody[key].info.barCode01 || productCode)
         let row = []
-        const image = ToBase64(res)
+        // const image = ToBase64(res)
         row.push({ text: productCode, style: 'productCode' })
         row.push({ text: productName, style: 'productName' })
-        row.push({ image: `data:image/jpeg;base64,${image}`, style: 'productBarcode' })
-        row.push({ text: tableBody[key].info.barCode01 || productCode, style: 'productCode' })
-        row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, style: 'sellPrice' })
+        // row.push({ image: `data:image/jpeg;base64,${image}`, style: 'productBarcode' })
+        // row.push({ text: tableBody[key].info.barCode01 || productCode, style: 'productCode' })
+        row.push({ text: `Rp ${(tableBody[key].info.sellPrice || 0).toLocaleString()}`, margin: [0, (4 - Math.ceil(productName.length / 26)) * 5, 10, 0], style: 'sellPrice' })
         body.push(row)
       }
     }
@@ -63,19 +63,19 @@ const styles = {
     fontSize: 10
   },
   sellPrice: {
-    bold: true,
     alignment: 'right',
-    fontSize: 5,
-    margin: [5, 0]
+    fontSize: 10
   },
   productName: {
-    fontSize: 5,
-    margin: [0, 0, 0, 5],
+    // fontSize: 5,
+    fontSize: 9,
+    margin: [10, 0, 10, 0],
     alignment: 'center'
   },
   productCode: {
-    fontSize: 5,
-    margin: [0, 0],
+    // fontSize: 5,
+    fontSize: 10,
+    margin: [0, 0, 0, 0],
     alignment: 'center'
   },
   productBarcode: {
@@ -144,10 +144,10 @@ class PrintSticker extends React.PureComponent {
       height: HEIGHT,
       pageSize: { width: (WIDTH * 2) + (MARGIN * 4), height: HEIGHTWITHMARGIN * 10 },
       pageOrientation: 'portrait',
-      pageMargins: [MARGIN / 3, MARGIN * 2],
+      pageMargins: [MARGIN, MARGIN],
       tableStyle: styles,
       tableBody,
-      layout: 'noBorders',
+      layout: process.env.NODE_ENV === 'production' ? 'noBorders' : '',
       footer: {}
     }
 
