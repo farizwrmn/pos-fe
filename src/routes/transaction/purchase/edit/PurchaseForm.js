@@ -170,7 +170,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     message: 'Required',
                     pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                   }]
-                })(<Input maxLength={25} disabled />)}
+                })(<Input maxLength={25} />)}
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
