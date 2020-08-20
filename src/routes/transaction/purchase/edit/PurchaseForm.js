@@ -278,6 +278,15 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                   }]
                 })(<DatePicker />)}
               </FormItem>
+              <FormItem label="Receive Date" {...formItemLayout}>
+                {getFieldDecorator('receiveDate', {
+                  initialValue: transNo.receiveDate ? moment.utc(transNo.receiveDate, 'YYYY-MM-DD') : null,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<DatePicker />)}
+              </FormItem>
             </Col>
           </Row>
         </Col>
