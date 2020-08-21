@@ -33,7 +33,7 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 }
 }
 
-const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
   const {
     onInvoiceHeader
   } = purchaseProps
@@ -170,7 +170,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     message: 'Required',
                     pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                   }]
-                })(<Input maxLength={25} disabled />)}
+                })(<Input maxLength={25} disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
@@ -179,7 +179,7 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     required: true,
                     message: 'Required'
                   }]
-                })(<DatePicker disabled />)}
+                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
               <FormItem label="Supplier" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierCode', {
@@ -277,6 +277,15 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     message: 'Required'
                   }]
                 })(<DatePicker />)}
+              </FormItem>
+              <FormItem label="Receive Date" {...formItemLayout}>
+                {getFieldDecorator('receiveDate', {
+                  initialValue: transNo.receiveDate ? moment.utc(transNo.receiveDate, 'YYYY-MM-DD') : null,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
             </Col>
           </Row>

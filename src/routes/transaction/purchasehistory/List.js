@@ -59,6 +59,12 @@ const List = ({ ...tableProps, dispatch, printInvoice }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Total',
+      dataIndex: 'nettoTotal',
+      key: 'nettoTotal',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Term',
       dataIndex: 'tempo',
       key: 'tempo',

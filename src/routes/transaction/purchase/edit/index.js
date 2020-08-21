@@ -5,11 +5,13 @@ import { Modal } from 'antd'
 import PurchaseForm from './PurchaseForm'
 import PurchaseList from './PurchaseList'
 
-const Purchase = ({ location, dispatch, purchase, loading }) => {
+const Purchase = ({ location, app, dispatch, purchase, loading }) => {
   const {
     item, supplierInformation, searchText, listProduct, pagination, curHead, rounding, dataBrowse, listSupplier, date, datePicker, modalProductVisible,
     modalPurchaseVisible, discPRC, discNML, transNo, curDiscPercent, curDiscNominal } = purchase
+  const { user } = app
   const purchaseProps = {
+    user,
     date,
     datePicker,
     pagination,
@@ -221,6 +223,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
 }
 
 Purchase.propTypes = {
+  app: PropTypes.object.isRequired,
   purchase: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -228,4 +231,4 @@ Purchase.propTypes = {
 }
 
 
-export default connect(({ purchase, loading }) => ({ purchase, loading }))(Purchase)
+export default connect(({ purchase, app, loading }) => ({ purchase, app, loading }))(Purchase)
