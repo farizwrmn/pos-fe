@@ -12,7 +12,8 @@ import styles from './index.less'
 
 const { SupplierBank } = DataAdd
 
-const Detail = ({ paymentEdc, paymentCost, payableDetail, bank, supplierBank, paymentOpts, dispatch }) => {
+const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBank, paymentOpts, dispatch }) => {
+  const { user } = app
   const {
     listPayment: listEdc
   } = paymentEdc
@@ -39,6 +40,7 @@ const Detail = ({ paymentEdc, paymentCost, payableDetail, bank, supplierBank, pa
 
   const modalProps = {
     width: '68%',
+    user,
     data,
     listAmount,
     visibleTooltip,
@@ -257,10 +259,11 @@ const Detail = ({ paymentEdc, paymentCost, payableDetail, bank, supplierBank, pa
 }
 
 Detail.propTypes = {
+  app: PropTypes.object,
   payableDetail: PropTypes.object,
   bank: PropTypes.object.isRequired,
   supplierBank: PropTypes.object.isRequired,
   paymentOpts: PropTypes.object
 }
 
-export default connect(({ bank, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }) => ({ bank, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }))(Detail)
+export default connect(({ bank, app, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }) => ({ bank, app, paymentEdc, paymentCost, supplierBank, payableDetail, paymentOpts, dispatch, loading }))(Detail)

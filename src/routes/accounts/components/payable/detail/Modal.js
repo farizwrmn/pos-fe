@@ -24,6 +24,7 @@ const formItemLayout = {
 }
 
 const modal = ({
+  user,
   onOk,
   onCancel,
   item = {},
@@ -285,6 +286,7 @@ const modal = ({
                 <DatePicker
                   format="YYYY-MM-DD"
                   placeholder="Select Date"
+                  disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
                   style={{ width: '100%', fontSize: '14pt' }}
                 />
               )}
