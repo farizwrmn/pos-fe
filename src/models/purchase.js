@@ -281,7 +281,7 @@ export default modelExtend(pageModel, {
         voidData = payload.dataVoid.map((dataVoidMap) => {
           return ({
             storeId,
-            transNo: payload.id.transNo,
+            transNo: payload.e.transNo,
             productId: dataVoidMap.code,
             productName: dataVoidMap.name,
             qty: dataVoidMap.qty,
@@ -299,7 +299,7 @@ export default modelExtend(pageModel, {
       arrayProdAdd = addData.map((dataArrayProdAddtMap) => {
         return ({
           storeId,
-          transNo: payload.id.transNo,
+          transNo: payload.e.transNo,
           id: dataArrayProdAddtMap.id,
           productId: dataArrayProdAddtMap.code,
           productName: dataArrayProdAddtMap.name,
@@ -315,7 +315,7 @@ export default modelExtend(pageModel, {
       arrayProdEdit = editData.map((dataArrayProdEditMap) => {
         return ({
           storeId,
-          transNo: payload.id.transNo,
+          transNo: payload.e.transNo,
           id: dataArrayProdEditMap.id,
           productId: dataArrayProdEditMap.code,
           productName: dataArrayProdEditMap.name,
