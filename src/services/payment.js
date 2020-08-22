@@ -36,6 +36,19 @@ export async function query (params) {
   })
 }
 
+export async function queryPaymentPos (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const storeId = lstorage.getCurrentUserStore()
+  params.storeId = storeId
+  const url = '/payment/pos'
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryPos (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${pos}/code/${encodeURIComponent(params.id)}`

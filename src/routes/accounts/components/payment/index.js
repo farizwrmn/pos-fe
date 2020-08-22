@@ -2,13 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
 
-const Pos = ({ location, dispatch, loading, pos, app }) => {
+const Pos = ({ location, dispatch, accountPayment, loading, pos, app }) => {
   const { listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    modalPrintVisible, posData, listPayment, tmpListPayment } = pos
+    modalPrintVisible, posData } = pos
+
+  const { listPayment, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
   const modalProps = {
@@ -148,8 +151,22 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
     tmpDataSource: tmpListPayment,
     width: 90,
     size: 'small',
-    loading: loading.effects['pos/queryHistory'],
+    loading: loading.effects['pos/queryHistoryPayment'],
     location,
+    onChange (page, filters) {
+      const { pathname, query } = location
+      if (query && query.page && parseFloat(query.page) !== parseFloat(page.current)) return
+      if (filters) {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: page.current,
+            ...filters
+          }
+        }))
+      }
+    },
     onSearchChange (data) {
       dispatch({
         type: 'pos/searchPOS',
@@ -179,14 +196,16 @@ const Pos = ({ location, dispatch, loading, pos, app }) => {
         type: 'pos/showPrintModal'
       })
     },
-    onChangePeriod (start, end) {
-      dispatch({
-        type: 'pos/queryHistory',
-        payload: {
-          startPeriod: start,
-          endPeriod: end
+    onChangePeriod (from, to) {
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          from,
+          to
         }
-      })
+      }))
     }
   }
 
@@ -208,4 +227,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, loading, app }) => ({ pos, loading, app }))(Pos)
+export default connect(({ pos, accountPayment, loading, app }) => ({ pos, accountPayment, loading, app }))(Pos)

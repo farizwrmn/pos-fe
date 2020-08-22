@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { queryPayable } from '../../services/payment/payable'
-import { query as queryPos } from '../../services/payment'
+import { queryPaymentPos } from '../../services/payment'
 
 export default {
 
@@ -45,10 +45,11 @@ export default {
             }
           })
           dispatch({
-            type: 'queryHistory',
+            type: 'queryHistoryPayment',
             payload: {
-              startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
-              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+              from: moment().startOf('month').format('YYYY-MM-DD'),
+              to: moment().endOf('month').format('YYYY-MM-DD'),
+              ...location.query
             }
           })
         }
@@ -57,8 +58,8 @@ export default {
   },
 
   effects: {
-    * queryHistory ({ payload = {} }, { call, put }) {
-      const data = yield call(queryPos, payload)
+    * queryHistoryPayment ({ payload = {} }, { call, put }) {
+      const data = yield call(queryPaymentPos, payload)
       if (data) {
         yield put({
           type: 'querySuccessPayment',
