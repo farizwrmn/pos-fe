@@ -5,6 +5,7 @@ import { DropOption } from 'components'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { configMain, alertModal } from 'utils'
+import styles from 'themes/index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
 const { MonthPicker } = DatePicker
@@ -81,6 +82,12 @@ const BrowseGroup = ({
   }
   const columns = [
     {
+      title: 'No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: 120
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
@@ -89,10 +96,18 @@ const BrowseGroup = ({
       render: (text, record) => `${text} ${record.transTime}`
     },
     {
+      title: 'Total',
+      dataIndex: 'posTotal.netto',
+      key: 'posTotal.netto',
+      width: 70,
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Cashier',
       dataIndex: 'technicianName',
       key: 'technicianName',
-      width: 100
+      width: 120
     },
     {
       title: 'Member',
@@ -120,12 +135,6 @@ const BrowseGroup = ({
       }],
       filterMultiple: false,
       onFilter: (value, record) => record.status.indexOf(value) === 0
-    },
-    {
-      title: 'No',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: 180
     },
     {
       title: <Icon type="setting" />,

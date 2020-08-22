@@ -59,28 +59,36 @@ const BrowseGroup = ({
       render: _text => `${moment(_text).format('LL')}`
     },
     {
+      title: 'Total',
+      dataIndex: 'posTotal.netto',
+      key: 'posTotal.netto',
+      width: 70,
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Member',
       dataIndex: 'memberName',
       key: 'memberName'
     },
-    {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo'
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      className: styles.alignRight,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId'
-    },
+    // {
+    //   title: 'Car Unit',
+    //   dataIndex: 'policeNo',
+    //   key: 'policeNo'
+    // },
+    // {
+    //   title: 'KM',
+    //   dataIndex: 'lastMeter',
+    //   key: 'lastMeter',
+    //   className: styles.alignRight,
+    //   sorter: (a, b) => a.lastMeter - b.lastMeter,
+    //   render: text => (text || '-').toLocaleString()
+    // },
+    // {
+    //   title: 'Cashier',
+    //   dataIndex: 'cashierId',
+    //   key: 'cashierId'
+    // },
     {
       title: 'Status',
       dataIndex: 'status',
