@@ -26,7 +26,7 @@ const rightColumn = {
 }
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onSearchChange, onChangePeriod,
+  tmpDataSource, onSearchChange, onChangePeriod,
   form: { getFieldDecorator }, ...browseProps }) => {
   // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlSearch = (e) => {
@@ -48,7 +48,7 @@ const BrowseGroup = ({
       title: 'No',
       dataIndex: 'transNo',
       key: 'transNo',
-      render: (text, record) => (record.status === 'A' ? <Link to={`/accounts/payment/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
+      render: (text, record) => (record.statusInvoice === 'A' ? <Link to={`/accounts/payment/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
     },
     {
       title: 'Date',
@@ -59,32 +59,35 @@ const BrowseGroup = ({
       render: _text => `${moment(_text).format('LL')}`
     },
     {
-      title: 'Member',
-      dataIndex: 'memberName',
-      key: 'memberName'
-    },
-    {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo'
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
+      title: 'Total',
+      dataIndex: 'nettoTotal',
+      key: 'nettoTotal',
+      width: 70,
       className: styles.alignRight,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
       render: text => (text || '-').toLocaleString()
     },
+    // {
+    //   title: 'Car Unit',
+    //   dataIndex: 'policeNo',
+    //   key: 'policeNo'
+    // },
+    // {
+    //   title: 'KM',
+    //   dataIndex: 'lastMeter',
+    //   key: 'lastMeter',
+    //   className: styles.alignRight,
+    //   sorter: (a, b) => a.lastMeter - b.lastMeter,
+    //   render: text => (text || '-').toLocaleString()
+    // },
+    // {
+    //   title: 'Cashier',
+    //   dataIndex: 'cashierId',
+    //   key: 'cashierId'
+    // },
     {
-      title: 'Cashier',
-      dataIndex: 'cashierId',
-      key: 'cashierId'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Active',
+      dataIndex: 'statusInvoice',
+      key: 'statusInvoice',
       render: text =>
         (<span>
           <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
@@ -97,9 +100,34 @@ const BrowseGroup = ({
       }, {
         text: 'Canceled',
         value: 'C'
-      }],
-      filterMultiple: false,
-      onFilter: (value, record) => record.status.indexOf(value) === 0
+      }]
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      filters: [
+        {
+          text: 'Paid',
+          value: 'PAID'
+        },
+        {
+          text: 'Partial',
+          value: 'PARTIAL'
+        },
+        {
+          text: 'Pending',
+          value: 'PENDING'
+        }
+      ],
+      render: text => (
+        <span>
+          <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
+            {(text || '')}
+          </Tag>
+        </span>
+      )
     },
     // {
     //   title: 'Payment',
@@ -163,7 +191,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table {...browseProps} bordered pageSize={5} size="small" columns={columns} dataSource={dataSource} />
+      <Table {...browseProps} bordered pageSize={5} size="small" columns={columns} />
     </Form>
   )
 }
