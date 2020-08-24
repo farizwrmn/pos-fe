@@ -54,6 +54,7 @@ const Inventory = ({
       }
       let dataInventory = {}
       dataInventory.posOrder = {}
+      dataInventory.posOrder.disable_qty_pos_edit = (data.disable_qty_pos_edit === true || data.disable_qty_pos_edit === 1 ? 1 : 0)
       dataInventory.posOrder.post_month_transaction = (data.post_month_transaction === true || data.post_month_transaction === 1 ? 1 : 0)
       dataInventory.posOrder.outOfStock = (data.outOfStock === true || data.outOfStock === 1 ? 1 : 0)
       dataInventory.posOrder.editPurchase = (data.editPurchase === true || data.editPurchase === 1 ? 1 : 0)
@@ -82,6 +83,11 @@ const Inventory = ({
             {getFieldDecorator('post_month_transaction', {
               initialValue: config.posOrder.post_month_transaction
             })(<Switch defaultChecked={config.posOrder.post_month_transaction} />)}
+          </FormItem>
+          <FormItem label="Disable Qty POS Edit" {...formItemLayout}>
+            {getFieldDecorator('disable_qty_pos_edit', {
+              initialValue: config.posOrder.disable_qty_pos_edit
+            })(<Switch defaultChecked={config.posOrder.disable_qty_pos_edit} />)}
           </FormItem>
         </Col>
         <Col lg={{ span: 9, offset: 1 }} md={{ span: 9, offset: 1 }} sm={{ span: 19 }} />

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { posTotal } from 'utils'
 import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
+import { checkPermissionEditQtyPos } from 'utils/alertModal'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -11,6 +12,8 @@ const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 12 }
 }
+
+const editQty = checkPermissionEditQtyPos()
 
 const PaymentList = ({
   onChooseItem,
@@ -157,6 +160,7 @@ const PaymentList = ({
               defaultValue={0}
               min={0}
               onBlur={value => handleTotalChange(value)}
+              disabled={editQty}
             />
           )}
         </FormItem>

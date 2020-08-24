@@ -206,7 +206,7 @@ export default {
               type: 'print'
             }
           })
-        } else if (location.pathname === '/transaction/pos/history' || location.pathname === '/accounts/payment') {
+        } else if (location.pathname === '/transaction/pos/history') {
           dispatch({
             type: 'queryHistory',
             payload: {

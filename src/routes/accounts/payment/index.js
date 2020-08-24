@@ -5,10 +5,10 @@ import React from 'react'
 import { connect } from 'dva'
 import { Payment } from '../components'
 
-const PaymentTab = () => {
+const PaymentTab = ({ location }) => {
   return (
     <div className="content-inner">
-      <Payment />
+      <Payment location={location} />
     </div>
   )
 }
