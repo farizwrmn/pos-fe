@@ -39,7 +39,8 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
     modalSpecificationVisible,
     modalProductVisible,
     countStoreList,
-    modalQuantityVisible
+    modalQuantityVisible,
+    inventoryMode
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -51,8 +52,21 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
     display,
     isChecked,
     show,
+    inventoryMode,
     filter: {
       ...location.query
+    },
+    handleInventory () {
+      const { query, pathname } = location
+      const { q, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...other,
+          mode: 'inventory',
+          page: 1
+        }
+      }))
     },
     onFilterChange (value) {
       dispatch({
@@ -62,10 +76,11 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
         }
       })
       const { query, pathname } = location
+      const { mode, ...other } = query
       dispatch(routerRedux.push({
         pathname,
         query: {
-          ...query,
+          ...other,
           ...value,
           page: 1
         }
@@ -79,7 +94,7 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
     },
     onResetClick () {
       const { query, pathname } = location
-      const { q, createdAt, page, ...other } = query
+      const { q, createdAt, page, order, mode, ...other } = query
 
       dispatch(routerRedux.push({
         pathname,
@@ -124,11 +139,14 @@ const ProductStock = ({ specification, store, specificationStock, variant, varia
     listCategory,
     listBrand,
     loadingModel: loading,
-    loading: loading.effects['productstock/query'],
+    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'],
     location,
     onChange (page, filters) {
       const { brandId, categoryId } = filters
       const { query, pathname } = location
+      if (inventoryMode === 'inventory') {
+        return
+      }
       dispatch(routerRedux.push({
         pathname,
         query: {
