@@ -56,6 +56,11 @@ const BrowseGroup = ({
       title: 'Supplier',
       dataIndex: 'supplierName',
       key: 'supplierName',
+      filters: tmpDataSource.map(item => ({
+        text: item.supplierName,
+        value: item.supplierName
+      })),
+      onFilter: (value, record) => record.supplierName.includes(value),
       width: 140
     },
     {
