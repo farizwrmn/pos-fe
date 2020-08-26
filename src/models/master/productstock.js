@@ -3,6 +3,7 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
 import moment from 'moment'
+import { queryFifo } from 'services/report/fifo'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
@@ -43,6 +44,7 @@ export default modelExtend(pageModel, {
     period: [],
     showPDFModal: false,
     mode: '',
+    inventoryMode: null,
     changed: false,
     stockLoading: false,
     countStoreList: [],
@@ -64,18 +66,31 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, mode, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock') {
           if (!activeKey) dispatch({ type: 'refreshView' })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            if (mode === 'inventory') {
+              dispatch({
+                type: 'queryInventory',
+                payload: {
+                  period: moment().format('MM'),
+                  year: moment().format('YYYY')
+                }
+              })
+            } else {
+              dispatch({ type: 'query', payload: other })
+            }
+          }
           dispatch({
             type: 'updateState',
             payload: {
               changed: false,
               activeKey: activeKey || '0',
               listSticker: [],
-              listItem: []
+              listItem: [],
+              inventoryMode: mode
             }
           })
         } else if (pathname === '/master/product/sticker') {
@@ -93,6 +108,44 @@ export default modelExtend(pageModel, {
           type: 'querySuccessItem',
           payload: data.data
         })
+      }
+    },
+
+    * queryInventory ({ payload = {} }, { call, put }) {
+      const date = payload
+      yield put({
+        type: 'setPeriod',
+        payload: date
+      })
+      yield put({
+        type: 'setNull',
+        payload: date
+      })
+      const data = yield call(queryFifo, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data && data.data.length > 0
+              ? data.data
+                .filter(filtered => filtered.count > 0)
+                .sort((a, b) => b.count - a.count)
+              : [],
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: undefined
+          }
+        })
+      } else {
+        throw data
       }
     },
 
