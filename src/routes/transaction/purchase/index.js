@@ -28,10 +28,12 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     curDiscNominal,
     curHead,
     listPurchaseLatestDetail,
-    modalSupplierVisible
+    modalSupplierVisible,
+    lastTrans
   } = purchase
 
   const purchaseProps = {
+    lastTrans,
     date,
     datePicker,
     listPurchaseLatestDetail,
