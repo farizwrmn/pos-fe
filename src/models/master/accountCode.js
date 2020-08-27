@@ -31,6 +31,16 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+        if (pathname === '/transaction/adjust') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'EQTY',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/cash-entry'
           || pathname === '/bank-entry'
           || pathname === '/transfer-entry'
