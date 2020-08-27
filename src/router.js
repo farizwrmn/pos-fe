@@ -550,6 +550,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/transaction/adjust/'))
             }, 'transaction-adjust')
           }
