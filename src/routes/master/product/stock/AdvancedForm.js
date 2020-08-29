@@ -529,12 +529,12 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode01', {
-                initialValue: item.barCode01
+                initialValue: modalType === 'edit' ? item.barCode01 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
             <FormItem label="Barcode 2" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode02', {
-                initialValue: item.barCode02
+                initialValue: modalType === 'edit' ? item.barCode02 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
 
