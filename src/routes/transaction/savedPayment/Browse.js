@@ -8,7 +8,7 @@ import { configMain, alertModal } from 'utils'
 import styles from 'themes/index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = configMain
@@ -159,9 +159,9 @@ const BrowseGroup = ({
       }
     }
   ]
-  const onChange = (date, dateString) => {
-    let dateFormat = moment(dateString).format('YYYY-MM-DD')
-    let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
+  const onChange = (date) => {
+    let dateFormat = moment(date[0]).format('YYYY-MM-DD')
+    let lastDate = moment(date[1]).format('YYYY-MM-DD')
     onChangePeriod(dateFormat, lastDate)
   }
 
@@ -175,11 +175,11 @@ const BrowseGroup = ({
         <Col {...filterItemLayout} >
           <FormItem hasFeedBack >
             {getFieldDecorator('period', {
-              initialValue: moment(new Date(), 'YYYYMM'),
+              initialValue: [moment().startOf('month'), moment().endOf('month')],
               rules: [{
                 required: true
               }]
-            })(<MonthPicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
+            })(<RangePicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
         <Col {...searchBarLayout}>

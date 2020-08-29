@@ -8,12 +8,12 @@ import PurchaseList from './PurchaseList'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item,
-    paginationSupplier,
     supplierInformation,
     pagination,
     listProduct,
     rounding,
     dataBrowse,
+    paginationSupplier,
     listSupplier,
     tmpSupplierData,
     date,
