@@ -3,6 +3,7 @@ import { Modal } from 'antd'
 import { lstorage, configMain, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
+import { query as querySequence } from '../services/sequence'
 import {
   query,
   queryDetail,
@@ -31,6 +32,7 @@ export default modelExtend(pageModel, {
     date: '',
     readOnly: false,
     addItem: {},
+    lastTrans: '',
     searchTextSupplier: '',
     curHead: {
       discInvoiceNominal: 0,
@@ -84,6 +86,7 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
           dispatch({ type: 'changeRounding', payload: 0 })
+          dispatch({ type: 'queryLastAdjust' })
         } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
@@ -105,6 +108,17 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'PRC',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
+
     * queryList ({ payload = {} }, { call, put }) {
       const data = yield call(queryList, payload)
       if (data.success) {
@@ -629,6 +643,9 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
 
     querySuccess (state, action) {
       const { listPurchase, listSupplier, tmpSupplierData, paginationSupplier } = action.payload
