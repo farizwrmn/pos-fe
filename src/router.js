@@ -964,13 +964,14 @@ const Routers = function ({ history, app }) {
           path: 'accounts/payable-form',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/tools/maintenance'))
-              registerModel(app, require('./models/unit'))
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
-              registerModel(app, require('./models/accounts/detail/payableDetail'))
-              registerModel(app, require('./models/accounts/accountPayment'))
-              cb(null, require('./routes/accounts/payable-form'))
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/supplier'))
+              cb(null, require('./routes/accounts/payableform/'))
             }, 'accounts-payable-form')
           }
         }, {
