@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, Spin } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import ListDetail from './ListDetail'
@@ -31,11 +31,11 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  loading,
   showLov,
   onSubmit,
   modalShow,
   modalShowList,
-  resetListItem,
   // onCancel,
   listItem,
   // modalType,
@@ -44,19 +44,15 @@ const FormCounter = ({
   listBank,
   listDetailProps,
   listOpts,
-  listCustomer,
   listSupplier,
-  updateCurrentItem,
   bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
   paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
-  customerOpt = (listCustomer || []).length > 0 ? listCustomer.map(c => <Option value={c.id} key={c.id}>{`${c.memberName} (${c.memberCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   form: {
     getFieldDecorator,
     getFieldValue,
     validateFields,
     getFieldsValue,
-    setFieldsValue,
     resetFields
   },
   inputType = getFieldValue('type')
@@ -100,58 +96,6 @@ const FormCounter = ({
     })
   }
 
-  const hdlModalReset = () => {
-    const oldType = getFieldValue('type')
-    const oldSupplierId = getFieldValue('supplierId')
-    const oldMemberId = getFieldValue('memberId')
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
-      if (errors) {
-        return
-      }
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          const type = getFieldValue('type')
-          resetListItem(type)
-        },
-        onCancel () {
-          if (oldType === 'I') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              memberId: {
-                key: oldMemberId ? oldMemberId.key : null,
-                label: oldMemberId ? oldMemberId.label : null
-              },
-              supplierId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          } else if (oldType === 'E') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              supplierId: {
-                key: oldSupplierId ? oldSupplierId.key : null,
-                label: oldSupplierId ? oldSupplierId.label : null
-              },
-              memberId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          }
-        }
-      })
-    })
-  }
-
   const modalOpts = {
     showLov,
     inputType: getFieldValue('type'),
@@ -181,7 +125,7 @@ const FormCounter = ({
       <Form layout="horizontal">
         <Row>
           <Col {...column}>
-            <FormItem label="transNo" hasFeedback {...formItemLayout}>
+            <FormItem label="Trans No" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transNo', {
                 initialValue: item.transNo,
                 rules: [
@@ -201,43 +145,7 @@ const FormCounter = ({
             </FormItem>
           </Col>
           <Col {...column}>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('type', {
-                initialValue: item.type,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <Select
-                  allowClear
-                  onChange={() => hdlModalReset()}
-                >
-                  <Option value="E">Out</Option>
-                  <Option value="I">In</Option>
-                </Select>)}
-            </FormItem>
-            {getFieldValue('type') === 'I' && <FormItem label={(<Link target="_blank" to={'/master/customer'}>Member</Link>)} hasFeedback {...formItemLayout}>
-              {getFieldDecorator('memberId', {
-                initialValue: item.memberId,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                onFocus={() => showLov('customer')}
-                onSearch={value => showLov('customer', { q: value })}
-                optionFilterProp="children"
-                labelInValue
-                filterOption={filterOption}
-              >{customerOpt}
-              </Select>)}
-            </FormItem>}
-            {getFieldValue('type') === 'E' && <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
+            <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierId', {
                 initialValue: item.supplierId,
                 rules: [
@@ -248,14 +156,14 @@ const FormCounter = ({
               })(<Select
                 showSearch
                 allowClear
-                onFocus={() => showLov('supplier')}
+                notFoundContent={loading.effects['supplier/query'] ? <Spin size="small" /> : null}
                 onSearch={value => showLov('supplier', { q: value })}
                 optionFilterProp="children"
                 labelInValue
                 filterOption={filterOption}
               >{supplierOpt}
               </Select>)}
-            </FormItem>}
+            </FormItem>
             <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transType', {
                 initialValue: item.transType,

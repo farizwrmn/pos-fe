@@ -132,6 +132,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   }
   let timeout
   const formProps = {
+    loading,
     modalType,
     modalVisible,
     modalProps,
