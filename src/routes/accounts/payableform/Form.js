@@ -150,7 +150,7 @@ const FormCounter = ({
                 initialValue: item.supplierId,
                 rules: [
                   {
-                    required: false
+                    required: true
                   }
                 ]
               })(<Select
