@@ -252,6 +252,9 @@ export default modelExtend(pageModel, {
         if (data.success) {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
+          yield put({
+            type: 'queryLastAdjust'
+          })
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'changeRounding', payload: 0 })
           const modalMember = () => {
