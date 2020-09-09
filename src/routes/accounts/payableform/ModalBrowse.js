@@ -3,10 +3,14 @@ import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import ListInvoice from './ListInvoice'
 
-const Browse = ({ location, pagination, purchase, onChange, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
+const Browse = ({ location, pagination, purchase, dispatch, onChange, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
   const { listInvoice, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
-    ...purchaseProps
+    ...purchaseProps,
+    onCancel () {
+      dispatch({ type: 'purchase/modalEditHide' })
+      dispatch({ type: 'purchase/hideProductModal' })
+    }
   }
   const listProps = {
     dataSource: modalType === 'browseInvoice' ? listInvoice : [],

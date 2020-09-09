@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, Spin } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, Spin, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -36,6 +36,7 @@ const FormCounter = ({
   loading,
   showLov,
   onSubmit,
+  dispatch,
   // modalShow,
   modalShowList,
   // onCancel,
@@ -141,6 +142,7 @@ const FormCounter = ({
       resetFields()
       onChooseInvoice(item)
     },
+    dispatch,
     visible: modalProductVisible,
     ...purchaseProps
   }
@@ -160,10 +162,14 @@ const FormCounter = ({
                 ]
               })(<Input disabled maxLength={30} />)}
             </FormItem>
-            <FormItem label="Reference" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('reference', {
-                initialValue: item.reference
-              })(<Input maxLength={40} autoFocus />)}
+            <FormItem label="Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description')(<Input />)}

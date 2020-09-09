@@ -168,6 +168,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   }
   const formProps = {
     purchaseProps,
+    dispatch,
     loading,
     modalType,
     modalVisible,
