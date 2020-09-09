@@ -9,7 +9,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, app }) => {
+const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, purchase, app }) => {
   const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = bankentry
   const { listOpts } = paymentOpts
   const { listBank } = bank
@@ -131,7 +131,43 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
     dataSource: listItem
   }
   let timeout
+
+  const purchaseProps = {
+    purchase,
+    loading,
+    handleBrowseInvoice () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          modalType: 'browseInvoice'
+        }
+      })
+
+      dispatch({
+        type: 'purchase/showProductModal',
+        payload: {
+          modalType: 'browseInvoice'
+        }
+      })
+    },
+    onInvoiceHeader (period) {
+      dispatch({
+        type: 'purchase/getInvoiceHeader',
+        payload: {
+          ...period
+        }
+      })
+    },
+    onChooseInvoice (item) {
+      console.log('item', item)
+      // dispatch({
+      //   type: 'purchase/getInvoiceDetail',
+      //   payload: item
+      // })
+    }
+  }
   const formProps = {
+    purchaseProps,
     loading,
     modalType,
     modalVisible,
@@ -280,4 +316,5 @@ export default connect(({
   customer,
   supplier,
   loading,
-  app }) => ({ bankentry, accountCode, paymentOpts, bank, customer, supplier, loading, app }))(Cash)
+  purchase,
+  app }) => ({ bankentry, accountCode, paymentOpts, bank, customer, supplier, loading, purchase, app }))(Cash)

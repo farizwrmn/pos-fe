@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Modal, Select, Spin } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
+import ModalBrowse from './ModalBrowse'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -34,7 +36,7 @@ const FormCounter = ({
   loading,
   showLov,
   onSubmit,
-  modalShow,
+  // modalShow,
   modalShowList,
   // onCancel,
   listItem,
@@ -48,6 +50,7 @@ const FormCounter = ({
   bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
   paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
+  purchaseProps,
   form: {
     getFieldDecorator,
     getFieldValue,
@@ -57,6 +60,8 @@ const FormCounter = ({
   },
   inputType = getFieldValue('type')
 }) => {
+  const { handleBrowseInvoice, onInvoiceHeader, onChooseInvoice, purchase } = purchaseProps
+  const { modalProductVisible } = purchase
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   // const handleCancel = () => {
   //   onCancel()
@@ -86,15 +91,15 @@ const FormCounter = ({
       })
     })
   }
-  const hdlModalShow = () => {
-    validateFields(['type'], (errors) => {
-      if (errors) {
-        return
-      }
-      const type = getFieldValue('type')
-      modalShow(type)
-    })
-  }
+  // const hdlModalShow = () => {
+  //   validateFields(['type'], (errors) => {
+  //     if (errors) {
+  //       return
+  //     }
+  //     const type = getFieldValue('type')
+  //     modalShow(type)
+  //   })
+  // }
 
   const modalOpts = {
     showLov,
@@ -118,6 +123,26 @@ const FormCounter = ({
   const listDetailOpts = {
     handleModalShowList,
     ...listDetailProps
+  }
+
+  const hdlBrowseInvoice = () => {
+    handleBrowseInvoice()
+    let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
+    let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
+    const period = {
+      startPeriod,
+      endPeriod
+    }
+    onInvoiceHeader(period)
+  }
+
+  const purchaseOpts = {
+    onChooseInvoice (item) {
+      resetFields()
+      onChooseInvoice(item)
+    },
+    visible: modalProductVisible,
+    ...purchaseProps
   }
 
   return (
@@ -208,7 +233,9 @@ const FormCounter = ({
         </Row>
         <Row>
           <Col {...column}>
-            <Button type="primary" size="large" onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Add</Button>
+            {/* <Button type="primary" size="large" onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Add</Button> */}
+            <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
+            {modalProductVisible && <ModalBrowse {...purchaseOpts} />}
           </Col>
           <Col {...column} />
         </Row>
