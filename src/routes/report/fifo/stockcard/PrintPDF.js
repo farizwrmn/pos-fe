@@ -10,7 +10,6 @@ import { RepeatReport } from 'components'
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const getLinkName = (transNo, transType) => {
-  console.log('window', window.location)
   switch (transType) {
     case 'FJ':
       return `${window.location.origin}/accounts/payment/${encodeURIComponent(transNo)}`
