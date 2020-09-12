@@ -87,7 +87,6 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(add, payload)
       if (data.success) {
         success()
@@ -95,13 +94,15 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            currentItemList: {},
+            listItem: []
           }
         })
-        yield put({
-          type: 'query'
-        })
+        yield put({ type: 'query' })
         payload.reset()
+        yield put({ type: 'querySequence' })
+        message.success('Success save data')
       } else {
         throw data
       }
@@ -130,6 +131,8 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
         payload.reset()
+        message.success('Success edit data')
+        yield put({ type: 'querySequence' })
       } else {
         throw data
       }
@@ -263,7 +266,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    editItem (state, { payload }) {
+    setEdit (state, { payload }) {
       const { item } = payload
       return {
         ...state,

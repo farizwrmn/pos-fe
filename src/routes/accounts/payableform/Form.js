@@ -51,7 +51,7 @@ const FormCounter = ({
   listOpts,
   listSupplier,
   bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
+  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,
@@ -180,13 +180,6 @@ const FormCounter = ({
       })
     })
   }
-  console.log('modalType', modalType, item, modalType === 'add' && item.supplierId ? {
-    key: item.supplierId.key,
-    label: item.supplierId.label
-  } : modalType === 'edit' && item.supplierId ? {
-    key: item.supplierId,
-    label: `${item.supplierName} (${item.supplierCode})`
-  } : null)
 
   return (
     <div>
