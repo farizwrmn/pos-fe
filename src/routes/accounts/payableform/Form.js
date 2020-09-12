@@ -39,8 +39,10 @@ const FormCounter = ({
   dispatch,
   // modalShow,
   modalShowList,
+  modalType,
   // onCancel,
   listItem,
+  resetListItem,
   // modalType,
   modalVisible,
   modalProps,
@@ -52,14 +54,15 @@ const FormCounter = ({
   paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.id} key={c.id}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
+  updateCurrentItem,
   form: {
     getFieldDecorator,
     getFieldValue,
     validateFields,
     getFieldsValue,
-    resetFields
-  },
-  inputType = getFieldValue('type')
+    resetFields,
+    setFieldsValue
+  }
 }) => {
   const { handleBrowseInvoice, onInvoiceHeader, onChooseInvoice, purchase } = purchaseProps
   const { modalProductVisible } = purchase
@@ -78,15 +81,13 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
+      data.typeCode = data.typeCode ? data.typeCode.key : null
       data.bankId = data.bankId ? data.bankId.key : null
-      data.transType = data.transType ? data.transType.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listItem, getFieldsValue())
-          resetFields()
+          onSubmit(data, listItem, getFieldsValue(), resetFields)
         },
         onCancel () { }
       })
@@ -109,13 +110,9 @@ const FormCounter = ({
   }
 
   const handleModalShowList = (record) => {
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
+    validateFields(['supplierId'], (errors) => {
       if (errors) {
         return
-      }
-      record.accountId = {
-        key: record.accountId,
-        label: record.accountName
       }
       modalShowList(record)
     })
@@ -127,14 +124,19 @@ const FormCounter = ({
   }
 
   const hdlBrowseInvoice = () => {
-    handleBrowseInvoice()
-    let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
-    let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
-    const period = {
-      startPeriod,
-      endPeriod
-    }
-    onInvoiceHeader(period)
+    validateFields(['supplierId'], (errors) => {
+      if (errors) {
+        return
+      }
+      handleBrowseInvoice()
+      let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
+      let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
+      const period = {
+        startPeriod,
+        endPeriod
+      }
+      onInvoiceHeader(period)
+    })
   }
 
   const purchaseOpts = {
@@ -146,6 +148,45 @@ const FormCounter = ({
     visible: modalProductVisible,
     ...purchaseProps
   }
+
+  const hdlModalReset = () => {
+    const oldSupplierId = getFieldValue('supplierId')
+    validateFields(['supplierId'], (errors) => {
+      if (errors) {
+        return
+      }
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          const type = getFieldValue('type')
+          resetListItem(type)
+        },
+        onCancel () {
+          setFieldsValue({
+            supplierId: {
+              key: oldSupplierId ? oldSupplierId.key : null,
+              label: oldSupplierId ? oldSupplierId.label : null
+            }
+          })
+          updateCurrentItem({
+            supplierId: {
+              key: oldSupplierId ? oldSupplierId.key : null,
+              label: oldSupplierId ? oldSupplierId.label : null
+            },
+            ...item
+          })
+        }
+      })
+    })
+  }
+  console.log('modalType', modalType, item, modalType === 'add' && item.supplierId ? {
+    key: item.supplierId.key,
+    label: item.supplierId.label
+  } : modalType === 'edit' && item.supplierId ? {
+    key: item.supplierId,
+    label: `${item.supplierName} (${item.supplierCode})`
+  } : null)
 
   return (
     <div>
@@ -178,13 +219,21 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierId', {
-                initialValue: item.supplierId,
+                initialValue: modalType === 'edit' && item.supplierId ? {
+                  key: item.supplierId,
+                  label: `${item.supplierName} (${item.supplierCode})`
+                }
+                  : {
+                    key: null,
+                    label: null
+                  },
                 rules: [
                   {
                     required: true
                   }
                 ]
               })(<Select
+                onChange={() => hdlModalReset()}
                 showSearch
                 allowClear
                 notFoundContent={loading.effects['supplier/query'] ? <Spin size="small" /> : null}
@@ -196,8 +245,15 @@ const FormCounter = ({
               </Select>)}
             </FormItem>
             <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transType', {
-                initialValue: item.transType,
+              {getFieldDecorator('typeCode', {
+                initialValue: modalType === 'edit' && item.typeCode ? {
+                  key: item.typeCode,
+                  label: `${item.typeName} (${item.typeCode})`
+                }
+                  : {
+                    key: null,
+                    label: null
+                  },
                 rules: [
                   {
                     required: true
@@ -215,7 +271,14 @@ const FormCounter = ({
             </FormItem>
             <FormItem label="Bank" hasFeedback {...formItemLayout}>
               {getFieldDecorator('bankId', {
-                initialValue: item.bankId,
+                initialValue: modalType === 'edit' && item.bankId ? {
+                  key: item.bankId,
+                  label: `${item.bankName} (${item.bankCode})`
+                }
+                  : {
+                    key: null,
+                    label: null
+                  },
                 rules: [
                   {
                     required: true
@@ -258,7 +321,7 @@ const FormCounter = ({
           </Col>
         </Row>
       </Form>
-      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
+      {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )
 }

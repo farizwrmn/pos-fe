@@ -12,21 +12,21 @@ const Browse = ({
       key: 'no'
     },
     {
-      title: 'Type',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
+      title: 'Must Paid',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },

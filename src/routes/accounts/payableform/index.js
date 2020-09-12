@@ -9,18 +9,24 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, purchase, app }) => {
-  const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = bankentry
+const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+  const {
+    modalVisible,
+    currentItem,
+    listItem,
+    currentItemList,
+    modalType,
+    activeKey,
+    list
+  } = payableForm
   const { listOpts } = paymentOpts
   const { listBank } = bank
-  const { listCustomer } = customer
   const { listSupplier } = supplier
-  const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'bankentry/query',
+        type: 'payableForm/query',
         payload: {
           ...value
         }
@@ -29,10 +35,10 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   }
 
   const listProps = {
-    dataSource: listCash,
+    dataSource: list,
     user,
     storeInfo,
-    loading: loading.effects['bankentry/query'],
+    loading: loading.effects['payableForm/query'],
     location,
     editItem (item) {
       const { pathname } = location
@@ -43,13 +49,13 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
         }
       }))
       dispatch({
-        type: 'bankentry/editItem',
+        type: 'payableForm/setEdit',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'bankentry/delete',
+        type: 'payableForm/delete',
         payload: id
       })
     }
@@ -62,7 +68,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
         content: 'this action will reset your current process',
         onOk () {
           dispatch({
-            type: 'bankentry/changeTab',
+            type: 'payableForm/changeTab',
             payload: { key }
           })
           const { query, pathname } = location
@@ -73,12 +79,12 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
               activeKey: key
             }
           }))
-          dispatch({ type: 'bankentry/updateState', payload: { listCash: [], listItem: [] } })
+          dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
         }
       })
     } else {
       dispatch({
-        type: 'bankentry/changeTab',
+        type: 'payableForm/changeTab',
         payload: { key }
       })
       const { query, pathname } = location
@@ -89,13 +95,13 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
           activeKey: key
         }
       }))
-      dispatch({ type: 'bankentry/updateState', payload: { listCash: [], listItem: [] } })
+      dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
     }
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'bankentry/updateState',
+      type: 'payableForm/updateState',
       payload: {
         activeKey: '1'
       }
@@ -106,23 +112,19 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
     title: 'Add Detail',
     item: currentItemList,
     visible: modalVisible,
-    listAccountCode,
     onCancel () {
       dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/updateState',
         payload: {
           modalVisible: false
         }
       })
     },
-    addModalItem (data) {
-      data.no = (listItem || []).length + 1
-      listItem.push(data)
+    editModalItem (item) {
       dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/editItem',
         payload: {
-          modalVisible: false,
-          listItem
+          item
         }
       })
     }
@@ -136,13 +138,6 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
     purchase,
     loading,
     handleBrowseInvoice () {
-      dispatch({
-        type: 'purchase/getProducts',
-        payload: {
-          modalType: 'browseInvoice'
-        }
-      })
-
       dispatch({
         type: 'purchase/showProductModal',
         payload: {
@@ -159,11 +154,12 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
       })
     },
     onChooseInvoice (item) {
-      console.log('item', item)
-      // dispatch({
-      //   type: 'purchase/getInvoiceDetail',
-      //   payload: item
-      // })
+      dispatch({
+        type: 'payableForm/addItem',
+        payload: {
+          item
+        }
+      })
     }
   }
   const formProps = {
@@ -173,22 +169,21 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
     modalType,
     modalVisible,
     modalProps,
-    inputType,
     listDetailProps,
     listItem,
     listOpts,
     listBank,
-    listCustomer,
     listSupplier,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, detail, oldValue, reset) {
       dispatch({
-        type: `bankentry/${modalType}`,
+        type: `payableForm/${modalType}`,
         payload: {
           data,
           detail,
-          oldValue
+          oldValue,
+          reset
         }
       })
     },
@@ -201,7 +196,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
         }
       }))
       dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/updateState',
         payload: {
           currentItem: {}
         }
@@ -233,43 +228,35 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
     },
     updateCurrentItem (data) {
       dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/updateState',
         payload: {
           currentItem: data
         }
       })
     },
-    modalShow (value) { // string
+    modalShow () { // string
       dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/updateState',
         payload: {
-          modalVisible: true,
-          inputType: value
-        }
-      })
-    },
-    resetListItem (value) {
-      dispatch({
-        type: 'bankentry/updateState',
-        payload: {
-          listItem: [],
-          inputType: value
+          modalVisible: true
         }
       })
     },
     modalShowList (record) {
       dispatch({
-        type: 'accountCode/query',
-        payload: {
-          pageSize: 5,
-          id: record.accountId.key
-        }
-      })
-      dispatch({
-        type: 'bankentry/updateState',
+        type: 'payableForm/updateState',
         payload: {
           modalVisible: true,
           currentItemList: record
+        }
+      })
+    },
+    resetListItem () {
+      dispatch({
+        type: 'payableForm/updateState',
+        payload: {
+          currentItemList: {},
+          listItem: []
         }
       })
     }
@@ -300,7 +287,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
 }
 
 Cash.propTypes = {
-  bankentry: PropTypes.object,
+  payableForm: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
   loading: PropTypes.object,
@@ -310,12 +297,19 @@ Cash.propTypes = {
 }
 
 export default connect(({
-  bankentry,
-  accountCode,
+  payableForm,
   paymentOpts,
   bank,
-  customer,
   supplier,
   loading,
   purchase,
-  app }) => ({ bankentry, accountCode, paymentOpts, bank, customer, supplier, loading, purchase, app }))(Cash)
+  app }) =>
+  ({
+    payableForm,
+    paymentOpts,
+    bank,
+    supplier,
+    loading,
+    purchase,
+    app
+  }))(Cash)
