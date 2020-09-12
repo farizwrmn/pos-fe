@@ -93,15 +93,6 @@ const FormCounter = ({
       })
     })
   }
-  // const hdlModalShow = () => {
-  //   validateFields(['type'], (errors) => {
-  //     if (errors) {
-  //       return
-  //     }
-  //     const type = getFieldValue('type')
-  //     modalShow(type)
-  //   })
-  // }
 
   const modalOpts = {
     showLov,
@@ -135,7 +126,10 @@ const FormCounter = ({
         startPeriod,
         endPeriod
       }
-      onInvoiceHeader(period)
+      const supplierId = getFieldValue('supplierId')
+      if (supplierId && supplierId.key) {
+        onInvoiceHeader(period, supplierId.key)
+      }
     })
   }
 
@@ -146,7 +140,19 @@ const FormCounter = ({
     },
     dispatch,
     visible: modalProductVisible,
-    ...purchaseProps
+    ...purchaseProps,
+    onInvoiceHeader (period) {
+      validateFields(['supplierId'], (errors) => {
+        if (errors) {
+          return
+        }
+        handleBrowseInvoice()
+        const supplierId = getFieldValue('supplierId')
+        if (supplierId && supplierId.key) {
+          onInvoiceHeader(period, supplierId.key)
+        }
+      })
+    }
   }
 
   const hdlModalReset = () => {
@@ -216,10 +222,7 @@ const FormCounter = ({
                   key: item.supplierId,
                   label: `${item.supplierName} (${item.supplierCode})`
                 }
-                  : {
-                    key: null,
-                    label: null
-                  },
+                  : undefined,
                 rules: [
                   {
                     required: true
@@ -243,10 +246,7 @@ const FormCounter = ({
                   key: item.typeCode,
                   label: `${item.typeName} (${item.typeCode})`
                 }
-                  : {
-                    key: null,
-                    label: null
-                  },
+                  : undefined,
                 rules: [
                   {
                     required: true
@@ -268,10 +268,7 @@ const FormCounter = ({
                   key: item.bankId,
                   label: `${item.bankName} (${item.bankCode})`
                 }
-                  : {
-                    key: null,
-                    label: null
-                  },
+                  : undefined,
                 rules: [
                   {
                     required: true

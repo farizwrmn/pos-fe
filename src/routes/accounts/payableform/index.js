@@ -145,11 +145,12 @@ const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, loc
         }
       })
     },
-    onInvoiceHeader (period) {
+    onInvoiceHeader (period, supplierId) {
       dispatch({
         type: 'purchase/getInvoiceHeader',
         payload: {
-          ...period
+          ...period,
+          supplierId
         }
       })
     },

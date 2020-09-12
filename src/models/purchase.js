@@ -442,6 +442,14 @@ export default modelExtend(pageModel, {
           content: 'Content Not Found...!'
         })
         setTimeout(() => modal.destroy(), 1000)
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataInvoice: [],
+            tmpInvoiceList: [],
+            listInvoice: []
+          }
+        })
       }
     },
     * getInvoiceDetail ({ payload }, { call, put }) {
