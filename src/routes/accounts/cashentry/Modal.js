@@ -30,8 +30,7 @@ class ModalList extends Component {
       onDelete,
       showLov,
       item,
-      inputType,
-      modalType,
+      modalItemType,
       form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
       ...modalProps
     } = this.props
@@ -42,14 +41,17 @@ class ModalList extends Component {
         if (errors) {
           return
         }
-        const data = getFieldsValue()
+        const data = {
+          ...item,
+          ...getFieldsValue()
+        }
         data.no = item.no
         data.accountName = data.accountId.label
         data.accountId = data.accountId.key
-        if (modalType === 'add') {
-          addModalItem(data, inputType)
-        } else if (modalType === 'edit') {
-          editModalItem(data, inputType)
+        if (modalItemType === 'add') {
+          addModalItem(data)
+        } else if (modalItemType === 'edit') {
+          editModalItem(data)
         }
         resetFields()
       })

@@ -12,7 +12,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = cashentry
+  const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = cashentry
 
   let currentCashier = {
     cashierId: null,
@@ -94,13 +94,10 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          edit: item.id
         }
       }))
-      dispatch({
-        type: 'cashentry/editItem',
-        payload: { item }
-      })
     },
     deleteItem (id) {
       dispatch({
@@ -125,6 +122,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
             pathname,
             query: {
               ...query,
+              edit: null,
               activeKey: key
             }
           }))
@@ -157,9 +155,10 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
 
   const modalProps = {
-    title: modalType === 'add' ? 'Add Detail' : 'Edit Detail',
+    title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
+    modalItemType,
     modalType,
     listAccountCode: listAccountCodeExpense,
     onCancel () {
@@ -171,13 +170,14 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       })
     },
     addModalItem (data) {
+      const { listItem } = cashentry
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
         type: 'cashentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -185,12 +185,13 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       message.success('success add item')
     },
     editModalItem (data) {
+      const { listItem } = cashentry
       listItem[data.no - 1] = data
       dispatch({
         type: 'cashentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -203,26 +204,28 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
   let timeout
   const formProps = {
+    dispatch,
     listAccountCode,
     modalType,
+    modalItemType,
     modalVisible,
     modalProps,
-    inputType,
     listDetailProps,
     listItem,
     listCustomer,
     listSupplier,
     storeInfo,
     item: currentItem,
+    loading: loading.effects['cashentry/add'] || loading.effects['cashentry/edit'] || loading.effects['cashentry/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, detail, oldValue, reset) {
       dispatch({
         type: `cashentry/${modalType}`,
         payload: {
-          inputType,
           data,
           detail,
-          oldValue
+          oldValue,
+          reset
         }
       })
     },
@@ -237,7 +240,9 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       dispatch({
         type: 'cashentry/updateState',
         payload: {
-          currentItem: {}
+          modalType: 'add',
+          currentItem: {},
+          listItem: []
         }
       })
     },
@@ -273,22 +278,20 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         }
       })
     },
-    modalShow (value) { // string
+    modalShow () { // string
       dispatch({
         type: 'cashentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'add',
-          inputType: value
+          modalItemType: 'add'
         }
       })
     },
-    resetListItem (value) {
+    resetListItem () {
       dispatch({
         type: 'cashentry/updateState',
         payload: {
-          listItem: [],
-          inputType: value
+          listItem: []
         }
       })
     },
@@ -304,7 +307,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         type: 'cashentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'edit',
+          modalItemType: 'edit',
           currentItemList: record
         }
       })
