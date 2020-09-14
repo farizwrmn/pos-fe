@@ -12,7 +12,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, pagination, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = bankentry
+  const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = bankentry
 
   let currentCashier = {
     cashierId: null,
@@ -122,6 +122,7 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
             pathname,
             query: {
               ...query,
+              edit: null,
               activeKey: key
             }
           }))
@@ -154,9 +155,10 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
   }
 
   const modalProps = {
-    title: modalType === 'add' ? 'Add Detail' : 'Edit Detail',
+    title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
+    modalItemType,
     modalType,
     listAccountCode: listAccountCodeExpense,
     onCancel () {
@@ -168,13 +170,14 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
       })
     },
     addModalItem (data) {
+      const { listItem } = bankentry
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -182,12 +185,13 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
       message.success('success add item')
     },
     editModalItem (data) {
+      const { listItem } = bankentry
       listItem[data.no - 1] = data
       dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -200,26 +204,28 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
   }
   let timeout
   const formProps = {
+    dispatch,
     listAccountCode,
     modalType,
+    modalItemType,
     modalVisible,
     modalProps,
-    inputType,
     listDetailProps,
     listItem,
     listCustomer,
     listSupplier,
     storeInfo,
     item: currentItem,
+    loading: loading.effects['bankentry/add'] || loading.effects['bankentry/edit'] || loading.effects['bankentry/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, detail, oldValue, reset) {
       dispatch({
         type: `bankentry/${modalType}`,
         payload: {
-          inputType,
           data,
           detail,
-          oldValue
+          oldValue,
+          reset
         }
       })
     },
@@ -234,7 +240,9 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
       dispatch({
         type: 'bankentry/updateState',
         payload: {
-          currentItem: {}
+          modalType: 'add',
+          currentItem: {},
+          listItem: []
         }
       })
     },
@@ -270,22 +278,20 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
         }
       })
     },
-    modalShow (value) { // string
+    modalShow () { // string
       dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'add',
-          inputType: value
+          modalItemType: 'add'
         }
       })
     },
-    resetListItem (value) {
+    resetListItem () {
       dispatch({
         type: 'bankentry/updateState',
         payload: {
-          listItem: [],
-          inputType: value
+          listItem: []
         }
       })
     },
@@ -301,7 +307,7 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
         type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'edit',
+          modalItemType: 'edit',
           currentItemList: record
         }
       })
