@@ -35,22 +35,23 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType: 'EQTY',
+              accountType:
+                'EQTY',
               type: 'all',
               order: 'accountCode'
             }
           })
         }
         if (pathname === '/cash-entry'
-          || pathname === '/bank-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
           || pathname === '/master/paymentoption'
+          || pathname === '/bank-entry'
           || matchEdc) {
           dispatch({
             type: 'queryExpense',
             payload: {
-              accountType: [
+              accountType: pathname === '/bank-entry' ? undefined : [
                 'EXPS',
                 'OEXP'
               ],
@@ -67,16 +68,6 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/bank-entry') {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all',
-              order: 'accountCode'
-            }
-          })
-        }
-
         if (pathname === '/master/account'
           || pathname === '/journal-entry') {
           dispatch({

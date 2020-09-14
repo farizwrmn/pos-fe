@@ -94,13 +94,10 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          edit: item.id
         }
       }))
-      dispatch({
-        type: 'bankentry/editItem',
-        payload: { item }
-      })
     },
     deleteItem (id) {
       dispatch({
