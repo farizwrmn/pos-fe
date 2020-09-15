@@ -13,6 +13,16 @@ export async function query (params) {
   })
 }
 
+export async function queryId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.order = 'typeCode'
+  return request({
+    url: `${cashier}/cashentry/${params.id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

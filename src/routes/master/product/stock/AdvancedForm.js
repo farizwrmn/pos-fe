@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message } from 'antd'
+import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
+import moment from 'moment'
+import ModalSupplier from './ModalSupplier'
 
 const { Variant, Specification, Stock } = DataQuery
 const FormItem = Form.Item
@@ -45,6 +47,7 @@ const AdvancedForm = ({
   item = {},
   onSubmit,
   onCancel,
+  onGetSupplier,
   disabled,
   loadingButton,
   modalVariantVisible,
@@ -52,12 +55,22 @@ const AdvancedForm = ({
   modalProductVisible,
   listVariantStock,
   editItemProductById,
+  supplierInformation,
   dispatch,
   modalType,
   button,
   listCategory,
   showCategories,
   listBrand,
+  modalSupplierVisible,
+  paginationSupplier,
+  listSupplier,
+  tmpSupplierData,
+  searchTextSupplier,
+  onChooseSupplier,
+  onSearchSupplierData,
+  onSearchSupplier,
+  onChangeDate,
   listVariant,
   showBrands,
   showVariant,
@@ -167,6 +180,9 @@ const AdvancedForm = ({
       data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
       data.usageTimePeriod = data.usageTimePeriod || 0
       data.usageMileage = data.usageMileage || 0
+      data.supplierId = modalType === 'add' && supplierInformation && supplierInformation.id
+        ? supplierInformation.id
+        : supplierInformation.id || item.supplierId
       let valid = true
       if (valid) {
         Modal.confirm({
@@ -421,6 +437,24 @@ const AdvancedForm = ({
       resetFields(['variantId'])
     }
   }
+
+  const hdlGetSupplier = () => {
+    onGetSupplier()
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: true
+      }
+    })
+  }
+
+  const buttonSupplierProps = {
+    type: 'primary',
+    onClick () {
+      hdlGetSupplier()
+    }
+  }
+
   const handleShowVariant = () => {
     if (item.variantId) {
       dispatch({
@@ -447,6 +481,73 @@ const AdvancedForm = ({
     showProductModal()
   }
   const variantIdFromItem = modalType === 'edit' && !!item.variantId
+
+  const hdlSearchPagination = (page) => {
+    const query = {
+      q: searchTextSupplier,
+      page: page.current,
+      pageSize: page.pageSize
+    }
+    onSearchSupplierData(query)
+  }
+
+  const hdlSearch = (e) => {
+    onSearchSupplier(e, tmpSupplierData)
+  }
+
+  const modalSupplierProps = {
+    title: 'Supplier',
+    visible: modalSupplierVisible,
+    footer: null,
+    hdlSearch,
+    onCancel () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalSupplierVisible: false
+        }
+      })
+    }
+  }
+
+  const handleMenuClick = (record) => {
+    let a = getFieldValue('transDate')
+    onChooseSupplier(record)
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: false
+      }
+    })
+    if (record.paymentTempo) {
+      message.success(`Supplier ${record.supplierName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
+      setFieldsValue({ tempo: record.paymentTempo })
+      if (a) {
+        onChangeDate(moment(a).add(record.paymentTempo, 'days').format('YYYY-MM-DD'))
+      }
+    }
+  }
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'supplierCode',
+      key: 'supplierCode',
+      width: '20%'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: '45%'
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address01',
+      key: 'address01',
+      width: '45%'
+    }
+  ]
 
   return (
     <Form layout="horizontal">
@@ -519,6 +620,9 @@ const AdvancedForm = ({
               >{productBrand}
               </Select>)}
             </FormItem>
+            <FormItem label="Supplier" {...formItemLayout}>
+              <Button {...buttonSupplierProps} size="default">{item.supplierId && item.supplierName ? `${item.supplierName.substring(0, 12)} (${item.supplierCode})` : 'Search Supplier'}</Button>
+            </FormItem>
             <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
               <Button.Group>
                 {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
@@ -529,12 +633,12 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode01', {
-                initialValue: item.barCode01
+                initialValue: modalType === 'edit' ? item.barCode01 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
             <FormItem label="Barcode 2" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode02', {
-                initialValue: item.barCode02
+                initialValue: modalType === 'edit' ? item.barCode02 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
 
@@ -761,6 +865,23 @@ const AdvancedForm = ({
           <Button type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
+      {modalSupplierVisible && (
+        <ModalSupplier {...modalSupplierProps}>
+          <Table
+            bordered
+            pagination={paginationSupplier}
+            scroll={{ x: 500 }}
+            columns={columns}
+            simple
+            loading={loadingButton.effects['purchase/querySupplier']}
+            dataSource={listSupplier}
+            size="small"
+            pageSize={10}
+            onChange={hdlSearchPagination}
+            onRowClick={_record => handleMenuClick(_record)}
+          />
+        </ModalSupplier>
+      )}
       {modalVariantVisible && <Variant {...modalVariantProps} />}
       {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
       {modalProductVisible && <Stock {...modalProductProps} />}

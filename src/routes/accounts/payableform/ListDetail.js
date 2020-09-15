@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, listItem, ...purchaseProps }) => {
+  handleModalShowList, ...purchaseProps }) => {
   const columns = [
     {
       title: 'No',
@@ -12,21 +12,21 @@ const Browse = ({
       key: 'no'
     },
     {
-      title: 'Type',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
+      title: 'Must Paid',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
@@ -51,12 +51,6 @@ const Browse = ({
       size="small"
       pagination={{ pageSize: 5 }}
       onRowClick={_record => hdlModalShow(_record)}
-      footer={() => (
-        <div>
-          <div>Debit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()}</div>
-          <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
-        </div>)
-      }
     />
   )
 }

@@ -12,6 +12,8 @@ const Filter = ({
   filter,
   show,
   onResetClick,
+  handleInventory,
+  inventoryMode,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -88,6 +90,7 @@ const Filter = ({
           <div >
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
             <Button size="large" onClick={handleReset}>Reset</Button>
+            {inventoryMode !== 'inventory' && <Button size="large" onClick={handleInventory}>Inventory Mode</Button>}
           </div>
         </div>
       </Col>

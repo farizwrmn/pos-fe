@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
+import { Table, Input, Tag, Form, Row, Col, DatePicker, Button } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import { numberFormat, formatDate } from 'utils'
@@ -56,6 +56,11 @@ const BrowseGroup = ({
       title: 'Supplier',
       dataIndex: 'supplierName',
       key: 'supplierName',
+      filters: tmpDataSource.map(item => ({
+        text: item.supplierName,
+        value: item.supplierName
+      })),
+      onFilter: (value, record) => record.supplierName.includes(value),
       width: 140
     },
     {
@@ -159,6 +164,18 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
         <Col {...rightColumn}>
+          <FormItem>
+            <Link
+              to="/accounts/payable-form"
+            >
+              <Button
+                style={{ float: 'right' }}
+                type="primary"
+              >
+                Add
+              </Button>
+            </Link>
+          </FormItem>
           <FormItem>
             <Search
               placeholder="Search Invoice"

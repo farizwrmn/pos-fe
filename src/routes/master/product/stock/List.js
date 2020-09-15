@@ -9,6 +9,7 @@ import styles from '../../../../themes/index.less'
 const confirm = Modal.confirm
 
 const List = ({ ...tableProps,
+  user,
   dispatch,
   loadingModel,
   editItem,
@@ -49,6 +50,20 @@ const List = ({ ...tableProps,
       key: 'count',
       width: '50px',
       className: styles.clickableRight,
+      onCellClick: (record) => {
+        dispatch({
+          type: 'updateState',
+          payload: {
+            countStoreList: []
+          }
+        })
+        dispatch({
+          type: 'productstock/showProductStoreQty',
+          payload: {
+            data: [record]
+          }
+        })
+      },
       render: (text) => {
         if (!loadingModel.effects['productstock/showProductQty']) {
           return text || 0
@@ -60,11 +75,10 @@ const List = ({ ...tableProps,
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: '200px',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.productCode}</div>
+            <div><strong>{record.productCode}</strong></div>
             <div>{record.productName}</div>
           </div>
         )
@@ -203,25 +217,12 @@ const List = ({ ...tableProps,
     <div>
       <Table {...tableProps}
         bordered
-        columns={columns}
+        columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
+          ? columns
+          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'margin')}
         simple
         scroll={{ x: 2500 }}
         rowKey={record => record.id}
-        onRowClick={(record) => {
-          console.log('click', record.id)
-          dispatch({
-            type: 'updateState',
-            payload: {
-              countStoreList: []
-            }
-          })
-          dispatch({
-            type: 'productstock/showProductStoreQty',
-            payload: {
-              data: [record]
-            }
-          })
-        }}
       />
     </div>
   )

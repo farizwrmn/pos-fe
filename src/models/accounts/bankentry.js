@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
+import { query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -18,11 +18,17 @@ export default modelExtend(pageModel, {
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
+    modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
     modalVisible: false,
     listItem: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     listBankRecon: [],
     summaryBankRecon: [],
     accountId: null,
@@ -33,7 +39,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, edit, ...other } = location.query
         const { pathname } = location
         if (pathname === '/bank-entry') {
           dispatch({
@@ -43,7 +49,16 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query' })
+            dispatch({ type: 'query', payload: other })
+          }
+
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
           } else {
             dispatch({ type: 'querySequence' })
           }
@@ -55,7 +70,8 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { edit, ...other } = payload
+      const data = yield call(query, other)
       if (data) {
         yield put({
           type: 'querySuccessCounter',
@@ -138,6 +154,30 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * setEdit ({ payload }, { call, put }) {
+      const data = yield call(queryId, { id: payload.edit, relationship: 1 })
+      if (data.success) {
+        const { bankEntryDetail, ...currentItem } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem,
+            modalType: 'edit',
+            listItem: bankEntryDetail ?
+              bankEntryDetail.map((item, index) => ({
+                no: index + 1,
+                ...item,
+                accountId: item.accountId,
+                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+              }))
+              : []
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * transfer ({ payload }, { call, put }) {
       const response = yield call(transfer, payload)
       if (response.success) {
@@ -181,6 +221,7 @@ export default modelExtend(pageModel, {
           const data = yield call(add, payload)
           if (data.success) {
             success()
+            payload.reset()
             yield put({
               type: 'updateState',
               payload: {
@@ -190,13 +231,11 @@ export default modelExtend(pageModel, {
               }
             })
             yield put({ type: 'querySequence' })
-          } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                currentItem: payload.oldValue
-              }
+            Modal.success({
+              title: 'Transaction success',
+              content: 'Transaction has been saved'
             })
+          } else {
             throw data
           }
         } else {
@@ -211,11 +250,12 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ cashentry }) => cashentry.currentItem.id)
+      const id = yield select(({ bankentry }) => bankentry.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {
@@ -233,12 +273,6 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     }

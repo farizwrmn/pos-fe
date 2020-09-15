@@ -9,6 +9,17 @@ import { RepeatReport } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
+const getLinkName = (transNo, transType) => {
+  switch (transType) {
+    case 'FJ':
+      return `${window.location.origin}/accounts/payment/${encodeURIComponent(transNo)}`
+    case 'FB':
+      return `${window.location.origin}/accounts/payable/${encodeURIComponent(transNo)}`
+    default:
+      return undefined
+  }
+}
+
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   let width = []
   let outJSON = listRekap
@@ -75,7 +86,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           { text: counter, alignment: 'center', fontSize: 11 },
           { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
           { text: moment(data.createdAt).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.transNo || '').toString(), link: getLinkName(data.transNo, data.transType), decoration: getLinkName(data.transNo, data.transType) ? 'underline' : undefined, alignment: 'left', fontSize: 11 },
           { text: data.transType.toString(), alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.pQty) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.pPrice) || 0), alignment: 'right', fontSize: 11 },

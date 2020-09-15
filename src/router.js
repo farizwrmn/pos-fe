@@ -196,15 +196,17 @@ const Routers = function ({ history, app }) {
             }, 'master-product-category')
           }
         }, {
-          path: '/stock',
+          path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specificationStock'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/master/variant'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
@@ -549,6 +551,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/transaction/adjust/'))
             }, 'transaction-adjust')
           }
@@ -956,6 +959,20 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/accountPayment'))
               cb(null, require('./routes/accounts/payable'))
             }, 'accounts-payable')
+          }
+        }, {
+          path: 'accounts/payable-form',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/payableForm'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/supplier'))
+              cb(null, require('./routes/accounts/payableform/'))
+            }, 'accounts-payable-form')
           }
         }, {
           path: 'cash-entry',
