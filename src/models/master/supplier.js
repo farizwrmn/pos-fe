@@ -33,6 +33,14 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/accounts/payable-form') {
+          dispatch({
+            type: 'query',
+            payload: {
+              pageSize: 5
+            }
+          })
+        }
         if (pathname === '/master/supplier') {
           if (activeKey === '1') {
             dispatch({

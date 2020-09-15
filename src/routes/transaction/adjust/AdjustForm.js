@@ -1,9 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  Form, message, Input, Button,
+  Form,
+  message,
+  Input,
+  Button,
+  Select,
   // Popover, Table, Icon,
-  Row, Col, DatePicker, Cascader, AutoComplete
+  Row,
+  Col,
+  DatePicker,
+  Cascader,
+  AutoComplete
 } from 'antd'
 import { DataQuery } from 'components'
 import { lstorage, alertModal } from 'utils'
@@ -28,8 +36,36 @@ const formItemLayout1 = {
   wrapperCol: { xs: { span: 24 }, sm: { span: 14 }, md: { span: 14 }, lg: { span: 15 } },
   style: { marginBottom: 3 }
 }
-const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, showProductModal, lastTrans, loadData, changeDisabledItem, templistType, onChooseItem, onResetAll, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, item,
-  popoverVisible, onHidePopover, onOk, onChangeSearch, tmpProductList, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, dataBrowse, ...adjustProps }) => {
+
+const { Option } = Select
+
+const AdjustForm = ({
+  modalProductVisible,
+  loadingButton,
+  dispatch,
+  showProductModal,
+  lastTrans,
+  loadData,
+  changeDisabledItem,
+  templistType,
+  onChooseItem,
+  onResetAll,
+  onGetEmployee,
+  itemEmployee,
+  listType,
+  listEmployee,
+  item,
+  onOk,
+  form: {
+    getFieldDecorator,
+    getFieldsValue,
+    validateFields,
+    resetFields
+  },
+  dataBrowse,
+  listAccountCode,
+  ...adjustProps
+}) => {
   const adjustOpts = {
     dataBrowse,
     ...adjustProps
@@ -185,11 +221,15 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
   const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
   const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
   const totalPrice = dataBrowse.reduce((prev, next) => prev + ((next.price * next.In) + (next.price * next.Out)), 0)
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listAccountOpt = (listAccountCode || []).length > 0
+    ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>)
+    : []
 
   return (
     <Form style={{ padding: 3 }}>
       <Row>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+        <Col md={24} lg={12}>
           <FormItem label="Trans No" {...formItemLayout}>
             {getFieldDecorator('transNo', {
               initialValue: lastTrans,
@@ -198,8 +238,25 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
               }]
             })(<Input disabled maxLength={25} />)}
           </FormItem>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+          <FormItem {...formItemLayout} label="Account Code">
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId || (listAccountCode && listAccountCode[0] ? {
+                key: listAccountCode[0].id,
+                name: `${listAccountCode[0].accountName} (${listAccountCode[0].accountCode})`
+              } : null),
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
           <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('transType', {
               rules: [{
@@ -215,8 +272,6 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
               />
             )}
           </FormItem>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Date" {...formItemLayout}>
             {getFieldDecorator('transDate', {
               rules: [{
@@ -225,27 +280,16 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
             })(<DatePicker format={dateFormat} />)}
           </FormItem>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+        <Col md={24} lg={12}>
           <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('reference', {
               rules: [{
                 pattern: /^[a-z0-9/_-]{6,40}$/i,
-                required: true,
+                required: false,
                 message: 'not a valid pattern'
               }]
             })(<Input maxLength={40} />)}
           </FormItem>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-          <FormItem label="Memo" {...formItemLayout1}>
-            {getFieldDecorator('memo', {
-              rules: [{
-                required: false
-              }]
-            })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
-          </FormItem>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="Employee" {...formItemLayout}>
             {getFieldDecorator('employeeName', {
               rules: [{
@@ -261,16 +305,15 @@ const AdjustForm = ({ modalProductVisible, loadingButton, pagination, dispatch, 
               />
             )}
           </FormItem>
-        </Col>
-        <Col xs={0} sm={24} md={24} lg={0} xl={0} />
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
           <FormItem label="PIC" {...formItemLayout}>
             <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
           </FormItem>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-          <FormItem label="PIC ID" {...formItemLayout}>
-            <Input value={itemEmployee !== null ? itemEmployee.employeeId : ''} />
+          <FormItem label="Memo" {...formItemLayout1}>
+            {getFieldDecorator('memo', {
+              rules: [{
+                required: false
+              }]
+            })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
           </FormItem>
         </Col>
       </Row>

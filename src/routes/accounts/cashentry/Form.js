@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Modal, Select, DatePicker, message } from 'antd'
 import { lstorage } from 'utils'
 import moment from 'moment'
+import { FooterToolbar } from 'components'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
 
@@ -35,23 +36,27 @@ const FormCounter = ({
   showLov,
   onSubmit,
   modalShow,
+  modalType,
+  modalItemType,
   modalShowList,
   storeInfo,
   listItem,
   modalVisible,
   modalProps,
   listDetailProps,
+  loading,
+  onCancel,
+  button,
   listAccountCode,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
     resetFields
-  },
-  inputType = 'E'
+  }
 }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -74,8 +79,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listItem, getFieldsValue())
-          resetFields()
+          onSubmit(data, listItem, getFieldsValue(), resetFields)
         },
         onCancel () { }
       })
@@ -87,6 +91,7 @@ const FormCounter = ({
 
   const modalOpts = {
     showLov,
+    modalItemType,
     ...modalProps
   }
 
@@ -102,6 +107,11 @@ const FormCounter = ({
     handleModalShowList,
     listItem,
     ...listDetailProps
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   return (
@@ -131,7 +141,10 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem {...formItemLayout} label="Account Code">
               {getFieldDecorator('accountId', {
-                initialValue: item.accountId,
+                initialValue: item.accountId ? {
+                  key: item.accountId,
+                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                } : undefined,
                 rules: [{
                   required: true,
                   message: 'Required'
@@ -165,17 +178,14 @@ const FormCounter = ({
         <Row style={{ marginBottom: '8px' }}>
           <ListDetail {...listDetailOpts} />
         </Row>
-        <Row>
-          <Col {...column} />
-          <Col {...column}>
-            <FormItem>
-              {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" onClick={handleSubmit} style={{ float: 'right' }}>Save</Button>
-            </FormItem>
-          </Col>
-        </Row>
+        <FooterToolbar>
+          <FormItem>
+            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+            <Button disabled={loading} type="primary" onClick={handleSubmit}>{button}</Button>
+          </FormItem>
+        </FooterToolbar>
       </Form>
-      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
+      {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )
 }

@@ -289,13 +289,6 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
     },
     modalShowList (record) {
       dispatch({
-        type: 'accountCode/query',
-        payload: {
-          pageSize: 5,
-          id: record.accountId.key
-        }
-      })
-      dispatch({
         type: 'journalentry/updateState',
         payload: {
           modalVisible: true,

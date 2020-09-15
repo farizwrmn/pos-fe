@@ -26,7 +26,7 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
+const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
   modalProductVisible, modalSupplierVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
   onChooseItem, tmpSupplierData, onSearchSupplier, onSearchSupplierData, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
   const { loading } = purchaseProps
@@ -242,9 +242,10 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1', '2']}>
             <Panel header="Invoice Information" key="1" style={customPanelStyle}>
               <Row>
-                <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+                <Col md={24} lg={14}>
                   <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transNo', {
+                      initialValue: lastTrans,
                       rules: [{
                         required: true,
                         message: 'Required',
@@ -287,7 +288,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                     </Select>))}
                   </FormItem> */}
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+                <Col md={24} lg={10}>
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transDate', {
                       rules: [{

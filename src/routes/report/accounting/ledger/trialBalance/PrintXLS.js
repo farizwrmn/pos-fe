@@ -114,7 +114,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableHeader,
     tableBody,
     tableFooter,
-    fileName: 'LAPORAN HISTORY BUKU BESAR'
+    fileName: 'LAPORAN NERACA SALDO'
   }
 
   let reportType

@@ -17,8 +17,8 @@ const numberFormatter = numberFormat.numberFormatter
 const options = {
   upgrade: true,
   transports: ['websocket'],
-  pingTimeout: 3000,
-  pingInterval: 5000
+  pingTimeout: 100,
+  pingInterval: 100
 }
 
 const socket = io(APISOCKET, options)

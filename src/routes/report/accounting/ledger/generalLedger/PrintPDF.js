@@ -6,8 +6,26 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicReport } from 'components'
+import {
+  EXPENSE,
+  DEPOSITE,
+  JOURNALENTRY
+} from 'utils/variable'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+
+const getLinkName = (transNo, transType) => {
+  switch (transType) {
+    case EXPENSE:
+      return `${window.location.origin}/cash-entry?edit=${encodeURIComponent(transNo)}`
+    case DEPOSITE:
+      return `${window.location.origin}/bank-entry?edit=${encodeURIComponent(transNo)}`
+    case JOURNALENTRY:
+      return `${window.location.origin}/journal-entry?edit=${encodeURIComponent(transNo)}`
+    default:
+      return undefined
+  }
+}
 
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   const styles = {
@@ -58,7 +76,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           { text: count, style: 'textCenter' },
           { text: (data.transDate || '').toString(), style: 'textLeft' },
           { text: (data.transactionType || '').toString(), style: 'textLeft' },
-          { text: (data.transactionId || '').toString(), style: 'textLeft' },
+          { text: (data.transactionId || '').toString(), link: getLinkName(data.transactionId, data.transactionType), decoration: getLinkName(data.transactionId, data.transactionType) ? 'underline' : undefined, style: 'textLeft' },
           { text: (data.accountCode || '').toString(), style: 'textLeft' },
           { text: (data.accountName || '').toString(), style: 'textLeft' },
           { text: formatNumberIndonesia(data.debit || 0), style: 'textRight' },
