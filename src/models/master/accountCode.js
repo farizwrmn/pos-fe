@@ -35,8 +35,13 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType:
-                'EQTY',
+              accountType: [
+                'REVE',
+                'OINC',
+                'EXPS',
+                'OEXP',
+                'EQTY'
+              ],
               type: 'all',
               order: 'accountCode'
             }

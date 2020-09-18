@@ -1,5 +1,8 @@
 import moment from 'moment'
 import { getDashboards } from '../services/dashboard'
+import {
+  queryFifoCategory
+} from '../services/report/fifo'
 
 const construct = (dataSales, startDate, toDate) => {
   const diffDay = moment(startDate, 'YYYY-MM-DD').diff(moment(toDate, 'YYYY-MM-DD'), 'days') + 1
@@ -31,6 +34,8 @@ export default {
   state: {
     typeText: '',
     modalPeriod: false,
+    listSalesCategory: [],
+    listStockByCategory: [],
     sales: [],
     data: [],
     numbers: [],
@@ -71,6 +76,25 @@ export default {
         return moment.utc(moment(left.title, 'MM/DD/YYYY').format('YYYY-MM-DD')).diff(moment.utc(moment(right.title, 'MM/DD/YYYY').format('YYYY-MM-DD')))
       })
       yield put({ type: 'querySuccess', payload: { data: formatData, ...payload } })
+    },
+    * querySalesCategory (payload, { call, put }) {
+      const response = yield call(queryFifoCategory, {
+        from: '',
+        to: '',
+        category: '183'
+      })
+      const responseStock = yield call(queryFifoCategory, {
+        from: '',
+        to: '',
+        category: '183'
+      })
+      yield put({
+        type: 'querySuccess',
+        payload: {
+          listSalesCategory: [],
+          listStockByCategory: []
+        }
+      })
     }
   },
   reducers: {

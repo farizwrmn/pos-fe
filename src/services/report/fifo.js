@@ -52,3 +52,14 @@ export async function queryFifoTransfer (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryFifoCategory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${fiforeport}/stock-category`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

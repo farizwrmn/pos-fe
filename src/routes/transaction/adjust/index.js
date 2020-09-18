@@ -98,6 +98,7 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
       })
     }
   }
+
   const adjustProps = {
     ...browseProps,
     listAccountCode,
