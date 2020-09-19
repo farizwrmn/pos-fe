@@ -24,7 +24,7 @@ const History = ({ onGetAdjust, dataBrowse, onEditItem, ...historyProps }) => {
       title: 'Type',
       dataIndex: 'transType',
       key: 'transType',
-      width: '200'
+      width: '50'
     },
     {
       title: 'Reference',
@@ -36,7 +36,7 @@ const History = ({ onGetAdjust, dataBrowse, onEditItem, ...historyProps }) => {
       title: 'PIC',
       dataIndex: 'pic',
       key: 'pic',
-      width: '200'
+      width: '100'
     },
     {
       title: 'Trans Date',
@@ -44,6 +44,12 @@ const History = ({ onGetAdjust, dataBrowse, onEditItem, ...historyProps }) => {
       key: 'transDate',
       width: '100',
       render: text => moment(text).format('DD-MMM-YYYY')
+    },
+    {
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo',
+      width: '200'
     },
     {
       title: 'Operation',

@@ -88,6 +88,7 @@ const AdjustForm = ({
       }
 
       data.transType = data.transType[0]
+      data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
       onOk(data)
       resetFields()
     })
@@ -266,7 +267,7 @@ const AdjustForm = ({
               <Cascader
                 size="large"
                 style={{ width: '100%' }}
-                options={listType}
+                options={listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ')}
                 placeholder="Pick a Type"
                 onChange={value => changeCascader(value)}
               />

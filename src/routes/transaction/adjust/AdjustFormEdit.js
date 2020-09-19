@@ -1,14 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, Row, Button, DatePicker, Cascader } from 'antd'
+import { Form, Modal, Input, Row, Button, DatePicker, Cascader, Select } from 'antd'
 import moment from 'moment'
 import { alertModal } from 'utils'
+import {
+  RBB,
+  RJJ
+} from 'utils/variable'
 import Browse from './Browse'
 
 const { checkPermissionMonthTransaction } = alertModal
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
 const { TextArea } = Input
+const { Option } = Select
 // const { Search } = Input
 const formItemLayout1 = {
   labelCol: { xs: { span: 24 }, sm: { span: 9 }, md: { span: 9 }, lg: { span: 8 } },
@@ -20,7 +25,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
+const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
   popoverVisible, dataBrowse, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
   if (item) {
     itemEmployee.employeeId = item.picId
@@ -37,6 +42,7 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
           }
           const data = {
             ...getFieldsValue(),
+            id: item.id,
             transNo: item.transNo,
             transType: item.transType,
             pic: itemEmployee !== null ? itemEmployee.employeeName : '',
@@ -46,7 +52,7 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
           if (checkPermission) {
             return
           }
-          data.transType = data.transType[0]
+          data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
           onEdit(data)
         })
       },
@@ -65,7 +71,10 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
   const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
   const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
   const totalPrice = dataBrowse.reduce((prev, next) => prev + (next.price || 0), 0)
-
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listAccountOpt = (listAccountCode || []).length > 0
+    ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>)
+    : []
   return (
     <Form style={{ padding: 3 }}>
       <FormItem label="Trans No" {...formItemLayout}>
@@ -84,6 +93,25 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
           options={listType}
           placeholder="Pick a Type"
         />)}
+      </FormItem>
+      <FormItem {...formItemLayout} label="Account Code">
+        {getFieldDecorator('accountId', {
+          initialValue: item.accountId && item.accountCode && item.accountCode.accountCode ? {
+            key: item.accountId,
+            name: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+          } : null,
+          rules: [{
+            required: true,
+            message: 'Required'
+          }]
+        })(<Select
+          showSearch
+          allowClear
+          optionFilterProp="children"
+          labelInValue
+          filterOption={filterOption}
+        >{listAccountOpt}
+        </Select>)}
       </FormItem>
       <FormItem label="Date" {...formItemLayout}>
         <DatePicker disabled value={moment.utc(item.transDate, 'YYYY/MM/DD')} format={dateFormat} />
@@ -123,7 +151,7 @@ const AdjustForm = ({ onChooseItem, onResetAll, disableItem, onGetEmployee, item
         </div>
       </Form>
       <FormItem {...formItemLayout}>
-        <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
+        <Button disabled={item && (item.transType === RBB || item.transType === RJJ)} type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
         {/* <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button> */}
       </FormItem>
     </Form>
