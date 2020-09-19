@@ -36,6 +36,11 @@ const List = ({
       key: 'reference'
     },
     {
+      title: 'Desc',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
