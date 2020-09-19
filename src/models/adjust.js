@@ -417,7 +417,7 @@ export default modelExtend(pageModel, {
       })
       yield put({
         type: 'setTransType',
-        payload: { listType: dataAdjust.data.filter(filtered => filtered.code !== 'RBB' && filtered.code !== 'RJJ'), listEmployee: dataEmployee.data }
+        payload: { listType: dataAdjust.data, listEmployee: dataEmployee.data }
       })
     },
     * modalShow ({ payload = {} }, { call, put }) {
