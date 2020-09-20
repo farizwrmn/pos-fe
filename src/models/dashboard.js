@@ -110,8 +110,8 @@ export default {
         category: '117,118,121,122,125'
       })
       const responseSales = yield call(queryByDate, {
-        from: moment().subtract(2, 'day').format('YYYY-MM-DD'),
-        to: moment().add(2, 'day').format('YYYY-MM-DD')
+        from: moment().format('YYYY-MM-DD'),
+        to: moment().format('YYYY-MM-DD')
       })
       if (responseSales && responseSales.success) {
         for (let key in listUserStores) {
