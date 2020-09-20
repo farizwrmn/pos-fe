@@ -65,6 +65,17 @@ export async function queryInterval (params) {
   })
 }
 
+export async function queryByDate (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${posReport}/bydate`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   if (!params.storeId) {

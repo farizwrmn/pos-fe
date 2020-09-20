@@ -7,7 +7,7 @@ import SalesDetail from './SalesDetail'
 import Profit from './Profit'
 import Product from './Product'
 
-function Dashboard ({ loading, fifoReport, dashboard, pos }) {
+function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
   const { data, numbers } = dashboard
   const { listPosDetail } = pos
   const { listRekap } = fifoReport
@@ -16,6 +16,7 @@ function Dashboard ({ loading, fifoReport, dashboard, pos }) {
   </Col>))
 
   const salesDetailProps = {
+    dispatch,
     dataSource: listPosDetail,
     pagination: false,
     width: 90,

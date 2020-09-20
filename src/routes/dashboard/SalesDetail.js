@@ -1,12 +1,18 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Button, Table } from 'antd'
 import moment from 'moment'
 import { numberFormatter } from 'utils/numberFormat'
 
-const SalesDetail = ({ ...other }) => {
+const SalesDetail = ({ dispatch, ...other }) => {
+  const onClickCopy = () => {
+    dispatch({
+      type: 'dashboard/querySalesCategory'
+    })
+  }
+
   const columns = [
     {
-      title: 'Latest Sales',
+      title: (<div>Latest Sales <Button onClick={onClickCopy} type="default" shape="circle" icon="copy" /></div>),
       dataIndex: 'productCode',
       key: 'productCode',
       render: (text, record) => {
