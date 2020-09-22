@@ -99,7 +99,7 @@ const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, on
           initialValue: item.accountId && item.accountCode && item.accountCode.accountCode ? {
             key: item.accountId,
             name: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-          } : null,
+          } : undefined,
           rules: [{
             required: true,
             message: 'Required'

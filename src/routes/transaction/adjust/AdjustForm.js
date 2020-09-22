@@ -244,7 +244,7 @@ const AdjustForm = ({
               initialValue: item.accountId || (listAccountCode && listAccountCode[0] ? {
                 key: listAccountCode[0].id,
                 name: `${listAccountCode[0].accountName} (${listAccountCode[0].accountCode})`
-              } : null),
+              } : undefined),
               rules: [{
                 required: true,
                 message: 'Required'
