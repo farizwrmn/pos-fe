@@ -257,7 +257,7 @@ export default modelExtend(pageModel, {
       if (data.success) {
         success()
         yield put({ type: 'modalHide' })
-        // yield put({ type: 'query' })
+        yield put({ type: 'query' })
       } else {
         stockMinusAlert(data)
         throw data
@@ -555,7 +555,7 @@ export default modelExtend(pageModel, {
     //   return { ...state, ...payload, modalVisible: true, disableItem: true }
     // },
     modalHide (state, { payload }) {
-      return { ...state, ...payload, modalVisible: false, disableItem: false, modalProductVisible: true }
+      return { ...state, ...payload, item: [], currentItem: {}, modalVisible: false, disableItem: false, modalProductVisible: true }
     },
     onInputChange (state, action) {
       return { ...state, searchText: action.payload.searchText, popoverVisible: true }
