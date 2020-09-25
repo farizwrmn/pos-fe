@@ -13,9 +13,10 @@ import BrowseTotal from './BrowseTotal'
 import BrowseReturn from './BrowseReturn'
 import Filter from './Filter'
 
-const Report = ({ dispatch, paymentOpts, posPaymentReport, returnSalesDetail, loading, app }) => {
+const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSalesDetail, loading, app }) => {
   const { list } = returnSalesDetail
   const { listTrans, from, to, productCode } = posPaymentReport
+  const { listSalesCategory, listStockByCategory } = dashboard
   const { listOpts } = paymentOpts
   const { user, storeInfo } = app
   const browseProps = {
@@ -44,6 +45,8 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, returnSalesDetail, lo
   }
 
   const filterProps = {
+    listSalesCategory,
+    listStockByCategory,
     listTrans,
     user,
     storeInfo,
@@ -175,4 +178,4 @@ Report.propTyps = {
   posPaymentReport: PropTypes.object
 }
 
-export default connect(({ loading, paymentOpts, posPaymentReport, app, returnSalesDetail }) => ({ loading, paymentOpts, posPaymentReport, app, returnSalesDetail }))(Report)
+export default connect(({ loading, dashboard, paymentOpts, posPaymentReport, app, returnSalesDetail }) => ({ loading, dashboard, paymentOpts, posPaymentReport, app, returnSalesDetail }))(Report)

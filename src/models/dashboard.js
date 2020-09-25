@@ -98,20 +98,19 @@ export default {
       })
       yield put({ type: 'querySuccess', payload: { data: formatData, ...payload } })
     },
-    * querySalesCategory (payload, { call, put }) {
+    * querySalesCategory ({ payload = {} }, { call, put }) {
       let copiedText = ''
 
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-
       const listUserStores = lstorage.getListUserStores()
       const responseStock = yield call(queryFifoCategory, {
         from: storeInfo.startPeriod,
-        to: moment().format('YYYY-MM-DD'),
+        to: payload.to,
         category: '117,118,121,122,125'
       })
       const responseSales = yield call(queryByDate, {
-        from: moment().format('YYYY-MM-DD'),
-        to: moment().format('YYYY-MM-DD')
+        from: payload.from,
+        to: payload.to
       })
       if (responseSales && responseSales.success) {
         for (let key in listUserStores) {
@@ -157,8 +156,8 @@ export default {
       yield put({
         type: 'querySuccess',
         payload: {
-          listSalesCategory: [],
-          listStockByCategory: []
+          listSalesCategory: responseSales.data,
+          listStockByCategory: responseStock.data
         }
       })
     }

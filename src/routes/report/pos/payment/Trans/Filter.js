@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
+import PrintDaily from './PrintDaily'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
@@ -71,6 +72,7 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
+        {<PrintDaily {...printProps} />}
         {<PrintPDF {...printProps} />}
         {<PrintXLS {...printProps} />}
       </Col>

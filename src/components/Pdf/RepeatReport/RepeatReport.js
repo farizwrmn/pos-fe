@@ -13,6 +13,7 @@ const RepeatReport = ({
   iconSize = 'icon-large',
   buttonStyle = {},
   buttonType = 'dashed',
+  layout = '',
   tableMargin = [0, 0],
   pageMargins = [0, 0, 0, 0],
   pageOrientation = 'portrait',
@@ -70,7 +71,8 @@ const RepeatReport = ({
           table: {
             widths: width[i],
             body
-          }
+          },
+          layout
         }
       )
     }

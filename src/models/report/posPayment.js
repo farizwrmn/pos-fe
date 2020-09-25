@@ -40,6 +40,13 @@ export default {
             type: 'query',
             payload: location.query
           })
+          dispatch({
+            type: 'dashboard/querySalesCategory',
+            payload: {
+              from: location.query.from,
+              to: location.query.to
+            }
+          })
         }
       })
     }
