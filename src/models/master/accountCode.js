@@ -40,7 +40,8 @@ export default modelExtend(pageModel, {
                 'OINC',
                 'EXPS',
                 'OEXP',
-                'EQTY'
+                'EQTY',
+                'COGS'
               ],
               type: 'all',
               order: 'accountCode'
