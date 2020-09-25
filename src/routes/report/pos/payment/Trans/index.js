@@ -10,9 +10,11 @@ import {
 } from 'utils'
 import Browse from './Browse'
 import BrowseTotal from './BrowseTotal'
+import BrowseReturn from './BrowseReturn'
 import Filter from './Filter'
 
-const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
+const Report = ({ dispatch, paymentOpts, posPaymentReport, returnSalesDetail, loading, app }) => {
+  const { list } = returnSalesDetail
   const { listTrans, from, to, productCode } = posPaymentReport
   const { listOpts } = paymentOpts
   const { user, storeInfo } = app
@@ -26,6 +28,13 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
     from,
     to,
     productCode
+  }
+
+  const browseReturnTotalProps = {
+    loading: loading.effects['returnSalesDetail/query'],
+    list,
+    dataSource: list,
+    pagination: false
   }
 
   const browseTotalProps = {
@@ -132,6 +141,7 @@ const Report = ({ dispatch, paymentOpts, posPaymentReport, loading, app }) => {
         listEdc={groupByEdc}
         dataSource={arrByEdc}
       />
+      <BrowseReturn {...browseReturnTotalProps} />
       {arr && arr.map((item, index) => {
         return (
           <Browse
@@ -165,4 +175,4 @@ Report.propTyps = {
   posPaymentReport: PropTypes.object
 }
 
-export default connect(({ loading, paymentOpts, posPaymentReport, app }) => ({ loading, paymentOpts, posPaymentReport, app }))(Report)
+export default connect(({ loading, paymentOpts, posPaymentReport, app, returnSalesDetail }) => ({ loading, paymentOpts, posPaymentReport, app, returnSalesDetail }))(Report)
