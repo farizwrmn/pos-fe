@@ -1,5 +1,14 @@
 import { request, crypt } from '../../utils'
 
+export async function queryId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/accounting/journal-entry/${params.id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'typeCode'
