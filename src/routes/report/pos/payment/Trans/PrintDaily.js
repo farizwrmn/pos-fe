@@ -68,8 +68,6 @@ const PrintPDF = ({
     .concat(arrStock)
     .concat(arrReMapTotal)
 
-  console.log('arr', arr)
-
 
   const createTableBody = (tabledata) => {
     const isDaily = tabledata && tabledata[0] && tabledata[0].productCode
