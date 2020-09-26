@@ -8,7 +8,6 @@ import PropTypes from 'prop-types'
 import { RepeatReport } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
-const listUserStores = lstorage.getListUserStores()
 
 const PrintPDF = ({
   user,
@@ -20,6 +19,7 @@ const PrintPDF = ({
 }) => {
   let width = []
   let outJSON = listSalesCategory
+  const listUserStores = lstorage.getListUserStores()
 
   let groupBy = (xs, key) => {
     return xs
@@ -68,8 +68,6 @@ const PrintPDF = ({
     .concat(arrStock)
     .concat(arrReMapTotal)
 
-  console.log('arr', arr)
-
 
   const createTableBody = (tabledata) => {
     const isDaily = tabledata && tabledata[0] && tabledata[0].productCode
@@ -107,7 +105,7 @@ const PrintPDF = ({
             { text: '', alignment: 'left', fontSize: 11 },
             { text: '', alignment: 'right', fontSize: 11 },
             { text: '', alignment: 'right', fontSize: 11 },
-            { text: '', decoration: 'underline', alignment: 'right', fontSize: 11 },
+            { text: '', alignment: 'right', fontSize: 11 },
             { text: '', alignment: 'right', fontSize: 11 }
           ]
         } else if (isDaily && !data.name) {
@@ -118,7 +116,7 @@ const PrintPDF = ({
             { text: data.productName, alignment: 'left', fontSize: 11 },
             { text: `${margin > 0 ? `(${margin}%) ` : ''}${formatNumberIndonesia(parseFloat(data.sellPrice || 0))}`, alignment: 'right', fontSize: 11 },
             { text: formatNumberIndonesia(parseFloat(data.count || 0)), alignment: 'right', fontSize: 11 },
-            { text: formatNumberIndonesia(parseFloat(data.amount) / parseFloat(data.count)), decoration: 'underline', alignment: 'right', fontSize: 11 },
+            { text: formatNumberIndonesia(parseFloat(data.amount) / parseFloat(data.count)), alignment: 'right', fontSize: 11 },
             { text: formatNumberIndonesia(parseFloat(data.amount || 0)), alignment: 'right', fontSize: 11 }
           ]
         }
