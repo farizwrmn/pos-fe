@@ -10,7 +10,6 @@ import styles from '../../../themes/index.less'
 const List = ({
   editItem,
   deleteItem,
-  listItem,
   ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
@@ -67,12 +66,6 @@ const List = ({
         simple
         scroll={{ x: 1000 }}
         rowKey={record => record.id}
-        footer={() => (
-          <div>
-            <div>Debit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()}</div>
-            <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
-          </div>)
-        }
       />
     </div>
   )
