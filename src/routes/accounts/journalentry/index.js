@@ -12,7 +12,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, pagination, modalVisible, modalType, currentItem, currentItemList, activeKey } = journalentry
+  const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = journalentry
 
   let currentCashier = {
     cashierId: null,
@@ -76,6 +76,7 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
     user,
     pagination,
     storeInfo,
+    listItem,
     loading: loading.effects['journalentry/query'],
     location,
     onChange (page) {
@@ -94,13 +95,10 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          edit: item.id
         }
       }))
-      dispatch({
-        type: 'journalentry/editItem',
-        payload: { item }
-      })
     },
     deleteItem (id) {
       dispatch({
@@ -157,9 +155,10 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
   }
 
   const modalProps = {
-    title: modalType === 'add' ? 'Add Detail' : 'Edit Detail',
+    title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
+    modalItemType,
     modalType,
     listAccountCode: listAccountCodeLov,
     onCancel () {
@@ -171,13 +170,14 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
       })
     },
     addModalItem (data) {
+      const { listItem } = journalentry
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
         type: 'journalentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -185,12 +185,13 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
       message.success('success add item')
     },
     editModalItem (data) {
+      const { listItem } = journalentry
       listItem[data.no - 1] = data
       dispatch({
         type: 'journalentry/updateState',
         payload: {
           modalVisible: false,
-          modalType: 'add',
+          modalItemType: 'add',
           listItem,
           currentItemList: {}
         }
@@ -203,23 +204,27 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
   }
   let timeout
   const formProps = {
+    dispatch,
     modalType,
     modalVisible,
     modalProps,
     listDetailProps,
+    modalItemType,
     listItem,
     listCustomer,
     listSupplier,
     storeInfo,
     item: currentItem,
+    loading: loading.effects['journalentry/add'] || loading.effects['journalentry/edit'] || loading.effects['journalentry/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, detail, oldValue, reset) {
       dispatch({
         type: `journalentry/${modalType}`,
         payload: {
           data,
           detail,
-          oldValue
+          oldValue,
+          reset
         }
       })
     },
@@ -234,7 +239,9 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
       dispatch({
         type: 'journalentry/updateState',
         payload: {
-          currentItem: {}
+          modalType: 'add',
+          currentItem: {},
+          listItem: []
         }
       })
     },
@@ -275,7 +282,7 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
         type: 'journalentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'add'
+          modalItemType: 'add'
         }
       })
     },
@@ -292,7 +299,7 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
         type: 'journalentry/updateState',
         payload: {
           modalVisible: true,
-          modalType: 'edit',
+          modalItemType: 'edit',
           currentItemList: record
         }
       })

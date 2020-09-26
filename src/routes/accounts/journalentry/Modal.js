@@ -28,11 +28,8 @@ class ModalList extends Component {
       editModalItem,
       listAccountCode,
       listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
-      onDelete,
-      showLov,
       item,
-      inputType = 'I',
-      modalType,
+      modalItemType,
       form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
       ...modalProps
     } = this.props
@@ -42,14 +39,17 @@ class ModalList extends Component {
         if (errors) {
           return
         }
-        const data = getFieldsValue()
+        const data = {
+          id: item.id,
+          ...getFieldsValue()
+        }
         data.no = item.no
-        data.accountName = data.accountId.label
-        data.accountId = data.accountId.key
-        if (modalType === 'add') {
-          addModalItem(data, inputType)
-        } else if (modalType === 'edit') {
-          editModalItem(data, inputType)
+        data.accountName = data.accountId ? data.accountId.label : null
+        data.accountId = data.accountId ? data.accountId.key : null
+        if (modalItemType === 'add') {
+          addModalItem(data)
+        } else if (modalItemType === 'edit') {
+          editModalItem(data)
         }
         resetFields()
       })
@@ -65,7 +65,9 @@ class ModalList extends Component {
         <Form>
           <FormItem {...formItemLayout} label="Entry Type">
             {getFieldDecorator('type', {
-              initialValue: item.type || 'I',
+              initialValue: modalItemType === 'edit'
+                ? (item.amountIn !== null ? 'I' : 'E')
+                : (item.type || 'I'),
               rules: [{
                 required: true,
                 message: 'Required'
