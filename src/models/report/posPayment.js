@@ -1,3 +1,4 @@
+import moment from 'moment'
 /**
  * Created by Veirry on 07/07/2020.
  */
@@ -43,8 +44,8 @@ export default {
           dispatch({
             type: 'dashboard/querySalesCategory',
             payload: {
-              from: location.query.from,
-              to: location.query.to
+              from: location.query.from || moment().format('YYYY-MM-DD'),
+              to: location.query.to || moment().format('YYYY-MM-DD')
             }
           })
         }
