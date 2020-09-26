@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
 import { DropOption } from 'components'
+import styles from '../../../themes/index.less'
 
 // const confirm = Modal.confirm
 
@@ -34,6 +35,13 @@ const List = ({
       title: 'Reference',
       dataIndex: 'reference',
       key: 'reference'
+    },
+    {
+      title: 'Total',
+      dataIndex: 'amountIn',
+      key: 'amountIn',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Desc',
