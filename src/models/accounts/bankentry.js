@@ -260,6 +260,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
+            listItem: [],
             currentItem: {},
             activeKey: '1'
           }
