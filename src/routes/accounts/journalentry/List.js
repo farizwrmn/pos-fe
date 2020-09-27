@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
 import { DropOption } from 'components'
+import styles from '../../../themes/index.less'
 
 // const confirm = Modal.confirm
 
 const List = ({
   editItem,
   deleteItem,
-  listItem,
   ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
@@ -27,6 +27,13 @@ const List = ({
       title: 'Reference',
       dataIndex: 'reference',
       key: 'reference'
+    },
+    {
+      title: 'Total',
+      dataIndex: 'amountOut',
+      key: 'amountOut',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Desc',
@@ -59,12 +66,6 @@ const List = ({
         simple
         scroll={{ x: 1000 }}
         rowKey={record => record.id}
-        footer={() => (
-          <div>
-            <div>Debit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()}</div>
-            <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
-          </div>)
-        }
       />
     </div>
   )

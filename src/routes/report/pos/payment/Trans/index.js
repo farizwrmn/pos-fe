@@ -10,9 +10,11 @@ import {
 } from 'utils'
 import Browse from './Browse'
 import BrowseTotal from './BrowseTotal'
+import BrowseReturn from './BrowseReturn'
 import Filter from './Filter'
 
-const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, loading, app }) => {
+const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSalesDetail, loading, app }) => {
+  const { list } = returnSalesDetail
   const { listTrans, from, to, productCode } = posPaymentReport
   const { listSalesCategory, listStockByCategory } = dashboard
   const { listOpts } = paymentOpts
@@ -27,6 +29,13 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, loading, a
     from,
     to,
     productCode
+  }
+
+  const browseReturnTotalProps = {
+    loading: loading.effects['returnSalesDetail/query'],
+    list,
+    dataSource: list,
+    pagination: false
   }
 
   const browseTotalProps = {
@@ -135,6 +144,7 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, loading, a
         listEdc={groupByEdc}
         dataSource={arrByEdc}
       />
+      <BrowseReturn {...browseReturnTotalProps} />
       {arr && arr.map((item, index) => {
         return (
           <Browse
@@ -168,4 +178,4 @@ Report.propTyps = {
   posPaymentReport: PropTypes.object
 }
 
-export default connect(({ loading, dashboard, paymentOpts, posPaymentReport, app }) => ({ loading, dashboard, paymentOpts, posPaymentReport, app }))(Report)
+export default connect(({ loading, dashboard, paymentOpts, posPaymentReport, app, returnSalesDetail }) => ({ loading, dashboard, paymentOpts, posPaymentReport, app, returnSalesDetail }))(Report)

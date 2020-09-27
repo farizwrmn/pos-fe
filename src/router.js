@@ -857,6 +857,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/dashboard'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/report/posPayment'))
+              registerModel(app, require('./models/return/returnSalesDetail'))
               cb(null, require('./routes/report/pos/payment'))
             }, 'report-pos-payment')
           }
