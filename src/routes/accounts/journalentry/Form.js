@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, message, Row, Col, Modal, DatePicker } from 'antd'
 import { lstorage } from 'utils'
+import { FooterToolbar } from 'components'
 import moment from 'moment'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
@@ -35,11 +36,16 @@ const FormCounter = ({
   showLov,
   onSubmit,
   modalShow,
+  modalType,
+  modalItemType,
   modalShowList,
   listItem,
   modalVisible,
   modalProps,
   listDetailProps,
+  loading,
+  onCancel,
+  button,
   form: {
     getFieldDecorator,
     validateFields,
@@ -71,8 +77,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listItem, getFieldsValue())
-          resetFields()
+          onSubmit(data, listItem, getFieldsValue(), resetFields)
         },
         onCancel () { }
       })
@@ -84,7 +89,13 @@ const FormCounter = ({
 
   const modalOpts = {
     showLov,
+    modalItemType,
     ...modalProps
+  }
+
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
   }
 
   const handleModalShowList = (record) => {
@@ -122,7 +133,9 @@ const FormCounter = ({
               })(<Input maxLength={40} autoFocus />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
+              {getFieldDecorator('description', {
+                initialValue: item.description
+              })(<Input maxLength={255} autoFocus />)}
             </FormItem>
             <FormItem {...formItemLayout} label="Trans Date">
               {getFieldDecorator('transDate', {
@@ -145,15 +158,12 @@ const FormCounter = ({
         <Row style={{ marginBottom: '8px' }}>
           <ListDetail {...listDetailOpts} />
         </Row>
-        <Row>
-          <Col {...column} />
-          <Col {...column}>
-            <FormItem>
-              {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" onClick={handleSubmit} style={{ float: 'right' }}>Save</Button>
-            </FormItem>
-          </Col>
-        </Row>
+        <FooterToolbar>
+          <FormItem>
+            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+            <Button disabled={loading} type="primary" onClick={handleSubmit}>{button}</Button>
+          </FormItem>
+        </FooterToolbar>
       </Form>
       {modalVisible && <ModalList {...modalOpts} />}
     </div>

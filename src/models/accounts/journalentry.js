@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { query, add, edit, remove } from 'services/payment/journalentry'
+import { query, queryId, add, edit, remove } from 'services/payment/journalentry'
 import { pageModel } from 'common'
 
 const success = () => {
@@ -17,6 +17,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
+    modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
@@ -32,7 +33,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, edit, ...other } = location.query
         const { pathname } = location
         if (pathname === '/journal-entry') {
           dispatch({
@@ -41,8 +42,17 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
+
           if (activeKey === '1') {
             dispatch({ type: 'query', payload: other })
+          }
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
           } else {
             dispatch({ type: 'querySequence' })
           }
@@ -54,7 +64,8 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { edit, ...other } = payload
+      const data = yield call(query, other)
       if (data) {
         yield put({
           type: 'querySuccessCounter',
@@ -90,6 +101,30 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * setEdit ({ payload }, { call, put }) {
+      const data = yield call(queryId, { id: payload.edit, relationship: 1 })
+      if (data.success) {
+        const { journalEntryDetail, ...currentItem } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem,
+            modalType: 'edit',
+            listItem: journalEntryDetail ?
+              journalEntryDetail.map((item, index) => ({
+                no: index + 1,
+                ...item,
+                accountId: item.accountId,
+                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+              }))
+              : []
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
@@ -110,6 +145,7 @@ export default modelExtend(pageModel, {
       const data = yield call(add, payload)
       if (data.success) {
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {
@@ -148,11 +184,13 @@ export default modelExtend(pageModel, {
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
             currentItem: {},
+            listItem: [],
             activeKey: '1'
           }
         })
@@ -165,12 +203,6 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     }

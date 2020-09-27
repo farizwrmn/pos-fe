@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
-// import { DropOption } from 'components'
+import { DropOption } from 'components'
+import styles from '../../../themes/index.less'
 
 // const confirm = Modal.confirm
 
@@ -10,18 +11,11 @@ const List = ({
   editItem,
   deleteItem,
   ...tableProps }) => {
-  // const handleMenuClick = (record, e) => {
-  //   if (e.key === '1') {
-  //     editItem(record)
-  //   } else if (e.key === '2') {
-  //     confirm({
-  //       title: `Are you sure delete ${record.counterName} ?`,
-  //       onOk () {
-  //         deleteItem(record.id)
-  //       }
-  //     })
-  //   }
-  // }
+  const handleMenuClick = (record, e) => {
+    if (e.key === '1') {
+      editItem(record)
+    }
+  }
 
   const columns = [
     {
@@ -35,6 +29,13 @@ const List = ({
       key: 'reference'
     },
     {
+      title: 'Total',
+      dataIndex: 'amountOut',
+      key: 'amountOut',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Desc',
       dataIndex: 'description',
       key: 'description'
@@ -45,17 +46,16 @@ const List = ({
       key: 'transDate',
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${_text ? moment(_text).format('DD-MMM-YYYY') : '-'}`
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      width: 100,
+      fixed: 'right',
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+      }
     }
-    // ,
-    // {
-    //   title: 'Operation',
-    //   key: 'operation',
-    //   width: 100,
-    //   fixed: 'right',
-    //   render: (text, record) => {
-    //     return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-    //   }
-    // }
   ]
 
   return (

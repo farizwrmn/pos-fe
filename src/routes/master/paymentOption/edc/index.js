@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 const Counter = ({ paymentOpts, paymentEdc, accountCode, loading, dispatch, location, app }) => {
   const { listPayment, pagination, modalType, currentItem, activeKey } = paymentEdc
   const { listOpts } = paymentOpts
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -93,7 +93,7 @@ const Counter = ({ paymentOpts, paymentEdc, accountCode, loading, dispatch, loca
   const formProps = {
     options: listOpts || [],
     modalType,
-    listAccountCodeLov,
+    listAccountCodeLov: listAccountCode,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {

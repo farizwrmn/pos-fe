@@ -202,6 +202,7 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {},
+            listItem: [],
             activeKey: '1'
           }
         })
