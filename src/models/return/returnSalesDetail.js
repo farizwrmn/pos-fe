@@ -30,7 +30,9 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/report/pos/payment') {
+        if (pathname === '/report/pos/payment'
+          && location.query.from
+          && location.query.to) {
           dispatch({
             type: 'updateState',
             payload: {
@@ -38,7 +40,11 @@ export default modelExtend(pageModel, {
             }
           })
           dispatch({
-            type: 'query'
+            type: 'query',
+            payload: {
+              ...location.query,
+              type: 'all'
+            }
           })
         }
       })
