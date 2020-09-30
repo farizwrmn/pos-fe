@@ -1,10 +1,11 @@
-import { request, config, crypt } from '../../utils'
+import { request, lstorage, config, crypt } from '../../utils'
 
 const { cashier } = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'typeCode'
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${cashier}/cashentry`,
     method: 'get',

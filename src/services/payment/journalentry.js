@@ -1,4 +1,4 @@
-import { request, crypt } from '../../utils'
+import { request, lstorage, crypt } from '../../utils'
 
 export async function queryId (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -12,6 +12,7 @@ export async function queryId (params) {
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'typeCode'
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: '/accounting/journal-entry',
     method: 'get',
