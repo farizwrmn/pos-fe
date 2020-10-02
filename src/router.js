@@ -1035,6 +1035,15 @@ const Routers = function ({ history, app }) {
             }, 'finance-bank-recon')
           }
         }, {
+          path: 'bank-history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/accounts/bankhistory/'))
+            }, 'finance-bank-history')
+          }
+        }, {
           path: 'tools/maintenance/inventoryproduct',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

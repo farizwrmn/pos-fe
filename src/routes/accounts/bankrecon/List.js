@@ -37,20 +37,22 @@ const List = ({
                 <Card
                   title={item.transactionType}
                   extra={
-                    <Button
-                      shape="circle"
-                      type="primary"
-                      loading={loading.effects['bankentry/updateBankRecon']}
-                      icon="check"
-                      onClick={() => {
-                        Modal.confirm({
-                          title: 'Approve bank recon',
-                          onOk () {
-                            onSubmit(item)
-                          }
-                        })
-                      }}
-                    />
+                    item.recon === 0 ? (
+                      <Button
+                        shape="circle"
+                        type="primary"
+                        loading={loading.effects['bankentry/updateBankRecon']}
+                        icon="check"
+                        onClick={() => {
+                          Modal.confirm({
+                            title: 'Approve bank recon',
+                            onOk () {
+                              onSubmit(item)
+                            }
+                          })
+                        }}
+                      />
+                    ) : null
                   }
                   style={{ marginBottom: '1em' }}
                 >
