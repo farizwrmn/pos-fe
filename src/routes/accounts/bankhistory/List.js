@@ -42,7 +42,6 @@ const List = ({ ...tableProps, summaryBankRecon }) => {
       className: styles.alignRight,
       render: (text) => {
         if (text) {
-          console.log('text', text)
           return (
             <Tag color="green">
               Recon
