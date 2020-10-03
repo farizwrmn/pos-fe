@@ -38,7 +38,7 @@ export default {
             payload: location.query
           })
         }
-        if (location.pathname === '/report/accounting/consolidation/trial-balance' && location.query.period && location.query.year) {
+        if (location.pathname === '/report/accounting/consolidation/trial-balance' && location.query.from && location.query.to) {
           dispatch({
             type: 'queryTrialBalance',
             payload: location.query
@@ -82,8 +82,11 @@ export default {
     * queryTrialBalance ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
-        type: 'setPeriod',
-        payload: date
+        type: 'updateState',
+        payload: {
+          from: payload.from,
+          to: payload.to
+        }
       })
       yield put({
         type: 'setNull',
@@ -97,6 +100,8 @@ export default {
             listRekap: data.data,
             period: payload.period,
             year: payload.year,
+            from: payload.from,
+            to: payload.to,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
