@@ -809,6 +809,15 @@ const Routers = function ({ history, app }) {
             }, 'report-purchase-summary-card')
           }
         }, {
+          path: 'report/fifo/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/fifo'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/report/fifo/stockhistory/'))
+            }, 'report-purchase-summary-history')
+          }
+        }, {
           path: 'report/customer/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
