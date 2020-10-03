@@ -136,6 +136,7 @@ export default modelExtend(pageModel, {
       ]
       const newData = {
         no: listItem.length + 1,
+        transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
         initialQty: payload.item.qty
       }

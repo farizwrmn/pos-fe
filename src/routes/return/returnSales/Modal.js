@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Button } from 'antd'
+import { Form, Input, InputNumber, Modal, Button, Select } from 'antd'
 
 const FormItem = Form.Item
 const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -26,6 +27,7 @@ class TransferModal extends Component {
       currentItemList,
       onOkList,
       onCancelList,
+      listStore,
       onDeleteItem,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
@@ -72,6 +74,20 @@ class TransferModal extends Component {
       ...formEditProps,
       onOk: handleOk
     }
+
+    let childrenStoreReceived = []
+    if (listStore.length > 0) {
+      let groupStore = []
+      for (let id = 0; id < listStore.length; id += 1) {
+        groupStore.push(
+          <Option value={listStore[id].value}>
+            {listStore[id].label}
+          </Option>
+        )
+      }
+      childrenStoreReceived.push(groupStore)
+    }
+
     return (
       <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`}
         {...modalOpts}
@@ -91,6 +107,18 @@ class TransferModal extends Component {
                 required: true
               }]
             })(<Input disabled maxLength={10} />)}
+          </FormItem>
+          <FormItem label="Store ID" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transferStoreId', {
+              initialValue: currentItemList.transferStoreId,
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select>
+                {childrenStoreReceived}
+              </Select>
+            )}
           </FormItem>
           <FormItem label="Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('qty', {
