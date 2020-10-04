@@ -61,7 +61,6 @@ const FormCustomer = ({
     validateFields
   }
 }) => {
-  console.log('listDataTypes', listDataTypes)
   const disabledDate = (current) => {
     return current > moment(new Date())
   }
