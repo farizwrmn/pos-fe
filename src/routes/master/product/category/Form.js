@@ -164,6 +164,16 @@ const formProductCategory = ({
               ]
             })(<Input />)}
           </FormItem>
+          <FormItem label="Category Color" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('categoryColor', {
+              initialValue: item.categoryColor,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Input type="color" />)}
+          </FormItem>
           <FormItem label="Category Parent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryParentId', {
               initialValue: item.categoryParentId,
