@@ -20,7 +20,7 @@ const getLinkName = (transNo, transType) => {
   }
 }
 
-const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
+const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
   let width = []
   let outJSON = listRekap
 
@@ -30,20 +30,6 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       return rv
     }, {})
   }
-
-  // const unique = (group, code) => {
-  //   return group.map((key) => {
-  //     return key[code]
-  //   }).filter((e, index, array) => {
-  //     return index === array.indexOf(e)
-  //   })
-  // }
-  // const groupCode = unique(outJSON, 'productCode')
-  // let groups = []
-  // groupCode.map((code) => {
-  //   groups.push(outJSON.filter(group => group.productCode === code))
-  //   return code
-  // })
 
   let groubedByTeam = groupBy(outJSON, 'productCode')
   let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
@@ -154,7 +140,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
+                text: `\nPERIODE: ${moment(from, 'YYYY-MM-DD').format('YYYY-MM-DD')} TO ${moment(to, 'YYYY-MM-DD').format('YYYY-MM-DD')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

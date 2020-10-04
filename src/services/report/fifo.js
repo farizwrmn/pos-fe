@@ -41,6 +41,18 @@ export async function queryFifoCard (params) {
   })
 }
 
+export async function queryFifoHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = '/inventory/stock-card'
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryFifoTransfer (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

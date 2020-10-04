@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
+const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
   let outJSON = listRekap
 
   let groupBy = (xs, key) => {
@@ -68,7 +68,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   const title = [
     { value: 'LAPORAN KARTU STOK FIFO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
+    { value: `PERIODE : ${moment(from, 'YYYY-MM-DD').format('YYYY-MM-DD')} TO ${moment(to, 'YYYY-MM-DD').format('YYYY-MM-DD')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
 
   const tableHeader = [

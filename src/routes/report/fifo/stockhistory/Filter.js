@@ -4,13 +4,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Button, DatePicker, Row, Col, Icon, Form, Select, Modal } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Select, Modal, Spin } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const Option = Select.Option
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -31,14 +31,14 @@ const rightColumn = {
 
 const Filter = ({
   onOk,
-  period,
-  year,
+  from,
+  to,
+  loading,
   onChangePeriod,
-  // productCode,
-  // productName,
-  listProduct,
-  dispatch,
+  list,
   onListReset,
+  showLov,
+  optionSelect = (list || []).length > 0 ? list.map(c => <Option value={c.id} key={c.id} title={`${c.productName} (${c.productCode})`}>{`${c.productName} (${c.productCode})`}</Option>) : [],
   form: {
     getFieldsValue,
     resetFields,
@@ -46,21 +46,10 @@ const Filter = ({
     validateFields
   },
   ...printProps }) => {
-  let optionSelect = []
-  let optionSelectName = []
-  const selectChildren = () => {
-    for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelect.push(<Option key={listProduct[i].productCode.toString(36)} title={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
-    }
-  }
-  const selectChildrenName = () => {
-    for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)} title={`${listProduct[i].productCode.toString(36)} - ${listProduct[i].productName.toString(36)}`}>{listProduct[i].productName.toString(36)}</Option>)
-    }
-  }
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const exportProps = {
-    period,
-    year,
+    from,
+    to,
     ...printProps
   }
 
@@ -76,13 +65,10 @@ const Filter = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.productCode === undefined) {
-        data.productCode = []
+      if (data.productId === undefined) {
+        data.productId = []
       }
-      if (data.productName === undefined) {
-        data.productName = []
-      }
-      if (data.productCode.length === 0 && data.productName.length === 0) {
+      if (data.productId.length === 0) {
         Modal.confirm({
           title: 'Cannot find parameter',
           content: 'Try to reset the form',
@@ -95,18 +81,17 @@ const Filter = ({
         })
         return
       }
-      let period = moment(data.Period).format('M')
-      let year = moment(data.Period).format('Y')
-      onOk(period, year, data)
+      onOk({
+        ...data,
+        productId: data.productId && data.productId.length > 0 ?
+          data.productId.map(item => item.key) : []
+      })
     })
   }
-  const resetSelected = (e) => {
-    resetFields([e])
-  }
-  const onChange = (date, dateString) => {
-    let period = moment(dateString).format('M')
-    let year = moment(dateString).format('Y')
-    onChangePeriod(period, year)
+  const onChange = (value) => {
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+    onChangePeriod(from, to)
     resetFields()
   }
   return (
@@ -114,56 +99,36 @@ const Filter = ({
       <Col {...leftColumn} >
         <FilterItem label="Period">
           {getFieldDecorator('Period', {
-            initialValue: moment.utc(`${period}-${year}`, 'MM-YYYY'),
+            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : undefined,
             rules: [
               {
                 required: true
               }
             ]
-          })(<MonthPicker style={{ width: '189px' }} onChange={onChange} placeholder="Select Period" />)}
+          })(
+            <RangePicker size="large" onChange={value => onChange(value)} format="DD-MMM-YYYY" />
+          )}
         </FilterItem>
-        {/* <FilterItem label="Category">
-            {getFieldDecorator('category')(<Select
-              showSearch
-              placeholder="Select category"
-              style={{ width: '189px', marginTop: '5px' }}
-            >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-              <Option value="tom">Tom</Option>
-            </Select>)}
-          </FilterItem> */}
         <Row style={{ marginTop: 5 }}>
           <Col lg={16} md={24} >
-            <FilterItem label="Code">
-              {getFieldDecorator('productCode', {
+            <FilterItem label="Product">
+              {getFieldDecorator('productId', {
               })(<Select
-                className=""
                 mode="multiple"
                 style={{ width: '250px' }}
-                placeholder="Select Code"
-                onFocus={selectChildren()}
-                onChange={() => resetSelected('productName')}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                {...printProps}
+                placeholder="Select Product"
+
+                showSearch
+                allowClear
+                optionFilterProp="children"
+
+                notFoundContent={loading.effects['productstock/query'] ? <Spin size="small" /> : null}
+                onSearch={value => showLov('productstock', { q: value })}
+                labelInValue
+                filterOption={filterOption}
               >
                 {optionSelect}
               </Select>)}
-            </FilterItem>
-            <FilterItem label="Name">
-              {getFieldDecorator('productName', {
-              })(<Select
-                mode="multiple"
-                style={{ width: '250px' }}
-                placeholder="Select Name"
-                onFocus={selectChildrenName()}
-                onChange={() => resetSelected('productCode')}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                {...printProps}
-              >
-                {optionSelectName}
-              </Select>
-              )}
             </FilterItem>
           </Col>
         </Row>
@@ -198,7 +163,7 @@ Filter.propTypes = {
   form: PropTypes.object.isRequired,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
-  productCode: PropTypes.array,
+  productId: PropTypes.array,
   period: PropTypes.string,
   year: PropTypes.string
 }

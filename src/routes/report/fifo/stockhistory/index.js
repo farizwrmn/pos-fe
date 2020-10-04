@@ -8,16 +8,15 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, loading, app }) => {
-  const { listRekap, period, year, listProduct } = fifoReport
+const Report = ({ dispatch, fifoReport, productstock, loading, app }) => {
+  const { listRekap, from, to } = fifoReport
+  const { list } = productstock
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
-    loading: loading.effects['fifoReport/queryCard'],
+    loading: loading.effects['fifoReport/queryHistory'],
     storeInfo,
     user,
-    period,
-    year,
     onListReset () {
       dispatch({
         type: 'fifoReport/setNull'
@@ -25,53 +24,70 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     }
   }
 
+  let timeout
   const filterProps = {
     listRekap,
     user,
     dispatch,
+    loading,
     storeInfo,
-    period,
-    year,
-    loading: loading.effects['fifoReport/queryProductCode'],
+    from,
+    to,
     // productCode,
     // productName,
-    listProduct,
+    list,
     onListReset () {
       dispatch({
         type: 'fifoReport/setNull'
       })
     },
-    onOk (month, yearPeriod, data) {
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
+    },
+    onOk (data) {
       dispatch({
-        type: 'fifoReport/queryCard',
+        type: 'fifoReport/queryHistory',
         payload: {
-          period: month,
-          year: yearPeriod,
-          productCode: (data.productCode || '').toString(),
-          productName: (data.productName || '').toString()
+          from,
+          to,
+          productId: data.productId
         }
       })
     },
-    onChangePeriod (month, yearPeriod) {
+    onChangePeriod (from, to) {
       dispatch({
-        type: 'setPeriod',
+        type: 'fifoReport/updateState',
         payload: {
-          month,
-          yearPeriod
+          from,
+          to
         }
       })
-      // dispatch({
-      //   type: 'fifoReport/queryProductCode',
-      //   payload: {
-      //     period: month,
-      //     year: yearPeriod
-      //   }
-      // })
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
-          period: month,
-          year: yearPeriod
+          from,
+          to
         }
       }))
     }
@@ -91,4 +107,4 @@ Report.propTypes = {
   fifoReport: PropTypes.object
 }
 
-export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)
+export default connect(({ fifoReport, productstock, loading, app }) => ({ fifoReport, productstock, loading, app }))(Report)

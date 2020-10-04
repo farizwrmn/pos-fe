@@ -68,6 +68,11 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, mode, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/report/fifo/history') {
+          dispatch({
+            type: 'query'
+          })
+        }
         if (pathname === '/stock') {
           if (!activeKey) dispatch({ type: 'refreshView' })
           if (activeKey === '1') {
