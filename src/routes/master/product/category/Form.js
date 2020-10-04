@@ -164,7 +164,7 @@ const formProductCategory = ({
               ]
             })(<Input />)}
           </FormItem>
-          <FormItem label="Category Color" hasFeedback {...formItemLayout}>
+          <FormItem label="Category Color" help="Usage in product sticker" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryColor', {
               initialValue: item.categoryColor,
               rules: [
