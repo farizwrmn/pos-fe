@@ -113,6 +113,14 @@ const Routers = function ({ history, app }) {
             }, 'master-customer')
           }
         }, {
+          path: 'master/customer-migration/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/loyalty/cashbackManagement'))
+              cb(null, require('./routes/loyalty/cashbackManagement'))
+            }, 'integration-revenue-calculator')
+          }
+        }, {
           path: 'master/customergroup',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
