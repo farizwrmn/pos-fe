@@ -82,7 +82,7 @@ const FormAdd = ({
       <Form layout="horizontal">
         <Row>
           <Col {...col}>
-            <FormItem label="No. Transfer" hasFeedback {...formItemLayout}>
+            <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transNo', {
                 initialValue: item.transNo,
                 rules: [
