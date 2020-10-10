@@ -2,111 +2,111 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-// import { Button, Modal, Tabs } from 'antd'
+import { Button, Modal, Tabs } from 'antd'
 import Form from './Form'
-// import List from './List'
-// import Filter from './Filter'
+import List from './List'
+import Filter from './Filter'
 
-// const TabPane = Tabs.TabPane
+const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, location, purchase /* , app */ }) => {
+const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
   const {
     modalVisible,
     currentItem,
     listItem,
     currentItemList,
-    modalType
-    // activeKey,
-    // list
+    modalType,
+    activeKey,
+    list
   } = payableForm
   const { listOpts } = paymentOpts
   const { listBank } = bank
   const { listSupplier } = supplier
-  // const { user, storeInfo } = app
-  // const filterProps = {
-  //   onFilterChange (value) {
-  //     dispatch({
-  //       type: 'payableForm/query',
-  //       payload: {
-  //         ...value
-  //       }
-  //     })
-  //   }
-  // }
+  const { user, storeInfo } = app
+  const filterProps = {
+    onFilterChange (value) {
+      dispatch({
+        type: 'payableForm/query',
+        payload: {
+          ...value
+        }
+      })
+    }
+  }
 
-  // const listProps = {
-  //   dataSource: list,
-  //   user,
-  //   storeInfo,
-  //   loading: loading.effects['payableForm/query'],
-  //   location,
-  //   editItem (item) {
-  //     const { pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         activeKey: 0
-  //       }
-  //     }))
-  //     dispatch({
-  //       type: 'payableForm/setEdit',
-  //       payload: { item }
-  //     })
-  //   },
-  //   deleteItem (id) {
-  //     dispatch({
-  //       type: 'payableForm/delete',
-  //       payload: id
-  //     })
-  //   }
-  // }
+  const listProps = {
+    dataSource: list,
+    user,
+    storeInfo,
+    loading: loading.effects['payableForm/query'],
+    location,
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'payableForm/setEdit',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'payableForm/delete',
+        payload: id
+      })
+    }
+  }
 
-  // const changeTab = (key) => {
-  //   if (key !== '0') {
-  //     Modal.confirm({
-  //       title: 'Reset unsaved process',
-  //       content: 'this action will reset your current process',
-  //       onOk () {
-  //         dispatch({
-  //           type: 'payableForm/changeTab',
-  //           payload: { key }
-  //         })
-  //         const { query, pathname } = location
-  //         dispatch(routerRedux.push({
-  //           pathname,
-  //           query: {
-  //             ...query,
-  //             activeKey: key
-  //           }
-  //         }))
-  //         dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
-  //       }
-  //     })
-  //   } else {
-  //     dispatch({
-  //       type: 'payableForm/changeTab',
-  //       payload: { key }
-  //     })
-  //     const { query, pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         ...query,
-  //         activeKey: key
-  //       }
-  //     }))
-  //     dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
-  //   }
-  // }
+  const changeTab = (key) => {
+    if (key !== '0') {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'payableForm/changeTab',
+            payload: { key }
+          })
+          const { query, pathname } = location
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              activeKey: key
+            }
+          }))
+          dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
+        }
+      })
+    } else {
+      dispatch({
+        type: 'payableForm/changeTab',
+        payload: { key }
+      })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: key
+        }
+      }))
+      dispatch({ type: 'payableForm/updateState', payload: { listItem: [] } })
+    }
+  }
 
-  // const clickBrowse = () => {
-  //   dispatch({
-  //     type: 'payableForm/updateState',
-  //     payload: {
-  //       activeKey: '1'
-  //     }
-  //   })
-  // }
+  const clickBrowse = () => {
+    dispatch({
+      type: 'payableForm/updateState',
+      payload: {
+        activeKey: '1'
+      }
+    })
+  }
 
   const modalProps = {
     title: 'Add Detail',
@@ -263,15 +263,14 @@ const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, loc
     }
   }
 
-  // let moreButtonTab
-  // if (activeKey === '0') {
-  //   moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  // }
+  let moreButtonTab
+  if (activeKey === '0') {
+    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
+  }
 
   return (
     <div className="content-inner">
-      <Form {...formProps} />
-      {/* <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab={`Form ${modalType === 'add' ? 'Add' : 'Update'}`} key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
@@ -283,7 +282,7 @@ const Cash = ({ payableForm, bank, paymentOpts, supplier, loading, dispatch, loc
             </div>
           }
         </TabPane>
-      </Tabs> */}
+      </Tabs>
     </div>
   )
 }
