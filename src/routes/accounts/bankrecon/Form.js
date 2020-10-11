@@ -50,7 +50,8 @@ const FormCounter = ({
       onSubmit({
         accountId: data.accountId ? data.accountId.key : null,
         from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-        to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
+        to: moment(data.rangePicker[1]).format('YYYY-MM-DD'),
+        recon: 0
       })
     })
   }

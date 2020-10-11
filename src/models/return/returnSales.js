@@ -2,13 +2,13 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, add, edit, remove } from 'services/return/returnSales'
+import { query, add, edit, approve, remove } from 'services/return/returnSales'
 import { query as querySequence } from 'services/sequence'
 import { queryDetail as queryPosDetail } from 'services/payment'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Return Sales has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -85,6 +85,15 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * approve ({ payload }, { call, put }) {
+      const data = yield call(approve, payload)
+      if (data.success) {
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
     * getInvoiceDetailPurchase ({ payload }, { select, call, put }) {
       const currentItem = yield select(({ returnSales }) => returnSales.currentItem)
       yield put({
@@ -136,6 +145,7 @@ export default modelExtend(pageModel, {
       ]
       const newData = {
         no: listItem.length + 1,
+        transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
         initialQty: payload.item.qty
       }

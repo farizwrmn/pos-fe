@@ -13,6 +13,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     let body = []
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
+        console.log('tableBody', tableBody)
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
           let maxStringPerRow2 = ' '
@@ -25,7 +26,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
           ]
           if (aliases.check1) {
             row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
-            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), style: 'sellPrice' })
+            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), background: tableBody[key].info.categoryColor, color: tableBody[key].info.categoryColor ? '#fff' : '#000', style: 'sellPrice' })
           }
           if (aliases.check2) {
             // row.push({ text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] })

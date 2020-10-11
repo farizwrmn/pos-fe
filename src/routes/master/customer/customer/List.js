@@ -6,7 +6,7 @@ import { DropOption } from 'components'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, editItem, onCashback, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -15,6 +15,13 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         title: `Are you sure delete ${record.memberName} ?`,
         onOk () {
           deleteItem(record.memberCode)
+        }
+      })
+    } else if (e.key === '3') {
+      confirm({
+        title: `Edit ${record.memberName} Cashback ?`,
+        onOk () {
+          onCashback(record.id)
         }
       })
     }
@@ -110,7 +117,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '3', name: 'Cashback' }, { key: '2', name: 'Delete' }]} />
       }
     }
   ]

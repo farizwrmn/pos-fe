@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
+import styles from '../../../themes/index.less'
 // import { DropOption } from 'components'
 
 // const confirm = Modal.confirm
@@ -17,16 +18,28 @@ const List = ({
       key: 'transNo'
     },
     {
-      title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference'
-    },
-    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${_text ? moment(_text).format('DD-MMM-YYYY') : '-'}`
+    },
+    {
+      title: 'Supplier Name',
+      dataIndex: 'supplierName',
+      key: 'supplierName'
+    },
+    {
+      title: 'Machine',
+      dataIndex: 'machineName',
+      key: 'machineName'
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

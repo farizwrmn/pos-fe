@@ -3,7 +3,10 @@
  */
 import { Modal } from 'antd'
 import moment from 'moment'
-import { queryFifo, queryFifoValue, queryFifoCard, queryFifoTransfer } from '../../services/report/fifo'
+import { configMain } from 'utils'
+import { queryFifo, queryFifoValue, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
+
+const { prefix } = configMain
 
 export default {
   namespace: 'fifoReport',
@@ -97,6 +100,25 @@ export default {
               }
             })
           }
+        } else if (location.pathname === '/report/fifo/history') {
+          if (location.query.from && location.query.to) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                from: location.query.from,
+                to: location.query.to
+              }
+            })
+          }
+          // else {
+          //   dispatch({
+          //     type: 'queryProductCode',
+          //     payload: {
+          //       period: moment().format('MM'),
+          //       year: moment().format('YYYY')
+          //     }
+          //   })
+          // }
         } else if (location.pathname === '/report/fifo/value' && location.query.period && location.query.year) {
           dispatch({
             type: 'queryFifoValues',
@@ -231,6 +253,55 @@ export default {
                 total: data.total
               },
               date
+            }
+          })
+        } else {
+          Modal.warning({
+            title: 'No Data',
+            content: `No data inside storage, ${data.message}`
+          })
+        }
+      }
+    },
+    * queryHistory ({ payload = {} }, { call, put }) {
+      let data
+      try {
+        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        data = yield call(queryFifoHistory, {
+          ...payload,
+          from: storeInfo.startPeriod
+        })
+        if (data.success === false) {
+          Modal.warning({
+            title: 'Something Went Wrong',
+            content: 'Please Refresh the page or change params'
+          })
+          console.log(`error Message: ${data.message}`)
+        }
+      } catch (e) {
+        console.log('error', e)
+      }
+      if (data.success) {
+        console.log('data.data', data.data)
+        if (data.data.length > 0) {
+          yield put({
+            type: 'querySuccessTrans',
+            payload: {
+              listRekap: data.data,
+              from: payload.from,
+              to: payload.to,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 5,
+                total: data.total
+              },
+              date: payload
+            }
+          })
+          yield put({
+            type: 'updateState',
+            payload: {
+              listRekap: data.data
             }
           })
         } else {

@@ -51,6 +51,7 @@ export default modelExtend(pageModel, {
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
+          || pathname === '/bank-history'
           || pathname === '/master/paymentoption'
           || pathname === '/bank-entry'
           || matchEdc) {
@@ -74,7 +75,9 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/master/account'
+        if (
+          pathname === '/master/account'
+          || pathname === '/account/payable-form'
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',

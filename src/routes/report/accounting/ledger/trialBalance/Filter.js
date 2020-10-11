@@ -3,20 +3,19 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
-  sm: 14,
-  md: 14,
-  lg: 14,
+  sm: 12,
+  md: 12,
+  lg: 12,
   style: {
     marginBottom: 10
   }
@@ -24,75 +23,42 @@ const leftColumn = {
 
 const rightColumn = {
   xs: 24,
-  sm: 10,
-  md: 10,
-  lg: 10
+  sm: 12,
+  md: 12,
+  lg: 12
 }
 
-const Filter = ({
-  onOk,
-  onChangePeriod,
-  dispatch,
-  onListReset,
-  onShowCategories,
-  onShowBrands,
-  form: {
-    resetFields,
-    getFieldDecorator
-  },
-  activeKey,
-  ...otherProps
-}) => {
+const Filter = ({ onDateChange, onListReset, from, to, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+  const handleChange = (value) => {
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+    onDateChange(from, to)
+  }
+
   const handleReset = () => {
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        activeKey
+    const fields = getFieldsValue()
+    for (let item in fields) {
+      if ({}.hasOwnProperty.call(fields, item)) {
+        if (fields[item] instanceof Array) {
+          fields[item] = []
+        } else {
+          fields[item] = undefined
+        }
       }
-    }))
+    }
+    setFieldsValue(fields)
     resetFields()
     onListReset()
-  }
-
-  const onChange = (date, dateString) => {
-    if (date) {
-      let period = dateString ? moment(dateString).format('M') : null
-      let year = dateString ? moment(dateString).format('Y') : null
-      onChangePeriod(period, year)
-    } else {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey
-        }
-      }))
-      onListReset()
-    }
-    resetFields()
-  }
-
-  const params = location.search.substring(1)
-  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
-
-  if (!query.year && !query.period) {
-    resetFields(['rangePicker'])
-  }
-
-  const printProps = {
-    activeKey,
-    ...otherProps
   }
 
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Period">
+        <FilterItem label="Trans Date">
           {getFieldDecorator('rangePicker', {
-            initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : ''
+            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null
           })(
-            <MonthPicker onChange={onChange} placeholder="Select Period" />
+            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
           )}
         </FilterItem>
       </Col>
@@ -104,8 +70,8 @@ const Filter = ({
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        {<PrintPDF {...printProps} />}
-        {<PrintXLS {...printProps} />}
+        <PrintPDF {...printProps} />
+        <PrintXLS {...printProps} />
       </Col>
     </Row>
   )

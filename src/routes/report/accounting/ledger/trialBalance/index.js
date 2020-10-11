@@ -9,7 +9,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, generalLedger, app, loading }) => {
-  const { period, year, activeKey, listProduct } = generalLedger
+  const { period, year, from, to, activeKey, listProduct } = generalLedger
   let { listRekap } = generalLedger
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
@@ -29,6 +29,8 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
     listProduct,
     listRekap,
     user,
+    from,
+    to,
     dispatch,
     storeInfo,
     period,
@@ -68,6 +70,17 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
           period: month,
           year: yearPeriod,
           activeKey
+        }
+      }))
+    },
+    onDateChange (from, to) {
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          from,
+          to
         }
       }))
     },

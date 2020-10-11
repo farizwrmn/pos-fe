@@ -107,9 +107,18 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/marketing/social'))
               registerModel(app, require('./models/marketing/customerSocial'))
+              registerModel(app, require('./models/setting/customDataTypes'))
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/master/customer/customer/'))
             }, 'master-customer')
+          }
+        }, {
+          path: 'master/customer-migration/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/loyalty/cashbackManagement'))
+              cb(null, require('./routes/loyalty/cashbackManagement'))
+            }, 'integration-revenue-calculator')
           }
         }, {
           path: 'master/customergroup',
@@ -545,6 +554,23 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-add')
           }
         }, {
+          path: 'transaction/purchase/order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchase/purchaseOrder'))
+              cb(null, require('./routes/purchase/purchaseOrder'))
+            }, 'transaction-purchase-order')
+          }
+        }, {
+          path: 'transaction/purchase/return',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnPurchase'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/return/returnPurchase'))
+            }, 'transaction-return-purchase')
+          }
+        }, {
           path: 'transaction/adjust',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -809,6 +835,15 @@ const Routers = function ({ history, app }) {
             }, 'report-purchase-summary-card')
           }
         }, {
+          path: 'report/fifo/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/fifo'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/report/fifo/stockhistory/'))
+            }, 'report-purchase-summary-history')
+          }
+        }, {
           path: 'report/customer/history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1033,6 +1068,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/accounts/bankrecon/'))
             }, 'finance-bank-recon')
+          }
+        }, {
+          path: 'bank-history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/accounts/bankhistory/'))
+            }, 'finance-bank-history')
           }
         }, {
           path: 'tools/maintenance/inventoryproduct',
@@ -1373,6 +1417,14 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               cb(null, require('./routes/integration/consignment'))
             }, 'integration-consignment')
+          }
+        }, {
+          path: 'integration/revenue-calculator',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/revenueCalculator'))
+              cb(null, require('./routes/integration/revenueCalculator'))
+            }, 'integration-revenue-calculator')
           }
         }, {
           path: '*',
