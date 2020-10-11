@@ -2,23 +2,28 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
+import { Button, Tabs } from 'antd'
 import { lstorage } from 'utils'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
 import Browse from './Browse'
 import ModalItem from './Modal'
-// import ListTransfer from './ListTransferOut'
-// import FilterTransfer from './FilterTransferOut'
+import List from './List'
+import Filter from './Filter'
 
 // const { getCashierTrans } = lstorage
+const { TabPane } = Tabs
 
 const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loading }) => {
   const {
     list: listReturnSales,
+    pagination,
     // listInvoice,
     // tmpInvoiceList,
     // isChecked,
     // listProducts,
     // listTransOut,
+    activeKey,
     modalInvoiceVisible,
     modalProductVisible,
     listItem,
@@ -307,9 +312,106 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     }
   }
 
+  const browseProps = {
+    dataSource: listReturnSales,
+    user,
+    storeInfo,
+    pagination,
+    loading: loading.effects['returnPurchase/query'],
+    location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'returnPurchase/editItem',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'returnPurchase/delete',
+        payload: id
+      })
+    },
+    approveItem (id) {
+      dispatch({
+        type: 'returnPurchase/approve',
+        payload: {
+          id
+        }
+      })
+    }
+  }
+
+  const filterProps = {
+    onFilterChange (value) {
+      dispatch({
+        type: 'returnPurchase/query',
+        payload: {
+          ...value
+        }
+      })
+    }
+  }
+
+
+  const clickBrowse = () => {
+    dispatch({
+      type: 'returnPurchase/updateState',
+      payload: {
+        activeKey: '1'
+      }
+    })
+  }
+
+  let moreButtonTab
+  if (activeKey === '0') {
+    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
+  }
+
+  const changeTab = (key) => {
+    dispatch({
+      type: 'returnPurchase/changeTab',
+      payload: { key }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        activeKey: key
+      }
+    }))
+    dispatch({ type: 'returnPurchase/updateState', payload: { listAccountCode: [] } })
+  }
+
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      <Tabs type="card" activeKey={activeKey} tabBarExtraContent={moreButtonTab} onChange={key => changeTab(key)}>
+        <TabPane tab="Form" key="0">
+          <Form {...formProps} />
+        </TabPane>
+        <TabPane tab="Browse" key="1">
+          <Filter {...filterProps} />
+          <List {...browseProps} />
+        </TabPane>
+      </Tabs>
       {modalEditItemVisible && <ModalItem {...formEditProps} />}
       {modalProductVisible && <Browse {...modalProductProps} />}
       {modalInvoiceVisible && <Browse {...modalProductProps} />}

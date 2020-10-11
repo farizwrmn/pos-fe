@@ -1,6 +1,7 @@
-import { request, crypt } from 'utils'
+import { request, lstorage, crypt } from 'utils'
 
 export async function query (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/return-sales',

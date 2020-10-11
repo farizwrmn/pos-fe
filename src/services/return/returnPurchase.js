@@ -1,6 +1,7 @@
-import { request, crypt } from 'utils'
+import { request, lstorage, crypt } from 'utils'
 
 export async function query (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/return-purchase',
@@ -25,6 +26,15 @@ export async function remove (params) {
   return request({
     url: `/return-purchase/${params.id}`,
     method: 'delete',
+    headers: apiHeaderToken
+  })
+}
+
+export async function approve (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/return-purchase/approve/${params.id}`,
+    method: 'post',
     headers: apiHeaderToken
   })
 }
