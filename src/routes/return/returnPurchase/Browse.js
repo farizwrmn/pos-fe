@@ -9,18 +9,18 @@ const Browse = ({
   showProductQty,
   modalInvoiceVisible,
   modalProductVisible,
-  listInvoice,
   tmpInvoiceList,
   onInvoiceHeader,
   onChooseInvoice,
   location,
-  pos,
+  purchase,
   loading,
   onChooseItem,
   totalItem,
   returnPurchase,
   ...modalProps
 }) => {
+  const { listInvoice } = purchase
   const { listProduct } = returnPurchase
   const width = '80%'
   const modalOpts = {
@@ -28,9 +28,10 @@ const Browse = ({
   }
 
   const listProps = {
-    pos,
+    purchase,
     dataSource: modalInvoiceVisible ? listInvoice : listProduct,
-    loading,
+    loading: loading.effects['purchase/queryHistory'] || loading.effects['returnPurchase/getInvoiceDetailPurchase'],
+    loadingProduct: loading,
     pagination: null,
     tmpInvoiceList,
     searchText,
@@ -61,7 +62,7 @@ const Browse = ({
 }
 
 Browse.propTypes = {
-  pos: PropTypes.object,
+  purchase: PropTypes.object,
   location: PropTypes.object,
   loading: PropTypes.object,
   onChangeTotalItem: PropTypes.func.isRequired,

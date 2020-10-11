@@ -8,7 +8,7 @@ import { queryDetail as queryPosDetail } from 'services/payment'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Return Sales has been saved')
 }
 
 export default modelExtend(pageModel, {

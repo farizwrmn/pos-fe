@@ -11,7 +11,7 @@ import ModalItem from './Modal'
 
 // const { getCashierTrans } = lstorage
 
-const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) => {
+const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loading }) => {
   const {
     list: listReturnSales,
     // listInvoice,
@@ -34,7 +34,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     // sort,
     // showPrintModal
   } = returnPurchase
-  // const { modalProductVisible, listProductData, searchText } = pos
+  // const { modalProductVisible, listProductData, searchText } = purchase
   const { user, storeInfo } = app
   // const filterProps = {
   //   display,
@@ -100,7 +100,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
   const modalProductProps = {
     location,
     loading,
-    pos,
+    purchase,
     returnPurchase,
     modalProductVisible,
     modalInvoiceVisible,
@@ -110,7 +110,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     onChange (/* event */) { },
     showProductQty (data) {
       dispatch({
-        type: 'pos/showProductQty',
+        type: 'purchase/showProductQty',
         payload: {
           data
         }
@@ -118,7 +118,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     },
     onCancel () {
       dispatch({
-        type: 'pos/hideProductModal'
+        type: 'purchase/hideProductModal'
       })
       dispatch({
         type: 'returnPurchase/updateState',
@@ -138,7 +138,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     },
     onInvoiceHeader (period) {
       dispatch({
-        type: 'pos/queryHistory',
+        type: 'purchase/queryHistory',
         payload: {
           ...period
         }
@@ -247,7 +247,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     modalProductVisible,
     modalInvoiceVisible,
     loadingButton: loading,
-    pos,
+    purchase,
     loading: loading.effects['returnPurchase/querySequence'],
     disabled: false,
     button: 'Add',
@@ -274,14 +274,14 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
     handleProductBrowse,
     handleInvoiceBrowse () {
       dispatch({
-        type: 'pos/queryHistory',
+        type: 'purchase/queryHistory',
         payload: {
           startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
           endPeriod: moment().endOf('month').format('YYYY-MM-DD')
         }
       })
       dispatch({
-        type: 'pos/updateState',
+        type: 'purchase/updateState',
         payload: {
           modalType: 'modalInvoice'
         }
@@ -290,6 +290,18 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
         type: 'returnPurchase/updateState',
         payload: {
           modalInvoiceVisible: true
+        }
+      })
+      let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
+      let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
+      const period = {
+        startPeriod,
+        endPeriod
+      }
+      dispatch({
+        type: 'purchase/getInvoiceHeader',
+        payload: {
+          ...period
         }
       })
     }
@@ -307,7 +319,7 @@ const ReturnSales = ({ location, returnPurchase, pos, app, dispatch, loading }) 
 
 ReturnSales.propTypes = {
   returnPurchase: PropTypes.object,
-  pos: PropTypes.object,
+  purchase: PropTypes.object,
   app: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -315,4 +327,4 @@ ReturnSales.propTypes = {
 }
 
 
-export default connect(({ returnPurchase, pos, app, loading }) => ({ returnPurchase, pos, app, loading }))(ReturnSales)
+export default connect(({ returnPurchase, purchase, app, loading }) => ({ returnPurchase, purchase, app, loading }))(ReturnSales)

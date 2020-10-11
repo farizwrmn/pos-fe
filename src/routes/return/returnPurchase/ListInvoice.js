@@ -1,62 +1,47 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Input, Form, Modal, Row, Col, DatePicker, Tag } from 'antd'
+import { Table, Button, Input, Form, Row, Col, DatePicker } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain } from 'utils'
 
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
-const Warning = Modal.confirm
-const { prefix } = configMain
 
-const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch, ...tableProps }) => {
-  const { listPayment, tmpListPayment } = pos
+const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
+  const { searchText, tmpInvoiceList } = purchase
+
   const handleMenuClick = (record) => {
-    const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-    if (record.transDate < storeInfo.startPeriod) {
-      record.readOnly = true
-      Warning({
-        title: 'Read-only Invoice',
-        content: 'This Invoice cannot be edit',
-        onOk () {
-          onChooseInvoice(record)
-        },
-        onCancel () {
-          console.log('cancel')
-        }
-      })
-    } else if (record.transDate >= storeInfo.startPeriod) {
-      record.readOnly = false
-      Warning({
-        title: 'Warning: change recorded activity',
-        content: 'Do you want to replace recent activity',
-        onOk () {
-          onChooseInvoice(record)
-        },
-        onCancel () {
-          console.log('cancel')
-        }
-      })
-    }
+    onChooseInvoice(record)
   }
 
   const handleChange = (e) => {
     const { value } = e.target
-    const reg = new RegExp(value, 'gi')
-    let newData
-    newData = tmpListPayment.map((record) => {
-      const match = (record.transNo || '').match(reg) || (record.cashierId || '').match(reg) || (record.policeNo || '').match(reg) || (record.cashierName || '').match(reg)
-      if (!match) {
-        return null
-      }
-      return {
-        ...record
-      }
-    }).filter(record => !!record)
+
     dispatch({
-      type: 'pos/searchPOS',
-      payload: newData
+      type: 'purchase/updateState',
+      payload: {
+        searchText: value
+      }
+    })
+  }
+
+  const handleSearch = () => {
+    dispatch({
+      type: 'purchase/onInvoiceSearch',
+      payload: {
+        searchText,
+        tmpInvoiceList
+      }
+    })
+  }
+
+  const handleReset = () => {
+    dispatch({
+      type: 'purchase/onInvoiceReset',
+      payload: {
+        searchText: '',
+        tmpInvoiceList
+      }
     })
   }
 
@@ -72,57 +57,50 @@ const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch,
 
   const columns = [
     {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: 150,
-      render: (text, record) => `${text} ${record.transTime}`
-    },
-    {
-      title: 'Cashier',
-      dataIndex: 'technicianName',
-      key: 'technicianName',
-      width: 100
-    },
-    {
-      title: 'Member',
-      dataIndex: 'memberName',
-      key: 'memberName',
-      width: 100
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: text =>
-        (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
-          </Tag>
-        </span>)
-    },
-    {
-      title: 'No',
+      title: 'Invoice',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: 180
+      width: 580 * (25 / 100)
+    },
+    {
+      title: 'Trans Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 580 * (25 / 100)
+    },
+    {
+      title: 'Receive Date',
+      dataIndex: 'receiveDate',
+      key: 'receiveDate',
+      width: 580 * (25 / 100)
+    },
+    {
+      title: 'SupplierName',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: 580 * (25 / 100)
     }
   ]
-
+  console.log('tableProps', tableProps)
   return (
     <div>
       <Form layout="inline">
         <Row>
           <Col lg={16} md={14}>
             <FormItem>
-              <Input
-                placeholder="Search Invoice Number"
-                // value={searchText}
+              <Input placeholder="Search Invoice Number"
+                value={searchText}
+                size="small"
                 onChange={_e => handleChange(_e)}
-                onPressEnter={handleChange}
+                onPressEnter={handleSearch}
                 style={{ marginBottom: 16 }}
               />
+            </FormItem>
+            <FormItem>
+              <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
+            </FormItem>
+            <FormItem>
+              <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
             </FormItem>
           </Col>
           <Col lg={8} md={10}>
@@ -136,13 +114,11 @@ const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch,
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: 500, y: 388 }}
         columns={columns}
         simple
         size="small"
         rowKey={record => record.productCode}
         onRowClick={_record => handleMenuClick(_record)}
-        dataSource={listPayment}
       />
     </div>
   )

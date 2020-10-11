@@ -4,11 +4,11 @@ import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query, add, edit, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
-import { queryDetail as queryPosDetail } from 'services/payment'
+import { queryDetail as queryPurchaseDetail } from 'services/purchase'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Return Purchase has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -94,12 +94,10 @@ export default modelExtend(pageModel, {
           listItem: []
         }
       })
-      const response = yield call(queryPosDetail, {
-        id: payload.transNo,
-        type: 'print'
+      const response = yield call(queryPurchaseDetail, {
+        transNo: payload.transNo
       })
-      if (response.success && response.pos) {
-        const listProduct = response.pos.filter(filtered => filtered.typeCode === 'P')
+      if (response.success && response.data) {
         yield put({
           type: 'updateItem',
           payload: {
@@ -110,7 +108,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listProduct,
+            listProduct: response.data,
             modalInvoiceVisible: false,
             currentItem: {
               ...currentItem,

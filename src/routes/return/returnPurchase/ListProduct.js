@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from 'themes/index.less'
 
-const ListProduct = ({ onChooseItem, loading, ...tableProps }) => {
+const ListProduct = ({ onChooseItem, loadingProduct, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onChooseItem(record)
   }
@@ -33,8 +33,8 @@ const ListProduct = ({ onChooseItem, loading, ...tableProps }) => {
     },
     {
       title: 'Price',
-      dataIndex: 'DPP',
-      key: 'DPP',
+      dataIndex: 'dpp',
+      key: 'dpp',
       className: styles.alignRight,
       render: (text, record) => (parseFloat(text) / (parseFloat(record.qty)) || '-').toLocaleString()
     }
@@ -44,7 +44,7 @@ const ListProduct = ({ onChooseItem, loading, ...tableProps }) => {
     <Table
       {...tableProps}
       bordered
-      loading={loading.effects['pos/getProducts'] || loading.effects['pos/checkQuantityNewProduct'] || loading.effects['pos/checkQuantityEditProduct']}
+      loading={loadingProduct.effects['pos/getProducts'] || loadingProduct.effects['pos/checkQuantityNewProduct'] || loadingProduct.effects['pos/checkQuantityEditProduct']}
       columns={columns}
       simple
       size="small"
