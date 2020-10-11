@@ -648,6 +648,7 @@ export default {
               type: PosData.pos.type,
               year: PosData.pos.year,
               chassisNo: PosData.pos.chassisNo,
+              defaultMember: PosData.pos.defaultMember,
               machineNo: PosData.pos.machineNo,
               discountLoyalty: PosData.pos.discountLoyalty, // discountLoyalty, lastCashback, gettingCashback
               lastCashback: PosData.pos.lastCashback,

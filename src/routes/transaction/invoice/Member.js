@@ -22,7 +22,7 @@ const Member = ({
           {numberFormatter(invoiceInfo.memberName)}
         </Col>
       </Row>
-      {invoiceInfo.unitInfo && invoiceInfo.unitInfo.id && (
+      {invoiceInfo.unitInfo && invoiceInfo.unitInfo.id && !invoiceInfo.unitInfo.defaultMember && (
         <Row>
           <Col span={12} className={styles.right}>
             <span>
