@@ -16,7 +16,7 @@ const { TabPane } = Tabs
 
 const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loading }) => {
   const {
-    list: listReturnSales,
+    list: listReturnPurchase,
     pagination,
     // listInvoice,
     // tmpInvoiceList,
@@ -245,7 +245,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     listProps,
     formConfirmProps,
     modalConfirmVisible,
-    listTrans: listReturnSales,
+    listTrans: listReturnPurchase,
     listItem,
     listStore: lstorage.getListUserStores(),
     item: currentItem,
@@ -313,7 +313,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   }
 
   const browseProps = {
-    dataSource: listReturnSales,
+    dataSource: listReturnPurchase,
     user,
     storeInfo,
     pagination,

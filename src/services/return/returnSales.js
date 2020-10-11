@@ -30,6 +30,15 @@ export async function remove (params) {
   })
 }
 
+export async function approve (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/return-sales/approve/${params.id}`,
+    method: 'post',
+    headers: apiHeaderToken
+  })
+}
+
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

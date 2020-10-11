@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, add, edit, remove } from 'services/return/returnSales'
+import { query, add, edit, approve, remove } from 'services/return/returnSales'
 import { query as querySequence } from 'services/sequence'
 import { queryDetail as queryPosDetail } from 'services/payment'
 import { pageModel } from './../common'
@@ -78,6 +78,15 @@ export default modelExtend(pageModel, {
 
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
+      if (data.success) {
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
+    * approve ({ payload }, { call, put }) {
+      const data = yield call(approve, payload)
       if (data.success) {
         yield put({ type: 'query' })
       } else {

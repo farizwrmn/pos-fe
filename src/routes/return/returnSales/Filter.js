@@ -1,119 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
-import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Switch } from 'antd'
+import { Form, Row, Col, Input } from 'antd'
 
 const Search = Input.Search
-const { RangePicker } = DatePicker
+const FormItem = Form.Item
 
-const ColProps = {
-  xs: 24,
-  sm: 12,
-  style: {
-    marginBottom: 16
-  }
-}
-
-const TwoColProps = {
-  ...ColProps,
-  xl: 96
+const searchBarLayout = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
 }
 
 const Filter = ({
-  isChecked,
-  display,
-  switchIsChecked,
   onFilterChange,
-  filter,
   form: {
     getFieldDecorator,
-    getFieldsValue,
-    setFieldsValue
+    getFieldsValue
   }
 }) => {
-  const switchFilter = () => {
-    switchIsChecked()
-  }
-  const handleFields = (fields) => {
-    const { createTime } = fields
-    if (createTime.length) {
-      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
-    }
-    return fields
-  }
-
   const handleSubmit = () => {
-    let fields = getFieldsValue()
-    fields.cityName = fields.searchName
-    fields = handleFields(fields)
-    onFilterChange(fields)
-  }
-
-  const handleReset = () => {
-    const fields = getFieldsValue()
-    for (let item in fields) {
-      if ({}.hasOwnProperty.call(fields, item)) {
-        if (fields[item] instanceof Array) {
-          fields[item] = []
-        } else {
-          fields[item] = undefined
-        }
-      }
-    }
-    setFieldsValue(fields)
-    handleSubmit()
-  }
-
-  const handleChange = (key, values) => {
-    let fields = getFieldsValue()
-    fields[key] = values
-    fields = handleFields(fields)
-    onFilterChange(fields)
-  }
-  const { cityName } = filter
-
-  let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
-  }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
+    let field = getFieldsValue()
+    if (field.counterName === undefined || field.counterName === '') delete field.counterName
+    onFilterChange(field)
   }
 
   return (
-    <Row gutter={24}>
-      <div>
-        <Switch style={{ marginRight: 16, marginBottom: 16 }} size="large" defaultChecked={isChecked} onChange={switchFilter} checkedChildren={'Open'} unCheckedChildren={'Hide'} />
-      </div>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('searchName', { initialValue: cityName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} style={{ display }} />)}
-      </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} style={{ display }}>
-        <FilterItem label="Createtime" >
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+    <Row>
+      <Col span={12} />
+      <Col {...searchBarLayout} >
+        <FormItem >
+          {getFieldDecorator('counterName')(
+            <Search
+              placeholder="Search Counter"
+              onSearch={() => handleSubmit()}
+            />
           )}
-        </FilterItem>
-      </Col>
-      <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
-        <div style={{ display, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-          <div >
-            <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>Search</Button>
-            <Button size="large" onClick={handleReset}>Reset</Button>
-          </div>
-        </div>
+        </FormItem>
       </Col>
     </Row>
   )
 }
 
 Filter.propTypes = {
-  isChecked: PropTypes.bool,
-  switchIsChecked: PropTypes.func,
   form: PropTypes.object,
-  display: PropTypes.string,
-  filter: PropTypes.object,
   onFilterChange: PropTypes.func
 }
 
