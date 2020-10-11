@@ -14,6 +14,7 @@ const Member = ({
   customergroup,
   customertype,
   customerSocial,
+  customDataTypes,
   city,
   misc,
   social,
@@ -27,6 +28,7 @@ const Member = ({
   const { listType } = customertype
   const { listCity } = city
   const { listLov, code } = misc
+  const { list: listDataTypes } = customDataTypes
   const listIdType = listLov && listLov[code] ? listLov[code] : []
 
   const modalSocialProps = {
@@ -98,6 +100,7 @@ const Member = ({
   }
 
   const formCustomerProps = {
+    listDataTypes,
     listSocial,
     modalSocialProps,
     modalSocialVisible,
@@ -240,4 +243,4 @@ Member.propTypes = {
   social: PropTypes.object.isRequired
 }
 
-export default connect(({ customerSocial, customer, store, pos, customergroup, customertype, city, misc, social }) => ({ customerSocial, customer, store, pos, customergroup, customertype, city, misc, social }))(Member)
+export default connect(({ customerSocial, customDataTypes, customer, store, pos, customergroup, customertype, city, misc, social }) => ({ customerSocial, customDataTypes, customer, store, pos, customergroup, customertype, city, misc, social }))(Member)

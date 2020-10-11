@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, Spin, DatePicker } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, Spin, DatePicker, InputNumber } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -45,6 +45,8 @@ const FormCounter = ({
   resetListItem,
   // modalType,
   modalVisible,
+  listAccountCode,
+  listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   modalProps,
   listBank,
   listDetailProps,
@@ -82,6 +84,7 @@ const FormCounter = ({
       }
       data.storeId = lstorage.getCurrentUserStore()
       data.supplierId = data.supplierId ? data.supplierId.key : null
+      data.discountAccountId = data.discountAccountId ? data.discountAccountId.key : null
       data.typeCode = data.typeCode ? data.typeCode.key : null
       data.bankId = data.bankId ? data.bankId.key : null
       Modal.confirm({
@@ -211,11 +214,6 @@ const FormCounter = ({
                 }]
               })(<DatePicker />)}
             </FormItem>
-            <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
-            </FormItem>
-          </Col>
-          <Col {...column}>
             <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierId', {
                 initialValue: modalType === 'edit' && item.supplierId ? {
@@ -240,6 +238,11 @@ const FormCounter = ({
               >{supplierOpt}
               </Select>)}
             </FormItem>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description')(<Input />)}
+            </FormItem>
+          </Col>
+          <Col {...column}>
             <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
                 initialValue: modalType === 'edit' && item.typeCode ? {
@@ -287,6 +290,39 @@ const FormCounter = ({
                 >{bankOpt}
                 </Select>
               )}
+            </FormItem>
+            <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('discount', {
+                initialValue: 0,
+                rules: [{
+                  required: true,
+                  pattern: /^([0-9.-]{0,19})$/i,
+                  message: 'Required'
+                }]
+              })(
+                <InputNumber
+                  defaultValue={0}
+                  step={10000}
+                  max={listItem ? listItem.reduce((prev, next) => prev + next.paymentTotal, 0) : 0}
+                  min={0}
+                />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Discount Account">
+              {getFieldDecorator('discountAccountId', {
+                initialValue: item.discountAccountId,
+                rules: [{
+                  required: getFieldValue('discount') > 0,
+                  message: 'Required'
+                }]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{listAccountOpt}
+              </Select>)}
             </FormItem>
           </Col>
         </Row>

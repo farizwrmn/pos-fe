@@ -41,6 +41,12 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/bank-history') {
+          dispatch({
+            type: 'bankentry/queryBankRecon',
+            payload: other
+          })
+        }
         if (pathname === '/bank-entry') {
           dispatch({
             type: 'updateState',

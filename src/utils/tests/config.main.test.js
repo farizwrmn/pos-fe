@@ -9,7 +9,7 @@ import {
 } from '../config.main'
 
 it('Should render App name', () =>
-  expect(name).toEqual('www.k3mart.id')
+  expect(name).toEqual('www.k3bike.com')
 )
 
 it('Should render App Prefix', () =>

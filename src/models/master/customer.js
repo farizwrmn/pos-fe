@@ -102,8 +102,12 @@ export default modelExtend(pageModel, {
             break
           }
           case '/master/customer':
-            if (!activeKey) dispatch({ type: 'refreshView' })
-            if (activeKey === '1') dispatch({ type: 'query', payload: other })
+            if (!activeKey) {
+              dispatch({ type: 'refreshView' })
+            }
+            if (activeKey === '1') {
+              dispatch({ type: 'query', payload: other })
+            }
             dispatch({
               type: 'updateState',
               payload: {
