@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
-import { numberFormatter } from 'utils/numberFormat'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -25,7 +24,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: numberFormatter(data.transferOutHPokok && data.transferOutHPokok[0] ? data.transferOutHPokok[0].purchasePrice : 0), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -35,7 +33,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
 
   // Declare Variable
   let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.transferOutHPokok && o.transferOutHPokok[0] ? o.transferOutHPokok[0].purchasePrice : 0), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -194,8 +191,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
       { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -210,8 +206,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
       {},
       {},
       { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 12 },
-      {},
-      { text: formatNumberIndonesia(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 }
+      {}
     ]
   ]
   const tableLayout = {
@@ -231,7 +226,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '12%', '30%', '6%', '26%', '20%'],
+    width: ['6%', '20%', '34%', '6%', '34%'],
     pageMargins: [40, 180, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
