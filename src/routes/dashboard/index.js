@@ -44,9 +44,10 @@ function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
         title: 'Cost',
         value: sales
       },
+
       {
         title: 'Gross Profit',
-        value: value - sales
+        value: parseFloat(value) - parseFloat(sales)
       }
     ],
     pagination: false,
