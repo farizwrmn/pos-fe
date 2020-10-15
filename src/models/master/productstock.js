@@ -336,6 +336,7 @@ export default modelExtend(pageModel, {
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const productId = yield select(({ productstock }) => productstock.currentItem.id)
+      const { location } = payload
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
       let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
@@ -385,10 +386,12 @@ export default modelExtend(pageModel, {
                 activeKey: '1'
               }
             })
-            const { pathname } = location
+            const { pathname, query } = location
             yield put(routerRedux.push({
               pathname,
               query: {
+                ...query,
+                page: 1,
                 activeKey: '1'
               }
             }))
@@ -415,10 +418,12 @@ export default modelExtend(pageModel, {
               activeKey: '1'
             }
           })
-          const { pathname } = location
+          const { pathname, query } = location
           yield put(routerRedux.push({
             pathname,
             query: {
+              ...query,
+              page: 1,
               activeKey: '1'
             }
           }))
