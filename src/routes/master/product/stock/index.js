@@ -191,10 +191,11 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
           supplierInformation: {}
         }
       })
-      const { pathname } = location
+      const { pathname, query } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
+          ...query,
           activeKey: 0
         }
       }))
@@ -291,7 +292,8 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
         type: `productstock/${modalType}`,
         payload: {
           id,
-          data
+          data,
+          location
         }
       })
     },
