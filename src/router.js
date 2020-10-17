@@ -1108,6 +1108,14 @@ const Routers = function ({ history, app }) {
             }, 'tools-maintenance-posheader')
           }
         }, {
+          path: 'tools/maintenance/health-checkup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/healthcheckup'))
+              cb(null, require('./routes/tools/health-checkup/'))
+            }, 'tools-maintenance-health-checkup')
+          }
+        }, {
           path: 'tools/maintenance/inventory',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
