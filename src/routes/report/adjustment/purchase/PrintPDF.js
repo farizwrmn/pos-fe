@@ -22,7 +22,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.qtyIn), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(data.qtyOut), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.costPrice), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 })
         body.push(row)
@@ -35,7 +35,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Variable
   let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyIn), 0)
+  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
 
   const styles = {
     header: {
@@ -65,7 +65,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN ADJUSTMENT IN',
+            text: 'LAPORAN RETUR BELI',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -180,7 +180,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
 
 PrintPDF.propTypes = {
   listTrans: PropTypes.array,
+  app: PropTypes.object,
   user: PropTypes.object.isRequired,
+  dataSource: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired,
   fromDate: PropTypes.string.isRequired,
   toDate: PropTypes.string.isRequired

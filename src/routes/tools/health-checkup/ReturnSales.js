@@ -1,6 +1,7 @@
 import React from 'react'
 import { Col, Row } from 'antd'
 import { numberFormatter } from 'utils/numberFormat'
+import { Link } from 'dva/router'
 
 const ReturnSales = ({ listUnitAll }) => {
   return (
@@ -8,7 +9,7 @@ const ReturnSales = ({ listUnitAll }) => {
       {listUnitAll.ReturnSales && listUnitAll.ReturnSalesJurnal && (
         <div>
           <Row>
-            <Col span="6">ReturnSales:</Col>
+            <Col span="6"><Link to="/report/adjust/sales">ReturnSales:</Link></Col>
             <Col span="18">{numberFormatter(listUnitAll.ReturnSales.summary)}</Col>
           </Row>
           <Row>
