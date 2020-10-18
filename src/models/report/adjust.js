@@ -2,7 +2,7 @@
  * Created by Veirry on 19/09/2017.
  */
 // import { query as queryReport, queryTrans } from '../../services/report/purchase'
-import { queryIn, queryOut } from '../../services/report/adjust'
+import { queryIn, queryOut, querySales, queryPurchase } from '../../services/report/adjust'
 
 export default {
   namespace: 'adjustReport',
@@ -25,21 +25,30 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        dispatch({ type: 'setListNull' })
         if (location.pathname === '/report/adjust/in' && Object.keys(location.query).length > 0) {
           dispatch({
             type: 'queryInAdj',
             payload: location.query
           })
-        } else if (location.pathname === '/report/adjust/out' && Object.keys(location.query).length > 0) {
-          // console.log('query', Object.keys(location.query).length)
+        }
+        if (location.pathname === '/report/adjust/sales' && Object.keys(location.query).length > 0) {
+          dispatch({
+            type: 'querySales',
+            payload: location.query
+          })
+        }
+        if (location.pathname === '/report/adjust/out' && Object.keys(location.query).length > 0) {
           dispatch({
             type: 'queryOutAdj',
             payload: location.query
           })
-        } else if (location.pathname === '/report/adjust/in') {
-          dispatch({ type: 'setListNull' })
-        } else if (location.pathname === '/report/adjust/out') {
-          dispatch({ type: 'setListNull' })
+        }
+        if (location.pathname === '/report/adjust/purchase' && Object.keys(location.query).length > 0) {
+          dispatch({
+            type: 'queryPurchase',
+            payload: location.query
+          })
         }
       })
     }
@@ -53,6 +62,32 @@ export default {
         payload: date
       })
       const data = yield call(queryIn, payload)
+      if (data.data.length > 0) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listTrans: data.data,
+            listOut: [],
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            },
+            date
+          }
+        })
+      } else {
+        yield put({ type: 'setListNull' })
+      }
+    },
+    * querySales ({ payload = {} }, { call, put }) {
+      const date = payload
+      yield put({ type: 'setListNull' })
+      yield put({
+        type: 'setDate',
+        payload: date
+      })
+      const data = yield call(querySales, payload)
       if (data.data.length > 0) {
         yield put({
           type: 'querySuccessTrans',
@@ -101,12 +136,44 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+    * queryReturnPurchase ({ payload = {} }, { call, put }) {
+      const date = payload
+      yield put({ type: 'setListNull' })
+      yield put({
+        type: 'setDate',
+        payload: date
+      })
+      let data = {}
+      try {
+        data = yield call(queryPurchase, payload)
+        if (data.data.length > 0) {
+          yield put({
+            type: 'querySuccessTrans',
+            payload: {
+              listTrans: [],
+              listOut: data.data,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 5,
+                total: data.total
+              },
+              date
+            }
+          })
+        } else {
+          yield put({ type: 'setListNull' })
+        }
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
   reducers: {
     querySuccessTrans (state, action) {
       const { listTrans, listOut, date, pagination, tmpList } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listTrans,
         listOut,
         fromDate: date.from,

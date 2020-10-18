@@ -789,7 +789,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/adjust'))
               cb(null, require('./routes/report/adjustment/in/'))
-            }, 'report-purchase-summary-trans')
+            }, 'report-adjust-in')
           }
         }, {
           path: 'report/adjust/out',
@@ -797,7 +797,23 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/adjust'))
               cb(null, require('./routes/report/adjustment/out/'))
-            }, 'report-purchase-summary-trans')
+            }, 'report-adjust-out')
+          }
+        }, {
+          path: 'report/adjust/sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/sales/'))
+            }, 'report-adjust-sales')
+          }
+        }, {
+          path: 'report/adjust/purchase',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/purchase/'))
+            }, 'report-adjust-purchase')
           }
         }, {
           path: 'report/fifo/summary',
