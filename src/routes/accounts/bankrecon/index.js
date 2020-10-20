@@ -23,7 +23,11 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
     onSubmit (data) {
       dispatch({
         type: 'bankentry/queryBankRecon',
-        payload: data
+        payload: {
+          type: 'all',
+          order: 'transDate',
+          ...data
+        }
       })
     }
   }
@@ -33,6 +37,7 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
     listBankRecon,
     summaryBankRecon,
     pagination,
+    dispatch,
     onSubmit (item) {
       console.log('item', item)
       dispatch({

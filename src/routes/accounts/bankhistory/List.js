@@ -6,15 +6,23 @@ import {
 import {
   currencyFormatter
 } from 'utils/string'
+import { getName, getLink } from 'utils/link'
 import styles from '../../../themes/index.less'
 
 
-const List = ({ ...tableProps, summaryBankRecon }) => {
+const List = ({ dispatch, ...tableProps, summaryBankRecon }) => {
   const columns = [
     {
       title: 'Type',
       dataIndex: 'transactionType',
-      key: 'transactionType'
+      key: 'transactionType',
+      render: (text, record) => {
+        return (
+          <a onClick={() => getLink(dispatch, { transactionType: text, transactionId: record.transactionId })}>
+            {getName(text)}
+          </a>
+        )
+      }
     },
     {
       title: 'Date',
@@ -64,7 +72,7 @@ const List = ({ ...tableProps, summaryBankRecon }) => {
         columns={columns}
         simple
         title={() => (summaryBankRecon && summaryBankRecon[0]
-          ? `Saldo: ${currencyFormatter(summaryBankRecon[0].amount)}`
+          ? `Balance: ${currencyFormatter(summaryBankRecon[0].amount)}`
           : null)}
         scroll={{ x: 1000 }}
         rowKey={record => record.id}
