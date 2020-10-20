@@ -39,6 +39,7 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
     summaryBankRecon,
     dataSource: listBankRecon,
     pagination,
+    dispatch,
     loading: loading.effects['bankentry/queryBankRecon'],
     location,
     onChange (page) {

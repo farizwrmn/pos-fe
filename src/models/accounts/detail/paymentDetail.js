@@ -88,28 +88,30 @@ export default {
           disc3: data.pos[n].disc3 || 0
         })
       }
-      for (let n = 0; n < payment.data.length; n += 1) {
-        dataPayment.push({
-          no: n + 1,
-          id: payment.data[n].id,
-          cashierTransId: payment.data[n].cashierTransId,
-          active: payment.data[n].active,
-          storeId: payment.data[n].storeId,
-          transDate: payment.data[n].transDate,
-          transTime: payment.data[n].transTime,
-          typeCode: payment.data[n].typeCode,
-          paymentMachine: payment.data[n].paymentMachine,
-          cost: payment.data[n].cost,
-          cardNo: payment.data[n].cardNo,
-          cardName: payment.data[n].cardName,
-          chargeNominal: payment.data[n].chargeNominal,
-          chargePercent: payment.data[n].chargePercent,
-          chargeTotal: payment.data[n].chargeTotal,
-          description: payment.data[n].description,
-          paid: payment.data[n].paid || 0
-        })
+      if (payment && payment.data) {
+        for (let n = 0; n < payment.data.length; n += 1) {
+          dataPayment.push({
+            no: n + 1,
+            id: payment.data[n].id,
+            cashierTransId: payment.data[n].cashierTransId,
+            active: payment.data[n].active,
+            storeId: payment.data[n].storeId,
+            transDate: payment.data[n].transDate,
+            transTime: payment.data[n].transTime,
+            typeCode: payment.data[n].typeCode,
+            paymentMachine: payment.data[n].paymentMachine,
+            cost: payment.data[n].cost,
+            cardNo: payment.data[n].cardNo,
+            cardName: payment.data[n].cardName,
+            chargeNominal: payment.data[n].chargeNominal,
+            chargePercent: payment.data[n].chargePercent,
+            chargeTotal: payment.data[n].chargeTotal,
+            description: payment.data[n].description,
+            paid: payment.data[n].paid || 0
+          })
+        }
       }
-      if (invoiceInfo.data.length > 0) {
+      if (invoiceInfo.data && invoiceInfo.data.length > 0) {
         if (data.success) {
           yield put({
             type: 'querySuccess',
