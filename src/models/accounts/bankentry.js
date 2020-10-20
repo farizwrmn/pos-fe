@@ -2,9 +2,12 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import { query as querySequence } from '../../services/sequence'
 import { query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
+import { queryById as queryPaymentById } from '../../services/payment/payment'
+import { queryById as queryPayableById } from '../../services/payment/payable'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -75,6 +78,79 @@ export default modelExtend(pageModel, {
 
   effects: {
 
+    * linkSales ({ payload = {} }, { select, call, put }) {
+      const user = yield select(({ app }) => app.user)
+      console.log('user', user)
+      const data = yield call(queryPaymentById, payload)
+      if (data.success) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [data.data.storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
+        yield put(routerRedux.push(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`))
+      } else {
+        throw data
+      }
+    },
+
+    * linkPurchase ({ payload = {} }, { select, call, put }) {
+      const user = yield select(({ app }) => app.user)
+      const data = yield call(queryPayableById, payload)
+      if (data.success) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [data.data.storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
+        yield put(routerRedux.push(`/accounts/payable/${encodeURIComponent(data.data.transNo)}`))
+      } else {
+        throw data
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const { edit, ...other } = payload
       const data = yield call(query, other)
@@ -96,7 +172,6 @@ export default modelExtend(pageModel, {
     * queryBankRecon ({ payload = {} }, { call, put }) {
       const response = yield call(queryBankRecon, payload)
       if (response && response.success) {
-        console.log('response.data', response.data)
         yield put({
           type: 'updateState',
           payload
