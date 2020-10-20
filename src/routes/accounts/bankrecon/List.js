@@ -4,11 +4,13 @@ import {
   currencyFormatter
 } from 'utils/string'
 import { Row, Col, Card, Button, Modal } from 'antd'
+import { getName, getLink } from 'utils/link'
 
 const List = ({
   loading,
   summaryBankRecon,
   listBankRecon,
+  dispatch,
   onSubmit
 }) => {
   return (
@@ -22,7 +24,7 @@ const List = ({
                 style={{ marginBottom: '1em' }}
               >
                 <div>
-                  {`Saldo: ${currencyFormatter(summaryBankRecon[0].amount)}`}
+                  {`Balance: ${currencyFormatter(summaryBankRecon[0].amount)}`}
                 </div>
               </Card>
             </div>
@@ -35,7 +37,11 @@ const List = ({
             return (
               <div>
                 <Card
-                  title={item.transactionType}
+                  title={(
+                    <a onClick={() => getLink(dispatch, { transactionType: item.transactionType, transactionId: item.transactionId })}>
+                      {getName(item.transactionType)}
+                    </a>
+                  )}
                   extra={
                     item.recon === 0 ? (
                       <Button

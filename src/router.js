@@ -789,7 +789,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/adjust'))
               cb(null, require('./routes/report/adjustment/in/'))
-            }, 'report-purchase-summary-trans')
+            }, 'report-adjust-in')
           }
         }, {
           path: 'report/adjust/out',
@@ -797,7 +797,23 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/adjust'))
               cb(null, require('./routes/report/adjustment/out/'))
-            }, 'report-purchase-summary-trans')
+            }, 'report-adjust-out')
+          }
+        }, {
+          path: 'report/adjust/sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/sales/'))
+            }, 'report-adjust-sales')
+          }
+        }, {
+          path: 'report/adjust/purchase',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/adjust'))
+              cb(null, require('./routes/report/adjustment/purchase/'))
+            }, 'report-adjust-purchase')
           }
         }, {
           path: 'report/fifo/summary',
@@ -1106,6 +1122,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               cb(null, require('./routes/tools/maintenance/'))
             }, 'tools-maintenance-posheader')
+          }
+        }, {
+          path: 'tools/maintenance/health-checkup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/healthcheckup'))
+              cb(null, require('./routes/tools/health-checkup/'))
+            }, 'tools-maintenance-health-checkup')
           }
         }, {
           path: 'tools/maintenance/inventory',

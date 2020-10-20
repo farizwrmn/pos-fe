@@ -4,8 +4,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Modal } from 'antd'
-import { numberFormat } from 'utils'
 import { saveAs } from 'file-saver'
+import { numberFormat } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import moment from 'moment'
 
@@ -15,7 +15,7 @@ const { formatNumberInExcel } = numberFormat
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
   let grandTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   let costTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.costPrice), 0)
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyIn), 0)
+  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qtyOut), 0)
 
   const workbook = new Excel.Workbook()
   workbook.creator = 'smartPOS'
@@ -106,9 +106,9 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`B${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`C${m}`).value = `${moment(listTrans[n].transDate).format('DD-MM-YYYY')}`
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).value = parseFloat(listTrans[n].qtyIn)
+        sheet.getCell(`D${m}`).value = parseFloat(listTrans[n].qtyOut)
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`D${m}`).numFmt = formatNumberInExcel(listTrans[n].qtyIn)
+        sheet.getCell(`D${m}`).numFmt = formatNumberInExcel(listTrans[n].qtyOut)
         sheet.getCell(`E${m}`).value = parseFloat(listTrans[n].costPrice)
         sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
         sheet.getCell(`E${m}`).numFmt = formatNumberInExcel(listTrans[n].costPrice)
@@ -135,7 +135,7 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
       }
 
       sheet.getCell('F2').alignment = { vertical: 'middle', horizontal: 'center' }
-      sheet.getCell('F2').value = 'LAPORAN ADJUSTMENT IN'
+      sheet.getCell('F2').value = 'LAPORAN RETUR BELI'
       sheet.getCell('F3').alignment = { vertical: 'middle', horizontal: 'center' }
       sheet.getCell('F3').value = `${storeInfo.name}`
       sheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' }
