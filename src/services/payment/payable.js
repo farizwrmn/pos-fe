@@ -16,7 +16,7 @@ export async function queryPayable (params) {
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable/${params.id}`,
+    url: `${paymentOpts}/payable-detail/${params.id}`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
