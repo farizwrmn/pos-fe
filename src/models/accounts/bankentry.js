@@ -80,7 +80,6 @@ export default modelExtend(pageModel, {
 
     * linkSales ({ payload = {} }, { select, call, put }) {
       const user = yield select(({ app }) => app.user)
-      console.log('user', user)
       const data = yield call(queryPaymentById, payload)
       if (data.success) {
         const loginTimeDiff = lstorage.getLoginTimeDiff()
@@ -170,7 +169,11 @@ export default modelExtend(pageModel, {
     },
 
     * queryBankRecon ({ payload = {} }, { call, put }) {
-      const response = yield call(queryBankRecon, payload)
+      const response = yield call(queryBankRecon, {
+        ...payload,
+        type: 'all',
+        order: 'transDate'
+      })
       if (response && response.success) {
         yield put({
           type: 'updateState',

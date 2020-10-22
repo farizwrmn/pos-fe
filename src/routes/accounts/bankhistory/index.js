@@ -10,7 +10,7 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
     listBankRecon,
     summaryBankRecon,
     currentItem,
-    pagination,
+    // pagination,
     from,
     to
   } = bankentry
@@ -38,21 +38,21 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
     listBankRecon,
     summaryBankRecon,
     dataSource: listBankRecon,
-    pagination,
+    pagination: false,
     dispatch,
     loading: loading.effects['bankentry/queryBankRecon'],
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    }
+    location
+    // onChange (page) {
+    //   const { query, pathname } = location
+    //   dispatch(routerRedux.push({
+    //     pathname,
+    //     query: {
+    //       ...query,
+    //       page: page.current,
+    //       pageSize: page.pageSize
+    //     }
+    //   }))
+    // }
   }
 
   return (
