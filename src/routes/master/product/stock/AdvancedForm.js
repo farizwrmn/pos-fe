@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
+import { IMAGEURL } from 'utils/config.company'
 import ModalSupplier from './ModalSupplier'
 
 const { Variant, Specification, Stock } = DataQuery
@@ -867,8 +868,8 @@ const AdvancedForm = ({
                             uid: index + 1,
                             name: detail,
                             status: 'done',
-                            url: `http://localhost:3100/${detail}`,
-                            thumbUrl: `http://localhost:3100/${detail}`
+                            url: `${IMAGEURL}/${detail}`,
+                            thumbUrl: `${IMAGEURL}/${detail}`
                           })
                         })
                       }
@@ -891,8 +892,8 @@ const AdvancedForm = ({
                               uid: index + 1,
                               name: detail,
                               status: 'done',
-                              url: `http://localhost:3100/${detail}`,
-                              thumbUrl: `http://localhost:3100/${detail}`
+                              url: `${IMAGEURL}/${detail}`,
+                              thumbUrl: `${IMAGEURL}/${detail}`
                             })
                           })
                           : []

@@ -4,6 +4,7 @@ import { Table, Modal, Tag, Icon } from 'antd'
 import { routerRedux } from 'dva/router'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { IMAGEURL } from 'utils/config.company'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -56,7 +57,7 @@ const List = ({ ...tableProps,
           && text !== 'no_image.png') {
           const item = JSON.parse(text)
           if (item && item[0]) {
-            return <img src={`http://localhost:3100/${item[0]}`} alt="no_image" />
+            return <img src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
           }
         }
         return null
