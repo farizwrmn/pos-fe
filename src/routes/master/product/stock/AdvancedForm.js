@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table } from 'antd'
+import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
+import { IMAGEURL } from 'utils/config.company'
 import ModalSupplier from './ModalSupplier'
 
 const { Variant, Specification, Stock } = DataQuery
+const { TextArea } = Input
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -86,7 +88,8 @@ const AdvancedForm = ({
     getFieldValue,
     resetFields,
     setFieldsValue
-  }
+  },
+  ...props
 }) => {
   const tailFormItemLayout = {
     wrapperCol: {
@@ -188,9 +191,8 @@ const AdvancedForm = ({
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data.productCode, data)
+            onSubmit(data.productCode, data, resetFields)
             // setTimeout(() => {
-            resetFields()
             // }, 500)
           },
           onCancel () { }
@@ -274,10 +276,12 @@ const AdvancedForm = ({
     },
     title: (
       <Row>
-        <Col span={12}><h3>Product Info</h3></Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
+        <Col md={12} lg={3}>
+          <h3>Product Info</h3>
+        </Col>
+        <Col md={12} lg={9}>
           <Button
-            type="primary"
+            type="default"
             onClick={handleImportStock}
           >
             Import
@@ -371,9 +375,7 @@ const AdvancedForm = ({
         }
       })
     },
-    onRowClick (item) {
-      console.log('item', item)
-
+    onRowClick () {
       // const data = getFieldsValue()
       // dispatch({
       //   type: 'productstock/updateState',
@@ -551,7 +553,14 @@ const AdvancedForm = ({
 
   return (
     <Form layout="horizontal">
+      <FooterToolbar>
+        <FormItem {...tailFormItemLayout}>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+        </FormItem>
+      </FooterToolbar>
       <Card {...cardProps}>
+        <BackTop visibilityHeight={10} />
         <Row>
           <Col {...column}>
             <FormItem label="Product Code" hasFeedback {...formItemLayout}>
@@ -808,17 +817,6 @@ const AdvancedForm = ({
                     initialValue: !!item.exception01
                   })(<Checkbox>Allow</Checkbox>)}
                 </FormItem>
-                <FormItem label="Image" {...formItemLayout}>
-                  {getFieldDecorator('productImage', {
-                    initialValue: item.productImage
-                  })(
-                    <Upload>
-                      <Button>
-                        <Icon type="upload" /> Click to Upload
-                      </Button>
-                    </Upload>
-                  )}
-                </FormItem>
                 <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('usageTimePeriod', {
                     initialValue: item.usageTimePeriod,
@@ -856,15 +854,111 @@ const AdvancedForm = ({
                 </FormItem> */}
               </Col>
             </Row>
+            <Row>
+              <Col {...column}>
+                <FormItem label="Image" {...formItemLayout}>
+                  {getFieldDecorator('productImage', {
+                    initialValue: item.productImage
+                      && item.productImage != null
+                      && item.productImage !== '"no_image.png"'
+                      && item.productImage !== 'no_image.png' ?
+                      {
+                        fileList: JSON.parse(item.productImage).map((detail, index) => {
+                          return ({
+                            uid: index + 1,
+                            name: detail,
+                            status: 'done',
+                            url: `${IMAGEURL}/${detail}`,
+                            thumbUrl: `${IMAGEURL}/${detail}`
+                          })
+                        })
+                      }
+                      : item.productImage
+                  })(
+                    <Upload
+                      {...props}
+                      multiple
+                      showUploadList={{
+                        showPreviewIcon: true
+                      }}
+                      listType="picture"
+                      defaultFileList={
+                        item.productImage
+                          && item.productImage != null
+                          && item.productImage !== '"no_image.png"'
+                          && item.productImage !== 'no_image.png' ?
+                          JSON.parse(item.productImage).map((detail, index) => {
+                            return ({
+                              uid: index + 1,
+                              name: detail,
+                              status: 'done',
+                              url: `${IMAGEURL}/${detail}`,
+                              thumbUrl: `${IMAGEURL}/${detail}`
+                            })
+                          })
+                          : []
+                      }
+                      action="//jsonplaceholder.typicode.com/posts/"
+                      onPreview={file => console.log('file', file)}
+                      onChange={(info) => {
+                        if (info.file.status !== 'uploading') {
+                          console.log('pending', info.fileList)
+                        }
+                        if (info.file.status === 'done') {
+                          console.log('success', info)
+                          message.success(`${info.file.name} file staged success`)
+                        } else if (info.file.status === 'error') {
+                          console.log('error', info)
+                          message.error(`${info.file.name} file staged failed.`)
+                        }
+                      }}
+                    >
+                      <Button>
+                        <Icon type="upload" /> Click to Upload
+                      </Button>
+                    </Upload>
+                  )}
+                </FormItem>
+                <FormItem label="Description" {...formItemLayout}>
+                  {getFieldDecorator('description', {
+                    initialValue: item.description,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
+                </FormItem>
+              </Col>
+              <Col {...column}>
+                <FormItem label="Dimension" {...formItemLayout}>
+                  {getFieldDecorator('dimension', {
+                    initialValue: item.dimension,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={30} />)}
+                </FormItem>
+                <FormItem label="Weight" {...formItemLayout}>
+                  {getFieldDecorator('weight', {
+                    initialValue: item.weight,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={20} />)}
+                </FormItem>
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
-      <FooterToolbar>
-        <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" onClick={handleSubmit}>{button}</Button>
-        </FormItem>
-      </FooterToolbar>
       {modalSupplierVisible && (
         <ModalSupplier {...modalSupplierProps}>
           <Table

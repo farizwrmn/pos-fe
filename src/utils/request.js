@@ -14,7 +14,8 @@ const fetch = (options) => {
     method = 'get',
     data,
     // fetchType,
-    url,
+    url = '',
+    fullUrl,
     headers
   } = options
 
@@ -40,6 +41,9 @@ const fetch = (options) => {
 
   if (options.usage === 'form') {
     cloneData = data
+  }
+  if (fullUrl) {
+    url = fullUrl
   }
   // if (fetchType === 'JSONP') {
   //   return new Promise((resolve, reject) => {
