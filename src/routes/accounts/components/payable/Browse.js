@@ -102,7 +102,7 @@ const BrowseGroup = ({
       render: text => formatNumberIndonesia(text)
     },
     {
-      title: 'Rest',
+      title: 'Owing',
       dataIndex: 'sisa',
       key: 'sisa',
       width: 100,
@@ -113,6 +113,17 @@ const BrowseGroup = ({
       title: 'Status',
       dataIndex: 'statusPaid',
       key: 'statusPaid',
+      filters: [{
+        text: 'Paid',
+        value: 'PAID'
+      }, {
+        text: 'Partial',
+        value: 'PARTIAL'
+      }, {
+        text: 'Pending',
+        value: 'PENDING'
+      }],
+      onFilter: (value, record) => record.statusPaid.indexOf(value) === 0,
       width: 100,
       render: text => (
         <span>
