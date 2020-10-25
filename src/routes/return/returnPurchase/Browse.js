@@ -30,7 +30,9 @@ const Browse = ({
   const listProps = {
     purchase,
     dataSource: modalInvoiceVisible ? listInvoice : listProduct,
-    loading: loading.effects['purchase/queryHistory'] || loading.effects['returnPurchase/getInvoiceDetailPurchase'],
+    loading: loading.effects['purchase/getInvoiceHeader']
+      || loading.effects['purchase/queryHistory']
+      || loading.effects['returnPurchase/getInvoiceDetailPurchase'],
     loadingProduct: loading,
     pagination: null,
     tmpInvoiceList,
