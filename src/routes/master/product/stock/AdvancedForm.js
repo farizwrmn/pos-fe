@@ -954,6 +954,14 @@ const AdvancedForm = ({
                     ]
                   })(<Input maxLength={20} />)}
                 </FormItem>
+                <FormItem label="Publish on e-commerce" {...formItemLayout}>
+                  {getFieldDecorator('activeShop', {
+                    valuePropName: 'checked',
+                    initialValue: item.activeShop === undefined
+                      ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                      : item.activeShop
+                  })(<Checkbox>Publish</Checkbox>)}
+                </FormItem>
               </Col>
             </Row>
           </Card>
