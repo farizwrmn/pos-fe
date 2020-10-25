@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Button, Input, Form, Row, Col, DatePicker } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
+import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
@@ -59,29 +60,46 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
     {
       title: 'Invoice',
       dataIndex: 'transNo',
-      key: 'transNo',
-      width: 580 * (25 / 100)
+      key: 'transNo'
     },
     {
       title: 'Trans Date',
       dataIndex: 'transDate',
-      key: 'transDate',
-      width: 580 * (25 / 100)
+      key: 'transDate'
     },
     {
       title: 'Receive Date',
       dataIndex: 'receiveDate',
-      key: 'receiveDate',
-      width: 580 * (25 / 100)
+      key: 'receiveDate'
     },
     {
       title: 'SupplierName',
       dataIndex: 'supplierName',
-      key: 'supplierName',
-      width: 580 * (25 / 100)
+      key: 'supplierName'
+    },
+    {
+      title: 'Netto',
+      dataIndex: 'netto',
+      key: 'netto',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Paid',
+      dataIndex: 'paid',
+      key: 'paid',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Owing',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     }
   ]
-  console.log('tableProps', tableProps)
+
   return (
     <div>
       <Form layout="inline">
