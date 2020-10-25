@@ -4,6 +4,7 @@ import { Table, Modal, Tag, Icon } from 'antd'
 import { routerRedux } from 'dva/router'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { IMAGEURL } from 'utils/config.company'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -42,6 +43,24 @@ const List = ({ ...tableProps,
       width: '80px',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
+    },
+    {
+      title: 'Image',
+      dataIndex: 'productImage',
+      key: 'productImage',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          const item = JSON.parse(text)
+          if (item && item[0]) {
+            return <img src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+          }
+        }
+        return null
       }
     },
     {

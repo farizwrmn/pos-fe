@@ -142,8 +142,14 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       })
     },
     onInvoiceHeader (period) {
+      // dispatch({
+      //   type: 'purchase/queryHistory',
+      //   payload: {
+      //     ...period
+      //   }
+      // })
       dispatch({
-        type: 'purchase/queryHistory',
+        type: 'purchase/getInvoiceHeader',
         payload: {
           ...period
         }

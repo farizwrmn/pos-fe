@@ -3,7 +3,9 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
 import moment from 'moment'
+import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
+import { uploadProductImage } from 'services/utils/imageUploader'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
@@ -287,8 +289,42 @@ export default modelExtend(pageModel, {
       const modalType = yield select(({ productstock }) => productstock.modalType)
       const listSpecification = yield select(({ specification }) => specification.listSpecification)
 
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadProductImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.productImage = uploadedImage
+      } else {
+        payload.data.productImage = 'no_image.png'
+      }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
         let loadData = {}
         if (payload.data.useVariant) {
           loadData = {
@@ -317,10 +353,20 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            activeKey: '1',
             modalType: 'add',
             currentItem: {}
           }
         })
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: 1,
+            activeKey: '1'
+          }
+        }))
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -334,15 +380,54 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadProductImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const productId = yield select(({ productstock }) => productstock.currentItem.id)
       const { location } = payload
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.productImage = uploadedImage
+      } else {
+        payload.data.productImage = 'no_image.png'
+      }
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
       let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
       const typeInput = yield select(({ specificationStock }) => specificationStock.typeInput)
       let loadData = {}
       if (data.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
         if ((listSpecificationCode || []).length > 0) {
           if (typeInput === 'edit') {
             for (let n = 0; n < listSpecificationCode.length; n += 1) {

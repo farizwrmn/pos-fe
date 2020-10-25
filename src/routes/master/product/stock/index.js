@@ -286,14 +286,15 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
     modalProductVisible,
     dispatch,
     disabled: `${modalType === 'edit' ? disable : ''}`,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (id, data) {
+    button: `${modalType === 'add' ? 'Save' : 'Update'}`,
+    onSubmit (id, data, reset) {
       dispatch({
         type: `productstock/${modalType}`,
         payload: {
           id,
           data,
-          location
+          location,
+          reset
         }
       })
     },
@@ -558,7 +559,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
-          {advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
+          {activeKey === '0' && advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
