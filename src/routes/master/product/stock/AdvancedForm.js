@@ -4,9 +4,10 @@ import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
-import { IMAGEURL } from 'utils/config.company'
+import { IMAGEURL, rest } from 'utils/config.company'
 import ModalSupplier from './ModalSupplier'
 
+const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
 const { TextArea } = Input
 const FormItem = Form.Item
@@ -898,7 +899,7 @@ const AdvancedForm = ({
                           })
                           : []
                       }
-                      action="//jsonplaceholder.typicode.com/posts/"
+                      action={`${apiCompanyURL}/time/time`}
                       onPreview={file => console.log('file', file)}
                       onChange={(info) => {
                         if (info.file.status !== 'uploading') {
