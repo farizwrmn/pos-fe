@@ -269,7 +269,8 @@ export default {
         const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
         data = yield call(queryFifoHistory, {
           ...payload,
-          from: storeInfo.startPeriod
+          from: storeInfo.startPeriod,
+          fromDate: payload.from
         })
         if (data.success === false) {
           Modal.warning({
