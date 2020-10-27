@@ -57,7 +57,7 @@ const List = ({ ...tableProps,
           && text !== 'no_image.png') {
           const item = JSON.parse(text)
           if (item && item[0]) {
-            return <img height="100px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+            return <img height="70px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
           }
         }
         return null
