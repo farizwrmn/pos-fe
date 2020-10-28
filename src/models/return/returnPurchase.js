@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, add, edit, approve, remove } from 'services/return/returnPurchase'
+import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
 import { queryDetail as queryPurchaseDetail } from 'services/purchase'
 import { pageModel } from './../common'
@@ -15,6 +16,8 @@ export default modelExtend(pageModel, {
   namespace: 'returnPurchase',
 
   state: {
+    data: {},
+    listDetail: [],
     listItem: [],
     listProduct: [],
     list: [],
@@ -37,6 +40,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/transaction/purchase/return/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryReturnPurchaseDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/transaction/purchase/return') {
           dispatch({
             type: 'updateState',
@@ -58,6 +71,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, returnPurchaseDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: returnPurchaseDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)

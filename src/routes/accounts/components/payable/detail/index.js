@@ -2,7 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, Tag, Button } from 'antd'
+import {
+  Row,
+  Col,
+  // Tag,
+  Button
+} from 'antd'
 import { DataAdd } from 'components'
 import ModalPayment from './Modal'
 import ModalCancel from './ModalCancel'
@@ -221,7 +226,7 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
     }
   }
 
-  const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
+  // const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
   return (<div className="wrapper">
     <Row>
       <Col lg={6}>
@@ -242,10 +247,10 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
         </div>
         <div className="content-inner-zero-min-height">
           <h1>Payment</h1>
-          <Tag color={parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) ? 'red' : parseFloat(data.nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'green' : 'yellow'}>
+          {/* <Tag color={parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) ? 'red' : parseFloat(data.nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'green' : 'yellow'}>
             {parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) - parseFloat(curPayment || 0) === parseFloat(data.length > 0 ? data.nettoTotal || 0 : 0) ? 'Pending' :
               parseFloat(data.nettoTotal || 0) - parseFloat(curPayment || 0) <= 0 ? 'Paid' : 'Partial'}
-          </Tag>
+          </Tag> */}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <FormPayment {...formProps} />
           </Row>

@@ -571,6 +571,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-return-purchase')
           }
         }, {
+          path: 'transaction/purchase/return/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnPurchase'))
+              cb(null, require('./routes/return/returnPurchase/detail'))
+            }, 'transaction-return-purchase-detail')
+          }
+        }, {
           path: 'transaction/adjust',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
