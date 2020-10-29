@@ -78,12 +78,12 @@ export default modelExtend(pageModel, {
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, bankEntryDetail, ...other } = data.data
+        const { purchase, journalEntryDetail, ...other } = data.data
         yield put({
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: bankEntryDetail
+            listDetail: journalEntryDetail
           }
         })
       } else {
