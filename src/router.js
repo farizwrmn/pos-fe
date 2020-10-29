@@ -1293,6 +1293,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-return-sales')
           }
         }, {
+          path: 'transaction/return-sales/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnSales'))
+              cb(null, require('./routes/return/returnSales/detail'))
+            }, 'transaction-return-sales-detail')
+          }
+        }, {
           path: 'setting/misc',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

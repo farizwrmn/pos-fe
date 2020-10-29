@@ -45,8 +45,8 @@ const List = ({ ...tableProps, editList }) => {
       width: 120,
       className: styles.alignRight,
       render: (text, record) => {
-        if (record.purchaseDetail) {
-          const dppItem = record.purchaseDetail.DPP / record.purchaseDetail.qty
+        if (record.posDetail) {
+          const dppItem = record.posDetail.DPP / record.posDetail.qty
           const total = dppItem * record.qty
           return formatNumberIndonesia(total || 0)
         }

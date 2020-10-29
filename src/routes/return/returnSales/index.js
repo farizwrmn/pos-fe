@@ -145,7 +145,8 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
       dispatch({
         type: 'pos/queryHistory',
         payload: {
-          ...period
+          ...period,
+          type: 'return'
         }
       })
     },
@@ -282,7 +283,8 @@ const ReturnSales = ({ location, returnSales, pos, app, dispatch, loading }) => 
         type: 'pos/queryHistory',
         payload: {
           startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
-          endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+          endPeriod: moment().endOf('month').format('YYYY-MM-DD'),
+          type: 'return'
         }
       })
       dispatch({

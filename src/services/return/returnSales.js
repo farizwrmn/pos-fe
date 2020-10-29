@@ -1,5 +1,16 @@
 import { request, lstorage, crypt } from 'utils'
 
+export async function queryById (params) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/return-sales/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
@@ -21,10 +32,10 @@ export async function add (params) {
   })
 }
 
-export async function remove (params) {
+export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/return-sales/${params.id}`,
+    url: `/return-sales/${id}`,
     method: 'delete',
     headers: apiHeaderToken
   })
