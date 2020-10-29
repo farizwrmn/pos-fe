@@ -3,8 +3,9 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import moment from 'moment'
+import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from '../../services/sequence'
-import { query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
+import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { queryById as queryPaymentById } from '../../services/payment/payment'
 import { queryById as queryPayableById } from '../../services/payment/payable'
@@ -18,6 +19,8 @@ export default modelExtend(pageModel, {
   namespace: 'bankentry',
 
   state: {
+    data: {},
+    listDetail: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
@@ -44,6 +47,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/bank-entry/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/bank-history') {
           dispatch({
             type: 'bankentry/queryBankRecon',
@@ -77,6 +90,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, bankEntryDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: bankEntryDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * linkSales ({ payload = {} }, { select, call, put }) {
       const user = yield select(({ app }) => app.user)
@@ -148,6 +176,24 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
+    },
+
+    * linkCashEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/cash-entry/${payload.id}`))
+    },
+
+    * linkBankEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/bank-entry/${payload.id}`))
+    },
+
+    * linkJournalEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/journal-entry/${payload.id}`))
     },
 
     * query ({ payload = {} }, { call, put }) {

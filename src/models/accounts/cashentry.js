@@ -2,8 +2,9 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from '../../services/sequence'
-import { query, queryId, add, edit, remove } from '../../services/payment/cashentry'
+import { queryById, query, queryId, add, edit, remove } from '../../services/payment/cashentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
@@ -15,6 +16,8 @@ export default modelExtend(pageModel, {
   namespace: 'cashentry',
 
   state: {
+    data: {},
+    listDetail: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
@@ -36,6 +39,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/cash-entry/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/cash-entry'
           || pathname === '/journal-entry') {
           dispatch({
@@ -64,6 +77,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, cashEntryDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: cashEntryDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const { edit, ...other } = payload
