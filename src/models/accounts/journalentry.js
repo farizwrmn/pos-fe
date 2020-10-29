@@ -3,8 +3,9 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { query, queryId, add, edit, remove } from 'services/payment/journalentry'
+import { queryById, query, queryId, add, edit, remove } from 'services/payment/journalentry'
 import { pageModel } from 'common'
+import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
   message.success('Journal entry has been saved')
@@ -14,6 +15,8 @@ export default modelExtend(pageModel, {
   namespace: 'journalentry',
 
   state: {
+    data: {},
+    listDetail: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
@@ -35,6 +38,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/journal-entry/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
@@ -62,6 +75,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, journalEntryDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: journalEntryDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const { edit, ...other } = payload

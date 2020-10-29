@@ -1,9 +1,12 @@
 import {
   SALESPAY,
-  PPAY
+  PPAY,
+  EXPENSE,
+  DEPOSITE,
+  JOURNALENTRY
 } from './variable'
 
-export const getLink = (dispatch, { transactionId, transactionType }) => {
+export const getLink = (dispatch, { transactionId, storeId, transactionType }) => {
   switch (transactionType) {
     case SALESPAY:
       dispatch({
@@ -21,6 +24,33 @@ export const getLink = (dispatch, { transactionId, transactionType }) => {
         }
       })
       break
+    case EXPENSE:
+      dispatch({
+        type: 'bankentry/linkCashEntry',
+        payload: {
+          id: transactionId,
+          storeId
+        }
+      })
+      break
+    case DEPOSITE:
+      dispatch({
+        type: 'bankentry/linkBankEntry',
+        payload: {
+          id: transactionId,
+          storeId
+        }
+      })
+      break
+    case JOURNALENTRY:
+      dispatch({
+        type: 'bankentry/linkJournalEntry',
+        payload: {
+          id: transactionId,
+          storeId
+        }
+      })
+      break
     default:
       break
   }
@@ -32,7 +62,13 @@ export const getName = (transactionType) => {
       return 'Sales Payment'
     case PPAY:
       return 'Purchase Payment'
+    case EXPENSE:
+      return 'Expense Entry'
+    case DEPOSITE:
+      return 'Deposit Entry'
+    case JOURNALENTRY:
+      return 'Journal Entry'
     default:
-      break
+      return transactionType
   }
 }

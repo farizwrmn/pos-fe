@@ -4,6 +4,7 @@ import { Table, Input, Form, Modal, Row, Col, DatePicker, Tag } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain } from 'utils'
+import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
@@ -72,6 +73,12 @@ const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch,
 
   const columns = [
     {
+      title: 'No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: 180
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
@@ -103,10 +110,25 @@ const ListInvoice = ({ onInvoiceHeader, pos, loading, onChooseInvoice, dispatch,
         </span>)
     },
     {
-      title: 'No',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: 180
+      title: 'Netto',
+      dataIndex: 'netto',
+      key: 'netto',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Paid',
+      dataIndex: 'paid',
+      key: 'paid',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Owing',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     }
   ]
 

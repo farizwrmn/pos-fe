@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
@@ -35,17 +36,24 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
     {
       title: 'Trans No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/transaction/return-sales/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo'
     },
     {
       title: 'Operation',
@@ -53,7 +61,7 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '3', name: 'Approve' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '3', name: 'Approve' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]

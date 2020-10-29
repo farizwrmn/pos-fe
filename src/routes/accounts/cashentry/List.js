@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Modal, Table } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
 import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -29,7 +30,14 @@ const List = ({
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/cash-entry/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
       title: 'Reference',
