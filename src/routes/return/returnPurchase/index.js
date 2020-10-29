@@ -151,7 +151,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'purchase/getInvoiceHeader',
         payload: {
-          ...period
+          ...period,
+          type: 'return'
         }
       })
     },
@@ -312,7 +313,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'purchase/getInvoiceHeader',
         payload: {
-          ...period
+          ...period,
+          type: 'return'
         }
       })
     }
