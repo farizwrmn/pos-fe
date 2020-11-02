@@ -25,6 +25,16 @@ const List = ({ dispatch, ...tableProps, summaryBankRecon }) => {
       }
     },
     {
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate'
