@@ -64,11 +64,27 @@ const List = ({
                 >
                   <Row>
                     <Col span={12}>
+                      <div>Trans No:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.transNo}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
                       <div>{item.transDate}</div>
                     </Col>
                     <Col span={12}>
                       {item.debit && <div>{`(DB) ${currencyFormatter(item.debit)}`}</div>}
                       {item.credit && <div>{`(CR) ${currencyFormatter(item.credit)}`}</div>}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
+                      <div>Description:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.description}
                     </Col>
                   </Row>
                 </Card>

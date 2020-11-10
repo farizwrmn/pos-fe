@@ -571,6 +571,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-return-purchase')
           }
         }, {
+          path: 'transaction/purchase/return/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnPurchase'))
+              cb(null, require('./routes/return/returnPurchase/detail'))
+            }, 'transaction-return-purchase-detail')
+          }
+        }, {
           path: 'transaction/adjust',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1041,6 +1049,30 @@ const Routers = function ({ history, app }) {
             }, 'accounts-cash-entry')
           }
         }, {
+          path: 'cash-entry/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/cashentry'))
+              cb(null, require('./routes/accounts/cashentry/detail'))
+            }, 'accounts-cash-entry-detail')
+          }
+        }, {
+          path: 'bank-entry/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              cb(null, require('./routes/accounts/bankentry/detail'))
+            }, 'accounts-bank-entry-detail')
+          }
+        }, {
+          path: 'journal-entry/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/journalentry'))
+              cb(null, require('./routes/accounts/journalentry/detail'))
+            }, 'accounts-journal-entry-detail')
+          }
+        }, {
           path: 'journal-entry',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1283,6 +1315,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/return/returnSales'))
             }, 'transaction-return-sales')
+          }
+        }, {
+          path: 'transaction/return-sales/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/return/returnSales'))
+              cb(null, require('./routes/return/returnSales/detail'))
+            }, 'transaction-return-sales-detail')
           }
         }, {
           path: 'setting/misc',

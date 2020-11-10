@@ -18,11 +18,21 @@ const List = ({ dispatch, ...tableProps, summaryBankRecon }) => {
       key: 'transactionType',
       render: (text, record) => {
         return (
-          <a onClick={() => getLink(dispatch, { transactionType: text, transactionId: record.transactionId })}>
+          <a onClick={() => getLink(dispatch, { storeId: record.storeId, transactionType: text, transactionId: record.transactionId })}>
             {getName(text)}
           </a>
         )
       }
+    },
+    {
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     },
     {
       title: 'Date',
