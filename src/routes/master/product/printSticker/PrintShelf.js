@@ -60,24 +60,24 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const styles = {
     info: {
       alignment: 'left',
-      fontSize: 8,
+      fontSize: 7,
       bold: true
     },
     sellPrice: {
       bold: true,
       alignment: 'center',
-      fontSize: 18,
+      fontSize: 17,
       width: '100%',
       margin: [0, 5]
     },
     productName1: {
       alignment: 'center',
-      fontSize: 8,
+      fontSize: 7,
       margin: [0, 5, 0, 0]
     },
     productName2: {
       alignment: 'center',
-      fontSize: 8,
+      fontSize: 7,
       margin: [0, 0, 0, 9]
     },
     others: {
