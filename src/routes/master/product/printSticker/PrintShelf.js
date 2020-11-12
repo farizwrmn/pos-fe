@@ -164,7 +164,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     tableStyle: styles,
     layout: {
       hLineStyle () {
-        return { dash: { length: 4 } }
+        return { dash: { length: 10, space: 4 } }
       },
       vLineStyle () {
         return { dash: { length: 4 } }
