@@ -13,7 +13,6 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     let body = []
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
-        console.log('tableBody', tableBody)
         for (let i = 0; i < tableBody[key].qty; i += 1) {
           const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
           let maxStringPerRow2 = ' '
@@ -24,9 +23,11 @@ const PrintShelf = ({ stickers, user, aliases }) => {
             { text: maxStringPerRow1, style: 'productName1', alignment: 'center' },
             { text: maxStringPerRow2, style: 'productName2', alignment: 'center' }
           ]
+          const background = tableBody[key].info.categoryColor
+          const color = '#000'
           if (aliases.check1) {
             row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
-            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), background: tableBody[key].info.categoryColor, color: tableBody[key].info.categoryColor ? '#fff' : '#000', style: 'sellPrice' })
+            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), width: '100%', fillColor: background, background, color, style: 'sellPrice' })
           }
           if (aliases.check2) {
             // row.push({ text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] })
@@ -44,7 +45,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
             ]
           })
-          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'right' })
+          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'center' })
           body.push(row)
         }
       }
@@ -54,12 +55,14 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const styles = {
     info: {
       alignment: 'left',
-      fontSize: 7
+      fontSize: 8,
+      bold: true
     },
     sellPrice: {
       bold: true,
       alignment: 'center',
-      fontSize: 12,
+      fontSize: 16,
+      width: '100%',
       margin: [0, 5]
     },
     productName1: {
@@ -147,7 +150,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   }
 
   const WIDTH_TABLE = (5 / 2.54) * 72
-  const HEIGHT_TABLE = (4 / 2.54) * 72
+  const HEIGHT_TABLE = (3.8 / 2.54) * 72
 
   const pdfProps = {
     name: 'Print',
