@@ -27,9 +27,9 @@ const PrintShelf = ({ stickers, user, aliases }) => {
           ]
           const background = tableBody[key].info.categoryColor
           const color = '#000'
-          row.push({
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
-          })
+          // row.push({
+          //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
+          // })
           if (aliases.check1) {
             row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
             row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), width: '100%', fillColor: background, background, color, style: 'sellPrice' })
