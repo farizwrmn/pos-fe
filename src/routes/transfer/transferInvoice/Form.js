@@ -5,6 +5,7 @@ import { lstorage } from 'utils'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
 import ListDetail from './ListDetail'
+import ListTransferOut from './ListTransferOut'
 import ModalList from './Modal'
 
 const Option = Select.Option
@@ -35,6 +36,7 @@ const FormCounter = ({
   item = {},
   showLov,
   onSubmit,
+  listLovProps,
   modalShow,
   modalType,
   modalItemType,
@@ -57,6 +59,8 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const { visible } = listLovProps
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -96,7 +100,6 @@ const FormCounter = ({
           resetListItem()
         }
         if (storeIdReceiver && storeIdReceiver.key) {
-          console.log('storeIdReceiver', storeIdReceiver)
           modalShow(storeIdReceiver.key)
         }
       } else {
@@ -192,6 +195,7 @@ const FormCounter = ({
           </FormItem>
         </FooterToolbar>
       </Form>
+      {visible && <ListTransferOut {...listLovProps} />}
       {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )

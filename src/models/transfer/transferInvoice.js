@@ -17,6 +17,7 @@ export default modelExtend(pageModel, {
   state: {
     data: {},
     listDetail: [],
+    listStore: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',

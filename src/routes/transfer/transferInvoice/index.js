@@ -12,7 +12,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, location, app }) => {
-  const { list, listStore, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
+  const { list, listStore, listItem, listLovVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
   const { listTrans: listTransfer } = transferOut
   const { user, storeInfo } = app
   const filterProps = {
@@ -109,8 +109,6 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
     })
   }
 
-  console.log('listTransfer', listTransfer)
-
   const modalProps = {
     title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
@@ -159,9 +157,87 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
   const listDetailProps = {
     dataSource: listItem
   }
+
+  const modalLovProps = {
+    title: 'Add Detail',
+    visible: listLovVisible,
+    width: '85%',
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'transferInvoice/updateState',
+        payload: {
+          listLovVisible: false
+        }
+      })
+    }
+  }
+
+  const listLovProps = {
+    modalProps: modalLovProps,
+    dataSource: listTransfer,
+    visible: listLovVisible,
+    user,
+    storeInfo,
+    pagination,
+    loading: loading.effects['transferOut/queryLov'],
+    location,
+    onChange (page) {
+      const { query } = location
+      dispatch({
+        type: 'transferOut/query',
+        payload: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize,
+          listLovVisible: false,
+          storeId: lstorage.getCurrentUserStore(),
+          storeIdReceiver: currentItem.storeIdReceiver,
+          status: 1
+        }
+      })
+    },
+    addModalItem (data) {
+      const { listItem } = transferInvoice
+      data.no = (listItem || []).length + 1
+      listItem.push(data)
+      dispatch({
+        type: 'transferInvoice/updateState',
+        payload: {
+          listLovVisible: false,
+          modalVisible: false,
+          modalItemType: 'add',
+          listItem,
+          currentItemList: {}
+        }
+      })
+      message.success('success add item')
+    },
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'transferInvoice/editItem',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'transferInvoice/delete',
+        payload: id
+      })
+    }
+  }
+
   let timeout
   const formProps = {
     listStore,
+    listLovProps,
     dispatch,
     modalType,
     modalItemType,
@@ -237,7 +313,11 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
       dispatch({
         type: 'transferInvoice/updateState',
         payload: {
-          modalVisible: true,
+          currentItem: {
+            ...currentItem,
+            storeIdReceiver
+          },
+          listLovVisible: true,
           modalItemType: 'add'
         }
       })

@@ -1,0 +1,85 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Table, Modal, Tag } from 'antd'
+import moment from 'moment'
+
+const List = ({ addModalItem, modalProps, ...tableProps }) => {
+  const columns = [
+    {
+      title: 'Store Name',
+      dataIndex: 'storeName',
+      key: 'storeName'
+    },
+    {
+      title: 'Store Name Receiver',
+      dataIndex: 'storeNameReceiver',
+      key: 'storeNameReceiver'
+    },
+    {
+      title: 'Transaction Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      render: (text) => {
+        return moment(text).format('DD MMMM YYYY')
+      }
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => {
+        const nonActive = !record.active
+        const received = record.status
+        const inProgress = record.active && !record.status
+        if (nonActive) {
+          return (
+            <Tag color="red">
+              Canceled
+            </Tag>
+          )
+        }
+        if (inProgress) {
+          return (
+            <Tag color="blue">
+              In Progress
+            </Tag>
+          )
+        }
+        if (received) {
+          return (
+            <Tag color="green">
+              Accepted
+            </Tag>
+          )
+        }
+      }
+    },
+    {
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    }
+  ]
+
+  return (
+    <div>
+      <Modal {...modalProps}>
+        <Table {...tableProps}
+          bordered
+          columns={columns}
+          simple
+          scroll={{ x: 1000 }}
+          rowKey={record => record.id}
+          onRowClick={addModalItem}
+        />
+      </Modal>
+    </div>
+  )
+}
+
+List.propTypes = {
+  editItem: PropTypes.func,
+  deleteItem: PropTypes.func
+}
+
+export default List
