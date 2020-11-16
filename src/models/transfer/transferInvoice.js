@@ -3,17 +3,16 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
-import { query as querySequence } from '../../services/sequence'
-import { queryById, query, queryId, add, edit, remove } from '../../services/payment/cashentry'
-import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
-import { pageModel } from './../common'
+import { query as querySequence } from 'services/sequence'
+import { queryById, query, queryId, add, edit, remove } from 'services/transfer/transferInvoice'
+import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Expense has been saved')
+  message.success('Transfer Invoice has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'cashentry',
+  namespace: 'transferInvoice',
 
   state: {
     data: {},
@@ -24,7 +23,7 @@ export default modelExtend(pageModel, {
     modalItemType: 'add',
     inputType: null,
     activeKey: '0',
-    listCash: [],
+    list: [],
     modalVisible: false,
     listItem: [],
     pagination: {
@@ -49,8 +48,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/cash-entry'
-          || pathname === '/journal-entry') {
+        if (pathname === '/inventory/transfer/invoice') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -80,12 +78,12 @@ export default modelExtend(pageModel, {
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, cashEntryDetail, ...other } = data.data
+        const { purchase, transferInvoiceDetail, ...other } = data.data
         yield put({
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: cashEntryDetail
+            listDetail: transferInvoiceDetail
           }
         })
       } else {
@@ -100,7 +98,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listCash: data.data,
+            list: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -113,20 +111,22 @@ export default modelExtend(pageModel, {
 
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
-        seqCode: 'CAS',
+        seqCode: 'TINV',
         type: lstorage.getCurrentUserStore(),
         ...payload
       }
       const data = yield call(querySequence, invoice)
-      const currentItem = yield select(({ cashentry }) => cashentry.currentItem)
+      const currentItem = yield select(({ transferInvoice }) => transferInvoice.currentItem)
       const transNo = data.data
       yield put({
         type: 'updateState',
         payload: {
           currentItem: {
             ...currentItem,
+            storeId: lstorage.getCurrentUserStore(),
             transNo
-          }
+          },
+          listStore: lstorage.getListUserStores()
         }
       })
     },
@@ -134,14 +134,14 @@ export default modelExtend(pageModel, {
     * setEdit ({ payload }, { call, put }) {
       const data = yield call(queryId, { id: payload.edit, relationship: 1 })
       if (data.success) {
-        const { cashEntryDetail, ...currentItem } = data.data
+        const { transferInvoiceDetail, ...currentItem } = data.data
         yield put({
           type: 'updateState',
           payload: {
             currentItem,
             modalType: 'edit',
-            listItem: cashEntryDetail ?
-              cashEntryDetail.map((item, index) => ({
+            listItem: transferInvoiceDetail ?
+              transferInvoiceDetail.map((item, index) => ({
                 no: index + 1,
                 ...item,
                 accountId: item.accountId,
@@ -164,7 +164,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload = {} }, { call, put, select }) {
+    * add ({ payload = {} }, { call, put }) {
       const { oldValue } = payload
       yield put({
         type: 'updateState',
@@ -172,54 +172,31 @@ export default modelExtend(pageModel, {
           currentItem: oldValue
         }
       })
-      const cashier = yield select(({ app }) => app.user)
-      const currentRegister = yield call(queryCurrentOpenCashRegister, { cashierId: cashier.userid })
-      if (currentRegister.success) {
-        if (currentRegister.data) {
-          const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-          payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
-          payload.data.transDate = cashierInformation ? cashierInformation.period : payload.data.transDate ? payload.data.transDate : undefined
-          const data = yield call(add, payload)
-          if (data.success) {
-            success()
-            payload.reset()
-            yield put({
-              type: 'updateState',
-              payload: {
-                modalType: 'add',
-                currentItem: {},
-                listItem: []
-              }
-            })
-            const userId = lstorage.getStorageKey('udi')[1]
-            yield put({
-              type: 'pos/loadDataPos',
-              payload: {
-                cashierId: userId,
-                status: 'O'
-              }
-            })
-            yield put({ type: 'querySequence' })
-            Modal.success({
-              title: 'Transaction success',
-              content: 'Transaction has been saved'
-            })
-          } else {
-            throw data
+      const data = yield call(add, payload)
+      if (data.success) {
+        success()
+        payload.reset()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: []
           }
-        } else {
-          Modal.warning({
-            title: 'No cashierInformation',
-            content: `No cashier information for ${cashier.userid}`
-          })
-        }
+        })
+        yield put({ type: 'querySequence' })
+        yield put({ type: 'query' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
+        })
       } else {
-        throw currentRegister
+        throw data
       }
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ cashentry }) => cashentry.currentItem.id)
+      const id = yield select(({ transferInvoice }) => transferInvoice.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -250,10 +227,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccessCounter (state, action) {
-      const { listCash, pagination } = action.payload
+      const { list, pagination } = action.payload
       return {
         ...state,
-        listCash,
+        list,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -1039,12 +1039,8 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/invoice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/cashentry'))
-              registerModel(app, require('./models/master/accountCode'))
-              registerModel(app, require('./models/master/customer'))
-              registerModel(app, require('./models/marketing/customerSocial'))
-              registerModel(app, require('./models/master/supplier'))
-              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/transfer/transferInvoice'))
+              registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/transfer/transferInvoice'))
             }, 'inventory-transfer-invoice')
           }

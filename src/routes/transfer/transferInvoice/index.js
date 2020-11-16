@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, message, Modal, Tabs, Icon } from 'antd'
-import { color, lstorage } from 'utils'
+import { Button, message, Modal, Tabs } from 'antd'
+import { lstorage } from 'utils'
 import moment from 'moment'
 import Form from './Form'
 import List from './List'
@@ -11,59 +11,14 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = cashentry
-
-  let currentCashier = {
-    cashierId: null,
-    employeeName: null,
-    shiftId: null,
-    shiftName: null,
-    counterId: null,
-    counterName: null,
-    period: null,
-    status: null,
-    cashActive: null
-  }
-
-  let infoCashRegister = {}
-  infoCashRegister.title = 'Cashier Information'
-  infoCashRegister.titleColor = color.normal
-  infoCashRegister.descColor = color.error
-  infoCashRegister.dotVisible = false
-  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
-  let checkTimeDiff = lstorage.getLoginTimeDiff()
-  if (checkTimeDiff > 500) {
-    console.log('something fishy', checkTimeDiff)
-  } else {
-    const currentDate = moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')
-    if (!currentCashier.period) {
-      infoCashRegister.desc = '* Select the correct cash register'
-      infoCashRegister.dotVisible = true
-    } else if (currentCashier.period !== currentDate) {
-      if (currentCashier.period && currentDate) {
-        const diffDays = moment.duration(moment(currentCashier.period, 'YYYY-MM-DD').diff(currentDate)).asDays()
-        infoCashRegister.desc = `${diffDays} day${Math.abs(diffDays) > 1 ? 's' : ''}`
-        infoCashRegister.dotVisible = true
-      }
-    }
-    infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
-    infoCashRegister.CaptionObject =
-      (<span style={{ color: infoCashRegister.titleColor }}>
-        <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
-        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
-          {infoCashRegister.desc}
-        </span>
-      </span>)
-  }
-  const { listCustomer } = customer
-  const { listSupplier } = supplier
-  const { listAccountCode, listAccountCodeExpense } = accountCode
+const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, location, app }) => {
+  const { list, listStore, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
+  const { listTrans: listTransfer } = transferOut
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'cashentry/query',
+        type: 'transferInvoice/query',
         payload: {
           ...value
         }
@@ -72,11 +27,11 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
 
   const listProps = {
-    dataSource: listCash,
+    dataSource: list,
     user,
     pagination,
     storeInfo,
-    loading: loading.effects['cashentry/query'],
+    loading: loading.effects['transferInvoice/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -101,7 +56,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     deleteItem (id) {
       dispatch({
-        type: 'cashentry/delete',
+        type: 'transferInvoice/delete',
         payload: id
       })
     }
@@ -114,7 +69,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         content: 'this action will reset your current process',
         onOk () {
           dispatch({
-            type: 'cashentry/changeTab',
+            type: 'transferInvoice/changeTab',
             payload: { key }
           })
           const { query, pathname } = location
@@ -126,12 +81,12 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
               activeKey: key
             }
           }))
-          dispatch({ type: 'cashentry/updateState', payload: { listCash: [], listItem: [] } })
+          dispatch({ type: 'transferInvoice/updateState', payload: { list: [], listItem: [] } })
         }
       })
     } else {
       dispatch({
-        type: 'cashentry/changeTab',
+        type: 'transferInvoice/changeTab',
         payload: { key }
       })
       const { query, pathname } = location
@@ -142,39 +97,41 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
           activeKey: key
         }
       }))
-      dispatch({ type: 'cashentry/updateState', payload: { listCash: [], listItem: [] } })
+      dispatch({ type: 'transferInvoice/updateState', payload: { list: [], listItem: [] } })
     }
   }
   const clickBrowse = () => {
     dispatch({
-      type: 'cashentry/updateState',
+      type: 'transferInvoice/updateState',
       payload: {
         activeKey: '1'
       }
     })
   }
 
+  console.log('listTransfer', listTransfer)
+
   const modalProps = {
     title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
+    listTransfer,
     modalItemType,
     modalType,
-    listAccountCode: listAccountCodeExpense,
     onCancel () {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalVisible: false
         }
       })
     },
     addModalItem (data) {
-      const { listItem } = cashentry
+      const { listItem } = transferInvoice
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalVisible: false,
           modalItemType: 'add',
@@ -185,10 +142,10 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
       message.success('success add item')
     },
     editModalItem (data) {
-      const { listItem } = cashentry
+      const { listItem } = transferInvoice
       listItem[data.no - 1] = data
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalVisible: false,
           modalItemType: 'add',
@@ -204,23 +161,21 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   }
   let timeout
   const formProps = {
+    listStore,
     dispatch,
-    listAccountCode,
     modalType,
     modalItemType,
     modalVisible,
     modalProps,
     listDetailProps,
     listItem,
-    listCustomer,
-    listSupplier,
     storeInfo,
     item: currentItem,
-    loading: loading.effects['cashentry/add'] || loading.effects['cashentry/edit'] || loading.effects['cashentry/setEdit'],
+    loading: loading.effects['transferInvoice/add'] || loading.effects['transferInvoice/edit'] || loading.effects['transferInvoice/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, detail, oldValue, reset) {
       dispatch({
-        type: `cashentry/${modalType}`,
+        type: `transferInvoice/${modalType}`,
         payload: {
           data,
           detail,
@@ -238,7 +193,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
         }
       }))
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalType: 'add',
           currentItem: {},
@@ -272,24 +227,34 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     updateCurrentItem (data) {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           currentItem: data
         }
       })
     },
-    modalShow () { // string
+    modalShow (storeIdReceiver) { // string
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalVisible: true,
           modalItemType: 'add'
         }
       })
+      dispatch({
+        type: 'transferOut/queryLov',
+        payload: {
+          start: moment().startOf('month').format('YYYY-MM-DD'),
+          end: moment().endOf('month').format('YYYY-MM-DD'),
+          storeId: lstorage.getCurrentUserStore(),
+          storeIdReceiver,
+          status: 1
+        }
+      })
     },
     resetListItem () {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           listItem: []
         }
@@ -297,7 +262,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
     },
     modalShowList (record) {
       dispatch({
-        type: 'cashentry/updateState',
+        type: 'transferInvoice/updateState',
         payload: {
           modalVisible: true,
           modalItemType: 'edit',
@@ -331,11 +296,8 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   )
 }
 
-Cash.propTypes = {
-  cashentry: PropTypes.object,
-  paymentOpts: PropTypes.object,
-  bank: PropTypes.object,
-  pos: PropTypes.object.isRequired,
+TransferInvoice.propTypes = {
+  transferInvoice: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
@@ -343,10 +305,14 @@ Cash.propTypes = {
 }
 
 export default connect(({
-  cashentry,
-  accountCode,
-  customer,
-  supplier,
+  transferInvoice,
+  transferOut,
   loading,
-  pos,
-  app }) => ({ cashentry, accountCode, customer, supplier, loading, pos, app }))(Cash)
+  app
+}) =>
+  ({
+    transferInvoice,
+    transferOut,
+    loading,
+    app
+  }))(TransferInvoice)

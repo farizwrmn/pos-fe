@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, DatePicker, message } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, message } from 'antd'
 import { lstorage } from 'utils'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
@@ -46,17 +46,17 @@ const FormCounter = ({
   listDetailProps,
   loading,
   onCancel,
+  listStore,
   button,
-  listAccountCode,
+  resetListItem,
   form: {
     getFieldDecorator,
     validateFields,
+    getFieldValue,
     getFieldsValue,
     resetFields
   }
 }) => {
-  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -86,7 +86,23 @@ const FormCounter = ({
     })
   }
   const hdlModalShow = () => {
-    modalShow()
+    validateFields(['storeIdReceiver'], (errors) => {
+      if (errors) {
+        return
+      }
+      const storeIdReceiver = getFieldValue('storeIdReceiver')
+      if (item && item.storeId) {
+        if (parseFloat(item.storeId) !== parseFloat(storeIdReceiver.key)) {
+          resetListItem()
+        }
+        if (storeIdReceiver && storeIdReceiver.key) {
+          console.log('storeIdReceiver', storeIdReceiver)
+          modalShow(storeIdReceiver.key)
+        }
+      } else {
+        message.error('Store ID not found')
+      }
+    })
   }
 
   const modalOpts = {
@@ -114,6 +130,21 @@ const FormCounter = ({
     resetFields()
   }
 
+  let childrenStoreReceived = []
+  if (listStore.length > 0) {
+    if (item.storeId) {
+      let groupStore = []
+      for (let id = 0; id < listStore.length; id += 1) {
+        groupStore.push(
+          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+            {listStore[id].label}
+          </Option>
+        )
+      }
+      childrenStoreReceived.push(groupStore)
+    }
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -129,43 +160,19 @@ const FormCounter = ({
                 ]
               })(<Input disabled maxLength={30} />)}
             </FormItem>
-            <FormItem label="Reference" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('reference', {
-                initialValue: item.reference
-              })(<Input maxLength={40} autoFocus />)}
-            </FormItem>
-            <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
-            </FormItem>
-          </Col>
-          <Col {...column}>
-            <FormItem {...formItemLayout} label="Account Code">
-              {getFieldDecorator('accountId', {
-                initialValue: item.accountId ? {
-                  key: item.accountId,
-                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-                } : undefined,
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
+            <FormItem label="To Store" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('storeIdReceiver', {
+                initialValue: item.storeIdReceiver,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
               })(<Select
-                showSearch
-                allowClear
-                optionFilterProp="children"
                 labelInValue
-                filterOption={filterOption}
-              >{listAccountOpt}
+              >
+                {childrenStoreReceived}
               </Select>)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="Trans Date">
-              {getFieldDecorator('transDate', {
-                initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(<DatePicker />)}
             </FormItem>
           </Col>
         </Row>

@@ -12,8 +12,8 @@ import TransDetail from './TransDetail'
 import styles from './index.less'
 
 
-const Detail = ({ cashentry, dispatch }) => {
-  const { listDetail, data } = cashentry
+const Detail = ({ transferInvoice, dispatch }) => {
+  const { listDetail, data } = transferInvoice
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -60,7 +60,7 @@ const Detail = ({ cashentry, dispatch }) => {
 }
 
 Detail.propTypes = {
-  cashentry: PropTypes.object
+  transferInvoice: PropTypes.object
 }
 
-export default connect(({ cashentry }) => ({ cashentry }))(Detail)
+export default connect(({ transferInvoice }) => ({ transferInvoice }))(Detail)
