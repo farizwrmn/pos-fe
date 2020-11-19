@@ -29,7 +29,7 @@ const Detail = ({ transferInvoice, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/cash-entry?activeKey=1'))
+    dispatch(routerRedux.push('/inventory/transfer/invoice?activeKey=1'))
   }
 
   const formDetailProps = {

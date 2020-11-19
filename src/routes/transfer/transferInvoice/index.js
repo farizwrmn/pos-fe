@@ -173,7 +173,8 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
     }
   }
   const listDetailProps = {
-    dataSource: listItem
+    dataSource: listItem,
+    modalType
   }
 
   const modalLovProps = {

@@ -4,8 +4,8 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, listItem, ...purchaseProps }) => {
-  const columns = [
+  handleModalShowList, modalType, listItem, ...purchaseProps }) => {
+  let columns = [
     {
       title: 'No',
       dataIndex: 'no',
@@ -22,11 +22,35 @@ const Browse = ({
       key: 'employeeName'
     },
     {
-      title: 'Total',
+      title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Charge (%)',
+      dataIndex: 'chargePercent',
+      key: 'chargePercent',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Charge (N)',
+      dataIndex: 'chargeNominal',
+      key: 'chargeNominal',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
+      className: styles.alignRight,
+      render: (text, item) => {
+        const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+        return (total || '-').toLocaleString()
+      }
     },
     {
       title: 'Description',
@@ -39,6 +63,61 @@ const Browse = ({
       key: 'memo'
     }
   ]
+  if (modalType === 'edit') {
+    columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: 'Trans No',
+        dataIndex: 'transferOut.transNo',
+        key: 'transferOut.transNo'
+      },
+      {
+        title: 'Employee',
+        dataIndex: 'createdBy',
+        key: 'createdBy'
+      },
+      {
+        title: 'Amount',
+        dataIndex: 'amount',
+        key: 'amount',
+        className: styles.alignRight,
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: 'Charge (%)',
+        dataIndex: 'chargePercent',
+        key: 'chargePercent',
+        className: styles.alignRight,
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: 'Charge (N)',
+        dataIndex: 'chargeNominal',
+        key: 'chargeNominal',
+        className: styles.alignRight,
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: 'Total',
+        dataIndex: 'total',
+        key: 'total',
+        className: styles.alignRight,
+        render: (text, item) => {
+          const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+          return (total || '-').toLocaleString()
+        }
+      },
+      {
+        title: 'Memo',
+        dataIndex: 'memo',
+        key: 'memo'
+      }
+    ]
+  }
 
   const hdlModalShow = (record) => {
     handleModalShowList(record)
@@ -56,8 +135,7 @@ const Browse = ({
       onRowClick={_record => hdlModalShow(_record)}
       footer={() => (
         <div>
-          <div>Debit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountIn || 0), 0).toLocaleString()}</div>
-          <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
+          <div>Total : {listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString()}</div>
         </div>)
       }
     />

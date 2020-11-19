@@ -1,10 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { numberFormat } from 'utils'
 import styles from '../../../../themes/index.less'
-
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
@@ -15,28 +12,53 @@ const List = ({ ...tableProps, editList }) => {
     {
       title: 'ID',
       dataIndex: 'id',
-      key: 'id',
-      width: 40
+      key: 'id'
     },
     {
-      title: 'Account Code',
-      dataIndex: 'accountCode.accountCode',
-      key: 'accountCode.accountCode',
-      width: 100
+      title: 'Trans No',
+      dataIndex: 'transferOut.transNo',
+      key: 'transferOut.transNo'
     },
     {
-      title: 'Account Name',
-      dataIndex: 'accountCode.accountName',
-      key: 'accountCode.accountName',
-      width: 200
+      title: 'Employee',
+      dataIndex: 'createdBy',
+      key: 'createdBy'
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Charge (%)',
+      dataIndex: 'chargePercent',
+      key: 'chargePercent',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Charge (N)',
+      dataIndex: 'chargeNominal',
+      key: 'chargeNominal',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Total',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
-      width: 120,
+      dataIndex: 'total',
+      key: 'total',
       className: styles.alignRight,
-      render: text => formatNumberIndonesia(text || 0)
+      render: (text, item) => {
+        const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+        return (total || '-').toLocaleString()
+      }
+    },
+    {
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo'
     }
   ]
 
@@ -49,6 +71,11 @@ const List = ({ ...tableProps, editList }) => {
         simple
         rowKey={record => record.no}
         onRowClick={record => handleMenuClick(record)}
+        footer={() => (
+          <div>
+            <div>Total : {tableProps.dataSource ? tableProps.dataSource.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString() : 0}</div>
+          </div>)
+        }
       />
     </div>
   )

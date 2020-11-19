@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Input, Form, InputNumber, Button } from 'antd'
+import { numberFormatter } from 'utils/string'
 
 const FormItem = Form.Item
 
@@ -30,7 +31,8 @@ class ModalList extends Component {
       showLov,
       item,
       modalItemType,
-      form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
+      modalType,
+      form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
       ...modalProps
     } = this.props
 
@@ -54,12 +56,16 @@ class ModalList extends Component {
       onOk: handleClick
     }
 
+    const total = item && item.id ?
+      (parseFloat(item.amount) * (1 + (parseFloat(getFieldValue('chargePercent')) / 100))) + parseFloat(getFieldValue('chargeNominal'))
+      : 0
+
     return (
       <Modal {...modalOpts}
         footer={[
-          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem()}>Delete</Button>,
+          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem()} disabled={modalType === 'edit'}>Delete</Button>,
           <Button size="large" key="back" onClick={() => modalProps.onCancel()}>Cancel</Button>,
-          <Button size="large" key="submit" type="primary" onClick={handleClick}>Ok</Button>
+          <Button size="large" key="submit" type="primary" onClick={handleClick}>{total > 0 ? `Ok (${numberFormatter(parseInt(total, 10))})` : 'Ok'}</Button>
         ]}
       >
         <Form>
@@ -75,6 +81,11 @@ class ModalList extends Component {
               min={0}
               max={9999999999}
               disabled
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleClick()
+                }
+              }}
               style={{ width: '100%' }}
             />)}
           </FormItem>
@@ -89,6 +100,11 @@ class ModalList extends Component {
             })(<InputNumber
               min={0}
               max={100}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleClick()
+                }
+              }}
               style={{ width: '100%' }}
             />)}
           </FormItem>
@@ -103,13 +119,24 @@ class ModalList extends Component {
             })(<InputNumber
               min={0}
               max={9999999999}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleClick()
+                }
+              }}
               style={{ width: '100%' }}
             />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Memo">
             {getFieldDecorator('memo', {
               initialValue: item.memo
-            })(<Input />)}
+            })(<Input
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleClick()
+                }
+              }}
+            />)}
           </FormItem>
         </Form>
       </Modal>

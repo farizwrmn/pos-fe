@@ -41,7 +41,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/cash-entry/:id').exec(location.pathname)
+        const match = pathToRegexp('/inventory/transfer/invoice/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -150,7 +150,6 @@ export default modelExtend(pageModel, {
       if (data.success) {
         if (data.data.length === 0) {
           const newListItem = ([]).concat(listItem)
-          console.log('newListItem', newListItem)
           const amount = cost.data ? cost
             .data
             .reduce(
@@ -162,9 +161,10 @@ export default modelExtend(pageModel, {
           newListItem.push({
             ...payload.data,
             no: (listItem || []).length + 1,
+            chargePercent: 0,
+            chargeNominal: 0,
             amount
           })
-          console.log('newListItem', newListItem)
           yield put({
             type: 'updateState',
             payload: {
@@ -188,17 +188,17 @@ export default modelExtend(pageModel, {
       const data = yield call(queryId, { id: payload.edit, relationship: 1 })
       if (data.success) {
         const { transferInvoiceDetail, ...currentItem } = data.data
+        console.log('transferInvoiceDetail', transferInvoiceDetail)
         yield put({
           type: 'updateState',
           payload: {
             currentItem,
+            listStore: lstorage.getListUserStores(),
             modalType: 'edit',
             listItem: transferInvoiceDetail ?
               transferInvoiceDetail.map((item, index) => ({
                 no: index + 1,
-                ...item,
-                accountId: item.accountId,
-                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                ...item
               }))
               : []
           }

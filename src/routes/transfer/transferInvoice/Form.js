@@ -41,7 +41,6 @@ const FormCounter = ({
   modalType,
   modalItemType,
   modalShowList,
-  storeInfo,
   listItem,
   modalVisible,
   modalProps,
@@ -82,23 +81,27 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.memberId = data.memberId ? data.memberId.key : null
-      data.supplierId = data.supplierId ? data.supplierId.key : null
-      data.accountId = data.accountId ? data.accountId.key : null
-      data.transType = data.transType ? data.transType.key : null
-      const transDate = moment(data.transDate).format('YYYY-MM-DD')
-      data.transDate = transDate
-      if (transDate < storeInfo.startPeriod) {
-        message.error('This period has been closed')
-        return
+      data.storeIdReceiver = data.storeIdReceiver ? data.storeIdReceiver.key : null
+      data.total = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) || 0), 0)
+      data.chargeTotal = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (parseFloat(item.chargePercent) / 100)) + parseFloat(item.chargeNominal) || 0, 0)
+      data.netto = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0)
+      data.paymentTotal = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0)
+      data.paid = 0
+      const newListItem = listItem.map(item => ({
+        ...item,
+        transferId: item.id
+      }))
+      if (newListItem.length > 0) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data, newListItem, getFieldsValue(), resetFields)
+          },
+          onCancel () { }
+        })
+      } else {
+        message.warning('List Item is empty')
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, listItem, getFieldsValue(), resetFields)
-        },
-        onCancel () { }
-      })
     })
   }
   const hdlModalShow = () => {
@@ -127,6 +130,7 @@ const FormCounter = ({
   const modalOpts = {
     showLov,
     modalItemType,
+    modalType,
     ...modalProps
   }
 
@@ -181,7 +185,10 @@ const FormCounter = ({
             </FormItem>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
-                initialValue: item.storeIdReceiver,
+                initialValue: item.storeIdReceiver ? {
+                  key: item.storeIdReceiver,
+                  label: `${item.storeIdReceiverDetail ? item.storeIdReceiverDetail.storeName : item.storeIdReceiver}`
+                } : undefined,
                 rules: [
                   {
                     required: true
@@ -189,6 +196,7 @@ const FormCounter = ({
                 ]
               })(<Select
                 labelInValue
+                disabled={modalType === 'edit'}
               >
                 {childrenStoreReceived}
               </Select>)}
@@ -197,7 +205,7 @@ const FormCounter = ({
         </Row>
         <Row>
           <Col {...column}>
-            <Button type="primary" size="large" onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Add</Button>
+            <Button type="primary" size="large" disabled={modalType === 'edit'} onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Transfer Out</Button>
           </Col>
           <Col {...column} />
         </Row>
