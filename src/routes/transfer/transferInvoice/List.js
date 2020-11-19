@@ -33,28 +33,23 @@ const List = ({
       key: 'transNo',
       render: (text, record) => {
         return (
-          <Link to={`/cash-entry/${record.id}`}>
+          <Link to={`/inventory/transfer/invoice/${record.id}`}>
             {text}
           </Link>
         )
       }
     },
     {
-      title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference'
-    },
-    {
       title: 'Total',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
+      dataIndex: 'netto',
+      key: 'netto',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Desc',
-      dataIndex: 'description',
-      key: 'description'
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo'
     },
     {
       title: 'Date',
@@ -77,7 +72,7 @@ const List = ({
               {
                 key: '2',
                 name: 'Delete',
-                disabled: !(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
+                disabled: !(user.permissions.role === 'SPR' || user.permissions.role === 'OWN' || user.permissions.role === 'ADM')
               }
             ]}
           />

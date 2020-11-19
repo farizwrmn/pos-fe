@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
 import { configMain, lstorage, color, alertModal } from 'utils'
-import { query, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
+import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
 import { query as queryInvoice, queryDetail as queryDetailInvoice } from '../services/purchase'
@@ -80,7 +80,24 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
+      console.log('payload', payload)
       const data = yield call(query, payload)
+      if (data) {
+        yield put({
+          type: 'querySuccessTransferOut',
+          payload: {
+            listTrans: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(queryLov, payload)
       if (data) {
         yield put({
           type: 'querySuccessTransferOut',

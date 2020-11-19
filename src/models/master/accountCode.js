@@ -75,6 +75,16 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/inventory/transfer/invoice') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (
           pathname === '/master/account'
           || pathname === '/account/payable-form'

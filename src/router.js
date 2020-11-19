@@ -1036,6 +1036,24 @@ const Routers = function ({ history, app }) {
             }, 'accounts-payable-form')
           }
         }, {
+          path: 'inventory/transfer/invoice',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/transferInvoice'))
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/transfer/transferInvoice'))
+            }, 'inventory-transfer-invoice')
+          }
+        }, {
+          path: 'inventory/transfer/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/transferInvoice'))
+              cb(null, require('./routes/transfer/transferInvoice/detail'))
+            }, 'inventory-transfer-invoice-detail')
+          }
+        }, {
           path: 'cash-entry',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

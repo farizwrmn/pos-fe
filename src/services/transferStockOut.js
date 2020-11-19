@@ -14,6 +14,26 @@ export async function query (params) {
   })
 }
 
+export async function queryCost (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${transfer}/out/cost`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryLov (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${transfer}/out`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryHpokok (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
