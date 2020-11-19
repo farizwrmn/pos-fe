@@ -4,7 +4,6 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, message, Modal, Tabs } from 'antd'
 import { lstorage } from 'utils'
-import moment from 'moment'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
@@ -152,6 +151,25 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
         }
       })
       message.success('success edit item')
+    },
+    deleteModalItem (no) {
+      const { listItem } = transferInvoice
+      const newItemList = listItem
+        .filter(filtered => filtered.no !== no)
+        .map((item, index) => ({
+          ...item,
+          no: index + 1
+        }))
+      dispatch({
+        type: 'transferInvoice/updateState',
+        payload: {
+          modalVisible: false,
+          modalItemType: 'add',
+          listItem: newItemList,
+          currentItemList: {}
+        }
+      })
+      message.success('success delete item')
     }
   }
   const listDetailProps = {
@@ -197,21 +215,36 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
         }
       })
     },
-    addModalItem (data) {
-      const { listItem } = transferInvoice
-      data.no = (listItem || []).length + 1
-      listItem.push(data)
+    changePeriod (storeIdReceiver, start, end) {
       dispatch({
         type: 'transferInvoice/updateState',
         payload: {
-          listLovVisible: false,
-          modalVisible: false,
-          modalItemType: 'add',
-          listItem,
-          currentItemList: {}
+          currentItem: {
+            ...currentItem,
+            storeIdReceiver
+          },
+          listLovVisible: true,
+          modalItemType: 'add'
         }
       })
-      message.success('success add item')
+      dispatch({
+        type: 'transferOut/queryLov',
+        payload: {
+          start,
+          end,
+          storeId: lstorage.getCurrentUserStore(),
+          storeIdReceiver,
+          status: 1
+        }
+      })
+    },
+    addModalItem (data) {
+      dispatch({
+        type: 'transferInvoice/addItem',
+        payload: {
+          data
+        }
+      })
     },
     editItem (item) {
       const { pathname } = location
@@ -309,7 +342,7 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
         }
       })
     },
-    modalShow (storeIdReceiver) { // string
+    modalShow (storeIdReceiver, start, end) { // string
       dispatch({
         type: 'transferInvoice/updateState',
         payload: {
@@ -324,8 +357,8 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
       dispatch({
         type: 'transferOut/queryLov',
         payload: {
-          start: moment().startOf('month').format('YYYY-MM-DD'),
-          end: moment().endOf('month').format('YYYY-MM-DD'),
+          start,
+          end,
           storeId: lstorage.getCurrentUserStore(),
           storeIdReceiver,
           status: 1

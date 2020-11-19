@@ -1,10 +1,9 @@
-import { request, lstorage, crypt } from '../../utils'
+import { request, crypt } from '../../utils'
 
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: `/transfer-invoice/${params.id}`,
+    url: `/transfer-invoice-detail/${params.id}`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -13,10 +12,8 @@ export async function queryById (params) {
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.order = 'typeCode'
-  params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: '/transfer-invoice',
+    url: '/transfer-invoice-detail',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -27,18 +24,8 @@ export async function queryId (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'typeCode'
   return request({
-    url: `/transfer-invoice/${params.id}`,
+    url: `/transfer-invoice-detail/${params.id}`,
     method: 'get',
-    headers: apiHeaderToken
-  })
-}
-
-export async function addPayment (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `/transfer-invoice-payment/${params.id}`,
-    method: 'post',
-    data: params,
     headers: apiHeaderToken
   })
 }
@@ -46,7 +33,7 @@ export async function addPayment (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/transfer-invoice',
+    url: '/transfer-invoice-detail',
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -56,7 +43,7 @@ export async function add (params) {
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/transfer-invoice/${params.id}`,
+    url: `/transfer-invoice-detail/${params.id}`,
     method: 'put',
     data: params,
     headers: apiHeaderToken
@@ -66,7 +53,7 @@ export async function edit (params) {
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/transfer-invoice/${id}`,
+    url: `/transfer-invoice-detail/${id}`,
     method: 'delete',
     headers: apiHeaderToken
   })

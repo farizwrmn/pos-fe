@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { DatePicker, Table, Modal, Tag } from 'antd'
 import moment from 'moment'
 
-const List = ({ addModalItem, modalProps, ...tableProps }) => {
+const { MonthPicker } = DatePicker
+
+const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
   const columns = [
     {
       title: 'Store Name',
@@ -61,9 +63,16 @@ const List = ({ addModalItem, modalProps, ...tableProps }) => {
     }
   ]
 
+  const onChange = (date, dateString) => {
+    let dateFormat = moment(dateString).format('YYYY-MM-DD')
+    let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
+    changePeriod(dateFormat, lastDate)
+  }
+
   return (
     <div>
       <Modal {...modalProps}>
+        <MonthPicker style={{ marginBottom: 10 }} onChange={onChange} placeholder="Select Period" />
         <Table {...tableProps}
           bordered
           columns={columns}

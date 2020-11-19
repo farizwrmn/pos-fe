@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Input, Form, InputNumber } from 'antd'
+import { Modal, Input, Form, InputNumber, Button } from 'antd'
 
-const Option = Select.Option
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -13,7 +12,7 @@ const formItemLayout = {
 class ModalList extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('amountOut')
+      const selector = document.getElementById('chargePercent')
       if (selector) {
         selector.focus()
         selector.select()
@@ -25,8 +24,8 @@ class ModalList extends Component {
     const {
       addModalItem,
       editModalItem,
+      deleteModalItem,
       listAccountCode,
-      listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
       onDelete,
       showLov,
       item,
@@ -35,7 +34,6 @@ class ModalList extends Component {
       ...modalProps
     } = this.props
 
-    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
     const handleClick = () => {
       validateFields((errors) => {
         if (errors) {
@@ -46,13 +44,7 @@ class ModalList extends Component {
           ...getFieldsValue()
         }
         data.no = item.no
-        data.accountName = data.accountId.label
-        data.accountId = data.accountId.key
-        if (modalItemType === 'add') {
-          addModalItem(data)
-        } else if (modalItemType === 'edit') {
-          editModalItem(data)
-        }
+        editModalItem(data)
         resetFields()
       })
     }
@@ -63,42 +55,60 @@ class ModalList extends Component {
     }
 
     return (
-      <Modal {...modalOpts}>
+      <Modal {...modalOpts}
+        footer={[
+          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem()}>Delete</Button>,
+          <Button size="large" key="back" onClick={() => modalProps.onCancel()}>Cancel</Button>,
+          <Button size="large" key="submit" type="primary" onClick={handleClick}>Ok</Button>
+        ]}
+      >
         <Form>
-          <FormItem {...formItemLayout} label="Amount Out">
-            {getFieldDecorator('amountOut', {
-              initialValue: item.amountOut,
+          <FormItem {...formItemLayout} label="Total">
+            {getFieldDecorator('amount', {
+              initialValue: item.amount != null ? item.amount : 0,
               rules: [{
                 required: true,
                 pattern: /^([0-9.]{0,19})$/i,
-                message: 'Amount is not define'
+                message: 'Total is not define'
               }]
             })(<InputNumber
-
+              min={0}
+              max={9999999999}
+              disabled
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="Charge Percent">
+            {getFieldDecorator('chargePercent', {
+              initialValue: item.chargePercent != null ? item.chargePercent : 0,
+              rules: [{
+                required: true,
+                pattern: /^([0-9.]{0,19})$/i,
+                message: 'Charge Percent is not define'
+              }]
+            })(<InputNumber
+              min={0}
+              max={100}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="Charge Nominal">
+            {getFieldDecorator('chargeNominal', {
+              initialValue: item.chargeNominal != null ? item.chargeNominal : 0,
+              rules: [{
+                required: true,
+                pattern: /^([0-9.]{0,19})$/i,
+                message: 'Charge Nominal is not define'
+              }]
+            })(<InputNumber
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
             />)}
           </FormItem>
-          <FormItem {...formItemLayout} label="Account Code">
-            {getFieldDecorator('accountId', {
-              initialValue: item.accountId,
-              rules: [{
-                required: true,
-                message: 'Required'
-              }]
-            })(<Select
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              labelInValue
-              filterOption={filterOption}
-            >{listAccountOpt}
-            </Select>)}
-          </FormItem>
-          <FormItem {...formItemLayout} label="Description">
-            {getFieldDecorator('description', {
-              initialValue: item.description
+          <FormItem {...formItemLayout} label="Memo">
+            {getFieldDecorator('memo', {
+              initialValue: item.memo
             })(<Input />)}
           </FormItem>
         </Form>

@@ -12,21 +12,19 @@ const Browse = ({
       key: 'no'
     },
     {
-      title: 'Type',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      title: 'Employee',
+      dataIndex: 'employeeName',
+      key: 'employeeName'
     },
     {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
+      title: 'Total',
+      dataIndex: 'amount',
+      key: 'amount',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
@@ -34,6 +32,11 @@ const Browse = ({
       title: 'Description',
       dataIndex: 'description',
       key: 'description'
+    },
+    {
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo'
     }
   ]
 

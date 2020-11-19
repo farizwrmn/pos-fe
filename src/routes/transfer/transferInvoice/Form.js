@@ -59,7 +59,19 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  const { visible } = listLovProps
+  const { visible, changePeriod } = listLovProps
+
+  const handleChangePeriod = (start, end) => {
+    validateFields(['storeIdReceiver'], (errors) => {
+      if (errors) {
+        return
+      }
+      const storeIdReceiver = getFieldValue('storeIdReceiver')
+      if (storeIdReceiver) {
+        changePeriod(storeIdReceiver.key, start, end)
+      }
+    })
+  }
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -96,11 +108,15 @@ const FormCounter = ({
       }
       const storeIdReceiver = getFieldValue('storeIdReceiver')
       if (item && item.storeId) {
-        if (parseFloat(item.storeId) !== parseFloat(storeIdReceiver.key)) {
-          resetListItem()
-        }
         if (storeIdReceiver && storeIdReceiver.key) {
-          modalShow(storeIdReceiver.key)
+          modalShow(
+            storeIdReceiver.key,
+            moment().startOf('month').format('YYYY-MM-DD'),
+            moment().endOf('month').format('YYYY-MM-DD')
+          )
+        }
+        if (parseFloat(item.storeIdReceiver) !== parseFloat(storeIdReceiver.key)) {
+          resetListItem()
         }
       } else {
         message.error('Store ID not found')
@@ -195,7 +211,7 @@ const FormCounter = ({
           </FormItem>
         </FooterToolbar>
       </Form>
-      {visible && <ListTransferOut {...listLovProps} />}
+      {visible && <ListTransferOut {...listLovProps} changePeriod={handleChangePeriod} />}
       {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )

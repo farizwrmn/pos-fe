@@ -5,6 +5,8 @@ import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from 'services/sequence'
 import { queryById, query, queryId, add, edit, remove } from 'services/transfer/transferInvoice'
+import { query as queryDetail } from 'services/transfer/transferInvoiceDetail'
+import { queryCost } from 'services/transferStockOut'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -130,6 +132,56 @@ export default modelExtend(pageModel, {
           listStore: lstorage.getListUserStores()
         }
       })
+    },
+
+    * addItem ({ payload }, { select, call, put }) {
+      const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
+      const data = yield call(queryDetail, {
+        transferId: payload.data.id
+      })
+      const cost = yield call(queryCost, {
+        transNo: payload.data.transNo,
+        storeId: payload.data.storeId,
+        storeIdReceiver: payload.data.storeIdReceiver
+      })
+      if (!cost.success) {
+        throw cost
+      }
+      if (data.success) {
+        if (data.data.length === 0) {
+          const newListItem = ([]).concat(listItem)
+          console.log('newListItem', newListItem)
+          const amount = cost.data ? cost
+            .data
+            .reduce(
+              (prev, next) => prev + (parseFloat(next.purchasePrice) * parseFloat(next.qty)),
+              0) : 0
+          if (amount === 0) {
+            throw new Error('Transfer total is 0')
+          }
+          newListItem.push({
+            ...payload.data,
+            no: (listItem || []).length + 1,
+            amount
+          })
+          console.log('newListItem', newListItem)
+          yield put({
+            type: 'updateState',
+            payload: {
+              listLovVisible: false,
+              modalVisible: false,
+              modalItemType: 'add',
+              listItem: newListItem,
+              currentItemList: {}
+            }
+          })
+          message.success('success add item')
+        } else {
+          message.warning('transfer already used')
+        }
+      } else {
+        throw data
+      }
     },
 
     * setEdit ({ payload }, { call, put }) {
