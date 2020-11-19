@@ -24,6 +24,7 @@ export default modelExtend(pageModel, {
     currentItemList: {},
     modalType: 'add',
     modalItemType: 'add',
+    modalPaymentVisible: false,
     inputType: null,
     activeKey: '0',
     list: [],
@@ -60,6 +61,16 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') {
             dispatch({ type: 'query', payload: other })
+          }
+
+          if (activeKey === '2') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                forPayment: 1
+              }
+            })
           }
 
           if (edit && edit !== '' && edit !== '0') {
@@ -261,17 +272,38 @@ export default modelExtend(pageModel, {
             modalType: 'add',
             currentItem: {},
             listItem: [],
-            activeKey: '1'
+            activeKey: payload.forPayment ? '2' : '1'
           }
         })
         const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
+        if (payload.forPayment) {
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '2'
+            }
+          }))
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalPaymentVisible: false
+            }
+          })
+          yield put({
+            type: 'query',
+            payload: {
+              forPayment: 1
+            }
+          })
+        } else {
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '1'
+            }
+          }))
+          yield put({ type: 'query' })
+        }
       } else {
         throw data
       }

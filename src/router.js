@@ -1041,6 +1041,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/transferInvoice'))
               registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/transfer/transferInvoice'))
             }, 'inventory-transfer-invoice')
           }

@@ -14,6 +14,7 @@ const searchBarLayout = {
 
 const Filter = ({
   onFilterChange,
+  forPayment,
   form: {
     getFieldDecorator,
     getFieldsValue
@@ -21,8 +22,8 @@ const Filter = ({
 }) => {
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
-    onFilterChange(field)
+    if (field.q === undefined || field.q === '') delete field.q
+    onFilterChange(field, forPayment)
   }
 
   return (
@@ -30,9 +31,9 @@ const Filter = ({
       <Col xs={9} sm={17} md={17} lg={18} />
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('counterName')(
+          {getFieldDecorator('q')(
             <Search
-              placeholder="Search Counter"
+              placeholder="Search Field"
               onSearch={() => handleSubmit()}
             />
           )}

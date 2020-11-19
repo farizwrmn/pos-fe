@@ -1,28 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Modal, Table } from 'antd'
+import { Table } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import styles from '../../../themes/index.less'
 
-const confirm = Modal.confirm
-
-const List = ({
-  user,
-  editItem,
-  deleteItem,
+const PaymentList = ({
+  onPayment,
   ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete ${record.transNo} ?`,
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
+      onPayment(record)
     }
   }
 
@@ -38,6 +27,13 @@ const List = ({
           </Link>
         )
       }
+    },
+    {
+      title: 'Owing',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Total',
@@ -68,12 +64,7 @@ const List = ({
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'Edit' },
-              {
-                key: '2',
-                name: 'Delete',
-                disabled: !(user.permissions.role === 'SPR' || user.permissions.role === 'OWN' || user.permissions.role === 'ADM')
-              }
+              { key: '1', name: 'Payment' }
             ]}
           />
         )
@@ -94,9 +85,9 @@ const List = ({
   )
 }
 
-List.propTypes = {
+PaymentList.propTypes = {
   editItem: PropTypes.func,
   deleteItem: PropTypes.func
 }
 
-export default List
+export default PaymentList

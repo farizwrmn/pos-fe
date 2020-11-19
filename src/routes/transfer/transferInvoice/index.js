@@ -6,19 +6,23 @@ import { Button, message, Modal, Tabs } from 'antd'
 import { lstorage } from 'utils'
 import Form from './Form'
 import List from './List'
+import PaymentList from './PaymentList'
 import Filter from './Filter'
+import PaymentModal from './PaymentModal'
 
 const TabPane = Tabs.TabPane
 
-const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, location, app }) => {
-  const { list, listStore, listItem, listLovVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
+const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, dispatch, location, app }) => {
+  const { list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
   const { listTrans: listTransfer } = transferOut
+  const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
-    onFilterChange (value) {
+    onFilterChange (value, forPayment) {
       dispatch({
         type: 'transferInvoice/query',
         payload: {
+          forPayment,
           ...value
         }
       })
@@ -32,6 +36,16 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
     storeInfo,
     loading: loading.effects['transferInvoice/query'],
     location,
+    onPayment (currentItem) {
+      console.log('currentItem', currentItem)
+      dispatch({
+        type: 'transferInvoice/updateState',
+        payload: {
+          currentItem,
+          modalPaymentVisible: true
+        }
+      })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -391,6 +405,33 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
   }
 
+  const modalPaymentOpts = {
+    title: 'Add Payment',
+    item: currentItem,
+    listAccountCode,
+    visible: modalPaymentVisible,
+    onCancel () {
+      dispatch({
+        type: 'transferInvoice/updateState',
+        payload: {
+          modalPaymentVisible: false
+        }
+      })
+    },
+    onSubmit (data, detail, oldValue, reset) {
+      dispatch({
+        type: 'transferInvoice/edit',
+        payload: {
+          data,
+          detail,
+          oldValue,
+          reset,
+          forPayment: 1
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -402,6 +443,15 @@ const TransferInvoice = ({ transferInvoice, transferOut, loading, dispatch, loca
             <div>
               <Filter {...filterProps} />
               <List {...listProps} />
+            </div>
+          }
+        </TabPane>
+        <TabPane tab="Payment" key="2" >
+          {activeKey === '2' &&
+            <div>
+              <Filter forPayment={1} {...filterProps} />
+              <PaymentList {...listProps} />
+              {modalPaymentVisible && currentItem && currentItem.id && <PaymentModal {...modalPaymentOpts} />}
             </div>
           }
         </TabPane>
@@ -420,12 +470,14 @@ TransferInvoice.propTypes = {
 
 export default connect(({
   transferInvoice,
+  accountCode,
   transferOut,
   loading,
   app
 }) =>
   ({
     transferInvoice,
+    accountCode,
     transferOut,
     loading,
     app
