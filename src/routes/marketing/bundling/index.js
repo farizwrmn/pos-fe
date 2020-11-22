@@ -252,6 +252,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
     },
     confirmEditModal (item, type) {
       if (type === 0) {
+        const { listRules } = bundling
         listRules[item.no - 1] = item
         dispatch({
           type: 'bundling/updateState',
@@ -262,6 +263,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
           }
         })
       } else if (type === 1) {
+        const { listReward } = bundling
         listReward[item.no - 1] = item
         dispatch({
           type: 'bundling/updateState',
