@@ -8,6 +8,7 @@ import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
+import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
 const { getCashierTrans, getConsignment } = lstorage
@@ -133,6 +134,7 @@ export default {
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
+          const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
           const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
@@ -221,6 +223,7 @@ export default {
               transTime: payload.transTime,
               total: payload.grandTotal,
               dineInTax: dineIn,
+              typePembelian: dineInTax === 10 ? TYPE_PEMBELIAN_DINEIN : (dineInTax === 0 ? typePembelian : TYPE_PEMBELIAN_UMUM),
               lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
               creditCardNo: payload.creditCardNo,
               creditCardType: payload.creditCardType,
