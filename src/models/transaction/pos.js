@@ -79,6 +79,7 @@ export default {
     companyPrint: [],
     curQueue: 1,
     currentItem: {},
+    typePembelian: localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1,
     dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
     modalAssetVisible: false,
     modalMemberVisible: false,
@@ -456,6 +457,7 @@ export default {
           sellPrice: ary[n].sellPrice,
           price: ary[n].price,
           otherSellPrice: ary[n].otherSellPrice,
+          martSellPrice: ary[n].martSellPrice,
           qty: ary[n].qty,
           total: ary[n].total
         })
@@ -1418,6 +1420,7 @@ export default {
         qty: 1,
         sellPrice: item.price,
         otherSellPrice: item.price_grabfood_gofood,
+        martSellPrice: item.price_grabmart,
         price: item.price,
         discount: 0,
         disc1: 0,
@@ -1435,6 +1438,7 @@ export default {
         qty: 1,
         sellPrice: item.price,
         otherSellPrice: item.price_grabfood_gofood,
+        martSellPrice: item.price_grabmart,
         price: item.price,
         discount: 0,
         disc1: 0,
