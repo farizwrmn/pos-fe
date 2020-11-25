@@ -4,6 +4,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
+import {
+  TYPE_PEMBELIAN_UMUM,
+  TYPE_PEMBELIAN_GRABFOOD,
+  TYPE_PEMBELIAN_DINEIN,
+  TYPE_PEMBELIAN_GRABMART
+} from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
 import {
   Icon,
@@ -102,6 +108,7 @@ const Pos = ({
     modalAddUnit,
     cashierInformation,
     dineInTax,
+    typePembelian,
     modalLoginType
   } = pos
   const { modalLoginData } = login
@@ -1337,15 +1344,17 @@ const Pos = ({
     })
   }
 
-  // const handleChangeDineIn = (event) => {
-  //   localStorage.setItem('dineInTax', event)
-  //   dispatch({
-  //     type: 'pos/updateState',
-  //     payload: {
-  //       dineInTax: event
-  //     }
-  //   })
-  // }
+  const handleChangeDineIn = (event, type) => {
+    localStorage.setItem('dineInTax', event)
+    localStorage.setItem('typePembelian', type)
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        dineInTax: event,
+        typePembelian: type
+      }
+    })
+  }
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
   const dineIn = curNetto * (dineInTax / 100)
@@ -1462,10 +1471,12 @@ const Pos = ({
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
               <Col md={24} lg={12}>
-                {/* <Button.Group>
-                  <Button size="large" onClick={() => handleChangeDineIn(0)} type={dineInTax === 0 ? 'primary' : 'secondary'}>Take Away (0%)</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(10)} type={dineInTax && dineInTax === 10 ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
-                </Button.Group> */}
+                <Button.Group>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away (0%)</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Grab Food</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Grab Mart</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
+                </Button.Group>
               </Col>
               <Col md={24} lg={12}>
                 <div style={{ textAlign: 'right' }}>
