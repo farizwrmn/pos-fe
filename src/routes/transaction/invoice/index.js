@@ -119,6 +119,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     gender: data.memberPrint.gender,
     company: data.companyPrint,
     lastTransNo: listPaymentDetail.id,
+    consignmentNo: data.posData.consignmentNo,
     unitInfo: {
       ...listPaymentDetail
     },

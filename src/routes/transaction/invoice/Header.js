@@ -27,6 +27,9 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
         <div>
           <strong>#{invoiceInfo.lastTransNo}</strong>
         </div>
+        <div>
+          #{invoiceInfo.consignmentNo}
+        </div>
       </div>
     </div>
   )

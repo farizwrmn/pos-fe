@@ -106,7 +106,7 @@ export default {
       const responseStock = yield call(queryFifoCategory, {
         from: storeInfo.startPeriod,
         to: payload.to,
-        category: '117,118,121,122,125'
+        category: '117,118,120,121,122,123,125,128,192'
       })
       const responseSales = yield call(queryByDate, {
         from: payload.from,
