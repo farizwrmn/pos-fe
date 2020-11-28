@@ -8,11 +8,18 @@ const MerchantCopy = ({
   invoiceInfo = {},
   dataPos = [],
   dataService = [],
-  dataConsignment = []
+  dataConsignment = [],
+  listAmount = []
 }) => {
   const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
   let TotalConsignment = dataConsignment.reduce((cnt, o) => cnt + o.total, 0)
+  const cash = listAmount && listAmount.filter(filtered => filtered.typeCode === 'C')
+  const showCopy = (listAmount.length > 0 && cash.length === 0) || (listAmount.length > 1 && cash.length > 0)
+
+  if (!showCopy) {
+    return null
+  }
 
   return (
     <div>
