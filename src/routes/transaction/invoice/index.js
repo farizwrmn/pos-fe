@@ -216,6 +216,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           dataService={invoiceInfo.dataService || []}
           dataConsignment={listPaymentDetail.dataConsignment || []}
           invoiceInfo={invoiceInfo}
+          listAmount={listAmount}
         />
         <Member invoiceInfo={invoiceInfo} />
         {modalConfirmVisible && <ModalConfirm {...modalOpts} />}
