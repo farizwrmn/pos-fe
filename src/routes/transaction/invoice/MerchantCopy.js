@@ -12,7 +12,7 @@ const MerchantCopy = ({
   dataConsignment = [],
   listAmount = []
 }) => {
-  const merge = dataPos.concat(dataService).concat(dataGroup).concat(dataConsignment)
+  const merge = dataPos.concat(dataService).concat(dataGroup)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
   let TotalConsignment = dataConsignment.reduce((cnt, o) => cnt + o.total, 0)
   const cash = listAmount && listAmount.filter(filtered => filtered.typeCode === 'C')
