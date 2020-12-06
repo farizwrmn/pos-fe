@@ -215,6 +215,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           dataPos={invoiceInfo.dataPos || []}
           dataService={invoiceInfo.dataService || []}
           dataConsignment={listPaymentDetail.dataConsignment || []}
+          dataGroup={invoiceInfo.dataGroup || []}
           invoiceInfo={invoiceInfo}
           listAmount={listAmount}
         />

@@ -7,11 +7,12 @@ const MerchantCopy = ({
   posData = {},
   invoiceInfo = {},
   dataPos = [],
+  dataGroup = [],
   dataService = [],
   dataConsignment = [],
   listAmount = []
 }) => {
-  const merge = dataPos.length === 0 ? dataService : dataPos.concat(dataService)
+  const merge = dataPos.concat(dataService).concat(dataGroup).concat(dataConsignment)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
   let TotalConsignment = dataConsignment.reduce((cnt, o) => cnt + o.total, 0)
   const cash = listAmount && listAmount.filter(filtered => filtered.typeCode === 'C')
