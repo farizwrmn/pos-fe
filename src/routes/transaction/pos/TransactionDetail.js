@@ -4,7 +4,6 @@ import moment from 'moment'
 import { isEmptyObject, lstorage, color, calendar } from 'utils'
 import {
   currencyFormatter,
-  discountFormatter,
   numberFormatter
 } from 'utils/string'
 import { Badge, Icon, Table, Tabs, Tag } from 'antd'
@@ -155,8 +154,7 @@ const TransactionDetail = ({
               render: (text, record) => {
                 return (
                   <div>
-                    <div>{`Product Code: ${record.code}`}</div>
-                    <div>{`Product Name: ${record.name}`}</div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
                   </div>
                 )
               }
@@ -174,20 +172,15 @@ const TransactionDetail = ({
               width: '250px',
               className: styles.alignRight,
               render: (text, record) => {
-                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                const disc1 = record.disc1
-                const disc2 = record.disc2
-                const disc3 = record.disc3
-                const discount = record.discount
+                // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                // const disc1 = record.disc1
+                // const disc2 = record.disc2
+                // const disc3 = record.disc3
+                // const discount = record.discount
                 const total = record.total
                 return (
                   <div>
-                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
-                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
+                    <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                   </div>
                 )
               }
@@ -221,8 +214,7 @@ const TransactionDetail = ({
               render: (text, record) => {
                 return (
                   <div>
-                    <div>{`Product Code: ${record.code}`}</div>
-                    <div>{`Product Name: ${record.name}`}</div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
                   </div>
                 )
               }
@@ -240,20 +232,10 @@ const TransactionDetail = ({
               width: '250px',
               className: styles.alignRight,
               render: (text, record) => {
-                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                const disc1 = record.disc1
-                const disc2 = record.disc2
-                const disc3 = record.disc3
-                const discount = record.discount
                 const total = record.total
                 return (
                   <div>
-                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
-                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
+                    <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                   </div>
                 )
               }
@@ -287,8 +269,7 @@ const TransactionDetail = ({
               render: (text, record) => {
                 return (
                   <div>
-                    <div>{`Product Code: ${record.code}`}</div>
-                    <div>{`Product Name: ${record.name}`}</div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
                   </div>
                 )
               }
@@ -306,17 +287,14 @@ const TransactionDetail = ({
               width: '250px',
               className: styles.alignRight,
               render: (text, record) => {
-                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                const disc1 = record.disc1
-                const disc2 = record.disc2
-                const disc3 = record.disc3
-                const discount = record.discount
+                // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                // const disc1 = record.disc1
+                // const disc2 = record.disc2
+                // const disc3 = record.disc3
+                // const discount = record.discount
                 const total = record.total
                 return (
                   <div>
-                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
-                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
                     <div>
                       <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                     </div>
