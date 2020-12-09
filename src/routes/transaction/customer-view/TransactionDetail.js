@@ -4,7 +4,6 @@ import moment from 'moment'
 import { isEmptyObject, lstorage, color } from 'utils'
 import {
   currencyFormatter,
-  discountFormatter,
   numberFormatter
 } from 'utils/string'
 import { Icon, Table, Tabs } from 'antd'
@@ -111,8 +110,7 @@ class TransactionDetail extends Component {
                 render: (text, record) => {
                   return (
                     <div>
-                      <div>{`Product Code: ${record.code}`}</div>
-                      <div>{`Product Name: ${record.name}`}</div>
+                      <div><strong>{record.code}</strong>-{record.name}</div>
                     </div>
                   )
                 }
@@ -130,22 +128,10 @@ class TransactionDetail extends Component {
                 width: '300px',
                 className: styles.alignRight,
                 render: (text, record) => {
-                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  const disc1 = record.disc1
-                  const disc2 = record.disc2
-                  const disc3 = record.disc3
-                  const discount = record.discount
                   const total = record.total
                   return (
                     <div>
-                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
-                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
-                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
-                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                      <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                      </div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                     </div>
                   )
                 }
@@ -179,8 +165,7 @@ class TransactionDetail extends Component {
                 render: (text, record) => {
                   return (
                     <div>
-                      <div>{`Service Code: ${record.code}`}</div>
-                      <div>{`Service Name: ${record.name}`}</div>
+                      <div><strong>{record.code}</strong>-{record.name}</div>
                     </div>
                   )
                 }
@@ -198,22 +183,15 @@ class TransactionDetail extends Component {
                 width: '300px',
                 className: styles.alignRight,
                 render: (text, record) => {
-                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  const disc1 = record.disc1
-                  const disc2 = record.disc2
-                  const disc3 = record.disc3
-                  const discount = record.discount
+                  // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                  // const disc1 = record.disc1
+                  // const disc2 = record.disc2
+                  // const disc3 = record.disc3
+                  // const discount = record.discount
                   const total = record.total
                   return (
                     <div>
-                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
-                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
-                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
-                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                      <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                      </div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                     </div>
                   )
                 }
