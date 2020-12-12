@@ -427,7 +427,7 @@ const TransactionDetail = ({
             {
               title: 'Type',
               dataIndex: 'typeTrans',
-              width: '200px'
+              width: '150px'
             },
             {
               title: 'Product',
