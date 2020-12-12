@@ -23,6 +23,11 @@ class TransactionDetail extends Component {
       pos,
       product,
       service,
+      consignment,
+      listTrans = product.map(item => ({ ...item, type: 'Product' }))
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .map((item, index) => ({ ...item, no: index + 1 })),
       loading
     } = this.props
     const {
@@ -86,14 +91,14 @@ class TransactionDetail extends Component {
 
     return (
       <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-        <TabPane tab="Product" key="1">
+        <TabPane tab="Sales" key="1">
           <Table
             loading={loading}
             rowKey={(record, key) => key}
-            pagination={{ pageSize: 5 }}
             bordered
+            pagination={false}
             size="small"
-            scroll={{ x: '680px', y: '220px' }}
+            scroll={{ x: '680px' }}
             locale={{
               emptyText: 'Your Payment List'
             }}
@@ -101,7 +106,14 @@ class TransactionDetail extends Component {
               {
                 title: 'No',
                 width: '40px',
-                dataIndex: 'no'
+                dataIndex: 'no',
+                sortOrder: 'descend',
+                sorter: (a, b) => a.no - b.no
+              },
+              {
+                title: 'Type',
+                width: '150px',
+                dataIndex: 'type'
               },
               {
                 title: 'Product',
@@ -137,67 +149,7 @@ class TransactionDetail extends Component {
                 }
               }
             ]}
-            dataSource={product}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab="Service" key="2">
-          <Table
-            loading={loading}
-            rowKey={(record, key) => key}
-            pagination={{ pageSize: 5 }}
-            bordered
-            size="small"
-            scroll={{ x: '680px', y: '220px' }}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no'
-              },
-              {
-                title: 'Service',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '300px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  // const disc1 = record.disc1
-                  // const disc2 = record.disc2
-                  // const disc3 = record.disc3
-                  // const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            dataSource={service}
+            dataSource={listTrans}
             style={{ marginBottom: 16 }}
           />
         </TabPane>

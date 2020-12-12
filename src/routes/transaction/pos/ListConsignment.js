@@ -6,7 +6,7 @@ import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const ListConsignment = ({ onChooseItem, pos, loading, dispatch, ...tableProps }) => {
+const ListConsignment = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
   const { searchText } = pos
 
   const handleMenuClick = (record) => {
