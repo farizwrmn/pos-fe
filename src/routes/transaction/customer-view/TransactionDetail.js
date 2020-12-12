@@ -112,6 +112,7 @@ class TransactionDetail extends Component {
               },
               {
                 title: 'Type',
+                width: '200px',
                 dataIndex: 'type'
               },
               {
