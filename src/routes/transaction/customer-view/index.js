@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { Form, Input, Row, Card } from 'antd'
 import TransactionDetail from './TransactionDetail'
 
-const { getCashierTrans, getServiceTrans } = lstorage
+const { getCashierTrans, getServiceTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -34,6 +34,7 @@ class Pos extends Component {
     dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
     product: [],
     service: [],
+    consignment: [],
     memberInformation: {}
   }
 
@@ -53,6 +54,7 @@ class Pos extends Component {
         dineInTax: Number(localStorage.getItem('dineInTax')),
         product: getCashierTrans(),
         service: getServiceTrans(),
+        consignment: getConsignment(),
         memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : []
       })
       this.setState({ loading: false })
@@ -65,12 +67,13 @@ class Pos extends Component {
       dineInTax,
       product,
       service,
+      consignment,
       loading,
       memberInformation
     } = this.state
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
-    let dataPos = product.concat(service)
+    let dataPos = product.concat(service).concat(consignment)
     const totalDiscount = memberInformation.useLoyalty || 0
     let totalPayment = dataPos.reduce((cnt, o) => cnt + o.total, 0)
     let totalQty = dataPos.reduce((cnt, o) => { return cnt + parseInt(o.qty, 10) }, 0)
@@ -86,6 +89,7 @@ class Pos extends Component {
             dispatch={dispatch}
             product={product}
             service={service}
+            consignment={consignment}
             loading={loading}
           />
           <Form>
