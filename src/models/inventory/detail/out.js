@@ -90,7 +90,7 @@ export default {
             }
           })
         }
-        yield put(routerRedux.push('/inventory/transfer/out/'))
+        yield put(routerRedux.push('/inventory/transfer/out'))
         Modal.info({
           title: 'Transaction has been canceled'
         })
