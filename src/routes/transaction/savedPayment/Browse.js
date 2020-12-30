@@ -151,7 +151,7 @@ const BrowseGroup = ({
           ) ? [
               { key: '1', name: 'Print', icon: 'printer' },
               { key: '2', name: 'Payment', icon: 'pay-circle-o' },
-              { key: '3', name: 'Void', icon: 'delete' }
+              { key: '3', name: 'Void', icon: 'delete', disabled: user.permissions.role === 'ADM' }
             ] : [
               { key: '1', name: 'Print', icon: 'printer' }
             ]}
