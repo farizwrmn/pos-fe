@@ -16,6 +16,7 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
   const { listAccountCode } = accountCode
 
   const formProps = {
+    loading,
     item: currentItem,
     from,
     to,

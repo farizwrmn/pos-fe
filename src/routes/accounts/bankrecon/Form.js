@@ -27,6 +27,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  loading,
   onSubmit,
   listAccountCode,
   from,
@@ -94,7 +95,7 @@ const FormCounter = ({
           <Col span={2}>
             <FormItem>
               {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" icon="search" onClick={handleSubmit} style={{ float: 'right' }} />
+              <Button type="primary" icon="search" loading={loading && loading.effects['bankentry/queryBankRecon']} disabled={loading && loading.effects['bankentry/queryBankRecon']} onClick={handleSubmit} style={{ float: 'right' }} />
             </FormItem>
           </Col>
         </Row>

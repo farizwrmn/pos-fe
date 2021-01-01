@@ -54,6 +54,13 @@ const List = ({ dispatch, ...tableProps, summaryBankRecon }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Status',
       dataIndex: 'recon',
       key: 'recon',
