@@ -17,6 +17,7 @@ const Cash = ({ payableForm, accountCode, bank, paymentOpts, supplier, loading, 
     currentItemList,
     modalType,
     activeKey,
+    pagination,
     list
   } = payableForm
   const { listAccountCodeLov } = accountCode
@@ -39,8 +40,20 @@ const Cash = ({ payableForm, accountCode, bank, paymentOpts, supplier, loading, 
     dataSource: list,
     user,
     storeInfo,
+    pagination,
     loading: loading.effects['payableForm/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({
@@ -309,13 +322,13 @@ export default connect(({
   loading,
   purchase,
   app }) =>
-  ({
-    payableForm,
-    accountCode,
-    paymentOpts,
-    bank,
-    supplier,
-    loading,
-    purchase,
-    app
-  }))(Cash)
+({
+  payableForm,
+  accountCode,
+  paymentOpts,
+  bank,
+  supplier,
+  loading,
+  purchase,
+  app
+}))(Cash)
