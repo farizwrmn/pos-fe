@@ -33,7 +33,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
             style: 'header'
           },
           {
-            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 970, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 1570, y2: 5, lineWidth: 0.5 }]
           }
         ]
       }
@@ -48,6 +48,9 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'NAMA', style: 'tableHeader' },
       { text: 'MEREK', style: 'tableHeader' },
       { text: 'KATEGORI', style: 'tableHeader' },
+      { text: 'QTY', style: 'tableHeader' },
+      { text: 'MARGIN', style: 'tableHeader' },
+      { text: 'MODAL', style: 'tableHeader' },
       { text: 'HARGA JUAL', style: 'tableHeader' },
       { text: 'HARGA POKOK', style: 'tableHeader' },
       { text: 'HARGA DIST-1', style: 'tableHeader' },
@@ -57,18 +60,21 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
   ]
 
   const createTableBody = (tableBody) => {
-    const body = tableBody.map((specification, index) => (
+    const body = tableBody.map((list, index) => (
       [
         { text: index + 1, alignment: 'center' },
-        { text: (specification.productCode || '').toString(), alignment: 'left' },
-        { text: (specification.productName || '').toString(), alignment: 'left' },
-        { text: (specification.brandName || '').toString(), alignment: 'left' },
-        { text: (specification.categoryName || '').toString(), alignment: 'left' },
-        { text: (specification.sellPrice || 0).toLocaleString(), alignment: 'right' },
-        { text: (specification.costPrice || 0).toLocaleString(), alignment: 'right' },
-        { text: (specification.distPrice01 || 0).toLocaleString(), alignment: 'right' },
-        { text: (specification.distPrice02 || 0).toLocaleString(), alignment: 'right' },
-        { text: (specification.distPrice03 || 0).toLocaleString(), alignment: 'right' }
+        { text: (list.productCode || '').toString(), alignment: 'left' },
+        { text: (list.productName || '').toString(), alignment: 'left' },
+        { text: (list.brandName || '').toString(), alignment: 'left' },
+        { text: (list.categoryName || '').toString(), alignment: 'left' },
+        { text: (list.count || 0).toLocaleString(), alignment: 'right' },
+        { text: (`${Math.round(((parseFloat(list.sellPrice) - parseFloat(list.costPrice)) / parseFloat(list.sellPrice)) * 100)} %` || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.costPrice || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.sellPrice || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.costPrice || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.distPrice01 || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.distPrice02 || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.distPrice03 || 0).toLocaleString(), alignment: 'right' }
       ]
     ))
     return body
@@ -80,7 +86,7 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
 
       stack: [
         {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 970, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 1570, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
@@ -121,8 +127,8 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    width: ['4%', '15%', '19%', '14%', '8%', '8%', '8%', '8%', '8%', '8%'],
-    pageSize: { width: 1000, height: 530 },
+    width: ['3%', '10%', '10%', '10%', '10%', '6%', '6%', '6%', '8%', '8%', '8%', '8%', '8%'],
+    pageSize: { width: 1600, height: 830 },
     pageOrientation: 'landscape',
     pageMargins: [15, 140, 15, 60],
     tableStyle: styles,
