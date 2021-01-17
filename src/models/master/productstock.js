@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
+import { query as querySequence } from 'services/sequence'
 import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
@@ -26,6 +27,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    lastTrans: '',
     activeKey: '0',
     disable: '',
     searchText: '',
@@ -76,6 +78,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (pathname === '/stock') {
+          dispatch({ type: 'queryLastAdjust' })
           if (!activeKey) dispatch({ type: 'refreshView' })
           if (activeKey === '1') {
             if (mode === 'inventory') {
@@ -108,6 +111,18 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'PS',
+        type: 1,
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
+
     * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
@@ -528,6 +543,11 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
+
     showLoading (state) {
       return {
         ...state,

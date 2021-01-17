@@ -12,7 +12,7 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
-  const { listBrand, display, isChecked, modalType, currentItem, activeKey, disable, show } = productbrand
+  const { listBrand, lastTrans, display, isChecked, modalType, currentItem, activeKey, disable, show } = productbrand
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -115,6 +115,7 @@ const ProductBrand = ({ productbrand, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    lastTrans,
     modalType,
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,

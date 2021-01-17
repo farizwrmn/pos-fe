@@ -48,7 +48,8 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
     modalProductVisible,
     countStoreList,
     modalQuantityVisible,
-    inventoryMode
+    inventoryMode,
+    lastTrans
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -260,6 +261,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
   }
 
   const formProps = {
+    lastTrans,
     listSpecification,
     listSpecificationCode,
     listVariantStock,

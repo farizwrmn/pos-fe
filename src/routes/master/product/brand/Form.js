@@ -25,6 +25,7 @@ const column = {
 }
 
 const formProductBrand = ({
+  lastTrans,
   item = {},
   onSubmit,
   disabled,
@@ -92,7 +93,7 @@ const formProductBrand = ({
         <Col {...column}>
           <FormItem label="Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('brandCode', {
-              initialValue: item.brandCode,
+              initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.brandCode,
               rules: [
                 {
                   required: true,
@@ -100,7 +101,7 @@ const formProductBrand = ({
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
+            })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={10} autoFocus />)}
           </FormItem>
           <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('brandName', {
