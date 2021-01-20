@@ -925,6 +925,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/accountingStatement'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounting/statement'))
             }, 'report-accounting-profit-loss')
           }
