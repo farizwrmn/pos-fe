@@ -225,6 +225,22 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'master/store-price',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              cb(null, require('./routes/storePrice/stockExtraPriceStore'))
+            }, 'store-price')
+          }
+        }, {
+          path: 'master/store-price-upload',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/storePrice/stockPriceUpload'))
+              cb(null, require('./routes/storePrice/stockPriceUpload'))
+            }, 'store-price-upload')
+          }
+        }, {
           path: 'master/product/stock/import',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

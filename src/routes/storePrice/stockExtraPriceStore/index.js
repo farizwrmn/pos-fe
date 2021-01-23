@@ -9,13 +9,13 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = accountCode
+const Counter = ({ stockExtraPriceStore, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = stockExtraPriceStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'accountCode/query',
+        type: 'stockExtraPriceStore/query',
         payload: {
           ...value
         }
@@ -28,7 +28,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['accountCode/query'],
+    loading: loading.effects['stockExtraPriceStore/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +50,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/editItem',
+        type: 'stockExtraPriceStore/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'accountCode/delete',
+        type: 'stockExtraPriceStore/delete',
         payload: id
       })
     }
@@ -64,7 +64,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'accountCode/changeTab',
+      type: 'stockExtraPriceStore/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,12 +75,12 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'accountCode/updateState', payload: { list: [] } })
+    dispatch({ type: 'stockExtraPriceStore/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'accountCode/updateState',
+      type: 'stockExtraPriceStore/updateState',
       payload: {
         activeKey: '1'
       }
@@ -93,7 +93,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
-        type: `accountCode/${modalType}`,
+        type: `stockExtraPriceStore/${modalType}`,
         payload: data
       })
     },
@@ -106,7 +106,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/updateState',
+        type: 'stockExtraPriceStore/updateState',
         payload: {
           currentItem: {}
         }
@@ -139,11 +139,11 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  accountCode: PropTypes.object,
+  stockExtraPriceStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, loading, app }) => ({ accountCode, loading, app }))(Counter)
+export default connect(({ stockExtraPriceStore, loading, app }) => ({ stockExtraPriceStore, loading, app }))(Counter)
