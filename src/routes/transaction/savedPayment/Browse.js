@@ -121,11 +121,11 @@ const BrowseGroup = ({
       key: 'status',
       width: 100,
       render: text =>
-        (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+          {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: 'A'
@@ -151,9 +151,10 @@ const BrowseGroup = ({
           ) ? [
               { key: '1', name: 'Print', icon: 'printer' },
               { key: '2', name: 'Payment', icon: 'pay-circle-o' },
-              { key: '3', name: 'Void', icon: 'delete', disabled: user.permissions.role === 'ADM' }
+              { key: '3', name: 'Void', icon: 'delete' }
             ] : [
-              { key: '1', name: 'Print', icon: 'printer' }
+              { key: '1', name: 'Print', icon: 'printer' },
+              { key: '3', name: 'Void', icon: 'delete' }
             ]}
         />)
       }

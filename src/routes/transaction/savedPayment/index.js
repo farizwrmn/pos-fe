@@ -7,10 +7,25 @@ import moment from 'moment'
 import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
+import ModalLogin from '../ModalLogin'
 
-const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
-  const { listPayment, listPaymentDetail, invoiceCancel, modalCancelVisible, memberPrint, mechanicPrint,
-    pagination, modalPrintVisible, tmpListPayment, posData, cashierInformation } = pos
+const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
+  const {
+    listPayment,
+    listPaymentDetail,
+    invoiceCancel,
+    modalCancelVisible,
+    memberPrint,
+    mechanicPrint,
+    pagination,
+    modalPrintVisible,
+    tmpListPayment,
+    posData,
+    cashierInformation,
+    modalLoginVisible,
+    modalLoginType
+  } = pos
+  const { modalLoginData } = login
   const { companyInfo } = payment
   const { storeInfo } = app
 
@@ -132,9 +147,21 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
     confirmLoading: loading.effects['payment/printPayment'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
+      // dispatch({
+      //   type: 'pos/cancelInvoice',
+      //   payload: data
+      // })
       dispatch({
-        type: 'pos/cancelInvoice',
-        payload: data
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'cancelHistory'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
       })
     },
     onCancel () {
@@ -208,8 +235,29 @@ const Pos = ({ location, dispatch, loading, pos, payment, app }) => {
     size: 'small'
   }
 
+  const modalLoginProps = {
+    modalLoginType,
+    modalLoginData,
+    visible: modalLoginVisible,
+    title: 'Supervisor Verification',
+    width: '320px',
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'pos/hideModalLogin'
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div>
+      {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
       <Browse {...browseProps} />
       <Modal {...modalProps} />
       <ModalCancel {...modalCancelProps} />
@@ -227,4 +275,4 @@ Pos.propTypes = {
 }
 
 
-export default connect(({ pos, payment, loading, app }) => ({ pos, payment, loading, app }))(Pos)
+export default connect(({ login, pos, payment, loading, app }) => ({ login, pos, payment, loading, app }))(Pos)

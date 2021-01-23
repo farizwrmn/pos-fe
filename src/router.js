@@ -739,8 +739,11 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/history'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/login'))
+              registerModel(app, require('./models/master/employee'))
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/notification/salesDiscount'))
               cb(null, require('./routes/transaction/history/'))
             }, 'transaction-pos-history')
           }
