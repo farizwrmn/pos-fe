@@ -77,6 +77,9 @@ export default modelExtend(pageModel, {
             type: 'query'
           })
         }
+        if (pathname === '/master/store-price') {
+          dispatch({ type: 'query' })
+        }
         if (pathname === '/stock') {
           dispatch({ type: 'queryLastAdjust' })
           if (!activeKey) dispatch({ type: 'refreshView' })

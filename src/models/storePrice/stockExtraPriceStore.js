@@ -70,8 +70,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
-      if (data.success) {
+      const { data, resetFields } = payload
+      const response = yield call(add, data)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -83,11 +84,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        resetFields()
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            currentItem: data
           }
         })
         throw data
@@ -95,10 +97,11 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      const { data, resetFields } = payload
       const id = yield select(({ stockExtraPriceStore }) => stockExtraPriceStore.currentItem.id)
-      const newCounter = { ...payload, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
+      const newCounter = { ...data, id }
+      const response = yield call(edit, newCounter)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -116,6 +119,7 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        resetFields()
       } else {
         yield put({
           type: 'updateState',

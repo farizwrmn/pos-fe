@@ -23,7 +23,10 @@ export default modelExtend(pageModel, {
             payload: location.query
           })
         }
-        if (location.pathname === '/marketing/promo' || location.pathname === '/report/accounting/profit-loss') {
+        if (location.pathname === '/marketing/promo'
+          || location.pathname === '/report/accounting/profit-loss'
+          || location.pathname === '/master/store-price'
+          || location.pathname === '/master/store-price-upload') {
           dispatch({
             type: 'getAllListStores'
             // payload: location.query

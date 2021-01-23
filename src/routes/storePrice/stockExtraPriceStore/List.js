@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import moment from 'moment'
+import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
 
@@ -21,19 +23,53 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Store',
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Product',
+      dataIndex: 'product.productName',
+      key: 'product.productName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Sell Price',
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Dist 01',
+      dataIndex: 'distPrice01',
+      key: 'distPrice01',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Dist 02',
+      dataIndex: 'distPrice02',
+      key: 'distPrice02',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Dist 03',
+      dataIndex: 'distPrice03',
+      key: 'distPrice03',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Updated By',
+      dataIndex: 'updatedBy',
+      key: 'updatedBy'
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: _text => `${moment(_text).format('LLL')}`
     },
     {
       title: 'Operation',
@@ -41,7 +77,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]

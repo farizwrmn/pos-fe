@@ -9,8 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ stockExtraPriceStore, loading, dispatch, location, app }) => {
+const Counter = ({ userStore, stockExtraPriceStore, productstock, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = stockExtraPriceStore
+  const { list: listProduct } = productstock
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,15 +89,43 @@ const Counter = ({ stockExtraPriceStore, loading, dispatch, location, app }) => 
     })
   }
 
+  let timeout
   const formProps = {
+    list: listProduct,
+    listAllStores,
+    loading,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, resetFields) {
       dispatch({
         type: `stockExtraPriceStore/${modalType}`,
-        payload: data
+        payload: { data, resetFields }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     },
     onCancel () {
       const { pathname } = location
@@ -139,6 +169,8 @@ const Counter = ({ stockExtraPriceStore, loading, dispatch, location, app }) => 
 }
 
 Counter.propTypes = {
+  userStore: PropTypes.object,
+  productstock: PropTypes.object,
   stockExtraPriceStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -146,4 +178,8 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ stockExtraPriceStore, loading, app }) => ({ stockExtraPriceStore, loading, app }))(Counter)
+export default connect(({
+  userStore, productstock, stockExtraPriceStore, loading, app
+}) => ({
+  userStore, productstock, stockExtraPriceStore, loading, app
+}))(Counter)
