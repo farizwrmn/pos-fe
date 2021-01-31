@@ -7,6 +7,7 @@ import { FooterToolbar } from 'components'
 import ListDetail from './ListDetail'
 import ListTransferOut from './ListTransferOut'
 import ModalList from './Modal'
+import PrintPDF from './PrintPDF'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -36,6 +37,8 @@ const FormCounter = ({
   item = {},
   showLov,
   onSubmit,
+  user,
+  storeInfo,
   listLovProps,
   modalShow,
   modalType,
@@ -168,6 +171,19 @@ const FormCounter = ({
     }
   }
 
+
+  const printProps = {
+    // listItem: listProducts,
+    // itemPrint: transHeader,
+    // itemHeader: transHeader,
+    listItem,
+    itemPrint: item,
+    itemHeader: item,
+    storeInfo,
+    user,
+    printNo: 1
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -205,6 +221,7 @@ const FormCounter = ({
         </Row>
         <Row>
           <Col {...column}>
+            {modalType === 'edit' && <PrintPDF {...printProps} />}
             <Button type="primary" size="large" disabled={modalType === 'edit'} onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Transfer Out</Button>
           </Col>
           <Col {...column} />

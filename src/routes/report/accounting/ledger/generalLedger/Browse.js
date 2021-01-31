@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
+import { getLinkName } from 'utils/string'
 
 const { formatNumberIndonesia } = numberFormat
 
@@ -14,15 +15,27 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
     {
       title: 'Account Code',
       dataIndex: 'accountCode',
-      key: 'accountCode',
-      width: '20%'
+      key: 'accountCode'
+    },
+    {
+      title: 'Account Name',
+      dataIndex: 'accountName',
+      key: 'accountName'
+    },
+    {
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      render: (text, record) => {
+        const link = getLinkName(record.transactionId, record.transNo, record.transactionType)
+        return <a target="__blank" href={link}>{text}</a>
+      }
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: text => moment(text).format('LL'),
-      width: '20%'
+      render: text => moment(text).format('LL')
     },
     {
       title: 'Debit',
@@ -32,8 +45,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
         <div>
           {formatNumberIndonesia(parseFloat(text || 0))}
         </div>
-      ),
-      width: '30%'
+      )
     },
     {
       title: 'Credit',
@@ -43,8 +55,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
         <div>
           {formatNumberIndonesia(parseFloat(text || 0))}
         </div>
-      ),
-      width: '30%'
+      )
     }
   ]
 

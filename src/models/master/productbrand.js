@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/master/productbrand'
-import { pageModel } from './../common'
+import { query as querySequence } from 'services/sequence'
+import { query, add, edit, remove } from 'services/master/productbrand'
+import { pageModel } from '../common'
 
 const success = () => {
   message.success('Brand Product has been saved')
@@ -14,6 +15,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalType: 'add',
+    lastTrans: '',
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
@@ -29,6 +31,7 @@ export default modelExtend(pageModel, {
         const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/master/product/brand') {
+          dispatch({ type: 'queryLastAdjust' })
           if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({
             type: 'updateState',
@@ -50,6 +53,17 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'BR',
+        type: 1,
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -139,6 +153,10 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }

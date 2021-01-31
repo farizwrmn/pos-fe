@@ -29,7 +29,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
         let item = rows[key]
         let row = [
           { text: '', alignment: 'left', fontSize: 11 },
-          { text: (item.accountName || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
           { text: '', alignment: 'left', fontSize: 11 }
         ]

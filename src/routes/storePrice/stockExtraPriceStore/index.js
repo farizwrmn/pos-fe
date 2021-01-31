@@ -9,13 +9,15 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = accountCode
+const Counter = ({ userStore, stockExtraPriceStore, productstock, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = stockExtraPriceStore
+  const { list: listProduct } = productstock
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'accountCode/query',
+        type: 'stockExtraPriceStore/query',
         payload: {
           ...value
         }
@@ -28,7 +30,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['accountCode/query'],
+    loading: loading.effects['stockExtraPriceStore/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +52,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/editItem',
+        type: 'stockExtraPriceStore/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'accountCode/delete',
+        type: 'stockExtraPriceStore/delete',
         payload: id
       })
     }
@@ -64,7 +66,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'accountCode/changeTab',
+      type: 'stockExtraPriceStore/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,27 +77,55 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'accountCode/updateState', payload: { list: [] } })
+    dispatch({ type: 'stockExtraPriceStore/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'accountCode/updateState',
+      type: 'stockExtraPriceStore/updateState',
       payload: {
         activeKey: '1'
       }
     })
   }
 
+  let timeout
   const formProps = {
+    list: listProduct,
+    listAllStores,
+    loading,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, resetFields) {
       dispatch({
-        type: `accountCode/${modalType}`,
-        payload: data
+        type: `stockExtraPriceStore/${modalType}`,
+        payload: { data, resetFields }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     },
     onCancel () {
       const { pathname } = location
@@ -106,7 +136,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/updateState',
+        type: 'stockExtraPriceStore/updateState',
         payload: {
           currentItem: {}
         }
@@ -139,11 +169,17 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  accountCode: PropTypes.object,
+  userStore: PropTypes.object,
+  productstock: PropTypes.object,
+  stockExtraPriceStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, loading, app }) => ({ accountCode, loading, app }))(Counter)
+export default connect(({
+  userStore, productstock, stockExtraPriceStore, loading, app
+}) => ({
+  userStore, productstock, stockExtraPriceStore, loading, app
+}))(Counter)

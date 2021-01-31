@@ -23,7 +23,10 @@ export default modelExtend(pageModel, {
             payload: location.query
           })
         }
-        if (location.pathname === '/marketing/promo') {
+        if (location.pathname === '/marketing/promo'
+          || location.pathname === '/report/accounting/profit-loss'
+          || location.pathname === '/master/store-price'
+          || location.pathname === '/master/store-price-upload') {
           dispatch({
             type: 'getAllListStores'
             // payload: location.query
@@ -105,7 +108,6 @@ export default modelExtend(pageModel, {
     },
     * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
-      console.log('data', data)
       if (data.success) {
         messageInfo(data.message, 'info', 3)
         yield put({

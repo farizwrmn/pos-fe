@@ -18,6 +18,7 @@ export default {
     data: [],
     listDetail: [],
     listAmount: [],
+    listAmountInvoice: [],
     listPaymentOpts: [],
     modalVisible: false,
     modalCancelVisible: false
@@ -71,6 +72,7 @@ export default {
       const data = yield call(queryDetail, payload)
       let dataPos = []
       let dataPayment = []
+      let dataPaymentInvoice = []
       for (let n = 0; n < data.pos.length; n += 1) {
         dataPos.push({
           no: n + 1,
@@ -111,6 +113,29 @@ export default {
           })
         }
       }
+      if (payment && payment.invoice) {
+        for (let n = 0; n < payment.invoice.length; n += 1) {
+          dataPaymentInvoice.push({
+            no: n + 1,
+            id: payment.invoice[n].id,
+            cashierTransId: payment.invoice[n].cashierTransId,
+            active: payment.invoice[n].active,
+            storeId: payment.invoice[n].storeId,
+            transDate: payment.invoice[n].transDate,
+            transTime: payment.invoice[n].transTime,
+            typeCode: payment.invoice[n].typeCode,
+            paymentMachine: payment.invoice[n].paymentMachine,
+            cost: payment.invoice[n].cost,
+            cardNo: payment.invoice[n].cardNo,
+            cardName: payment.invoice[n].cardName,
+            chargeNominal: payment.invoice[n].chargeNominal,
+            chargePercent: payment.invoice[n].chargePercent,
+            chargeTotal: payment.invoice[n].chargeTotal,
+            description: payment.invoice[n].description,
+            paid: payment.invoice[n].paid || 0
+          })
+        }
+      }
       if (invoiceInfo.data && invoiceInfo.data.length > 0) {
         if (data.success) {
           yield put({
@@ -123,7 +148,8 @@ export default {
             type: 'updateState',
             payload: {
               listDetail: dataPos,
-              listAmount: dataPayment
+              listAmount: dataPayment,
+              listAmountInvoice: dataPaymentInvoice
             }
           })
         }

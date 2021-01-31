@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Table, Modal, Tag } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import moment from 'moment'
 
-const { MonthPicker } = DatePicker
+// const { MonthPicker } = DatePicker
 
 const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
   const columns = [
@@ -57,22 +57,60 @@ const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
       }
     },
     {
+      title: 'Posting',
+      dataIndex: 'posting',
+      key: 'posting',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Posted
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Not Posted
+          </Tag>
+        )
+      }
+    },
+    {
+      title: 'Paid',
+      dataIndex: 'paid',
+      key: 'paid',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Paid
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Not Paid
+          </Tag>
+        )
+      }
+    },
+    {
       title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo'
     }
   ]
 
-  const onChange = (date, dateString) => {
-    let dateFormat = moment(dateString).format('YYYY-MM-DD')
-    let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
-    changePeriod(dateFormat, lastDate)
-  }
+  // const onChange = (date, dateString) => {
+  //   let dateFormat = moment(dateString).format('YYYY-MM-DD')
+  //   let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
+  //   changePeriod(dateFormat, lastDate)
+  // }
 
   return (
     <div>
       <Modal {...modalProps}>
-        <MonthPicker style={{ marginBottom: 10 }} onChange={onChange} placeholder="Select Period" />
+        {/* <MonthPicker style={{ marginBottom: 10 }} onChange={onChange} placeholder="Select Period" /> */}
         <Table {...tableProps}
           bordered
           columns={columns}

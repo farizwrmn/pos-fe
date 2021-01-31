@@ -6,7 +6,7 @@ import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from 'services/sequence'
 import { queryById, query, queryId, add, edit, remove } from 'services/transfer/transferInvoice'
 import { query as queryDetail } from 'services/transfer/transferInvoiceDetail'
-import { queryCost } from 'services/transferStockOut'
+import { queryDetail as queryTransferDetail, queryCost } from 'services/transferStockOut'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -147,8 +147,16 @@ export default modelExtend(pageModel, {
 
     * addItem ({ payload }, { select, call, put }) {
       const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
+      const filtered = listItem.filter(filtered => filtered.id === payload)
+      if (filtered && filtered[0]) {
+        message.success('item already exists')
+      }
       const data = yield call(queryDetail, {
         transferId: payload.data.id
+      })
+      const transferDetail = yield call(queryTransferDetail, {
+        transNo: payload.data.transNo,
+        storeId: payload.data.storeId
       })
       const cost = yield call(queryCost, {
         transNo: payload.data.transNo,
@@ -158,14 +166,24 @@ export default modelExtend(pageModel, {
       if (!cost.success) {
         throw cost
       }
+      if (!transferDetail.success) {
+        throw transferDetail
+      }
       if (data.success) {
         if (data.data.length === 0) {
           const newListItem = ([]).concat(listItem)
-          const amount = cost.data ? cost
-            .data
+          let amount = 0
+          amount = transferDetail.mutasi ? transferDetail.mutasi
             .reduce(
               (prev, next) => prev + (parseFloat(next.purchasePrice) * parseFloat(next.qty)),
               0) : 0
+          if (amount === 0) {
+            amount = cost.data ? cost
+              .data
+              .reduce(
+                (prev, next) => prev + (parseFloat(next.purchasePrice) * parseFloat(next.qty)),
+                0) : 0
+          }
           if (amount === 0) {
             throw new Error('Transfer total is 0')
           }
@@ -199,7 +217,6 @@ export default modelExtend(pageModel, {
       const data = yield call(queryId, { id: payload.edit, relationship: 1 })
       if (data.success) {
         const { transferInvoiceDetail, ...currentItem } = data.data
-        console.log('transferInvoiceDetail', transferInvoiceDetail)
         yield put({
           type: 'updateState',
           payload: {
