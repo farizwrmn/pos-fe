@@ -19,7 +19,8 @@ import {
   Col,
   Card,
   Button,
-  Modal
+  Modal,
+  message
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
@@ -34,7 +35,7 @@ import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
-import ModalLogin from './ModalLogin'
+import ModalLogin from '../ModalLogin'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -799,6 +800,10 @@ const Pos = ({
       })
     },
     onChooseItem (data) {
+      if (data && data.qty === 0) {
+        message.warning('Qty is 0')
+        return
+      }
       if (
         itemPayment.qty !== data.qty
         && itemPayment.disc1 === data.disc1

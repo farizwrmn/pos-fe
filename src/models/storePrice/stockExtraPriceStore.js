@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/accountCode'
+import { query, add, edit, remove } from 'services/storePrice/stockExtraPriceStore'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Store Price has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'accountCode',
+  namespace: 'stockExtraPriceStore',
 
   state: {
     currentItem: {},
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/master/store-price') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -70,8 +70,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
-      if (data.success) {
+      const { data, resetFields } = payload
+      const response = yield call(add, data)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -83,11 +84,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        resetFields()
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            currentItem: data
           }
         })
         throw data
@@ -95,10 +97,11 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
-      const newCounter = { ...payload, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
+      const { data, resetFields } = payload
+      const id = yield select(({ stockExtraPriceStore }) => stockExtraPriceStore.currentItem.id)
+      const newCounter = { ...data, id }
+      const response = yield call(edit, newCounter)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -116,6 +119,7 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        resetFields()
       } else {
         yield put({
           type: 'updateState',

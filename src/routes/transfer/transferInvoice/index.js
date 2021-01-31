@@ -212,25 +212,23 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
     visible: listLovVisible,
     user,
     storeInfo,
-    pagination,
+    pagination: false,
     loading: loading.effects['transferOut/queryLov'],
     location,
-    onChange (page) {
-      const { query } = location
-      dispatch({
-        type: 'transferOut/query',
-        payload: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-          listLovVisible: false,
-          storeId: lstorage.getCurrentUserStore(),
-          storeIdReceiver: currentItem.storeIdReceiver,
-          status: 1
-        }
-      })
-    },
-    changePeriod (storeIdReceiver, start, end) {
+    // onChange (page) {
+    //   dispatch({
+    //     type: 'transferOut/query',
+    //     payload: {
+    //       page: page.current,
+    //       pageSize: page.pageSize,
+    //       listLovVisible: false,
+    //       storeId: lstorage.getCurrentUserStore(),
+    //       storeIdReceiver: currentItem.storeIdReceiver,
+    //       status: 1
+    //     }
+    //   })
+    // },
+    changePeriod (storeIdReceiver) {
       dispatch({
         type: 'transferInvoice/updateState',
         payload: {
@@ -245,8 +243,9 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
       dispatch({
         type: 'transferOut/queryLov',
         payload: {
-          start,
-          end,
+          // start,
+          // end,
+          posting: 1,
           storeId: lstorage.getCurrentUserStore(),
           storeIdReceiver,
           status: 1
@@ -254,6 +253,11 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
       })
     },
     addModalItem (data) {
+      const filtered = listItem.filter(filtered => filtered.id === data.id)
+      if (filtered && filtered[0]) {
+        message.warning('item already exists')
+        return
+      }
       dispatch({
         type: 'transferInvoice/addItem',
         payload: {
@@ -284,6 +288,8 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
 
   let timeout
   const formProps = {
+    user,
+    storeInfo,
     listStore,
     listLovProps,
     dispatch,
@@ -293,7 +299,6 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
     modalProps,
     listDetailProps,
     listItem,
-    storeInfo,
     item: currentItem,
     loading: loading.effects['transferInvoice/add'] || loading.effects['transferInvoice/edit'] || loading.effects['transferInvoice/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -357,7 +362,7 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
         }
       })
     },
-    modalShow (storeIdReceiver, start, end) { // string
+    modalShow (storeIdReceiver) { // string
       dispatch({
         type: 'transferInvoice/updateState',
         payload: {
@@ -372,8 +377,9 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
       dispatch({
         type: 'transferOut/queryLov',
         payload: {
-          start,
-          end,
+          // start,
+          // end,
+          posting: 1,
           storeId: lstorage.getCurrentUserStore(),
           storeIdReceiver,
           status: 1
@@ -474,11 +480,10 @@ export default connect(({
   transferOut,
   loading,
   app
-}) =>
-  ({
-    transferInvoice,
-    accountCode,
-    transferOut,
-    loading,
-    app
-  }))(TransferInvoice)
+}) => ({
+  transferInvoice,
+  accountCode,
+  transferOut,
+  loading,
+  app
+}))(TransferInvoice)

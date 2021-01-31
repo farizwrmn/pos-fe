@@ -133,6 +133,44 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       }
     },
     {
+      title: 'Posting',
+      dataIndex: 'posting',
+      key: 'posting',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Posted
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Not Posted
+          </Tag>
+        )
+      }
+    },
+    {
+      title: 'Paid',
+      dataIndex: 'paid',
+      key: 'paid',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Paid
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Not Paid
+          </Tag>
+        )
+      }
+    },
+    {
       title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo',

@@ -70,7 +70,15 @@ const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, on
 
   const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
   const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
-  const totalPrice = dataBrowse.reduce((prev, next) => prev + (next.price || 0), 0)
+  const totalPrice = dataBrowse.reduce((prev, next) => {
+    if (next.In > 0) {
+      return prev + (parseFloat(next.price) * parseFloat(next.In) || 0)
+    }
+    if (next.Out > 0) {
+      return prev + (parseFloat(next.price) * parseFloat(next.Out) || 0)
+    }
+    return 0
+  }, 0)
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const listAccountOpt = (listAccountCode || []).length > 0
     ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>)

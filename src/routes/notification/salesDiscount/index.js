@@ -51,7 +51,7 @@ class SalesDiscount extends Component {
 
     const handleClick = (item) => {
       Modal.confirm({
-        title: 'Approve discount request',
+        title: 'Approve this request',
         onOk () {
           dispatch({
             type: 'salesDiscount/approve',
@@ -71,19 +71,29 @@ class SalesDiscount extends Component {
       <div>
         <Row>
           <Col lg={6}>
-            <h1>Sales Discount</h1>
+            <h1>Approval</h1>
             <div className={styles.content} >
               {listSalesDiscount && listSalesDiscount.length > 0 ? listSalesDiscount.map((item) => {
                 return (
                   <Card
-                    title={`${item.value.code} - ${item.value.name}`}
+                    title={item.value.transNo ? 'Cancel Invoice' : `${item.value.code} - ${item.value.name}`}
                     extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    <div>{`Created By: ${item.discountUser.fullName}`}</div>
-                    <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
-                    <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
-                    <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
+                    {item.value.transNo ? (
+                      <div>
+                        <div>{`Trans No: ${item.value.transNo}`}</div>
+                        <div>{`Memo: ${item.value.memo}`}</div>
+                      </div>
+                    )
+                      : (
+                        <div>
+                          <div>{`Created By: ${item.discountUser.fullName}`}</div>
+                          <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
+                          <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
+                          <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
+                        </div>
+                      )}
                   </Card>
                 )
               })

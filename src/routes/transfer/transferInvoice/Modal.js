@@ -63,7 +63,7 @@ class ModalList extends Component {
     return (
       <Modal {...modalOpts}
         footer={[
-          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem()} disabled={modalType === 'edit'}>Delete</Button>,
+          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem(item.no)} disabled={modalType === 'edit'}>Delete</Button>,
           <Button size="large" key="back" onClick={() => modalProps.onCancel()}>Cancel</Button>,
           <Button size="large" key="submit" type="primary" onClick={handleClick}>{total > 0 ? `Ok (${numberFormatter(parseInt(total, 10))})` : 'Ok'}</Button>
         ]}

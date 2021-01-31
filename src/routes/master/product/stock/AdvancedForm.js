@@ -47,6 +47,7 @@ const parentLeft = {
 }
 
 const AdvancedForm = ({
+  lastTrans,
   item = {},
   onSubmit,
   onCancel,
@@ -566,7 +567,7 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Product Code" hasFeedback {...formItemLayout}>
               {getFieldDecorator('productCode', {
-                initialValue: item.productCode,
+                initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.productCode,
                 rules: [
                   {
                     required: true,
@@ -574,7 +575,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
+              })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
             </FormItem>
             <FormItem label="Product Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('productName', {

@@ -1,17 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, message, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 9 },
+    xs: { span: 8 },
     sm: { span: 8 },
     md: { span: 7 }
   },
   wrapperCol: {
-    xs: { span: 15 },
+    xs: { span: 16 },
     sm: { span: 14 },
     md: { span: 14 }
   }
@@ -24,13 +24,11 @@ const column = {
   xl: { span: 12 }
 }
 
-const formProductBrand = ({
-  lastTrans,
+const FormCounter = ({
   item = {},
   onSubmit,
-  disabled,
-  modalType,
   onCancel,
+  modalType,
   button,
   form: {
     getFieldDecorator,
@@ -43,7 +41,7 @@ const formProductBrand = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 18
+        offset: modalType === 'edit' ? 10 : 19
       },
       sm: {
         offset: modalType === 'edit' ? 15 : 20
@@ -70,20 +68,16 @@ const formProductBrand = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.brandCode) {
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onSubmit(data.brandCode, data)
-            // setTimeout(() => {
-            resetFields()
-            // }, 500)
-          },
-          onCancel () { }
-        })
-      } else {
-        message.warning("Product Brand Code can't be null")
-      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          onSubmit(data)
+          // setTimeout(() => {
+          resetFields()
+          // }, 500)
+        },
+        onCancel () { }
+      })
     })
   }
 
@@ -91,29 +85,26 @@ const formProductBrand = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brandCode', {
-              initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.brandCode,
+          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountCode', {
+              initialValue: item.accountCode,
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-zA-Z0-9_]{3,}$/,
-                  message: 'a-Z & 0-9'
+                  pattern: /^[a-z0-9-/]{3,9}$/i
                 }
               ]
-            })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={10} autoFocus />)}
+            })(<Input maxLength={50} autoFocus />)}
           </FormItem>
-          <FormItem label="Brand Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('brandName', {
-              initialValue: item.brandName,
+          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountName', {
+              initialValue: item.accountName,
               rules: [
                 {
-                  required: true,
-                  pattern: /^.{3,20}$/,
-                  message: 'Brand Name must be between 3 and 20 characters'
+                  required: true
                 }
               ]
-            })(<Input />)}
+            })(<Input maxLength={50} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
@@ -125,12 +116,11 @@ const formProductBrand = ({
   )
 }
 
-formProductBrand.propTypes = {
+FormCounter.propTypes = {
   form: PropTypes.object.isRequired,
-  disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   button: PropTypes.string
 }
 
-export default Form.create()(formProductBrand)
+export default Form.create()(FormCounter)

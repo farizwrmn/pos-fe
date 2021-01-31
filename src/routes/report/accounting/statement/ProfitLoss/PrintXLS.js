@@ -74,7 +74,7 @@ const groupByType = (
     const item = list[type][key]
     try {
       let body = [
-        { value: `     ${item.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: `     ${item.accountCode} - ${item.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
         { value: (parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
       ]
       groupBody.push(body)
