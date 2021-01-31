@@ -36,18 +36,35 @@ const List = ({ ...tableProps, editList }) => {
       width: '50px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Price',
+      dataIndex: 'purchasePrice',
+      key: 'purchasePrice',
+      width: '50px',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Subtotal',
+      dataIndex: 'subtotal',
+      key: 'subtotal',
+      width: '75px',
+      className: styles.alignRight,
+      render: (text, record) => (parseFloat(record.qty) * parseFloat(record.purchasePrice) || '-').toLocaleString()
     }
   ]
 
   return (
     <div>
-      <Table {...tableProps}
+      <Table
         bordered={false}
         scroll={{ x: 500, y: 700 }}
         columns={columns}
         simple
         rowKey={record => record.no}
         onRowClick={record => handleMenuClick(record)}
+        {...tableProps}
       />
     </div>
   )

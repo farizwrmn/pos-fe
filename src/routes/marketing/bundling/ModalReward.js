@@ -58,7 +58,6 @@ const modal = ({
     ...formEditProps,
     onOk: handleOk
   }
-  console.log('item', item, item.distPrice02)
 
   return (
     <Modal title={`Reward for ${item.productCode} - ${item.productName}`}

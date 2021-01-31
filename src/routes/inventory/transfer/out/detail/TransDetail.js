@@ -11,14 +11,12 @@ const formPayment = ({
   form: {
     // getFieldDecorator,
     resetFields
-  }
+  },
+  ...formProps
 }) => {
   const listProps = {
     dataSource,
-    editList () {
-      // editItem(data)
-      resetFields()
-    }
+    ...formProps
   }
 
   return (

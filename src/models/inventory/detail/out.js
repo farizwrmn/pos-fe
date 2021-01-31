@@ -2,7 +2,7 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
-import { queryByTrans, queryDetail, voidTrans } from '../../../services/transferStockOut.js'
+import { queryByTrans, queryDetail, editPrice, queryPrice, postTrans, voidTrans } from '../../../services/transferStockOut.js'
 
 export default {
 
@@ -17,7 +17,9 @@ export default {
     listPaymentOpts: [],
     modalVisible: false,
     disableConfirm: false,
-    modalCancelVisible: false
+    modalCancelVisible: false,
+    modalEditVisible: false,
+    currentItem: {}
   },
 
   subscriptions: {
@@ -38,6 +40,77 @@ export default {
   },
 
   effects: {
+    * editListPrice ({ payload }, { call, put }) {
+      const response = yield call(queryPrice, {
+        storeId: payload.currentItem.storeId,
+        transNo: payload.currentItem.transNo,
+        productId: payload.currentItem.productId
+      })
+      if (response && response.success && response.data) {
+        const newCurrentItem = {
+          ...payload.currentItem,
+          purchasePrice: response.data.purchasePrice
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: newCurrentItem,
+            modalEditVisible: true
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload
+        })
+      }
+    },
+
+    * postTrans ({ payload }, { call, put }) {
+      const response = yield call(postTrans, payload.data)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditVisible: false,
+            currentItem: {}
+          }
+        })
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            transNo: payload.data.transNo,
+            storeId: payload.data.storeId
+          }
+        })
+        if (payload.resetFields) payload.resetFields()
+      } else {
+        throw response
+      }
+    },
+
+    * editPrice ({ payload }, { call, put }) {
+      const response = yield call(editPrice, payload.data)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditVisible: false,
+            currentItem: {}
+          }
+        })
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            transNo: payload.data.transNo,
+            storeId: payload.data.storeId
+          }
+        })
+        if (payload.resetFields) payload.resetFields()
+      } else {
+        throw response
+      }
+    },
     * queryDetail ({ payload }, { call, put }) {
       const invoiceInfo = yield call(queryByTrans, payload)
       const data = yield call(queryDetail, payload)
@@ -50,9 +123,13 @@ export default {
           dataDetail.push({
             no: n + 1,
             id: data.mutasi[n].id,
+            storeId: data.mutasi[n].storeId,
+            transNo: data.mutasi[n].transNo,
+            productId: data.mutasi[n].productId,
             productCode: data.mutasi[n].productCode,
             productName: data.mutasi[n].productName,
-            qty: data.mutasi[n].qty
+            qty: data.mutasi[n].qty,
+            purchasePrice: data.mutasi[n].purchasePrice
           })
         }
         if (data.success) {

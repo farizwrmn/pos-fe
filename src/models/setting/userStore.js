@@ -108,7 +108,6 @@ export default modelExtend(pageModel, {
     },
     * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
-      console.log('data', data)
       if (data.success) {
         messageInfo(data.message, 'info', 3)
         yield put({
