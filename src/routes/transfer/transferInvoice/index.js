@@ -288,6 +288,8 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
 
   let timeout
   const formProps = {
+    user,
+    storeInfo,
     listStore,
     listLovProps,
     dispatch,
@@ -297,7 +299,6 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
     modalProps,
     listDetailProps,
     listItem,
-    storeInfo,
     item: currentItem,
     loading: loading.effects['transferInvoice/add'] || loading.effects['transferInvoice/edit'] || loading.effects['transferInvoice/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -479,8 +480,7 @@ export default connect(({
   transferOut,
   loading,
   app
-}) =>
-({
+}) => ({
   transferInvoice,
   accountCode,
   transferOut,

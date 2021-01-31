@@ -217,7 +217,6 @@ export default modelExtend(pageModel, {
       const data = yield call(queryId, { id: payload.edit, relationship: 1 })
       if (data.success) {
         const { transferInvoiceDetail, ...currentItem } = data.data
-        console.log('transferInvoiceDetail', transferInvoiceDetail)
         yield put({
           type: 'updateState',
           payload: {
