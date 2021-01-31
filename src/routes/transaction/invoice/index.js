@@ -23,7 +23,8 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     modalConfirmVisible
   } = pos
   const {
-    listAmount
+    listAmount,
+    listAmountInvoice
   } = paymentDetail
   const {
     listOpts
@@ -217,7 +218,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           dataConsignment={listPaymentDetail.dataConsignment || []}
           dataGroup={invoiceInfo.dataGroup || []}
           invoiceInfo={invoiceInfo}
-          listAmount={listAmount}
+          listAmount={listAmountInvoice}
         />
         <Member invoiceInfo={invoiceInfo} />
         {modalConfirmVisible && <ModalConfirm {...modalOpts} />}
