@@ -423,7 +423,16 @@ const Pos = ({
         content: 'this action will reset your current process',
         onOk () {
           dispatch({
-            type: 'pos/removeTrans'
+            type: 'pos/showModalLogin',
+            payload: {
+              modalLoginType: 'resetAllPosInput'
+            }
+          })
+          dispatch({
+            type: 'login/updateState',
+            payload: {
+              modalLoginData: {}
+            }
           })
         }
       })
