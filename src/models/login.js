@@ -86,6 +86,11 @@ export default {
         if (modalLoginType === 'cancelHistory') {
           yield put({ type: 'pos/cancelInvoice', payload: modalLoginData })
         }
+        if (modalLoginType === 'resetAllPosInput') {
+          yield put({
+            type: 'pos/removeTrans'
+          })
+        }
         if (modalLoginType === 'editPayment') {
           if (modalLoginData && modalLoginData.typeCode === 'P') {
             yield put({
