@@ -190,7 +190,8 @@ export default modelExtend(pageModel, {
       const modalLoginData = yield select(({ login }) => login && login.modalLoginData)
       if (response.success) {
         if (modalLoginType === 'editPayment'
-          || modalLoginType === 'cancelHistory') {
+          || modalLoginType === 'cancelHistory'
+          || modalLoginType === 'resetAllPosInput') {
           yield put({
             type: 'salesDiscount/add',
             payload: {

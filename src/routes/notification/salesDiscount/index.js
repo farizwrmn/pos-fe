@@ -80,20 +80,20 @@ class SalesDiscount extends Component {
                     extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
-                    {item.value.transNo ? (
+                    {item && item.value && item.value.transNo ? (
                       <div>
                         <div>{`Trans No: ${item.value.transNo}`}</div>
                         <div>{`Memo: ${item.value.memo}`}</div>
                       </div>
                     )
-                      : (
+                      : item && item.discountUser && item.discountUser.fullName ? (
                         <div>
                           <div>{`Created By: ${item.discountUser.fullName}`}</div>
                           <div>{`Total: ${numberFormatter((parseFloat(item.value.sellingPrice || item.value.sellPrice)) * item.value.qty)}`}</div>
                           <div>{`Discount: ${numberFormatter(posDiscount(item.value))}`}</div>
                           <div>{`Netto: ${numberFormatter(posTotal(item.value))}`}</div>
                         </div>
-                      )}
+                      ) : null}
                   </Card>
                 )
               })

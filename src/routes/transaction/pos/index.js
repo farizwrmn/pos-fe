@@ -69,7 +69,7 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
-  const { setting } = app
+  const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
   const {
@@ -431,7 +431,10 @@ const Pos = ({
           dispatch({
             type: 'login/updateState',
             payload: {
-              modalLoginData: {}
+              modalLoginData: {
+                transNo: user.username,
+                memo: 'Cancel Input POS'
+              }
             }
           })
         }
