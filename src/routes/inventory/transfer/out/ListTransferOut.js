@@ -152,6 +152,33 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       }
     },
     {
+      title: 'Transaction Date',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (text) => {
+        return moment(text).format('DD MMM YYYY HH:mm:ss')
+      }
+    },
+    {
+      title: 'Invoiced',
+      dataIndex: 'invoicing',
+      key: 'invoicing',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Ivoiced
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Not Invoiced
+          </Tag>
+        )
+      }
+    },
+    {
       title: 'Paid',
       dataIndex: 'paid',
       key: 'paid',
