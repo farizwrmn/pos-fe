@@ -97,7 +97,6 @@ const List = ({ ...tableProps,
       render: (text, record) => {
         return (
           <div>
-            <div><strong>{record.id}</strong></div>
             <div><strong>{record.productCode}</strong></div>
             <div>{record.productName}</div>
           </div>
