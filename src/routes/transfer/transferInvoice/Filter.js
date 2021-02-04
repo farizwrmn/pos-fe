@@ -56,7 +56,7 @@ const Filter = ({
         {rangePicker && (
           <FormItem>
             {getFieldDecorator('rangePicker', {
-              initialValue: startDate ? [moment().startOf('month'), moment().endOf('month')] : [startDate, endDate],
+              initialValue: startDate ? [moment.utc(startDate, 'YYYY-MM-DD'), moment.utc(endDate, 'YYYY-MM-DD')] : [moment().startOf('month'), moment().endOf('month')],
               rules: [
                 {
                   required: rangePicker,
