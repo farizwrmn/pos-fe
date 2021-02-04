@@ -1,3 +1,4 @@
+import moment from 'moment'
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
@@ -60,7 +61,14 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query', payload: other })
+            dispatch({
+              type: 'query',
+              payload: {
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                ...other
+              }
+            })
           }
 
           if (activeKey === '2') {
@@ -69,6 +77,18 @@ export default modelExtend(pageModel, {
               payload: {
                 ...other,
                 forPayment: 1
+              }
+            })
+          }
+
+          if (activeKey === '3') {
+            dispatch({
+              type: 'query',
+              payload: {
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                ...other,
+                forHistory: 1
               }
             })
           }

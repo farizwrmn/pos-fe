@@ -79,7 +79,15 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   filter = filter || {}
   const columns = [
     {
-      title: 'Store Name',
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
+      sortOrder: sort.columnKey === 'transNo' && sort.order,
+      render: text => <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}`}>{text}</Link>
+    },
+    {
+      title: 'Sender',
       dataIndex: 'storeName',
       key: 'storeName',
       filters: filterStoreName,
@@ -89,7 +97,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       sortOrder: sort.columnKey === 'storeName' && sort.order
     },
     {
-      title: 'Store Name Receiver',
+      title: 'Receiver',
       dataIndex: 'storeNameReceiver',
       key: 'storeNameReceiver'
     },
@@ -98,7 +106,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       dataIndex: 'transDate',
       key: 'transDate',
       render: (text) => {
-        return moment(text).format('DD MMMM YYYY')
+        return moment(text).format('DD MMM YYYY')
       }
     },
     {
@@ -152,14 +160,6 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       }
     },
     {
-      title: 'Transaction Date',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => {
-        return moment(text).format('DD MMM YYYY HH:mm:ss')
-      }
-    },
-    {
       title: 'Invoiced',
       dataIndex: 'invoicing',
       key: 'invoicing',
@@ -198,12 +198,26 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       }
     },
     {
-      title: 'Transaction No',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
-      sortOrder: sort.columnKey === 'transNo' && sort.order,
-      render: text => <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}`}>{text}</Link>
+      title: 'Paid Date',
+      dataIndex: 'paidDate',
+      key: 'paidDate',
+      render: (text) => {
+        if (text) {
+          return moment(text).format('DD MMM YYYY HH:mm:ss')
+        }
+        return null
+      }
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (text) => {
+        if (text) {
+          return moment(text).format('DD MMM YYYY HH:mm:ss')
+        }
+        return null
+      }
     },
     {
       title: 'Operation',
@@ -226,7 +240,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
+        scroll={{ x: 1200 }}
         rowKey={record => record.id}
         onChange={handleChange}
       />

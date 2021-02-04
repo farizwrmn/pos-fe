@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input } from 'antd'
+import { Form, Row, Col, Input, DatePicker } from 'antd'
+import moment from 'moment'
 
+const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 
@@ -13,6 +15,8 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  rangePicker,
+  query,
   onFilterChange,
   forPayment,
   form: {
@@ -20,15 +24,54 @@ const Filter = ({
     getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
+  const { startDate, endDate } = query
+  const handleSubmit = (s, dateString) => {
     let field = getFieldsValue()
-    if (field.q === undefined || field.q === '') delete field.q
-    onFilterChange(field, forPayment)
+    // if (field.q === undefined || field.q === '') {
+    // }
+    let date = []
+    if (field.rangePicker && field.rangePicker[0]) {
+      const fromDate = moment(field.rangePicker[0]).format('YYYY-MM-DD')
+      const toDate = moment(field.rangePicker[1]).format('YYYY-MM-DD')
+      date = [
+        fromDate,
+        toDate
+      ]
+    }
+    if (dateString && dateString[0]) {
+      const fromDate = moment(dateString[0]).format('YYYY-MM-DD')
+      const toDate = moment(dateString[1]).format('YYYY-MM-DD')
+      date = [
+        fromDate,
+        toDate
+      ]
+    }
+    const { rangePicker, ...other } = field
+    onFilterChange(other, forPayment, date[0], date[1])
   }
 
   return (
     <Row>
-      <Col xs={9} sm={17} md={17} lg={18} />
+      <Col xs={9} sm={17} md={17} lg={18}>
+        {rangePicker && (
+          <FormItem>
+            {getFieldDecorator('rangePicker', {
+              initialValue: startDate ? [moment().startOf('month'), moment().endOf('month')] : [startDate, endDate],
+              rules: [
+                {
+                  required: rangePicker,
+                  message: 'Required'
+                }
+              ]
+            })(
+              <RangePicker
+                placeholder="Pick a range"
+                onChange={handleSubmit}
+              />
+            )}
+          </FormItem>
+        )}
+      </Col>
       <Col {...searchBarLayout} >
         <FormItem >
           {getFieldDecorator('q')(

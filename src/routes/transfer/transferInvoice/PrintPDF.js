@@ -21,6 +21,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data && data.transferOut ? data.transferOut.transNo : '' || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data && data.transferOut ? moment(data.transferOut.createdAt).format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(parseFloat(data.amount)), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.memo || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
@@ -79,7 +80,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'POSTING', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeIdDetail ? itemHeader.storeIdDetail.storeName : '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader && itemHeader.storeIdReceiverDetail && itemHeader.storeIdReceiverDetail.storeName ? itemHeader.storeIdReceiverDetail.storeName : '').toString(), fontSize: 11 }, {}, {}, {}, {}]
           ]
@@ -189,6 +190,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
     ]
@@ -201,7 +203,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 2, alignment: 'center', fontSize: 12 },
+      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
+      {},
       {},
       { text: formatNumberIndonesia(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 },
       {}
@@ -224,7 +227,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '40%', '34%'],
+    width: ['6%', '20%', '15%', '34%', '35%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
