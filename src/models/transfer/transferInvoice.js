@@ -64,8 +64,8 @@ export default modelExtend(pageModel, {
             dispatch({
               type: 'query',
               payload: {
-                startDate: moment().startOf('month'),
-                endDate: moment().endOf('month'),
+                startDate: moment().startOf('month').format('YYYY-MM-DD'),
+                endDate: moment().endOf('month').format('YYYY-MM-DD'),
                 ...other
               }
             })
@@ -85,8 +85,8 @@ export default modelExtend(pageModel, {
             dispatch({
               type: 'query',
               payload: {
-                startDate: moment().startOf('month'),
-                endDate: moment().endOf('month'),
+                startDate: moment().startOf('month').format('YYYY-MM-DD'),
+                endDate: moment().endOf('month').format('YYYY-MM-DD'),
                 ...other,
                 forHistory: 1
               }
