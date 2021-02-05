@@ -12,20 +12,24 @@ const List = ({ ...tableProps, editList }) => {
     {
       title: 'ID',
       dataIndex: 'id',
+      width: 70,
       key: 'id'
     },
     {
       title: 'Trans No',
+      width: 200,
       dataIndex: 'transferOut.transNo',
       key: 'transferOut.transNo'
     },
     {
       title: 'Employee',
+      width: 100,
       dataIndex: 'createdBy',
       key: 'createdBy'
     },
     {
       title: 'Amount',
+      width: 100,
       dataIndex: 'amount',
       key: 'amount',
       className: styles.alignRight,
@@ -33,6 +37,7 @@ const List = ({ ...tableProps, editList }) => {
     },
     {
       title: 'Charge (%)',
+      width: 100,
       dataIndex: 'chargePercent',
       key: 'chargePercent',
       className: styles.alignRight,
@@ -40,6 +45,7 @@ const List = ({ ...tableProps, editList }) => {
     },
     {
       title: 'Charge (N)',
+      width: 100,
       dataIndex: 'chargeNominal',
       key: 'chargeNominal',
       className: styles.alignRight,
@@ -47,6 +53,7 @@ const List = ({ ...tableProps, editList }) => {
     },
     {
       title: 'Total',
+      width: 100,
       dataIndex: 'total',
       key: 'total',
       className: styles.alignRight,
@@ -57,6 +64,7 @@ const List = ({ ...tableProps, editList }) => {
     },
     {
       title: 'Memo',
+      width: 150,
       dataIndex: 'memo',
       key: 'memo'
     }
@@ -66,7 +74,7 @@ const List = ({ ...tableProps, editList }) => {
     <div>
       <Table {...tableProps}
         bordered={false}
-        scroll={{ x: 500, y: 270 }}
+        scroll={{ x: 700, y: 500 }}
         columns={columns}
         simple
         rowKey={record => record.no}
