@@ -43,6 +43,7 @@ class ModalList extends Component {
           ...getFieldsValue()
         }
         data.accountId = data.accountId ? data.accountId.key : null
+        data.paymentToAccountId = data.paymentToAccountId ? data.paymentToAccountId.key : null
         data.paymentTotal = 0
         onSubmit(data, [], getFieldsValue(), resetFields)
       })
@@ -78,8 +79,27 @@ class ModalList extends Component {
               style={{ width: '100%' }}
             />)}
           </FormItem>
-          <FormItem {...formItemLayout} label="Account Code">
+          <FormItem {...formItemLayout} label="From">
             {getFieldDecorator('accountId', {
+              initialValue: listAccountCode && listAccountCode[0] ? {
+                key: listAccountCode[0].accountId,
+                name: `${listAccountCode[0].accountName || ''} (${listAccountCode[0].accountCode})`
+              } : {},
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="Payment To">
+            {getFieldDecorator('paymentToAccountId', {
               initialValue: listAccountCode && listAccountCode[0] ? {
                 key: listAccountCode[0].accountId,
                 name: `${listAccountCode[0].accountName || ''} (${listAccountCode[0].accountCode})`
