@@ -8,6 +8,11 @@ import moment from 'moment'
 const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
   const columns = [
     {
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
       title: 'Store Name',
       dataIndex: 'storeName',
       key: 'storeName'
@@ -95,9 +100,12 @@ const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
       }
     },
     {
-      title: 'Transaction No',
-      dataIndex: 'transNo',
-      key: 'transNo'
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (text) => {
+        return moment(text).format('DD MMM YYYY HH:mm:ss')
+      }
     }
   ]
 

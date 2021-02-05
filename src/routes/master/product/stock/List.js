@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router'
 import { DropOption } from 'components'
 import moment from 'moment'
 import { IMAGEURL } from 'utils/config.company'
+import { lstorage } from 'utils'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -141,28 +142,64 @@ const List = ({ ...tableProps,
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].sellPrice
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
-      title: 'Dist 01',
+      title: 'Dist Price 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice01
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
-      title: 'Dist 02',
+      title: 'Dist Price 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice02
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
-      title: 'Dist 03',
+      title: 'Dist Price 03',
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice03
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
       title: 'Track Qty',

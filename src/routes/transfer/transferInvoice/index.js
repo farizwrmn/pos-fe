@@ -7,25 +7,50 @@ import { lstorage } from 'utils'
 import Form from './Form'
 import List from './List'
 import PaymentList from './PaymentList'
+import HistoryList from './HistoryList'
 import Filter from './Filter'
 import PaymentModal from './PaymentModal'
 
 const TabPane = Tabs.TabPane
 
 const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, dispatch, location, app }) => {
+  const { query, pathname } = location
   const { list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
   const { listTrans: listTransfer } = transferOut
   const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
-    onFilterChange (value, forPayment) {
-      dispatch({
-        type: 'transferInvoice/query',
-        payload: {
-          forPayment,
-          ...value
-        }
-      })
+    query,
+    onFilterChange (value, forPayment, startDate, endDate) {
+      if (forPayment === 'payment') {
+        dispatch({
+          type: 'transferInvoice/query',
+          payload: {
+            forPayment: 1,
+            ...value
+          }
+        })
+      } else if (forPayment === 'history') {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            ...value,
+            startDate,
+            endDate
+          }
+        }))
+      } else {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            ...value,
+            startDate,
+            endDate
+          }
+        }))
+      }
     }
   }
 
@@ -47,7 +72,6 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
       })
     },
     onChange (page) {
-      const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
@@ -447,7 +471,7 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
         <TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
-              <Filter {...filterProps} />
+              <Filter rangePicker {...filterProps} />
               <List {...listProps} />
             </div>
           }
@@ -455,9 +479,17 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
         <TabPane tab="Payment" key="2" >
           {activeKey === '2' &&
             <div>
-              <Filter forPayment={1} {...filterProps} />
+              <Filter forPayment="payment" {...filterProps} />
               <PaymentList {...listProps} />
               {modalPaymentVisible && currentItem && currentItem.id && <PaymentModal {...modalPaymentOpts} />}
+            </div>
+          }
+        </TabPane>
+        <TabPane tab="History" key="3" >
+          {activeKey === '3' &&
+            <div>
+              <Filter rangePicker forPayment="history" {...filterProps} />
+              <HistoryList {...listProps} />
             </div>
           }
         </TabPane>
