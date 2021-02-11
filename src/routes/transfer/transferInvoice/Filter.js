@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Row, Col, Input, DatePicker, Select } from 'antd'
 import moment from 'moment'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -22,7 +24,8 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue
-  }
+  },
+  ...printProps
 }) => {
   const { startDate, endDate } = query
   const handleSubmit = (s, dateString) => {
@@ -85,7 +88,7 @@ const Filter = ({
                 mode="default"
                 allowClear
                 size="large"
-                style={{ width: '100%' }}
+                style={{ minWidth: '300px' }}
                 placeholder="Choose StoreId"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
@@ -94,10 +97,8 @@ const Filter = ({
             )}
           </FormItem>
         </Col>
-        <Col {...searchBarLayout} >
-          <FormItem
-            style={{ float: 'right' }}
-          >
+        <Col style={{ float: 'right' }} {...searchBarLayout} >
+          <FormItem>
             {getFieldDecorator('q')(
               <Search
                 placeholder="Search Field"
@@ -105,6 +106,8 @@ const Filter = ({
               />
             )}
           </FormItem>
+          {<PrintPDF {...printProps} />}
+          {<PrintXLS {...printProps} />}
         </Col>
       </Row>
     </div>

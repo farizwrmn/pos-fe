@@ -21,6 +21,9 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
   const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
+    data: list,
+    user,
+    storeInfo,
     listAllStores,
     query,
     onFilterChange (value, forPayment, startDate, endDate, storeIdReceiver) {

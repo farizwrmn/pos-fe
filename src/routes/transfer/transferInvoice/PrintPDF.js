@@ -1,184 +1,99 @@
-/**
- * Created by veirry on 31/01/2021.
- */
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { numberFormat } from 'utils'
-import { BasicInvoice } from 'components'
+import { BasicReport } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
-
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
-  // Declare Function
-  const createTableBody = (tabledata) => {
-    let body = []
-    const rows = tabledata
-    let count = 1
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let data = rows[key]
-        let row = []
-        row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data && data.transferOut ? data.transferOut.transNo : '' || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data && data.transferOut ? moment(data.transferOut.createdAt).format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.amount)), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.memo || '').toString(), alignment: 'left', fontSize: 11 })
-        body.push(row)
-      }
-      count += 1
-    }
-    return body
-  }
-
-  // Declare Variable
-  // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+const PrintPDF = ({ data, user, storeInfo, name }) => {
   const styles = {
     header: {
       fontSize: 18,
       bold: true,
-      margin: [0, 0, 0, 10]
-    },
-    subheader: {
-      fontSize: 16,
-      bold: true,
-      margin: [0, 10, 0, 5]
-    },
-    tableExample: {
-      margin: [0, 5, 0, 15]
+      margin: [0, 0, 0, 10],
+      alignment: 'center'
     },
     tableHeader: {
       bold: true,
       fontSize: 13,
-      color: 'black'
+      alignment: 'center'
+    },
+    tableBody: {
+      fontSize: 11
     }
   }
+
   const header = {
     stack: [
       {
-        columns: [
-          {
-            text: ' ',
-            style: 'header',
-            fontSize: 18,
-            alignment: 'right'
-          },
-          {
-            text: 'TAGIHAN PENGIRIMAN',
-            style: 'header',
-            fontSize: 18,
-            alignment: 'center'
-          },
-          {
-            stack: storeInfo.stackHeader02
-          }
-        ]
-      },
-      {
-        table: {
-          widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
-          body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'POSTING', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeIdDetail ? itemHeader.storeIdDetail.storeName : '').toString(), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader && itemHeader.storeIdReceiverDetail && itemHeader.storeIdReceiverDetail.storeName ? itemHeader.storeIdReceiverDetail.storeName : '').toString(), fontSize: 11 }, {}, {}, {}, {}]
-          ]
-        },
-        layout: 'noBorders'
-      },
-      {
-        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
-      }
-    ],
-    margin: [30, 12, 12, 30]
-  }
-  const footer = (currentPage, pageCount) => {
-    if (currentPage === pageCount) {
-      return {
-        margin: [40, 0, 40, 0],
-        height: 160,
         stack: [
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+            stack: storeInfo.stackHeader01
           },
           {
-            // columns: [
-            //   { fontSize: 12, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left' },
-            //   { fontSize: 12, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' },
-            // ],
+            text: 'LAPORAN DAFTAR PENAGIHAN',
+            style: 'header'
           },
           {
-            columns: [
-              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeId ? itemHeader.employeeId.label : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: 'Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
-            ]
-          },
-          {
-            fontSize: 9,
-            columns: [
-              {
-                text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
-                margin: [0, 10, 0, 10],
-                fontSize: 9,
-                alignment: 'left'
-              },
-              {
-                text: `Cetakan ke: ${printNo}`,
-                margin: [0, 10, 0, 10],
-                fontSize: 9,
-                alignment: 'center'
-              },
-              {
-                text: `Dicetak Oleh: ${user.username}`,
-                margin: [0, 10, 0, 10],
-                fontSize: 9,
-                alignment: 'center'
-              },
-              {
-                text: `page: ${(currentPage || 0).toString()} of ${pageCount}\n`,
-                fontSize: 9,
-                margin: [0, 10, 0, 10],
-                alignment: 'right'
-              }
-            ],
-            alignment: 'center'
+            canvas: [{ type: 'line', x1: 2, y1: 5, x2: 1570, y2: 5, lineWidth: 0.5 }]
           }
         ]
       }
-    }
+    ],
+    margin: [15, 12, 15, 30]
+  }
+
+  const tableHeader = [
+    [
+      { text: 'NO', style: 'tableHeader' },
+      { text: 'TRANS NO', style: 'tableHeader' },
+      { text: 'DATE', style: 'tableHeader' },
+      { text: 'RECEIVER', style: 'tableHeader' },
+      { text: 'OWING', style: 'tableHeader' },
+      { text: 'TOTAL', style: 'tableHeader' },
+      { text: 'MEMO', style: 'tableHeader' }
+    ]
+  ]
+
+  const createTableBody = (tableBody) => {
+    const body = tableBody.map((list, index) => (
+      [
+        { text: index + 1, alignment: 'center' },
+        { text: (list.transNo || '').toString(), alignment: 'left' },
+        { text: (moment(list.transDate).format('DD-MMM-YYYY') || '').toString(), alignment: 'left' },
+        { text: (list && list.storeIdReceiverDetail && list.storeIdReceiverDetail.storeName ? list.storeIdReceiverDetail.storeName : '').toString(), alignment: 'left' },
+        { text: (list.paymentTotal || '').toLocaleString(), alignment: 'right' },
+        { text: (list.netto || 0).toLocaleString(), alignment: 'right' },
+        { text: (list.memo || '').toLocaleString(), alignment: 'left' }
+      ]
+    ))
+    return body
+  }
+
+  const footer = (currentPage, pageCount) => {
     return {
-      margin: [40, 100, 40, 10],
-      height: 160,
+      margin: [15, 30, 15, 0],
+
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 1570, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
         },
         {
           columns: [
             {
-              text: `Tgl Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
-              margin: [0, 20, 0, 40],
+              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
+              margin: [0, 0, 0, 0],
               fontSize: 9,
               alignment: 'left'
             },
             {
-              text: `Cetakan ke: ${printNo}`,
-              margin: [0, 20, 0, 40],
+              text: `Dicetak Oleh: ${user.userid}`,
               fontSize: 9,
+              margin: [0, 0, 0, 0],
               alignment: 'center'
             },
             {
-              text: `Dicetak Oleh: ${user.username}`,
-              margin: [0, 20, 0, 40],
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
               fontSize: 9,
-              alignment: 'center'
-            },
-            {
-              text: `page: ${(currentPage || 0).toString()} of ${pageCount}\n`,
-              fontSize: 9,
-              margin: [0, 20, 0, 40],
+              margin: [0, 0, 0, 0],
               alignment: 'right'
             }
           ]
@@ -186,73 +101,48 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       ]
     }
   }
-  const tableHeader = [
-    [
-      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
-    ]
-  ]
+
   let tableBody = []
   try {
-    tableBody = createTableBody(listItem)
+    tableBody = createTableBody(data)
   } catch (e) {
-    console.log('error', e)
+    console.log(e)
   }
-  const tableFooter = [
-    [
-      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-      {},
-      {},
-      { text: formatNumberIndonesia(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 },
-      {}
-    ]
-  ]
-  const tableLayout = {
-    hLineWidth: (i, node) => {
-      return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 0.01 : 0
-    },
-    vLineWidth: (i, node) => {
-      return (i === 0 || i === node.table.widths.length) ? 0 : 0
-    },
-    hLineColor: (i, node) => {
-      return (i === 1 || i === 0 || i === node.table.body.length || i === (node.table.body.length - 1)) ? 'black' : 'grey'
-    },
-    vLineColor: () => {
-      return 'black'
-    }
-  }
-  // Declare additional Props
+
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '15%', '34%', '35%'],
-    pageMargins: [40, 160, 40, 150],
-    pageSize: { width: 813, height: 530 },
+    buttonType: 'default',
+    buttonSize: 'large',
+    name,
+    width: [
+      '5%',
+      '11%',
+      '11%',
+      '13%',
+      '15%',
+      '15%',
+      '30%'
+    ],
+    pageSize: { width: 1200, height: 830 },
     pageOrientation: 'landscape',
+    pageMargins: [15, 140, 15, 60],
     tableStyle: styles,
-    layout: tableLayout,
     tableHeader,
     tableBody,
-    tableFooter,
-    data: listItem,
+    data,
     header,
-    footer,
-    printNo: 1
+    footer
   }
 
   return (
-    <BasicInvoice {...pdfProps} />
+    <BasicReport {...pdfProps} />
   )
 }
 
 PrintPDF.propTypes = {
-  listItem: PropTypes.array,
-  user: PropTypes.object.isRequired,
-  storeInfo: PropTypes.object.isRequired
-  // fromDate: PropTypes.string.isRequired,
-  // toDate: PropTypes.string.isRequired,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object,
+  data: PropTypes.object
 }
 
 export default PrintPDF
