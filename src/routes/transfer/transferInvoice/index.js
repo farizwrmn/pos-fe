@@ -13,20 +13,23 @@ import PaymentModal from './PaymentModal'
 
 const TabPane = Tabs.TabPane
 
-const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, dispatch, location, app }) => {
+const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut, loading, dispatch, location, app }) => {
   const { query, pathname } = location
+  const { listAllStores } = userStore
   const { list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
   const { listTrans: listTransfer } = transferOut
   const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
+    listAllStores,
     query,
-    onFilterChange (value, forPayment, startDate, endDate) {
+    onFilterChange (value, forPayment, startDate, endDate, storeIdReceiver) {
       if (forPayment === 'payment') {
         dispatch({
           type: 'transferInvoice/query',
           payload: {
             forPayment: 1,
+            storeIdReceiver,
             ...value
           }
         })
@@ -36,6 +39,7 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
           query: {
             ...query,
             ...value,
+            storeIdReceiver,
             startDate,
             endDate
           }
@@ -46,6 +50,7 @@ const TransferInvoice = ({ transferInvoice, accountCode, transferOut, loading, d
           query: {
             ...query,
             ...value,
+            storeIdReceiver,
             startDate,
             endDate
           }
@@ -508,12 +513,14 @@ TransferInvoice.propTypes = {
 
 export default connect(({
   transferInvoice,
+  userStore,
   accountCode,
   transferOut,
   loading,
   app
 }) => ({
   transferInvoice,
+  userStore,
   accountCode,
   transferOut,
   loading,
