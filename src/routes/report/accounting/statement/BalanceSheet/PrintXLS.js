@@ -101,7 +101,41 @@ const createTableBody = (tabledata, bodyStruct) => {
   return { data: groupBody, total: grandTotal }
 }
 
-const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
+const groupByType = (
+  list,
+  {
+    type,
+    bodyTitle,
+    totalTitle
+  }
+) => {
+  let groupBody = [
+    [{ value: bodyTitle, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle, border: styles.tableTitle }]
+  ]
+  for (let key in list[type]) {
+    const item = list[type][key]
+    try {
+      let body = [
+        { value: `     ${item.accountCode} - ${item.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+        { value: (parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+      ]
+      groupBody.push(body)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  const total = list[type].reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+  groupBody.push([
+    { value: totalTitle, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTotal, border: styles.tableBorder },
+    { value: parseFloat(total), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTotal, border: styles.tableBorder }
+  ])
+  return {
+    groupBody,
+    total
+  }
+}
+
+const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDate }) => {
   const title = [
     { value: 'LAPORAN NERACA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
@@ -123,7 +157,6 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
   const group = {
     BANK: [],
     AREC: [],
-    INTR: [],
     OCAS: [],
 
     FASS: [],
@@ -135,10 +168,92 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
     LTLY: [],
 
     EQTY: [],
-    ...groubedByTeam
+    ...groubedByTeam,
+    INTR: []
+  }
+
+  const groubedByTeamProfit = groupBy(listProfit, 'accountType')
+
+  const groupProfit = {
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
+    ...groubedByTeamProfit
   }
 
   const ProcedureOfList = () => {
+    // Start - REVE
+    const { total: totalREVE } = groupByType(groupProfit, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
+    // End - REVE
+
+    // Start - COGS
+    const { total: totalCOGS } = groupByType(groupProfit, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
+    // End - COGS
+
+    // Start - Laba Kotor
+    const labaKotor = totalREVE + totalCOGS
+    // End - Laba Kotor
+
+    // Start - EXPS
+    const { total: totalEXPS } = groupByType(groupProfit, {
+      type: 'EXPS',
+      totalTitle: 'Jumlah Beban Operasional',
+      bodyTitle: 'BEBAN OPERASIONAL'
+    })
+    // End - EXPS
+
+    // Start - Pendapatan Operasional
+    const operationalRevenue = labaKotor + totalEXPS
+    // End - Pendapatan Operasional
+
+    // Start - OINC
+    const { total: totalOINC } = groupByType(groupProfit, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
+    // End - OINC
+
+    // Start - OEXP
+    const { total: totalOXPS } = groupByType(groupProfit, {
+      type: 'OEXP',
+      bodyTitle: 'BEBAN NON OPERASIONAL',
+      totalTitle: 'Jumlah Beban Non Operasional'
+    })
+    // End - OEXP
+
+    // Start - Jumlah Non Operasional
+    const nonOperationalRevenue = totalOINC + totalOXPS
+    const fixRevenue = operationalRevenue + nonOperationalRevenue
+    group.PRFT = [
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Rugi',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: fixRevenue,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      }
+    ]
+
+    const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
+    group.INTR = [
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Persediaan Barang Dagang',
+        accountParentId: null,
+        accountType: 'INTR',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: -1 * totalPersediaan,
+        entryType: 'D',
+        transactionType: 'INTR'
+      }
+    ]
+
     // Start - REVE
     const { data: groupREVEBody } = createTableBody(
       group,
@@ -235,6 +350,12 @@ const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
               level: 1,
               bodyTitle: 'Ekuitas',
               totalTitle: 'Jumlah Ekuitas'
+            },
+            {
+              type: 'PRFT',
+              level: 1,
+              bodyTitle: 'Laba Rugi',
+              totalTitle: 'Jumlah Laba Rugi'
             }
           ]
         }
