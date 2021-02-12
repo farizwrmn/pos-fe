@@ -6,8 +6,6 @@ import {
   queryBalanceSheet,
   queryCashFlow
 } from 'services/report/accounting/accountingStatement'
-import { queryLastActive } from 'services/period'
-import moment from 'moment'
 
 export default {
   namespace: 'accountingStatementReport',
@@ -81,17 +79,11 @@ export default {
     },
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
-      const period = yield call(queryLastActive)
-      let startPeriod
-      if (period && period.data && period.data[0]) {
-        startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
-      }
       if (data.success) {
         yield put({
           type: 'query',
           payload: {
-            to: payload.to,
-            from: startPeriod
+            to: payload.to
           }
         })
         yield put({
