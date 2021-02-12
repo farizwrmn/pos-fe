@@ -8,13 +8,16 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
-  const { listTrans, from, to, productCode } = accountingStatementReport
+const Report = ({ dispatch, accountingStatementReport, fifoReport, loading, app }) => {
+  const { listBalanceSheet: listTrans, listProfit, from, to, productCode } = accountingStatementReport
+  const { listRekap } = fifoReport
   const { user, storeInfo } = app
   const browseProps = {
     loading: loading.effects['accountingStatementReport/queryBalanceSheet'],
     dataSource: listTrans,
     listTrans,
+    listProfit,
+    listRekap,
     storeInfo,
     user,
     from,
@@ -24,6 +27,8 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
 
   const filterProps = {
     listTrans,
+    listProfit,
+    listRekap,
     user,
     storeInfo,
     from,
@@ -69,9 +74,10 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
 }
 
 Report.propTyps = {
+  fifoReport: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
   accountingStatementReport: PropTypes.object
 }
 
-export default connect(({ loading, accountingStatementReport, app }) => ({ loading, accountingStatementReport, app }))(Report)
+export default connect(({ loading, fifoReport, accountingStatementReport, app }) => ({ loading, fifoReport, accountingStatementReport, app }))(Report)

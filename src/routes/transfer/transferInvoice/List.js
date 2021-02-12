@@ -40,6 +40,15 @@ const List = ({
       }
     },
     {
+      title: 'Receiver',
+      dataIndex: 'storeIdReceiverDetail',
+      key: 'storeIdReceiverDetail',
+      className: styles.alignRight,
+      render: (text) => {
+        return (text && text.storeName ? text.storeName : '-')
+      }
+    },
+    {
       title: 'Total',
       dataIndex: 'netto',
       key: 'netto',

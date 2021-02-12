@@ -29,6 +29,15 @@ const PaymentList = ({
       }
     },
     {
+      title: 'Receiver',
+      dataIndex: 'storeIdReceiverDetail',
+      key: 'storeIdReceiverDetail',
+      className: styles.alignRight,
+      render: (text) => {
+        return (text && text.storeName ? text.storeName : '-')
+      }
+    },
+    {
       title: 'Owing',
       dataIndex: 'paymentTotal',
       key: 'paymentTotal',

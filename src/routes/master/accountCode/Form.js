@@ -106,6 +106,10 @@ const FormCounter = ({
       value: 'Aset lainnya'
     },
     {
+      key: 'APAY',
+      value: 'Hutang lancar lain-lain'
+    },
+    {
       key: 'OCLY',
       value: 'Hutang lancar lain-lain'
     },

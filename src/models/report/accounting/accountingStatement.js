@@ -6,12 +6,16 @@ import {
   queryBalanceSheet,
   queryCashFlow
 } from 'services/report/accounting/accountingStatement'
+import { queryLastActive } from 'services/period'
+import moment from 'moment'
 
 export default {
   namespace: 'accountingStatementReport',
 
   state: {
-    listTrans: [],
+    listProfit: [],
+    listBalanceSheet: [],
+    listCashflow: [],
     from: '',
     to: '',
     date: null,
@@ -66,7 +70,7 @@ export default {
       yield put({
         type: 'querySuccessTrans',
         payload: {
-          listTrans: data.data,
+          listProfit: data.data,
           pagination: {
             total: data.total
           },
@@ -77,23 +81,37 @@ export default {
     },
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
-      yield put({
-        type: 'querySuccessTrans',
-        payload: {
-          listTrans: data.data,
-          pagination: {
-            total: data.total
-          },
-          to: payload.to
-        }
-      })
+      const period = yield call(queryLastActive)
+      let startPeriod
+      if (period && period.data && period.data[0]) {
+        startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
+      }
+      if (data.success) {
+        yield put({
+          type: 'query',
+          payload: {
+            to: payload.to,
+            from: startPeriod
+          }
+        })
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listBalanceSheet: data.data,
+            pagination: {
+              total: data.total
+            },
+            to: payload.to
+          }
+        })
+      }
     },
     * queryCashFlow ({ payload }, { call, put }) {
       const data = yield call(queryCashFlow, payload)
       yield put({
         type: 'querySuccessTrans',
         payload: {
-          listTrans: data.data,
+          listCashflow: data.data,
           pagination: {
             total: data.total
           },
@@ -105,11 +123,11 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { listTrans, pagination, tmpList, from, to } = action.payload
+      const { pagination, tmpList, from, to, ...other } = action.payload
 
       return {
         ...state,
-        listTrans,
+        ...other,
         from,
         to,
         tmpList,
@@ -125,7 +143,9 @@ export default {
     setListNull (state) {
       return {
         ...state,
-        listTrans: [],
+        listBalanceSheet: [],
+        listProfit: [],
+        listCashflow: [],
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,
