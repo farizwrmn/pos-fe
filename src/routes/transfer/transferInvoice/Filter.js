@@ -1,28 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, DatePicker } from 'antd'
+import { Form, Row, Col, Input, DatePicker, Select } from 'antd'
 import moment from 'moment'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const { RangePicker } = DatePicker
+const { Option } = Select
 const Search = Input.Search
 const FormItem = Form.Item
 
 const searchBarLayout = {
-  xs: { span: 15 },
-  sm: { span: 7 },
-  md: { span: 7 },
-  lg: { span: 6 }
+  md: { span: 24 },
+  lg: { span: 12 }
 }
 
 const Filter = ({
   rangePicker,
   query,
+  listAllStores,
   onFilterChange,
   forPayment,
   form: {
     getFieldDecorator,
     getFieldsValue
-  }
+  },
+  ...printProps
 }) => {
   const { startDate, endDate } = query
   const handleSubmit = (s, dateString) => {
@@ -46,43 +49,68 @@ const Filter = ({
         toDate
       ]
     }
-    const { rangePicker, ...other } = field
-    onFilterChange(other, forPayment, date[0], date[1])
+    const { rangePicker, storeIdReceiver, ...other } = field
+    onFilterChange(
+      other,
+      forPayment,
+      date[0],
+      date[1],
+      storeIdReceiver)
   }
 
+  let childrenTransNo = listAllStores && listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+
   return (
-    <Row>
-      <Col xs={9} sm={17} md={17} lg={18}>
-        {rangePicker && (
+    <div>
+      <Row>
+        <Col md={24} lg={12}>
+          {rangePicker && (
+            <FormItem>
+              {getFieldDecorator('rangePicker', {
+                initialValue: startDate ? [moment.utc(startDate, 'YYYY-MM-DD'), moment.utc(endDate, 'YYYY-MM-DD')] : [moment().startOf('month'), moment().endOf('month')],
+                rules: [
+                  {
+                    required: rangePicker,
+                    message: 'Required'
+                  }
+                ]
+              })(
+                <RangePicker
+                  placeholder="Pick a range"
+                  onChange={handleSubmit}
+                />
+              )}
+            </FormItem>
+          )}
           <FormItem>
-            {getFieldDecorator('rangePicker', {
-              initialValue: startDate ? [moment.utc(startDate, 'YYYY-MM-DD'), moment.utc(endDate, 'YYYY-MM-DD')] : [moment().startOf('month'), moment().endOf('month')],
-              rules: [
-                {
-                  required: rangePicker,
-                  message: 'Required'
-                }
-              ]
-            })(
-              <RangePicker
-                placeholder="Pick a range"
-                onChange={handleSubmit}
+            {getFieldDecorator('storeIdReceiver')(
+              <Select
+                mode="default"
+                allowClear
+                size="large"
+                style={{ minWidth: '300px' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenTransNo}
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+        <Col style={{ float: 'right' }} {...searchBarLayout} >
+          <FormItem>
+            {getFieldDecorator('q')(
+              <Search
+                placeholder="Search Field"
+                onSearch={() => handleSubmit()}
               />
             )}
           </FormItem>
-        )}
-      </Col>
-      <Col {...searchBarLayout} >
-        <FormItem >
-          {getFieldDecorator('q')(
-            <Search
-              placeholder="Search Field"
-              onSearch={() => handleSubmit()}
-            />
-          )}
-        </FormItem>
-      </Col>
-    </Row>
+          {<PrintPDF {...printProps} />}
+          {<PrintXLS {...printProps} />}
+        </Col>
+      </Row>
+    </div>
   )
 }
 

@@ -9,7 +9,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
-  const { listTrans, from, to, productCode } = accountingStatementReport
+  const { listCashflow: listTrans, from, to, productCode } = accountingStatementReport
   const { user, storeInfo } = app
   const browseProps = {
     loading: loading.effects['accountingStatementReport/queryCashFlow'],

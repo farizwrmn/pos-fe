@@ -955,6 +955,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/accountingStatement'))
+              registerModel(app, require('./models/report/fifo'))
               cb(null, require('./routes/report/accounting/statement'))
             }, 'report-accounting-balance-sheet')
           }
@@ -1064,6 +1065,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transfer/transferInvoice'))
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/transfer/transferInvoice'))
             }, 'inventory-transfer-invoice')
           }

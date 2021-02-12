@@ -59,7 +59,42 @@ const createTableBody = (tabledata, bodyStruct) => {
   return { data: groupBody, total: grandTotal }
 }
 
-const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
+const createTableBodyProfit = (tabledata, {
+  type,
+  bodyTitle,
+  totalTitle
+}) => {
+  let groupBody = []
+  const rows = tabledata[type]
+  groupBody.push([
+    { text: '', alignment: 'right', fontSize: 11 },
+    { text: bodyTitle, style: 'tableHeader', alignment: 'left', fontSize: 11 },
+    { text: '', alignment: 'right', fontSize: 11 },
+    { text: '', alignment: 'right', fontSize: 11 }
+  ])
+  for (let key in rows) {
+    if (rows.hasOwnProperty(key)) {
+      let item = rows[key]
+      let row = [
+        { text: '', alignment: 'left', fontSize: 11 },
+        { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
+        { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+        { text: '', alignment: 'left', fontSize: 11 }
+      ]
+      groupBody.push(row)
+    }
+  }
+  const total = rows.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+  groupBody.push([
+    { text: '', alignment: 'left', fontSize: 11 },
+    { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
+    { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+    { text: '', alignment: 'left', fontSize: 11 }
+  ])
+  return { total, groupBody }
+}
+
+const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to }) => {
   // Declare Variable
   const styles = {
     header: {
@@ -178,7 +213,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   const group = {
     BANK: [],
     AREC: [],
-    INTR: [],
     OCAS: [],
 
     FASS: [],
@@ -190,9 +224,86 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     LTLY: [],
 
     EQTY: [],
-    ...groubedByTeam
+    PRFT: [],
+    ...groubedByTeam,
+    INTR: []
+  }
+  const groubedByTeamProfit = groupBy(listProfit, 'accountType')
+
+  const groupProfit = {
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
+    ...groubedByTeamProfit
   }
   try {
+    // Start - REVE
+    const { total: totalREVE } = createTableBodyProfit(groupProfit, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
+    // End - REVE
+
+    // Start - COGS
+    const { total: totalCOGS } = createTableBodyProfit(groupProfit, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
+    // End - COGS
+
+    const labaKotor = totalREVE + totalCOGS
+
+    // Start - EXPS
+    const { total: totalEXPS } = createTableBodyProfit(groupProfit, {
+      type: 'EXPS',
+      totalTitle: 'Jumlah Beban Operasional',
+      bodyTitle: 'BEBAN OPERASIONAL'
+    })
+    // End - EXPS
+
+    const operationalRevenue = labaKotor + totalEXPS
+
+    // Start - OINC
+    const { total: totalOINC } = createTableBodyProfit(groupProfit, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
+    // End - OINC
+
+    // Start - OEXP
+    const { total: totalOXPS } = createTableBodyProfit(groupProfit, {
+      type: 'OEXP',
+      bodyTitle: 'BEBAN NON OPERASIONAL',
+      totalTitle: 'Jumlah Beban Non Operasional'
+    })
+    // End - OEXP
+    const nonOperationalRevenue = totalOINC + totalOXPS
+    const fixRevenue = operationalRevenue + nonOperationalRevenue
+
+    group.PRFT = [
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Rugi',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: fixRevenue,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      }
+    ]
+
+    const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
+    group.INTR = [
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Persediaan Barang Dagang',
+        accountParentId: null,
+        accountType: 'INTR',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: -1 * totalPersediaan,
+        entryType: 'D',
+        transactionType: 'INTR'
+      }
+    ]
+
     const { data: groupBANKBody } = createTableBody(
       group,
       [
@@ -288,6 +399,12 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
               level: 1,
               bodyTitle: 'Ekuitas',
               totalTitle: 'Jumlah Ekuitas'
+            },
+            {
+              type: 'PRFT',
+              level: 1,
+              bodyTitle: 'Laba Rugi',
+              totalTitle: 'Jumlah Laba Rugi'
             }
           ]
         }
