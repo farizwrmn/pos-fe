@@ -4,7 +4,9 @@ const { paymentOpts } = config.api
 
 export async function queryPayableWithBank (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
   return request({
     url: `${paymentOpts}/report/ap`,
     method: 'get',
