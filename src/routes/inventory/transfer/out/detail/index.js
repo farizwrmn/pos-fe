@@ -98,13 +98,15 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
   const formDetailProps = {
     dataSource: listDetail,
     editList (record) {
-      dispatch({
-        type: 'transferOutDetail/editListPrice',
-        payload: {
-          currentItem: record,
-          modalEditVisible: true
-        }
-      })
+      if (!loading.effects['transferOutDetail/editPrice']) {
+        dispatch({
+          type: 'transferOutDetail/editListPrice',
+          payload: {
+            currentItem: record,
+            modalEditVisible: true
+          }
+        })
+      }
     }
   }
 
@@ -231,7 +233,7 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
           <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>
-          {data && data[0] && !data[0].paid && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail'] || loading.effects['transferOutDetail/editTrans']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => editTrans()}>Edit</Button>}
+          {data && data[0] && !data[0].paid && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail'] || loading.effects['transferOutDetail/editTrans']} disabled={loading.effects['transferOutDetail/editTrans'] || (data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1)} onClick={() => editTrans()}>Edit</Button>}
           {data && data[0] && !data[0].posting && !data[0].invoicing && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => postTrans()}>Post</Button>}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
