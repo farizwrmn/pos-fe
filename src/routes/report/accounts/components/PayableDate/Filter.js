@@ -3,13 +3,12 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Select, DatePicker, Row, Col, Icon, Form, message } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { RangePicker } = DatePicker
-const { Option } = Select
+const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 
 const leftColumn = {
@@ -29,22 +28,16 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, listAllStores, loading, onListReset, form: { getFieldsValue, getFieldValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, loading, onListReset, form: { getFieldsValue, getFieldValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   // const handleChange = (value) => {
   //   const from = moment(value, 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
   //   const to = moment(value, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
   //   onDateChange(from, to)
   // }
   const handleSearch = () => {
-    const storeId = getFieldValue('storeId')
-    const dateString = getFieldValue('rangePicker')
-    if (!dateString) {
-      message.warning('Require Date')
-      return
-    }
-    const from = moment(dateString[0]).format('YYYY-MM-DD')
-    const to = moment(dateString[1]).format('YYYY-MM-DD')
-    onDateChange(from, to, storeId)
+    const from = moment(getFieldValue('rangePicker'), 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
+    const to = moment(getFieldValue('rangePicker'), 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+    onDateChange(from, to)
   }
 
   const handleReset = () => {
@@ -63,31 +56,15 @@ const Filter = ({ onDateChange, listAllStores, loading, onListReset, form: { get
     onListReset()
   }
 
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
-
   return (
     <Row >
       <Col {...leftColumn} >
-        <Form>
+        <Form layout="inline">
           <FormItem label="Trans Date">
-            {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" style={{ width: '189px' }} placeholder="Select Period" />
-            )}
-          </FormItem>
-          <FormItem
-            label="Store"
-          >
-            {getFieldDecorator('storeId')(
-              <Select
-                mode="multiple"
-                allowClear
-                size="large"
-                style={{ width: '189px' }}
-                placeholder="Choose StoreId"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {childrenTransNo}
-              </Select>
+            {getFieldDecorator('rangePicker', {
+              initialValue: moment()
+            })(
+              <MonthPicker size="large" style={{ width: '189px' }} placeholder="Select Period" />
             )}
           </FormItem>
         </Form>
