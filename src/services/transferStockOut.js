@@ -112,6 +112,16 @@ export async function queryPrice (params) {
   })
 }
 
+export async function queryPriceList (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${transfer}/out-hpokok-list`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function postTrans (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -2,7 +2,7 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
-import { queryByTrans, queryDetail, editPrice, queryPrice, postTrans, voidTrans } from '../../../services/transferStockOut.js'
+import { queryByTrans, queryDetail, editPrice, queryPrice, queryPriceList, postTrans, voidTrans } from '../../../services/transferStockOut.js'
 
 export default {
 
@@ -40,6 +40,38 @@ export default {
   },
 
   effects: {
+    * editTrans ({ payload }, { call, put }) {
+      const response = yield call(queryPriceList, {
+        storeId: payload.data.storeId,
+        transNo: payload.data.transNo
+      })
+      if (response.success && response.data && response.data[0]) {
+        for (let key in response.data) {
+          const item = response.data[key]
+          const filteredPrice = response.data
+            .filter(filtered => filtered.productId === item.productId)
+            .reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0)
+          yield put({
+            type: 'transferOutDetail/editPrice',
+            payload: {
+              data: {
+                productId: item.productId,
+                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice / item.qty : 0
+              },
+              break: true
+            }
+          })
+        }
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            transNo: response.data[0].transNo,
+            storeId: response.data[0].storeId
+          }
+        })
+      }
+    },
+
     * editListPrice ({ payload }, { call, put }) {
       const response = yield call(queryPrice, {
         storeId: payload.currentItem.storeId,
@@ -99,6 +131,9 @@ export default {
             currentItem: {}
           }
         })
+        if (payload.break) {
+          return
+        }
         yield put({
           type: 'queryDetail',
           payload: {
