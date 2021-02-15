@@ -25,6 +25,7 @@ export default modelExtend(pageModel, {
         }
         if (location.pathname === '/marketing/promo'
           || location.pathname === '/report/accounting/profit-loss'
+          || location.pathname === '/report/accounts/payable'
           || location.pathname === '/inventory/transfer/invoice'
           || location.pathname === '/master/store-price'
           || location.pathname === '/master/store-price-upload') {

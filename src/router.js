@@ -973,6 +973,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounts'))
               registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounts/summary'))
             }, 'report-account-summary')
           }
@@ -981,6 +982,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounts'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/customergroup'))
               cb(null, require('./routes/report/accounts/payable'))
             }, 'report-account-summary')
