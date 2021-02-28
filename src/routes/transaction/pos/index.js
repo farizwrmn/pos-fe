@@ -54,6 +54,7 @@ const keyMap = {
 }
 
 const Pos = ({
+  pospromo,
   location,
   customer,
   loading,
@@ -862,7 +863,7 @@ const Pos = ({
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'payment'
+          modalLoginType: 'service'
         }
       })
       dispatch({
@@ -1082,9 +1083,14 @@ const Pos = ({
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        const { currentReward } = pospromo
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+          item.serviceCost = currentReward.sellPrice
+        }
         if (checkExists.length === 0) {
           arrayProd.push({
             no: arrayProd.length + 1,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
@@ -1572,7 +1578,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

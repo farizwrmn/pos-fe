@@ -20,7 +20,7 @@ const TransactionDetail = ({
   pos
 }) => {
   const {
-    paymentListActiveKey,
+    paymentListActiveKey = '5',
     cashierInformation
   } = pos
 
@@ -139,7 +139,7 @@ const TransactionDetail = ({
     .map((item, index) => ({ ...item, no: index + 1 }))
 
   return (
-    <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
+    <Tabs activeKey={paymentListActiveKey} defaultActiveKey="5" onChange={key => changePaymentListTab(key)} >
       <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
         <Table
           rowKey={(record, key) => key}

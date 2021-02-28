@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     modalPromoVisible: false,
+    currentReward: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -48,6 +49,7 @@ export default modelExtend(pageModel, {
         // const itemRulesService = dataRules.data.filter(x => x.type !== 'P')
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
+        const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
         if (item && dataRules.data && dataReward.data) {
           const resultCompareBundle = compareBundleExists(currentBundle, item)
           // const resultCompareRulesProductRequired = compareExistsByIdAndQty(currentProduct, itemRulesProduct)
@@ -102,6 +104,12 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              yield put({
+                type: 'setCategoryPos',
+                payload: {
+                  currentReward: itemRewardCategory
+                }
+              })
               message.success('Success add bundle')
               if (payload.resolve) {
                 payload.resolve('done')
@@ -126,6 +134,12 @@ export default modelExtend(pageModel, {
                 payload: {
                   currentProduct: currentService,
                   currentReward: itemRewardService
+                }
+              })
+              yield put({
+                type: 'setCategoryPos',
+                payload: {
+                  currentReward: itemRewardCategory
                 }
               })
             }
@@ -153,6 +167,12 @@ export default modelExtend(pageModel, {
               payload: {
                 currentProduct: currentService,
                 currentReward: itemRewardService
+              }
+            })
+            yield put({
+              type: 'setCategoryPos',
+              payload: {
+                currentReward: itemRewardCategory
               }
             })
             message.success('Success add bundle')
@@ -342,6 +362,48 @@ export default modelExtend(pageModel, {
         payload: {}
       })
     },
+
+    * setCategoryPos ({ payload = {} }, { put }) {
+      const { currentReward } = payload
+      if (currentReward && currentReward.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentReward: currentReward[0]
+          }
+        })
+        if (currentReward[0].type === 'P') {
+          yield put({
+            type: 'pos/showProductModal',
+            payload: {
+              modalType: 'browseProductLock'
+            }
+          })
+          yield put({
+            type: 'pos/getProducts',
+            payload: {
+              active: 1
+            }
+          })
+        }
+        if (currentReward[0].type === 'S') {
+          yield put({
+            type: 'pos/getServices',
+            payload: {
+              active: 1
+            }
+          })
+
+          yield put({
+            type: 'pos/showServiceModal',
+            payload: {
+              modalType: 'browseService'
+            }
+          })
+        }
+      }
+    },
+
     * setServicePos ({ payload = {} }, { select, put }) {
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
