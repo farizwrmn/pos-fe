@@ -5,13 +5,14 @@ import { Row, Col, Button } from 'antd'
 import Product from './Product'
 import styles from './index.less'
 import ModalProduct from './ModalProduct'
+import ModalBundle from './ModalBundle'
 
 const Detail = ({
   productBookmarkDetail,
   dispatch,
   loading
 }) => {
-  const { data, listBookmark, modalProductVisible } = productBookmarkDetail
+  const { data, listBookmark, modalProductVisible, modalBundleVisible } = productBookmarkDetail
 
   const content = []
   for (let key in data) {
@@ -48,6 +49,18 @@ const Detail = ({
       type: 'productBookmarkDetail/updateState',
       payload: {
         modalProductVisible: true
+      }
+    })
+  }
+
+  const openBundleModal = () => {
+    dispatch({
+      type: 'promo/query'
+    })
+    dispatch({
+      type: 'productBookmarkDetail/updateState',
+      payload: {
+        modalBundleVisible: true
       }
     })
   }
@@ -102,9 +115,52 @@ const Detail = ({
     }
   }
 
+  const modalBundleProps = {
+    isModal: false,
+    modalBundleVisible,
+    location,
+    loading: loading.effects['productstock/query'],
+    visible: modalBundleVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          list: []
+        }
+      })
+      dispatch({
+        type: 'productBookmarkDetail/updateState',
+        payload: {
+          modalBundleVisible: false
+        }
+      })
+    },
+    async onRowClick (record) {
+      dispatch({
+        type: 'productBookmark/add',
+        payload: {
+          data: {
+            type: 'BUNDLE',
+            productId: record.id,
+            groupId: data.id
+          }
+        }
+      })
+      dispatch({
+        type: 'productBookmarkDetail/updateState',
+        payload: {
+          modalBundleVisible: false
+        }
+      })
+    }
+  }
+
   return (<div className="content-inner">
     <div className={styles.content}>
       {modalProductVisible && !loading.effects['productBookmark/query'] && <ModalProduct {...modalProductProps} />}
+      {modalBundleVisible && !loading.effects['promo/query'] && <ModalBundle {...modalBundleProps} />}
       <Row>
         <Col md={24} lg={12}>
           {content}
@@ -113,8 +169,16 @@ const Detail = ({
           <Button
             type="primary"
             onClick={() => openProductModal()}
+            style={{ marginRight: '1em' }}
           >
             Product
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => openBundleModal()}
+            style={{ marginRight: '1em' }}
+          >
+            Bundle
           </Button>
           <Button
             icon="reload"
@@ -133,4 +197,4 @@ Detail.propTypes = {
   productBookmarkDetail: PropTypes.object
 }
 
-export default connect(({ productstock, productBookmark, productBookmarkDetail, loading }) => ({ productstock, productBookmark, productBookmarkDetail, loading }))(Detail)
+export default connect(({ productstock, bundling, productBookmark, productBookmarkDetail, loading }) => ({ productstock, bundling, productBookmark, productBookmarkDetail, loading }))(Detail)

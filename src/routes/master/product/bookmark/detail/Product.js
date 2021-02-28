@@ -9,7 +9,7 @@ const List = ({ ...tableProps, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       confirm({
-        title: `Are you sure delete ${record.product.productName} ?`,
+        title: record.product ? `Are you sure delete ${record.product.productName} ?` : 'Are you sure delete this item ?',
         onOk () {
           deleteItem(record.id)
         }
