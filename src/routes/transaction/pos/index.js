@@ -54,6 +54,7 @@ const keyMap = {
 }
 
 const Pos = ({
+  pospromo,
   location,
   customer,
   loading,
@@ -862,7 +863,7 @@ const Pos = ({
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'payment'
+          modalLoginType: 'service'
         }
       })
       dispatch({
@@ -1082,9 +1083,14 @@ const Pos = ({
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        const { currentReward } = pospromo
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+          item.serviceCost = currentReward.sellPrice
+        }
         if (checkExists.length === 0) {
           arrayProd.push({
             no: arrayProd.length + 1,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
@@ -1326,7 +1332,9 @@ const Pos = ({
           type: 'pos/getProductByBarcode',
           payload: {
             id: value,
-            type: 'barcode'
+            type: 'barcode',
+            day: moment().isoWeekday(),
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       }
@@ -1380,6 +1388,8 @@ const Pos = ({
     dispatch({
       type: 'productBookmark/query',
       payload: {
+        day: moment().isoWeekday(),
+        storeId: lstorage.getCurrentUserStore(),
         groupId: key,
         relationship: 1,
         page,
@@ -1390,6 +1400,19 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
+  const chooseBundle = (item) => {
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        type: 'all',
+        bundleId: item.id,
+        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+        currentProduct: getCashierTrans(),
+        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1398,17 +1421,18 @@ const Pos = ({
       />
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
-          <Col md={10} sm={24}>
+          <Col md={7} sm={0} xs={0}>
             <Bookmark
               loading={loading.effects['productBookmark/query']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
+              onChooseBundle={chooseBundle}
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />
           </Col>
         ) : null}
-        <Col md={hasBookmark ? 14 : 24} sm={24}>
+        <Col md={hasBookmark ? 17 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
@@ -1554,7 +1578,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

@@ -9,7 +9,8 @@ export default modelExtend(pageModel, {
   state: {
     data: {},
     listBookmark: [],
-    modalProductVisible: false
+    modalProductVisible: false,
+    modalBundleVisible: false
   },
 
   subscriptions: {

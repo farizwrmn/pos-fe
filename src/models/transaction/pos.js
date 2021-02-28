@@ -152,7 +152,7 @@ export default {
     listServiceReminder: [],
     showAlert: false,
     showListReminder: false,
-    paymentListActiveKey: '1',
+    paymentListActiveKey: '5',
     modalAddUnit: false,
     modalAddMember: false,
     currentCashier: {}
@@ -899,7 +899,11 @@ export default {
       }
     },
 
-    * getServices ({ payload = {} }, { call, put }) {
+    * getServices ({ payload = {} }, { select, call, put }) {
+      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+      if (currentReward && currentReward.categoryCode) {
+        payload.serviceTypeId = currentReward.categoryCode
+      }
       const data = yield call(queryService, payload)
       if (data.data !== null) {
         yield put({
@@ -1503,7 +1507,14 @@ export default {
           })
         })
       }
+      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
       const { item, type } = payload
+      if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
+        item.sellPrice = currentReward.sellPrice
+        item.distPrice01 = currentReward.distPrice01
+        item.distPrice02 = currentReward.distPrice02
+        item.distPrice03 = currentReward.distPrice03
+      }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       const curQty = yield select(({ pos }) => pos.curQty)
@@ -1515,6 +1526,7 @@ export default {
         if ((checkExists || []).length === 0) {
           const data = {
             no: arrayProd.length + 1,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
@@ -1534,6 +1546,7 @@ export default {
           arrayProd.push({
             no: arrayProd.length + 1,
             code: item.productCode,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1577,6 +1590,7 @@ export default {
           const data = {
             no: currentItem.no,
             code: item.productCode,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1595,6 +1609,7 @@ export default {
           arrayProd.push({
             no: currentItem.no,
             code: item.productCode,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1671,13 +1686,28 @@ export default {
     * getProductByBarcode ({ payload }, { call, put }) {
       const response = yield call(queryByBarcode, payload)
       if (response && response.success && response.data && response.data.id) {
-        yield put({
-          type: 'pos/chooseProduct',
-          payload: {
-            item: response.data,
-            type: payload.type
-          }
-        })
+        if (response.data.productCode) {
+          yield put({
+            type: 'pos/chooseProduct',
+            payload: {
+              item: response.data,
+              type: payload.type
+            }
+          })
+        }
+
+        if (response.data.code) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              type: 'all',
+              bundleId: response.data.id,
+              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentProduct: getCashierTrans(),
+              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+            }
+          })
+        }
       } else {
         message.warning('Barcode Not found')
       }
@@ -1707,7 +1737,37 @@ export default {
       }
     },
 
-    * getProducts ({ payload }, { call, put }) {
+    * hideProductModal (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalProductVisible: false, listProduct: [], tmpProductList: []
+        }
+      })
+      yield put({
+        type: 'pospromo/updateState',
+        payload: {
+          currentReward: {}
+        }
+      })
+    },
+
+    * hideServiceModal (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalServiceVisible: false
+        }
+      })
+      yield put({
+        type: 'pospromo/updateState',
+        payload: {
+          currentReward: {}
+        }
+      })
+    },
+
+    * getProducts ({ payload }, { select, call, put }) {
       // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       // let data = {}
       // if (payload.outOfStock) {
@@ -1715,6 +1775,10 @@ export default {
       // } else {
       //   data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
       // }
+      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+      if (currentReward && currentReward.categoryCode) {
+        payload.categoryCode = currentReward.categoryCode
+      }
       const data = yield call(queryProductStock, payload)
       let newData = data.data
       if (data.success) {
@@ -2408,9 +2472,6 @@ export default {
     showProductModal (state, action) {
       return { ...state, ...action.payload, modalProductVisible: true }
     },
-    hideProductModal (state) {
-      return { ...state, modalProductVisible: false, listProduct: [], tmpProductList: [] }
-    },
 
     showConsignmentModal (state, action) {
       return { ...state, ...action.payload, modalConsignmentVisible: true }
@@ -2422,10 +2483,6 @@ export default {
 
     showServiceModal (state, action) {
       return { ...state, ...action.payload, modalServiceVisible: true }
-    },
-
-    hideServiceModal (state) {
-      return { ...state, modalServiceVisible: false }
     },
 
     showHelpModal (state, action) {

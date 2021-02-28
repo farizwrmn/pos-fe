@@ -289,6 +289,12 @@ const Routers = function ({ history, app }) {
           path: 'master/product/bookmark/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pospromo'))
+              registerModel(app, require('./models/marketing/bundlingReward'))
+              registerModel(app, require('./models/marketing/bundlingRules'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/marketing/promo'))
+              registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/detail/productBookmarkDetail'))
               registerModel(app, require('./models/product/bookmark'))
               registerModel(app, require('./models/master/productstock'))
@@ -1465,6 +1471,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/service'))
               registerModel(app, require('./models/master/variant'))
