@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { Modal } from 'antd'
+import { message, Modal } from 'antd'
 import { compare, posTotal } from 'utils'
 import { query } from '../../services/marketing/bundling'
 import { query as queryRules } from '../../services/marketing/bundlingRules'
@@ -102,6 +102,7 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
+              message.success('Success add bundle')
               if (payload.resolve) {
                 payload.resolve('done')
               }
@@ -128,6 +129,7 @@ export default modelExtend(pageModel, {
                 }
               })
             }
+            message.success('Success add bundle')
             if (payload.resolve) {
               payload.resolve('done')
             }
@@ -153,6 +155,7 @@ export default modelExtend(pageModel, {
                 currentReward: itemRewardService
               }
             })
+            message.success('Success add bundle')
             if (payload.resolve) {
               payload.resolve('done')
             }
@@ -178,6 +181,7 @@ export default modelExtend(pageModel, {
                 currentReward: itemRewardService
               }
             })
+            message.success('Success add bundle')
             if (payload.resolve) {
               payload.resolve('done')
             }

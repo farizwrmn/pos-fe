@@ -1671,13 +1671,28 @@ export default {
     * getProductByBarcode ({ payload }, { call, put }) {
       const response = yield call(queryByBarcode, payload)
       if (response && response.success && response.data && response.data.id) {
-        yield put({
-          type: 'pos/chooseProduct',
-          payload: {
-            item: response.data,
-            type: payload.type
-          }
-        })
+        if (response.data.productCode) {
+          yield put({
+            type: 'pos/chooseProduct',
+            payload: {
+              item: response.data,
+              type: payload.type
+            }
+          })
+        }
+
+        if (response.data.code) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              type: 'all',
+              bundleId: response.data.id,
+              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentProduct: getCashierTrans(),
+              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+            }
+          })
+        }
       } else {
         message.warning('Barcode Not found')
       }

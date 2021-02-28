@@ -1326,7 +1326,9 @@ const Pos = ({
           type: 'pos/getProductByBarcode',
           payload: {
             id: value,
-            type: 'barcode'
+            type: 'barcode',
+            day: moment().isoWeekday(),
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       }
