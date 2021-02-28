@@ -1380,6 +1380,8 @@ const Pos = ({
     dispatch({
       type: 'productBookmark/query',
       payload: {
+        day: moment().isoWeekday(),
+        storeId: lstorage.getCurrentUserStore(),
         groupId: key,
         relationship: 1,
         page,
