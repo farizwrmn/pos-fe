@@ -1398,7 +1398,7 @@ const Pos = ({
       />
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
-          <Col md={10} sm={24}>
+          <Col md={7} sm={0} xs={0}>
             <Bookmark
               loading={loading.effects['productBookmark/query']}
               onChange={handleChangeBookmark}
@@ -1408,7 +1408,7 @@ const Pos = ({
             />
           </Col>
         ) : null}
-        <Col md={hasBookmark ? 14 : 24} sm={24}>
+        <Col md={hasBookmark ? 17 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />

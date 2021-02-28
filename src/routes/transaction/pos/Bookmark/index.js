@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Avatar, Tabs, Spin, Pagination } from 'antd'
+import { Card, Tabs, Spin, Pagination } from 'antd'
 import { currencyFormatter } from 'utils/string'
 import styles from './bookmark.less'
 import EmptyBookmark from './EmptyBookmark'
@@ -34,16 +34,16 @@ const Bookmark = ({
                       {list && list.length > 0 ?
                         list.map((item, index) => {
                           return (
-                            <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
-                              <div>
+                            <div onClick={() => onChoose(item.product)} key={index} className={styles.card}>
+                              {/* <div>
                                 <Avatar size="large" src="/product-placeholder.jpg" />
-                              </div>
+                              </div> */}
                               <div>{item && item.product ? item.product.productCode : null}</div>
                               <div>
                                 <h3>{item && item.product ? item.product.productName : null}</h3>
                               </div>
                               <div>{currencyFormatter(item && item.product ? item.product.sellPrice : null)}</div>
-                            </Card.Grid>
+                            </div>
                           )
                         }) : (
                           <EmptyBookmark id={item.id} />
