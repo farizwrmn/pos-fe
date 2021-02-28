@@ -102,7 +102,9 @@ export default modelExtend(pageModel, {
                   currentReward: itemRewardService
                 }
               })
-              payload.resolve('done')
+              if (payload.resolve) {
+                payload.resolve('done')
+              }
             } else if (resultCompareBundle.status && item.applyMultiple === '1') {
               yield put({
                 type: 'setBundleAlreadyExists',
@@ -126,7 +128,9 @@ export default modelExtend(pageModel, {
                 }
               })
             }
-            payload.resolve('done')
+            if (payload.resolve) {
+              payload.resolve('done')
+            }
           } else if (!resultCompareBundle.status) {
             yield put({
               type: 'setBundleNeverExists',
@@ -149,7 +153,9 @@ export default modelExtend(pageModel, {
                 currentReward: itemRewardService
               }
             })
-            payload.resolve('done')
+            if (payload.resolve) {
+              payload.resolve('done')
+            }
           } else if (resultCompareBundle.status && item.applyMultiple === '1') {
             yield put({
               type: 'setBundleAlreadyExists',
@@ -172,7 +178,9 @@ export default modelExtend(pageModel, {
                 currentReward: itemRewardService
               }
             })
-            payload.resolve('done')
+            if (payload.resolve) {
+              payload.resolve('done')
+            }
           }
         } else {
           Modal.warning({
@@ -181,7 +189,9 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
-        payload.reject('error')
+        if (payload.reject) {
+          payload.reject('error')
+        }
         throw data
       }
     },

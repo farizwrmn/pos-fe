@@ -1390,6 +1390,19 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
+  const chooseBundle = (item) => {
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        type: 'all',
+        bundleId: item.id,
+        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+        currentProduct: getCashierTrans(),
+        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1403,6 +1416,7 @@ const Pos = ({
               loading={loading.effects['productBookmark/query']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
+              onChooseBundle={chooseBundle}
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />

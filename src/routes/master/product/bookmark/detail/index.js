@@ -28,7 +28,7 @@ const Detail = ({
 
   const productProps = {
     dataSource: listBookmark,
-    loading: loading.effects['productBookmark/query'],
+    loading: loading.effects['productBookmark/query'] || loading.effects['productBookmarkDetail/query'],
     location,
     deleteItem (id) {
       dispatch({
