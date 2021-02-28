@@ -9,7 +9,7 @@ const List = ({ ...tableProps, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       confirm({
-        title: `Are you sure delete ${record.product.productName} ?`,
+        title: record.product ? `Are you sure delete ${record.product.productName} ?` : 'Are you sure delete this item ?',
         onOk () {
           deleteItem(record.id)
         }
@@ -21,12 +21,30 @@ const List = ({ ...tableProps, deleteItem }) => {
     {
       title: 'Product Code',
       dataIndex: 'product.productCode',
-      key: 'product.productCode'
+      key: 'product.productCode',
+      render: (text, record) => {
+        if (record.type === 'PRODUCT') {
+          return record.product.productCode
+        }
+
+        if (record.type === 'BUNDLE') {
+          return record.bundle.code
+        }
+      }
     },
     {
       title: 'Product Name',
       dataIndex: 'product.productName',
-      key: 'product.productName'
+      key: 'product.productName',
+      render: (text, record) => {
+        if (record.type === 'PRODUCT') {
+          return record.product.productCode
+        }
+
+        if (record.type === 'BUNDLE') {
+          return record.bundle.name
+        }
+      }
     },
     {
       title: 'Operation',

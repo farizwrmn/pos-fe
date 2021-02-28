@@ -1,4 +1,6 @@
 import modelExtend from 'dva-model-extend'
+import moment from 'moment'
+import { lstorage } from 'utils'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/product/bookmarkGroup'
@@ -67,7 +69,9 @@ export default modelExtend(pageModel, {
             type: 'productBookmark/query',
             payload: {
               groupId: data.data[0].id,
-              relationship: 1
+              relationship: 1,
+              day: moment().isoWeekday(),
+              storeId: lstorage.getCurrentUserStore()
             }
           })
         }
