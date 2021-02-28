@@ -9,6 +9,8 @@ import Asset from './Asset'
 import Variant from './Variant'
 import Specification from './Specification'
 import Stock from './Stock'
+import ServiceCategory from './ServiceCategory'
+import ProductCategory from './ProductCategory'
 
 export default {
   Product,
@@ -21,5 +23,7 @@ export default {
   Asset,
   Variant,
   Specification,
-  Stock
+  Stock,
+  ServiceCategory,
+  ProductCategory
 }

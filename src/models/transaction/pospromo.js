@@ -46,8 +46,8 @@ export default modelExtend(pageModel, {
         const item = data.data[0]
         // const itemRulesProduct = dataRules.data.filter(x => x.type === 'P')
         // const itemRulesService = dataRules.data.filter(x => x.type !== 'P')
-        const itemRewardProduct = dataReward.data.filter(x => x.type === 'P')
-        const itemRewardService = dataReward.data.filter(x => x.type !== 'P')
+        const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
+        const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         if (item && dataRules.data && dataReward.data) {
           const resultCompareBundle = compareBundleExists(currentBundle, item)
           // const resultCompareRulesProductRequired = compareExistsByIdAndQty(currentProduct, itemRulesProduct)

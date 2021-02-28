@@ -38,6 +38,7 @@ const column = {
 }
 
 const FormCounter = ({
+  showRules = false,
   item = {},
   listAllStores = [],
   onSubmit,
@@ -84,7 +85,21 @@ const FormCounter = ({
       hideModal()
     },
     onRowClick (item) {
-      const type = _.has(item, 'productCode') ? 'P' : 'S'
+      let type = _.has(item, 'productCode') ? 'P' : _.has(item, 'serviceCode') ? 'S' : null
+      let categoryCode = null
+      let categoryName = null
+      if (type === null) {
+        if (_.has(item, 'categoryCode')) {
+          categoryCode = item.categoryCode
+          categoryName = item.categoryName
+          type = 'P'
+        }
+        if (_.has(item, 'miscCode')) {
+          categoryCode = item.miscName
+          categoryName = item.miscDesc
+          type = 'S'
+        }
+      }
       if (typeModal === 'Rules') {
         let arrayProd = []
         const listByCode = listRules
@@ -113,6 +128,14 @@ const FormCounter = ({
         let arrayProd = []
         const listByCode = listReward
         const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
+        const checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode)
+        if (checkExistsCategory && checkExistsCategory.length > 0) {
+          Modal.warning({
+            title: 'Cannot add category',
+            content: 'Only one in a promo'
+          })
+          return
+        }
         if (checkExists.length === 0) {
           arrayProd = listByCode
 
@@ -120,14 +143,15 @@ const FormCounter = ({
             no: arrayProd.length + 1,
             type,
             productId: item.id,
-            productCode: type === 'P' ? item.productCode : item.serviceCode,
-            productName: type === 'P' ? item.productName : item.serviceName,
+            productCode: categoryCode === null ? (type === 'P' ? item.productCode : item.serviceCode) : categoryCode,
+            productName: categoryName === null ? (type === 'P' ? item.productName : item.serviceName) : categoryName,
+            categoryCode: categoryCode !== null ? categoryCode : undefined,
             qty: 1,
-            sellPrice: type === 'P' ? item.sellPrice : item.serviceCost,
-            sellingPrice: type === 'P' ? item.sellPrice : item.serviceCost,
-            distPrice01: type === 'P' ? item.distPrice01 : item.serviceCost,
-            distPrice02: type === 'P' ? item.distPrice02 : item.serviceCost,
-            distPrice03: type === 'P' ? item.distPrice03 : item.serviceCost,
+            sellPrice: categoryCode === null ? (type === 'P' ? item.sellPrice : item.serviceCost) : 0,
+            sellingPrice: categoryCode === null ? (type === 'P' ? item.sellPrice : item.serviceCost) : 0,
+            distPrice01: categoryCode === null ? (type === 'P' ? item.distPrice01 : item.serviceCost) : 0,
+            distPrice02: categoryCode === null ? (type === 'P' ? item.distPrice02 : item.serviceCost) : 0,
+            distPrice03: categoryCode === null ? (type === 'P' ? item.distPrice03 : item.serviceCost) : 0,
             discount: 0,
             disc1: 0,
             disc2: 0,
@@ -317,12 +341,15 @@ const FormCounter = ({
       dataIndex: 'type',
       key: 'type',
       width: '100',
-      render: text =>
-        (<span>
-          <Tag color={text === 'P' ? 'green' : 'blue'}>
-            {text === 'P' ? 'Product' : 'Service'}
-          </Tag>
-        </span>)
+      render: (text) => {
+        return (
+          <span>
+            <Tag color={text === 'P' ? 'green' : 'blue'}>
+              {text === 'P' ? 'Product' : 'Service'}
+            </Tag>
+          </span>
+        )
+      }
     },
     {
       title: 'Code',
@@ -356,12 +383,15 @@ const FormCounter = ({
       dataIndex: 'type',
       key: 'type',
       width: '100',
-      render: text =>
-        (<span>
-          <Tag color={text === 'P' ? 'green' : 'blue'}>
-            {text === 'P' ? 'Product' : 'Service'}
-          </Tag>
-        </span>)
+      render: (text) => {
+        return (
+          <span>
+            <Tag color={text === 'P' ? 'green' : 'blue'}>
+              {text === 'P' ? 'Product' : 'Service'}
+            </Tag>
+          </span>
+        )
+      }
     },
     {
       title: 'Code',
@@ -541,11 +571,15 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...column}>
-          <Row>
-            <Col span={12}><h2 className="h2-add-items">Rules</h2></Col>
-            <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Rules')}>Add Items</Button></Col>
-          </Row>
-          <ListRules {...listRulesProps} />
+          {showRules && (
+            <div>
+              <Row>
+                <Col span={12}><h2 className="h2-add-items">Rules</h2></Col>
+                <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Rules')}>Add Items</Button></Col>
+              </Row>
+              <ListRules {...listRulesProps} />
+            </div>
+          )}
           <Row>
             <Col span={12}><h2 className="h2-add-items">Reward</h2></Col>
             <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
