@@ -13,9 +13,9 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.brandName} ?`,
+        title: `Are you sure delete ${record.name} ?`,
         onOk () {
-          deleteItem(record.brandCode)
+          deleteItem(record.id)
         }
       })
     }
