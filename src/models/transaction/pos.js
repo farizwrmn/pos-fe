@@ -900,7 +900,7 @@ export default {
     },
 
     * getServices ({ payload = {} }, { select, call, put }) {
-      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.serviceTypeId = currentReward.categoryCode
       }
@@ -1507,7 +1507,7 @@ export default {
           })
         })
       }
-      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       const { item, type } = payload
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice
@@ -1775,7 +1775,7 @@ export default {
       // } else {
       //   data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
       // }
-      const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.categoryCode = currentReward.categoryCode
       }
