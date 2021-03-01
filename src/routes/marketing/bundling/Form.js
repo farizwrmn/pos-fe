@@ -472,6 +472,16 @@ const FormCounter = ({
               ]
             })(<Input disabled maxLength={50} />)}
           </FormItem>
+          <FormItem label="Barcode" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('barcode01', {
+              initialValue: item.barcode01,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Input maxLength={50} />)}
+          </FormItem>
           <FormItem label="Promo Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: item.name,
