@@ -100,7 +100,9 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({ type: 'query' })
-        payload.reset()
+        if (payload.reset) {
+          payload.reset()
+        }
         yield put({ type: 'querySequence' })
         message.success('Success save data')
       } else {
@@ -130,7 +132,9 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
-        payload.reset()
+        if (payload.reset) {
+          payload.reset()
+        }
         message.success('Success edit data')
         yield put({ type: 'querySequence' })
       } else {

@@ -48,12 +48,12 @@ const FormCounter = ({
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   modalProps,
-  listBank,
+  listPayment,
   listDetailProps,
   listOpts,
   listSupplier,
-  bankOpt = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id}>{`${c.bankName} (${c.bankCode})`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
+  bankOpt = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{`${c.name} ${c.accountCode && c.accountCode.accountCode ? `(${c.accountCode.accountCode})` : ''}`}</Option>) : [],
+  paymentOpt = (listOpts || []).length > 0 ? listOpts.filter(filtered => filtered.typeCode !== 'C').map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,
@@ -265,32 +265,40 @@ const FormCounter = ({
               >{paymentOpt}
               </Select>)}
             </FormItem>
-            <FormItem label="Bank" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bankId', {
-                initialValue: modalType === 'edit' && item.bankId ? {
-                  key: item.bankId,
-                  label: `${item.bankName} (${item.bankCode})`
-                }
-                  : undefined,
-                rules: [
-                  {
-                    required: true
+            {getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C' && (
+              <FormItem label="Bank" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bankId', {
+                  initialValue: modalType === 'edit' && item.bankId ? {
+                    key: item.bankId,
+                    label: `${item.bankName} (${item.bankCode})`
                   }
-                ]
-              })(
-                // <AutoComplete {...autoCompleteProps} />
-                <Select
-                  showSearch
-                  allowClear
-                  onFocus={() => showLov('bank')}
-                  onSearch={value => showLov('bank', { q: value })}
-                  optionFilterProp="children"
-                  labelInValue
-                  filterOption={filterOption}
-                >{bankOpt}
-                </Select>
-              )}
-            </FormItem>
+                    : undefined,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C'
+                    }
+                  ]
+                })(
+                  // <AutoComplete {...autoCompleteProps} />
+                  <Select
+                    showSearch
+                    allowClear
+                    onFocus={() => {
+                      validateFields(['typeCode'], (errors) => {
+                        if (errors) {
+                          return
+                        }
+                        showLov('paymentEdc', { paymentOption: getFieldValue('typeCode').key, type: 'all' })
+                      })
+                    }}
+                    optionFilterProp="children"
+                    labelInValue
+                    filterOption={filterOption}
+                  >{bankOpt}
+                  </Select>
+                )}
+              </FormItem>
+            )}
             <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
               {getFieldDecorator('discount', {
                 initialValue: 0,
