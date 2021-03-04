@@ -1056,6 +1056,7 @@ const Routers = function ({ history, app }) {
           path: 'accounts/payable-form',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/accounts/payableForm'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/master/bank'))

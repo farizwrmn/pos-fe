@@ -9,7 +9,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, accountCode, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+const Cash = ({ payableForm, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
   const {
     modalVisible,
     currentItem,
@@ -20,6 +20,7 @@ const Cash = ({ payableForm, accountCode, bank, paymentOpts, supplier, loading, 
     pagination,
     list
   } = payableForm
+  const { listPayment } = paymentEdc
   const { listAccountCodeLov } = accountCode
   const { listOpts } = paymentOpts
   const { listBank } = bank
@@ -178,6 +179,7 @@ const Cash = ({ payableForm, accountCode, bank, paymentOpts, supplier, loading, 
     }
   }
   const formProps = {
+    listPayment,
     purchaseProps,
     dispatch,
     loading,
@@ -317,18 +319,20 @@ export default connect(({
   payableForm,
   accountCode,
   paymentOpts,
+  paymentEdc,
   bank,
   supplier,
   loading,
   purchase,
-  app }) =>
-({
-  payableForm,
-  accountCode,
-  paymentOpts,
-  bank,
-  supplier,
-  loading,
-  purchase,
-  app
-}))(Cash)
+  app }) => (
+  {
+    payableForm,
+    accountCode,
+    paymentOpts,
+    paymentEdc,
+    bank,
+    supplier,
+    loading,
+    purchase,
+    app
+  }))(Cash)

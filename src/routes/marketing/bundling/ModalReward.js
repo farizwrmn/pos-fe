@@ -28,6 +28,7 @@ const modal = ({
       }
       data.no = item.no
       data.type = item.type
+      data.categoryCode = item.categoryCode
       data.productId = item.productId
       data.productCode = item.productCode
       data.productName = item.productName
