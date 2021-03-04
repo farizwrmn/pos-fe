@@ -87,7 +87,7 @@ export default modelExtend(pageModel, {
         }
         if (
           pathname === '/master/account'
-          || pathname === '/account/payable-form'
+          || pathname === '/accounts/payable-form'
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
