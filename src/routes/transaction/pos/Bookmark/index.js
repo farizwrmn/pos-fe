@@ -1,10 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, Tabs, Spin, Pagination } from 'antd'
-import { currencyFormatter } from 'utils/string'
+// import { currencyFormatter } from 'utils/string'
 import styles from './bookmark.less'
 import EmptyBookmark from './EmptyBookmark'
 import EmptyBookmarkGroup from './EmptyBookmarkGroup'
+
+const gridStyle = {
+  width: '50%',
+  textAlign: 'center'
+}
 
 const Bookmark = ({
   onChange,
@@ -35,7 +40,8 @@ const Bookmark = ({
                       {list && list.length > 0 ?
                         list.map((item, index) => {
                           return (
-                            <div
+                            <Card.Grid
+                              style={gridStyle}
                               key={index}
                               className={styles.card}
                               onClick={() => {
@@ -50,12 +56,12 @@ const Bookmark = ({
                               {/* <div>
                                 <Avatar size="large" src="/product-placeholder.jpg" />
                               </div> */}
-                              <div>{item && item.product ? item.product.productCode : item.bundle.code}</div>
+                              {/* <div>{item && item.product ? item.product.productCode : item.bundle.code}</div> */}
                               <div>
                                 <h3>{item && item.product ? item.product.productName : item.bundle.name}</h3>
                               </div>
-                              <div>{item && item.product ? currencyFormatter(item.product.sellPrice) : null}</div>
-                            </div>
+                              {/* <div>{item && item.product ? currencyFormatter(item.product.sellPrice) : null}</div> */}
+                            </Card.Grid>
                           )
                         }) : (
                           <EmptyBookmark id={item.id} />

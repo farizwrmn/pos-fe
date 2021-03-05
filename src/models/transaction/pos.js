@@ -1509,11 +1509,13 @@ export default {
       }
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       const { item, type } = payload
+      let qty = 1
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice
         item.distPrice01 = currentReward.distPrice01
         item.distPrice02 = currentReward.distPrice02
         item.distPrice03 = currentReward.distPrice03
+        qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
@@ -1523,7 +1525,56 @@ export default {
         let listByCode = getCashierTrans()
         let arrayProd = listByCode
         const checkExists = listByCode.filter(el => el.code === item.productCode)
-        if ((checkExists || []).length === 0) {
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'P' && checkExists && checkExists[0]) {
+          const currentItem = checkExists[0]
+          const newQty = currentItem.qty + currentReward.qty
+          const data = {
+            no: currentItem.no,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            code: item.productCode,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: newQty,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * newQty
+          }
+
+          arrayProd[currentItem.no - 1] = {
+            no: currentItem.no,
+            code: item.productCode,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            productId: item.id,
+            name: item.productName,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'P',
+            qty: newQty,
+            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * newQty
+          }
+          yield put({
+            type: 'pos/checkQuantityEditProduct',
+            payload: {
+              data,
+              arrayProd,
+              setting,
+              type: payload.type
+            }
+          })
+        } else if ((checkExists || []).length === 0) {
           const data = {
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
@@ -1533,7 +1584,7 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: 1,
+            qty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
@@ -1552,7 +1603,7 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: 1,
+            qty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,

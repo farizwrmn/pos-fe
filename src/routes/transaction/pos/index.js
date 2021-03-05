@@ -1082,12 +1082,66 @@ const Pos = ({
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
-        const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
         const { currentReward } = pospromo
+        let qty = curQty
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
           item.serviceCost = currentReward.sellPrice
+          qty = currentReward.qty
+          // eslint-disable-next-line eqeqeq
+          checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode && el.bundleId == currentReward.bundleId) : []
         }
-        if (checkExists.length === 0) {
+        // eslint-disable-next-line eqeqeq
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'S' && checkExists && checkExists[0] && checkExists[0].bundleId == currentReward.bundleId) {
+          arrayProd[checkExists[0].no - 1] = {
+            no: checkExists[0].no,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            code: item.serviceCode,
+            productId: item.id,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            name: item.serviceName,
+            qty: checkExists[0].qty + qty,
+            typeCode: 'S',
+            sellPrice: item.serviceCost,
+            price: item.serviceCost,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.serviceCost * (checkExists[0].qty + qty)
+          }
+
+          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+
+          dispatch({
+            type: 'pos/queryServiceSuccessByCode',
+            payload: {
+              listByCode: item,
+              curRecord: curRecord + 1
+            }
+          })
+
+          let successModal = Modal.info({
+            title: 'Success add service',
+            content: 'Service has been added in Service`s Tab'
+          })
+
+          dispatch({
+            type: 'pos/hideServiceModal'
+          })
+
+          setTimeout(() => successModal.destroy(), 1000)
+
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '2'
+            }
+          })
+
+          setCurBarcode('', 1)
+        } else if (checkExists.length === 0) {
           arrayProd.push({
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
@@ -1096,7 +1150,7 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
-            qty: curQty,
+            qty,
             typeCode: 'S',
             sellPrice: item.serviceCost,
             price: item.serviceCost,
@@ -1104,7 +1158,7 @@ const Pos = ({
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: item.serviceCost * curQty
+            total: item.serviceCost * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -1138,7 +1192,7 @@ const Pos = ({
           setCurBarcode('', 1)
         } else {
           Modal.warning({
-            title: 'Cannot add product',
+            title: 'Cannot add service',
             content: 'Already Exists in list'
           })
         }

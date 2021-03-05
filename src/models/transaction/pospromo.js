@@ -201,6 +201,12 @@ export default modelExtend(pageModel, {
                 currentReward: itemRewardService
               }
             })
+            yield put({
+              type: 'setCategoryPos',
+              payload: {
+                currentReward: itemRewardCategory
+              }
+            })
             message.success('Success add bundle')
             if (payload.resolve) {
               payload.resolve('done')
