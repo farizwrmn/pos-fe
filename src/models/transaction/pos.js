@@ -1509,11 +1509,13 @@ export default {
       }
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       const { item, type } = payload
+      let qty = 1
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice
         item.distPrice01 = currentReward.distPrice01
         item.distPrice02 = currentReward.distPrice02
         item.distPrice03 = currentReward.distPrice03
+        qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
@@ -1533,7 +1535,7 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: 1,
+            qty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
@@ -1552,7 +1554,7 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
-            qty: 1,
+            qty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
             price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
             discount: 0,
