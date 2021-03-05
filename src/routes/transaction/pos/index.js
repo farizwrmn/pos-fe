@@ -1084,8 +1084,10 @@ const Pos = ({
         let arrayProd = listByCode
         const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
         const { currentReward } = pospromo
+        let qty = curQty
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
           item.serviceCost = currentReward.sellPrice
+          qty = currentReward.qty
         }
         if (checkExists.length === 0) {
           arrayProd.push({
@@ -1096,7 +1098,7 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
-            qty: curQty,
+            qty,
             typeCode: 'S',
             sellPrice: item.serviceCost,
             price: item.serviceCost,
