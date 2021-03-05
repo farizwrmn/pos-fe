@@ -51,7 +51,10 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const { pathname, ...other } = payload
-      const data = yield call(query, other)
+      const data = yield call(query, {
+        ...other,
+        type: 'all'
+      })
       if (data) {
         yield put({
           type: 'querySuccess',
