@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Select, Modal } from 'antd'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -25,6 +26,7 @@ const column = {
 }
 
 const FormCounter = ({
+  listGroup,
   item = {},
   onSubmit,
   onCancel,
@@ -37,6 +39,8 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listGroupOpt = (listGroup || []).length > 0 ? listGroup.map(c => <Option value={c.id} key={c.id} title={`${c.markGroupName}`}>{`${c.markGroupName}`}</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -71,10 +75,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          onSubmit(data, resetFields)
         },
         onCancel () { }
       })
@@ -85,7 +86,7 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
+          <FormItem label="Marketplace Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('marketplaceName', {
               initialValue: item.marketplaceName,
               rules: [
@@ -94,6 +95,20 @@ const FormCounter = ({
                 }
               ]
             })(<Input maxLength={100} autoFocus />)}
+          </FormItem>
+          <FormItem label="Marketplace Group" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('marketplaceGroupId', {
+              initialValue: item.marketplaceGroupId,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              filterOption={filterOption}
+            >{listGroupOpt}
+            </Select>)}
           </FormItem>
           <FormItem label="Marketplace Image" hasFeedback {...formItemLayout}>
             {getFieldDecorator('marketplaceImage', {

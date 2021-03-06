@@ -91,10 +91,13 @@ const Counter = ({ marketplaceProduct, loading, dispatch, location, app }) => {
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, reset) {
       dispatch({
         type: `marketplaceProduct/${modalType}`,
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {

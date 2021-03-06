@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ marketplace, loading, dispatch, location, app }) => {
+const Counter = ({ marketplace, marketplaceGroup, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = marketplace
+  const { list: listGroup } = marketplaceGroup
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -88,13 +89,17 @@ const Counter = ({ marketplace, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    listGroup,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, reset) {
       dispatch({
         type: `marketplace/${modalType}`,
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {
@@ -140,10 +145,11 @@ const Counter = ({ marketplace, loading, dispatch, location, app }) => {
 
 Counter.propTypes = {
   marketplace: PropTypes.object,
+  marketplaceGroup: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ marketplace, loading, app }) => ({ marketplace, loading, app }))(Counter)
+export default connect(({ marketplace, marketplaceGroup, loading, app }) => ({ marketplace, marketplaceGroup, loading, app }))(Counter)

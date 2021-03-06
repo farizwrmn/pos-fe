@@ -70,7 +70,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, payload.data)
       if (data.success) {
         success()
         yield put({
@@ -83,6 +83,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',
@@ -96,7 +99,7 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ accountCode }) => accountCode.currentItem.id)
-      const newCounter = { ...payload, id }
+      const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -116,6 +119,9 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',

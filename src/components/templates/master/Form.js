@@ -71,10 +71,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          onSubmit(data, resetFields)
         },
         onCancel () { }
       })

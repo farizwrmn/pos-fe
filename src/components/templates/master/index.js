@@ -91,10 +91,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, reset) {
       dispatch({
         type: `accountCode/${modalType}`,
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {
