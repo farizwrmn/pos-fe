@@ -1543,6 +1543,31 @@ const Routers = function ({ history, app }) {
             }, 'integration-revenue-calculator')
           }
         }, {
+          path: 'integration/marketplace',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketplace/marketplace'))
+              registerModel(app, require('./models/marketplace/marketplaceGroup'))
+              cb(null, require('./routes/marketplace/marketplace'))
+            }, 'integration-marketplace')
+          }
+        }, {
+          path: 'integration/marketplace-group',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketplace/marketplaceGroup'))
+              cb(null, require('./routes/marketplace/marketplaceGroup'))
+            }, 'integration-marketplace-group')
+          }
+        }, {
+          path: 'integration/marketplace-product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketplace/marketplaceProduct'))
+              cb(null, require('./routes/marketplace/marketplaceProduct'))
+            }, 'integration-marketplace-product')
+          }
+        }, {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
